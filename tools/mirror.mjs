@@ -38,7 +38,7 @@ for (const page of pages) {
     const target = slug === '' ? 'home' : slug;
     return pages.includes(target) ? `href="${PREVIEW}${target}.html"` : `href="${LIVE}/${slug}"`;
   });
-  html = html.replace(/href="/#([a-z0-9-]+)"/gi, `href="${PREVIEW}home.html#$1"`);
+  html = html.replace(/href="\/#([a-z0-9-]+)"/gi, `href="${PREVIEW}home.html#$1"`);
   html = html.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${LIVE}/">\n<meta name="robots" content="noindex,nofollow">`);
   html = html.replace(/<\/body>/i, `${banner(page)}\n</body>`);
   writeFileSync(join(ROOT, 'preview', `${page}.html`), html);
