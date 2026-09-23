@@ -25,7 +25,8 @@ So editing a page = edit `pages/SLUG.html` here, then `npm run publish`. It is l
 Points and Solve forms (feed the Google Sheets the hunt bot's `npm run pull` reads), the Newsletter embed, home page native image, text and button blocks, header, footer, navigation, domain, SEO titles, cookie banner. Editing those still happens in the Squarespace editor, or via Claude in Chrome with the user's OK per change.
 
 ## Rules
-- **Do not edit Squarespace until Rachel has reviewed and finalized the design** (her instruction, 2026-09-22). The snippet swap has not happened yet; the live site does not load anything from this repo.
+- **Live since 2026-09-22:** all 15 code blocks on 11 pages hold the loader snippet. Publishing here changes the live site. Never paste full page code back into a Squarespace code block; that would detach the page from this repo. Pre-switch backups: `backups/2026-09-22-before-switch/` (gitignored).
+- After any change that matters, run `node tools/verify-live.mjs page,page` (logged-out check that every block loads).
 - Everything here is public (GitHub Pages). Never put answer keys, emails or anything from `../treasure-hunt-leaderboard/private/` in `pages/`.
 - Brand rules and assets: the Claude Design system "Maurice Africh - Author Branding - 2026" (source in `../maurice-africh-design-system`). New sections should use its tokens and components.
 - The hunt runs Sept 20 to Nov 1, 2026. Preview before publishing anything on hunt pages.
