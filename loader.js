@@ -24,6 +24,16 @@
     }, Promise.resolve());
   }
 
+  function scrollToHash(el) {
+    var id = location.hash ? decodeURIComponent(location.hash.slice(1)) : '';
+    if (!id) return;
+    var target = document.getElementById(id);
+    if (!target || !el.contains(target)) return;
+    var go = function () { target.scrollIntoView({ block: 'start' }); };
+    go();
+    setTimeout(go, 400); setTimeout(go, 1500); // again after late images and fonts settle the layout
+  }
+
   function mount(el) {
     if (el.getAttribute('data-ma-state')) return;
     el.setAttribute('data-ma-state', 'loading');
@@ -38,6 +48,8 @@
         el.setAttribute('data-ma-state', 'ready');
         // Pages that size themselves on window load get a second chance now that they exist.
         try { window.dispatchEvent(new Event('resize')); } catch (e) {}
+        // A link like /the-hunt#rewards arrives before its section exists; scroll once it does.
+        scrollToHash(el);
       })
       .catch(function () {
         el.setAttribute('data-ma-state', 'error');

@@ -132,7 +132,7 @@
 <li>Simon &amp; Schuster:
 <a href="https://simonandschuster.com/about/privacy_policy" target="_blank" rel="noopener">simonandschuster.com/about/privacy_policy</a></li>
 <li>Hachette UK / Hodder &amp; Stoughton:
-<a href="https://hachette.co.uk/privacy-notice" target="_blank" rel="noopener">hachette.co.uk/privacy-notice</a></li>
+<a href="https://www.hachette.co.uk/landing-page/hachette/privacy-notice-holder-huk/" target="_blank" rel="noopener">hachette.co.uk/privacy-notice</a></li>
 </ul>
 <p>We do not share the entrant list with our publishers for their own marketing, and we do not give them subscriber data from our newsletter.</p>
 <h4>Scoreboard and public display</h4>
@@ -227,3 +227,17 @@
 <p>Postal: 1141 Tunnel Rd Ste C, Asheville, NC 28805</p>
 <p>If you contact us about a Promotion run with a publisher, we may need to pass your request to the publisher so it can act on the information it holds; we will tell you if we do.</p>
 </div>
+<style>.pp>:last-child{margin-bottom:0}.pp{padding-bottom:40px}</style>
+<script>
+// Squarespace's layout grid keeps empty rows under this block; pull the footer up to meet the policy.
+(function () {
+  function trim() {
+    var pp = document.querySelector('.pp'); if (!pp) return;
+    var blk = pp.closest('.fe-block'), fe = pp.closest('.fluid-engine'); if (!blk || !fe) return;
+    fe.style.marginBottom = '';
+    var extra = fe.getBoundingClientRect().bottom - blk.getBoundingClientRect().bottom;
+    if (extra > 1) fe.style.marginBottom = (-extra) + 'px';
+  }
+  trim(); setTimeout(trim, 500); window.addEventListener('resize', trim);
+})();
+</script>
