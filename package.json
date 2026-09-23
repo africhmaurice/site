@@ -3,8 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "publish": "node tools/publish.mjs",
+    "publish": "node tools/mirror.mjs && node tools/publish.mjs",
     "check": "node tools/publish.mjs --dry",
-    "preview": "node tools/preview.mjs"
+    "preview": "node tools/preview.mjs",
+    "mirror": "node tools/mirror.mjs"
   }
 }
