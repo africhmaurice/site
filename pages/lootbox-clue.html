@@ -11,6 +11,11 @@ html,body{margin:0 !important;padding:0 !important}
 #loot-clue .lc-clue{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(40px,6vw,84px);line-height:1.15;color:#89fbcb;margin:0}
 #loot-clue .lc-poem{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(24px,3vw,40px);line-height:1.35;color:#89fbcb;margin:0;white-space:pre-line}
 #loot-clue p{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(16px,1.4vw,20px);letter-spacing:.05em;line-height:1.65;color:#fffffe;text-transform:uppercase;max-width:640px;margin:0 auto}
+#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;max-width:1240px;width:100%;align-items:stretch}
+#loot-clue .lc-board{box-sizing:border-box;max-width:none;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 44px 52px}
+#loot-clue .lc-num{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,3.4vw,52px);line-height:1;color:#89fbcb;margin:0 0 22px}
+#loot-clue .lc-text{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(18px,1.6vw,23px);line-height:1.55;letter-spacing:.02em;color:#fffffe;white-space:pre-line;text-transform:none;margin:0}
+@media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}}
 @media (max-width:760px){#loot-clue{padding:130px 20px 70px}#loot-clue .lc-board{padding:48px 26px 44px}}
 </style>
 <style>
@@ -78,13 +83,14 @@ html,body{margin:0 !important;padding:0 !important}
 </div>
 
 <section id="loot-clue">
-  <div class="lc-board">
-    <div class="lc-eyebrow">Clue #0</div>
-    <div class="lc-clue">CLICK IT</div>
+  <div class="lc-grid">
+  <div class="lc-board" data-clue="0">
+    <div class="lc-num">#0</div>
+    <div class="lc-text">CLICK IT</div>
   </div>
-  <div class="lc-board">
-    <div class="lc-eyebrow">Clue #1</div>
-    <div class="lc-poem">The Quiet One waits
+  <div class="lc-board" data-clue="1">
+    <div class="lc-num">#1</div>
+    <div class="lc-text">The Quiet One waits
 hanging, listless and forgotten
 at the base of a
 tree without leaves
@@ -96,11 +102,74 @@ far and away.
 Within a liminal space
 the Quiet One waits.</div>
   </div>
-  <div class="lc-board">
-    <div class="lc-eyebrow">Clue #2</div>
-    <div class="lc-poem">&ldquo;I would have lived in war
-but my enemies brought me loot.&rdquo;
-&mdash; RR's #1 Fan</div>
+  <div class="lc-board" data-clue="2">
+    <div class="lc-num">#2</div>
+    <div class="lc-text">“I would have lived in war
+but my enemies brought me loot.”
+— RR's #1 Fan</div>
+  </div>
+  <div class="lc-board" data-clue="3">
+    <div class="lc-num">#3</div>
+    <div class="lc-text">If you like this game, open this loot box!</div>
+  </div>
+  <div class="lc-board" data-clue="4">
+    <div class="lc-num">#4</div>
+    <div class="lc-text">Down the
+rabbit hole you
+eager heathens!
+Remember to
+eat your veggies
+and
+drown your enemies in the
+slow-cooked abyss!</div>
+  </div>
+  <div class="lc-board" data-clue="5">
+    <div class="lc-num">#5</div>
+    <div class="lc-text">WINE DADDY 45</div>
+  </div>
+  <div class="lc-board" data-clue="6">
+    <div class="lc-num">#6</div>
+    <div class="lc-text">NEEWWWW ACHIEVEMENT! This loot box is shaped like a cat girl, you dirty little lynx! I bet you like that, don't you?</div>
+  </div>
+  <div class="lc-board" data-clue="7">
+    <div class="lc-num">#7</div>
+    <div class="lc-text">Keep yapping and you never know.</div>
+  </div>
+  <div class="lc-board" data-clue="9">
+    <div class="lc-num">#9</div>
+    <div class="lc-text">Destination X</div>
+  </div>
+  <div class="lc-board" data-clue="10">
+    <div class="lc-num">#10</div>
+    <div class="lc-text">nuh ay thuh nuh sih buh oof kuh tuh ock</div>
+  </div>
+  <div class="lc-board" data-clue="11">
+    <div class="lc-num">#11</div>
+    <div class="lc-text">the clock says tik.
+the clock says tok.
+a certaiN guy has hidden a prize.
+no dragon’s hoard, no kings chest.
+but a clever doom scroller might do bEst.
+start with the clock.
+fInd the guy.
+only his personaL story
+holds the key,
+to the room for fans of fiction
+(some might say addict),
+to find their prize.</div>
+  </div>
+  <div class="lc-board" data-clue="12">
+    <div class="lc-num">#12</div>
+    <div class="lc-text">Samuel Chastain Rogers aka &quot;Pops&quot;</div>
+  </div>
+  <div class="lc-board" data-clue="13">
+    <div class="lc-num">#13</div>
+    <div class="lc-text">In the Dark</div>
+  </div>
+  <div class="lc-board" data-clue="14">
+    <div class="lc-num">#14</div>
+    <div class="lc-text">Them: &quot;As an author, you're not supposed to do this!&quot;</div>
+  </div>
   </div>
 </section>
 <!-- END OF FILE — if you cannot find this comment after pasting, the paste was truncated -->
