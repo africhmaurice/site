@@ -34,6 +34,7 @@ for (const page of pages) {
   html = swapped;
   if (n !== LAYOUT[page].length) console.warn(`! ${page}: expected ${LAYOUT[page].length} code blocks, found ${n} (did the live page change?)`);
   // Links between site pages stay inside the preview; everything else resolves against the live site.
+  html = html.replace(/href="https?:\/\/(?:www\.)?mauriceafrich\.com\//gi, 'href="/');
   html = html.replace(/href="\/([a-z0-9-]*)"(?=[\s>])/gi, (m, slug) => {
     const target = slug === '' ? 'home' : slug;
     return pages.includes(target) ? `href="${PREVIEW}${target}.html"` : `href="${LIVE}/${slug}"`;
