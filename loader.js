@@ -57,5 +57,36 @@
       });
   }
 
+  // Site-wide background style: Squarespace's own "Parallax" image effect (the image slides) becomes the
+  // Hunt page's fixed background (the image holds still while the page scrolls over it). Like the Hunt page,
+  // screens 900px and narrower get a plain scrolling background, since phones don't support fixed ones.
+  function fixedBackgrounds() {
+    if (!document.getElementById('ma-fixed-bg-css')) {
+    var css = document.createElement('style'); css.id = 'ma-fixed-bg-css';
+    css.textContent =
+      '.ma-fixed-bg{background-size:cover!important;background-repeat:no-repeat!important;background-attachment:fixed!important}' +
+      '.ma-fixed-bg img,.ma-fixed-bg canvas,.ma-fixed-bg .section-background-canvas{display:none!important}' +
+      '@media (max-width:900px),(hover:none){.ma-fixed-bg{background-attachment:scroll!important}}';
+    document.head.appendChild(css);
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('[data-controller="BackgroundImageFXParallax"]'), function (fx) {
+      var bg = fx.closest('.section-background') || fx;
+      var img = bg.querySelector('img');
+      if (!img) return;
+      var src = img.getAttribute('data-src') || img.currentSrc || img.getAttribute('src');
+      if (!src) return;
+      if (/squarespace-cdn\.com/.test(src) && src.indexOf('format=') < 0) src += (src.indexOf('?') < 0 ? '?' : '&') + 'format=2500w';
+      fx.removeAttribute('data-controller'); // stop Squarespace animating it
+      var fp = (img.getAttribute('data-image-focal-point') || '0.5,0.5').split(',');
+      bg.style.backgroundImage = 'url("' + src + '")';
+      bg.style.backgroundPosition = (parseFloat(fp[0]) * 100) + '% ' + (parseFloat(fp[1]) * 100) + '%';
+      bg.classList.add('ma-fixed-bg');
+    });
+  }
+
+  fixedBackgrounds();
+  // Sections below the first code block aren't parsed yet when this runs near the top of the page.
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fixedBackgrounds);
+  window.addEventListener('load', fixedBackgrounds);
   Array.prototype.forEach.call(document.querySelectorAll('[data-ma-page]'), mount);
 })();
