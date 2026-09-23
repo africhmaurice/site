@@ -1,32 +1,72 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow"><title>Riddle 4 Options</title>
+<meta name="robots" content="noindex,nofollow"><title>Riddle 4 Picture Options</title>
 <style>
-:root{--ink:#0b170f;--card:#213226;--line:rgba(162,245,144,.2);--text:#fff;--muted:#9fb3a5}
-*{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--text);font:16px/1.4 system-ui,Segoe UI,sans-serif}
-header{position:sticky;top:0;z-index:5;background:rgba(11,23,15,.97);border-bottom:1px solid var(--line);padding:14px 16px}
-h1{margin:0 0 4px;font-size:18px}p{margin:0;color:var(--muted);font-size:13px}
-nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-button{font:inherit;font-size:14px;color:#fff;background:var(--card);border:2px solid transparent;border-radius:999px;padding:8px 14px;cursor:pointer}
-button[aria-pressed=true]{border-color:currentColor}
-.a{color:#ff6b81}.b{color:#6ea8ff}.c{color:#4dffa0}.d{color:#ffe24d}
-button b{color:#fff}
-main{display:flex;justify-content:center;padding:16px}img{width:100%;max-width:900px;display:block}
+:root{--ink:#0b170f;--card:#1d1433;--line:rgba(195,166,255,.25);--text:#ede9dc;--muted:#a99fc0;--violet:#c3a6ff;--ember:#c1330a;--parch:#f3ead9}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--text);font:16px/1.45 system-ui,Segoe UI,sans-serif;padding:24px 16px 48px}
+h1{margin:0 0 6px;font-size:22px;color:#fff}
+.lead{margin:0 0 24px;color:var(--muted);max-width:760px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:1100px}
+.opt{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+.opt h2{margin:0 0 4px;font-size:18px;color:var(--violet)}
+.opt .sub{margin:0 0 14px;color:var(--muted);font-size:14px}
+svg{display:block;width:100%;height:auto;background:#2a1f45;border-radius:8px}
+.ans{margin:14px 0 0;font-size:15px}
+.ans b{color:#fff;font-size:20px}
+.math{color:var(--muted);font-size:13px;margin-top:4px}
+.note{max-width:760px;margin:28px 0 0;color:var(--muted);font-size:14px}
 </style></head><body>
-<header>
-  <h1>Riddle #4: which boxes should count?</h1>
-  <p>The Hunt page on a desktop screen (today, before riddles #4 to #6 are added). Each option is outlined and numbered on the page.</p>
-  <nav id="nav">
-    <button class="a" data-k="A">A · Outlined boxes and buttons <b>59</b></button>
-    <button class="b" data-k="B">B · How to earn points boxes <b>33</b></button>
-    <button class="c" data-k="C">C · Cards <b>9</b></button>
-    <button class="d" data-k="D">D · Solid filled shapes <b>24</b></button>
-  </nav>
-</header>
-<main><img id="shot" alt="Hunt page with the chosen boxes outlined"></main>
-<script>
-var btns=document.querySelectorAll('#nav button'),img=document.getElementById('shot');
-function show(k){img.src=k+'.jpg';btns.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.k===k)});}
-btns.forEach(function(b){b.onclick=function(){show(b.dataset.k)}});show('A');
-</script>
+<h1>Riddle #4: pick a picture</h1>
+<p class="lead">Each picture would sit on the riddle card itself, so nothing else on the page can change the answer. The question: <em>“How many rectangles can you find in this picture?”</em> Every box counts, and so does every bigger rectangle made from boxes that touch.</p>
+
+<div class="grid">
+  <div class="opt">
+    <h2>A · Cabin window</h2>
+    <p class="sub">2 panes wide × 3 tall · easiest</p>
+    <svg viewBox="0 0 300 300" role="img" aria-label="A cabin window with 6 panes">
+      <rect x="70" y="30" width="160" height="240" fill="#16324d" stroke="#f3ead9" stroke-width="8"/>
+      <line x1="150" y1="30" x2="150" y2="270" stroke="#f3ead9" stroke-width="6"/>
+      <line x1="70" y1="110" x2="230" y2="110" stroke="#f3ead9" stroke-width="6"/>
+      <line x1="70" y1="190" x2="230" y2="190" stroke="#f3ead9" stroke-width="6"/>
+      <circle cx="205" cy="60" r="7" fill="#f3ead9" opacity=".5"/>
+    </svg>
+    <p class="ans">Answer: <b>18</b></p>
+    <p class="math">Columns: 1+2 = 3 ways · rows: 1+2+3 = 6 ways · 3 × 6 = 18</p>
+  </div>
+
+  <div class="opt">
+    <h2>B · Cargo crate</h2>
+    <p class="sub">3 × 3 panels · medium</p>
+    <svg viewBox="0 0 300 300" role="img" aria-label="A cargo crate with 9 panels">
+      <rect x="45" y="45" width="210" height="210" fill="#7a4a24" stroke="#f3ead9" stroke-width="8"/>
+      <line x1="115" y1="45" x2="115" y2="255" stroke="#f3ead9" stroke-width="6"/>
+      <line x1="185" y1="45" x2="185" y2="255" stroke="#f3ead9" stroke-width="6"/>
+      <line x1="45" y1="115" x2="255" y2="115" stroke="#f3ead9" stroke-width="6"/>
+      <line x1="45" y1="185" x2="255" y2="185" stroke="#f3ead9" stroke-width="6"/>
+      <text x="150" y="160" text-anchor="middle" font-family="Georgia,serif" font-size="30" fill="#f3ead9" opacity=".35">✕</text>
+    </svg>
+    <p class="ans">Answer: <b>36</b></p>
+    <p class="math">Columns: 1+2+3 = 6 ways · rows: 6 ways · 6 × 6 = 36</p>
+  </div>
+
+  <div class="opt">
+    <h2>C · Treasure map grid</h2>
+    <p class="sub">4 squares wide × 3 tall · hard</p>
+    <svg viewBox="0 0 300 300" role="img" aria-label="A treasure map divided into a 4 by 3 grid">
+      <rect x="20" y="60" width="260" height="195" fill="#e9d9b4" stroke="#3b2a14" stroke-width="7"/>
+      <line x1="85" y1="60" x2="85" y2="255" stroke="#3b2a14" stroke-width="5"/>
+      <line x1="150" y1="60" x2="150" y2="255" stroke="#3b2a14" stroke-width="5"/>
+      <line x1="215" y1="60" x2="215" y2="255" stroke="#3b2a14" stroke-width="5"/>
+      <line x1="20" y1="125" x2="280" y2="125" stroke="#3b2a14" stroke-width="5"/>
+      <line x1="20" y1="190" x2="280" y2="190" stroke="#3b2a14" stroke-width="5"/>
+      <path d="M50 230 q30 -40 60 -10 t70 -40 t60 -60" fill="none" stroke="#c1330a" stroke-width="3" stroke-dasharray="6 6"/>
+      <text x="243" y="112" text-anchor="middle" font-family="Georgia,serif" font-size="26" fill="#c1330a">✕</text>
+    </svg>
+    <p class="ans">Answer: <b>60</b></p>
+    <p class="math">Columns: 1+2+3+4 = 10 ways · rows: 6 ways · 10 × 6 = 60</p>
+  </div>
+</div>
+
+<p class="note">Rough sketches to pick a direction. The final art would match the riddle cards and could be drawn in your own style. The dotted path and ✕ on the map aren’t boxes and don’t count.</p>
 </body></html>
