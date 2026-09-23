@@ -1,5 +1,6 @@
 // npm run preview [-- slug,slug] : for each live page, screenshots the real Squarespace page ("before") and the same page
 // with its code blocks replaced by the loader snippet pointed at this folder ("after"), then diffs them.
+// LIVE=1 npm run preview loads from the published GitHub Pages copy instead of this folder.
 // Needs playwright (from ../maurice-africh-design-system/.ds-sync) and Chrome.
 import { createServer } from 'node:http';
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -66,7 +67,7 @@ for (const [page, slugs] of Object.entries(LAYOUT)) {
         const res = await route.fetch(); const s = swapBlocks(await res.text(), slugs); swapped = s.swapped;
         await route.fulfill({ response: res, body: s.html, headers: { ...res.headers(), 'content-security-policy': '' } });
       });
-      await p.route(LOCAL + '**', async (route) => { const u = new URL(route.request().url()); const f = join(ROOT, u.pathname.replace('/site/', '')); if (!existsSync(f)) return route.fulfill({ status: 404 }); await route.fulfill({ status: 200, headers: { 'content-type': types[extname(f)] || 'application/octet-stream', 'access-control-allow-origin': '*' }, body: readFileSync(f) }); });
+      if (!process.env.LIVE) await p.route(LOCAL + '**', async (route) => { const u = new URL(route.request().url()); const f = join(ROOT, u.pathname.replace('/site/', '')); if (!existsSync(f)) return route.fulfill({ status: 404 }); await route.fulfill({ status: 200, headers: { 'content-type': types[extname(f)] || 'application/octet-stream', 'access-control-allow-origin': '*' }, body: readFileSync(f) }); });
       await p.goto(`https://www.mauriceafrich.com/${page}`, { waitUntil: 'load', timeout: 60000 });
       await p.waitForTimeout(4000);
       await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 700) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 120)); } window.scrollTo(0, 0); });

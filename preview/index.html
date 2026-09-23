@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Site Preview</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--ink:#0b170f;--card:#213226;--line:rgba(162,245,144,.16);--text:#fff;--muted:#8fa596;--accent:#ff4c0f;--link:#3adb97}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--ink:#0b170f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+header{position:fixed;left:0;right:0;bottom:0;z-index:2147483647;background:rgba(11,23,15,.97);border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.4);padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+header b{font-size:14px;letter-spacing:.06em;text-transform:uppercase;margin-right:6px}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav a{color:var(--text);text-decoration:none;font-size:13px;padding:6px 10px;border:1px solid var(--line);border-radius:999px}
+nav a[aria-current]{background:var(--accent);border-color:var(--accent)}
+.note{font-size:12px;color:var(--muted);width:100%}
+.note a{color:var(--link)}
+main{min-height:60vh;padding-bottom:110px}
+.sep{font-size:11px;color:var(--muted);text-align:center;padding:10px;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);letter-spacing:.08em;text-transform:uppercase}
+</style></head>
+<body>
+<header>
+  <b>Site preview</b>
+  <nav id="nav"></nav>
+  <div class="note">What each page's custom section looks like, loaded from the new system. Squarespace's header, footer, forms and home-page photo sections aren't shown here. <a id="live" target="_blank" rel="noopener">Open this page on the live site ↗</a></div>
+</header>
+<main id="main"></main>
+<script>
+var PAGES = {
+  home: { label: 'Home', live: '/home', slugs: ['home-slider', 'home-widget-1', 'home-widget-2'] },
+  'the-hunt': { label: 'The Hunt', live: '/the-hunt', slugs: ['the-hunt'] },
+  points: { label: 'Points', live: '/points', slugs: ['hunt-menu'] },
+  solve: { label: 'Solve', live: '/solve', slugs: ['hunt-menu'] },
+  leaderboard: { label: 'Leaderboard', live: '/leaderboard', slugs: ['hunt-menu', 'leaderboard'] },
+  contests: { label: 'Contests', live: '/contests', slugs: ['contests'] },
+  'lootbox-clue': { label: 'Clues', live: '/lootbox-clue', slugs: ['lootbox-clue'] },
+  games: { label: 'Game', live: '/games', slugs: ['games'] },
+  loot: { label: 'Loot', live: '/loot', slugs: ['loot'] },
+  rules: { label: 'Rules', live: '/rules', slugs: ['rules'] },
+  'privacy-policy': { label: 'Privacy', live: '/privacy-policy', slugs: ['privacy-policy'] }
+};
+var cur = new URLSearchParams(location.search).get('page') || 'home';
+if (!PAGES[cur]) cur = 'home';
+var nav = document.getElementById('nav');
+Object.keys(PAGES).forEach(function (k) {
+  var a = document.createElement('a'); a.href = '?page=' + k; a.textContent = PAGES[k].label;
+  if (k === cur) a.setAttribute('aria-current', 'page');
+  nav.appendChild(a);
+});
+document.getElementById('live').href = 'https://www.mauriceafrich.com' + PAGES[cur].live;
+document.title = PAGES[cur].label + ' · Site Preview';
+var main = document.getElementById('main');
+PAGES[cur].slugs.forEach(function (s, i) {
+  if (i) { var d = document.createElement('div'); d.className = 'sep'; d.textContent = 'next section'; main.appendChild(d); }
+  var el = document.createElement('div'); el.setAttribute('data-ma-page', s); main.appendChild(el);
+});
+var sc = document.createElement('script'); sc.src = '../loader.js'; document.body.appendChild(sc);
+</script>
+</body></html>
