@@ -1,0 +1,67 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&display=swap" rel="stylesheet">
+<style>
+#hunt-nav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(12,35,8,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:18px 16px}
+#hunt-nav .mn-row{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:clamp(12px,1.8vw,30px)}
+#hunt-nav .mn-link{white-space:nowrap;color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.07em;text-decoration:none;text-shadow:0 1px 6px rgba(0,0,0,.55);transition:color .15s ease}
+#hunt-nav .mn-link:hover{color:#a2f590}
+#hunt-nav .mn-cta{border:2px solid #f3ead9;padding:8px clamp(10px,1.4vw,20px);background:rgba(12,26,8,.35);transition:transform .15s ease,background .15s ease}
+#hunt-nav .mn-cta:hover{background:#c1330a;color:#fff;transform:scale(1.04)}
+#hunt-nav .mn-drop{position:relative;display:flex}
+#hunt-nav .mn-dd{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:14px}
+#hunt-nav .mn-dd-in{background:rgba(9,23,7,.95);border:1px solid rgba(243,234,217,.25);min-width:170px;display:flex;flex-direction:column}
+#hunt-nav .mn-dd-in a{display:block;padding:13px 18px;color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.07em;text-decoration:none;white-space:nowrap}
+#hunt-nav .mn-dd-in a:hover{color:#a2f590;background:rgba(255,255,255,.06)}
+#hunt-nav .mn-drop:hover .mn-dd,#hunt-nav .mn-drop:focus-within .mn-dd{display:block}
+#hunt-nav .mn-burger{display:none;width:46px;height:46px;margin:0 auto;align-items:center;justify-content:center;cursor:pointer}
+#hunt-nav-ov{display:none;position:fixed;inset:0;background:rgba(9,23,7,.97);z-index:10000;flex-direction:column;align-items:center;justify-content:center;gap:30px;padding:32px}
+#hunt-nav-ov a{color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:20px;letter-spacing:.08em;text-decoration:none}
+#hunt-nav-ov .mn-cta{border:2px solid #f3ead9;padding:12px 26px;background:rgba(12,26,8,.35);text-align:center}
+#hunt-nav-ov .mn-x{position:absolute;top:16px;right:16px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+@media (max-width:900px){
+  #hunt-nav{padding:10px 0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  #hunt-nav .mn-row{display:none}
+  #hunt-nav .mn-burger{display:flex}
+}
+</style>
+<nav id="hunt-nav">
+  <div class="mn-row">
+    <a href="https://www.mauriceafrich.com" class="mn-link">HOME</a>
+    <a href="https://www.mauriceafrich.com/the-hunt" class="mn-link">HUNT</a>
+    <a href="https://www.mauriceafrich.com/leaderboard" class="mn-link">LEADERBOARD</a>
+    <div class="mn-drop">
+      <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">SUBMIT &#9662;</a>
+      <div class="mn-dd"><div class="mn-dd-in">
+        <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+        <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
+      </div></div>
+    </div>
+    <a href="https://www.mauriceafrich.com/contests" class="mn-link">CONTESTS</a>
+    <a href="https://www.mauriceafrich.com/the-hunt#rewards" class="mn-link">REWARDS</a>
+    <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
+    <a href="https://www.mauriceafrich.com/loot" class="mn-link">LOOT</a>
+    <a href="https://www.mauriceafrich.com/games" class="mn-link">GAMES</a>
+    <a href="https://linktr.ee/mauriceafrich" target="_blank" rel="noopener" class="mn-link mn-cta">PRE-ORDER CELLO'S GATE</a>
+  </div>
+  <div class="mn-burger" role="button" aria-label="Open menu" onclick="var o=document.getElementById('hunt-nav-ov');if(o.parentNode!==document.body){document.body.appendChild(o);}o.style.display='flex'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M3 6h18"></path><path d="M3 12h18"></path><path d="M3 18h18"></path></svg>
+  </div>
+</nav>
+<div id="hunt-nav-ov" onclick="if(event.target.tagName==='A'||event.target.closest('.mn-x'))this.style.display='none'">
+  <div class="mn-x" role="button" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M5 5l14 14"></path><path d="M19 5L5 19"></path></svg>
+  </div>
+  <a href="https://www.mauriceafrich.com">HOME</a>
+  <a href="https://www.mauriceafrich.com/the-hunt">HUNT</a>
+  <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
+  <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+  <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
+  <a href="https://www.mauriceafrich.com/contests">CONTESTS</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+  <a href="https://www.mauriceafrich.com/lootbox-clue">CLUES</a>
+  <a href="https://www.mauriceafrich.com/loot">LOOT</a>
+  <a href="https://www.mauriceafrich.com/games">GAMES</a>
+  <a href="https://linktr.ee/mauriceafrich" target="_blank" rel="noopener" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
+</div>
+<!-- END OF FILE — if you cannot find this comment after pasting, the paste was truncated -->

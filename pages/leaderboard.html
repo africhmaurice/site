@@ -1,0 +1,9 @@
+<div style="width:100vw;position:relative;left:50%;margin-left:-50vw;overflow:hidden;z-index:2;isolation:isolate">
+  <iframe id="th-leaderboard" src="https://africhmaurice.github.io/leaderboard/?v=7" title="Treasure Hunt Leaderboard" loading="lazy" style="width:100%;height:1200px;border:0;display:block;background:#c1330a;position:relative;z-index:2;pointer-events:auto"></iframe>
+</div>
+<script>
+  window.addEventListener('message', function (e) {
+    var f = document.getElementById('th-leaderboard');
+    if (e.source === f.contentWindow && e.data && e.data.thLeaderboardHeight) f.style.height = e.data.thLeaderboardHeight + 'px';
+  });
+</script>

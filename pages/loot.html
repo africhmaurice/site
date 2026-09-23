@@ -1,0 +1,525 @@
+<!-- Generated copy of squarespace-lootbox.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
+<!-- ============================================================
+     LOOT BOXES - the claim page for the Cello's Gate Treasure Hunt.
+     Paste this whole thing into a Squarespace Code Block on its own page.
+
+     HOW IT WORKS
+       Every loot box out on the internet is a picture that links here with
+       its own secret code on the end:  /loot?c=KKWKUD27
+       Land here with a code and the page claims that box for you and fills
+       in your scorecard - 51 squares, one per box. That is how you know you
+       found one. Land here without a code and you just see your scorecard.
+
+       The first claim asks for a name, email, handle and country. After that
+       the browser remembers you, so finding a box is one click. The email is
+       the identity: your scorecard follows you across phone and laptop, and
+       it is what ties a claim to your row on the leaderboard.
+
+     BEFORE IT WORKS
+       Set up the Google Sheet from apps-script/lootbox.gs, deploy it as a web
+       app, and paste the /exec URL into ENDPOINT below. The codes and links
+       are in private/lootbox-codes.csv.
+
+     FULL WIDTH ON DESKTOP
+       Same trick as The Daily Word: Squarespace drops a code block inside a
+       narrow column, so the script measures the window and pulls the section
+       out to the full width, and hangs the menu off <body> so it stays pinned.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+html,body{margin:0 !important;padding:0 !important}
+
+/* ---- site header menu ---- */
+#hunt-nav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(12,35,8,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:18px 16px}
+#hunt-nav .mn-row{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:clamp(12px,1.8vw,30px)}
+#hunt-nav .mn-link{white-space:nowrap;color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.07em;text-decoration:none;text-shadow:0 1px 6px rgba(0,0,0,.55);transition:color .15s ease}
+#hunt-nav .mn-link:hover{color:#a2f590}
+#hunt-nav .mn-cta{border:2px solid #f3ead9;padding:8px clamp(10px,1.4vw,20px);background:rgba(12,26,8,.35);transition:transform .15s ease,background .15s ease}
+#hunt-nav .mn-cta:hover{background:#c1330a;color:#fff;transform:scale(1.04)}
+#hunt-nav .mn-drop{position:relative;display:flex}
+#hunt-nav .mn-dd{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:14px}
+#hunt-nav .mn-dd-in{background:rgba(9,23,7,.95);border:1px solid rgba(243,234,217,.25);min-width:170px;display:flex;flex-direction:column}
+#hunt-nav .mn-dd-in a{display:block;padding:13px 18px;color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.07em;text-decoration:none;white-space:nowrap}
+#hunt-nav .mn-dd-in a:hover{color:#a2f590;background:rgba(255,255,255,.06)}
+#hunt-nav .mn-drop:hover .mn-dd,#hunt-nav .mn-drop:focus-within .mn-dd{display:block}
+#hunt-nav .mn-burger{display:none;width:46px;height:46px;margin:0 auto;align-items:center;justify-content:center;cursor:pointer}
+#hunt-nav-ov{display:none;position:fixed;inset:0;background:rgba(9,23,7,.97);z-index:10000;flex-direction:column;align-items:center;justify-content:center;gap:30px;padding:32px}
+#hunt-nav-ov a{color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:20px;letter-spacing:.08em;text-decoration:none}
+#hunt-nav-ov .mn-cta{border:2px solid #f3ead9;padding:12px 26px;background:rgba(12,26,8,.35);text-align:center}
+#hunt-nav-ov .mn-x{position:absolute;top:16px;right:16px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* Break out of Squarespace's content column. The script refines this to the
+   exact window width so the scrollbar never forces a sideways scroll. */
+#loot-page{font-family:'Almarai',sans-serif;letter-spacing:0;color:#111;
+  position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow-x:hidden}
+#loot-page *{box-sizing:border-box}
+
+/* ---- the backdrop ----
+   The painting holds still while the page slides over it. The rust wash is
+   the same 90% #c1330a the leaderboard uses, run as a gradient so the top of
+   the section sits darker than the bottom.
+   background-attachment:fixed does nothing on iOS and fights with reduced
+   motion, so touch devices get the same picture without the parallax. */
+#loot-boxes{position:relative;overflow-x:hidden;background:#3d0e03}
+#loot-boxes::before{content:"";position:absolute;inset:0;z-index:0;
+  background:url("https://africhmaurice.github.io/leaderboard/loot/bg.jpg") center center/cover fixed no-repeat}
+#loot-boxes::after{content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(178deg,rgba(74,18,4,.9) 0%,rgba(193,51,10,.9) 62%,rgba(193,51,10,.9) 100%)}
+#loot-boxes > *{position:relative;z-index:2}
+@media (hover:none),(prefers-reduced-motion:reduce){
+  #loot-boxes::before{background-attachment:scroll}
+}
+
+/* ---- the stage: whatever just happened ---- */
+.lb-stage{min-height:120px;text-align:center}
+.lb-bang{font-family:'Atomic Marker',cursive;font-size:clamp(38px,7vw,68px);line-height:1.05;margin:0 0 10px;color:#1e6417}
+.lb-bang.miss{color:#c11212}
+.lb-boxname{font-family:'Atomic Marker',cursive;font-size:clamp(26px,4vw,40px);color:#c53200;line-height:1.1;margin:0 0 12px}
+.lb-say{font-size:clamp(16px,2.1vw,20px);line-height:1.55;margin:0 auto;max-width:540px;color:#111}
+.lb-quiet{font-size:clamp(13px,1.6vw,15px);color:#607667;margin:10px auto 0;max-width:540px;line-height:1.5}
+.lb-pts{display:inline-block;background:#1e6417;color:#fff;font-weight:800;font-size:clamp(14px,1.8vw,17px);letter-spacing:.09em;padding:8px 16px;margin:14px 0 4px}
+.lb-pts.dim{background:#607667}
+
+/* ---- the scorecard ---- */
+.lb-tally{text-align:center;font-weight:800;letter-spacing:.09em;text-transform:uppercase;font-size:clamp(12px,1.5vw,14px);color:#607667;margin:34px 0 14px}
+.lb-tally strong{color:#c53200;font-size:1.5em;letter-spacing:.02em}
+.lb-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:clamp(3px,.7vw,8px);max-width:660px;margin:0 auto}
+.lb-cell{position:relative;aspect-ratio:1/1}
+.lb-cell img{width:100%;height:100%;object-fit:contain;display:block}
+/* Not found yet: the chest is there, but only as a shadow of itself. */
+.lb-cell.miss img{filter:grayscale(1) brightness(.5) contrast(.75);opacity:.2}
+.lb-cell.fresh img{animation:lbpop .55s ease}
+/* Fallback for a chest whose art hasn't been uploaded yet, so the card still
+   reads as 51 squares rather than 51 broken images. */
+.lb-cell.plain{display:flex;align-items:center;justify-content:center;border:2px solid #d3dcd4;
+  background:#f4f7f4;color:#aab5ab;font-weight:800;font-size:clamp(10px,1.5vw,15px)}
+.lb-cell.plain.got{background:#1e6417;border-color:#0d3309;color:#fff}
+.lb-cell.plain.fresh{background:#c1330a;border-color:#111;color:#fff;animation:lbpop .5s ease}
+.lb-chest{width:min(220px,46vw);height:auto;margin:0 auto 4px;display:block}
+.lb-chest.pop{animation:lbpop .55s ease}
+@keyframes lbpop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+
+/* ---- the first-time form ---- */
+.lb-form{max-width:440px;margin:22px auto 0;text-align:left}
+.lb-form label{display:block;font-weight:800;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:#607667;margin:14px 0 5px}
+.lb-form input,.lb-form select{width:100%;font-family:'Almarai',sans-serif;font-size:16px;font-weight:700;
+  color:#111;background:#fff;border:2px solid #111;padding:12px 13px;border-radius:0;-webkit-appearance:none;appearance:none}
+.lb-form select{background-image:linear-gradient(45deg,transparent 50%,#111 50%),linear-gradient(135deg,#111 50%,transparent 50%);background-position:calc(100% - 19px) 20px,calc(100% - 13px) 20px;background-size:6px 6px,6px 6px;background-repeat:no-repeat}
+.lb-btn{display:inline-block;width:100%;margin-top:22px;cursor:pointer;font-family:'Almarai',sans-serif;font-weight:800;font-size:17px;
+  letter-spacing:.09em;text-transform:uppercase;color:#fff;background:#c1330a;border:2px solid #111;
+  padding:15px 28px;transition:transform .15s ease,background .15s ease}
+.lb-btn:hover{background:#e04a12;transform:scale(1.02)}
+.lb-btn[disabled]{background:#9aa79b;cursor:default;transform:none}
+.lb-err{color:#c11212;font-weight:700;font-size:15px;margin:14px 0 0;text-align:center;min-height:20px}
+
+.lb-link{display:inline-block;margin-top:26px;font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;
+  letter-spacing:.08em;text-decoration:none;color:#fff;background:#c1330a;border:2px solid #f3ead9;
+  padding:14px 30px;transition:transform .15s ease,background .15s ease}
+.lb-link:hover{background:#e04a12;transform:scale(1.04)}
+.lb-foot{text-align:center;margin:26px 0 0;font-size:13px;color:#607667;letter-spacing:.04em}
+.lb-foot a{color:#c53200;font-weight:700;text-decoration:underline;cursor:pointer}
+
+@media (max-width:900px){
+  #hunt-nav{padding:10px 0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  #hunt-nav .mn-row{display:none}
+  #hunt-nav .mn-burger{display:flex}
+}
+@media (max-width:760px){
+  #loot-page section[data-screen-label]{padding:88px 18px 56px !important}
+  .lb-grid{grid-template-columns:repeat(6,1fr);gap:5px}
+}
+</style>
+
+<nav id="hunt-nav">
+  <div class="mn-row">
+    <a href="https://www.mauriceafrich.com" class="mn-link">HOME</a>
+    <a href="https://www.mauriceafrich.com/the-hunt" class="mn-link">HUNT</a>
+    <a href="https://www.mauriceafrich.com/leaderboard" class="mn-link">LEADERBOARD</a>
+    <div class="mn-drop">
+      <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">SUBMIT &#9662;</a>
+      <div class="mn-dd"><div class="mn-dd-in">
+        <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+        <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
+      </div></div>
+    </div>
+    <a href="https://www.mauriceafrich.com/contests" class="mn-link">CONTESTS</a>
+    <a href="https://www.mauriceafrich.com/the-hunt#rewards" class="mn-link">REWARDS</a>
+    <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
+    <a href="https://www.mauriceafrich.com/loot" class="mn-link">LOOT</a>
+    <a href="https://www.mauriceafrich.com/games" class="mn-link">GAMES</a>
+    <a href="https://linktr.ee/mauriceafrich" target="_blank" rel="noopener" class="mn-link mn-cta">PRE-ORDER CELLO'S GATE</a>
+  </div>
+  <div class="mn-burger" role="button" aria-label="Open menu" onclick="var o=document.getElementById('hunt-nav-ov');if(o.parentNode!==document.body){document.body.appendChild(o);}o.style.display='flex'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M3 6h18"></path><path d="M3 12h18"></path><path d="M3 18h18"></path></svg>
+  </div>
+</nav>
+<div id="hunt-nav-ov" onclick="if(event.target.tagName==='A'||event.target.closest('.mn-x'))this.style.display='none'">
+  <div class="mn-x" role="button" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M5 5l14 14"></path><path d="M19 5L5 19"></path></svg>
+  </div>
+  <a href="https://www.mauriceafrich.com">HOME</a>
+  <a href="https://www.mauriceafrich.com/the-hunt">HUNT</a>
+  <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
+  <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+  <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
+  <a href="https://www.mauriceafrich.com/contests">CONTESTS</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+  <a href="https://www.mauriceafrich.com/lootbox-clue">CLUES</a>
+  <a href="https://www.mauriceafrich.com/loot">LOOT</a>
+  <a href="https://www.mauriceafrich.com/games">GAMES</a>
+  <a href="https://linktr.ee/mauriceafrich" target="_blank" rel="noopener" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
+</div>
+
+<div id="loot-page">
+<section data-screen-label="Loot Boxes" id="loot-boxes" style="padding:150px 72px 100px">
+
+  <div style="text-align:center;max-width:1000px;margin:0 auto clamp(30px,4vw,46px)">
+    <div style="font-family:'Atomic Marker',cursive;font-size:clamp(24px,3.4vw,44px);color:#ffd9c4;margin-bottom:12px">The Treasure Hunt</div>
+    <h1 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(52px,9vw,124px);line-height:1.04;color:#fff;margin:0 0 22px">LOOT BOXES</h1>
+    <p style="font-weight:700;font-size:clamp(15px,1.8vw,19px);letter-spacing:.05em;line-height:1.6;color:#ffd9c4;text-shadow:0 1px 6px rgba(0,0,0,.4);max-width:720px;margin:0 auto">Fifty-one of them are hidden out there on the internet. Spot one, click it, and it is yours. 50 points each.</p>
+  </div>
+
+  <main style="background:rgba(255,255,255,.94);border:3px solid #111;max-width:780px;margin:0 auto;padding:clamp(26px,4vw,48px) clamp(16px,3.5vw,44px) clamp(28px,4vw,44px)">
+    <div class="lb-stage" id="lb-stage" role="status" aria-live="polite"></div>
+    <div id="lb-card" style="display:none">
+      <p class="lb-tally" id="lb-tally"></p>
+      <div class="lb-grid" id="lb-grid" aria-label="Your loot box scorecard"></div>
+    </div>
+    <p class="lb-foot" id="lb-foot"></p>
+  </main>
+</section>
+</div>
+
+<script>
+// ---- full width, wherever Squarespace puts this block ------------------
+(function () {
+  var page = document.getElementById('loot-page'),
+      nav = document.getElementById('hunt-nav'),
+      ov = document.getElementById('hunt-nav-ov');
+
+  // A transformed or filtered Squarespace ancestor would trap position:fixed
+  // and pin the menu to the content column instead of the window. Hanging the
+  // menu off <body> keeps it edge to edge no matter where the block lands.
+  if (nav && nav.parentNode !== document.body) document.body.appendChild(nav);
+  if (ov && ov.parentNode !== document.body) document.body.appendChild(ov);
+
+  // 100vw counts the scrollbar and would force a sideways scroll, so measure
+  // the real window instead: reset, read where the column starts, pull left.
+  function fullBleed() {
+    if (!page) return;
+    page.style.marginLeft = '0';
+    page.style.width = 'auto';
+    var left = page.getBoundingClientRect().left;
+    page.style.width = document.documentElement.clientWidth + 'px';
+    page.style.marginLeft = (-left) + 'px';
+  }
+  fullBleed();
+  window.addEventListener('resize', fullBleed);
+  window.addEventListener('load', fullBleed);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fullBleed);
+})();
+
+// ---- the loot boxes -----------------------------------------------------
+(function () {
+  /* ============================================================
+     EDIT HERE - the web app URL from apps-script/lootbox.gs.
+     Deploy > New deployment > Web app > Anyone, then paste the
+     /exec URL between the quotes.
+     ============================================================ */
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+
+  /* Where the chest art lives. Each box wants a file named for its number:
+     00.png is the blank one, 01.png … 50.png the rest. They are published from
+     the leaderboard repo's public/loot/ folder. Set ART to '' to go back to
+     plain numbered squares. */
+  var ART = 'https://africhmaurice.github.io/leaderboard/loot/';
+
+  var TOTAL = 51;
+  var ME = 'thLoot:me';      // who this browser belongs to
+  var CARD = 'thLoot:card';  // last scorecard we saw, so the grid paints instantly
+
+  var stage = document.getElementById('lb-stage'),
+      cardBox = document.getElementById('lb-card'),
+      tally = document.getElementById('lb-tally'),
+      grid = document.getElementById('lb-grid'),
+      foot = document.getElementById('lb-foot');
+
+  var code = readCode();
+  var me = load(ME) || {};
+  var card = load(CARD) || null;
+
+  // ---- storage (a locked-down browser can refuse it; nothing here depends
+  // on it working - the sheet is the record, this is only a convenience) ----
+  function load(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function drop(k) { try { localStorage.removeItem(k); } catch (e) {} }
+
+  function readCode() {
+    var m = (location.search + ' ' + location.hash).match(/[?&#]c=([A-Za-z0-9]+)/);
+    return m ? m[1].toUpperCase() : '';
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  // ---- talking to the sheet ----------------------------------------------
+  // A plain POST with no custom headers is a "simple" request, so the browser
+  // does not preflight it and the Apps Script URL answers directly. If that is
+  // blocked anyway, fall back to JSONP, which no browser blocks.
+  function send(payload, done, attempt) {
+    if (!/^https:\/\/script\.google\.com\//.test(ENDPOINT)) {
+      return done({ ok: false, error: 'endpoint' });
+    }
+    attempt = attempt || 1;
+    var settled = false;
+    // Apps Script answers in two seconds most of the time and occasionally takes
+    // thirty. One quiet retry turns that into a slow claim instead of a lost one.
+    var finish = function (res) {
+      if (settled) return;
+      settled = true;
+      var flaky = !res || (!res.ok && (res.error === 'network' || res.error === 'server'));
+      if (flaky && attempt < 2) {
+        return setTimeout(function () { send(payload, done, attempt + 1); }, 1500);
+      }
+      done(res);
+    };
+    try {
+      fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(payload) })
+        .then(function (r) { return r.json(); })
+        .then(finish)
+        .catch(function () { jsonp(payload, finish); });
+    } catch (e) { jsonp(payload, finish); }
+  }
+
+  function jsonp(payload, done) {
+    var name = 'lbcb' + Math.random().toString(36).slice(2);
+    var parts = ['callback=' + name];
+    for (var k in payload) if (payload[k] != null && payload[k] !== '') {
+      parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]));
+    }
+    var s = document.createElement('script');
+    var timer = setTimeout(function () { cleanup(); done({ ok: false, error: 'network' }); }, 30000);
+    function cleanup() { clearTimeout(timer); delete window[name]; if (s.parentNode) s.parentNode.removeChild(s); }
+    window[name] = function (res) { cleanup(); done(res); };
+    s.onerror = function () { cleanup(); done({ ok: false, error: 'network' }); };
+    s.src = ENDPOINT + '?' + parts.join('&');
+    document.body.appendChild(s);
+  }
+
+  // ---- drawing ------------------------------------------------------------
+  // The reveal gets the big chest; the 51-square card gets the small copies out
+  // of loot/t/, or the page would pull seventeen megabytes of artwork.
+  function chestUrl(n) { return ART + pad2(n) + '.png'; }
+  function thumbUrl(n) { return ART + 't/' + pad2(n) + '.png'; }
+  function pad2(n) { return n < 10 ? '0' + n : String(n); }
+
+  function drawCard(found, fresh) {
+    if (!found) { cardBox.style.display = 'none'; return; }
+    var have = {};
+    for (var i = 0; i < found.length; i++) have[found[i]] = true;
+    var html = '';
+    for (var n = 0; n < TOTAL; n++) {
+      var state = have[n] ? (n === fresh ? ' fresh' : ' got') : ' miss';
+      var title = 'Loot box ' + (n === 0 ? '(the blank one)' : n) + (have[n] ? ' — found' : ' — still out there');
+      html += ART
+        ? '<div class="lb-cell' + state + '" title="' + title + '">' +
+            '<img src="' + thumbUrl(n) + '" data-n="' + n + '" alt="' + title + '" loading="lazy"></div>'
+        : '<div class="lb-cell plain' + (have[n] ? (n === fresh ? ' fresh' : ' got') : '') + '" title="' + title + '">' +
+            (have[n] ? (n === 0 ? '&#9733;' : n) : '&#183;') + '</div>';
+    }
+    grid.innerHTML = html;
+    // A chest whose art is missing falls back to a numbered square rather than
+    // leaving a broken image in the middle of the card.
+    var imgs = grid.getElementsByTagName('img');
+    for (var k = 0; k < imgs.length; k++) {
+      imgs[k].onerror = function () {
+        var cell = this.parentNode, n = Number(this.getAttribute('data-n'));
+        cell.className = cell.className.replace('miss', '') + ' plain';
+        cell.innerHTML = have[n] ? (n === 0 ? '&#9733;' : n) : '&#183;';
+      };
+    }
+    tally.innerHTML = 'You have found <strong>' + found.length + '</strong> of ' + TOTAL +
+      ' &nbsp;&middot;&nbsp; <strong>' + (found.length * 50) + '</strong> points';
+    cardBox.style.display = 'block';
+  }
+
+  function say(html) { stage.innerHTML = html; }
+
+  function footer(known) {
+    foot.innerHTML = known
+      ? 'Points land on the board at the next tally. <a id="lb-forget">Not you?</a>'
+      : '';
+    var f = document.getElementById('lb-forget');
+    if (f) f.onclick = function () { drop(ME); drop(CARD); location.href = location.pathname; };
+  }
+
+  // ---- states -------------------------------------------------------------
+  function showReveal(res) {
+    var n = res.box.n;
+    var title = n === 0 ? 'THE BLANK ONE' : 'LOOT BOX #' + n;
+    var name = res.box.name || '';
+    var left = res.total - res.count;
+    // A box with no name of its own is just its number, and a box named the
+    // same as its number should not say it twice.
+    var showTitle = name && name.toUpperCase() !== title;
+    say((ART ? '<img class="lb-chest pop" src="' + chestUrl(n) + '" alt="' + title + '">' : '') +
+        '<p class="lb-bang">YOU FOUND IT!</p>' +
+        '<p class="lb-boxname">' + esc(name || title) + '</p>' +
+        (showTitle ? '<p class="lb-say">' + title + '</p>' : '') +
+        '<div class="lb-pts">+' + (res.box.points || 50) + ' POINTS</div>' +
+        '<p class="lb-quiet">' + (left > 0
+            ? left + ' still out there. Keep your eyes open.'
+            : 'That is all fifty-one. Nobody has ever looked harder.') + '</p>');
+    drawCard(res.found, n);
+  }
+
+  function showAlready(res) {
+    var n = res.box.n;
+    var title = n === 0 ? 'the blank one' : 'loot box #' + n;
+    say((ART ? '<img class="lb-chest" src="' + chestUrl(n) + '" alt="' + title + '">' : '') +
+        '<p class="lb-bang miss">ALREADY YOURS</p>' +
+        '<p class="lb-say">You found ' + title + ' once already, so no second helping of points.</p>' +
+        '<p class="lb-quiet">' + (res.total - res.count) + ' of the fifty-one are still out there.</p>');
+    drawCard(res.found, -1);
+  }
+
+  function showCard(res) {
+    if (res.count > 0) {
+      say('<p class="lb-bang">YOUR SCORECARD</p>' +
+          '<p class="lb-say">Loot boxes are hidden all over the internet &mdash; on this site, in the newsletter, ' +
+          'out on social, in places you would not think to look. Spot one, click it, and it fills in here.</p>');
+    } else {
+      say('<p class="lb-bang">NOTHING YET</p>' +
+          '<p class="lb-say">Fifty-one loot boxes are hidden out there. Click one when you spot it and this card ' +
+          'starts filling in. 50 points a box.</p>');
+    }
+    drawCard(res.found || [], -1);
+  }
+
+  function showError(err) {
+    var lines = {
+      badcode: ['NOT A LOOT BOX', 'That code does not match any of the fifty-one. Check the link you followed &mdash; or someone is having you on.'],
+      closed: ['THE HUNT IS OVER', 'Loot boxes stopped counting on November 1st. Thank you for hunting.'],
+      email: ['THAT EMAIL LOOKS OFF', 'Have another go &mdash; it has to be the address you use for the hunt.'],
+      endpoint: ['NOT WIRED UP YET', 'This page has no sheet behind it. (Paste the web app URL into ENDPOINT.)'],
+      network: ['THE SHIP IS SLOW TODAY', 'Your find may already be safe. Refresh the page \u2014 if that box is lit on your card below, it is yours.'],
+      server: ['SOMETHING WENT WRONG', 'The box is still yours to claim &mdash; refresh and try again.']
+    };
+    var l = lines[err] || lines.server;
+    say('<p class="lb-bang miss">' + l[0] + '</p><p class="lb-say">' + l[1] + '</p>');
+    // A bad link is no reason to hide what they have already found.
+    if (card && card.found && card.found.length) drawCard(card.found, -1);
+  }
+
+  function showForm() {
+    say('<p class="lb-bang">YOU FOUND ONE!</p>' +
+        '<p class="lb-say">Tell the Captain who you are and this box goes on your scorecard. ' +
+        'Only the first time &mdash; after this, finding a box is one click.</p>' +
+        '<div class="lb-form">' +
+        '<label for="lb-first">First name</label><input id="lb-first" autocomplete="given-name">' +
+        '<label for="lb-email">Email</label><input id="lb-email" type="email" autocomplete="email" inputmode="email">' +
+        '<label for="lb-handle">Social handle</label><input id="lb-handle" placeholder="@yourname" autocomplete="off">' +
+        '<label for="lb-platform">Where that handle lives</label>' +
+        '<select id="lb-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option>' +
+        '<option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option>' +
+        '<option>Discord</option><option>Bluesky</option><option>Substack</option></select>' +
+        '<label for="lb-country">Country</label>' +
+        '<select id="lb-country"><option value="">Pick one</option><option>United States</option>' +
+        '<option>United Kingdom</option><option value="__other">Somewhere else</option></select>' +
+        '<input id="lb-other" placeholder="Which country?" style="display:none;margin-top:8px">' +
+        '<button class="lb-btn" id="lb-go">Claim this loot box</button>' +
+        '<p class="lb-err" id="lb-err"></p>' +
+        '</div>');
+
+    var country = document.getElementById('lb-country'), other = document.getElementById('lb-other');
+    country.onchange = function () {
+      other.style.display = country.value === '__other' ? 'block' : 'none';
+      if (country.value === '__other') other.focus();
+    };
+    document.getElementById('lb-first').value = me.first_name || '';
+    document.getElementById('lb-email').value = me.email || '';
+    document.getElementById('lb-handle').value = me.handle || '';
+
+    var btn = document.getElementById('lb-go'), err = document.getElementById('lb-err');
+    btn.onclick = function () {
+      var person = {
+        first_name: document.getElementById('lb-first').value.trim(),
+        email: document.getElementById('lb-email').value.trim(),
+        handle: document.getElementById('lb-handle').value.trim(),
+        platform: document.getElementById('lb-platform').value,
+        country: country.value === '__other' ? other.value.trim() : country.value
+      };
+      if (!person.first_name) return (err.textContent = 'A first name, please.');
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(person.email)) return (err.textContent = 'That email does not look right.');
+      if (!person.country) return (err.textContent = 'Which country are you hunting from?');
+      err.textContent = '';
+      btn.disabled = true;
+      btn.textContent = 'Opening the box...';
+      me = person;
+      save(ME, me);
+      claim();
+    };
+    document.getElementById('lb-email').onkeydown = function (e) { if (e.key === 'Enter') btn.click(); };
+  }
+
+  // ---- the two things this page does --------------------------------------
+  function claim() {
+    say('<p class="lb-bang">OPENING THE BOX...</p>');
+    send({ action: 'claim', code: code, email: me.email, first_name: me.first_name,
+           handle: me.handle, platform: me.platform, country: me.country }, function (res) {
+      if (!res || !res.ok) return showError((res && res.error) || 'network');
+      save(CARD, { found: res.found, count: res.count, at: Date.now() });
+      // 'already' only comes back for a box they found some time ago. A retry of a
+      // claim that did land is answered 'new', so a slow round trip still reads as
+      // the find it was.
+      if (res.status === 'already') showAlready(res); else showReveal(res);
+      footer(true);
+      // Clean the code out of the address bar so a refresh is not a re-claim.
+      if (history.replaceState) history.replaceState(null, '', location.pathname);
+    });
+  }
+
+  // Looking at your own card is not worth a round trip. The sheet is only asked
+  // when there is nothing cached or the cache has gone stale, and if that ask
+  // fails we quietly keep showing the card we already had. Claims always go to
+  // the sheet - that is the part that has to be true.
+  var CARD_FRESH_MS = 10 * 60 * 1000;
+
+  function fetchCard() {
+    var fresh = card && card.at && (Date.now() - card.at) < CARD_FRESH_MS;
+    if (card) drawCard(card.found || [], -1);       // paint what we know first
+    if (fresh) { showCard({ found: card.found || [], count: card.count || 0 }); footer(true); return; }
+
+    send({ action: 'card', email: me.email }, function (res) {
+      if (!res || !res.ok) {
+        if (card) { showCard({ found: card.found || [], count: card.count || 0 }); footer(true); }
+        else showError((res && res.error) || 'network');
+        return;
+      }
+      save(CARD, { found: res.found, count: res.count, at: Date.now() });
+      showCard(res);
+      footer(true);
+    });
+  }
+
+  // ---- go -----------------------------------------------------------------
+  if (code && !me.email) { showForm(); footer(false); }
+  else if (code) { claim(); footer(true); }
+  else if (me.email) { say('<p class="lb-bang">YOUR SCORECARD</p>'); fetchCard(); }
+  else {
+    say('<p class="lb-bang">FIFTY-ONE BOXES</p>' +
+        '<p class="lb-say">They are hidden all over the internet &mdash; on this site, in the newsletter, out on ' +
+        'social, in places you would not think to look. Click one when you spot it and it lands on your scorecard, ' +
+        '50 points at a time.</p>' +
+        '<p class="lb-quiet">This page fills in the moment you find your first one.</p>');
+    footer(false);
+  }
+})();
+</script>

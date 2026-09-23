@@ -1,0 +1,10 @@
+{
+  "name": "mauriceafrich-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "publish": "node tools/publish.mjs",
+    "check": "node tools/publish.mjs --dry",
+    "preview": "node tools/preview.mjs"
+  }
+}
