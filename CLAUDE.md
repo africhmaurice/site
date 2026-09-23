@@ -18,7 +18,8 @@ So editing a page = edit `pages/SLUG.html` here, then `npm run publish`. It is l
 ## Commands
 - `npm run check`: dry run; shows what would publish, publishes nothing.
 - `npm run preview [-- page,page]`: opens each LIVE Squarespace page twice in headless Chrome (as-is, and with its Code Blocks swapped for the loader serving *this folder's* files), screenshots desktop 1440 and mobile 390, and pixel-diffs. Output in `.preview/` (`results.json`, `*.before.png` / `*.after.png`). Run it before publishing any change you want to compare against what's live. Known noise: home 10 to 20% (slider and testimonial carousel rotate), games ~0.1% (daily word), privacy ~0.3%.
-- `npm run publish [-- "message"]`: syncs bot pages, checks every page exists, commits, pushes.
+- `npm run mirror`: rebuilds `preview/<page>.html`, full copies of each live Squarespace page (header menu, footer, native sections, forms) with the code blocks loading from this repo. Forms are disabled and links stay inside the preview. This is what Rachel reviews: https://africhmaurice.github.io/site/preview/
+- `npm run publish [-- "message"]`: runs mirror, syncs bot pages, checks every page exists, commits, pushes.
 
 ## Stays in Squarespace (don't try to move these here)
 Points and Solve forms (feed the Google Sheets the hunt bot's `npm run pull` reads), the Newsletter embed, home page native image, text and button blocks, header, footer, navigation, domain, SEO titles, cookie banner. Editing those still happens in the Squarespace editor, or via Claude in Chrome with the user's OK per change.
