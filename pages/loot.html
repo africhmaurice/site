@@ -383,7 +383,7 @@ html,body{margin:0 !important;padding:0 !important}
   function showAlready(res) {
     var n = res.box.n;
     var title = n === 0 ? 'the blank one' : 'loot box #' + n;
-    say((ART ? '<img class="lb-chest" src="' + chestUrl(n) + '" alt="' + title + '">' : '') +
+    say((ART ? '<img loading="lazy" decoding="async" class="lb-chest" src="' + chestUrl(n) + '" alt="' + title + '">' : '') +
         '<p class="lb-bang miss">ALREADY YOURS</p>' +
         '<p class="lb-say">You found ' + title + ' once already, so no second helping of points.</p>' +
         '<p class="lb-quiet">' + (res.total - res.count) + ' of the fifty-one are still out there.</p>');

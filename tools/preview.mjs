@@ -16,7 +16,7 @@ const OUT = join(ROOT, '.preview'); mkdirSync(OUT, { recursive: true });
 
 const only = (process.argv[2] || '').split(',').filter(Boolean);
 
-const types = { '.js': 'text/javascript', '.html': 'text/html; charset=utf-8', '.json': 'application/json' };
+const types = { '.js': 'text/javascript', '.html': 'text/html; charset=utf-8', '.json': 'application/json', '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.gif': 'image/gif', '.mp3': 'audio/mpeg', '.css': 'text/css' };
 const server = createServer((q, r) => {
   const f = join(ROOT, decodeURIComponent(q.url.split('?')[0]));
   if (!f.startsWith(ROOT) || !existsSync(f)) { r.writeHead(404).end(); return; }

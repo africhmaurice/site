@@ -6,6 +6,7 @@ import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { extractImages } from './extract-images.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const site = JSON.parse(readFileSync(join(ROOT, 'site.json'), 'utf8'));
@@ -24,7 +25,11 @@ for (const p of site.pages) {
     const next = banner + body;
     if (!existsSync(target) || readFileSync(target, 'utf8') !== next) { writeFileSync(target, next); console.log(`↻ ${p.slug} ← bot ${p.source.slice(4)}`); }
   }
-  if (!existsSync(target) || statSync(target).size < 20) { console.error(`✗ ${p.slug}: pages/${p.slug}.html is missing or empty`); problems++; }
+  if (!existsSync(target) || statSync(target).size < 20) { console.error(`✗ ${p.slug}: pages/${p.slug}.html is missing or empty`); problems++; continue; }
+  // Move embedded images out into cached files (identical bytes). Site-owned sources are rewritten once and stay that way.
+  const before = readFileSync(target, 'utf8');
+  const out = extractImages(before, { root: ROOT, publicBase: site.publicBase });
+  if (out.html !== before) { writeFileSync(target, out.html); console.log(`⇢ ${p.slug}: ${out.moved} image(s), ${(out.bytes / 1048576).toFixed(1)} MB moved to assets/img (${(before.length / 1048576).toFixed(1)} → ${(out.html.length / 1048576).toFixed(2)} MB page)`); }
 }
 if (problems) { console.error(`\n${problems} problem(s); nothing published.`); process.exit(1); }
 

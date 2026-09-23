@@ -12,11 +12,22 @@ const TARGETS = (process.argv[2] ? JSON.parse(process.argv[2]) : [
   ['solve', '.ma-fixed-bg', 20], ['newsletter', '[data-controller="BackgroundImageFXParallax"]', 20], ['leaderboard', '#th-leaderboard', 20],
 ]);
 const browser = await chromium.launch({ executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe' });
+// LOCAL=1: serve this folder (and the bot's page + leaderboard files) in place of GitHub Pages, to test before publishing.
+import { readFileSync as rf, existsSync as ex } from 'node:fs';
+import { join as pj, extname as pe } from 'node:path';
+const BOT = resolve(ROOT, '../treasure-hunt-leaderboard');
+const TY = { '.js': 'text/javascript', '.html': 'text/html; charset=utf-8', '.json': 'application/json', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.css': 'text/css' };
+async function localRoutes(ctx) {
+  if (process.env.LOCAL !== '1') return;
+  await ctx.route('https://africhmaurice.github.io/site/**', (r) => { const u = new URL(r.request().url()); let f = pj(ROOT, u.pathname.replace('/site/', '')); if (u.pathname.endsWith('pages/the-hunt.html')) f = pj(BOT, 'squarespace-hunt.html'); if (!ex(f)) return r.fulfill({ status: 404 }); r.fulfill({ status: 200, headers: { 'content-type': TY[pe(f)] || 'application/octet-stream', 'access-control-allow-origin': '*' }, body: rf(f) }); });
+  await ctx.route('https://africhmaurice.github.io/leaderboard/**', (r) => { const u = new URL(r.request().url()); const f = pj(BOT, 'public', u.pathname.replace('/leaderboard/', '') || 'index.html'); if (!ex(f)) return r.continue(); r.fulfill({ status: 200, headers: { 'content-type': TY[pe(f)] || 'application/octet-stream' }, body: rf(f) }); });
+}
 for (const [page, sel, x] of TARGETS) {
-  const p = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } }); await localRoutes(ctx);
+  const p = await ctx.newPage();
   await p.goto(`https://www.mauriceafrich.com/${page}?x=${Date.now()}`, { waitUntil: 'load', timeout: 60000 }); await p.waitForTimeout(4500);
   const pos = await p.evaluate((sel) => { const e = document.querySelector(sel); if (!e) return null; const s = e.closest('section') || e; const r = s.getBoundingClientRect(); document.documentElement.style.scrollBehavior = 'auto'; const y = scrollY + r.top + 150; scrollTo(0, y); return { y, h: r.height }; }, sel);
-  if (!pos) { console.log(`${page.padEnd(13)} ${sel.padEnd(46)} (section not found)`); await p.close(); continue; }
+  if (!pos) { console.log(`${page.padEnd(13)} ${sel.padEnd(46)} (section not found)`); await ctx.close(); continue; }
   await p.waitForTimeout(700);
   const clip = { x, y: 200, width: 40, height: 400 };
   const a = await p.screenshot({ clip });
@@ -37,6 +48,6 @@ for (const [page, sel, x] of TARGETS) {
   }, ['data:image/png;base64,' + a.toString('base64'), 'data:image/png;base64,' + b.toString('base64')]);
   const verdict = shift.s <= 4 ? 'FIXED (locked in place)' : shift.s >= 116 ? 'scrolls with page' : 'SLIDING parallax';
   console.log(`${page.padEnd(13)} ${sel.padEnd(46)} background moved ${String(shift.s).padStart(3)}px of 120  → ${verdict}  (match ${shift.m.toFixed(1)})`);
-  await p.close();
+  await ctx.close();
 }
 await browser.close();

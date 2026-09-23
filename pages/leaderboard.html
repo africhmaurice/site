@@ -1,21 +1,24 @@
-<div style="width:100vw;position:relative;left:50%;margin-left:-50vw;overflow:hidden;z-index:2;isolation:isolate">
-  <iframe id="th-leaderboard" src="https://africhmaurice.github.io/leaderboard/?v=8" title="Treasure Hunt Leaderboard" loading="lazy" style="width:100%;height:1200px;border:0;display:block;background:#c1330a;position:relative;z-index:2;pointer-events:auto"></iframe>
+<style>
+  /* The artwork is a real fixed background on this page (same technique as the Hunt page sections); the board
+     frame is transparent and lays its 90% ember wash over it. Phones and 900px and under scroll normally, like the Hunt page. */
+  .th-lb-wrap{width:100vw;position:relative;left:50%;margin-left:-50vw;overflow:hidden;z-index:2;
+    background:#c1330a url('https://africhmaurice.github.io/leaderboard/leaderboard-bg-storm.webp') center/cover no-repeat;background-attachment:fixed}
+  @media (max-width:900px),(hover:none){.th-lb-wrap{background-attachment:scroll}}
+</style>
+<div class="th-lb-wrap">
+  <iframe id="th-leaderboard" src="https://africhmaurice.github.io/leaderboard/?v=9&amp;embed=1" title="Treasure Hunt Leaderboard" loading="lazy" allowtransparency="true" style="width:100%;height:1200px;border:0;display:block;background:transparent;color-scheme:normal;position:relative;z-index:2;pointer-events:auto"></iframe>
 </div>
 <script>
   (function () {
-    var f = document.getElementById('th-leaderboard'), queued = false;
-    // Tell the board where it sits on screen so its background can drift (parallax).
-    function report() {
-      queued = false;
-      if (!f.contentWindow) return;
-      f.contentWindow.postMessage({ thScroll: { top: f.getBoundingClientRect().top, vh: window.innerHeight } }, 'https://africhmaurice.github.io');
+    var f = document.getElementById('th-leaderboard');
+    // A transformed Squarespace container would turn the fixed background back into a scrolling one.
+    var sec = f.closest('section');
+    for (var a = f.parentElement.parentElement; a && sec && sec.contains(a); a = a.parentElement) {
+      var cs = getComputedStyle(a);
+      if (cs.transform !== 'none' || cs.willChange.indexOf('transform') >= 0 || cs.filter !== 'none') { a.style.setProperty('transform', 'none', 'important'); a.style.setProperty('will-change', 'auto', 'important'); a.style.setProperty('filter', 'none', 'important'); }
     }
-    function queue() { if (!queued) { queued = true; requestAnimationFrame(report); } }
-    window.addEventListener('scroll', queue, { passive: true });
-    window.addEventListener('resize', queue);
-    f.addEventListener('load', queue);
     window.addEventListener('message', function (e) {
-      if (e.source === f.contentWindow && e.data && e.data.thLeaderboardHeight) { f.style.height = e.data.thLeaderboardHeight + 'px'; queue(); }
+      if (e.source === f.contentWindow && e.data && e.data.thLeaderboardHeight) f.style.height = e.data.thLeaderboardHeight + 'px';
     });
   })();
 </script>
