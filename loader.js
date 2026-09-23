@@ -81,6 +81,16 @@
       bg.style.backgroundImage = 'url("' + src + '")';
       bg.style.backgroundPosition = (parseFloat(fp[0]) * 100) + '% ' + (parseFloat(fp[1]) * 100) + '%';
       bg.classList.add('ma-fixed-bg');
+      // A transformed container (Squarespace puts one on .section-border) silently turns "fixed" back into scrolling.
+      var sec = bg.closest('section');
+      for (var a = bg.parentElement; a && sec && sec.contains(a); a = a.parentElement) {
+        var cs = getComputedStyle(a);
+        if (cs.transform !== 'none' || cs.willChange.indexOf('transform') >= 0 || cs.filter !== 'none') {
+          a.style.setProperty('transform', 'none', 'important');
+          a.style.setProperty('will-change', 'auto', 'important');
+          a.style.setProperty('filter', 'none', 'important');
+        }
+      }
     });
   }
 
