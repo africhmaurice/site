@@ -77,17 +77,17 @@ html,body{margin:0 !important;padding:0 !important}
 .thw-tile.pop{transform:scale(1.07)}
 .thw-tile.flip{transform:scaleY(.05);transition:transform .22s ease}
 /* Brand colours: emerald-700 = right letter, right spot; ember-700 = right
-   letter, wrong spot; grey = not in the word. The key above the board uses the same. */
+   letter, wrong spot; charcoal = not in the word. The key above the board uses the same. */
 .thw-tile.correct{background:#268e62;border-color:#1a5e41;color:#fff}
 .thw-tile.present{background:#c53200;border-color:#912501;color:#fff}
-.thw-tile.absent{background:#3f4a3a;border-color:#3f4a3a;color:#fff}
-.thw-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 22px;margin:0 auto clamp(18px,3vw,26px);
+.thw-tile.absent{background:#1c1c1c;border-color:#000;color:#fff}
+.thw-legend{display:flex;flex-direction:column;align-items:flex-start;gap:8px;width:100%;max-width:calc(var(--n) * 78px);margin:0 auto clamp(18px,3vw,26px);
   font-weight:700;font-size:clamp(13px,1.6vw,15px);letter-spacing:.03em;color:#111}
 .thw-legend span{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
 .thw-legend i{display:inline-block;width:22px;height:22px;border:2px solid #111;flex:none}
 .thw-legend .correct{background:#268e62;border-color:#1a5e41}
 .thw-legend .present{background:#c53200;border-color:#912501}
-.thw-legend .absent{background:#3f4a3a;border-color:#3f4a3a}
+.thw-legend .absent{background:#1c1c1c;border-color:#000}
 .thw-row.shake{animation:thwShake .42s}
 @keyframes thwShake{10%,90%{transform:translateX(-3px)}20%,80%{transform:translateX(5px)}30%,50%,70%{transform:translateX(-8px)}40%,60%{transform:translateX(8px)}}
 
@@ -103,7 +103,7 @@ html,body{margin:0 !important;padding:0 !important}
 .thw-key.wide{flex:1.9 1 0;font-size:clamp(10px,2.7vw,13px);letter-spacing:0;padding-left:1px;padding-right:1px}
 .thw-key.correct{background:#268e62;border-color:#1a5e41;color:#fff}
 .thw-key.present{background:#c53200;border-color:#912501;color:#fff}
-.thw-key.absent{background:#3f4a3a;border-color:#3f4a3a;color:#fff}
+.thw-key.absent{background:#1c1c1c;border-color:#000;color:#fff}
 
 /* ---- messages ---- */
 .thw-early{display:inline-block;background:#c53200;color:#fff;font-weight:700;font-size:clamp(11px,1.4vw,13px);letter-spacing:.09em;padding:5px 11px;margin-bottom:10px}
@@ -434,6 +434,7 @@ button.thw-submit{cursor:pointer}
 
   // ---- building the board ---------------------------------------------
   gridEl.style.setProperty('--n', N);
+  document.getElementById('thw-legend').style.setProperty('--n', N);   // the key lines up with the board's left edge
   var rows = [];
   for (var r = 0; r < TRIES; r++) {
     var row = document.createElement('div');

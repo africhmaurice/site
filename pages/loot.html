@@ -101,6 +101,10 @@ html,body{margin:0 !important;padding:0 !important}
 .lb-cell.plain.fresh{background:#c1330a;border-color:#111;color:#fff;animation:lbpop .5s ease}
 .lb-chest{width:min(220px,46vw);height:auto;margin:0 auto 4px;display:block}
 .lb-chest.pop{animation:lbpop .55s ease}
+/* Every visit the found chests light up one at a time, in a new random order. */
+.lb-cell.lb-wait img{filter:grayscale(1) brightness(.5) contrast(.75);opacity:.2}
+.lb-cell.plain.lb-wait{background:#f4f7f4;border-color:#d3dcd4;color:#aab5ab}
+.lb-cell.lb-in img,.lb-cell.plain.lb-in{animation:lbpop .55s ease}
 @keyframes lbpop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.25)}100%{transform:scale(1)}}
 
 /* ---- the first-time form ---- */
@@ -320,8 +324,13 @@ html,body{margin:0 !important;padding:0 !important}
   function thumbUrl(n) { return ART + 't/' + pad2(n) + '.png'; }
   function pad2(n) { return n < 10 ? '0' + n : String(n); }
 
+  var shownKey = null;
   function drawCard(found, fresh) {
     if (!found) { cardBox.style.display = 'none'; return; }
+    // Same boxes as the card already on screen: leave it (and any fill-in under way) alone.
+    var key = found.slice().sort(function (a, b) { return a - b; }).join(',') + '|' + fresh;
+    if (key === shownKey && grid.children.length) { cardBox.style.display = 'block'; return; }
+    shownKey = key;
     var have = {};
     for (var i = 0; i < found.length; i++) have[found[i]] = true;
     var html = '';
@@ -348,6 +357,38 @@ html,body{margin:0 !important;padding:0 !important}
     tally.innerHTML = 'You have found <strong>' + found.length + '</strong> of ' + TOTAL +
       ' &nbsp;&middot;&nbsp; <strong>' + (found.length * 50) + '</strong> points';
     cardBox.style.display = 'block';
+    fillIn(found.slice().sort(function (a, b) { return a - b; }).join(','));
+  }
+
+  // The found chests start dark and light up one by one in a shuffled order (the one just claimed
+  // goes last), with the tally counting along. Runs when the card comes on screen.
+  // The card is drawn twice on a visit (saved copy first, then the fresh one), so a redraw with the
+  // same boxes after the animation has started just shows them lit instead of starting over.
+  var fillIO = null, fillStarted = null;
+  function fillIn(key) {
+    if (fillIO) { fillIO.disconnect(); fillIO = null; }
+    if (!key || fillStarted === key || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    var cells = Array.prototype.slice.call(grid.querySelectorAll('.lb-cell.got')), fresh = grid.querySelector('.lb-cell.fresh');
+    for (var j = cells.length - 1; j > 0; j--) { var r = Math.floor(Math.random() * (j + 1)), tmp = cells[j]; cells[j] = cells[r]; cells[r] = tmp; }
+    if (fresh) cells.push(fresh);
+    if (!cells.length) return;
+    var nums = tally.getElementsByTagName('strong');
+    cells.forEach(function (c) { c.classList.add('lb-wait'); });
+    if (nums[0]) nums[0].textContent = '0'; if (nums[1]) nums[1].textContent = '0';
+    var step = Math.max(45, Math.min(140, 2400 / cells.length));
+    function go() {
+      fillStarted = key;
+      cells.forEach(function (c, k) {
+        setTimeout(function () {
+          c.classList.remove('lb-wait'); c.classList.add('lb-in');
+          if (nums[0]) nums[0].textContent = String(k + 1);
+          if (nums[1]) nums[1].textContent = String((k + 1) * 50);
+        }, 250 + k * step);
+      });
+    }
+    if (!('IntersectionObserver' in window)) return go();
+    fillIO = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { fillIO.disconnect(); fillIO = null; go(); } }, { threshold: .25 });
+    fillIO.observe(grid);
   }
 
   function say(html) { stage.innerHTML = html; }
