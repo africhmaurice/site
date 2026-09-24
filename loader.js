@@ -3,9 +3,15 @@
      <div data-ma-page="the-hunt"></div>
      <script src="https://africhmaurice.github.io/site/loader.js"></script>
    This script fetches pages/<slug>.html from GitHub Pages, drops it in, and runs its scripts in order.
-   Edits published from Claude Code show up within about a minute (the fetch is cache-busted per minute). */
+   Edits published from Claude Code show up within about a minute (the fetch is cache-busted per minute).
+   Loaded once site-wide from Code Injection (in <head>), it also shows the crest loading screen.
+   Every copy after the first only mounts blocks it finds, so a page can include it any number of times. */
 (function () {
+  if (window.__maLoader) { window.__maLoader(); return; }
   var me = document.currentScript;
+  var inHead = !!(me && me.parentNode && me.parentNode.nodeName === 'HEAD');
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var pending = 0;
   var BASE = me ? me.src.replace(/loader\.js.*$/, '') : 'https://africhmaurice.github.io/site/';
   var stamp = Math.floor(Date.now() / 60000);
 
@@ -38,6 +44,7 @@
     if (el.getAttribute('data-ma-state')) return;
     el.setAttribute('data-ma-state', 'loading');
     var slug = el.getAttribute('data-ma-page');
+    pending++;
     fetch(BASE + 'pages/' + slug + '.html?v=' + stamp)
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
       .then(function (html) {
@@ -46,16 +53,70 @@
       })
       .then(function () {
         el.setAttribute('data-ma-state', 'ready');
+        pending--; reveal(el);
         // Pages that size themselves on window load get a second chance now that they exist.
         try { window.dispatchEvent(new Event('resize')); } catch (e) {}
         // A link like /the-hunt#rewards arrives before its section exists; scroll once it does.
         scrollToHash(el);
       })
       .catch(function () {
-        el.setAttribute('data-ma-state', 'error');
+        el.setAttribute('data-ma-state', 'error'); pending--;
         el.innerHTML = '<p style="text-align:center;padding:40px 16px;font-family:sans-serif">This section didn’t load. Please refresh the page.</p>';
       });
   }
+
+  // Scroll animations: headings, cards and boards in a custom section rise and fade in as they come on screen.
+  var REVEAL = 'h1,h2,h3,.tm-card,.lc-board,.po-hero,.po-region,.m-list,.m-ptsnote,[data-reveal]';
+  var io;
+  function reveal(root) {
+    if (still || !('IntersectionObserver' in window)) return;
+    if (!document.getElementById('ma-reveal-css')) {
+      var css = document.createElement('style'); css.id = 'ma-reveal-css';
+      css.textContent = '.ma-rv{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .8s cubic-bezier(.2,.7,.2,1)}.ma-rv.ma-in{opacity:1;transform:none}';
+      document.head.appendChild(css);
+    }
+    io = io || new IntersectionObserver(function (es) {
+      var n = 0;
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        e.target.style.transitionDelay = Math.min(n++, 5) * 90 + 'ms';
+        e.target.classList.add('ma-in');
+        setTimeout(function () { e.target.style.transitionDelay = ''; }, 1400);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    Array.prototype.forEach.call(root.querySelectorAll(REVEAL), function (x) {
+      // skip menus, fixed bars and anything already animated or nested in something that animates
+      if (x.closest('#hunt-nav,#hunt-nav-ov,nav,header,.ma-rv') || getComputedStyle(x).position === 'fixed') return;
+      x.classList.add('ma-rv');
+      io.observe(x);
+    });
+  }
+
+  // Loading screen: the crest in white on dark green fills with red while the page loads, then fades away.
+  // Only when this script is installed site-wide in <head>; add ?ma-loading to any page URL to preview it.
+  function loadingScreen() {
+    var ov = document.createElement('div');
+    ov.id = 'ma-loading'; ov.setAttribute('aria-hidden', 'true');
+    ov.innerHTML = '<style>#ma-loading{position:fixed;inset:0;z-index:2147483600;background:#0b170f;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s}' +
+      '#ma-loading.ma-done{opacity:0;visibility:hidden}' +
+      '#ma-loading .ma-crest{position:relative;width:min(60vw,340px);aspect-ratio:2/1;background:#fffffe;-webkit-mask:url(' + BASE + 'assets/img/crest-mask.png) center/contain no-repeat;mask:url(' + BASE + 'assets/img/crest-mask.png) center/contain no-repeat}' +
+      '#ma-loading .ma-red{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#e0301e,#c11212 40%,#8e0e0e);transition:height .35s ease-out}</style>' +
+      '<div class="ma-crest"><div class="ma-red"></div></div>';
+    document.documentElement.appendChild(ov);
+    var red = ov.querySelector('.ma-red'), t0 = Date.now(), p = 0, finished = false;
+    var tick = setInterval(function () { p += (0.9 - p) * 0.08; red.style.height = p * 100 + '%'; }, 60);
+    function finish() {
+      if (finished) return; finished = true; clearInterval(tick);
+      red.style.height = '100%';
+      setTimeout(function () { ov.classList.add('ma-done'); setTimeout(function () { ov.remove(); }, 600); }, still ? 0 : 420);
+    }
+    // Done when the page and its custom sections have loaded, but shown for at least 0.8s so the fill reads;
+    // never longer than 8s, whatever is still loading.
+    function check() { if (document.readyState === 'complete' && pending <= 0) setTimeout(finish, Math.max(0, 800 - (Date.now() - t0))); else setTimeout(check, 100); }
+    check(); setTimeout(finish, 8000);
+  }
+  if (inHead || /[?&]ma-loading/.test(location.search)) loadingScreen();
 
   // Site-wide background style: Squarespace's own "Parallax" image effect (the image slides) becomes the
   // Hunt page's fixed background (the image holds still while the page scrolls over it). Like the Hunt page,
@@ -94,9 +155,14 @@
     });
   }
 
-  fixedBackgrounds();
+  function scan() {
+    fixedBackgrounds();
+    Array.prototype.forEach.call(document.querySelectorAll('[data-ma-page]'), mount);
+  }
+  window.__maLoader = scan;
+  if (document.body) fixedBackgrounds();
   // Sections below the first code block aren't parsed yet when this runs near the top of the page.
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fixedBackgrounds);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scan);
   window.addEventListener('load', fixedBackgrounds);
   Array.prototype.forEach.call(document.querySelectorAll('[data-ma-page]'), mount);
 })();

@@ -189,21 +189,65 @@ section[data-screen-label="Social bar"] a[style*="width:36px"]{width:45px !impor
       <div class="m-pct" id="hunt-prog-pct" style="font-family:'Atomic Marker',cursive;color:#fff;font-size:clamp(29px,3.61vw,52px);min-width:110px;line-height:1.15">0%</div>
     </div>
   </section>
+<style>
+#act1-rewards .rw-item.rw-on .rw-badge{display:inline-block}
+#act1-rewards .rw-item.rw-pop .rw-badge{animation:ma-rwpop .75s cubic-bezier(.2,1.6,.4,1) both}
+#act1-rewards .rw-item.rw-pop{animation:ma-rwglow 1.4s ease-out both}
+@keyframes ma-rwpop{0%{transform:scale(0) rotate(-14deg);opacity:0}100%{transform:none;opacity:1}}
+@keyframes ma-rwglow{0%{text-shadow:0 0 0 rgba(193,51,10,0)}30%{text-shadow:0 0 18px rgba(193,51,10,.55)}100%{text-shadow:0 0 0 rgba(193,51,10,0)}}
+@media (prefers-reduced-motion:reduce){#act1-rewards .rw-item.rw-pop,#act1-rewards .rw-item.rw-pop .rw-badge{animation:none}}
+</style>
+<script>(function(){
+var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Calls fn once, the first time el is at least a third on screen.
+window.maFillOnView = function(el, fn){
+  if(!el) return;
+  if(!('IntersectionObserver' in window)) return fn();
+  var io = new IntersectionObserver(function(es){ if(es[0].isIntersecting){ io.disconnect(); fn(); } }, {threshold:.35});
+  io.observe(el);
+};
+// Eases from a to b over ms, calling step(value) each frame and done() at the end.
+window.maAnimate = function(a, b, ms, step, done){
+  if(still || a === b){ step(b); if(done) done(); return; }
+  var t0 = performance.now();
+  (function frame(t){ var k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3); step(a + (b - a) * e); if(k < 1) requestAnimationFrame(frame); else if(done) done(); })(t0);
+};
+// A burst of confetti in the site's colours from an element (or the middle of the screen).
+window.maConfetti = function(from){
+  if(still) return;
+  var r = from && from.getBoundingClientRect ? from.getBoundingClientRect() : null;
+  var x = r ? Math.min(innerWidth - 20, Math.max(20, r.left + r.width / 2)) : innerWidth / 2;
+  var y = r ? Math.min(innerHeight - 20, Math.max(20, r.top + r.height / 2)) : innerHeight / 2;
+  var c = document.createElement('canvas'), dpr = Math.min(2, window.devicePixelRatio || 1);
+  c.width = innerWidth * dpr; c.height = innerHeight * dpr;
+  c.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:2147483000';
+  document.body.appendChild(c);
+  var g = c.getContext('2d'); g.scale(dpr, dpr);
+  var cols = ['#c1330a','#c11212','#a2f590','#89fbcb','#c3a6ff','#f3ead9','#f5c542'], P = [];
+  for(var i = 0; i < 110; i++){ var a = Math.random() * Math.PI * 2, v = 4 + Math.random() * 9;
+    P.push({x:x, y:y, vx:Math.cos(a) * v, vy:Math.sin(a) * v - 6, w:6 + Math.random() * 7, h:4 + Math.random() * 5, r:Math.random() * 6, vr:(Math.random() - .5) * .4, c:cols[i % cols.length], round:Math.random() < .3}); }
+  var t0 = performance.now();
+  (function frame(t){ var age = t - t0; g.clearRect(0, 0, innerWidth, innerHeight);
+    for(var i = 0; i < P.length; i++){ var p = P[i]; p.vy += .32; p.vx *= .985; p.vy *= .985; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      g.save(); g.globalAlpha = Math.max(0, 1 - age / 2400); g.translate(p.x, p.y); g.rotate(p.r); g.fillStyle = p.c;
+      if(p.round){ g.beginPath(); g.arc(0, 0, p.h / 2, 0, 7); g.fill(); } else g.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.r * 2))); g.restore(); }
+    if(age < 2400) requestAnimationFrame(frame); else c.remove(); })(t0);
+};
+})();</script>
   <script>
   (function(){
     // Hunt: Sep 21 12:00 AM ET (EDT, UTC-4) to Nov 1 11:59 PM ET (EST, UTC-5)
     var start = Date.UTC(2026,8,21,4,0,0);
     var end   = Date.UTC(2026,10,2,4,59,0);
-    function upd(){
-      var p = (Date.now()-start)/(end-start)*100;
-      p = Math.max(0, Math.min(100, p));
-      var fill = document.getElementById('hunt-prog-fill');
-      var pct = document.getElementById('hunt-prog-pct');
-      if(fill) fill.style.width = p + '%';
-      if(pct) pct.textContent = Math.floor(p) + '%';
-    }
-    upd();
-    setInterval(upd, 60000);
+    var fill = document.getElementById('hunt-prog-fill');
+    var pct = document.getElementById('hunt-prog-pct');
+    if(!fill) return;
+    function target(){ return Math.max(0, Math.min(100, (Date.now()-start)/(end-start)*100)); }
+    function set(p){ fill.style.width = p + '%'; if(pct) pct.textContent = Math.floor(p) + '%'; }
+    var shown = false;
+    // Fills from empty the first time the bar scrolls into view, then keeps time every minute.
+    maFillOnView(fill.parentNode, function(){ maAnimate(0, target(), 1600, set, function(){ shown = true; }); });
+    setInterval(function(){ if(shown) set(target()); }, 60000);
   })();
   </script>
 
@@ -400,9 +444,14 @@ section[data-screen-label="Social bar"] a[style*="width:36px"]{width:45px !impor
 // time the board publishes. ACT1_POINTS is only what shows if that can't be reached.
 var ACT1_POINTS = 16400, GOAL = 40000;
 var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
-function paint(pts){var f=document.getElementById('act1-fill'),l=document.getElementById('act1-pts'),lw=document.getElementById('act1-pts-w'),p=document.getElementById('act1-pct');if(!f||!l)return;var pct=Math.max(0,Math.min(100,pts/GOAL*100));f.style.width=pct+'%';l.textContent=pts.toLocaleString('en-US')+' Points';if(lw){lw.textContent=l.textContent;lw.style.clipPath='inset(0 '+(100-pct)+'% 0 0)';}if(p)p.textContent=pct.toFixed(2)+'%';var rw=document.querySelectorAll('#act1-rewards .rw-item');for(var i=0;i<rw.length;i++){rw[i].classList.toggle('rw-on',pct>=+rw[i].getAttribute('data-at'));}}
-paint(ACT1_POINTS);
-if(window.fetch)fetch(BOARD+'?t='+Math.floor(Date.now()/300000)).then(function(r){return r.ok?r.json():null;}).then(function(d){if(d&&typeof d.crewTotal==='number')paint(d.crewTotal);}).catch(function(){});
+var target = ACT1_POINTS, cur = 0, started = false, running = false;
+function paint(pts, celebrate){var f=document.getElementById('act1-fill'),l=document.getElementById('act1-pts'),lw=document.getElementById('act1-pts-w'),p=document.getElementById('act1-pct');if(!f||!l)return;var pct=Math.max(0,Math.min(100,pts/GOAL*100));f.style.width=pct+'%';l.textContent=Math.round(pts).toLocaleString('en-US')+' Points';if(lw){lw.textContent=l.textContent;lw.style.clipPath='inset(0 '+(100-pct)+'% 0 0)';}if(p)p.textContent=pct.toFixed(2)+'%';var rw=document.querySelectorAll('#act1-rewards .rw-item');for(var i=0;i<rw.length;i++){var on=pct>=+rw[i].getAttribute('data-at');if(on&&celebrate&&!rw[i].classList.contains('rw-on')){rw[i].classList.add('rw-pop');maConfetti(rw[i]);}rw[i].classList.toggle('rw-on',on);}}
+// Starts empty, fills when the bar scrolls into view, and picks up the live total whenever it arrives.
+function run(){ running = true; maAnimate(cur, target, 1800 * Math.max(.35, Math.abs(target - cur) / GOAL * 2.2), function(v){ cur = v; paint(v, true); }, function(){ running = false; if(cur !== target) run(); }); }
+function setTarget(pts){ target = pts; if(started && !running) run(); }
+paint(0, false);
+maFillOnView(document.getElementById('act1-fill') && document.getElementById('act1-fill').parentNode, function(){ started = true; run(); });
+if(window.fetch)fetch(BOARD+'?t='+Math.floor(Date.now()/300000)).then(function(r){return r.ok?r.json():null;}).then(function(d){if(d&&typeof d.crewTotal==='number')setTarget(d.crewTotal);}).catch(function(){});
 })();</script>
         <div id="act1-rewards" class="m-list" style="font-size:26px;line-height:1.5;color:#111;text-align:center;display:flex;flex-direction:column;gap:30px">
           <div class="rw-item" data-at="25" style="color:#607667"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:20px;height:20px;vertical-align:-3px;margin-right:10px"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Exclusive Short Story “The Blind Duel” (Deleted Scene from "Cello's Gate")<span class="rw-badge">UNLOCKED!</span></div>
