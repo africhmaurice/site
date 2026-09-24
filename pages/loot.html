@@ -375,7 +375,7 @@ html,body{margin:0 !important;padding:0 !important}
     var nums = tally.getElementsByTagName('strong');
     cells.forEach(function (c) { c.classList.add('lb-wait'); });
     if (nums[0]) nums[0].textContent = '0'; if (nums[1]) nums[1].textContent = '0';
-    var step = Math.max(45, Math.min(140, 2400 / cells.length));
+    var step = Math.max(70, Math.min(220, 3600 / cells.length));
     function go() {
       fillStarted = key;
       cells.forEach(function (c, k) {
