@@ -75,8 +75,10 @@
   var longRead = /^\/(rules|privacy-policy)/.test(location.pathname);
   var REVEAL = 'h1,h2,h3,h4,.tm-card,.lc-board,.po-hero,.po-region,.m-list,.m-ptsnote,[data-reveal]' + (longRead ? '' : ',p,ul,ol,blockquote,img,table');
   var io;
+  // Game pages stay still: a board that fades in as you scroll can look like an empty page.
+  function gamePage() { return !!document.querySelector('[data-ma-page="games"],[data-ma-page^="game-"]') || /^\/(games|game-)/.test(location.pathname); }
   function reveal(root) {
-    if (still || !('IntersectionObserver' in window)) return;
+    if (still || gamePage() || !('IntersectionObserver' in window)) return;
     if (!document.getElementById('ma-reveal-css')) {
       var css = document.createElement('style'); css.id = 'ma-reveal-css';
       css.textContent = '.ma-rv{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .8s cubic-bezier(.2,.7,.2,1)}.ma-rv.ma-in{opacity:1;transform:none}';
