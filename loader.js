@@ -65,8 +65,10 @@
       });
   }
 
-  // Scroll animations: headings, cards and boards in a custom section rise and fade in as they come on screen.
-  var REVEAL = 'h1,h2,h3,.tm-card,.lc-board,.po-hero,.po-region,.m-list,.m-ptsnote,[data-reveal]';
+  // Scroll animations: headings, cards, boards, text and images rise and fade in as they come on screen.
+  // Long reading pages (Official Rules, Privacy Policy) keep their body text still so it reads easily.
+  var longRead = /^\/(rules|privacy-policy)/.test(location.pathname);
+  var REVEAL = 'h1,h2,h3,h4,.tm-card,.lc-board,.po-hero,.po-region,.m-list,.m-ptsnote,[data-reveal]' + (longRead ? '' : ',p,ul,ol,blockquote,img,table');
   var io;
   function reveal(root) {
     if (still || !('IntersectionObserver' in window)) return;
@@ -87,7 +89,8 @@
     }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
     Array.prototype.forEach.call(root.querySelectorAll(REVEAL), function (x) {
       // skip menus, fixed bars and anything already animated or nested in something that animates
-      if (x.closest('#hunt-nav,#hunt-nav-ov,nav,header,.ma-rv') || getComputedStyle(x).position === 'fixed') return;
+      if (x.closest('#hunt-nav,#hunt-nav-ov,#ma-loading,nav,header,footer,.ma-rv') || getComputedStyle(x).position === 'fixed') return;
+      if (x.nodeName === 'IMG' && x.getBoundingClientRect().width && x.getBoundingClientRect().width < 90) return; // icons
       x.classList.add('ma-rv');
       io.observe(x);
     });
@@ -155,8 +158,20 @@
     });
   }
 
+  var nativeDone = false;
+  function nativeReveal() {
+    if (nativeDone || !document.body) return; nativeDone = true;
+    var blocks = document.querySelectorAll('#sections .sqs-block, #page .sqs-block');
+    Array.prototype.forEach.call(blocks, function (b) {
+      if (b.querySelector('[data-ma-page]')) return;   // custom sections animate their own pieces
+      if (longRead && b.classList.contains('sqs-block-html')) return;
+      b.setAttribute('data-reveal', '');
+    });
+    reveal(document.body.querySelector('#sections') || document.body.querySelector('#page') || document.body);
+  }
   function scan() {
     fixedBackgrounds();
+    nativeReveal();
     Array.prototype.forEach.call(document.querySelectorAll('[data-ma-page]'), mount);
   }
   window.__maLoader = scan;
