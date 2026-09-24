@@ -375,6 +375,19 @@
 
     function pose(n) { return targets[n].clone().premultiply(TILT); }
 
+    function dieGeometry() {
+      var geo = new T.IcosahedronGeometry(1, 0), uv = [];
+      geo.clearGroups();
+      for (var f = 0; f < 20; f++) { uv.push(0.5, 0.95, 0.05, 0.2, 0.95, 0.2); geo.addGroup(f * 3, 3, f); }
+      geo.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+      return geo;
+    }
+    function dieMaterials() {
+      var mats = [];
+      for (var k = 0; k < 20; k++) mats.push(new T.MeshStandardMaterial({ map: faceTexture(numbers[k]), roughness: 0.3, metalness: 0.85, envMapIntensity: 1.2, flatShading: true }));
+      return mats;
+    }
+
     function build(id, node) {
       var cv = node.querySelector('canvas');
       var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
@@ -386,13 +399,7 @@
       var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
       scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
       var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-3, 5, 5); scene.add(sun);
-      var geo = new T.IcosahedronGeometry(1, 0), uv = [];
-      geo.clearGroups();
-      for (var f = 0; f < 20; f++) { uv.push(0.5, 0.95, 0.05, 0.2, 0.95, 0.2); geo.addGroup(f * 3, 3, f); }
-      geo.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
-      var mats = [];
-      for (var k = 0; k < 20; k++) mats.push(new T.MeshStandardMaterial({ map: faceTexture(numbers[k]), roughness: 0.3, metalness: 0.85, envMapIntensity: 1.2, flatShading: true }));
-      var mesh = new T.Mesh(geo, mats);
+      var mesh = new T.Mesh(dieGeometry(), dieMaterials());
       mesh.quaternion.copy(pose(20));
       scene.add(mesh);
       var d = { r: r, scene: scene, cam: cam, mesh: mesh, node: node, shadow: node.querySelector('.rc-die-shadow'), raf: 0, y: 0 };
@@ -435,6 +442,120 @@
 
     function stopLoop(d) { if (d.raf) cancelAnimationFrame(d.raf); d.raf = 0; }
 
+    // ---- the throw: the die leaves its card and rolls across the whole screen, like a dice app,
+    // then settles on the number, holds it a moment and glides back into its card.
+    var ov = null;
+    function overlay() {
+      if (ov) return ov;
+      var cv = document.createElement('canvas');
+      cv.setAttribute('aria-hidden', 'true');
+      cv.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147482000;display:none';
+      document.body.appendChild(cv);
+      var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+      r.outputEncoding = T.sRGBEncoding;
+      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      var scene = new T.Scene(), cam = new T.OrthographicCamera(-1, 1, 1, -1, -1000, 1000);
+      cam.position.set(0, 0, 500); cam.lookAt(0, 0, 0);
+      var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
+      scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
+      var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-300, 500, 500); scene.add(sun);
+      var mesh = new T.Mesh(dieGeometry(), dieMaterials()); scene.add(mesh);
+      var sc = document.createElement('canvas'); sc.width = sc.height = 128;
+      var sg = sc.getContext('2d'), rg = sg.createRadialGradient(64, 64, 0, 64, 64, 64);
+      rg.addColorStop(0, 'rgba(0,0,0,.55)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
+      sg.fillStyle = rg; sg.fillRect(0, 0, 128, 128);
+      var shadow = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: new T.CanvasTexture(sc), transparent: true, depthWrite: false }));
+      shadow.position.z = -200; scene.add(shadow);
+      ov = { cv: cv, r: r, scene: scene, cam: cam, mesh: mesh, shadow: shadow, raf: 0, st: null };
+      function size() {
+        var w = window.innerWidth, h = window.innerHeight;
+        r.setSize(w, h, false);
+        cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2; cam.bottom = -h / 2; cam.updateProjectionMatrix();
+        ov.w = w; ov.h = h; ov.R = Math.max(34, Math.min(62, Math.min(w, h) * 0.075));
+      }
+      size(); window.addEventListener('resize', size);
+      return ov;
+    }
+    function slotCenter(id) {
+      var b = dice[id].node.getBoundingClientRect();
+      return { x: b.left + b.width / 2 - window.innerWidth / 2, y: window.innerHeight / 2 - (b.top + b.height / 2) };
+    }
+    function throwStart(id) {
+      var d = dice[id], o = overlay();
+      stopLoop(d);
+      if (o.raf) cancelAnimationFrame(o.raf);
+      var s = slotCenter(id), ang = Math.atan2(-s.y, -s.x) + (Math.random() - 0.5) * 1.2, sp = Math.max(o.w, o.h) * (1.3 + Math.random() * 0.4), now = performance.now();
+      o.st = { id: id, x: s.x, y: s.y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, h: 0.6, vh: 3.2, t0: now, last: now, n: 0, done: null, phase: 'roll', shrink: 1 };
+      o.mesh.quaternion.copy(d.mesh.quaternion);
+      d.node.style.visibility = 'hidden';
+      o.cv.style.display = 'block';
+      clack(0.35);
+      paintOv();
+      o.raf = requestAnimationFrame(step);
+    }
+    function bump(st) { clack(Math.min(0.45, 0.12 + Math.hypot(st.vx, st.vy) / ov.w * 0.25)); }
+    function step(now) {
+      var o = ov, st = o.st;
+      if (!st) return;
+      var dt = Math.min(0.033, (now - st.last) / 1000); st.last = now;
+      var R = o.R, W = o.w / 2 - R, H = o.h / 2 - R;
+      if (st.phase === 'roll' || st.phase === 'settle') {
+        var damp = Math.pow(st.phase === 'settle' ? 0.02 : 0.45, dt);
+        st.vx *= damp; st.vy *= damp;
+        st.x += st.vx * dt; st.y += st.vy * dt;
+        if (st.x > W) { st.x = W; st.vx = -Math.abs(st.vx) * 0.8; bump(st); }
+        if (st.x < -W) { st.x = -W; st.vx = Math.abs(st.vx) * 0.8; bump(st); }
+        if (st.y > H) { st.y = H; st.vy = -Math.abs(st.vy) * 0.8; bump(st); }
+        if (st.y < -H) { st.y = -H; st.vy = Math.abs(st.vy) * 0.8; bump(st); }
+        st.vh -= 12 * dt; st.h += st.vh * dt;
+        if (st.h <= 0) { st.h = 0; if (st.vh < -1.2) clack(Math.min(0.5, -st.vh * 0.09)); st.vh = -st.vh * 0.45; if (st.vh < 0.8) st.vh = 0; }
+        var speed = Math.hypot(st.vx, st.vy);
+        if (st.phase === 'roll') {
+          if (speed > 1) o.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(-st.vy, st.vx, 0).normalize(), speed / R * dt));
+          if (st.n && now - st.t0 > 1300) { st.phase = 'settle'; st.s0 = now; st.q0 = o.mesh.quaternion.clone(); st.q1 = pose(st.n); }
+          else if (!st.n && speed < o.w * 0.35) {   // the number is still on its way: give it another shove
+            var a2 = Math.random() * Math.PI * 2;
+            st.vx += Math.cos(a2) * o.w * 0.5; st.vy += Math.sin(a2) * o.w * 0.5; st.vh = 2.5;
+          }
+        } else {
+          var e = Math.min(1, (now - st.s0) / 750), ee = 1 - Math.pow(1 - e, 3);
+          o.mesh.quaternion.copy(st.q0.clone().slerp(st.q1, ee));
+          st.h *= 1 - ee * 0.5;
+          if (e >= 1) { st.phase = 'hold'; st.h = 0; st.hold = now; o.mesh.quaternion.copy(st.q1); clack(0.12); }
+        }
+      } else if (st.phase === 'hold') {
+        if (now - st.hold > 1300) { st.phase = 'home'; st.r0 = now; st.fx = st.x; st.fy = st.y; }
+      } else if (st.phase === 'home') {
+        var s = slotCenter(st.id), k = Math.min(1, (now - st.r0) / 450), kk = k * k * (3 - 2 * k);
+        st.x = st.fx + (s.x - st.fx) * kk; st.y = st.fy + (s.y - st.fy) * kk; st.shrink = 1 - kk * 0.45;
+        if (k >= 1) { finishThrow(); return; }
+      }
+      paintOv();
+      o.raf = requestAnimationFrame(step);
+    }
+    function paintOv() {
+      var o = ov, st = o.st, sc = (1 + st.h * 0.12) * st.shrink;
+      o.mesh.position.set(st.x, st.y, 0);
+      o.mesh.scale.setScalar(o.R * sc);
+      o.shadow.position.set(st.x + 8 + st.h * 14, st.y - 10 - st.h * 14, -200);
+      o.shadow.scale.setScalar(o.R * 2.6 * (1 - Math.min(0.5, st.h * 0.1)) * st.shrink);
+      o.shadow.material.opacity = 0.9 - Math.min(0.6, st.h * 0.12);
+      o.r.render(o.scene, o.cam);
+    }
+    function finishThrow() {
+      var o = ov, st = o.st, d = dice[st.id];
+      o.cv.style.display = 'none'; o.raf = 0; o.st = null;
+      if (d) { d.y = 0; d.mesh.quaternion.copy(pose(st.n)); draw(d); d.node.style.visibility = ''; }
+      if (st.done) st.done();
+    }
+    function dropThrow(id) {
+      if (!ov || !ov.st || ov.st.id !== id) return;
+      if (ov.raf) cancelAnimationFrame(ov.raf);
+      ov.raf = 0; ov.st = null; ov.cv.style.display = 'none';
+      if (dice[id]) dice[id].node.style.visibility = '';
+    }
+
+
     return {
       // Builds the die in this node once three.js is in; the node shows the flat die until then.
       attach: function (id, node, n) {
@@ -448,8 +569,17 @@
       },
       ready: function (id) { return !!dice[id]; },
       show: function (id, n) { var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(pose(n)); draw(d); },
-      // Tumbling in the hand until the number is known.
+      // Thrown across the screen; in the card instead when motion is reduced or the throw can't start.
       spin: function (id) {
+        if (!calm && dice[id]) { try { throwStart(id); return; } catch (e) { dropThrow(id); } }
+        this.spinCard(id);
+      },
+      land: function (id, n, done) {
+        if (ov && ov.st && ov.st.id === id) { ov.st.n = n; ov.st.done = done; return; }
+        this.landCard(id, n, done);
+      },
+      // Tumbling in the card until the number is known.
+      spinCard: function (id) {
         var d = dice[id]; if (!d) return;
         stopLoop(d);
         var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), last = performance.now(), start = last, tick = 0;
@@ -463,8 +593,8 @@
           d.raf = requestAnimationFrame(frame);
         })(last);
       },
-      // Thrown: three bounces, a clack on each, and it settles on n.
-      land: function (id, n, done) {
+      // In the card: three bounces, a clack on each, and it settles on n.
+      landCard: function (id, n, done) {
         var d = dice[id]; if (!d) return done();
         stopLoop(d);
         var q0 = d.mesh.quaternion.clone(), q1 = pose(n), axis = d.axis || new T.Vector3(1, 0, 0), dur = calm ? 1 : 1150, t0 = performance.now(), hits = [0.286, 0.571, 0.857], hit = 0;
@@ -480,7 +610,7 @@
           else { d.raf = 0; d.mesh.quaternion.copy(q1); d.y = 0; draw(d); done(); }
         })(t0);
       },
-      stop: function (id) { var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(pose(20)); draw(d); },
+      stop: function (id) { dropThrow(id); var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(pose(20)); draw(d); },
       muted: function () { return muted; },
       setMuted: function (m) { muted = !!m; try { localStorage.setItem('thDice:muted', muted ? '1' : '0'); } catch (e) {} }
     };
