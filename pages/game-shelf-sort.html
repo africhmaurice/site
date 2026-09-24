@@ -77,8 +77,8 @@ html,body{margin:0 !important;padding:0 !important}
 /* Sort the Shelf: Rachel's bookcase, cover and spine art (assets/shelf/), tinted in every brand colour. */
 .ss-case{position:relative;width:100%;max-width:600px;margin:0 auto 18px;aspect-ratio:1400/1404;background:url(https://africhmaurice.github.io/site/assets/shelf/bookcase.webp) center/100% 100% no-repeat;container-type:inline-size}
 .ss-slot{position:absolute;left:5%;right:5%;display:flex;justify-content:center;align-items:flex-end;gap:1.2cqw}
-.ss-spine{position:relative;height:88%;aspect-ratio:72/463;background:center/100% 100% no-repeat;display:flex;align-items:center;justify-content:center;transform-origin:left center}
-.ss-spine span{writing-mode:vertical-rl;font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(7px,2.1cqw,13px);letter-spacing:.05em;line-height:1;white-space:nowrap;max-height:88%;overflow:hidden;text-overflow:ellipsis}
+.ss-spine{position:relative;height:90%;aspect-ratio:92/463;background:center/100% 100% no-repeat;display:flex;align-items:center;justify-content:center;transform-origin:left center}
+.ss-spine span{writing-mode:vertical-rl;font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(7px,2.3cqw,14px);letter-spacing:.03em;line-height:1;white-space:nowrap;max-height:94%;overflow:hidden;text-overflow:ellipsis}
 .ss-spine.in{animation:ss-turn .42s cubic-bezier(.2,.8,.3,1) both}
 @keyframes ss-turn{from{transform:perspective(500px) rotateY(-88deg);opacity:.2}to{transform:none;opacity:1}}
 .ss-sticker{position:absolute;left:50%;transform:translate(-50%,-50%) rotate(-2deg);white-space:nowrap;max-width:84%;overflow:hidden;text-overflow:ellipsis;background:#fffffe;color:#0b170f;border:2px solid #0b170f;border-radius:6px;padding:.5cqw 2.2cqw;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(12px,3.4cqw,21px);line-height:1.1;box-shadow:2px 3px 0 rgba(0,0,0,.4);z-index:3}
@@ -488,7 +488,8 @@ var HG_GAME = {"key":"shelf_sort","label":"Sort the Shelf","points":40,"startDat
     var d = drag; drag = null; caseEl.classList.remove('drop');
     if (d.ghost) d.ghost.remove();
     var it = d.b.dataset.item;
-    if (!d.moved) return toggle(it);
+    if (!d.moved) return;          // a plain tap: the click handler below picks the book
+    justDragged = true; setTimeout(function () { justDragged = false; }, 0);
     var c = caseEl.getBoundingClientRect();
     if (e.clientX > c.left && e.clientX < c.right && e.clientY > c.top && e.clientY < c.bottom) {
       if (sel.indexOf(it) < 0) { if (sel.length >= 4) return HG.toast('FOUR BOOKS AT A TIME'); sel.push(it); }
@@ -497,6 +498,9 @@ var HG_GAME = {"key":"shelf_sort","label":"Sort the Shelf","points":40,"startDat
     }
   }
   gridEl.addEventListener('pointerup', endDrag);
+  // taps, clicks and the keyboard (Enter/Space on a book) all arrive here
+  var justDragged = false;
+  gridEl.addEventListener('click', function (e) { var b = e.target.closest('.ss-book'); if (b && !justDragged) toggle(b.dataset.item); });
   gridEl.addEventListener('pointercancel', function () { if (drag && drag.ghost) drag.ghost.remove(); drag = null; caseEl.classList.remove('drop'); });
 
   document.getElementById('ss-shuffle').onclick = function () { order = st.order = HG.shuffle(order, Date.now() & 0xffff); paintBooks(); };
@@ -531,7 +535,7 @@ var HG_GAME = {"key":"shelf_sort","label":"Sort the Shelf","points":40,"startDat
     animating = true; goBtn.disabled = true;
     var slotIndex = st.solved.length, c = caseEl.getBoundingClientRect();
     var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var targetH = (SLOT_BOTTOM[slotIndex] - SLOT_TOP[slotIndex]) / 100 * c.height * 0.88, targetW = targetH * 72 / 463;
+    var targetH = (SLOT_BOTTOM[slotIndex] - SLOT_TOP[slotIndex]) / 100 * c.height * 0.9, targetW = targetH * 92 / 463;
     var gap = c.width * 0.012, rowW = 4 * targetW + 3 * gap, x0 = c.left + (c.width - rowW) / 2, yBottom = c.top + SLOT_BOTTOM[slotIndex] / 100 * c.height;
     var books = groups[gi].items.map(function (it) {
       var found = null; Array.prototype.forEach.call(gridEl.querySelectorAll('.ss-book'), function (b) { if (b.dataset.item === it) found = b; }); return found;
