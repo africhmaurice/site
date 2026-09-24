@@ -162,6 +162,13 @@ html,body{margin:0 !important;padding:0 !important}
 <div class="hg-page" id="hg-page">
 <section class="hg-section" data-screen-label="Crossword">
   <div class="hg-head">
+    <style>.hg-tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:0 auto 38px;position:relative;z-index:2}.hg-tabs a{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(13px,1.2vw,16px);letter-spacing:.08em;text-decoration:none;border:2px solid #fffffe;padding:11px 24px;color:#fffffe;background:rgba(11,23,15,.4);transition:background .15s ease,color .15s ease}.hg-tabs a:hover{background:rgba(255,255,255,.14);color:#fffffe}.hg-tabs a.on,.hg-tabs a.on:hover{background:#fffffe;color:#111}@media (max-width:560px){.hg-tabs{gap:8px}.hg-tabs a{padding:9px 13px;font-size:12px}}</style>
+    <nav class="hg-tabs" data-on="crossword" aria-label="Daily games">
+      <a href="https://www.mauriceafrich.com/games" data-k="skyword">SKYWORD</a>
+      <a href="https://www.mauriceafrich.com/sort-the-shelf" data-k="shelf_sort">SORT THE SHELF</a>
+      <a href="https://www.mauriceafrich.com/book-icons" data-k="emoji_reads">BOOK ICONS</a>
+    </nav>
+    <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');}}})();</script>
     <div class="hg-eyebrow">The Treasure Hunt</div>
     <h1 class="hg-h1">THE BOOKISH CROSSWORD</h1>
     <p class="hg-tag">A small themed crossword for readers. A new one every night at midnight EDT.</p>
