@@ -373,7 +373,9 @@
       return tex;
     }
 
-    function pose(n) { return targets[n].clone().premultiply(TILT); }
+    // A rolled number sits flat, facing the viewer square-on. Only a die still waiting to be rolled is tilted.
+    function pose(n) { return targets[n].clone(); }
+    function idle() { return targets[20].clone().premultiply(TILT); }
 
     function dieGeometry() {
       var geo = new T.IcosahedronGeometry(1, 0), uv = [];
@@ -395,12 +397,12 @@
       r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       r.setSize(120, 120, false);
       var scene = new T.Scene(), cam = new T.PerspectiveCamera(30, 1, 0.1, 50);
-      cam.position.set(0, 0.4, 6.4); cam.lookAt(0, 0.25, 0);
+      cam.position.set(0, 0, 6.4); cam.lookAt(0, 0, 0);
       var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
       scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
       var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-3, 5, 5); scene.add(sun);
       var mesh = new T.Mesh(dieGeometry(), dieMaterials());
-      mesh.quaternion.copy(pose(20));
+      mesh.quaternion.copy(idle());
       scene.add(mesh);
       var d = { r: r, scene: scene, cam: cam, mesh: mesh, node: node, shadow: node.querySelector('.rc-die-shadow'), raf: 0, y: 0 };
       dice[id] = d;
@@ -610,7 +612,7 @@
           else { d.raf = 0; d.mesh.quaternion.copy(q1); d.y = 0; draw(d); done(); }
         })(t0);
       },
-      stop: function (id) { dropThrow(id); var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(pose(20)); draw(d); },
+      stop: function (id) { dropThrow(id); var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(idle()); draw(d); },
       muted: function () { return muted; },
       setMuted: function (m) { muted = !!m; try { localStorage.setItem('thDice:muted', muted ? '1' : '0'); } catch (e) {} }
     };
