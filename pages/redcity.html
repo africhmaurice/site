@@ -164,6 +164,8 @@
 #rc .rc-rollres.crit{color:var(--lime)}
 #rc .rc-rollres.fumble{color:var(--ember)}
 #rc .rc-rollnote{font-size:13px;color:var(--muted);line-height:1.5}
+#rc .rc-rngnote{margin-top:24px;font-size:13px;line-height:1.6;color:var(--muted);max-width:760px}
+#rc .rc-rngnote b{color:var(--paper)}
 @media (prefers-reduced-motion:reduce){#rc .rc-die.rolling,#rc .rc-die.rolling svg,#rc .rc-die.landed{animation:none}}
 
 /* seal it */
@@ -250,6 +252,7 @@
     </header>
     <div id="rc-who" class="rc-whobox"></div>
     <div class="rc-qs" id="rc-qs"></div>
+    <p class="rc-rngnote"><b>About the dice:</b> the rolling die is a visualization. Your actual roll is made by a random number generator on our server the moment you press Roll. It is recorded straight away and can't be changed or rerolled, and the die simply shows the number it gave.</p>
   </section>
 
   <section class="rc-step rc-orders" id="rc-orders">
@@ -300,7 +303,7 @@
   // If three.js cannot load, the flat die (D20 above) stays and everything else works the same.
   var Dice = (function () {
     var URL3 = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-    var T = null, loading = null, faces = null, numbers = null, targets = {}, TILT = null, dice = {};
+    var T = null, loading = null, faces = null, numbers = null, faceOf = null, targets = {}, TILT = null, dice = {};
     var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     var muted = false;
     try { muted = localStorage.getItem('thDice:muted') === '1'; } catch (e) {}
@@ -326,7 +329,7 @@
       for (var f = 0; f < 20; f++) {
         var a = new T.Vector3().fromBufferAttribute(p, f * 3), b = new T.Vector3().fromBufferAttribute(p, f * 3 + 1), c = new T.Vector3().fromBufferAttribute(p, f * 3 + 2);
         var mid = a.clone().add(b).add(c).divideScalar(3);
-        faces.push({ a: a, mid: mid, n: mid.clone().normalize() });
+        faces.push({ a: a, b: b, c: c, mid: mid, n: mid.clone().normalize() });
       }
       numbers = new Array(20);
       var next = 1;
@@ -341,6 +344,7 @@
         var m = new T.Matrix4().makeBasis(x, y, z).transpose();
         targets[numbers[k]] = new T.Quaternion().setFromRotationMatrix(m);
       }
+      faceOf = {}; for (var q = 0; q < 20; q++) faceOf[numbers[q]] = q;
       TILT = new T.Quaternion().setFromEuler(new T.Euler(-0.42, 0.3, 0.06));
     }
 
@@ -444,8 +448,28 @@
 
     function stopLoop(d) { if (d.raf) cancelAnimationFrame(d.raf); d.raf = 0; }
 
-    // ---- the throw: the die leaves its card and rolls across the whole screen, like a dice app,
-    // then settles on the number, holds it a moment and glides back into its card.
+    // ---- the throw: a real physics roll (cannon.js, MIT licence, from cdnjs) -----------------
+    // The die is thrown from its card with a random force, spin and angle, and the physics decides
+    // everything after that: the tumbling, the bounces off the table and the screen edges, and where
+    // it comes to rest. Nothing steers it. Every face of a d20 is the same shape, so the numbers can
+    // be painted on to match the roll before it is thrown (the sheet's random number generator has
+    // already chosen it); that changes which number is on the face it lands on, not how it moves.
+    // A few throws are worked out in a blink and the one whose number lands most upright is shown.
+    var URLP = 'https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js', P = null, loadingP = null;
+    function loadPhysics() {
+      if (P) return Promise.resolve(P);
+      if (loadingP) return loadingP;
+      loadingP = new Promise(function (ok, no) {
+        if (window.CANNON) return ok(window.CANNON);
+        var s = document.createElement('script');
+        s.src = URLP; s.async = true;
+        s.onload = function () { window.CANNON ? ok(window.CANNON) : no(); };
+        s.onerror = no;
+        document.head.appendChild(s);
+      }).then(function (c) { P = c; return P; });
+      return loadingP;
+    }
+
     var ov = null;
     function overlay() {
       if (ov) return ov;
@@ -482,73 +506,139 @@
       var b = dice[id].node.getBoundingClientRect();
       return { x: b.left + b.width / 2 - window.innerWidth / 2, y: window.innerHeight / 2 - (b.top + b.height / 2) };
     }
-    function throwStart(id) {
-      var d = dice[id], o = overlay();
-      stopLoop(d);
-      if (o.raf) cancelAnimationFrame(o.raf);
-      var s = slotCenter(id), ang = Math.atan2(-s.y, -s.x) + (Math.random() - 0.5) * 1.2, sp = Math.max(o.w, o.h) * (1.3 + Math.random() * 0.4), now = performance.now();
-      o.st = { id: id, x: s.x, y: s.y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, h: 0.6, vh: 3.2, t0: now, last: now, n: 0, done: null, phase: 'roll', shrink: 1 };
-      o.mesh.quaternion.copy(d.mesh.quaternion);
-      d.node.style.visibility = 'hidden';
-      o.cv.style.display = 'block';
-      clack(0.35);
-      paintOv();
-      o.raf = requestAnimationFrame(step);
+
+    var hull = null;
+    function hullShape() {
+      if (!hull) {
+        var pts = [], idx = [], seen = {};
+        faces.forEach(function (f) {
+          idx.push([f.a, f.b, f.c].map(function (v) {
+            var k = v.x.toFixed(4) + ',' + v.y.toFixed(4) + ',' + v.z.toFixed(4);
+            if (!(k in seen)) { seen[k] = pts.length; pts.push([v.x, v.y, v.z]); }
+            return seen[k];
+          }));
+        });
+        hull = { pts: pts, idx: idx };
+      }
+      return new P.ConvexPolyhedron(hull.pts.map(function (p) { return new P.Vec3(p[0], p[1], p[2]); }), hull.idx.map(function (f) { return f.slice(); }));
     }
-    function bump(st) { clack(Math.min(0.45, 0.12 + Math.hypot(st.vx, st.vy) / ov.w * 0.25)); }
-    function step(now) {
+
+    // One throw, worked out ahead at 60 steps a second: where the die is at every step, and when it hits something.
+    function simulate(start, Wu, Hu) {
+      var world = new P.World();
+      world.gravity.set(0, 0, -40);
+      world.broadphase = new P.NaiveBroadphase();
+      world.solver.iterations = 12;
+      world.allowSleep = true;
+      world.defaultContactMaterial.friction = 0.28;
+      world.defaultContactMaterial.restitution = 0.38;
+      function wall(x, y, axis, ang) {
+        var b = new P.Body({ mass: 0 }); b.addShape(new P.Plane()); b.position.set(x, y, 0);
+        if (axis) b.quaternion.setFromAxisAngle(axis, ang);
+        world.addBody(b);
+      }
+      wall(0, 0);                                                    // the table
+      wall(-Wu, 0, new P.Vec3(0, 1, 0), Math.PI / 2); wall(Wu, 0, new P.Vec3(0, 1, 0), -Math.PI / 2);
+      wall(0, -Hu, new P.Vec3(1, 0, 0), -Math.PI / 2); wall(0, Hu, new P.Vec3(1, 0, 0), Math.PI / 2);
+      var die = new P.Body({ mass: 1 });
+      die.addShape(hullShape());
+      die.linearDamping = 0.1; die.angularDamping = 0.1;
+      die.allowSleep = true; die.sleepSpeedLimit = 0.15; die.sleepTimeLimit = 0.25;
+      die.position.set(start.x, start.y, 2.2 + Math.random() * 1.5);
+      die.quaternion.setFromEuler(Math.random() * 6.283, Math.random() * 6.283, Math.random() * 6.283);
+      var ang = Math.atan2(-start.y, -start.x) + (Math.random() - 0.5) * 1.6, sp = 14 + Math.random() * 12;
+      die.velocity.set(Math.cos(ang) * sp, Math.sin(ang) * sp, 2 + Math.random() * 5);
+      die.angularVelocity.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 30);
+      world.addBody(die);
+      var frames = [], hits = [], stepNo = 0, lastHit = -9;
+      die.addEventListener('collide', function (e) {
+        var v = Math.abs(e.contact.getImpactVelocityAlongNormal());
+        if (v > 1.2 && stepNo - lastHit > 3) { hits.push([stepNo, Math.min(0.55, v * 0.035)]); lastHit = stepNo; }
+      });
+      for (stepNo = 0; stepNo < 540; stepNo++) {
+        world.step(1 / 60);
+        frames.push([die.position.x, die.position.y, die.position.z, die.quaternion.x, die.quaternion.y, die.quaternion.z, die.quaternion.w]);
+        if (stepNo > 40 && die.sleepState === P.Body.SLEEPING) break;
+      }
+      return { frames: frames, hits: hits };
+    }
+
+    // Which face ended up facing the viewer.
+    function topFace(f) {
+      var q = new T.Quaternion(f[3], f[4], f[5], f[6]), best = -2, k = 0;
+      for (var i = 0; i < 20; i++) { var z = faces[i].n.clone().applyQuaternion(q).z; if (z > best) { best = z; k = i; } }
+      return { k: k, q: q, flat: best };
+    }
+    function frameOf(face, v) {
+      var z = face.n, y = v.clone().sub(face.mid).normalize(), x = new T.Vector3().crossVectors(y, z);
+      return new T.Matrix4().makeBasis(x, y, z);
+    }
+    // The turn of the die onto itself that puts number n on the face that landed up. Of the three
+    // ways to do it, the one that reads most upright.
+    function relabel(n, top) {
+      var ft = faces[faceOf[n]], f = faces[top.k], toCanon = frameOf(ft, ft.a).transpose(), best = null;
+      [f.a, f.b, f.c].forEach(function (v) {
+        var g = new T.Quaternion().setFromRotationMatrix(new T.Matrix4().multiplyMatrices(frameOf(f, v), toCanon));
+        var up = v.clone().sub(f.mid).normalize().applyQuaternion(top.q), tilt = Math.abs(Math.atan2(up.x, up.y));
+        if (!best || tilt < best.tilt) best = { g: g, tilt: tilt };
+      });
+      return best;
+    }
+
+    function throwIt(id, n, done) {
+      if (!P) return false;
+      var d = dice[id], o = overlay(), s = slotCenter(id), Wu = o.w / 2 / o.R, Hu = o.h / 2 / o.R;
+      var start = { x: Math.max(-Wu + 1.3, Math.min(Wu - 1.3, s.x / o.R)), y: Math.max(-Hu + 1.3, Math.min(Hu - 1.3, s.y / o.R)) };
+      var best = null, t0 = performance.now();
+      for (var i = 0; i < 8; i++) {
+        var sim = simulate(start, Wu, Hu), top = topFace(sim.frames[sim.frames.length - 1]);
+        if (top.flat < 0.97) continue;                               // still moving when time ran out: throw again
+        var rl = relabel(n, top);
+        sim.g = rl.g; sim.tilt = rl.tilt;
+        if (!best || rl.tilt < best.tilt) best = sim;
+        if (rl.tilt < 0.35 || performance.now() - t0 > 150) break;
+      }
+      if (!best) return false;
+      if (ov.raf) cancelAnimationFrame(ov.raf);
+      stopLoop(d); d.y = 0; d.node.style.visibility = 'hidden';
+      o.st = { id: id, n: n, sim: best, done: done, start: performance.now(), hit: 0 };
+      o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
+      clack(0.3);
+      o.raf = requestAnimationFrame(play);
+      return true;
+    }
+    function play(now) {
       var o = ov, st = o.st;
       if (!st) return;
-      var dt = Math.min(0.033, (now - st.last) / 1000); st.last = now;
-      var R = o.R, W = o.w / 2 - R, H = o.h / 2 - R;
-      if (st.phase === 'roll' || st.phase === 'settle') {
-        var damp = Math.pow(st.phase === 'settle' ? 0.02 : 0.45, dt);
-        st.vx *= damp; st.vy *= damp;
-        st.x += st.vx * dt; st.y += st.vy * dt;
-        if (st.x > W) { st.x = W; st.vx = -Math.abs(st.vx) * 0.8; bump(st); }
-        if (st.x < -W) { st.x = -W; st.vx = Math.abs(st.vx) * 0.8; bump(st); }
-        if (st.y > H) { st.y = H; st.vy = -Math.abs(st.vy) * 0.8; bump(st); }
-        if (st.y < -H) { st.y = -H; st.vy = Math.abs(st.vy) * 0.8; bump(st); }
-        st.vh -= 12 * dt; st.h += st.vh * dt;
-        if (st.h <= 0) { st.h = 0; if (st.vh < -1.2) clack(Math.min(0.5, -st.vh * 0.09)); st.vh = -st.vh * 0.45; if (st.vh < 0.8) st.vh = 0; }
-        var speed = Math.hypot(st.vx, st.vy);
-        if (st.phase === 'roll') {
-          if (speed > 1) o.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(-st.vy, st.vx, 0).normalize(), speed / R * dt));
-          if (st.n && now - st.t0 > 1300) { st.phase = 'settle'; st.s0 = now; st.q0 = o.mesh.quaternion.clone(); st.q1 = pose(st.n); }
-          else if (!st.n && speed < o.w * 0.35) {   // the number is still on its way: give it another shove
-            var a2 = Math.random() * Math.PI * 2;
-            st.vx += Math.cos(a2) * o.w * 0.5; st.vy += Math.sin(a2) * o.w * 0.5; st.vh = 2.5;
-          }
-        } else {
-          var e = Math.min(1, (now - st.s0) / 750), ee = 1 - Math.pow(1 - e, 3);
-          o.mesh.quaternion.copy(st.q0.clone().slerp(st.q1, ee));
-          st.h *= 1 - ee * 0.5;
-          if (e >= 1) { st.phase = 'hold'; st.h = 0; st.hold = now; o.mesh.quaternion.copy(st.q1); clack(0.12); }
-        }
-      } else if (st.phase === 'hold') {
-        if (now - st.hold > 1300) { st.phase = 'home'; st.r0 = now; st.fx = st.x; st.fy = st.y; }
-      } else if (st.phase === 'home') {
-        var s = slotCenter(st.id), k = Math.min(1, (now - st.r0) / 450), kk = k * k * (3 - 2 * k);
-        st.x = st.fx + (s.x - st.fx) * kk; st.y = st.fy + (s.y - st.fy) * kk; st.shrink = 1 - kk * 0.45;
-        if (k >= 1) { finishThrow(); return; }
+      var fr = st.sim.frames, i = Math.min(fr.length - 1, Math.floor((now - st.start) / (1000 / 60)));
+      while (st.hit < st.sim.hits.length && st.sim.hits[st.hit][0] <= i) { clack(st.sim.hits[st.hit][1]); st.hit++; }
+      paintFrame(fr[i], st.sim.g);
+      if (i < fr.length - 1) { o.raf = requestAnimationFrame(play); return; }
+      // At rest. Hold it so everyone can read it, then the table fades and the card has the number.
+      o.raf = 0;
+      if (PREVIEW) {   // preview only: which number really ended up facing the viewer, for checking
+        var lf = fr[fr.length - 1], qq = new T.Quaternion(lf[3], lf[4], lf[5], lf[6]).multiply(st.sim.g), bk = 0, bz = -2;
+        for (var i2 = 0; i2 < 20; i2++) { var zz = faces[i2].n.clone().applyQuaternion(qq).z; if (zz > bz) { bz = zz; bk = i2; } }
+        (window.__diceLog = window.__diceLog || []).push({ rolled: st.n, showing: numbers[bk], flat: +bz.toFixed(3), tiltDeg: Math.round(st.sim.tilt * 57.3), seconds: +(fr.length / 60).toFixed(2), bounces: st.sim.hits.length });
       }
-      paintOv();
-      o.raf = requestAnimationFrame(step);
+      setTimeout(function () {
+        if (o.st !== st) return;
+        var d = dice[st.id];
+        if (d) { d.y = 0; d.mesh.quaternion.copy(pose(st.n)); draw(d); d.node.style.visibility = ''; }
+        o.cv.style.transition = 'opacity .45s ease'; o.cv.style.opacity = '0';
+        setTimeout(function () { if (o.st === st) { o.cv.style.display = 'none'; o.st = null; } }, 480);
+        if (st.done) st.done();
+      }, 1400);
     }
-    function paintOv() {
-      var o = ov, st = o.st, sc = (1 + st.h * 0.12) * st.shrink;
-      o.mesh.position.set(st.x, st.y, 0);
+    function paintFrame(f, g) {
+      var o = ov, z = Math.max(0, f[2] - 0.8), sc = 1 + z * 0.07;
+      o.mesh.position.set(f[0] * o.R, f[1] * o.R, 0);
+      o.mesh.quaternion.set(f[3], f[4], f[5], f[6]).multiply(g);
       o.mesh.scale.setScalar(o.R * sc);
-      o.shadow.position.set(st.x + 8 + st.h * 14, st.y - 10 - st.h * 14, -200);
-      o.shadow.scale.setScalar(o.R * 2.6 * (1 - Math.min(0.5, st.h * 0.1)) * st.shrink);
-      o.shadow.material.opacity = 0.9 - Math.min(0.6, st.h * 0.12);
+      o.shadow.position.set(f[0] * o.R + 6 + z * 10, f[1] * o.R - 8 - z * 10, -200);
+      o.shadow.scale.setScalar(o.R * 2.4 * (1 - Math.min(0.5, z * 0.08)));
+      o.shadow.material.opacity = 0.9 - Math.min(0.6, z * 0.1);
       o.r.render(o.scene, o.cam);
-    }
-    function finishThrow() {
-      var o = ov, st = o.st, d = dice[st.id];
-      o.cv.style.display = 'none'; o.raf = 0; o.st = null;
-      if (d) { d.y = 0; d.mesh.quaternion.copy(pose(st.n)); draw(d); d.node.style.visibility = ''; }
-      if (st.done) st.done();
     }
     function dropThrow(id) {
       if (!ov || !ov.st || ov.st.id !== id) return;
@@ -557,12 +647,12 @@
       if (dice[id]) dice[id].node.style.visibility = '';
     }
 
-
     return {
       // Builds the die in this node once three.js is in; the node shows the flat die until then.
       attach: function (id, node, n) {
         load().then(function () {
           if (dice[id]) return;
+          if (!calm) loadPhysics().catch(function () {});
           var d = build(id, node);
           node.classList.add('is3d');
           if (n) d.mesh.quaternion.copy(pose(n));
@@ -571,13 +661,11 @@
       },
       ready: function (id) { return !!dice[id]; },
       show: function (id, n) { var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(pose(n)); draw(d); },
-      // Thrown across the screen; in the card instead when motion is reduced or the throw can't start.
-      spin: function (id) {
-        if (!calm && dice[id]) { try { throwStart(id); return; } catch (e) { dropThrow(id); } }
-        this.spinCard(id);
-      },
+      // Shaken in the card (like dice in a cupped hand) until the sheet's number is in, then thrown
+      // across the screen with physics. In the card instead when motion is reduced or physics won't load.
+      spin: function (id) { this.spinCard(id); },
       land: function (id, n, done) {
-        if (ov && ov.st && ov.st.id === id) { ov.st.n = n; ov.st.done = done; return; }
+        if (!calm && dice[id]) { try { if (throwIt(id, n, done)) return; } catch (e) { dropThrow(id); } }
         this.landCard(id, n, done);
       },
       // Tumbling in the card until the number is known.
