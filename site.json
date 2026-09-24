@@ -121,6 +121,12 @@
       "url": "(preview only, not on Squarespace yet)",
       "title": "Red City Vote (Pontune, before Act Two)",
       "source": "bot:squarespace-redcity.html"
+    },
+    {
+      "slug": "the-hunt-next",
+      "url": "(preview only: the next Hunt page, not live)",
+      "title": "The Hunt (next version, preview)",
+      "source": "bot:squarespace-hunt.next.html"
     }
   ],
   "staysInSquarespace": [
