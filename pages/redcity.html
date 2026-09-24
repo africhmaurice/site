@@ -135,6 +135,16 @@
 #rc .rc-whobox:not(:empty){margin:0 0 26px}
 #rc .rc-dice{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 20px;align-items:center;margin-top:8px;padding-top:18px;border-top:1px solid var(--hair)}
 #rc .rc-die{grid-row:1/4;position:relative;width:88px;height:88px}
+#rc .rc-die .rc-die-cv,#rc .rc-die .rc-die-shadow{display:none}
+#rc .rc-die.is3d{width:120px;height:120px}
+#rc .rc-die.is3d>svg,#rc .rc-die.is3d .rc-dn{display:none}
+#rc .rc-die.is3d .rc-die-cv{display:block;position:relative;z-index:1;width:100%;height:100%}
+#rc .rc-die.is3d .rc-die-shadow{display:block;position:absolute;left:50%;bottom:6px;width:62%;height:13%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),transparent)}
+#rc .rc-die.is3d.rolling,#rc .rc-die.is3d.landed{animation:none}
+#rc .rc-die.is3d.crit .rc-die-cv{filter:drop-shadow(0 0 12px rgba(162,245,144,.85))}
+#rc .rc-die.is3d.fumble .rc-die-cv{filter:drop-shadow(0 0 12px rgba(255,76,15,.8))}
+#rc .rc-sound{align-self:flex-start;background:none;border:1px solid var(--hair2);border-radius:999px;color:var(--muted);padding:6px 14px;font-weight:700;font-size:12px;letter-spacing:.1em}
+#rc .rc-sound:hover{color:#fff;border-color:var(--cream)}
 #rc .rc-die svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 6px 8px rgba(0,0,0,.45))}
 #rc .rc-die .face{fill:rgba(12,26,8,.7);stroke:var(--cream);stroke-width:2.5;stroke-linejoin:round}
 #rc .rc-die .edge{fill:none;stroke:rgba(243,234,217,.45);stroke-width:1.5;stroke-linejoin:round}
@@ -236,6 +246,7 @@
       <p class="rc-kick">STEP THREE</p>
       <h2>The plan</h2>
       <p>Five decisions, from the Pontune market to the island. Four of them are encounters: everyone rolls a d20, and the crew's average roll decides how the chosen option plays out. There are no wrong answers, only consequences.</p>
+      <button type="button" class="rc-sound" id="rc-sound"></button>
     </header>
     <div id="rc-who" class="rc-whobox"></div>
     <div class="rc-qs" id="rc-qs"></div>
@@ -282,6 +293,193 @@
     if (r === 1) return 'NATURAL 1. It counts as two 0s.';
     return 'You rolled ' + r + '.' + (PREVIEW ? ' (Preview roll, not recorded.)' : '');
   }
+  // ---- the 3D d20 ------------------------------------------------------
+  // A real twenty-sided die (three.js, MIT licence, from cdnjs), numbered like a table die: opposite
+  // faces add up to 21. It tumbles while the roll is on its way, then bounces and settles with the
+  // rolled face up. The clatter is made on the spot with Web Audio, so there is no sound file.
+  // If three.js cannot load, the flat die (D20 above) stays and everything else works the same.
+  var Dice = (function () {
+    var URL3 = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    var T = null, loading = null, faces = null, numbers = null, targets = {}, TILT = null, dice = {};
+    var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var muted = false;
+    try { muted = localStorage.getItem('thDice:muted') === '1'; } catch (e) {}
+
+    function load() {
+      if (T) return Promise.resolve(T);
+      if (loading) return loading;
+      loading = new Promise(function (ok, no) {
+        if (window.THREE) return ok(window.THREE);
+        var s = document.createElement('script');
+        s.src = URL3; s.async = true;
+        s.onload = function () { window.THREE ? ok(window.THREE) : no(); };
+        s.onerror = no;
+        document.head.appendChild(s);
+      }).then(function (three) { T = three; setup(); return T; });
+      return loading;
+    }
+
+    // The icosahedron's 20 faces, which number each one shows, and the turn that brings it face up.
+    function setup() {
+      var g = new T.IcosahedronGeometry(1, 0), p = g.getAttribute('position');
+      faces = [];
+      for (var f = 0; f < 20; f++) {
+        var a = new T.Vector3().fromBufferAttribute(p, f * 3), b = new T.Vector3().fromBufferAttribute(p, f * 3 + 1), c = new T.Vector3().fromBufferAttribute(p, f * 3 + 2);
+        var mid = a.clone().add(b).add(c).divideScalar(3);
+        faces.push({ a: a, mid: mid, n: mid.clone().normalize() });
+      }
+      numbers = new Array(20);
+      var next = 1;
+      for (var i = 0; i < 20; i++) {
+        if (numbers[i]) continue;
+        var opp = 0, best = 2;
+        for (var j = 0; j < 20; j++) { var dot = faces[i].n.dot(faces[j].n); if (dot < best) { best = dot; opp = j; } }
+        numbers[i] = next; numbers[opp] = 21 - next; next++;
+      }
+      for (var k = 0; k < 20; k++) {
+        var z = faces[k].n, y = faces[k].a.clone().sub(faces[k].mid).normalize(), x = new T.Vector3().crossVectors(y, z);
+        var m = new T.Matrix4().makeBasis(x, y, z).transpose();
+        targets[numbers[k]] = new T.Quaternion().setFromRotationMatrix(m);
+      }
+      TILT = new T.Quaternion().setFromEuler(new T.Euler(-0.42, 0.3, 0.06));
+    }
+
+    function faceTexture(n) {
+      var c = document.createElement('canvas'); c.width = c.height = 256;
+      var g = c.getContext('2d');
+      g.fillStyle = '#c1330a'; g.fillRect(0, 0, 256, 256);
+      g.fillStyle = '#f3ead9'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.font = '700 ' + (n > 9 ? 78 : 92) + 'px Almarai, Arial, sans-serif';
+      g.fillText(n === 6 || n === 9 ? n + '.' : String(n), 128, 150);
+      var t = new T.CanvasTexture(c);
+      t.encoding = T.sRGBEncoding;
+      return t;
+    }
+
+    function pose(n) { return targets[n].clone().premultiply(TILT); }
+
+    function build(id, node) {
+      var cv = node.querySelector('canvas');
+      var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+      r.outputEncoding = T.sRGBEncoding;
+      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      r.setSize(120, 120, false);
+      var scene = new T.Scene(), cam = new T.PerspectiveCamera(30, 1, 0.1, 50);
+      cam.position.set(0, 0.4, 6.4); cam.lookAt(0, 0.25, 0);
+      scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.85));
+      var sun = new T.DirectionalLight(0xffffff, 0.95); sun.position.set(-3, 5, 5); scene.add(sun);
+      var geo = new T.IcosahedronGeometry(1, 0), uv = [];
+      geo.clearGroups();
+      for (var f = 0; f < 20; f++) { uv.push(0.5, 0.95, 0.05, 0.2, 0.95, 0.2); geo.addGroup(f * 3, 3, f); }
+      geo.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+      var mats = [];
+      for (var k = 0; k < 20; k++) mats.push(new T.MeshStandardMaterial({ map: faceTexture(numbers[k]), roughness: 0.45, metalness: 0.05, flatShading: true }));
+      var mesh = new T.Mesh(geo, mats);
+      mesh.quaternion.copy(pose(20));
+      scene.add(mesh);
+      var d = { r: r, scene: scene, cam: cam, mesh: mesh, node: node, shadow: node.querySelector('.rc-die-shadow'), raf: 0, y: 0 };
+      dice[id] = d;
+      return d;
+    }
+
+    function draw(d) {
+      d.mesh.position.y = d.y;
+      if (d.shadow) { d.shadow.style.transform = 'translateX(-50%) scale(' + (1 - d.y * 0.45).toFixed(3) + ')'; d.shadow.style.opacity = (0.9 - d.y * 0.6).toFixed(2); }
+      d.r.render(d.scene, d.cam);
+    }
+
+    // ---- sound: a hard little knock plus a burst of clatter, a bit different every time
+    var ctx = null;
+    function audio() {
+      if (muted) return null;
+      var A = window.AudioContext || window.webkitAudioContext;
+      if (!A) return null;
+      if (!ctx) ctx = new A();
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }
+    function clack(vol) {
+      var a = audio(); if (!a) return;
+      var t = a.currentTime, len = Math.floor(a.sampleRate * 0.045), buf = a.createBuffer(1, len, a.sampleRate), ch = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 5);
+      var src = a.createBufferSource(); src.buffer = buf;
+      var bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2400 + Math.random() * 2200; bp.Q.value = 3;
+      var g = a.createGain(); g.gain.value = vol;
+      src.connect(bp); bp.connect(g); g.connect(a.destination); src.start(t);
+      var o = a.createOscillator(), og = a.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(380 + Math.random() * 300, t);
+      o.frequency.exponentialRampToValueAtTime(160, t + 0.07);
+      og.gain.setValueAtTime(vol * 0.7, t);
+      og.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+      o.connect(og); og.connect(a.destination); o.start(t); o.stop(t + 0.1);
+    }
+
+    function stopLoop(d) { if (d.raf) cancelAnimationFrame(d.raf); d.raf = 0; }
+
+    return {
+      // Builds the die in this node once three.js is in; the node shows the flat die until then.
+      attach: function (id, node, n) {
+        load().then(function () {
+          if (dice[id]) return;
+          var d = build(id, node);
+          node.classList.add('is3d');
+          if (n) d.mesh.quaternion.copy(pose(n));
+          draw(d);
+        }).catch(function () {});
+      },
+      ready: function (id) { return !!dice[id]; },
+      show: function (id, n) { var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(pose(n)); draw(d); },
+      // Tumbling in the hand until the number is known.
+      spin: function (id) {
+        var d = dice[id]; if (!d) return;
+        stopLoop(d);
+        var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), last = performance.now(), start = last, tick = 0;
+        d.axis = axis;
+        (function frame(now) {
+          var dt = Math.min(0.05, (now - last) / 1000); last = now;
+          if (!calm) d.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(axis, 13 * dt));
+          d.y = calm ? 0 : Math.abs(Math.sin((now - start) / 110)) * 0.35;
+          if (now - tick > 95) { tick = now; clack(0.05 + Math.random() * 0.06); }
+          draw(d);
+          d.raf = requestAnimationFrame(frame);
+        })(last);
+      },
+      // Thrown: three bounces, a clack on each, and it settles on n.
+      land: function (id, n, done) {
+        var d = dice[id]; if (!d) return done();
+        stopLoop(d);
+        var q0 = d.mesh.quaternion.clone(), q1 = pose(n), axis = d.axis || new T.Vector3(1, 0, 0), dur = calm ? 1 : 1150, t0 = performance.now(), hits = [0.286, 0.571, 0.857], hit = 0;
+        (function frame(now) {
+          var t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3);
+          var q = q0.clone().slerp(q1, e);
+          q.premultiply(new T.Quaternion().setFromAxisAngle(axis, (1 - e) * 7));
+          d.mesh.quaternion.copy(q);
+          d.y = Math.abs(Math.sin(Math.PI * 3.5 * t)) * 0.85 * Math.pow(1 - t, 2);
+          while (hit < hits.length && t >= hits[hit]) { clack([0.5, 0.28, 0.14][hit]); hit++; }
+          draw(d);
+          if (t < 1) d.raf = requestAnimationFrame(frame);
+          else { d.raf = 0; d.mesh.quaternion.copy(q1); d.y = 0; draw(d); done(); }
+        })(t0);
+      },
+      stop: function (id) { var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(pose(20)); draw(d); },
+      muted: function () { return muted; },
+      setMuted: function (m) { muted = !!m; try { localStorage.setItem('thDice:muted', muted ? '1' : '0'); } catch (e) {} }
+    };
+  })();
+  var dieEls = {};
+  function dieNode(id) {
+    var el = dieEls[id];
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'rc-die-' + id;
+      el.setAttribute('aria-hidden', 'true');
+      el.innerHTML = D20 + '<span class="rc-dn" id="rc-dn-' + id + '">?</span><i class="rc-die-shadow"></i><canvas class="rc-die-cv" width="240" height="240"></canvas>';
+      dieEls[id] = el;
+      Dice.attach(id, el, S.rolls[id]);
+    }
+    return el;
+  }
   function rollFor(q) {
     if (rolling[q.id] || S.rolls[q.id] || closed) return;
     var who = PREVIEW ? me : readWho();
@@ -292,20 +490,25 @@
       return;
     }
     if (!PREVIEW) { me = who; store(ME, me); renderWho(); }
-    rolling[q.id] = true; renderQs();
+    rolling[q.id] = true; renderQs(); Dice.spin(q.id);
     var started = Date.now();
     flick[q.id] = setInterval(function () { var n = document.getElementById('rc-dn-' + q.id); if (n) n.textContent = 1 + Math.floor(Math.random() * 20); }, 70);
     var land = function (res) {
       setTimeout(function () {
-        clearInterval(flick[q.id]); rolling[q.id] = false;
-        if (res && res.ok && res.roll) {
-          S.rolls[q.id] = Number(res.roll); store(STORE, S); render();
-          var d = document.getElementById('rc-die-' + q.id); if (d) d.classList.add('landed');
-        } else {
-          render();
-          var o = document.getElementById('rc-rr-' + q.id);
-          if (o) o.textContent = ({ closed: 'Voting has closed.', email: 'That email does not look right.' })[res && res.error] || 'The die rolled off the table. Give it another go.';
-        }
+        clearInterval(flick[q.id]);
+        var ok = res && res.ok && res.roll, n = ok ? Number(res.roll) : 0;
+        var finish = function () {
+          rolling[q.id] = false;
+          if (ok) {
+            S.rolls[q.id] = n; store(STORE, S); render();
+            var d = document.getElementById('rc-die-' + q.id); if (d && !Dice.ready(q.id)) d.classList.add('landed');
+          } else {
+            Dice.stop(q.id); render();
+            var o = document.getElementById('rc-rr-' + q.id);
+            if (o) o.textContent = ({ closed: 'Voting has closed.', email: 'That email does not look right.' })[res && res.error] || 'The die rolled off the table. Give it another go.';
+          }
+        };
+        if (ok && Dice.ready(q.id)) Dice.land(q.id, n, finish); else finish();
       }, Math.max(0, 1500 - (Date.now() - started)));
     };
     if (PREVIEW) land({ ok: true, roll: 1 + Math.floor(Math.random() * 20) });
@@ -415,12 +618,15 @@
       if (q.roll) {
         var r = S.rolls[q.id], d = document.createElement('div'), tone = r === 20 ? ' crit' : r === 1 ? ' fumble' : '';
         d.className = 'rc-dice';
-        d.innerHTML = '<div class="rc-die' + (rolling[q.id] ? ' rolling' : tone) + '" id="rc-die-' + q.id + '" aria-hidden="true">' + D20 +
-          '<span class="rc-dn" id="rc-dn-' + q.id + '">' + (r || '?') + '</span></div>' +
-          (r ? '<p class="rc-rollres' + tone + '" id="rc-rr-' + q.id + '" aria-live="polite">' + rollText(r) + '</p>'
+        d.innerHTML = (r ? '<p class="rc-rollres' + tone + '" id="rc-rr-' + q.id + '" aria-live="polite">' + rollText(r) + '</p>'
              : '<button type="button" class="rc-roll"' + (rolling[q.id] || closed ? ' disabled' : '') + '>' + (rolling[q.id] ? 'ROLLING…' : 'ROLL THE D20') + '</button>' +
                '<p class="rc-rollres" id="rc-rr-' + q.id + '" aria-live="polite"></p>') +
           '<p class="rc-rollnote">' + esc(DATA.rollNote) + '</p>';
+        var die = dieNode(q.id);
+        die.className = 'rc-die' + (Dice.ready(q.id) ? ' is3d' : '') + (rolling[q.id] ? ' rolling' : tone);
+        if (!rolling[q.id]) die.querySelector('.rc-dn').textContent = r || '?';
+        if (r && Dice.ready(q.id) && !rolling[q.id]) Dice.show(q.id, r);
+        d.insertBefore(die, d.firstChild);
         var rb = d.querySelector('.rc-roll');
         if (rb) rb.onclick = function () { rollFor(q); };
         el.appendChild(d);
@@ -472,7 +678,7 @@
       if (who.getAttribute('data-me') === me.email) return;
       who.setAttribute('data-me', me.email);
       who.innerHTML = '<p class="rc-quiet">Rolling and voting as ' + esc(me.first_name || me.email) + '. <a id="rc-notme">Not you?</a></p>';
-      $('rc-notme').onclick = function () { try { localStorage.removeItem(ME); } catch (e) {} me = {}; S.rolls = {}; store(STORE, S); who.removeAttribute('data-me'); render(); };
+      $('rc-notme').onclick = function () { try { localStorage.removeItem(ME); } catch (e) {} me = {}; S.rolls = {}; store(STORE, S); for (var k in dieEls) Dice.stop(k); who.removeAttribute('data-me'); render(); };
       return;
     }
     if (who.getAttribute('data-me') === '') return;
@@ -514,6 +720,9 @@
   }
 
   function render() { renderJobs(); renderStalls(); renderQs(); renderOrders(); renderWallet(); }
+  function paintSound() { $('rc-sound').textContent = 'DICE SOUND: ' + (Dice.muted() ? 'OFF' : 'ON'); $('rc-sound').setAttribute('aria-pressed', !Dice.muted()); }
+  $('rc-sound').onclick = function () { Dice.setMuted(!Dice.muted()); paintSound(); };
+  paintSound();
 
   $('rc-seal').onclick = function () {
     var who = readWho(), msg = $('rc-msg'), btn = this;
