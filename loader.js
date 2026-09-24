@@ -136,10 +136,10 @@
   function loadingScreen() {
     var ov = document.createElement('div');
     ov.id = 'ma-loading'; ov.setAttribute('aria-hidden', 'true');
-    ov.innerHTML = '<style>#ma-loading{position:fixed;inset:0;z-index:2147483600;background:#3d0707;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s}' +
+    ov.innerHTML = '<style>#ma-loading{position:fixed;inset:0;z-index:2147483600;background:#912501;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s}' +
       '#ma-loading.ma-done{opacity:0;visibility:hidden}' +
       '#ma-loading .ma-crest{position:relative;width:min(60vw,340px);aspect-ratio:2/1;background:#fffffe;-webkit-mask:url(' + BASE + 'assets/img/crest-mask.png) center/contain no-repeat;mask:url(' + BASE + 'assets/img/crest-mask.png) center/contain no-repeat}' +
-      '#ma-loading .ma-red{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#ff7a66,#f04a36 45%,#e0301e);transition:height .35s ease-out}</style>' +
+      '#ma-loading .ma-red{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#fd7547,#ff4c0f 55%,#ff4c0f);transition:height .35s ease-out}</style>' +
       '<div class="ma-crest"><div class="ma-red"></div></div>';
     document.documentElement.appendChild(ov);
     var red = ov.querySelector('.ma-red'), t0 = Date.now(), p = 0, finished = false;
