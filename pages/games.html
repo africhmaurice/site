@@ -110,6 +110,16 @@ html,body{margin:0 !important;padding:0 !important}
 .thw-submit{display:inline-block;margin-top:24px;font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;
   letter-spacing:.08em;text-decoration:none;color:#fff;background:#c1330a;border:2px solid #f3ead9;
   padding:14px 30px;transition:transform .15s ease,background .15s ease}
+.thw-result .thw-quiet{font-size:clamp(14px,1.7vw,16px);margin-top:16px;opacity:.9}
+.thw-result .thw-quiet a{color:#fff;text-decoration:underline;cursor:pointer}
+.thw-submit[disabled]{opacity:.7;cursor:wait;transform:none !important}
+button.thw-submit{cursor:pointer}
+.thw-pts{display:inline-block;font-family:'Atomic Marker',cursive;font-size:clamp(30px,5vw,46px);color:#fff;background:#c1330a;border:2px solid #f3ead9;padding:6px 22px;margin-top:10px}
+.thw-form{max-width:380px;margin:20px auto 0;text-align:left}
+.thw-form label{display:block;font-weight:700;font-size:14px;letter-spacing:.06em;margin:12px 0 5px}
+.thw-form input,.thw-form select{width:100%;font-family:'Almarai',sans-serif;font-size:16px;padding:11px 12px;border:2px solid #111;background:#fff;color:#111;border-radius:0}
+.thw-form .thw-submit{width:100%;text-align:center}
+.thw-err{color:#ffd9c4;font-weight:700;min-height:1.4em;margin-top:10px !important;font-size:16px !important}
 .thw-next{text-align:center;font-weight:700;font-size:15px;letter-spacing:.08em;color:#607667;margin:26px 0 0}
 .thw-next strong{color:#c53200;font-size:18px}
 
@@ -279,6 +289,13 @@ html,body{margin:0 !important;padding:0 !important}
   ];
   var SUBMIT_URL = 'https://www.mauriceafrich.com/points';
   var TRIES = 6;
+  /* A win is claimed straight from the page: the Loot Boxes web app checks the
+     guesses against its own copy of WORDS (apps-script/lootbox.gs) and records
+     it in its Games tab, and the twice-daily run awards it. Same URL as
+     ENDPOINT in squarespace-lootbox.html. Set to '' to go back to "screenshot
+     this and submit it". */
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var POINTS = 25;
   /* ==================== stop editing ==================== */
 
   var TZ = 'America/New_York';
@@ -339,7 +356,7 @@ html,body{margin:0 !important;padding:0 !important}
       N = answer.length,
       KEY = 'thWordle:' + dateStr;
 
-  var guesses = [], over = false, won = false, current = '';
+  var guesses = [], over = false, won = false, current = '', claimed = false;
 
   function notLive(msg) {
     gridEl.style.display = 'none';
@@ -365,7 +382,7 @@ html,body{margin:0 !important;padding:0 !important}
   // ---- saved progress -------------------------------------------------
   try {
     var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (saved && saved.a === answer && saved.g) { guesses = saved.g; }
+    if (saved && saved.a === answer && saved.g) { guesses = saved.g; claimed = !!saved.c; }
     // Yesterday's boards are no use to anyone.
     for (var i = localStorage.length - 1; i >= 0; i--) {
       var k = localStorage.key(i);
@@ -374,8 +391,16 @@ html,body{margin:0 !important;padding:0 !important}
   } catch (e) { /* private browsing - the board just will not persist */ }
 
   function save() {
-    try { localStorage.setItem(KEY, JSON.stringify({ a: answer, g: guesses })); } catch (e) {}
+    try { localStorage.setItem(KEY, JSON.stringify({ a: answer, g: guesses, c: claimed })); } catch (e) {}
   }
+
+  // Who this browser belongs to. The loot box page saves the same record under
+  // the same key, and both pages live on mauriceafrich.com, so a finder who has
+  // opened a loot box is never asked again.
+  var ME = 'thLoot:me';
+  function loadMe() { try { return JSON.parse(localStorage.getItem(ME) || 'null') || {}; } catch (e) { return {}; } }
+  function saveMe(v) { try { localStorage.setItem(ME, JSON.stringify(v)); } catch (e) {} }
+  var me = loadMe();
 
   // ---- scoring --------------------------------------------------------
   // Two passes so repeated letters are marked the way Wordle marks them:
@@ -537,10 +562,14 @@ html,body{margin:0 !important;padding:0 !important}
   function showResult() {
     if (won) {
       resultEl.className = 'thw-result win';
-      resultEl.innerHTML =
-        '<div class="thw-bang">CONGRATS!</div>' +
-        '<p>Screenshot this and submit it for 25 points in the Treasure Hunt!</p>' +
-        '<a class="thw-submit wv2" href="' + esc(SUBMIT_URL) + '">SUBMIT YOUR POINTS</a>';
+      if (!ENDPOINT) {
+        resultEl.innerHTML =
+          '<div class="thw-bang">CONGRATS!</div>' +
+          '<p>Screenshot this and submit it for 25 points in the Treasure Hunt!</p>' +
+          '<a class="thw-submit wv2" href="' + esc(SUBMIT_URL) + '">SUBMIT YOUR POINTS</a>';
+      } else if (claimed) showClaimed('new');
+      else if (me.email) showClaimButton();
+      else showClaimForm();
     } else {
       resultEl.className = 'thw-result lose';
       resultEl.innerHTML =
@@ -549,6 +578,134 @@ html,body{margin:0 !important;padding:0 !important}
         'Better luck next time! Come back tomorrow for a new word.</p>';
     }
     resultEl.style.display = 'block';
+  }
+
+  // ---- claiming the points --------------------------------------------
+  var WIN = '<div class="thw-bang">CONGRATS!</div>';
+
+  function showClaimButton() {
+    resultEl.innerHTML = WIN +
+      '<p>You cracked it. Claim your ' + POINTS + ' points for today.</p>' +
+      '<button type="button" class="thw-submit wv2" id="thw-claim">CLAIM ' + POINTS + ' POINTS</button>' +
+      '<p class="thw-quiet">Claiming as ' + esc(me.first_name || me.email) + '. <a id="thw-notme">Not you?</a></p>' +
+      '<p class="thw-err" id="thw-err"></p>';
+    document.getElementById('thw-claim').onclick = claim;
+    document.getElementById('thw-notme').onclick = function () {
+      try { localStorage.removeItem(ME); } catch (e) {}
+      me = {};
+      showClaimForm();
+    };
+  }
+
+  // The same questions the loot box page asks, saved the same way.
+  function showClaimForm() {
+    resultEl.innerHTML = WIN +
+      '<p>Tell the Captain who you are and your ' + POINTS + ' points go straight to the leaderboard. ' +
+      'Only the first time &mdash; after this it is one click.</p>' +
+      '<div class="thw-form">' +
+      '<label for="thw-first">First name</label><input id="thw-first" autocomplete="given-name">' +
+      '<label for="thw-email">Email you use for the hunt</label><input id="thw-email" type="email" autocomplete="email" inputmode="email">' +
+      '<label for="thw-handle">Social handle</label><input id="thw-handle" placeholder="@yourname" autocomplete="off">' +
+      '<label for="thw-platform">Where that handle lives</label>' +
+      '<select id="thw-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option>' +
+      '<option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option>' +
+      '<option>Discord</option><option>Bluesky</option><option>Substack</option></select>' +
+      '<label for="thw-country">Country</label>' +
+      '<select id="thw-country"><option value="">Pick one</option><option>United States</option>' +
+      '<option>United Kingdom</option><option value="__other">Somewhere else</option></select>' +
+      '<input id="thw-other" placeholder="Which country?" style="display:none;margin-top:8px">' +
+      '<button type="button" class="thw-submit wv2" id="thw-claim">CLAIM ' + POINTS + ' POINTS</button>' +
+      '<p class="thw-err" id="thw-err"></p>' +
+      '</div>';
+    var country = document.getElementById('thw-country'), other = document.getElementById('thw-other');
+    country.onchange = function () {
+      other.style.display = country.value === '__other' ? 'block' : 'none';
+      if (country.value === '__other') other.focus();
+    };
+    document.getElementById('thw-claim').onclick = function () {
+      var err = document.getElementById('thw-err');
+      var person = {
+        first_name: document.getElementById('thw-first').value.trim(),
+        email: document.getElementById('thw-email').value.trim(),
+        handle: document.getElementById('thw-handle').value.trim(),
+        platform: document.getElementById('thw-platform').value,
+        country: country.value === '__other' ? other.value.trim() : country.value
+      };
+      if (!person.first_name) return (err.textContent = 'A first name, please.');
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(person.email)) return (err.textContent = 'That email does not look right.');
+      if (!person.country) return (err.textContent = 'Which country are you hunting from?');
+      err.textContent = '';
+      me = person;
+      saveMe(me);
+      claim();
+    };
+  }
+
+  function claim() {
+    var btn = document.getElementById('thw-claim'), err = document.getElementById('thw-err');
+    btn.disabled = true;
+    btn.textContent = 'CLAIMING...';
+    send({ action: 'game', game: 'daily_word', day: dateStr, guesses: guesses.join(','),
+           email: me.email, first_name: me.first_name, handle: me.handle,
+           platform: me.platform, country: me.country }, function (res) {
+      if (res && res.ok) {
+        claimed = true;
+        save();
+        return showClaimed(res.status);
+      }
+      btn.disabled = false;
+      btn.textContent = 'TRY AGAIN';
+      var why = {
+        stale: 'That puzzle has closed &mdash; only today\'s word pays out.',
+        closed: 'The hunt is over, so the Daily Word no longer earns points.',
+        email: 'That email does not look right.',
+        unsolved: 'The Captain could not match your answer to today\'s word.'
+      }[res && res.error] || 'The ship is slow today. Give it another go in a moment.';
+      err.innerHTML = why + ' Or <a href="' + esc(SUBMIT_URL) + '" style="color:#fff">submit a screenshot</a> instead.';
+    });
+  }
+
+  function showClaimed(status) {
+    resultEl.innerHTML = WIN +
+      '<div class="thw-pts">+' + POINTS + ' POINTS</div>' +
+      '<p class="thw-quiet">' + (status === 'already'
+        ? 'Already claimed for today &mdash; no need to submit anything.'
+        : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>';
+  }
+
+  // Same round trip as the loot box page: a simple POST, JSONP if that is
+  // blocked, and one quiet retry because Apps Script is sometimes slow.
+  function send(payload, done, attempt) {
+    attempt = attempt || 1;
+    var settled = false;
+    var finish = function (res) {
+      if (settled) return;
+      settled = true;
+      var flaky = !res || (!res.ok && (res.error === 'network' || res.error === 'server'));
+      if (flaky && attempt < 2) return setTimeout(function () { send(payload, done, attempt + 1); }, 1500);
+      done(res);
+    };
+    try {
+      fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(payload) })
+        .then(function (r) { return r.json(); })
+        .then(finish)
+        .catch(function () { jsonp(payload, finish); });
+    } catch (e) { jsonp(payload, finish); }
+  }
+
+  function jsonp(payload, done) {
+    var name = 'thwcb' + Math.random().toString(36).slice(2);
+    var q = ['callback=' + name];
+    for (var k in payload) if (payload[k] != null && payload[k] !== '') {
+      q.push(encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]));
+    }
+    var s = document.createElement('script');
+    var timer = setTimeout(function () { cleanup(); done({ ok: false, error: 'network' }); }, 30000);
+    function cleanup() { clearTimeout(timer); delete window[name]; if (s.parentNode) s.parentNode.removeChild(s); }
+    window[name] = function (res) { cleanup(); done(res); };
+    s.onerror = function () { cleanup(); done({ ok: false, error: 'network' }); };
+    s.src = ENDPOINT + '?' + q.join('&');
+    document.body.appendChild(s);
   }
 
   // ---- replay whatever was already guessed today ----------------------
