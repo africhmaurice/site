@@ -93,15 +93,15 @@
     });
   }
 
-  // Loading screen: the crest in white on dark green fills with red while the page loads, then fades away.
+  // Loading screen: the crest in white on dark red fills with a lighter red while the page loads, then fades away.
   // Only when this script is installed site-wide in <head>; add ?ma-loading to any page URL to preview it.
   function loadingScreen() {
     var ov = document.createElement('div');
     ov.id = 'ma-loading'; ov.setAttribute('aria-hidden', 'true');
-    ov.innerHTML = '<style>#ma-loading{position:fixed;inset:0;z-index:2147483600;background:#0b170f;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s}' +
+    ov.innerHTML = '<style>#ma-loading{position:fixed;inset:0;z-index:2147483600;background:#3d0707;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease,visibility .5s}' +
       '#ma-loading.ma-done{opacity:0;visibility:hidden}' +
       '#ma-loading .ma-crest{position:relative;width:min(60vw,340px);aspect-ratio:2/1;background:#fffffe;-webkit-mask:url(' + BASE + 'assets/img/crest-mask.png) center/contain no-repeat;mask:url(' + BASE + 'assets/img/crest-mask.png) center/contain no-repeat}' +
-      '#ma-loading .ma-red{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#e0301e,#c11212 40%,#8e0e0e);transition:height .35s ease-out}</style>' +
+      '#ma-loading .ma-red{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#ff7a66,#f04a36 45%,#e0301e);transition:height .35s ease-out}</style>' +
       '<div class="ma-crest"><div class="ma-red"></div></div>';
     document.documentElement.appendChild(ov);
     var red = ov.querySelector('.ma-red'), t0 = Date.now(), p = 0, finished = false;
