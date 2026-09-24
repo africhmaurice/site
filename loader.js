@@ -86,10 +86,37 @@
         e.target.classList.add('ma-in');
         setTimeout(function () { e.target.style.transitionDelay = ''; }, 1400);
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
+    // Only things on the page right now: hidden panels, slider slides and embeds are left alone, so nothing
+    // can be stuck invisible (they may never "scroll into view" the way the observer sees it).
+    var SKIP = '#hunt-nav,#hunt-nav-ov,#ma-loading,nav,header,footer,.ma-rv,[data-ma-page="home-slider"],.instagram-media,[aria-hidden="true"],[class*="slide"],[class*="carousel"],[class*="swiper"],[class*="gallery"]';
+    // Like x.closest(SKIP), but stops below <body>: Squarespace's body classes contain words like "gallery".
+    function skipped(x) {
+      for (var a = x; a && a !== document.body && a !== document.documentElement; a = a.parentElement) if (a.matches(SKIP)) return true;
+      return false;
+    }
+    function placed(x) {
+      var r = x.getBoundingClientRect();
+      return r.width > 0 && r.height > 0 && r.right > 0 && r.left < document.documentElement.clientWidth;
+    }
+    // Boxes: any panel, card or board (it has a fill, border or shadow and isn't full width) rises in as one piece.
+    var vw = document.documentElement.clientWidth;
+    Array.prototype.forEach.call(root.querySelectorAll('div,article,aside,figure,form,iframe'), function (x) {
+      if (skipped(x) || !placed(x)) return;
+      var cs = getComputedStyle(x);
+      if (cs.position === 'fixed' || cs.position === 'absolute' || cs.display === 'none') return;
+      var r = x.getBoundingClientRect();
+      if (r.width < 160 || r.height < 90 || r.width > vw * 0.92) return;
+      var bg = cs.backgroundColor.match(/rgba?\(([^)]+)\)/), a = bg ? bg[1].split(',') : [];
+      var filled = (a.length === 3 || (a.length === 4 && parseFloat(a[3]) >= 0.25)) || cs.backgroundImage !== 'none';
+      var edged = parseFloat(cs.borderTopWidth) > 0 && cs.borderTopStyle !== 'none';
+      if (!(filled || edged || cs.boxShadow !== 'none' || x.nodeName === 'IFRAME')) return;
+      x.classList.add('ma-rv');
+      io.observe(x);
+    });
     Array.prototype.forEach.call(root.querySelectorAll(REVEAL), function (x) {
       // skip menus, fixed bars and anything already animated or nested in something that animates
-      if (x.closest('#hunt-nav,#hunt-nav-ov,#ma-loading,nav,header,footer,.ma-rv') || getComputedStyle(x).position === 'fixed') return;
+      if (skipped(x) || !placed(x) || getComputedStyle(x).position === 'fixed') return;
       if (x.nodeName === 'IMG' && x.getBoundingClientRect().width && x.getBoundingClientRect().width < 90) return; // icons
       x.classList.add('ma-rv');
       io.observe(x);
@@ -160,7 +187,8 @@
 
   var nativeDone = false;
   function nativeReveal() {
-    if (nativeDone || !document.body) return; nativeDone = true;
+    // wait for the whole page: a code block near the top runs this before later sections exist
+    if (nativeDone || !document.body || document.readyState === 'loading') return; nativeDone = true;
     var blocks = document.querySelectorAll('#sections .sqs-block, #page .sqs-block');
     Array.prototype.forEach.call(blocks, function (b) {
       if (b.querySelector('[data-ma-page]')) return;   // custom sections animate their own pieces
