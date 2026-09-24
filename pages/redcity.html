@@ -738,6 +738,14 @@
   }
 
   function render() { renderJobs(); renderStalls(); renderQs(); renderOrders(); renderWallet(); }
+  // Preview only: a button (and ?reset-rolls) to wipe this browser's preview rolls and roll again.
+  if (PREVIEW) {
+    if (location.search.indexOf('reset-rolls') >= 0) { S.rolls = {}; store(STORE, S); }
+    var again = document.createElement('button');
+    again.type = 'button'; again.className = 'rc-sound'; again.textContent = 'PREVIEW: ROLL AGAIN';
+    again.onclick = function () { S.rolls = {}; S.sealed = false; store(STORE, S); for (var k in dieEls) Dice.stop(k); render(); };
+    $('rc-sound').insertAdjacentElement('afterend', again);
+  }
   function paintSound() { $('rc-sound').textContent = 'DICE SOUND: ' + (Dice.muted() ? 'OFF' : 'ON'); $('rc-sound').setAttribute('aria-pressed', !Dice.muted()); }
   $('rc-sound').onclick = function () { Dice.setMuted(!Dice.muted()); paintSound(); };
   paintSound();
