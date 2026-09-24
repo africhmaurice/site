@@ -3,7 +3,7 @@
      <div data-ma-page="the-hunt"></div>
      <script src="https://africhmaurice.github.io/site/loader.js"></script>
    This script fetches pages/<slug>.html from GitHub Pages, drops it in, and runs its scripts in order.
-   Edits published from Claude Code show up within about a minute (the fetch is cache-busted per minute).
+   Published edits show up within about a minute (the fetch is cache-busted per minute).
    Loaded once site-wide from Code Injection (in <head>), it also shows the crest loading screen.
    Every copy after the first only mounts blocks it finds, so a page can include it any number of times. */
 (function () {
