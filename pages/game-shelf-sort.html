@@ -410,10 +410,10 @@ var HG_GAME = {"key":"shelf_sort","label":"Sort the Shelf","points":40,"startDat
   st.solved = st.solved || []; st.won = st.won || st.solved.slice(); st.miss = st.miss || 0; st.tried = st.tried || [];
   var order = st.order || HG.shuffle([].concat.apply([], groups.map(function (x) { return x.items; })), g.index * 7919 + 17);
   st.order = order;
-  // Unsorted books: a random brand colour each (the same for everyone that day). A shelf, once sorted, is one colour.
-  var PALETTE = ['green-900','green-700','green-500','green-300','emerald-900','emerald-700','emerald-500','emerald-300','ember-900','ember-700','ember-500','ember-300','violet-900','violet-700','violet-500','violet-300','ink-700','ink-400','white'];
-  var LIGHT = { 'green-300': 1, 'green-500': 1, 'emerald-500': 1, 'emerald-300': 1, 'ember-300': 1, 'violet-300': 1, 'white': 1 };
-  var SHELF_COLOUR = ['emerald-700', 'ember-700', 'violet-700', 'white'];
+  // Unsorted books: one of 16 shades (each main colour, 10% darker, 10% and 20% lighter) (the same for everyone that day). A shelf, once sorted, is one colour.
+  var PALETTE = ['green-dark','green','green-light','green-lighter','emerald-dark','emerald','emerald-light','emerald-lighter','ember-dark','ember','ember-light','ember-lighter','violet-dark','violet','violet-light','violet-lighter'];
+  var LIGHT = { 'green-lighter': 1, 'emerald-light': 1, 'emerald-lighter': 1, 'ember-light': 1, 'ember-lighter': 1 };
+  var SHELF_COLOUR = ['emerald', 'ember', 'violet', 'green'];
   // Where each shelf's books stand and where its front edge is, as % of the bookcase art's height.
   var SLOT_TOP = [3, 27.5, 51.5, 75], SLOT_BOTTOM = [24.4, 48.6, 71.9, 95], EDGE = [25.9, 50.1, 73.3, 96.6];
   var colourOf = {};
