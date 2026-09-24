@@ -115,6 +115,12 @@
       "url": "(preview only, not on Squarespace yet)",
       "title": "Game: Emoji Reads",
       "source": "bot:squarespace-game-emoji-reads.html"
+    },
+    {
+      "slug": "redcity",
+      "url": "(preview only, not on Squarespace yet)",
+      "title": "Red City Vote (Pontune, before Act Two)",
+      "source": "bot:squarespace-redcity.html"
     }
   ],
   "staysInSquarespace": [

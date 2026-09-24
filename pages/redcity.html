@@ -1,0 +1,439 @@
+<!-- Generated copy of squarespace-redcity.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
+<!-- ============================================================
+     THE RED CITY VOTE - provisioning in Pontune before Act Two.
+     Built by scripts/build-redcity.mjs from config/red-city.json into
+     squarespace-redcity.html. Edit the JSON (or this template), rebuild,
+     never the built file.
+
+     Every fren votes once (and may change their vote until it closes):
+     four recruits from four different jobs, a shopping list paid from the
+     crew purse (1 point = 1 credit, read live from the leaderboard's crew
+     total) and four plan questions. The vote posts action=vote to the Loot
+     Boxes web app, which checks it against its own copy of the catalog.
+     The first vote pays the voting points through the Games tab.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+#rc{--ink:#0b170f;--ink7:#213226;--ink4:#607667;--sunk:#101f16;--em7:#268e62;--em4:#3adb97;--em2:#89fbcb;--emb7:#c53200;--emb4:#ff4c0f;--emb2:#fd7547;--ar9:#2d1c53;--ar7:#482d85;--ar2:#9e74fd;--line:rgba(162,245,144,.16);--line2:rgba(162,245,144,.35);
+  --disp:'Atomic Marker','Bebas Neue',Impact,sans-serif;--lab:'Bebas Neue','Arial Narrow',sans-serif;
+  background:var(--ink);color:#fff;font-family:'Almarai',system-ui,sans-serif;font-size:16px;line-height:1.55;padding:16px;border-radius:24px;text-align:left}
+#rc *{box-sizing:border-box}
+#rc h1,#rc h2,#rc h3{font-family:var(--disp);font-weight:400;margin:0;letter-spacing:.02em;text-wrap:balance;color:#fff;text-transform:none}
+#rc p{margin:0}
+#rc button{font:inherit;color:inherit;cursor:pointer}
+#rc button:focus-visible,#rc input:focus-visible,#rc select:focus-visible{outline:2px solid var(--em4);outline-offset:2px}
+#rc .rc-num{font-variant-numeric:tabular-nums}
+#rc .rc-eye{font-family:var(--lab);letter-spacing:.12em;font-size:17px;color:var(--em4)}
+#rc .rc-hero{border-radius:18px;overflow:hidden;background:linear-gradient(180deg,rgba(11,23,15,.15) 0%,rgba(11,23,15,.78) 62%,var(--ink) 100%),url('https://africhmaurice.github.io/site/assets/bg/red-sun-ruins-as360866146.webp') center 30%/cover;padding:72px 24px 28px}
+#rc .rc-hero h1{font-size:clamp(36px,7vw,76px);line-height:1.02;text-shadow:0 2px 24px rgba(145,37,1,.6)}
+#rc .rc-hero h1 span{color:var(--emb4)}
+#rc .rc-lede{max-width:62ch;font-size:18px;margin-top:14px;color:#e8efe9}
+#rc .rc-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:26px}
+#rc .rc-stat{background:rgba(11,23,15,.72);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+#rc .rc-stat .k{font-family:var(--lab);letter-spacing:.1em;font-size:15px;color:var(--ink4)}
+#rc .rc-stat .v{font-family:var(--lab);font-size:34px;line-height:1.1}
+#rc .rc-stat .v.e{color:var(--emb4)}
+#rc .rc-stat small{display:block;color:#b9c7bd;font-size:13px;line-height:1.35}
+#rc .rc-bar{position:sticky;top:0;z-index:5;background:rgba(11,23,15,.94);border-bottom:1px solid var(--line);margin:20px -16px 0;padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#rc .rc-chip{font-family:var(--lab);letter-spacing:.08em;font-size:17px;border:1px solid var(--line2);border-radius:999px;padding:4px 14px;color:#fff;text-decoration:none}
+#rc .rc-chip.done{border-color:var(--em4);color:var(--em4)}
+#rc .rc-wallet{margin-left:auto;font-family:var(--lab);font-size:20px;letter-spacing:.06em}
+#rc .rc-wallet .l{color:var(--em4)} #rc .rc-wallet.over .l{color:var(--emb4)}
+#rc .rc-step{padding-top:44px}
+#rc .rc-step>header{display:flex;flex-direction:column;gap:6px;margin-bottom:20px;max-width:70ch}
+#rc .rc-step h2{font-size:clamp(28px,4.4vw,44px)}
+#rc .rc-step header p{color:#c9d6cd}
+#rc .rc-rule{font-size:14px;color:var(--em2);border-left:2px solid var(--em7);padding-left:10px}
+#rc .rc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+#rc .rc-card{background:var(--ink7);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+#rc .rc-card.taken{border-color:var(--em7)}
+#rc .rc-card h3{font-size:24px}
+#rc .rc-jd{font-size:14px;color:#b9c7bd}
+#rc .rc-perk{font-size:13px;color:#e9ddff;background:var(--ar9);border:1px solid var(--ar7);border-radius:8px;padding:8px 10px}
+#rc .rc-perk b{font-family:var(--lab);font-weight:400;letter-spacing:.08em;font-size:16px;color:var(--ar2);margin-right:4px}
+#rc .rc-arches{display:flex;flex-direction:column;gap:6px}
+#rc .rc-arch{text-align:left;background:var(--sunk);border:1px solid transparent;border-radius:8px;padding:9px 11px;display:grid;grid-template-columns:1fr auto;gap:2px 10px}
+#rc .rc-arch:hover{border-color:var(--line2)}
+#rc .rc-arch .n{font-family:var(--lab);font-size:21px;letter-spacing:.05em}
+#rc .rc-arch .c{font-family:var(--lab);font-size:17px;color:var(--em2);align-self:center}
+#rc .rc-arch .q{grid-column:1/-1;font-size:13px;color:#aebdb3}
+#rc .rc-arch .kit{grid-column:1/-1;font-size:12px;display:none;color:#dff7ea}
+#rc .rc-arch[aria-pressed="true"]{background:var(--em7);border-color:var(--em4)}
+#rc .rc-arch[aria-pressed="true"] .q,#rc .rc-arch[aria-pressed="true"] .c{color:#fff}
+#rc .rc-arch[aria-pressed="true"] .kit{display:block}
+#rc .rc-arch:disabled{opacity:.4;cursor:not-allowed}
+#rc .rc-sd{font-size:13px;color:#aebdb3}
+#rc .rc-item{display:grid;grid-template-columns:1fr auto;gap:0 10px;padding:8px 0;border-top:1px solid var(--line);align-items:center}
+#rc .rc-item .n{font-family:var(--lab);font-size:20px;letter-spacing:.04em}
+#rc .rc-item .lv{font-size:13px;color:var(--ar2);margin-left:6px;letter-spacing:.1em}
+#rc .rc-item .d{font-size:12px;color:#aebdb3}
+#rc .rc-item.on .n{color:var(--em4)}
+#rc .rc-qty{display:flex;align-items:center;gap:6px;grid-row:1/3;grid-column:2;justify-self:end}
+#rc .rc-qty button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line2);background:var(--sunk);font-size:18px;line-height:1;padding:0}
+#rc .rc-qty button:disabled{opacity:.35;cursor:not-allowed}
+#rc .rc-qty .q{min-width:22px;text-align:center;font-family:var(--lab);font-size:20px}
+#rc .rc-price{display:flex;flex-direction:column;align-items:flex-end;font-family:var(--lab);font-size:18px;color:var(--em2)}
+#rc .rc-locked{opacity:.55}
+#rc .rc-need{font-family:'Almarai',sans-serif;font-size:12px;color:var(--emb2)}
+#rc .rc-qs{display:grid;gap:16px}
+#rc .rc-set{color:#c9d6cd;max-width:70ch;margin-bottom:6px}
+#rc .rc-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+#rc .rc-opt{text-align:left;background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+#rc .rc-opt b{display:block;font-family:var(--lab);font-weight:400;font-size:20px;letter-spacing:.05em}
+#rc .rc-opt span{font-size:13px;color:#aebdb3}
+#rc .rc-opt[aria-pressed="true"]{background:var(--emb7);border-color:var(--emb4)}
+#rc .rc-opt[aria-pressed="true"] span{color:#ffe3d8}
+#rc .rc-orders{margin-top:44px;background:linear-gradient(135deg,var(--ar9),var(--ink7));border:1px solid var(--ar7);border-radius:18px;padding:22px;display:grid;gap:16px}
+#rc .rc-orders h2{font-size:clamp(28px,4vw,40px)}
+#rc .rc-olist{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+#rc .rc-olist h4{font-family:var(--lab);font-weight:400;letter-spacing:.1em;font-size:17px;color:var(--ar2);margin:0 0 4px}
+#rc .rc-olist ul{margin:0;padding-left:18px;font-size:14px}
+#rc .rc-empty{color:var(--ink4);font-size:14px}
+#rc .rc-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+#rc .rc-form label{display:grid;gap:4px;font-family:var(--lab);letter-spacing:.08em;font-size:15px;color:#c9d6cd}
+#rc .rc-form input,#rc .rc-form select{font:15px 'Almarai',sans-serif;color:#fff;background:var(--sunk);border:1px solid var(--line2);border-radius:8px;padding:9px 10px;width:100%}
+#rc .rc-cta{justify-self:start;background:var(--emb4);color:#fff;border:0;border-radius:999px;padding:12px 26px;font-family:var(--lab);font-size:22px;letter-spacing:.08em;box-shadow:0 0 24px rgba(255,76,15,.35)}
+#rc .rc-cta:hover{background:var(--emb2)} #rc .rc-cta:active{background:var(--emb7);transform:scale(.98)}
+#rc .rc-cta:disabled{background:var(--ink4);box-shadow:none;cursor:not-allowed}
+#rc .rc-msg{font-size:14px;color:var(--emb2)}
+#rc .rc-ok{font-size:15px;color:var(--em2)}
+#rc .rc-ok b{font-family:var(--lab);font-weight:400;font-size:26px;letter-spacing:.06em;color:var(--em4);display:block}
+#rc .rc-quiet{font-size:13px;color:#aebdb3}
+#rc .rc-quiet a{color:#fff;text-decoration:underline;cursor:pointer}
+#rc .rc-closed .rc-arch,#rc .rc-closed .rc-opt,#rc .rc-closed .rc-qty button{pointer-events:none;opacity:.6}
+@media (max-width:600px){#rc .rc-hero{padding:48px 16px 20px}#rc .rc-wallet{margin-left:0;width:100%}}
+@media (prefers-reduced-motion:reduce){#rc *{transition:none!important}}
+</style>
+
+<div id="rc">
+  <header class="rc-hero">
+    <div class="rc-eye">THE SKY PIRATES OF IMPERIA · BEFORE ACT TWO: THE ISLAND</div>
+    <h1>Provisioning in <span>Pontune</span></h1>
+    <p class="rc-lede">The crew makes port in Pontune, the Red City, a freecity on the eastern continent, before sailing for the island. Every point the frens have earned is a credit in the crew's purse, and the purse is shared. Recruit your crew, fill the market list and choose how you take the island. The crew goes with the majority, and what goes aboard decides how Act Two plays out.</p>
+    <div class="rc-stats">
+      <div class="rc-stat"><div class="k">CREW PURSE</div><div class="v e rc-num" id="rc-purse">…</div><small>1 point = 1 credit. The purse grows with every point until voting closes.</small></div>
+      <div class="rc-stat"><div class="k">FRENS WHO HAVE VOTED</div><div class="v rc-num" id="rc-count">…</div><small>One vote each. You can change yours until <span id="rc-close"></span>.</small></div>
+      <div class="rc-stat"><div class="k">FOR VOTING</div><div class="v rc-num" id="rc-pts"></div><small>Seal your orders and the points go straight to the leaderboard.</small></div>
+    </div>
+  </header>
+
+  <nav class="rc-bar" aria-label="Voting steps">
+    <a class="rc-chip" id="rc-c1" href="#rc-recruit">1 · RECRUIT</a>
+    <a class="rc-chip" id="rc-c2" href="#rc-market">2 · MARKET</a>
+    <a class="rc-chip" id="rc-c3" href="#rc-plan">3 · THE PLAN</a>
+    <a class="rc-chip" id="rc-c4" href="#rc-orders">SEAL IT</a>
+    <div class="rc-wallet rc-num" id="rc-wallet">SPENT <span id="rc-spent">0</span> / <span id="rc-total">…</span> · <span class="l" id="rc-left"></span></div>
+  </nav>
+
+  <section class="rc-step" id="rc-recruit">
+    <header>
+      <div class="rc-eye">STEP ONE</div>
+      <h2>Recruit the crew</h2>
+      <p>Pick four recruits. Each one brings their own kit, and their credits go into the crew purse. Each job also gives the whole crew a perk in Act Two.</p>
+      <p class="rc-rule">Crew rule: only one job per crew. Once you pick a Gunslinger, the other Gunslingers are off the table.</p>
+    </header>
+    <div class="rc-grid" id="rc-jobs"></div>
+  </section>
+
+  <section class="rc-step" id="rc-market">
+    <header>
+      <div class="rc-eye">STEP TWO</div>
+      <h2>Work the Pontune market</h2>
+      <p>Spend the purse. There isn't enough for everything, so choose carefully. Items marked behind the counter unlock only if the purse grows before voting closes.</p>
+      <p class="rc-rule">Weapons only help if a recruit can wield them, so check your crew's weapon types.</p>
+    </header>
+    <div class="rc-grid" id="rc-stalls"></div>
+  </section>
+
+  <section class="rc-step" id="rc-plan">
+    <header>
+      <div class="rc-eye">STEP THREE</div>
+      <h2>The plan</h2>
+      <p>Four decisions before you cast off. There are no wrong answers, only consequences.</p>
+    </header>
+    <div class="rc-qs" id="rc-qs"></div>
+  </section>
+
+  <section class="rc-orders" id="rc-orders">
+    <div><div class="rc-eye" style="color:var(--ar2)">YOUR ORDERS</div><h2>Seal your vote</h2></div>
+    <div class="rc-olist" id="rc-olist"></div>
+    <div id="rc-who"></div>
+    <p class="rc-msg" id="rc-msg"></p>
+    <button class="rc-cta" id="rc-seal" type="button">SEAL MY ORDERS</button>
+    <div id="rc-result"></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var DATA = {"key":"red_city_vote","points":50,"closes":"2026-09-30","crewSize":4,"bribe":2000,"jobs":[{"key":"gunslinger","name":"Gunslinger","d":"Agility- and intuition-based ranged fighter with a gift for gunnery.","perk":"Quick Draw","perkText":"The first 10 frens to crack each Act Two riddle earn +25 bonus points.","a":[["Outlaw","“Draw!” Fast draw, duelist.",1000,"Revolvers & Blades · Morton M8, Prismblade, Knife, Brittle Shield, Minor Med Pack, Stim"],["Deadeye","“Impossible shot? Never heard of ’em.” Sniper, tactician.",1000,"Revolvers, Tactical Rifles & Blades · Elia Noma T5, Prismblade, Knife, Brittle Shield, Minor Med Pack, Stim"],["Trickster","“Look over there! Just kidding… Or was I?” Trick shots, deception.",1500,"Revolvers & Blades · Morton M8, Prismblade, 2 Knives, Brittle Shield, Minor Med Pack, Stim"],["Tank","“Rrra-da-da-dah!” Heavy artillery.",1000,"Revolvers, Semiauto Rifles, Blades & Blunts · Harbinger B80, Cleave, Longknife, Brittle Shield, Minor Med Pack, Stim"]]},{"key":"guardian","name":"Guardian","d":"Brawn-based melee fighter with a gift for improvised weapons.","perk":"Hold the Line","perkText":"The Act Two goal drops by 2,000 points.","a":[["Brawler","“Fists up, buttercup.” Hand-to-hand fighter.",1000,"Knuckles · Brittle Shield, Minor Med Pack, Stim (bring your own fists)"],["Gladiator","“I’m not here for your entertainment.” Rage, weapon savant.",1000,"Blades, Blunts, Semiauto Rifles & Revolvers · Harbinger B80, Cleave/Axe/Maul, Longknife, Brittle Shield, Minor Med Pack, Stim"],["Sentinel","“Behind me!” Defender, protector.",1000,"Plate, Revolvers & Semiauto Rifles · Harbinger B80, Steel Plate, Longknife, Brittle Shield, Minor Med Pack, Stim"]]},{"key":"crest_knight","name":"Crest Knight","d":"Agility- and intellect-based melee fighter, magically enhanced, with martial skill.","perk":"Oath of the Crest","perkText":"Double points on one Act Two task for 24 hours.","a":[["Moonstone","“Guns are for the weak-willed and the unskilled.” Light on their feet.",1000,"Torches & Blades · Torch, 2 Longknives, 5 Knives, Brittle Shield, Minor Med Pack, Stim"],["Emerald","“I would die for you a thousand times if I could.” Steadfast, a rock in the sea.",1000,"Torches & Blades · Torch, 2 Longknives, 5 Knives, Brittle Shield, Minor Med Pack, Stim"],["Ruby","“Get out of my way. Or I will carve a door through your abdomen.” Reckless, chaotic.",1000,"Torches & Blades · Torch, 2 Longknives, 5 Knives, Brittle Shield, Minor Med Pack, Stim"],["Sapphire","“The ocean does not fear the land. It consumes it.” Calculated, wise.",1000,"Torches & Blades · Torch, 2 Longknives, 5 Knives, Brittle Shield, Minor Med Pack, Stim"]]},{"key":"imperial","name":"Imperial","d":"Intuition- and vitality-based magical support and fighter.","perk":"Mend","perkText":"Reopens one closed Act Two riddle for 12 hours.","a":[["Radiant","“I can fix that.” Healer.",1000,"Blunts, Poles & Blades · Bo Staff/Flail/Spear, 2 Knives, Brittle Shield, 2 Minor Med Packs, Stim"],["Warden","“Stonie don’t like you. And if Stonie don’t like you, I don’t like you.” Beast master.",1000,"Blunts, Poles & Blades · Bo Staff/Flail/Spear, 2 Knives, Brittle Shield, 2 Minor Med Packs, Stim"],["Geomancer","“Watch your feet.” Manipulates the imperia.",1000,"Blunts, Poles & Blades · Bo Staff/Flail/Spear, 2 Knives, Brittle Shield, 2 Minor Med Packs, Stim"]]},{"key":"intangible","name":"Intangible","d":"Agility- and intuition-based magical fighter. Teleporter.","perk":"Slip Through","perkText":"Reveals one hidden loot box during Act Two.","a":[["Ghost","Assassin. Unseen, quick kills.",1000,"One-Handed Blades & Revolvers · Morton M8, 2 Longknives, 5 Knives, Brittle Shield, Minor Med Pack, Stim"],["Grift","Thief. Entering without breaking.",1500,"One-Handed Blades, Poles & Revolvers · Morton M8, 5 Knives, Brittle Shield, Minor Med Pack, Stim"],["Blink","Scout, runner. Fast teleporting.",1000,"One-Handed Blades, Poles & Revolvers · Morton M8, 5 Knives, Brittle Shield, Minor Med Pack, Stim"],["Sever","Heavy-weapon teleporter.",1000,"Blades & Revolvers · Cleave, Prismblade, Morton M8, 2 Knives, Brittle Shield, Minor Med Pack, Stim"]]},{"key":"oracle","name":"Oracle","d":"Intuition- and charm-based magical support and ranged fighter.","perk":"Foresight","perkText":"One crew-wide hint on an Act Two riddle.","a":[["Seer","Precognition, threat sense. Prediction.",1000,"Blunts, Revolvers, Poles & Blades · Morton M8, Bo Staff/Spear, Brittle Shield, Minor Med Pack, Stim"],["Empath","Emotions, truth detection. Aura reader.",1000,"Blunts, Revolvers, Poles & Blades · Morton M8, Bo Staff/Spear, Brittle Shield, Minor Med Pack, Stim"],["Omen","Battle-focused. Fighter.",1000,"Blunts, Revolvers, Poles & Blades · Cleave/Prismblade, Morton M8, 3 Knives, Brittle Shield, Minor Med Pack, Stim"],["Sage","Wise and learned. Scholar.",1000,"Blunts, Revolvers, Poles & Blades · Morton M8, Bo Staff/Spear, Brittle Shield, Minor Med Pack, Stim"]]},{"key":"techtailor","name":"Techtailor","d":"Intellect-based support and melee or ranged fighter.","perk":"Rig It","perkText":"One Act Two riddle gets a second attempt.","a":[["Noble","“Get down!” Bomber, sapper, alchemist.",1000,"Bombs, Blunts, Revolvers, Poles & Blades · Morton M8, 10 Flares, 2 Stunners, 2 Flashers, Cauterizer, 2 Med Packs, 2 Stims"],["Mod","Mech armor, android enhancements, big guns and blades.",1000,"Bombs, Blunts, Revolvers, Poles & Blades · Morton M8, Cleave/Axe/Maul, 3 Flares, Stunner or Flasher, Cauterizer, 2 Med Packs, 2 Stims"],["Stitcher","“Let me stitch on that.” Hacker, code breaker, inventor.",1500,"Bombs, Blunts, Revolvers, Poles & Blades · Morton M8, 3 Flares, Flasher, Stunner, Cauterizer, 2 Med Packs, 2 Stims"]]},{"key":"beast","name":"Beast","d":"A beast of Imperia. Cheap to feed, useful on any airship.","perk":"Wild Card","perkText":"A surprise bonus loot box drops for the whole crew.","a":[["Goma","Rock creature.",500,"Voice Box, Brittle Shield, 2 Minor Med Packs, 2 Stims"],["Hexspider","Creepy crawly.",500,"Voice Box, Brittle Shield, 2 Minor Med Packs, 2 Stims"],["Drake","Big lizard.",500,"Voice Box, Brittle Shield, 2 Minor Med Packs, 2 Stims"]]}],"stalls":[{"name":"Blades","d":"Knives can be thrown 12 meters (6 squares) as an attack.","items":[["Knife",1,250,"1D6 · one-handed, throwable"],["Longknife",1,500,"1D8 · one-handed, throwable"],["Prismblade",1,750,"1D8 · one-handed"],["Cleave",1,1000,"1D10 · two-handed"],["Axe",1,1250,"1D12 · two-handed"],["Knife+",3,2000,"2D6 · one-handed, throwable"],["Longknife+",3,2000,"2D8 · one-handed"],["Prismblade+",3,3000,"2D8 · one-handed"],["Cleave+",3,3500,"2D10 · two-handed"],["Axe+",3,4000,"2D12 · two-handed"],["Sizzle Steel",5,20000,"2D6 + 1D6 lightning · one-handed, throwable"],["Mechblade",5,30000,"2D8 + 1D6 lightning · one-handed"],["Sky Breaker Cleave",5,35000,"2D10 + 1D6 lightning · two-handed"],["Mechaxe",5,40000,"2D12 + 1D6 lightning · two-handed"]]},{"name":"Poles & Blunts","d":"Poles have double reach.","items":[["Bo Staff",1,500,"1D6 · two-handed"],["Flail",1,750,"1D8 · one-handed"],["Spear",1,1000,"1D10 · two-handed, double reach"],["Maul",1,1000,"1D10 · two-handed"],["Bo Staff+",3,2500,"2D6 · two-handed"],["Flail+",3,3500,"2D8 · one-handed"],["Spear+",3,3500,"1D10 · two-handed, double reach"],["Maul+",3,4500,"2D10 · two-handed"],["Bolt Staff",5,30000,"2D6 + ranged 1D6 lightning · two-handed"],["Electrident",5,35000,"2D10 + 1D6 lightning · double reach"],["Starburst Flail",5,35000,"2D8 + 1D6 lightning · one-handed"],["Hammer of the Gods",5,40000,"2D10 + 1D6 lightning · two-handed"]]},{"name":"Knuckles & Plates","d":"Knuckles come in pairs (2 hits per attack). A plate can be thrown or used to block, which gives advantage on REACT.","items":[["Iron Knuckles",1,500,"1D10 · pair, 2 hits"],["Steel Plate",1,750,"1D10 · throw or block"],["Spiked Knuckles",3,1500,"2D10 · pair, 2 hits"],["Steel Plate+",3,3500,"2D10 · auto-retrieved"],["Mech Fists",5,30000,"2D10 + 1D6 lightning · pair"],["Kinetic Plate",5,40000,"2D10 + 2D6 force"]]},{"name":"Guns","d":"Revolvers hit at 4 to 24 m, tactical rifles at 12 to 48 m, semiautos at 6 to 30 m.","items":[["Morton M8",1,2500,"Revolver · 2D10 · 8 rounds"],["Elia Noma T5",1,3500,"Tactical rifle · 2D10 · 5 rounds"],["Harbinger B80",1,5000,"Semiauto rifle · 2D12 · 30 rounds"],["Class 7 Brass Point",3,7500,"Revolver · 3D10 · 10 rounds"],["Elia Noma T11",3,10000,"Tactical rifle · 3D10 · 10 rounds"],["Harbinger B86",3,12500,"Semiauto rifle · 3D12 · 30 rounds"],["Class 8 Leviathan",5,50000,"Revolver · 4D10 · 12 rounds"],["Apollo S957",5,75000,"Tactical rifle · 4D10 · 15 rounds"],["Bishop T60",5,100000,"Semiauto rifle · 4D12 · 30 rounds"]]},{"name":"Bombs","d":"Thrown up to 20 m (10 squares).","items":[["Flare",1,1000,"1D10 · 4 squares"],["Stunner",1,2000,"1D10 + STUN · 4 squares"],["Flasher",1,2000,"1D10 + BLIND · 4 squares"],["Cuss",3,5000,"2D10 · 4 squares"],["Presser",3,25000,"3D10 · 9 squares · buried compression trap"],["Shark",5,40000,"2D10 · 16 squares"]]},{"name":"Shields","d":"They stop ranged and area damage, but not melee or magic. Never cross two.","items":[["Brittle Shield (Class E)",1,1000,"50 HP · rechargeable"],["Simple Shield (Class D)",2,10000,"100 HP · rechargeable"],["Meta Shield (Class C)",3,25000,"150 HP · rechargeable"],["Force Shield (Class B)",4,50000,"200 HP · rechargeable"]]},{"name":"Meds, Stims & Tech","d":"Injectables are a bonus action.","items":[["Minor Med Pack",1,500,"Restores 2D6 + VITALITY HP"],["Med Pack+",2,5000,"Restores 4D6 + VITALITY"],["Triple Dose",3,20000,"Restores 6D6 + VITALITY"],["Stim",1,5000,"Gain 1 extra action"],["Stim+",3,20000,"Gain 2 extra actions, take 2D6"],["Heart Buster",5,50000,"Gain 6 extra actions, take 3D6"],["Cauterizer",1,10000,"Stops BLEEDING, deals 1D6"],["Burner",1,250,"Peach, Cherry, Mint, Honeysuckle or Sage"]]}],"questions":[{"id":"approach","t":"How does the crew take the island?","s":"Every hunt has a shape. Choose this one's, and Act Two plays to it.","o":[["Locate & Retrieve","Find the item, take it, leave. Simple enough."],["Smash & Grab","Get in, break things, get out. Make a mess and send a message."],["Blend & Bust","A heist. Careful planning, in full view, at risk."],["Ghost Gig","Pure espionage. Nobody was there, and you can't prove otherwise."]]},{"id":"knight","t":"A Crest Knight in the Pontune market has recognized one of the crew.","s":"He hasn't drawn his torch yet, but he's looking right at you.","o":[["Bribe him","2,000 credits off the purse. Clean and quiet."],["Talk your way out","An INFLUENCE check, DL 15. Free, if it works."],["Recruit him","DL 25, which the rulebook calls “Listen, fren…” territory. Legendary if it lands."],["Draw blades","In the middle of the Red City. Bold."]]},{"id":"skies","t":"A merchant airship crosses your heading on the way out of Pontune.","s":"She's riding heavy in the air.","o":[["Sky Break her","Anchor mid-flight, board, plunder. The most dangerous option, and the most fun."],["Shadow her","Follow at a distance and learn where she's headed."],["Let her pass","The island is the job. Stay on it."]]},{"id":"leftover","t":"What happens to whatever's left in the purse?","s":"Leftover credits don't spend themselves.","o":[["Stash it","It carries over into Act Three's purse."],["Buy intel","Pay a Pontune harbormaster for what she knows about the island."],["Buy a round","Everyone at the tavern drinks on the crew. Morale is a resource."]]}]};
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
+  var TZ = 'America/New_York';
+  var STORE = 'thRedCity:v1', ME = 'thLoot:me';
+
+  var root = document.getElementById('rc');
+  var $ = function (id) { return document.getElementById(id); };
+  var fmt = function (n) { return Number(n).toLocaleString('en-US'); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  function load(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+  function store(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+  var S = load(STORE) || {};
+  S.recruits = S.recruits || {}; S.cart = S.cart || {}; S.plan = S.plan || {};
+  var me = load(ME) || {};
+  var basePurse = null;
+  var today = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date());
+  var closed = today > DATA.closes;
+
+  var arch = {}, items = {};
+  DATA.jobs.forEach(function (j) { j.a.forEach(function (a) { arch[a[0]] = { job: j, a: a }; }); });
+  DATA.stalls.forEach(function (s) { s.items.forEach(function (i) { items[i[0]] = i; }); });
+
+  function purse() {
+    if (basePurse == null) return null;
+    var p = basePurse;
+    for (var k in S.recruits) p += arch[S.recruits[k]].a[2];
+    if (S.plan.knight === 'Bribe him') p -= DATA.bribe;
+    return p;
+  }
+  function spent() { var t = 0; for (var n in S.cart) t += items[n][2] * S.cart[n]; return t; }
+  function changed() { S.sealed = false; store(STORE, S); render(); }
+
+  function renderJobs() {
+    var box = $('rc-jobs'), count = Object.keys(S.recruits).length;
+    box.innerHTML = '';
+    DATA.jobs.forEach(function (j) {
+      var el = document.createElement('article');
+      el.className = 'rc-card' + (S.recruits[j.key] ? ' taken' : '');
+      el.innerHTML = '<h3>' + esc(j.name) + '</h3><p class="rc-jd">' + esc(j.d) + '</p>' +
+        '<p class="rc-perk"><b>' + esc(j.perk.toUpperCase()) + '</b>' + esc(j.perkText) + '</p><div class="rc-arches"></div>';
+      var list = el.querySelector('.rc-arches');
+      j.a.forEach(function (a) {
+        var on = S.recruits[j.key] === a[0];
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'rc-arch';
+        b.setAttribute('aria-pressed', on);
+        b.disabled = !on && count >= DATA.crewSize && !S.recruits[j.key];
+        b.innerHTML = '<span class="n">' + esc(a[0]) + '</span><span class="c rc-num">+' + fmt(a[2]) + ' CR</span>' +
+          '<span class="q">' + esc(a[1]) + '</span><span class="kit">' + esc(a[3]) + '</span>';
+        b.onclick = function () { if (on) delete S.recruits[j.key]; else S.recruits[j.key] = a[0]; changed(); };
+        list.appendChild(b);
+      });
+      box.appendChild(el);
+    });
+  }
+
+  function renderStalls() {
+    var box = $('rc-stalls'), p = purse(), left = p == null ? Infinity : p - spent();
+    box.innerHTML = '';
+    DATA.stalls.forEach(function (s) {
+      var el = document.createElement('article');
+      el.className = 'rc-card';
+      el.innerHTML = '<h3>' + esc(s.name) + '</h3><p class="rc-sd">' + esc(s.d) + '</p>';
+      s.items.forEach(function (i) {
+        var q = S.cart[i[0]] || 0, locked = p != null && i[2] > p && !q;
+        var row = document.createElement('div');
+        row.className = 'rc-item' + (q ? ' on' : '') + (locked ? ' rc-locked' : '');
+        row.innerHTML = '<div class="n">' + esc(i[0]) + '<span class="lv">LV ' + i[1] + '</span></div><div class="d">' + esc(i[3]) + '</div>';
+        var right = document.createElement('div');
+        right.className = 'rc-qty';
+        if (locked) {
+          right.innerHTML = '<div class="rc-price rc-num">' + fmt(i[2]) + '<span class="rc-need">BEHIND THE COUNTER · needs ' + fmt(i[2] - p) + ' more</span></div>';
+        } else {
+          right.innerHTML = '<div class="rc-price rc-num">' + fmt(i[2]) + '</div>' +
+            '<button type="button" aria-label="Remove one ' + esc(i[0]) + '"' + (q ? '' : ' disabled') + '>&minus;</button>' +
+            '<span class="q rc-num">' + q + '</span>' +
+            '<button type="button" aria-label="Add one ' + esc(i[0]) + '"' + (i[2] > left || q >= 99 ? ' disabled' : '') + '>+</button>';
+          var btns = right.querySelectorAll('button');
+          btns[0].onclick = function () { if (q > 1) S.cart[i[0]] = q - 1; else delete S.cart[i[0]]; changed(); };
+          btns[1].onclick = function () { S.cart[i[0]] = q + 1; changed(); };
+        }
+        row.appendChild(right);
+        el.appendChild(row);
+      });
+      box.appendChild(el);
+    });
+  }
+
+  function renderQs() {
+    var box = $('rc-qs');
+    box.innerHTML = '';
+    DATA.questions.forEach(function (q) {
+      var el = document.createElement('article');
+      el.className = 'rc-card';
+      el.innerHTML = '<h3>' + esc(q.t) + '</h3><p class="rc-set">' + esc(q.s) + '</p><div class="rc-opts" role="group"></div>';
+      var g = el.querySelector('.rc-opts');
+      g.setAttribute('aria-label', q.t);
+      q.o.forEach(function (o) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'rc-opt';
+        b.setAttribute('aria-pressed', S.plan[q.id] === o[0]);
+        b.innerHTML = '<b>' + esc(o[0]) + '</b><span>' + esc(o[1]) + '</span>';
+        b.onclick = function () { S.plan[q.id] = o[0]; changed(); };
+        g.appendChild(b);
+      });
+      box.appendChild(el);
+    });
+  }
+
+  function missing() {
+    var m = [], r = Object.keys(S.recruits).length, p = purse();
+    if (r < DATA.crewSize) m.push('recruit ' + (DATA.crewSize - r) + ' more');
+    if (!Object.keys(S.cart).length) m.push('buy something');
+    var un = DATA.questions.filter(function (q) { return !S.plan[q.id]; }).length;
+    if (un) m.push('answer ' + un + ' more plan question' + (un > 1 ? 's' : ''));
+    if (p != null && spent() > p) m.push('cut ' + fmt(spent() - p) + ' credits from the cargo');
+    return m;
+  }
+
+  function renderOrders() {
+    var li = function (a) { return a.length ? '<ul>' + a.join('') + '</ul>' : '<p class="rc-empty">Nothing yet.</p>'; };
+    var r = [], c = [], pl = [];
+    for (var k in S.recruits) r.push('<li>' + esc(S.recruits[k]) + ' <span style="color:var(--ink4)">' + esc(arch[S.recruits[k]].job.name) + '</span></li>');
+    for (var n in S.cart) c.push('<li class="rc-num">' + S.cart[n] + ' &times; ' + esc(n) + '</li>');
+    DATA.questions.forEach(function (q) { if (S.plan[q.id]) pl.push('<li>' + esc(S.plan[q.id]) + '</li>'); });
+    $('rc-olist').innerHTML =
+      '<div><h4>CREW (' + r.length + '/' + DATA.crewSize + ')</h4>' + li(r) + '</div>' +
+      '<div><h4>CARGO · ' + fmt(spent()) + ' CR</h4>' + li(c) + '</div>' +
+      '<div><h4>THE PLAN</h4>' + li(pl) + '</div>';
+
+    var seal = $('rc-seal'), msg = $('rc-msg'), m = missing();
+    if (closed) {
+      seal.hidden = true; $('rc-who').innerHTML = '';
+      msg.textContent = 'Voting has closed. The crew has set sail for the island.';
+      return;
+    }
+    msg.textContent = m.length ? 'Before you seal it: ' + m.join(', ') + '.' : '';
+    seal.disabled = !!m.length;
+    seal.textContent = S.sealed ? 'ORDERS SEALED' : (S.voted ? 'UPDATE MY ORDERS' : 'SEAL MY ORDERS');
+    if (S.sealed) seal.disabled = true;
+    renderWho();
+  }
+
+  // The same questions the loot box page and the Daily Word ask, saved the same way.
+  function renderWho() {
+    var who = $('rc-who');
+    if (me.email) {
+      if (who.getAttribute('data-me') === me.email) return;
+      who.setAttribute('data-me', me.email);
+      who.innerHTML = '<p class="rc-quiet">Voting as ' + esc(me.first_name || me.email) + '. <a id="rc-notme">Not you?</a></p>';
+      $('rc-notme').onclick = function () { try { localStorage.removeItem(ME); } catch (e) {} me = {}; who.removeAttribute('data-me'); renderWho(); };
+      return;
+    }
+    if (who.getAttribute('data-me') === '') return;
+    who.setAttribute('data-me', '');
+    who.innerHTML = '<p class="rc-quiet" style="margin-bottom:10px">Tell the Captain who you are. You only do this once; the loot box page and the Daily Word remember you too.</p>' +
+      '<div class="rc-form">' +
+      '<label>First name<input id="rc-first" autocomplete="given-name"></label>' +
+      '<label>Email you use for the hunt<input id="rc-email" type="email" autocomplete="email" inputmode="email"></label>' +
+      '<label>Social handle<input id="rc-handle" placeholder="@yourname" autocomplete="off"></label>' +
+      '<label>Where that handle lives<select id="rc-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select></label>' +
+      '<label>Country<select id="rc-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select></label>' +
+      '<label id="rc-otherl" hidden>Which country?<input id="rc-other"></label>' +
+      '</div>';
+    $('rc-country').onchange = function () { $('rc-otherl').hidden = this.value !== '__other'; };
+  }
+
+  function readWho() {
+    if (me.email) return me;
+    var country = $('rc-country').value;
+    var p = { first_name: $('rc-first').value.trim(), email: $('rc-email').value.trim(), handle: $('rc-handle').value.trim(),
+              platform: $('rc-platform').value, country: country === '__other' ? $('rc-other').value.trim() : country };
+    if (!p.first_name) return 'A first name, please.';
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email)) return 'That email does not look right.';
+    if (!p.country) return 'Which country are you hunting from?';
+    return p;
+  }
+
+  function renderWallet() {
+    var p = purse(), s = spent();
+    $('rc-purse').textContent = p == null ? '…' : fmt(p);
+    $('rc-total').textContent = p == null ? '…' : fmt(p);
+    $('rc-spent').textContent = fmt(s);
+    $('rc-left').textContent = p == null ? '' : (s > p ? fmt(s - p) + ' OVER' : fmt(p - s) + ' LEFT');
+    $('rc-wallet').className = 'rc-wallet rc-num' + (p != null && s > p ? ' over' : '');
+    $('rc-c1').className = 'rc-chip' + (Object.keys(S.recruits).length === DATA.crewSize ? ' done' : '');
+    $('rc-c2').className = 'rc-chip' + (Object.keys(S.cart).length && (p == null || s <= p) ? ' done' : '');
+    $('rc-c3').className = 'rc-chip' + (DATA.questions.every(function (q) { return S.plan[q.id]; }) ? ' done' : '');
+    $('rc-c4').className = 'rc-chip' + (S.sealed ? ' done' : '');
+  }
+
+  function render() { renderJobs(); renderStalls(); renderQs(); renderOrders(); renderWallet(); }
+
+  $('rc-seal').onclick = function () {
+    var who = readWho(), msg = $('rc-msg'), btn = this;
+    if (typeof who === 'string') { msg.textContent = who; return; }
+    me = who; store(ME, me);
+    var cart = []; for (var n in S.cart) cart.push(n + ':' + S.cart[n]);
+    var payload = { action: 'vote', email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country,
+                    recruits: Object.keys(S.recruits).map(function (k) { return S.recruits[k]; }).join(','), cart: cart.join('|') };
+    DATA.questions.forEach(function (q) { payload[q.id] = S.plan[q.id]; });
+    btn.disabled = true; btn.textContent = 'SEALING...'; msg.textContent = '';
+    send(payload, function (res) {
+      if (res && res.ok) {
+        S.sealed = true; S.voted = true; store(STORE, S);
+        if (res.count) $('rc-count').textContent = fmt(res.count);
+        $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.status === 'new' ? '+' + res.points + ' POINTS' : 'ORDERS UPDATED') + '</b>' +
+          (res.status === 'new' ? 'Your orders are with the Captain. The points land on the leaderboard at the next tally.' : 'Your new orders replace your old ones. No extra points, but your vote counts as it stands now.') +
+          ' You can change your vote until it closes.</p>';
+        renderOrders(); renderWallet();
+        return;
+      }
+      btn.disabled = false; btn.textContent = 'TRY AGAIN';
+      msg.textContent = ({ closed: 'Voting has closed.', email: 'That email does not look right.',
+        recruits: 'The Captain could not read your crew. Pick four recruits from four different jobs.',
+        cart: 'The Captain could not read your shopping list. Check it and try again.',
+        plan: 'Answer every plan question, then try again.' })[res && res.error] || 'The ship is slow today. Give it another go in a moment.';
+    });
+  };
+
+  // Same round trip as the loot box page: a simple POST, JSONP if that is
+  // blocked, and one quiet retry because Apps Script is sometimes slow.
+  function send(payload, done, attempt) {
+    attempt = attempt || 1;
+    var settled = false;
+    var finish = function (res) {
+      if (settled) return;
+      settled = true;
+      var flaky = !res || (!res.ok && (res.error === 'network' || res.error === 'server'));
+      if (flaky && attempt < 2) return setTimeout(function () { send(payload, done, attempt + 1); }, 1500);
+      done(res);
+    };
+    try {
+      fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(payload) })
+        .then(function (r) { return r.json(); }).then(finish)
+        .catch(function () { jsonp(payload, finish); });
+    } catch (e) { jsonp(payload, finish); }
+  }
+  function jsonp(payload, done) {
+    var name = 'rccb' + Math.random().toString(36).slice(2), q = ['callback=' + name];
+    for (var k in payload) if (payload[k] != null && payload[k] !== '') q.push(encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]));
+    var s = document.createElement('script');
+    var timer = setTimeout(function () { cleanup(); done({ ok: false, error: 'network' }); }, 30000);
+    function cleanup() { clearTimeout(timer); delete window[name]; if (s.parentNode) s.parentNode.removeChild(s); }
+    window[name] = function (res) { cleanup(); done(res); };
+    s.onerror = function () { cleanup(); done({ ok: false, error: 'network' }); };
+    s.src = ENDPOINT + '?' + q.join('&');
+    document.body.appendChild(s);
+  }
+
+  // A stale recruit or item (renamed in the catalog since this browser voted) is dropped quietly.
+  for (var k in S.recruits) if (!arch[S.recruits[k]]) delete S.recruits[k];
+  for (var n in S.cart) if (!items[n]) delete S.cart[n];
+
+  var d = new Date(DATA.closes + 'T12:00:00Z');
+  $('rc-close').textContent = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' }) + ' at 11:59 PM ET';
+  $('rc-pts').textContent = '+' + DATA.points;
+  if (closed) root.className = 'rc-closed';
+  render();
+
+  if (window.fetch) fetch(BOARD + '?t=' + Math.floor(Date.now() / 300000))
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) { if (d && typeof d.crewTotal === 'number') { basePurse = d.crewTotal; render(); } })
+    .catch(function () {});
+  jsonp({ action: 'votecount' }, function (res) { $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
+})();
+</script>
