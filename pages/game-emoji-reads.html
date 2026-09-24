@@ -274,7 +274,8 @@ var HG = (function () {
     var api = {
       day: day, index: index, puzzle: puzzle, state: state, save: save, esc: esc, norm: norm, b64: b64,
       // Shows the win box: claimed already, one-click claim, or the first-time form.
-      win: function (solution, detail, message, extra) {
+      win: function (solution, detail, message, extra, pts) {
+        var points = pts || o.points;
         state.done = 'win'; state.sol = solution; state.detail = detail; save();
         resultEl.className = 'hg-result win'; resultEl.style.display = 'block';
         var head = '<div class="hg-bang">' + (message || 'NICE WORK!') + '</div>' + (extra ? '<p style="margin-bottom:10px">' + extra + '</p>' : '');
@@ -282,21 +283,21 @@ var HG = (function () {
         if (me.email) return oneClick();
         return form();
         function oneClick() {
-          resultEl.innerHTML = head + '<p>You solved it. Claim your ' + o.points + ' points for today.</p>' +
-            '<button type="button" class="hg-claim" id="hg-claim">CLAIM ' + o.points + ' POINTS</button>' +
+          resultEl.innerHTML = head + '<p>' + (points < o.points ? 'Claim' : 'You solved it. Claim') + ' your ' + points + ' points for today.</p>' +
+            '<button type="button" class="hg-claim" id="hg-claim">CLAIM ' + points + ' POINTS</button>' +
             '<p class="hg-quiet">Claiming as ' + esc(me.first_name || me.email) + '. <a id="hg-notme">Not you?</a></p><p class="hg-err" id="hg-err"></p>';
           document.getElementById('hg-claim').onclick = claim;
           document.getElementById('hg-notme').onclick = function () { try { localStorage.removeItem(ME); } catch (e) {} me = {}; form(); };
         }
         function form() {
-          resultEl.innerHTML = head + '<p>Tell the Captain who you are and your ' + o.points + ' points go straight to the leaderboard. Only the first time &mdash; after this it is one click.</p>' +
+          resultEl.innerHTML = head + '<p>Tell the Captain who you are and your ' + points + ' points go straight to the leaderboard. Only the first time &mdash; after this it is one click.</p>' +
             '<div class="hg-form"><label for="hg-first">First name</label><input id="hg-first" autocomplete="given-name">' +
             '<label for="hg-email">Email you use for the hunt</label><input id="hg-email" type="email" autocomplete="email" inputmode="email">' +
             '<label for="hg-handle">Social handle</label><input id="hg-handle" placeholder="@yourname" autocomplete="off">' +
             '<label for="hg-platform">Where that handle lives</label><select id="hg-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select>' +
             '<label for="hg-country">Country</label><select id="hg-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select>' +
             '<input id="hg-other" placeholder="Which country?" style="display:none;margin-top:8px">' +
-            '<button type="button" class="hg-claim" id="hg-claim">CLAIM ' + o.points + ' POINTS</button><p class="hg-err" id="hg-err"></p></div>';
+            '<button type="button" class="hg-claim" id="hg-claim">CLAIM ' + points + ' POINTS</button><p class="hg-err" id="hg-err"></p></div>';
           var c = document.getElementById('hg-country'), other = document.getElementById('hg-other');
           c.onchange = function () { other.style.display = c.value === '__other' ? 'block' : 'none'; if (c.value === '__other') other.focus(); };
           document.getElementById('hg-claim').onclick = function () {
@@ -324,7 +325,7 @@ var HG = (function () {
           });
         }
         function claimed(status) {
-          resultEl.innerHTML = head + '<div class="hg-pts">+' + o.points + ' POINTS</div><p class="hg-quiet">' + (status === 'already'
+          resultEl.innerHTML = head + '<div class="hg-pts">+' + points + ' POINTS</div><p class="hg-quiet">' + (status === 'already'
             ? 'Already claimed for today &mdash; no need to submit anything.'
             : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>';
         }
