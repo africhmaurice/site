@@ -40,7 +40,7 @@ html,body{margin:0 !important;padding:0 !important}
 .hg-eyebrow{font-family:'Atomic Marker',cursive;font-size:clamp(24px,3.4vw,44px);color:#fd7547;margin-bottom:12px}
 .hg-h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(46px,8.4vw,116px);line-height:1.04;color:#fffffe;margin:0 0 22px}
 .hg-tag{font-weight:700;font-size:clamp(15px,1.8vw,19px);letter-spacing:.05em;line-height:1.6;color:#fffffe;text-shadow:0 1px 6px rgba(0,0,0,.4);max-width:720px;margin:0 auto}
-.hg-card{background:rgba(255,255,254,.95);border:3px solid #111;max-width:820px;margin:0 auto;padding:clamp(24px,4vw,46px) clamp(14px,3.5vw,44px) clamp(28px,4vw,44px)}
+.hg-card{background:rgba(255,255,254,.95);border:3px solid #111;max-width:1060px;margin:0 auto;padding:clamp(24px,4vw,46px) clamp(14px,3.5vw,44px) clamp(28px,4vw,44px)}
 .hg-stamp{text-align:center;font-weight:700;font-size:clamp(12px,1.5vw,14px);letter-spacing:.09em;text-transform:uppercase;color:#607667;margin:0 0 18px}
 .hg-how{text-align:center;font-size:clamp(15px,1.8vw,18px);line-height:1.5;color:#213226;max-width:560px;margin:0 auto 22px}
 .hg-toast{min-height:28px;text-align:center;font-weight:700;font-size:17px;letter-spacing:.05em;color:#c53200;margin:14px 0 0}
@@ -75,18 +75,21 @@ html,body{margin:0 !important;padding:0 !important}
 .hg-more{text-align:center;margin:26px 0 0;font-weight:700;font-size:15px;letter-spacing:.06em}
 .hg-more a{color:#c53200}
 /* Sort the Shelf: Rachel's bookcase, cover and spine art (assets/shelf/), tinted in every brand colour. */
-.ss-case{position:relative;width:100%;max-width:600px;margin:0 auto 18px;aspect-ratio:1400/1404;background:url(https://africhmaurice.github.io/site/assets/shelf/bookcase.webp) center/100% 100% no-repeat;container-type:inline-size}
-.ss-slot{position:absolute;left:5%;right:5%;display:flex;justify-content:center;align-items:flex-end;gap:1.2cqw}
+/* bookcase on the left, books on the right; phones stack them with the wider bookcase on top */
+.ss-board{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1fr);gap:clamp(16px,2.6vw,30px);align-items:center;max-width:980px;margin:0 auto}
+.ss-case{position:relative;width:100%;aspect-ratio:803/1300;background:url(https://africhmaurice.github.io/site/assets/shelf/bookcase-narrow.webp) center/100% 100% no-repeat;container-type:inline-size;--inset:7%}
+.ss-slot{position:absolute;left:var(--inset);right:var(--inset);display:flex;justify-content:center;align-items:flex-end;gap:1.2cqw}
 .ss-spine{position:relative;height:90%;aspect-ratio:92/463;background:center/100% 100% no-repeat;display:flex;align-items:center;justify-content:center;transform-origin:left center}
 .ss-spine span{writing-mode:vertical-rl;font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(7px,2.3cqw,14px);letter-spacing:.03em;line-height:1;white-space:nowrap;max-height:94%;overflow:hidden;text-overflow:ellipsis}
 .ss-spine.in{animation:ss-turn .42s cubic-bezier(.2,.8,.3,1) both}
 @keyframes ss-turn{from{transform:perspective(500px) rotateY(-88deg);opacity:.2}to{transform:none;opacity:1}}
-.ss-sticker{position:absolute;left:50%;transform:translate(-50%,-50%) rotate(-2deg);white-space:nowrap;max-width:84%;overflow:hidden;text-overflow:ellipsis;background:#fffffe;color:#0b170f;border:2px solid #0b170f;border-radius:6px;padding:.5cqw 2.2cqw;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(12px,3.4cqw,21px);line-height:1.1;box-shadow:2px 3px 0 rgba(0,0,0,.4);z-index:3}
+.ss-sticker{position:absolute;left:50%;transform:translate(-50%,-50%) rotate(-2deg);white-space:normal;text-align:center;width:max-content;max-width:86%;background:#fffffe;color:#0b170f;border:2px solid #0b170f;border-radius:6px;padding:.5cqw 2.2cqw;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(12px,4.4cqw,21px);line-height:1.05;box-shadow:2px 3px 0 rgba(0,0,0,.4);z-index:3}
 .ss-sticker.in{animation:ss-stick .5s cubic-bezier(.2,1.5,.4,1) both}
 @keyframes ss-stick{from{transform:translate(-50%,-50%) rotate(-12deg) scale(1.7);opacity:0}to{transform:translate(-50%,-50%) rotate(-2deg) scale(1);opacity:1}}
 .ss-s0{border-color:#1a5e41}.ss-s1{border-color:#912501}.ss-s2{border-color:#2d1c53}.ss-s3{border-color:#0b170f}
 .ss-slot.shown{opacity:.55;filter:saturate(.45)}
-.ss-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(6px,1.4vw,12px);max-width:600px;margin:0 auto}
+.ss-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(6px,1.2vw,12px)}
+@media (max-width:700px){.ss-board{grid-template-columns:1fr;gap:16px}.ss-case{max-width:600px;margin:0 auto;aspect-ratio:1400/1404;background-image:url(https://africhmaurice.github.io/site/assets/shelf/bookcase.webp);--inset:5%}.ss-sticker{font-size:clamp(12px,3.4cqw,21px)}}
 .ss-book{position:relative;aspect-ratio:360/417;background:center/100% 100% no-repeat;border:0;padding:0;cursor:grab;touch-action:none;transition:transform .15s ease,filter .15s ease;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
 .ss-book span{position:absolute;left:10%;right:8%;top:30%;bottom:30%;display:flex;align-items:center;justify-content:center;text-align:center;font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(9px,1.55vw,14px);letter-spacing:.03em;line-height:1.15;overflow-wrap:normal;word-break:normal;hyphens:none;overflow:hidden}
 .ss-book:hover{transform:translateY(-3px)}
@@ -172,8 +175,10 @@ html,body{margin:0 !important;padding:0 !important}
   <main class="hg-card">
     <div class="hg-stamp" id="hg-stamp">&nbsp;</div>
     <p class="hg-how">Sixteen books, four hidden groups. Tap four books (or drag them onto the bookcase), then press Submit. Every shelf you get right is worth 10 points. You can make four mistakes.</p>
-    <div class="ss-case" id="ss-case" aria-label="Bookcase"></div>
-    <div class="ss-grid" id="ss-grid"></div>
+    <div class="ss-board">
+      <div class="ss-case" id="ss-case" aria-label="Bookcase"></div>
+      <div class="ss-grid" id="ss-grid"></div>
+    </div>
     <div class="ss-lives" id="ss-lives"></div>
     <div class="ss-tools">
       <button type="button" class="hg-btn ghost" id="ss-shuffle">SHUFFLE</button>
