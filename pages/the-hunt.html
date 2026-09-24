@@ -203,7 +203,7 @@ var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').
 window.maFillOnView = function(el, fn){
   if(!el) return;
   if(!('IntersectionObserver' in window)) return fn();
-  var io = new IntersectionObserver(function(es){ if(es[0].isIntersecting){ io.disconnect(); fn(); } }, {threshold:.35});
+  var io = new IntersectionObserver(function(es){ if(es[0].isIntersecting){ io.disconnect(); (window.maAfterLoading || function (f) { f(); })(fn); } }, {threshold:.35});
   io.observe(el);
 };
 // Eases from a to b over ms, calling step(value) each frame and done() at the end.

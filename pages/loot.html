@@ -383,11 +383,12 @@ html,body{margin:0 !important;padding:0 !important}
           c.classList.remove('lb-wait'); c.classList.add('lb-in');
           if (nums[0]) nums[0].textContent = String(k + 1);
           if (nums[1]) nums[1].textContent = String((k + 1) * 50);
-        }, 250 + k * step);
+        }, 450 + k * step);
       });
     }
-    if (!('IntersectionObserver' in window)) return go();
-    fillIO = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { fillIO.disconnect(); fillIO = null; go(); } }, { threshold: .25 });
+    var later = (window.maAfterLoading || function (f) { f(); });
+    if (!('IntersectionObserver' in window)) return later(go);
+    fillIO = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { fillIO.disconnect(); fillIO = null; later(go); } }, { threshold: .25 });
     fillIO.observe(grid);
   }
 

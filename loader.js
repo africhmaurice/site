@@ -12,6 +12,11 @@
   var inHead = !!(me && me.parentNode && me.parentNode.nodeName === 'HEAD');
   var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var pending = 0;
+  // Runs fn once the loading screen has started fading (right away if there isn't one), so animations
+  // near the top of a page play where people can see them instead of underneath the crest.
+  window.maAfterLoading = function (fn) {
+    (function wait() { var ov = document.getElementById('ma-loading'); if (ov && !ov.classList.contains('ma-done')) setTimeout(wait, 80); else fn(); })();
+  };
   var BASE = me ? me.src.replace(/loader\.js.*$/, '') : 'https://africhmaurice.github.io/site/';
   var stamp = Math.floor(Date.now() / 60000);
 
@@ -82,9 +87,12 @@
       es.forEach(function (e) {
         if (!e.isIntersecting) return;
         io.unobserve(e.target);
-        e.target.style.transitionDelay = Math.min(n++, 5) * 90 + 'ms';
-        e.target.classList.add('ma-in');
-        setTimeout(function () { e.target.style.transitionDelay = ''; }, 1400);
+        var el = e.target, d = Math.min(n++, 5) * 90;
+        window.maAfterLoading(function () {
+          el.style.transitionDelay = d + 'ms';
+          el.classList.add('ma-in');
+          setTimeout(function () { el.style.transitionDelay = ''; }, 1400);
+        });
       });
     }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
     // Only things on the page right now: hidden panels, slider slides and embeds are left alone, so nothing
