@@ -2,7 +2,7 @@
 // LAYOUT: live page -> the site.json slugs its Squarespace code blocks load, in DOM order.
 export const LAYOUT = {
   home: ['home-slider', 'home-widget-1', 'home-widget-2'], 'the-hunt': ['the-hunt'], points: ['hunt-menu'], solve: ['hunt-menu'],
-  leaderboard: ['leaderboard', 'hunt-menu'], contests: ['contests'], 'lootbox-clue': ['lootbox-clue'], games: ['games'],
+  leaderboard: ['leaderboard', 'hunt-menu'], contests: ['contests'], 'lootbox-clue': ['lootbox-clue'], games: ['games'], preorder: ['preorder'],
   loot: ['loot'], rules: ['rules'], 'privacy-policy': ['privacy-policy'], newsletter: [],
 };
 

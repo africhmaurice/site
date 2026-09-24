@@ -2,18 +2,84 @@
   "publicBase": "https://africhmaurice.github.io/site/",
   "botRepo": "../treasure-hunt-leaderboard",
   "pages": [
-    { "slug": "home-slider",     "url": "/home",          "title": "Home: hero slider",            "source": "pages/home-slider.html" },
-    { "slug": "home-widget-1",   "url": "/home",          "title": "Home: Elfsight widget 1",      "source": "pages/home-widget-1.html" },
-    { "slug": "home-widget-2",   "url": "/home",          "title": "Home: Elfsight widget 2",      "source": "pages/home-widget-2.html" },
-    { "slug": "the-hunt",        "url": "/the-hunt",      "title": "The Hunt",                     "source": "bot:squarespace-hunt.html" },
-    { "slug": "hunt-menu",       "url": "/points /solve /leaderboard", "title": "Hunt header menu", "source": "pages/hunt-menu.html" },
-    { "slug": "leaderboard",     "url": "/leaderboard",   "title": "Leaderboard embed",            "source": "pages/leaderboard.html" },
-    { "slug": "contests",        "url": "/contests",      "title": "Contests",                     "source": "pages/contests.html" },
-    { "slug": "lootbox-clue",    "url": "/lootbox-clue",  "title": "Clues",                        "source": "pages/lootbox-clue.html" },
-    { "slug": "games",           "url": "/games",         "title": "Sky Pirate Wordle",            "source": "bot:squarespace-wordle.html" },
-    { "slug": "loot",            "url": "/loot",          "title": "Loot box scorecard",           "source": "bot:squarespace-lootbox.html" },
-    { "slug": "rules",           "url": "/rules",         "title": "Official Rules",               "source": "pages/rules.html" },
-    { "slug": "privacy-policy",  "url": "/privacy-policy","title": "Privacy Policy",               "source": "pages/privacy-policy.html" }
+    {
+      "slug": "home-slider",
+      "url": "/home",
+      "title": "Home: hero slider",
+      "source": "pages/home-slider.html"
+    },
+    {
+      "slug": "home-widget-1",
+      "url": "/home",
+      "title": "Home: Elfsight widget 1",
+      "source": "pages/home-widget-1.html"
+    },
+    {
+      "slug": "home-widget-2",
+      "url": "/home",
+      "title": "Home: Elfsight widget 2",
+      "source": "pages/home-widget-2.html"
+    },
+    {
+      "slug": "the-hunt",
+      "url": "/the-hunt",
+      "title": "The Hunt",
+      "source": "bot:squarespace-hunt.html"
+    },
+    {
+      "slug": "hunt-menu",
+      "url": "/points /solve /leaderboard",
+      "title": "Hunt header menu",
+      "source": "pages/hunt-menu.html"
+    },
+    {
+      "slug": "leaderboard",
+      "url": "/leaderboard",
+      "title": "Leaderboard embed",
+      "source": "pages/leaderboard.html"
+    },
+    {
+      "slug": "contests",
+      "url": "/contests",
+      "title": "Contests",
+      "source": "pages/contests.html"
+    },
+    {
+      "slug": "lootbox-clue",
+      "url": "/lootbox-clue",
+      "title": "Clues",
+      "source": "pages/lootbox-clue.html"
+    },
+    {
+      "slug": "games",
+      "url": "/games",
+      "title": "Sky Pirate Wordle",
+      "source": "bot:squarespace-wordle.html"
+    },
+    {
+      "slug": "loot",
+      "url": "/loot",
+      "title": "Loot box scorecard",
+      "source": "bot:squarespace-lootbox.html"
+    },
+    {
+      "slug": "rules",
+      "url": "/rules",
+      "title": "Official Rules",
+      "source": "pages/rules.html"
+    },
+    {
+      "slug": "privacy-policy",
+      "url": "/privacy-policy",
+      "title": "Privacy Policy",
+      "source": "pages/privacy-policy.html"
+    },
+    {
+      "slug": "preorder",
+      "url": "/preorder",
+      "title": "Pre-order: all retailers",
+      "source": "pages/preorder.html (built by tools/preorder.mjs)"
+    }
   ],
   "staysInSquarespace": [
     "Points and Solve submission forms (they feed the Google Sheets the hunt bot reads)",
