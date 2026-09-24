@@ -528,9 +528,14 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
   var map = document.querySelector('#map .mh-map'), calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var fresh = seen().indexOf('pontune') < 0;
   if (map && fresh && !calm && 'IntersectionObserver' in window) {
+    // "In view" means 60% of the map, or 60% of the screen when the map is taller than the screen.
+    var steps = []; for (var i = 0; i <= 20; i++) steps.push(i / 20);
     var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { map.classList.add('mh-zoomed'); io.disconnect(); } });
-    }, { threshold: 0.6 });
+      es.forEach(function (e) {
+        var need = Math.min(e.boundingClientRect.height, window.innerHeight) * 0.6;
+        if (e.isIntersecting && e.intersectionRect.height >= need) { map.classList.add('mh-zoomed'); io.disconnect(); }
+      });
+    }, { threshold: steps });
     io.observe(map);
   }
   function afterFenna(){
