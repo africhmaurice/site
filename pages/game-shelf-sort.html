@@ -74,12 +74,20 @@ html,body{margin:0 !important;padding:0 !important}
 .hg-next strong{color:#c53200;font-size:18px}
 .hg-more{text-align:center;margin:26px 0 0;font-weight:700;font-size:15px;letter-spacing:.06em}
 .hg-more a{color:#c53200}
-.ss-solved{display:grid;gap:8px;max-width:640px;margin:0 auto 8px}
-.ss-group{border:2px solid #111;padding:12px 10px;text-align:center;animation:ss-in .4s ease}
-.ss-group b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(20px,2.8vw,28px);line-height:1.1;margin-bottom:4px}
-.ss-group span{font-weight:700;letter-spacing:.06em;font-size:clamp(12px,1.6vw,15px)}
-.ss-g0{background:#3adb97;color:#0b170f}.ss-g1{background:#a2f590;color:#0b170f}.ss-g2{background:#fd7547;color:#0b170f}.ss-g3{background:#9e74fd;color:#0b170f}
-@keyframes ss-in{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+.ss-solved{display:grid;gap:18px;max-width:640px;margin:0 auto 18px}
+/* A solved group: its four books stand on a shelf, with the theme as a sticker centred on the shelf front.
+   Placeholder shelf and spines until the drawn art is in. */
+.ss-shelf{position:relative;padding:0 10px;animation:ss-in .45s ease}
+.ss-books{display:flex;justify-content:center;align-items:flex-end;gap:5px;height:clamp(92px,15vw,118px)}
+.ss-spine{flex:0 1 22%;height:100%;display:flex;align-items:center;justify-content:center;border:2px solid #0b170f;border-bottom:0;border-radius:3px 3px 0 0;padding:6px 4px;font-weight:800;font-size:clamp(9px,1.5vw,12px);letter-spacing:.04em;line-height:1.15;text-align:center;color:#fffffe;overflow:hidden;box-shadow:inset 3px 0 0 rgba(255,255,254,.18),inset -3px 0 0 rgba(0,0,0,.18)}
+.ss-spine:nth-child(2){height:92%}.ss-spine:nth-child(3){height:97%}.ss-spine:nth-child(4){height:88%}
+.ss-plank{position:relative;height:30px;background:linear-gradient(#5b3a1e,#3e2712);border:2px solid #0b170f;border-radius:2px;box-shadow:0 6px 10px rgba(0,0,0,.25)}
+.ss-sticker{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-2deg);white-space:nowrap;max-width:94%;overflow:hidden;text-overflow:ellipsis;background:#fffffe;color:#0b170f;border:2px solid #0b170f;border-radius:6px;padding:5px 14px;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(15px,2.4vw,22px);line-height:1;box-shadow:2px 3px 0 rgba(0,0,0,.35);animation:ss-stick .5s .25s cubic-bezier(.2,1.5,.4,1) both}
+.ss-g0 .ss-spine{background:#268e62}.ss-g1 .ss-spine{background:#2c6021}.ss-g2 .ss-spine{background:#c53200}.ss-g3 .ss-spine{background:#482d85}
+.ss-g0 .ss-sticker{border-color:#1a5e41}.ss-g1 .ss-sticker{border-color:#1b3b15}.ss-g2 .ss-sticker{border-color:#912501}.ss-g3 .ss-sticker{border-color:#2d1c53}
+@keyframes ss-in{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ss-stick{from{transform:translate(-50%,-50%) rotate(-12deg) scale(1.6);opacity:0}to{transform:translate(-50%,-50%) rotate(-2deg) scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.ss-shelf,.ss-sticker{animation:none}}
 .ss-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:640px;margin:0 auto}
 .ss-tile{min-width:0;overflow:hidden;font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(11px,1.7vw,15px);letter-spacing:.03em;line-height:1.2;min-height:clamp(62px,9vw,80px);padding:6px 3px;border:2px solid #111;background:#f3ead9;color:#111;cursor:pointer;word-break:normal;overflow-wrap:normal;hyphens:none;transition:transform .12s ease,background .12s ease}
 .ss-tile:hover{transform:scale(1.03)}
@@ -388,10 +396,12 @@ var HG_GAME = {"key":"shelf_sort","label":"Sort the Shelf","points":25,"startDat
   function groupOf(item) { for (var i = 0; i < groups.length; i++) if (groups[i].items.indexOf(item) >= 0) return i; return -1; }
   function key(items) { return items.slice().sort().join('+'); }
   function paint() {
-    var solvedEl = document.getElementById('ss-solved');
+    var solvedEl = document.getElementById('ss-solved'), before = solvedEl.children.length;
     solvedEl.innerHTML = st.solved.map(function (gi) {
-      return '<div class="ss-group ss-g' + gi + '"><b>' + HG.esc(groups[gi].name) + '</b><span>' + groups[gi].items.map(HG.esc).join(', ') + '</span></div>';
+      return '<div class="ss-shelf ss-g' + gi + '"><div class="ss-books">' + groups[gi].items.map(function (it) { return '<div class="ss-spine">' + HG.esc(it) + '</div>'; }).join('') +
+        '</div><div class="ss-plank"><span class="ss-sticker" title="' + HG.esc(groups[gi].name) + '">' + HG.esc(groups[gi].name) + '</span></div></div>';
     }).join('');
+    Array.prototype.forEach.call(solvedEl.children, function (s, i) { if (i < before) { s.style.animation = 'none'; var k = s.querySelector('.ss-sticker'); if (k) k.style.animation = 'none'; } });
     gridEl.innerHTML = '';
     order.filter(function (it) { return st.solved.indexOf(groupOf(it)) < 0; }).forEach(function (it) {
       var b = document.createElement('button'); b.type = 'button'; var longest = Math.max.apply(null, it.split(' ').map(function (w) { return w.length; }));
@@ -407,6 +417,7 @@ var HG_GAME = {"key":"shelf_sort","label":"Sort the Shelf","points":25,"startDat
     var lives = ''; for (var i = 0; i < LIVES; i++) lives += '<i class="' + (i < LIVES - st.miss ? '' : 'gone') + '"></i>';
     document.getElementById('ss-lives').innerHTML = st.done ? '' : 'MISTAKES LEFT ' + lives;
     goBtn.disabled = sel.length !== 4 || !!st.done;
+    document.querySelector('.ss-tools').style.display = st.done ? 'none' : '';
     g.save();
   }
   // long words shrink until they fit their tile instead of being cut off
