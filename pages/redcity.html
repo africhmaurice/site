@@ -277,7 +277,7 @@
         b.type = 'button'; b.className = 'rc-arch';
         b.setAttribute('aria-pressed', on);
         b.disabled = !on && count >= DATA.crewSize && !S.recruits[j.key];
-        b.innerHTML = '<span class="n">' + esc(a[0]) + '</span><span class="c rc-num">+' + fmt(a[2]) + ' CR</span>' +
+        b.innerHTML = '<span class="n">' + esc(a[0]) + '</span><span class="c rc-num">+' + fmt(a[2]) + ' credits</span>' +
           '<span class="q">' + esc(a[1]) + '</span><span class="kit">' + esc(a[3]) + '</span>';
         b.onclick = function () { if (on) delete S.recruits[j.key]; else S.recruits[j.key] = a[0]; changed(); };
         list.appendChild(b);
@@ -357,7 +357,7 @@
     DATA.questions.forEach(function (q) { if (S.plan[q.id]) pl.push('<li>' + esc(S.plan[q.id]) + '</li>'); });
     $('rc-olist').innerHTML =
       '<div><h4>CREW (' + r.length + '/' + DATA.crewSize + ')</h4>' + li(r) + '</div>' +
-      '<div><h4>CARGO · ' + fmt(spent()) + ' CR</h4>' + li(c) + '</div>' +
+      '<div><h4>CARGO · ' + fmt(spent()) + ' CREDITS</h4>' + li(c) + '</div>' +
       '<div><h4>THE PLAN</h4>' + li(pl) + '</div>';
 
     var seal = $('rc-seal'), msg = $('rc-msg'), m = missing();
