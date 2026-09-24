@@ -79,6 +79,42 @@
       "url": "/preorder",
       "title": "Pre-order: all retailers",
       "source": "pages/preorder.html (built by tools/preorder.mjs)"
+    },
+    {
+      "slug": "game-word-search",
+      "url": "(preview only, not on Squarespace yet)",
+      "title": "Game: Word Search",
+      "source": "bot:squarespace-game-word-search.html"
+    },
+    {
+      "slug": "game-crossword",
+      "url": "(preview only, not on Squarespace yet)",
+      "title": "Game: Crossword",
+      "source": "bot:squarespace-game-crossword.html"
+    },
+    {
+      "slug": "game-first-lines",
+      "url": "(preview only, not on Squarespace yet)",
+      "title": "Game: First Lines",
+      "source": "bot:squarespace-game-first-lines.html"
+    },
+    {
+      "slug": "game-shelf-sort",
+      "url": "(preview only, not on Squarespace yet)",
+      "title": "Game: Shelf Sort",
+      "source": "bot:squarespace-game-shelf-sort.html"
+    },
+    {
+      "slug": "game-title-scramble",
+      "url": "(preview only, not on Squarespace yet)",
+      "title": "Game: Title Scramble",
+      "source": "bot:squarespace-game-title-scramble.html"
+    },
+    {
+      "slug": "game-emoji-reads",
+      "url": "(preview only, not on Squarespace yet)",
+      "title": "Game: Emoji Reads",
+      "source": "bot:squarespace-game-emoji-reads.html"
     }
   ],
   "staysInSquarespace": [

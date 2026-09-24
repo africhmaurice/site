@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const BOT = resolve(ROOT, '../treasure-hunt-leaderboard');
 const FILES = [join(ROOT, 'pages/hunt-menu.html'), join(ROOT, 'pages/contests.html'), join(ROOT, 'pages/lootbox-clue.html'), join(ROOT, 'pages/rules.html'),
-  join(BOT, 'squarespace-hunt.html'), join(BOT, 'squarespace-lootbox.html'), join(BOT, 'squarespace-wordle.html')];
+  join(BOT, 'squarespace-hunt.html'), join(BOT, 'squarespace-lootbox.html'), join(BOT, 'squarespace-wordle.html'), join(BOT, 'games/_frame.html')];
 
 // Same stores and links, in the same order, as the main menu's Pre-Order folder.
 const STORES = [
