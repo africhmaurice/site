@@ -3,7 +3,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-#preorder{box-sizing:border-box;position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow-x:hidden;background:linear-gradient(rgba(9,23,7,.72),rgba(9,23,7,.82)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover no-repeat fixed;padding-top:clamp(120px,12vw,170px);color:#fffffe;font-family:'Almarai',sans-serif;letter-spacing:.03em;padding-bottom:110px}
+#preorder{box-sizing:border-box;position:relative;width:100vw;overflow-x:hidden;background:linear-gradient(rgba(9,23,7,.72),rgba(9,23,7,.82)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover no-repeat fixed;padding-top:clamp(120px,12vw,170px);color:#fffffe;font-family:'Almarai',sans-serif;letter-spacing:.03em;padding-bottom:110px}
 #preorder *,#preorder *::before,#preorder *::after{box-sizing:border-box}
 #preorder .po-hero{max-width:1180px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:56px;align-items:center;position:relative}
 #preorder .po-book{width:100%;height:auto;display:block;filter:drop-shadow(0 22px 34px rgba(0,0,0,.6))}
@@ -76,6 +76,16 @@
   <p class="po-foot">Store not listed? Ask your local bookshop to order it in: U.S. ISBN 9781668242834, UK ISBN 9781399763073.</p>
 </div>
 <script>
+// Stretch edge to edge, wherever the Squarespace block sits and however wide it is.
+(function () {
+  function fit() {
+    var e = document.getElementById('preorder'); if (!e) return;
+    e.style.marginLeft = '0px';
+    e.style.marginLeft = -e.getBoundingClientRect().left + 'px';
+    e.style.width = document.documentElement.clientWidth + 'px';
+  }
+  fit(); addEventListener('resize', fit); addEventListener('load', fit); setTimeout(fit, 600);
+})();
 // Region buttons scroll within the page (a plain #link would leave it, because the site sets a base address).
 document.querySelectorAll('#preorder .po-jump a').forEach(function (a) {
   a.addEventListener('click', function (e) {
