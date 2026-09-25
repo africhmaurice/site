@@ -157,9 +157,9 @@ html,body{margin:0 !important;padding:0 !important}
       <a href="https://www.mauriceafrich.com/games" data-k="skyword">SKYWORD</a>
       <a href="https://www.mauriceafrich.com/sort-the-shelf" data-k="shelf_sort">SORT THE SHELF</a>
       <a href="https://www.mauriceafrich.com/book-icons" data-k="emoji_reads">BOOK ICONS</a>
-      <a href="https://www.mauriceafrich.com/crossword" data-k="crossword" data-unlock="50000" hidden>CROSSWORD</a>
+      <a href="https://www.mauriceafrich.com/crossword" data-k="crossword" data-unlock="50000">CROSSWORD (COMING SOON!)</a>
     </nav>
-    <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++)if((+d.crewTotal||0)>=+lk[j].getAttribute('data-unlock'))lk[j].hidden=false;}).catch(function(){});})();</script>
+    <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++)if((+d.crewTotal||0)>=+lk[j].getAttribute('data-unlock'))lk[j].textContent='CROSSWORD';}).catch(function(){});})();</script>
     <script>(function(){function fit(){var t=document.querySelectorAll('.hg-tag');for(var i=0;i<t.length;i++){var e=t[i],w=e.parentNode.clientWidth;e.style.fontSize='';var fs=parseFloat(getComputedStyle(e).fontSize);while(e.scrollWidth>w&&fs>10){fs-=.5;e.style.fontSize=fs+'px';}}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fit);else setTimeout(fit,0);window.addEventListener('load',fit);window.addEventListener('resize',fit);})();</script>
     <div class="hg-eyebrow">The Treasure Hunt</div>
     <h1 class="hg-h1">WORD SEARCH</h1>
@@ -271,7 +271,7 @@ var HG = (function () {
     var main = document.querySelector('.hg-card'); if (!main) return;
     main.classList.add('hg-locked');
     var m = document.createElement('div'); m.className = 'hg-lockmsg';
-    m.innerHTML = '<div class="hg-bang">LOCKED</div><p>This bonus game unlocks for everyone when the crew reaches <b>' + o.unlockAt.toLocaleString('en-US') + '</b> points.</p><p class="hg-quiet" id="hg-lockpts"></p>';
+    m.innerHTML = '<div class="hg-bang">COMING SOON!</div><p>This bonus game unlocks for everyone when the crew reaches <b>' + o.unlockAt.toLocaleString('en-US') + '</b> points.</p><p class="hg-quiet" id="hg-lockpts"></p>';
     main.insertBefore(m, main.firstChild);
     fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t=' + Math.floor(Date.now() / 300000)).then(function (r) { return r.json(); }).then(function (d) {
       var n = +d.crewTotal || 0;
