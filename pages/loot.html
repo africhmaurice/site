@@ -85,6 +85,9 @@ html,body{margin:0 !important;padding:0 !important}
 .lb-quiet{font-size:clamp(13px,1.6vw,15px);color:#607667;margin:10px auto 0;max-width:540px;line-height:1.5}
 .lb-pts{display:inline-block;background:#1e6417;color:#fff;font-weight:800;font-size:clamp(14px,1.8vw,17px);letter-spacing:.09em;padding:8px 16px;margin:14px 0 4px}
 .lb-pts.dim{background:#607667}
+.lb-cta{margin:26px auto 0;padding-top:22px;border-top:2px solid rgba(17,17,17,.12);max-width:540px}
+.lb-cta p{text-wrap:balance;font-weight:800;font-size:clamp(16px,2vw,19px);color:#111;margin:0}
+.lb-cta .lb-btn{width:auto;margin-top:14px;text-decoration:none}
 
 /* ---- the scorecard ---- */
 .lb-tally{text-align:center;font-weight:800;letter-spacing:.09em;text-transform:uppercase;font-size:clamp(12px,1.5vw,14px);color:#607667;margin:34px 0 14px}
@@ -414,6 +417,12 @@ html,body{margin:0 !important;padding:0 !important}
     if (f) f.onclick = function () { drop(ME); drop(CARD); location.href = location.pathname; };
   }
 
+  // After every find: point them at the clue page for the next one.
+  function cta() {
+    return '<div class="lb-cta"><p>Want to find more loot boxes? Follow the clues!</p>' +
+      '<a class="lb-btn" href="https://www.mauriceafrich.com/lootbox-clue">See the clues</a></div>';
+  }
+
   // ---- states -------------------------------------------------------------
   function showReveal(res) {
     var n = res.box.n;
@@ -430,7 +439,8 @@ html,body{margin:0 !important;padding:0 !important}
         '<div class="lb-pts">+' + (res.box.points || 50) + ' POINTS</div>' +
         '<p class="lb-quiet">' + (left > 0
             ? left + ' still out there. Keep your eyes open.'
-            : 'That is all fifty-one. Nobody has ever looked harder.') + '</p>');
+            : 'That is all fifty-one. Nobody has ever looked harder.') + '</p>' +
+        (left > 0 ? cta() : ''));
     drawCard(res.found, n);
   }
 
@@ -440,7 +450,8 @@ html,body{margin:0 !important;padding:0 !important}
     say((ART ? '<img loading="lazy" decoding="async" class="lb-chest" src="' + chestUrl(n) + '" alt="' + title + '">' : '') +
         '<p class="lb-bang miss">ALREADY YOURS</p>' +
         '<p class="lb-say">You found ' + title + ' once already, so no second helping of points.</p>' +
-        '<p class="lb-quiet">' + (res.total - res.count) + ' of the fifty-one are still out there.</p>');
+        '<p class="lb-quiet">' + (res.total - res.count) + ' of the fifty-one are still out there.</p>' +
+        (res.total - res.count > 0 ? cta() : ''));
     drawCard(res.found, -1);
   }
 
