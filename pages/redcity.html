@@ -164,6 +164,13 @@
 #rc .rc-rollres.crit{color:var(--lime)}
 #rc .rc-rollres.fumble{color:var(--ember)}
 #rc .rc-rollnote{font-size:13px;color:var(--muted);line-height:1.5}
+#rc .rc-jobs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+#rc .rc-kitlist{margin:0;padding-left:18px;font-size:14px;line-height:1.7;color:var(--paper)}
+#rc .rc-kitfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:auto;padding-top:12px;border-top:1px solid var(--hair)}
+#rc .rc-kitfoot .rc-price{font-size:16px}
+#rc .rc-kitbtn{padding:10px 16px}
+#rc .rc-kitbtn b{font-size:14px}
+#rc .rc-kit .rc-need{font-size:12px}
 #rc .rc-rngnote{margin-top:24px;font-size:13px;line-height:1.6;color:var(--muted);max-width:760px}
 #rc .rc-rngnote b{color:var(--paper)}
 @media (prefers-reduced-motion:reduce){#rc .rc-die.rolling,#rc .rc-die.rolling svg,#rc .rc-die.landed{animation:none}}
@@ -226,18 +233,16 @@
     <header>
       <p class="rc-kick">STEP ONE</p>
       <h2>Recruit the crew</h2>
-      <p>Pick three recruits. The five most wanted across all the frens make the crew. Each one brings their own kit, and their credits go into the crew purse. Each job also gives the whole crew a perk in Act Two.</p>
-      <p class="rc-rule"><b>Crew rule:</b> only one job per crew. Once you pick a Gunslinger, the other Gunslingers are off the table.</p>
+      <p>Pick three jobs you want on the crew. The five most wanted across all the frens make the crew.</p>
     </header>
-    <div class="rc-grid" id="rc-jobs"></div>
+    <div class="rc-jobs" id="rc-jobs"></div>
   </section>
 
   <section class="rc-step" id="rc-market">
     <header>
       <p class="rc-kick">STEP TWO</p>
       <h2>Work the Pontune market</h2>
-      <p>Spend the purse. There isn't enough for everything, so choose carefully. Items marked behind the counter unlock only if the purse grows before voting closes.</p>
-      <p class="rc-rule">Weapons only help if a recruit can wield them, so check your crew's weapon types.</p>
+      <p>Four kits, each packed and priced. Pick the ones the crew should buy. There isn't enough in the purse for all of them, and the most wanted kits get bought first.</p>
       <div class="rc-rec" data-slot="market" hidden></div>
     </header>
     <div class="rc-grid" id="rc-stalls"></div>
@@ -247,7 +252,7 @@
     <header>
       <p class="rc-kick">STEP THREE</p>
       <h2>The plan</h2>
-      <p>Five decisions, from the Pontune market to the island. Four of them are encounters: everyone rolls a d20, and the crew's average roll decides how the chosen option plays out. There are no wrong answers, only consequences.</p>
+      <p>Three decisions for the island. Two of them are encounters: everyone rolls a d20, and the crew's average roll decides how the chosen option plays out. There are no wrong answers, only consequences.</p>
       <button type="button" class="rc-sound" id="rc-sound"></button>
     </header>
     <div id="rc-who" class="rc-whobox"></div>
@@ -269,7 +274,7 @@
 
 <script>
 (function () {
-  var DATA = {"key":"red_city_vote","points":50,"closes":"2026-09-30","crewSize":5,"picks":3,"bribe":2000,"recordings":[{"slot":"hero","label":"INCOMING TRANSMISSION · CPT. GREY SHIMADA","src":"https://africhmaurice.github.io/site/assets/audio/red-city-grey.m4a","transcript":[["Grey","First stop, we’ve got a date with a one-eyed sewer rat. Put together your inventory list. Buckle up, frens. We’re settin’ sail for the Red City. I hope you brought sunblock."]]},{"slot":"market","label":"BENJI'S BARGAIN SHOP","src":"https://africhmaurice.github.io/site/assets/audio/red-city-felix-benji.m4a","transcript":[["Felix","No fuckin’ way! Grey sent you? What is this, some kind of shopping trip? I don’t even know your names… The boss ain’t gonna like him sendin’ people his way without a word or nothing. Tell him the next time it happens, I’ll send their heads back in a box. Now get the fu—"],["Benji (far away)","Felix, who is it?!"],["Felix (calling back)","Sky pirates! From the redcoat!"],["Benji (far away)","*Laughs* Let em in, let em in!"],["","*Door creaking*"],["Benji","Hello, hello. Welcome to the Red City. I hope you’re good and lubed up, cause Sola don’t give a shit what backwater city you call home, it’ll burn your ass and charge a cover fee. Grey told me you were comin’. I forgot to tell Felix. That’s on me. What can I getcha?"]]}],"rollNote":"Your roll is averaged with the rest of the crew's and applied to whichever option the crew chooses. A natural 1 counts as two 0s, and a natural 20 counts as two 20s.","jobs":[{"key":"gunslinger","name":"Gunslinger","d":"Agility- and intuition-based ranged fighter with a gift for gunnery.","perk":"Quick Draw","perkText":"The first 10 frens to crack each Act Two riddle earn +25 bonus points.","a":[["Outlaw","“Draw!” Fast draw, duelist.",1000,"Revolvers & Blades · Morton M8, Prismblade, Knife, Brittle Shield, Minor Med Pack, Stim"],["Deadeye","“Impossible shot? Never heard of ’em.” Sniper, tactician.",1000,"Revolvers, Tactical Rifles & Blades · Elia Noma T5, Prismblade, Knife, Brittle Shield, Minor Med Pack, Stim"],["Trickster","“Look over there! Just kidding… Or was I?” Trick shots, deception.",1500,"Revolvers & Blades · Morton M8, Prismblade, 2 Knives, Brittle Shield, Minor Med Pack, Stim"],["Tank","“Rrra-da-da-dah!” Heavy artillery.",1000,"Revolvers, Semiauto Rifles, Blades & Blunts · Harbinger B80, Cleave, Longknife, Brittle Shield, Minor Med Pack, Stim"]]},{"key":"guardian","name":"Guardian","d":"Brawn-based melee fighter with a gift for improvised weapons.","perk":"Hold the Line","perkText":"The Act Two goal drops by 2,000 points.","a":[["Brawler","“Fists up, buttercup.” Hand-to-hand fighter.",1000,"Knuckles · Brittle Shield, Minor Med Pack, Stim (bring your own fists)"],["Gladiator","“I’m not here for your entertainment.” Rage, weapon savant.",1000,"Blades, Blunts, Semiauto Rifles & Revolvers · Harbinger B80, Cleave/Axe/Maul, Longknife, Brittle Shield, Minor Med Pack, Stim"],["Sentinel","“Behind me!” Defender, protector.",1000,"Plate, Revolvers & Semiauto Rifles · Harbinger B80, Steel Plate, Longknife, Brittle Shield, Minor Med Pack, Stim"]]},{"key":"crest_knight","name":"Crest Knight","d":"Agility- and intellect-based melee fighter, magically enhanced, with martial skill.","perk":"Oath of the Crest","perkText":"Double points on one Act Two task for 24 hours.","a":[["Moonstone","“Guns are for the weak-willed and the unskilled.” Light on their feet.",1000,"Torches & Blades · Torch, 2 Longknives, 5 Knives, Brittle Shield, Minor Med Pack, Stim"],["Emerald","“I would die for you a thousand times if I could.” Steadfast, a rock in the sea.",1000,"Torches & Blades · Torch, 2 Longknives, 5 Knives, Brittle Shield, Minor Med Pack, Stim"],["Ruby","“Get out of my way. Or I will carve a door through your abdomen.” Reckless, chaotic.",1000,"Torches & Blades · Torch, 2 Longknives, 5 Knives, Brittle Shield, Minor Med Pack, Stim"],["Sapphire","“The ocean does not fear the land. It consumes it.” Calculated, wise.",1000,"Torches & Blades · Torch, 2 Longknives, 5 Knives, Brittle Shield, Minor Med Pack, Stim"]]},{"key":"imperial","name":"Imperial","d":"Intuition- and vitality-based magical support and fighter.","perk":"Mend","perkText":"Reopens one closed Act Two riddle for 12 hours.","a":[["Radiant","“I can fix that.” Healer.",1000,"Blunts, Poles & Blades · Bo Staff/Flail/Spear, 2 Knives, Brittle Shield, 2 Minor Med Packs, Stim"],["Warden","“Stonie don’t like you. And if Stonie don’t like you, I don’t like you.” Beast master.",1000,"Blunts, Poles & Blades · Bo Staff/Flail/Spear, 2 Knives, Brittle Shield, 2 Minor Med Packs, Stim"],["Geomancer","“Watch your feet.” Manipulates the imperia.",1000,"Blunts, Poles & Blades · Bo Staff/Flail/Spear, 2 Knives, Brittle Shield, 2 Minor Med Packs, Stim"]]},{"key":"intangible","name":"Intangible","d":"Agility- and intuition-based magical fighter. Teleporter.","perk":"Slip Through","perkText":"Reveals one hidden loot box during Act Two.","a":[["Ghost","Assassin. Unseen, quick kills.",1000,"One-Handed Blades & Revolvers · Morton M8, 2 Longknives, 5 Knives, Brittle Shield, Minor Med Pack, Stim"],["Grift","Thief. Entering without breaking.",1500,"One-Handed Blades, Poles & Revolvers · Morton M8, 5 Knives, Brittle Shield, Minor Med Pack, Stim"],["Blink","Scout, runner. Fast teleporting.",1000,"One-Handed Blades, Poles & Revolvers · Morton M8, 5 Knives, Brittle Shield, Minor Med Pack, Stim"],["Sever","Heavy-weapon teleporter.",1000,"Blades & Revolvers · Cleave, Prismblade, Morton M8, 2 Knives, Brittle Shield, Minor Med Pack, Stim"]]},{"key":"oracle","name":"Oracle","d":"Intuition- and charm-based magical support and ranged fighter.","perk":"Foresight","perkText":"One crew-wide hint on an Act Two riddle.","a":[["Seer","Precognition, threat sense. Prediction.",1000,"Blunts, Revolvers, Poles & Blades · Morton M8, Bo Staff/Spear, Brittle Shield, Minor Med Pack, Stim"],["Empath","Emotions, truth detection. Aura reader.",1000,"Blunts, Revolvers, Poles & Blades · Morton M8, Bo Staff/Spear, Brittle Shield, Minor Med Pack, Stim"],["Omen","Battle-focused. Fighter.",1000,"Blunts, Revolvers, Poles & Blades · Cleave/Prismblade, Morton M8, 3 Knives, Brittle Shield, Minor Med Pack, Stim"],["Sage","Wise and learned. Scholar.",1000,"Blunts, Revolvers, Poles & Blades · Morton M8, Bo Staff/Spear, Brittle Shield, Minor Med Pack, Stim"]]},{"key":"techtailor","name":"Techtailor","d":"Intellect-based support and melee or ranged fighter.","perk":"Rig It","perkText":"One Act Two riddle gets a second attempt.","a":[["Noble","“Get down!” Bomber, sapper, alchemist.",1000,"Bombs, Blunts, Revolvers, Poles & Blades · Morton M8, 10 Flares, 2 Stunners, 2 Flashers, Cauterizer, 2 Med Packs, 2 Stims"],["Mod","Mech armor, android enhancements, big guns and blades.",1000,"Bombs, Blunts, Revolvers, Poles & Blades · Morton M8, Cleave/Axe/Maul, 3 Flares, Stunner or Flasher, Cauterizer, 2 Med Packs, 2 Stims"],["Stitcher","“Let me stitch on that.” Hacker, code breaker, inventor.",1500,"Bombs, Blunts, Revolvers, Poles & Blades · Morton M8, 3 Flares, Flasher, Stunner, Cauterizer, 2 Med Packs, 2 Stims"]]},{"key":"beast","name":"Beast","d":"A beast of Imperia. Cheap to feed, useful on any airship.","perk":"Wild Card","perkText":"A surprise bonus loot box drops for the whole crew.","a":[["Goma","Rock creature.",500,"Voice Box, Brittle Shield, 2 Minor Med Packs, 2 Stims"],["Hexspider","Creepy crawly.",500,"Voice Box, Brittle Shield, 2 Minor Med Packs, 2 Stims"],["Drake","Big lizard.",500,"Voice Box, Brittle Shield, 2 Minor Med Packs, 2 Stims"]]}],"stalls":[{"name":"Blades","d":"Knives can be thrown 12 meters (6 squares) as an attack.","items":[["Knife",1,250,"1D6 · one-handed, throwable"],["Longknife",1,500,"1D8 · one-handed, throwable"],["Prismblade",1,750,"1D8 · one-handed"],["Cleave",1,1000,"1D10 · two-handed"],["Axe",1,1250,"1D12 · two-handed"],["Knife+",3,2000,"2D6 · one-handed, throwable"],["Longknife+",3,2000,"2D8 · one-handed"],["Prismblade+",3,3000,"2D8 · one-handed"],["Cleave+",3,3500,"2D10 · two-handed"],["Axe+",3,4000,"2D12 · two-handed"],["Sizzle Steel",5,20000,"2D6 + 1D6 lightning · one-handed, throwable"],["Mechblade",5,30000,"2D8 + 1D6 lightning · one-handed"],["Sky Breaker Cleave",5,35000,"2D10 + 1D6 lightning · two-handed"],["Mechaxe",5,40000,"2D12 + 1D6 lightning · two-handed"]]},{"name":"Poles & Blunts","d":"Poles have double reach.","items":[["Bo Staff",1,500,"1D6 · two-handed"],["Flail",1,750,"1D8 · one-handed"],["Spear",1,1000,"1D10 · two-handed, double reach"],["Maul",1,1000,"1D10 · two-handed"],["Bo Staff+",3,2500,"2D6 · two-handed"],["Flail+",3,3500,"2D8 · one-handed"],["Spear+",3,3500,"1D10 · two-handed, double reach"],["Maul+",3,4500,"2D10 · two-handed"],["Bolt Staff",5,30000,"2D6 + ranged 1D6 lightning · two-handed"],["Electrident",5,35000,"2D10 + 1D6 lightning · double reach"],["Starburst Flail",5,35000,"2D8 + 1D6 lightning · one-handed"],["Hammer of the Gods",5,40000,"2D10 + 1D6 lightning · two-handed"]]},{"name":"Knuckles & Plates","d":"Knuckles come in pairs (2 hits per attack). A plate can be thrown or used to block, which gives advantage on REACT.","items":[["Iron Knuckles",1,500,"1D10 · pair, 2 hits"],["Steel Plate",1,750,"1D10 · throw or block"],["Spiked Knuckles",3,1500,"2D10 · pair, 2 hits"],["Steel Plate+",3,3500,"2D10 · auto-retrieved"],["Mech Fists",5,30000,"2D10 + 1D6 lightning · pair"],["Kinetic Plate",5,40000,"2D10 + 2D6 force"]]},{"name":"Guns","d":"Revolvers hit at 4 to 24 m, tactical rifles at 12 to 48 m, semiautos at 6 to 30 m.","items":[["Morton M8",1,2500,"Revolver · 2D10 · 8 rounds"],["Elia Noma T5",1,3500,"Tactical rifle · 2D10 · 5 rounds"],["Harbinger B80",1,5000,"Semiauto rifle · 2D12 · 30 rounds"],["Class 7 Brass Point",3,7500,"Revolver · 3D10 · 10 rounds"],["Elia Noma T11",3,10000,"Tactical rifle · 3D10 · 10 rounds"],["Harbinger B86",3,12500,"Semiauto rifle · 3D12 · 30 rounds"],["Class 8 Leviathan",5,50000,"Revolver · 4D10 · 12 rounds"],["Apollo S957",5,75000,"Tactical rifle · 4D10 · 15 rounds"],["Bishop T60",5,100000,"Semiauto rifle · 4D12 · 30 rounds"]]},{"name":"Bombs","d":"Thrown up to 20 m (10 squares).","items":[["Flare",1,1000,"1D10 · 4 squares"],["Stunner",1,2000,"1D10 + STUN · 4 squares"],["Flasher",1,2000,"1D10 + BLIND · 4 squares"],["Cuss",3,5000,"2D10 · 4 squares"],["Presser",3,25000,"3D10 · 9 squares · buried compression trap"],["Shark",5,40000,"2D10 · 16 squares"]]},{"name":"Shields","d":"They stop ranged and area damage, but not melee or magic. Never cross two.","items":[["Brittle Shield (Class E)",1,1000,"50 HP · rechargeable"],["Simple Shield (Class D)",2,10000,"100 HP · rechargeable"],["Meta Shield (Class C)",3,25000,"150 HP · rechargeable"],["Force Shield (Class B)",4,50000,"200 HP · rechargeable"]]},{"name":"Meds, Stims & Tech","d":"Injectables are a bonus action.","items":[["Minor Med Pack",1,500,"Restores 2D6 + VITALITY HP"],["Med Pack+",2,5000,"Restores 4D6 + VITALITY"],["Triple Dose",3,20000,"Restores 6D6 + VITALITY"],["Stim",1,5000,"Gain 1 extra action"],["Stim+",3,20000,"Gain 2 extra actions, take 2D6"],["Heart Buster",5,50000,"Gain 6 extra actions, take 3D6"],["Cauterizer",1,10000,"Stops BLEEDING, deals 1D6"],["Burner",1,250,"Peach, Cherry, Mint, Honeysuckle or Sage"]]}],"questions":[{"id":"knight","t":"A Crest Knight in the Pontune market has recognized one of the crew.","s":"He hasn't drawn his torch yet, but he's looking right at you.","o":[["Bribe him","2,000 credits off the purse. Clean and quiet."],["Talk your way out","An INFLUENCE check, DL 15. Free, if it works."],["Recruit him","DL 25, which the rulebook calls “Listen, fren…” territory. Legendary if it lands."],["Draw blades","In the middle of the Red City. Bold."]],"roll":true},{"id":"skies","t":"A merchant airship crosses your heading on the way out of Pontune.","s":"She's riding heavy in the air.","o":[["Sky Break her","Anchor mid-flight, board, plunder. The most dangerous option, and the most fun."],["Shadow her","Follow at a distance and learn where she's headed."],["Let her pass","The island is the job. Stay on it."]],"roll":true},{"id":"split","t":"When you get to the island, will you…?","s":"The island is big, and the crew is only so many pairs of boots.","o":[["Divide and Conquer","Split up and cover more ground. Faster, but nobody has your back."],["Stick Together","Move as one crew. Slower, but safer."]],"roll":true},{"id":"approach","t":"How do you want to approach the island?","s":"First impressions matter, even to an island.","o":[["Recon First","Gather information before anyone sets foot on the sand."],["Land Fast","Get boots on the ground and avoid detection."]],"roll":true},{"id":"landmarks","t":"Which landmarks do you want to see first?","s":"Pick up to three.","max":3,"o":[["Goma Skull",""],["Faces in the Rock",""],["Sword",""],["Temple",""],["Well",""],["South Tunnel",""],["Central Tunnel",""]]}]};
+  var DATA = {"key":"red_city_vote","points":50,"closes":"2026-09-30","crewSize":5,"picks":3,"recordings":[{"slot":"hero","label":"INCOMING TRANSMISSION · CPT. GREY SHIMADA","src":"https://africhmaurice.github.io/site/assets/audio/red-city-grey.m4a","transcript":[["Grey","First stop, we’ve got a date with a one-eyed sewer rat. Put together your inventory list. Buckle up, frens. We’re settin’ sail for the Red City. I hope you brought sunblock."]]},{"slot":"market","label":"BENJI'S BARGAIN SHOP","src":"https://africhmaurice.github.io/site/assets/audio/red-city-felix-benji.m4a","transcript":[["Felix","No fuckin’ way! Grey sent you? What is this, some kind of shopping trip? I don’t even know your names… The boss ain’t gonna like him sendin’ people his way without a word or nothing. Tell him the next time it happens, I’ll send their heads back in a box. Now get the fu—"],["Benji (far away)","Felix, who is it?!"],["Felix (calling back)","Sky pirates! From the redcoat!"],["Benji (far away)","*Laughs* Let em in, let em in!"],["","*Door creaking*"],["Benji","Hello, hello. Welcome to the Red City. I hope you’re good and lubed up, cause Sola don’t give a shit what backwater city you call home, it’ll burn your ass and charge a cover fee. Grey told me you were comin’. I forgot to tell Felix. That’s on me. What can I getcha?"]]}],"rollNote":"Your roll is averaged with the rest of the crew's and applied to whichever option the crew chooses. A natural 1 counts as two 0s, and a natural 20 counts as two 20s.","jobs":[{"key":"gunslinger","name":"Gunslinger","d":"Agility- and intuition-based ranged fighter with a gift for gunnery."},{"key":"guardian","name":"Guardian","d":"Brawn-based melee fighter with a gift for improvised weapons."},{"key":"crest_knight","name":"Crest Knight","d":"Agility- and intellect-based melee fighter, magically enhanced, with martial skill."},{"key":"imperial","name":"Imperial","d":"Intuition- and vitality-based magical support and fighter."},{"key":"intangible","name":"Intangible","d":"Agility- and intuition-based magical fighter. Teleporter."},{"key":"oracle","name":"Oracle","d":"Intuition- and charm-based magical support and ranged fighter."},{"key":"techtailor","name":"Techtailor","d":"Intellect-based support and melee or ranged fighter."},{"key":"beast","name":"Beast","d":"A beast of Imperia. Cheap to feed, useful on any airship."}],"kits":[{"name":"Thief Kit","price":12000,"d":"For getting in and out unseen.","items":["3 × Knife","2 × Flasher (1D10 + BLIND)","Morton M8 revolver","Stim","2 × Minor Med Pack"]},{"name":"Fighter Kit","price":18000,"d":"For when talking stops working.","items":["Cleave+ (2D10)","Harbinger B80 semiauto rifle","Simple Shield (Class D, 100 HP)","2 × Minor Med Pack"]},{"name":"Sabotage Kit","price":15000,"d":"For making a mess on purpose.","items":["2 × Cuss (2D10 blast)","2 × Stunner (1D10 + STUN)","3 × Flare"]},{"name":"Tech Kit","price":15000,"d":"For patching up people and gear.","items":["Cauterizer (stops BLEEDING)","Med Pack+","2 × Brittle Shield (Class E)","Burner"]}],"questions":[{"id":"split","t":"When you get to the island, will you…?","s":"The island is big, and the crew is only so many pairs of boots.","o":[["Divide and Conquer","Split up and cover more ground. Faster, but nobody has your back."],["Stick Together","Move as one crew. Slower, but safer."]],"roll":true},{"id":"approach","t":"How do you want to approach the island?","s":"First impressions matter, even to an island.","o":[["Recon First","Gather information before anyone sets foot on the sand."],["Land Fast","Get boots on the ground and avoid detection."]],"roll":true},{"id":"landmarks","t":"Which landmarks do you want to see first?","s":"Pick up to three.","max":3,"o":[["Goma Skull",""],["Faces in the Rock",""],["Sword",""],["Temple",""],["Well",""],["South Tunnel",""],["Central Tunnel",""]]}]};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
@@ -767,17 +772,14 @@
   var closed = today > DATA.closes;
 
   var arch = {}, items = {};
-  DATA.jobs.forEach(function (j) { j.a.forEach(function (a) { arch[a[0]] = { job: j, a: a }; }); });
-  DATA.stalls.forEach(function (s) { s.items.forEach(function (i) { items[i[0]] = i; }); });
+  DATA.jobs.forEach(function (j) { arch[j.name] = { job: j }; });
+  DATA.kits.forEach(function (k) { items[k.name] = k; });
 
   function purse() {
     if (basePurse == null) return null;
-    var p = basePurse;
-    for (var k in S.recruits) p += arch[S.recruits[k]].a[2];
-    if (S.plan.knight === 'Bribe him') p -= DATA.bribe;
-    return p;
+    return basePurse;
   }
-  function spent() { var t = 0; for (var n in S.cart) t += items[n][2] * S.cart[n]; return t; }
+  function spent() { var t = 0; for (var n in S.cart) t += items[n].price; return t; }
   function answered(q) { var v = S.plan[q.id]; return q.max ? !!(v && v.length) : !!v; }
   function changed() { S.sealed = false; store(STORE, S); render(); }
 
@@ -785,54 +787,28 @@
     var box = $('rc-jobs'), count = Object.keys(S.recruits).length;
     box.innerHTML = '';
     DATA.jobs.forEach(function (j) {
-      var el = document.createElement('article');
-      el.className = 'rc-card' + (S.recruits[j.key] ? ' taken' : '');
-      el.innerHTML = '<h3>' + esc(j.name) + '</h3><p class="rc-jd">' + esc(j.d) + '</p>' +
-        '<p class="rc-perk"><b>ACT TWO PERK · ' + esc(j.perk.toUpperCase()) + '</b>' + esc(j.perkText) + '</p><div class="rc-arches"></div>';
-      var list = el.querySelector('.rc-arches');
-      j.a.forEach(function (a) {
-        var on = S.recruits[j.key] === a[0];
-        var b = document.createElement('button');
-        b.type = 'button'; b.className = 'rc-arch';
-        b.setAttribute('aria-pressed', on);
-        b.disabled = !on && count >= DATA.picks && !S.recruits[j.key];
-        b.innerHTML = '<span class="n">' + esc(a[0]) + '</span><span class="c rc-num">+' + fmt(a[2]) + ' credits</span>' +
-          '<span class="q">' + esc(a[1]) + '</span><span class="kit">' + esc(a[3]) + '</span>';
-        b.onclick = function () { if (on) delete S.recruits[j.key]; else S.recruits[j.key] = a[0]; changed(); };
-        list.appendChild(b);
-      });
-      box.appendChild(el);
+      var on = !!S.recruits[j.key], b = document.createElement('button');
+      b.type = 'button'; b.className = 'rc-opt';
+      b.setAttribute('aria-pressed', on);
+      b.disabled = !on && count >= DATA.picks;
+      b.innerHTML = '<b>' + esc(j.name) + '</b><span>' + esc(j.d) + '</span>';
+      b.onclick = function () { if (on) delete S.recruits[j.key]; else S.recruits[j.key] = j.name; changed(); };
+      box.appendChild(b);
     });
   }
 
   function renderStalls() {
     var box = $('rc-stalls'), p = purse(), left = p == null ? Infinity : p - spent();
     box.innerHTML = '';
-    DATA.stalls.forEach(function (s) {
-      var el = document.createElement('article');
-      el.className = 'rc-card';
-      el.innerHTML = '<h3>' + esc(s.name) + '</h3><p class="rc-sd">' + esc(s.d) + '</p>';
-      s.items.forEach(function (i) {
-        var q = S.cart[i[0]] || 0, locked = p != null && i[2] > p && !q;
-        var row = document.createElement('div');
-        row.className = 'rc-item' + (q ? ' on' : '') + (locked ? ' rc-locked' : '');
-        row.innerHTML = '<div class="n">' + esc(i[0]) + '<span class="lv">LV ' + i[1] + '</span></div><div class="d">' + esc(i[3]) + '</div>';
-        var right = document.createElement('div');
-        right.className = 'rc-qty';
-        if (locked) {
-          right.innerHTML = '<div class="rc-price rc-num">' + fmt(i[2]) + '<span class="rc-need">BEHIND THE COUNTER · needs ' + fmt(i[2] - p) + ' more</span></div>';
-        } else {
-          right.innerHTML = '<div class="rc-price rc-num">' + fmt(i[2]) + '</div>' +
-            '<button type="button" aria-label="Remove one ' + esc(i[0]) + '"' + (q ? '' : ' disabled') + '>&minus;</button>' +
-            '<span class="q rc-num">' + q + '</span>' +
-            '<button type="button" aria-label="Add one ' + esc(i[0]) + '"' + (i[2] > left || q >= 99 ? ' disabled' : '') + '>+</button>';
-          var btns = right.querySelectorAll('button');
-          btns[0].onclick = function () { if (q > 1) S.cart[i[0]] = q - 1; else delete S.cart[i[0]]; changed(); };
-          btns[1].onclick = function () { S.cart[i[0]] = q + 1; changed(); };
-        }
-        row.appendChild(right);
-        el.appendChild(row);
-      });
+    DATA.kits.forEach(function (k) {
+      var on = !!S.cart[k.name], short = !on && p != null && k.price > left, el = document.createElement('article');
+      el.className = 'rc-card rc-kit' + (on ? ' taken' : '');
+      el.innerHTML = '<h3>' + esc(k.name) + '</h3><p class="rc-sd">' + esc(k.d) + '</p>' +
+        '<ul class="rc-kitlist">' + k.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>' +
+        '<div class="rc-kitfoot"><span class="rc-price rc-num">' + fmt(k.price) + ' credits</span>' +
+        '<button type="button" class="rc-opt rc-kitbtn" aria-pressed="' + on + '"' + (short ? ' disabled' : '') + '><b>' + (on ? 'IN THE CARGO' : 'BUY THIS KIT') + '</b></button></div>' +
+        (short ? '<p class="rc-need">Not enough left in the purse.</p>' : '');
+      el.querySelector('.rc-kitbtn').onclick = function () { if (on) delete S.cart[k.name]; else S.cart[k.name] = 1; changed(); };
       box.appendChild(el);
     });
   }
@@ -887,7 +863,7 @@
   function missing() {
     var m = [], r = Object.keys(S.recruits).length, p = purse();
     if (r < DATA.picks) m.push('recruit ' + (DATA.picks - r) + ' more');
-    if (!Object.keys(S.cart).length) m.push('buy something');
+    if (!Object.keys(S.cart).length) m.push('buy at least one kit');
     var un = DATA.questions.filter(function (q) { return !answered(q); }).length;
     if (un) m.push('answer ' + un + ' more plan question' + (un > 1 ? 's' : ''));
     var nr = DATA.questions.filter(function (q) { return q.roll && !S.rolls[q.id]; }).length;
@@ -899,11 +875,11 @@
   function renderOrders() {
     var li = function (a) { return a.length ? '<ul>' + a.join('') + '</ul>' : '<p class="rc-empty">Nothing yet.</p>'; };
     var r = [], c = [], pl = [];
-    for (var k in S.recruits) r.push('<li>' + esc(S.recruits[k]) + ' <span style="color:var(--ink4)">' + esc(arch[S.recruits[k]].job.name) + '</span></li>');
-    for (var n in S.cart) c.push('<li class="rc-num">' + S.cart[n] + ' &times; ' + esc(n) + '</li>');
+    for (var k in S.recruits) r.push('<li>' + esc(S.recruits[k]) + '</li>');
+    for (var n in S.cart) c.push('<li>' + esc(n) + '</li>');
     DATA.questions.forEach(function (q) { if (answered(q)) pl.push('<li>' + esc(q.max ? S.plan[q.id].join(', ') : S.plan[q.id]) + (q.roll && S.rolls[q.id] ? ' <span style="color:var(--muted)">· rolled ' + S.rolls[q.id] + '</span>' : '') + '</li>'); });
     $('rc-olist').innerHTML =
-      '<div><h4>YOUR RECRUITS (' + r.length + '/' + DATA.picks + ')</h4>' + li(r) + '</div>' +
+      '<div><h4>YOUR CREW PICKS (' + r.length + '/' + DATA.picks + ')</h4>' + li(r) + '</div>' +
       '<div><h4>CARGO · ' + fmt(spent()) + ' CREDITS</h4>' + li(c) + '</div>' +
       '<div><h4>THE PLAN</h4>' + li(pl) + '</div>';
 
@@ -1045,7 +1021,7 @@
 
   // A stale recruit or item (renamed in the catalog since this browser voted) is dropped quietly.
   for (var k in S.recruits) if (!arch[S.recruits[k]]) delete S.recruits[k];
-  for (var n in S.cart) if (!items[n]) delete S.cart[n];
+  for (var n in S.cart) { if (!items[n]) delete S.cart[n]; else S.cart[n] = 1; }
   var planIds = {};
   DATA.questions.forEach(function (q) {
     planIds[q.id] = true;
