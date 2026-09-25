@@ -493,7 +493,7 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
       <div class="mh-pmid"><div class="mh-plabel">INCOMING TRANSMISSION · CPT. GREY SHIMADA</div><div class="mh-ptrack"><div class="mh-pfill"></div></div></div>
       <div class="mh-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/red-city-grey.m4a"></audio></div>
     <details class="mh-tx"><summary>Read the transcript</summary><div><p><b>Grey</b>First stop, we’ve got a date with a one-eyed sewer rat. Put together your inventory list. Buckle up, frens. We’re settin’ sail for the Red City. I hope you brought sunblock.</p></div></details>
-    <p class="mh-blurb">Before the crew sails for the island, Grey's sending us shopping in Pontune. Recruit your crew, spend the crew's purse (every point you've earned is a credit) and vote on the plan. Every fren who votes earns 50 points. Voting opens Sunday, September 27 at 8 AM ET and closes 24 hours later, Monday, September 28 at 8 AM ET.</p>
+    <p class="mh-blurb">Before you sail for the island, Grey is sending you shopping in Pontune. Head that way now. You're looking for the one-eyed sewer rat!</p>
     <button type="button" class="mh-cta" data-reveal="pontune">GO SHOPPING IN PONTUNE</button>
   </div>
 </div>
@@ -506,16 +506,17 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
       <div class="mh-pmid"><div class="mh-plabel">BENJI'S BARGAIN SHOP</div><div class="mh-ptrack"><div class="mh-pfill"></div></div></div>
       <div class="mh-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/red-city-felix-benji.m4a"></audio></div>
     <details class="mh-tx"><summary>Read the transcript</summary><div><p><b>Felix</b>No fuckin’ way! Grey sent you? What is this, some kind of shopping trip? I don’t even know your names… The boss ain’t gonna like him sendin’ people his way without a word or nothing. Tell him the next time it happens, I’ll send their heads back in a box. Now get the fu—</p><p><b>Benji (far away)</b>Felix, who is it?!</p><p><b>Felix (calling back)</b>Sky pirates! From the redcoat!</p><p><b>Benji (far away)</b><i>Laughs</i> Let em in, let em in!</p><p><i>Door creaking</i></p><p><b>Benji</b>Hello, hello. Welcome to the Red City. I hope you’re good and lubed up, cause Sola don’t give a shit what backwater city you call home, it’ll burn your ass and charge a cover fee. Grey told me you were comin’. I forgot to tell Felix. That’s on me. What can I getcha?</p></div></details>
-    <p class="mh-blurb">Benji's expecting you. Felix, not so much. Pick three recruits, stock up with the crew's purse (1 point = 1 credit) and choose how the crew takes the island. The frens vote together, and the crew goes with the majority. Voting earns 50 points.</p>
+    <p class="mh-blurb">Benji's expecting you. Felix isn't—but it all works out! The frens vote together. Majority rules. Pick the crew, choose your kits, and make a plan! Every fren who votes earns 50 points. You have 24 hours from Sunday, September 27 at 8 AM ET.</p>
     <a class="mh-cta" href="https://africhmaurice.github.io/site/preview/redcity.html">ENTER BENJI'S BARGAIN SHOP</a>
   </div>
 </div>
   <script>(function(){
   // Popups live on <body> so no section's stacking or overflow can clip them.
-  var pops = document.querySelectorAll('.mh-pop'), last = null, KEY = 'thHunt:revealed';
+  var pops = document.querySelectorAll('.mh-pop'), last = null, KEY = 'thHunt:map:red-city';
   function seen(){try{return JSON.parse(localStorage.getItem(KEY)||'[]');}catch(e){return [];}}
   if (location.search.indexOf('reset-map') >= 0) { try { localStorage.removeItem(KEY); } catch (e) {} }
   seen().forEach(function (id) { var s = document.getElementById('mh-spot-' + id); if (s) s.hidden = false; });
+  function remember(id){var list=seen();if(list.indexOf(id)<0){list.push(id);try{localStorage.setItem(KEY,JSON.stringify(list));}catch(e){}}}
   function reveal(id){var s=document.getElementById('mh-spot-'+id);if(!s)return null;var was=s.hidden;s.hidden=false;
     if(was){s.classList.remove('mh-in');void s.offsetWidth;s.classList.add('mh-in');}
     var list=seen();if(list.indexOf(id)<0){list.push(id);try{localStorage.setItem(KEY,JSON.stringify(list));}catch(e){}}return s;}
@@ -527,14 +528,16 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
   // The zoom: the first time the map comes into view, it closes in on Fenna's Soul until the dot
   // fills the frame. Leaving Grey's popup pulls the map back out, and Pontune appears once it has.
   var map = document.querySelector('#map .mh-map'), calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var fresh = seen().indexOf('pontune') < 0;
+  // Seen this chapter's zoom already: no replay; the map stays as they left it, with every marker out.
+  if (seen().indexOf('zoom') >= 0) reveal('pontune');
+  var fresh = seen().indexOf('pontune') < 0 && seen().indexOf('zoom') < 0;
   if (map && fresh && !calm && 'IntersectionObserver' in window) {
     // "In view" means 60% of the map, or 60% of the screen when the map is taller than the screen.
     var steps = []; for (var i = 0; i <= 20; i++) steps.push(i / 20);
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
         var need = Math.min(e.boundingClientRect.height, window.innerHeight) * 0.6;
-        if (e.isIntersecting && e.intersectionRect.height >= need) { map.classList.add('mh-zoomed'); io.disconnect(); }
+        if (e.isIntersecting && e.intersectionRect.height >= need) { map.classList.add('mh-zoomed'); io.disconnect(); remember('zoom'); }
       });
     }, { threshold: steps });
     io.observe(map);
