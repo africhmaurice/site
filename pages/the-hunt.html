@@ -290,14 +290,15 @@ window.maConfetti = function(from){
 #hunt-video-overlay:hover .hv-play{transform:translate(-50%,-50%) scale(1.06)}
 #hunt-video .hv-label{position:absolute;left:50%;top:calc(50% + var(--d) * .6);transform:translateX(-50%);white-space:nowrap;font-family:'Atomic Marker',cursive;font-weight:400;font-size:max(17px,min(40px,3.8cqw));color:#fff;line-height:1.15;background:rgba(11,23,15,.94);border-radius:12px;padding:0 .7em;min-height:calc(var(--d) * .72);display:flex;align-items:center;text-shadow:0 2px 12px rgba(0,0,0,.6)}
 </style>
-    <div id="hunt-video" class="m-video" style="max-width:960px;margin:0 auto 64px;position:relative;aspect-ratio:16/9;background:#0b170f;box-shadow:6px 7px 0 rgba(0,0,0,.35);border:1px solid #111">
-      <iframe id="hunt-video-frame" src="https://www.loom.com/embed/4c96413ffa45456b880d3fbb7bd43714" title="How the Treasure Hunt works" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+    <div id="hunt-video" class="m-video" style="max-width:960px;margin:0 auto 64px;position:relative;aspect-ratio:16/9;background:#0b170f url(https://cdn.loom.com/sessions/thumbnails/4c96413ffa45456b880d3fbb7bd43714-5a20b52f92031b32.jpg) center/contain no-repeat;box-shadow:6px 7px 0 rgba(0,0,0,.35);border:1px solid #111">
+      <iframe id="hunt-video-frame" title="How the Treasure Hunt works" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
       <div id="hunt-video-overlay" style="position:absolute;inset:0;cursor:pointer;background:radial-gradient(ellipse at 50% 50%,rgba(11,23,15,.55) 0%,rgba(11,23,15,.88) 100%)">
         <div class="hv-play"><svg viewBox="0 0 24 24" fill="#ffffff"><path d="M6 3.5v17l14-8.5z"></path></svg></div>
         <div class="hv-label">WATCH THE TUTORIAL</div>
       </div>
     </div>
     <script>
+    // The video loads only when someone presses play; until then the page shows Loom's still frame (saves ~18 MB).
     (function(){
       var ov = document.getElementById('hunt-video-overlay');
       if(ov) ov.addEventListener('click', function(){
