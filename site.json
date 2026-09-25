@@ -88,7 +88,7 @@
     },
     {
       "slug": "game-crossword",
-      "url": "(preview only, not on Squarespace yet)",
+      "url": "/crossword",
       "title": "Game: Crossword",
       "source": "bot:squarespace-game-crossword.html"
     },
