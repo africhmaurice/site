@@ -198,6 +198,8 @@
 #rc .rc-cta:disabled{background:var(--well);border-color:var(--hair2);color:var(--muted);cursor:not-allowed}
 #rc .rc-msg{font-size:14px;color:var(--ember);margin-top:14px}
 #rc .rc-ok{font-size:15px;color:var(--paper);margin-top:16px;line-height:1.6}
+#rc .rc-next{margin-top:22px;padding-top:18px;border-top:1px solid var(--hair)}#rc .rc-next p{font-weight:800;font-size:17px;color:var(--cream);margin:0 0 12px}
+#rc .rc-cta{display:inline-block;font-weight:800;font-size:15px;letter-spacing:.09em;text-decoration:none;color:#fff;background:#c53200;border:2px solid var(--cream);padding:13px 26px;transition:transform .15s ease,background .15s ease}#rc .rc-cta:hover{background:#ff4c0f;transform:scale(1.03)}
 #rc .rc-ok b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:34px;color:var(--lime);display:block}
 #rc .rc-quiet{font-size:14px;color:var(--muted)}
 #rc .rc-quiet a{color:#fff;text-decoration:underline;cursor:pointer}
@@ -995,10 +997,12 @@
   $('rc-sound').onclick = function () { Dice.setMuted(!Dice.muted()); paintSound(); };
   paintSound();
 
+  // After a vote: point them at the loot box clues.
+  var NEXT = '<div class="rc-next"><p>Want to find more loot boxes? Follow the clues!</p><a class="rc-cta" href="https://www.mauriceafrich.com/lootbox-clue">SEE THE CLUES</a></div>';
   $('rc-seal').onclick = function () {
     var who = readWho(), msg = $('rc-msg'), btn = this;
     if (PREVIEW) {
-      $('rc-result').innerHTML = '<p class="rc-ok"><b>PREVIEW</b>Your orders look good. On the live page, this sends them to the Captain and pays the voting points.</p>';
+      $('rc-result').innerHTML = '<p class="rc-ok"><b>PREVIEW</b>Your orders look good. On the live page, this sends them to the Captain and pays the voting points.</p>' + NEXT;
       return;
     }
     if (typeof who === 'string') { msg.textContent = who; $('rc-who').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
@@ -1014,7 +1018,7 @@
         if (res.count) $('rc-count').textContent = fmt(res.count);
         $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.status === 'new' ? '+' + res.points + ' POINTS' : 'ORDERS UPDATED') + '</b>' +
           (res.status === 'new' ? 'Your orders are with the Captain. The points land on the leaderboard at the next tally.' : 'Your new orders replace your old ones. No extra points, but your vote counts as it stands now.') +
-          ' You can change your vote until it closes.</p>';
+          ' You can change your vote until it closes.</p>' + NEXT;
         renderOrders(); renderWallet();
         return;
       }
@@ -1140,10 +1144,16 @@
   });
   render();
 
-  if (window.fetch) fetch(BOARD + '?t=' + Math.floor(Date.now() / 300000))
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (d) { if (d && typeof d.crewTotal === 'number') { basePurse = d.crewTotal; render(); } })
-    .catch(function () {});
+  // The purse is the crew's live point total, so it grows during the vote: re-read it every few minutes.
+  function loadPurse() {
+    if (!window.fetch) return;
+    fetch(BOARD + '?t=' + Math.floor(Date.now() / 120000))
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d && typeof d.crewTotal === 'number' && d.crewTotal !== basePurse) { basePurse = d.crewTotal; render(); } })
+      .catch(function () {});
+  }
+  loadPurse();
+  if (!closed) setInterval(loadPurse, 300000);
   jsonp({ action: 'votecount' }, function (res) { $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
 })();
 </script>
