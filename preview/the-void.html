@@ -5,7 +5,7 @@
      ============================================================ -->
 <style>
 html,body{margin:0 !important;padding:0 !important;background:#0b170f !important}
-#ma-void{position:relative;width:1000px;height:1000px;background:#0b170f;margin-left:calc(50% - 50vw)}
+#ma-void{position:relative;width:1000px;height:1000px;background:#0b170f}
 #ma-void .v-say{position:fixed;left:24px;top:22px;font-family:'Almarai',sans-serif;font-weight:800;font-size:20px;letter-spacing:.1em;color:#89fbcb;pointer-events:none;z-index:2}
 #ma-void .v-dot{position:absolute;left:731px;top:618px;width:1px;height:1px;background:#213226;cursor:pointer}
 #ma-void .v-dot::after{content:'';position:absolute;left:-3px;top:-3px;width:7px;height:7px}
@@ -16,6 +16,9 @@ html,body{margin:0 !important;padding:0 !important;background:#0b170f !important
   // The Squarespace section and its layout grid would clip a page this size: let it spill out.
   var v=document.getElementById('ma-void');
   for(var e=v.parentElement;e&&e!==document.body;e=e.parentElement){e.style.overflow='visible';e.style.maxWidth='none';if(e.classList.contains('fluid-engine'))e.style.display='block';if(e.classList.contains('content-wrapper')){e.style.padding='0';}}
+  // Line the void up with the window's left edge, wherever Squarespace put the block.
+  function edge(){v.style.marginLeft='0px';v.style.marginLeft=(-(v.getBoundingClientRect().left+window.scrollX))+'px';}
+  edge();window.addEventListener('resize',edge);window.addEventListener('load',edge);
   var k='PREVIEW-NkRTWTRYSks9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
   v.querySelector('.v-dot').addEventListener('click',function(){var m=document.createElement('div');m.textContent='You found it! (Preview: on the live site this opens loot box 18.)';m.style.cssText='position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);background:#fffffe;color:#0b170f;font:700 20px/1.4 Almarai,sans-serif;padding:22px 28px;border:3px solid #0b170f;z-index:9;text-align:center;max-width:80vw';document.body.appendChild(m);});
 })();
