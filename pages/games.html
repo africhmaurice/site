@@ -1,6 +1,7 @@
 <!-- Generated copy of squarespace-wordle.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
 <!-- ============================================================
-     DAILY WORD - a Wordle for the Cello's Gate Treasure Hunt.
+     DAILY WORD (SKYWORD) - a daily word game for the Cello's Gate Treasure Hunt.
+     From Sept 26 the words come from all of science fiction and fantasy.
      Paste this whole thing into a Squarespace Code Block on its own page.
 
      HOW THE WORDS WORK
@@ -212,13 +213,14 @@ button.thw-submit{cursor:pointer}
     <script>(function(){function fit(){var t=document.querySelectorAll('.hg-tag');for(var i=0;i<t.length;i++){var e=t[i],w=e.parentNode.clientWidth;e.style.fontSize='';var fs=parseFloat(getComputedStyle(e).fontSize);while(e.scrollWidth>w&&fs>10){fs-=.5;e.style.fontSize=fs+'px';}}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fit);else setTimeout(fit,0);window.addEventListener('load',fit);window.addEventListener('resize',fit);})();</script>
     <div class="m-eyebrow" style="font-family:'Atomic Marker',cursive;font-size:clamp(24px,3.4vw,44px);color:#ffd9c4;margin-bottom:12px">The Treasure Hunt</div>
     <h1 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(52px,9vw,124px);line-height:1.04;color:#fff;margin:0 0 22px">SKYWORD</h1>
-    <p class="hg-tag" style="white-space:nowrap;font-weight:700;font-size:clamp(15px,1.8vw,19px);letter-spacing:.05em;line-height:1.6;color:#ffd9c4;text-shadow:0 1px 6px rgba(0,0,0,.4);margin:0 auto">One word from <em>Cello's Gate</em>, six guesses. New every midnight EDT.</p>
+    <p class="hg-tag" style="white-space:nowrap;font-weight:700;font-size:clamp(15px,1.8vw,19px);letter-spacing:.05em;line-height:1.6;color:#ffd9c4;text-shadow:0 1px 6px rgba(0,0,0,.4);margin:0 auto">One word from all of SFF, six guesses. New every midnight EDT.</p>
   </div>
 
   <main style="background:rgba(255,255,255,.94);border:3px solid #111;max-width:780px;margin:0 auto;padding:clamp(26px,4vw,48px) clamp(16px,3.5vw,44px) clamp(28px,4vw,44px)">
 
     <div id="thw-badge" style="text-align:center"></div>
     <div id="thw-stamp" style="text-align:center;font-weight:700;font-size:clamp(12px,1.5vw,14px);letter-spacing:.09em;text-transform:uppercase;color:#607667;margin:0 0 6px">&nbsp;</div>
+    <p id="thw-note" style="text-align:center;font-weight:700;font-size:clamp(14px,1.7vw,16px);line-height:1.5;color:#c53200;max-width:560px;margin:4px auto 0">Starting September 26, Skyword words come from all of science fiction and fantasy, not just <em>Cello&rsquo;s Gate</em>!</p>
     <div id="thw-hint" style="display:none;text-align:center;font-size:clamp(15px,1.9vw,19px);line-height:1.5;color:#111;margin:0 0 22px"></div>
     <div id="thw-spacer" style="height:22px"></div>
 
@@ -283,43 +285,43 @@ button.thw-submit{cursor:pointer}
     { w: 'R09NQQ==', hint: '' }, // #3  Sep 23, 4 letters
     { w: 'VFJFTkNI', hint: '' }, // #4  Sep 24, 6 letters
     { w: 'UElSQVRF', hint: '' }, // #5  Sep 25, 6 letters
-    { w: 'SVNMQU5E', hint: '' }, // #6  Sep 26, 6 letters
-    { w: 'T1JBQ0xF', hint: '' }, // #7  Sep 27, 6 letters
-    { w: 'R1JFWQ==', hint: '' }, // #8  Sep 28, 4 letters
-    { w: 'SU1NT1JUQUw=', hint: '' }, // #9  Sep 29, 8 letters
-    { w: 'R09WRVJOT1I=', hint: '' }, // #10 Sep 30, 8 letters
-    { w: 'TUlOTg==', hint: '' }, // #11 Oct 01, 4 letters
-    { w: 'SU5ESUdP', hint: '' }, // #12 Oct 02, 6 letters
-    { w: 'Q1JFU1Q=', hint: '' }, // #13 Oct 03, 5 letters
-    { w: 'QlJBU1NQT0lOVA==', hint: '' }, // #14 Oct 04, 10 letters
-    { w: 'RE9U', hint: '' }, // #15 Oct 05, 3 letters
-    { w: 'SUNJVFk=', hint: '' }, // #16 Oct 06, 5 letters
-    { w: 'S05JR0hU', hint: '' }, // #17 Oct 07, 6 letters
-    { w: 'Q0VMTE8=', hint: '' }, // #18 Oct 08, 5 letters
-    { w: 'SEVYU1BJREVS', hint: '' }, // #19 Oct 09, 9 letters
-    { w: 'RkFOVEFTWQ==', hint: '' }, // #20 Oct 10, 7 letters
-    { w: 'SU1QRVJJQUw=', hint: '' }, // #21 Oct 11, 8 letters
-    { w: 'VE9SQ0g=', hint: '' }, // #22 Oct 12, 5 letters
-    { w: 'TUFQUw==', hint: '' }, // #23 Oct 13, 4 letters
-    { w: 'U0NJRkk=', hint: '' }, // #24 Oct 14, 5 letters
-    { w: 'TUFHSUM=', hint: '' }, // #25 Oct 15, 5 letters
-    { w: 'VEVMRUtJTkVTSVM=', hint: '' }, // #26 Oct 16, 11 letters
-    { w: 'SU5UQU5HSUJMRQ==', hint: '' }, // #27 Oct 17, 10 letters
-    { w: 'Q09NTVM=', hint: '' }, // #28 Oct 18, 5 letters
-    { w: 'RkFSTE9X', hint: '' }, // #29 Oct 19, 6 letters
-    { w: 'UFJJU00=', hint: '' }, // #30 Oct 20, 5 letters
-    { w: 'QUZSSUNI', hint: '' }, // #31 Oct 21, 6 letters
-    { w: 'R0FURQ==', hint: '' }, // #32 Oct 22, 4 letters
-    { w: 'QU5DSUVOVA==', hint: '' }, // #33 Oct 23, 7 letters
-    { w: 'VFJFQVNVUkU=', hint: '' }, // #34 Oct 24, 8 letters
-    { w: 'U0FHQQ==', hint: '' }, // #35 Oct 25, 4 letters
-    { w: 'TUFSUw==', hint: '' }, // #36 Oct 26, 4 letters
-    { w: 'UE9OVFVORQ==', hint: '' }, // #37 Oct 27, 7 letters
-    { w: 'SU1QRVJJQQ==', hint: '' }, // #38 Oct 28, 7 letters
-    { w: 'U0tZ', hint: '' }, // #39 Oct 29, 3 letters
-    { w: 'Q09VTkNJTA==', hint: '' }, // #40 Oct 30, 7 letters
-    { w: 'RURFTg==', hint: '' }, // #41 Oct 31, 4 letters
-    { w: 'U1RVUkRZ', hint: '' }  // #42 Nov 01, 6 letters
+    { w: 'RFJBR09O', hint: '' }, // #6  Sep 26, 6 letters
+    { w: 'SE9CQklU', hint: '' }, // #7  Sep 27, 6 letters
+    { w: 'V0FSUA==', hint: '' }, // #8  Sep 28, 4 letters
+    { w: 'U1BJQ0U=', hint: '' }, // #9  Sep 29, 5 letters
+    { w: 'V0laQVJE', hint: '' }, // #10 Sep 30, 6 letters
+    { w: 'Uk9CT1Q=', hint: '' }, // #11 Oct 01, 5 letters
+    { w: 'R1JJTURBUks=', hint: '' }, // #12 Oct 02, 8 letters
+    { w: 'R0FMQVhZ', hint: '' }, // #13 Oct 03, 6 letters
+    { w: 'RElSRVdPTEY=', hint: '' }, // #14 Oct 04, 8 letters
+    { w: 'UE9SVEFM', hint: '' }, // #15 Oct 05, 6 letters
+    { w: 'R09MRU0=', hint: '' }, // #16 Oct 06, 5 letters
+    { w: 'QU5EUk9JRA==', hint: '' }, // #17 Oct 07, 7 letters
+    { w: 'S1JBS0VO', hint: '' }, // #18 Oct 08, 6 letters
+    { w: 'TUFHRQ==', hint: '' }, // #19 Oct 09, 4 letters
+    { w: 'U1RBUlNISVA=', hint: '' }, // #20 Oct 10, 8 letters
+    { w: 'V1lWRVJO', hint: '' }, // #21 Oct 11, 6 letters
+    { w: 'TVVUQU5U', hint: '' }, // #22 Oct 12, 6 letters
+    { w: 'UVVFU1Q=', hint: '' }, // #23 Oct 13, 5 letters
+    { w: 'Q1lCT1JH', hint: '' }, // #24 Oct 14, 6 letters
+    { w: 'UEhPRU5JWA==', hint: '' }, // #25 Oct 15, 7 letters
+    { w: 'V1lSTQ==', hint: '' }, // #26 Oct 16, 4 letters
+    { w: 'R1JJRkZJTg==', hint: '' }, // #27 Oct 17, 7 letters
+    { w: 'TkVCVUxB', hint: '' }, // #28 Oct 18, 6 letters
+    { w: 'RUxWRU4=', hint: '' }, // #29 Oct 19, 5 letters
+    { w: 'TUFHSUM=', hint: '' }, // #30 Oct 20, 5 letters
+    { w: 'T1JD', hint: '' }, // #31 Oct 21, 3 letters
+    { w: 'QkxBREU=', hint: '' }, // #32 Oct 22, 5 letters
+    { w: 'TElUUlBH', hint: '' }, // #33 Oct 23, 6 letters
+    { w: 'R09CTElO', hint: '' }, // #34 Oct 24, 6 letters
+    { w: 'V0FSRw==', hint: '' }, // #35 Oct 25, 4 letters
+    { w: 'UlVORVM=', hint: '' }, // #36 Oct 26, 5 letters
+    { w: 'V0VSRVdPTEY=', hint: '' }, // #37 Oct 27, 8 letters
+    { w: 'VkFNUElSRQ==', hint: '' }, // #38 Oct 28, 7 letters
+    { w: 'QkFOU0hFRQ==', hint: '' }, // #39 Oct 29, 7 letters
+    { w: 'V1JBSVRI', hint: '' }, // #40 Oct 30, 6 letters
+    { w: 'V0lUQ0g=', hint: '' }, // #41 Oct 31, 5 letters
+    { w: 'VFJFQVNVUkU=', hint: '' }  // #42 Nov 01, 8 letters
   ];
   var SUBMIT_URL = 'https://www.mauriceafrich.com/points';
   var TRIES = 6;
