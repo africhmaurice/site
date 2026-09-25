@@ -60,7 +60,7 @@ to find their prize.`],
   [12, 'Samuel Chastain Rogers aka "Pops"'],
   [13, 'In the Dark (Visually)', { flash: ART + 'clue-13-flash.webp' }],
   [14, 'Them: "As an author, you\'re not supposed to do this!"'],
-  [15, `You're doing great, kid. I love your passion, your work ethic, your commitment to always being you. And that's what's important to me because *you're* important to me. I couldn't be more proud to be your dad.`],
+  [15, `“You're doing great, kid. I love your passion, your work ethic, your commitment to always being you. And that's what's important to me because *you're* important to me. I couldn't be more proud to be your dad.”`],
   [17, '', { img: ART + 'clue-17.webp', alt: 'A barrel smoker with a coffee can on its chimney' }],
   [18, 'click this', { href: VOID }],
 ];

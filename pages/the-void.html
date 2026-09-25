@@ -6,10 +6,11 @@
 <style>
 html,body{margin:0 !important;padding:0 !important;background:#0b170f !important}
 #ma-void{position:relative;width:10000px;height:10000px;background:#0b170f;margin-left:calc(50% - 50vw)}
+#ma-void .v-say{position:fixed;left:0;right:0;top:28px;text-align:center;font-family:'Almarai',sans-serif;font-weight:700;font-size:18px;letter-spacing:.12em;color:#607667;pointer-events:none;z-index:2}
 #ma-void .v-dot{position:absolute;left:7321px;top:6184px;width:1px;height:1px;background:#213226;cursor:pointer}
 #ma-void .v-dot::after{content:'';position:absolute;left:-3px;top:-3px;width:7px;height:7px}
 </style>
-<div id="ma-void" aria-label="The void"><div class="v-dot" role="link" tabindex="-1"></div></div>
+<div id="ma-void" aria-label="The void"><div class="v-say">click the pixel</div><div class="v-dot" role="link" tabindex="-1"></div></div>
 <script>
 (function(){
   // The Squarespace section and its layout grid would clip a page this size: let it spill out.
