@@ -67,7 +67,9 @@ to find their prize.`],
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const boards = CLUES.map(([n, text, o = {}]) => {
-  let body = text ? `<div class="lc-text">${esc(text)}</div>` : '';
+  // *word* in a clue is shown in italics.
+  const rich = (t) => esc(t).replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  let body = text ? `<div class="lc-text">${rich(text)}</div>` : '';
   if (o.href) body = `<a class="lc-text lc-link" href="${esc(o.href)}">${esc(text)}</a>`;
   if (o.img) body += `<img class="lc-img" src="${esc(o.img)}" alt="${esc(o.alt || '')}" loading="lazy">`;
   return `  <div class="lc-board${o.flash ? ' lc-flash' : ''}" data-clue="${n}"${o.flash ? ` data-flash="${esc(o.flash)}" role="button" tabindex="0"` : ''}>
