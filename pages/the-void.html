@@ -16,6 +16,9 @@ html,body{margin:0 !important;padding:0 !important;background:#0b170f !important
   // The Squarespace section and its layout grid would clip a page this size: let it spill out.
   var v=document.getElementById('ma-void');
   for(var e=v.parentElement;e&&e!==document.body;e=e.parentElement){e.style.overflow='visible';e.style.maxWidth='none';if(e.classList.contains('fluid-engine'))e.style.display='block';if(e.classList.contains('content-wrapper')){e.style.padding='0';}}
+  // The whole page is the void: hide the Squarespace section's own colour behind it.
+  var sec=v.closest('section');if(sec){sec.style.background='#0b170f';var bg=sec.querySelector('.section-background');if(bg)bg.style.display='none';}
+  document.documentElement.style.background=document.body.style.background='#0b170f';
   // Line the void up with the window's left edge, wherever Squarespace put the block.
   function edge(){v.style.marginLeft='0px';v.style.marginLeft=(-(v.getBoundingClientRect().left+window.scrollX))+'px';}
   edge();window.addEventListener('resize',edge);window.addEventListener('load',edge);
