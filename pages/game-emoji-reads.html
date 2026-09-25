@@ -269,7 +269,7 @@ var HG = (function () {
     fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t=' + Math.floor(Date.now() / 300000)).then(function (r) { return r.json(); }).then(function (d) {
       var n = +d.crewTotal || 0;
       if (n >= o.unlockAt && o.ready) { main.classList.remove('hg-locked'); m.remove(); return; }
-      if (n >= o.unlockAt) { m.innerHTML = '<div class="hg-bang">COMING SOON!</div><p>The crew unlocked it! We are putting the finishing touches on the clues. The first puzzle drops very soon.</p>'; return; }
+      if (n >= o.unlockAt) { m.innerHTML = '<div class="hg-bang">COMING SOON!</div><p>The crew unlocked it! I am putting the finishing touches on the clues. The first puzzle drops very soon.</p>'; return; }
       document.getElementById('hg-lockpts').textContent = 'The crew is at ' + n.toLocaleString('en-US') + '. ' + (o.unlockAt - n).toLocaleString('en-US') + ' to go!';
     }).catch(function () {});
   }
