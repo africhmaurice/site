@@ -184,6 +184,8 @@ const heroButtons = `<div class="h-btns">
       // Marks the sweepstakes that is open today (New York calendar day).
       var d = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date());
       var acts = document.querySelectorAll('.h-act');
+      // Each sweepstakes box glides down to Rewards Unlocked (Squarespace swallows plain #links).
+      for (var j = 0; j < acts.length; j++) acts[j].addEventListener('click', function (e) { var t = document.getElementById('rewards'); if (!t) return; e.preventDefault(); var m = parseFloat(getComputedStyle(t).scrollMarginTop) || 0; window.scrollTo({ top: t.getBoundingClientRect().top + window.pageYOffset - m, behavior: 'smooth' }); });
       for (var i = 0; i < acts.length; i++) if (d >= acts[i].getAttribute('data-from') && d <= acts[i].getAttribute('data-to')) acts[i].classList.add('h-now');
       // Current Reward Count: the digital rewards the crew has unlocked so far, from the live leaderboard total.
       var el = document.getElementById('hero-rewards'); if (!el || !window.fetch) return;
