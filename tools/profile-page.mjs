@@ -67,7 +67,7 @@ html,body{margin:0 !important;padding:0 !important}
 #hp .hp-btn.alt{background:var(--violet)}
 #hp .hp-btn.alt:hover{background:#5b3aa6}
 #hp .hp-card{position:relative}
-#hp .hp-lb{position:absolute;right:2px;bottom:-34px;width:13px;height:13px;border:0;padding:0;margin:0;background:#2a1852;cursor:default;
+#hp .hp-lb{position:absolute;right:2px;bottom:-34px;width:13px;height:13px;border:0;padding:0;margin:0;background:#231540;cursor:default;
   -webkit-mask:url(https://africhmaurice.github.io/site/assets/clues/box-26.webp) center/contain no-repeat;mask:url(https://africhmaurice.github.io/site/assets/clues/box-26.webp) center/contain no-repeat}
 @media (max-width:560px){#hp .hp-lb{width:11px;height:11px;bottom:-30px}}
 #hp .hp-foot{text-align:center;margin:22px 0 0;font-size:13px;color:rgba(255,255,255,.65)}
