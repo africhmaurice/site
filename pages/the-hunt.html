@@ -143,6 +143,7 @@ section[data-screen-label="Social bar"] a[style*="width:36px"]{width:45px !impor
     <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
     <a href="https://www.mauriceafrich.com/loot" class="mn-link">LOOT</a>
     <a href="https://www.mauriceafrich.com/games" class="mn-link">GAMES</a>
+    <a href="https://www.mauriceafrich.com/red-city" class="mn-link" style="color:#ff4c0f">VOTE NOW!</a>
     <div class="mn-drop mn-drop-cta">
       <a href="https://www.mauriceafrich.com/preorder" class="mn-link mn-cta" aria-haspopup="true">PRE-ORDER CELLO'S GATE &#9662;</a>
       <div class="mn-dd"><div class="mn-dd-in">
@@ -173,6 +174,7 @@ section[data-screen-label="Social bar"] a[style*="width:36px"]{width:45px !impor
   <a href="https://www.mauriceafrich.com/lootbox-clue">CLUES</a>
   <a href="https://www.mauriceafrich.com/loot">LOOT</a>
   <a href="https://www.mauriceafrich.com/games">GAMES</a>
+  <a href="https://www.mauriceafrich.com/red-city" style="color:#ff4c0f">VOTE NOW!</a>
   <a href="https://www.mauriceafrich.com/preorder" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
 </div>
 
@@ -343,7 +345,7 @@ window.maConfetti = function(from){
   </section>
 
   <!-- ============ HOW TO EARN POINTS ============ -->
-  <section id="points" data-screen-label="How to earn points" style="background:linear-gradient(rgba(24,66,105,.65),rgba(24,66,105,.65)),url(https://africhmaurice.github.io/site/assets/img/66ea149bfc331ede.jpg) center/cover;background-attachment:fixed;padding:80px 72px 56px">
+  <section id="points" data-screen-label="How to earn points" style="background:linear-gradient(rgba(24,66,105,.65),rgba(24,66,105,.65)),url('https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp') center/cover;background-attachment:fixed;padding:80px 72px 56px">
     <div class="m-tablewrap" style="background:rgba(238,243,247,.88);max-width:1200px;margin:0 auto;padding:64px 56px 72px">
       <h2 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(44px,5vw,72px);color:#111;text-align:center;margin:0 0 56px;line-height:1.15">HOW TO EARN POINTS</h2>
       <div class="m-table" style="max-width:none;margin:0 auto;display:grid;grid-template-columns:minmax(0,2.6fr) minmax(0,1fr);border:2px solid #111;font-family:'Almarai',sans-serif;font-size:20px;color:#111">
@@ -418,6 +420,55 @@ window.maConfetti = function(from){
   </section>
 
   <!-- ============ FOLLOW ALONG ON THE MAP ============ -->
+  <style>
+/* Map markers and their popups (scripts/hunt-next.mjs) */
+#map .mh-spot{position:absolute;width:clamp(38px,5vw,70px);height:clamp(38px,5vw,70px);transform:translate(-50%,-50%);border:0;padding:0;background:none;cursor:pointer;z-index:2}
+#map .mh-spot[hidden]{display:none}
+#map .mh-map{overflow:hidden}
+#map .mh-zoom{position:relative;transform-origin:72% 72.4%;transition:transform 3s cubic-bezier(.45,0,.2,1);will-change:transform}
+#map .mh-map.mh-zoomed .mh-zoom{transform:translate(-22%,-22.4%) scale(3.2);transition-duration:4.5s}
+#map .mh-spot svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 5px 5px rgba(0,0,0,.55)) drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+#map .mh-spot .core{fill:#fffffe;transform-origin:50px 50px;transition:transform .15s ease}
+#map .mh-spot .ring{fill:none;stroke:#fffffe;stroke-linecap:round;transform-origin:50px 50px}
+#map .mh-spot .r1{stroke-width:5;stroke-dasharray:62 38;animation:mh-spin 7s linear infinite}
+#map .mh-spot .r2{stroke-width:4;stroke-dasharray:34 22 18 30;opacity:.85;animation:mh-spin 11s linear infinite reverse}
+#map .mh-spot .r3{stroke-width:3;stroke-dasharray:20 60;opacity:.6;animation:mh-spin 15s linear infinite}
+#map .mh-spot .glow{fill:#fffffe;opacity:.35;transform-origin:50px 50px;animation:mh-pulse 2.4s ease-out infinite}
+#map .mh-spot:hover .core,#map .mh-spot:focus-visible .core{transform:scale(1.25)}
+#map .mh-spot.mh-in{animation:mh-arrive .7s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes mh-arrive{0%{transform:translate(-50%,-50%) scale(0);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+#map .mh-spot:focus-visible{outline:3px solid #fffffe;outline-offset:4px;border-radius:50%}
+@keyframes mh-spin{to{transform:rotate(360deg)}}
+@keyframes mh-pulse{0%{transform:scale(.4);opacity:.55}100%{transform:scale(1.25);opacity:0}}
+@media (prefers-reduced-motion:reduce){#map .mh-spot .ring,#map .mh-spot .glow,#map .mh-spot.mh-in{animation:none}}
+button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
+.mh-pop{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(11,23,15,.72)}
+.mh-pop[hidden]{display:none!important}
+.mh-card{position:relative;width:100%;max-width:620px;max-height:calc(100vh - 40px);overflow:auto;background:#0b170f;border:1px solid rgba(243,234,217,.3);box-shadow:0 30px 80px rgba(0,0,0,.5);padding:40px 40px 34px;color:#fffffe;font-family:'Almarai',sans-serif;letter-spacing:.03em;text-align:left}
+.mh-x{position:absolute;top:12px;right:12px;width:40px;height:40px;border:0;background:none;color:#fffffe;font-size:28px;line-height:1;cursor:pointer}
+.mh-x:hover{color:#fd7547}
+.mh-kick{font-weight:700;font-size:13px;letter-spacing:.14em;color:#a2f590;margin:0 0 10px}
+.mh-card h3{font-family:'Atomic Marker',cursive!important;font-weight:400;font-size:clamp(28px,4vw,42px);line-height:1.1;color:#89fbcb;margin:0 0 18px;text-transform:none;letter-spacing:.02em}
+.mh-blurb{font-size:16px;line-height:1.6;color:#ede9dc;margin:18px 0 0}
+.mh-player{display:flex;align-items:center;gap:16px;background:rgba(45,28,83,.6);border:1px solid rgba(195,166,255,.35);padding:14px 18px}
+.mh-pbtn{flex:none;width:52px;height:52px;border-radius:50%;background:#482d85;border:0;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
+.mh-pbtn svg{width:22px;height:22px;fill:#c3a6ff}
+.mh-pmid{flex:1;min-width:0}
+.mh-plabel{font-weight:700;font-size:13px;letter-spacing:.1em;color:#c3a6ff;margin-bottom:10px}
+.mh-ptrack{position:relative;height:10px;background:rgba(195,166,255,.2);cursor:pointer}
+.mh-pfill{position:absolute;top:0;bottom:0;left:0;width:0;background:#9e74fd}
+.mh-ptime{flex:none;font-weight:700;font-size:15px;color:#c3a6ff;font-variant-numeric:tabular-nums}
+.mh-tx{margin-top:12px}
+.mh-tx summary{cursor:pointer;width:max-content;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(237,233,220,.72)}
+.mh-tx summary:hover{color:#fffffe}
+.mh-tx div{margin-top:10px;display:grid;gap:8px;font-size:14px;line-height:1.6;color:#ede9dc;border-left:2px solid rgba(195,166,255,.35);padding-left:14px}
+.mh-tx p{margin:0}
+.mh-tx b{font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#c3a6ff;margin-right:6px}
+.mh-tx i{color:rgba(237,233,220,.72)}
+.mh-cta{display:inline-block;margin-top:24px;color:#fff!important;text-decoration:none!important;font-weight:800;font-size:15px;letter-spacing:.1em;border:1.5px solid #f3ead9;background:#c1330a;padding:14px 26px;transition:transform .15s ease}
+.mh-cta:hover{transform:scale(1.04)}
+@media (max-width:560px){.mh-card{padding:34px 20px 26px}.mh-player{gap:12px;padding:12px}.mh-pbtn{width:44px;height:44px}}
+</style>
   <section id="map" data-screen-label="Follow along on the map" style="background:linear-gradient(160deg,#8f2f08 0%,#c9440c 45%,#e05310 100%);padding:120px 72px 130px;text-align:center">
     <h2 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(44px,5.5vw,80px);color:#fff;margin:0 0 40px;line-height:1.15">FOLLOW ALONG</h2>
     <p style="font-size:26px;line-height:1.6;color:#fff;max-width:1180px;margin:0 auto 90px">The map updates as the crew moves through the hunt. Earn as many points as you can to explore the map, unlock secret paths, discover areas yet unexplored, and find the treasure!</p>
@@ -426,15 +477,102 @@ window.maConfetti = function(from){
       <div class="m-deco" style="position:absolute;bottom:0;left:-24px;width:60%;height:52%;border:14px solid #eac9a4;border-right:none;border-top:none"></div>
       <div class="m-deco" style="position:absolute;top:-26px;right:120px;display:flex;gap:18px;transform:skewX(-35deg)"><div style="width:52px;height:22px;background:#eac9a4"></div><div style="width:52px;height:22px;background:#eac9a4"></div><div style="width:52px;height:22px;background:#eac9a4"></div><div style="width:150px;height:22px;background:#eac9a4"></div></div>
       <div class="m-deco" style="position:absolute;bottom:-26px;left:120px;display:flex;gap:18px;transform:skewX(-35deg)"><div style="width:150px;height:22px;background:#eac9a4"></div><div style="width:52px;height:22px;background:#eac9a4"></div><div style="width:52px;height:22px;background:#eac9a4"></div><div style="width:52px;height:22px;background:#eac9a4"></div></div>
-      <div onclick="var c=document.getElementById('map-cover');c.style.display=(c.style.display==='none'?'flex':'none')" style="position:relative;cursor:pointer;border:6px solid #7a3d1c;box-shadow:0 18px 50px rgba(40,10,0,.45)">
-        <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/62e204cf291948bf.jpg" alt="Map of De'gaté" style="width:100%;height:auto;display:block">
-        <div id="map-cover" style="position:absolute;inset:0;background:#0c0c0c;display:flex;align-items:center;justify-content:center">
-            <div style="font-family:'Atomic Marker',cursive;color:#fff;font-size:clamp(30px,4.5vw,62px);padding:24px;text-align:center;line-height:1.15">CLICK TO REVEAL THE MAP!</div>
-          </div>
+      <div class="mh-map" style="position:relative;border:6px solid #7a3d1c;box-shadow:0 18px 50px rgba(40,10,0,.45)">
+        <div class="mh-zoom"><img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/62e204cf291948bf.jpg" alt="Map of De'gaté" style="width:100%;height:auto;display:block">
+        <button type="button" class="mh-spot" id="mh-spot-fenna" data-pop="mh-fenna" style="left:72%;top:72.4%" aria-label="Fenna's Soul: Next stop: the Red City"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
+        <button type="button" class="mh-spot" id="mh-spot-pontune" data-pop="mh-pontune" hidden style="left:80%;top:50.3%" aria-label="Pontune: Benji's Bargain Shop"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
+        </div>
         
       </div>
     </div>
   </section>
+  <div class="mh-pop" id="mh-fenna" role="dialog" aria-modal="true" aria-labelledby="mh-fenna-t" hidden>
+  <div class="mh-card">
+    <button type="button" class="mh-x" aria-label="Close">&times;</button>
+    <p class="mh-kick">A NEW TRANSMISSION</p>
+    <h3 id="mh-fenna-t">Next stop: the Red City</h3>
+    <div class="mh-player"><button type="button" class="mh-pbtn" aria-label="Play INCOMING TRANSMISSION · CPT. GREY SHIMADA"><svg class="p" viewBox="0 0 24 24" style="margin-left:3px"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" style="display:none"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+      <div class="mh-pmid"><div class="mh-plabel">INCOMING TRANSMISSION · CPT. GREY SHIMADA</div><div class="mh-ptrack"><div class="mh-pfill"></div></div></div>
+      <div class="mh-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/red-city-grey.m4a"></audio></div>
+    <details class="mh-tx"><summary>Read the transcript</summary><div><p><b>Grey</b>First stop, we’ve got a date with a one-eyed sewer rat. Put together your inventory list. Buckle up, frens. We’re settin’ sail for the Red City. I hope you brought sunblock.</p></div></details>
+    <p class="mh-blurb">Before you sail for the island, Grey is sending you shopping in Pontune. Head that way now. You're looking for the one-eyed sewer rat!</p>
+    <button type="button" class="mh-cta" data-reveal="pontune">GO SHOPPING IN PONTUNE</button>
+  </div>
+</div>
+  <div class="mh-pop" id="mh-pontune" role="dialog" aria-modal="true" aria-labelledby="mh-pontune-t" hidden>
+  <div class="mh-card">
+    <button type="button" class="mh-x" aria-label="Close">&times;</button>
+    <p class="mh-kick">PONTUNE · THE RED CITY</p>
+    <h3 id="mh-pontune-t">Benji's Bargain Shop</h3>
+    <div class="mh-player"><button type="button" class="mh-pbtn" aria-label="Play BENJI'S BARGAIN SHOP"><svg class="p" viewBox="0 0 24 24" style="margin-left:3px"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" style="display:none"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+      <div class="mh-pmid"><div class="mh-plabel">BENJI'S BARGAIN SHOP</div><div class="mh-ptrack"><div class="mh-pfill"></div></div></div>
+      <div class="mh-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/red-city-felix-benji.m4a"></audio></div>
+    <details class="mh-tx"><summary>Read the transcript</summary><div><p><b>Felix</b>No fuckin’ way! Grey sent you? What is this, some kind of shopping trip? I don’t even know your names… The boss ain’t gonna like him sendin’ people his way without a word or nothing. Tell him the next time it happens, I’ll send their heads back in a box. Now get the fu—</p><p><b>Benji (far away)</b>Felix, who is it?!</p><p><b>Felix (calling back)</b>Sky pirates! From the redcoat!</p><p><b>Benji (far away)</b><i>Laughs</i> Let em in, let em in!</p><p><i>Door creaking</i></p><p><b>Benji</b>Hello, hello. Welcome to the Red City. I hope you’re good and lubed up, cause Sola don’t give a shit what backwater city you call home, it’ll burn your ass and charge a cover fee. Grey told me you were comin’. I forgot to tell Felix. That’s on me. What can I getcha?</p></div></details>
+    <p class="mh-blurb">Benji's expecting you. Felix isn't—but it all works out! The frens vote together. Majority rules. Pick the crew, choose your kits, and make a plan! Every fren who votes earns 50 points. You have 24 hours: voting closes Saturday, September 26 at 8:25 PM ET.</p>
+    <a class="mh-cta" href="https://www.mauriceafrich.com/red-city">ENTER BENJI'S BARGAIN SHOP</a>
+  </div>
+</div>
+  <script>(function(){
+  // Popups live on <body> so no section's stacking or overflow can clip them.
+  var pops = document.querySelectorAll('.mh-pop'), last = null, KEY = 'thHunt:map:red-city';
+  function seen(){try{return JSON.parse(localStorage.getItem(KEY)||'[]');}catch(e){return [];}}
+  if (location.search.indexOf('reset-map') >= 0) { try { localStorage.removeItem(KEY); } catch (e) {} }
+  seen().forEach(function (id) { var s = document.getElementById('mh-spot-' + id); if (s) s.hidden = false; });
+  function remember(id){var list=seen();if(list.indexOf(id)<0){list.push(id);try{localStorage.setItem(KEY,JSON.stringify(list));}catch(e){}}}
+  function reveal(id){var s=document.getElementById('mh-spot-'+id);if(!s)return null;var was=s.hidden;s.hidden=false;
+    if(was){s.classList.remove('mh-in');void s.offsetWidth;s.classList.add('mh-in');}
+    var list=seen();if(list.indexOf(id)<0){list.push(id);try{localStorage.setItem(KEY,JSON.stringify(list));}catch(e){}}return s;}
+  Array.prototype.forEach.call(pops, function (p) { document.body.appendChild(p); });
+  function clock(s){s=Math.floor(s||0);return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
+  function stopAll(){Array.prototype.forEach.call(document.querySelectorAll('.mh-pop audio'),function(a){a.pause();});}
+  function close(p){stopAll();p.hidden=true;document.documentElement.style.overflow='';if(last)last.focus({preventScroll:true});if(p.id==='mh-fenna')afterFenna();}
+
+  // The zoom: the first time the map comes into view, it closes in on Fenna's Soul until the dot
+  // fills the frame. Leaving Grey's popup pulls the map back out, and Pontune appears once it has.
+  var map = document.querySelector('#map .mh-map'), calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Seen this chapter's zoom already: no replay; the map stays as they left it, with every marker out.
+  if (seen().indexOf('zoom') >= 0) reveal('pontune');
+  var fresh = seen().indexOf('pontune') < 0 && seen().indexOf('zoom') < 0;
+  if (map && fresh && !calm && 'IntersectionObserver' in window) {
+    // "In view" means 60% of the map, or 60% of the screen when the map is taller than the screen.
+    var steps = []; for (var i = 0; i <= 20; i++) steps.push(i / 20);
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var need = Math.min(e.boundingClientRect.height, window.innerHeight) * 0.6;
+        if (e.isIntersecting && e.intersectionRect.height >= need) { map.classList.add('mh-zoomed'); io.disconnect(); remember('zoom'); }
+      });
+    }, { threshold: steps });
+    io.observe(map);
+  }
+  function afterFenna(){
+    if (map && map.classList.contains('mh-zoomed')) {
+      map.classList.remove('mh-zoomed');
+      setTimeout(function(){reveal('pontune');}, 3100);   // just as the pull-back settles
+    } else reveal('pontune');
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('#map .mh-spot'), function (b) {
+    b.addEventListener('click', function () {
+      var p = document.getElementById(b.getAttribute('data-pop')); if (!p) return;
+      last = b; p.hidden = false; document.documentElement.style.overflow = 'hidden';
+      p.querySelector('.mh-x').focus();
+    });
+  });
+  Array.prototype.forEach.call(pops, function (p) {
+    var a = p.querySelector('audio'), btn = p.querySelector('.mh-pbtn'), fill = p.querySelector('.mh-pfill'), t = p.querySelector('.mh-ptime'),
+        ip = p.querySelector('svg.p'), is = p.querySelector('svg.s'), label = p.querySelector('.mh-plabel').textContent;
+    function paint(){fill.style.width=(a.duration?a.currentTime/a.duration*100:0)+'%';t.textContent=clock(a.paused&&!a.currentTime?a.duration:a.currentTime);
+      ip.style.display=a.paused?'':'none';is.style.display=a.paused?'none':'';btn.setAttribute('aria-label',(a.paused?'Play ':'Pause ')+label);}
+    ['timeupdate','loadedmetadata','play','pause'].forEach(function(ev){a.addEventListener(ev,paint);});
+    a.addEventListener('ended',function(){a.currentTime=0;paint();});
+    btn.addEventListener('click',function(){if(a.paused){stopAll();var g=document.getElementById('grey-audio');if(g)g.pause();a.play();}else a.pause();});
+    p.querySelector('.mh-ptrack').addEventListener('click',function(e){if(!a.duration)return;var r=this.getBoundingClientRect();a.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*a.duration;});
+    p.querySelector('.mh-x').addEventListener('click',function(){close(p);});
+    var go=p.querySelector('[data-reveal]');
+    if(go)go.addEventListener('click',function(){close(p);});   // closing Grey's popup is what reveals Pontune
+    p.addEventListener('click',function(e){if(e.target===p)close(p);});
+  });
+  document.addEventListener('keydown',function(e){if(e.key!=='Escape')return;Array.prototype.forEach.call(pops,function(p){if(!p.hidden)close(p);});});
+})();</script>
 
   <!-- ============ REWARDS UNLOCKED ============ -->
   <section id="rewards" data-screen-label="Rewards unlocked" style="background:#fbf9f4;padding:110px 72px 110px">
@@ -618,7 +756,7 @@ if(window.fetch)fetch(BOARD+'?t='+Math.floor(Date.now()/300000)).then(function(r
           </div>
         </div>
         <div id="grey-time" style="flex:none;font-family:'Almarai',sans-serif;font-weight:700;font-size:15px;letter-spacing:.05em;color:#2d1c53;position:relative;z-index:1">0:00</div>
-        <audio id="grey-audio" preload="metadata" src="https://africhmaurice.github.io/site/assets/img/315e1ba24f6ce074.mp3"></audio>
+        <audio id="grey-audio" preload="metadata" src="https://africhmaurice.github.io/site/assets/audio/act1-grey.m4a"></audio>
       </div>
       <script>(function(){var a,f,t,ip,ib;function el(){a=document.getElementById('grey-audio');f=document.getElementById('grey-fill');t=document.getElementById('grey-time');ip=document.getElementById('grey-ico-play');ib=document.getElementById('grey-ico-pause');}function fmt(s){s=Math.floor(s||0);return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}window.__greyToggle=function(){el();if(a.paused){a.play();ip.style.display='none';ib.style.display='';}else{a.pause();ip.style.display='';ib.style.display='none';}};window.__greySeek=function(e){el();var r=document.getElementById('grey-track').getBoundingClientRect();if(a.duration){a.currentTime=(e.clientX-r.left)/r.width*a.duration;}};document.addEventListener('timeupdate',function(e){if(e.target&&e.target.id==='grey-audio'){el();if(a.duration)f.style.width=(a.currentTime/a.duration*100)+'%';t.textContent=fmt(a.currentTime);}},true);document.addEventListener('ended',function(e){if(e.target&&e.target.id==='grey-audio'){el();ip.style.display='';ib.style.display='none';f.style.width='0%';t.textContent='0:00';}},true);})();</script>
       <p style="font-style:italic;font-size:27px;line-height:1.45;color:#ede9dc;margin:0 0 22px;letter-spacing:.02em;text-align:justify">Every job starts the same. A landing strip in a city no one loves, a back alley handshake, and a contract offering too little for too much. But that’s the gig. We’re not in this for the money. We’re in it for the love of the game. Now ... Dalia, the immortal daughter of the ArchGovernor, has made an offer. And I know that we said we’re not in it for the money—and we both agreed—but it’s a lot of money. Like … a crazy amount of money.</p>
@@ -627,6 +765,12 @@ if(window.fetch)fetch(BOARD+'?t='+Math.floor(Date.now()/300000)).then(function(r
     </div>
     <h3 class="m-taskhead" style="font-family: 'Atomic Marker',cursive; font-weight: 400; font-size:clamp(44px,5.56vw,80px); color: #c3a6ff; text-align: center; margin: 0 0 56px;line-height:1.15">TASKS</h3>
     <div class="m-cards" style="max-width:1420px;margin:0 auto 100px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px">
+      <div class="tm-card" data-task="red-city-vote" style="border-radius:10px;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em;outline:3px solid #c53200;outline-offset:-3px">
+        <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">VOTE ON THE OUTCOME OF THE HUNT</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#c3a6ff;margin:8px 0 22px">50 POINTS (ONCE)</div>
+        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 30px;flex:1">Shopping in the Red City! Recruit the crew, pick 3 kits and make a plan for the island. The frens vote together, majority rules, and the result decides how Act Two plays out. Voting is open now and closes Saturday, September 26 at 8:25 PM ET.</p>
+        <div><a href="https://www.mauriceafrich.com/red-city" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:999px;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;background:#c53200;transition:transform .15s ease" class="hv10">VOTE NOW!</a></div>
+      </div>
       <div class="tm-card" style="border-radius:10px;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
         <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">BUY THE BOOK!</div>
         <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#c3a6ff;margin:8px 0 22px">100 POINTS PER RECEIPT</div>
