@@ -80,9 +80,6 @@
 }
 #header .header-menu .header-menu-bg { background: rgba(9, 23, 7, .97) !important; }
 
-/* Date endings (21st, 30th) small and tucked up */
-sup { font-size: .42em !important; line-height: 0 !important; vertical-align: .95em !important; }
-
 /* One row (from 1000px wide; narrower desktop windows wrap to two rows) */
 @media (min-width: 1000px) {
   #header .header-display-desktop .header-title-nav-wrapper { flex-wrap: nowrap !important; align-items: center !important; }
@@ -94,3 +91,6 @@ sup { font-size: .42em !important; line-height: 0 !important; vertical-align: .9
   #header .header-display-desktop .header-nav-folder-title { font-size: clamp(10.5px, .88vw, 14.4px) !important; white-space: nowrap !important; }
   #header .header-display-desktop .header-title-logo img { max-height: none !important; width: clamp(88px, 8.3vw, 120px) !important; height: auto !important; }
 }
+
+/* Date endings (21st, 30th): small and tucked up. Scaled with transform so a browser minimum font size cannot blow them up. */
+sup{font-size:.6em !important;line-height:0 !important;display:inline-block !important;transform:scale(.72) !important;transform-origin:left 30% !important;vertical-align:.7em !important;letter-spacing:.02em;margin-right:-.12em}
