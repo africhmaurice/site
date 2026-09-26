@@ -5,22 +5,19 @@
     background:#c1330a url('https://africhmaurice.github.io/leaderboard/leaderboard-bg-storm.webp') center/cover no-repeat;background-attachment:fixed}
   @media (max-width:900px),(hover:none){.th-lb-wrap{background-attachment:scroll}}
 </style>
-<style>
-#lb-top{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;padding:112px 16px 30px;background:#0b170f;position:relative;z-index:3;width:100vw;left:50%;margin-left:-50vw;box-sizing:border-box}
-#lb-top a{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.1em;color:#fff;text-decoration:none;background:#0f2e0a;border:1.5px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);padding:15px 30px;transition:transform .15s ease,background .15s ease}
-#lb-top a:hover{transform:scale(1.04);background:#1a4512}
-#lb-top a.red{background:#c1330a}
-#lb-top a.red:hover{background:#e04a12}
-@media (max-width:1240px){#lb-top{padding-top:76px}}
-@media (max-width:560px){#lb-top a{flex:1 1 100%;text-align:center}}
-</style>
-<div id="lb-top">
-  <a href="https://africhmaurice.github.io/site/preview-next/games.html" class="red">PLAY GAMES</a>
-  <a href="https://africhmaurice.github.io/site/preview-next/lootbox-clue.html">FIND A LOOT BOX</a>
-  <a href="https://africhmaurice.github.io/site/preview-next/the-treasure.html">SEE THE TREASURE</a>
-</div>
 <div class="th-lb-wrap">
   <iframe id="th-leaderboard" src="https://africhmaurice.github.io/leaderboard/?v=9&amp;embed=1" title="Treasure Hunt Leaderboard" loading="lazy" allowtransparency="true" style="width:100%;height:1200px;border:0;display:block;background:transparent;color-scheme:normal;position:relative;z-index:2;pointer-events:auto"></iframe>
+  <style>
+  #lb-more{position:relative;z-index:3;display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:8px 16px 64px}
+  #lb-more a{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.1em;color:#fff;text-decoration:none;border:1.5px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);padding:16px 32px;transition:transform .15s ease,filter .15s ease}
+  #lb-more a:hover{transform:scale(1.04);filter:brightness(1.12)}
+  @media (max-width:560px){#lb-more a{flex:1 1 100%;text-align:center}}
+  </style>
+  <div id="lb-more">
+    <a href="https://africhmaurice.github.io/site/preview-next/games.html" style="background:#268e62">PLAY GAMES</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/lootbox-clue.html" style="background:#2c6021">FIND A LOOT BOX</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/the-treasure.html" style="background:#482d85">SEE THE TREASURE</a>
+  </div>
 </div>
 <script>
   (function () {

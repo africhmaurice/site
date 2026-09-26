@@ -128,21 +128,32 @@ section[data-screen-label="Social bar"] a[style*="width:36px"]{width:45px !impor
 }
 </style>
 <style>
-#hunt-nav .mn-row{justify-content:space-between;gap:clamp(8px,1.05vw,18px)}
-#hunt-nav .mn-link{font-size:clamp(10px,.8vw,13px);letter-spacing:.05em}
-#hunt-nav .mn-logo{display:flex;align-items:center;flex:none;margin-right:clamp(2px,.8vw,14px);transition:transform .15s ease}
+html body{text-wrap:pretty}
+h1,h2,h3{text-wrap:balance}
+#hunt-nav{padding:14px clamp(28px,3.2vw,60px) 14px clamp(20px,2.4vw,44px)}
+#hunt-nav .mn-row{max-width:none;justify-content:space-between;gap:clamp(8px,1.2vw,22px)}
+#hunt-nav .mn-link{font-size:clamp(10px,.86vw,14px);letter-spacing:.05em}
+#hunt-nav .mn-logo{display:flex;align-items:center;flex:none;margin-right:clamp(18px,2.8vw,56px);transition:transform .15s ease}
 #hunt-nav .mn-logo:hover{transform:scale(1.05)}
-#hunt-nav .mn-logo img{height:clamp(30px,2.5vw,40px);width:auto;display:block;filter:drop-shadow(0 1px 6px rgba(0,0,0,.45))}
-@media (max-width:1240px){
+#hunt-nav .mn-logo img{height:clamp(42px,3.6vw,60px);width:auto;display:block;filter:drop-shadow(0 1px 6px rgba(0,0,0,.45))}
+#hunt-nav .mn-drop-cta{margin-left:clamp(6px,1vw,18px)}
+#hunt-nav .mn-dd-in a.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}
+#hunt-nav .mn-dd-in a.mn-profile:hover{background:#e04a12;color:#fff}
+#hunt-nav .mn-dd-in a.mn-profile svg{width:16px;height:16px;flex:none}
+@media (max-width:1100px){
   #hunt-nav{padding:10px 0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
   #hunt-nav .mn-row{display:none}
   #hunt-nav .mn-burger{display:flex}
 }
-#hunt-nav-ov{gap:16px;overflow-y:auto;justify-content:flex-start;padding-top:84px}
+#hunt-nav-ov{gap:14px;overflow-y:auto;justify-content:flex-start;padding-top:88px}
 #hunt-nav-ov a{font-size:17px}
-#hunt-nav-ov .mn-ovlogo{position:absolute;top:18px;left:20px}
-#hunt-nav-ov .mn-ovlogo img{height:38px;width:auto;display:block}
-@media (min-height:760px){#hunt-nav-ov{justify-content:center;padding-top:32px}}
+#hunt-nav-ov .mn-ovlogo{position:absolute;top:16px;left:20px}
+#hunt-nav-ov .mn-ovlogo img{height:44px;width:auto;display:block}
+#hunt-nav-ov .mn-ovgroup{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(243,234,217,.3);padding:14px 26px 16px}
+#hunt-nav-ov .mn-ovgroup span{font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590}
+#hunt-nav-ov .mn-ovgroup a{font-size:15px}
+#hunt-nav-ov .mn-ovgroup a.mn-profile{background:#c1330a;border:1.5px solid #f3ead9;padding:9px 16px}
+@media (min-height:860px){#hunt-nav-ov{justify-content:center;padding-top:32px}}
 </style>
 <nav id="hunt-nav">
   <div class="mn-row">
@@ -152,10 +163,16 @@ section[data-screen-label="Social bar"] a[style*="width:36px"]{width:45px !impor
     <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html#riddles" class="mn-link">RIDDLES</a>
     <a href="https://africhmaurice.github.io/site/preview-next/lootbox-clue.html" class="mn-link">CLUES</a>
     <a href="https://africhmaurice.github.io/site/preview-next/games.html" class="mn-link">GAMES</a>
-    <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html#rewards" class="mn-link">REWARDS</a>
     <a href="https://africhmaurice.github.io/site/preview-next/contests.html" class="mn-link">CONTESTS</a>
-    <a href="https://africhmaurice.github.io/site/preview-next/leaderboard.html" class="mn-link">GLOBAL LEADERBOARD</a>
-    <a href="https://africhmaurice.github.io/site/preview-next/loot.html" class="mn-link">LOOT BOX SCORECARD</a>
+    <div class="mn-drop">
+      <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">CURRENT PROGRESS &#9662;</a>
+      <div class="mn-dd"><div class="mn-dd-in">
+        <a href="https://africhmaurice.github.io/site/preview-next/profile.html" class="mn-profile"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"></path></svg>TREASURE HUNTER PROFILE</a>
+        <a href="https://africhmaurice.github.io/site/preview-next/leaderboard.html">GLOBAL LEADERBOARD</a>
+        <a href="https://africhmaurice.github.io/site/preview-next/loot.html">LOOT BOX SCORECARD</a>
+        <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html#rewards">REWARDS</a>
+      </div></div>
+    </div>
     <a href="https://africhmaurice.github.io/site/preview-next/questions.html" class="mn-link">QUESTIONS?</a>
     <a href="https://africhmaurice.github.io/site/preview-next/red-city.html" class="mn-link" style="color:#ff4c0f">VOTE NOW!</a>
     <div class="mn-drop mn-drop-cta">
@@ -184,10 +201,13 @@ section[data-screen-label="Social bar"] a[style*="width:36px"]{width:45px !impor
   <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html#riddles">RIDDLES</a>
   <a href="https://africhmaurice.github.io/site/preview-next/lootbox-clue.html">CLUES</a>
   <a href="https://africhmaurice.github.io/site/preview-next/games.html">GAMES</a>
-  <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html#rewards">REWARDS</a>
   <a href="https://africhmaurice.github.io/site/preview-next/contests.html">CONTESTS</a>
-  <a href="https://africhmaurice.github.io/site/preview-next/leaderboard.html">GLOBAL LEADERBOARD</a>
-  <a href="https://africhmaurice.github.io/site/preview-next/loot.html">LOOT BOX SCORECARD</a>
+  <div class="mn-ovgroup"><span>CURRENT PROGRESS</span>
+    <a href="https://africhmaurice.github.io/site/preview-next/profile.html" class="mn-profile">TREASURE HUNTER PROFILE</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/leaderboard.html">GLOBAL LEADERBOARD</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/loot.html">LOOT BOX SCORECARD</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html#rewards">REWARDS</a>
+  </div>
   <a href="https://africhmaurice.github.io/site/preview-next/questions.html">QUESTIONS?</a>
   <a href="https://africhmaurice.github.io/site/preview-next/red-city.html" style="color:#ff4c0f">VOTE NOW!</a>
   <a href="https://africhmaurice.github.io/site/preview-next/preorder.html" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
@@ -202,19 +222,19 @@ section[data-screen-label="Social bar"] a[style*="width:36px"]{width:45px !impor
         <div class="h-ways" style="display:flex;flex-direction:column;gap:20px;max-width:820px">
           <p style="font-size:21px;line-height:1.55;color:#fff;margin:0"><b style="color:#a2f590">Enter the Sweepstakes:</b> 1 Completed Task = 1 Entry into the Sky Pirate Sweepstakes. All you have to do is participate in the hunt, and you will be entered for a chance to win incredible prizes!</p>
           <p style="font-size:21px;line-height:1.55;color:#fff;margin:0"><b style="color:#a2f590">Climb the Leaderboard:</b> Compete against other sky pirates for a spot on the <a href="https://africhmaurice.github.io/site/preview-next/leaderboard.html" style="color:#fff;font-weight:700;text-decoration:underline" class="hv0">leaderboard</a>! The top three sky pirates at the end of the hunt will win <a href="https://africhmaurice.github.io/site/preview-next/the-treasure.html" style="color:#fff;font-weight:700;text-decoration:underline" class="hv0">the Treasure</a>!</p>
-          <p style="font-size:21px;line-height:1.55;color:#fff;margin:0"><b style="color:#a2f590">Join the Crew:</b> If you participate in the hunt (even once), you will be rewarded with all of the rewards unlocked by the crew! Help them rack up points and earn as many rewards as possible! <span style="white-space:nowrap;font-weight:700">Current Reward Count: <span id="hero-rewards" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:1.35em;color:#fd7547;line-height:1">&hellip;</span></span></p>
+          <p style="font-size:21px;line-height:1.55;color:#fff;margin:0"><b style="color:#a2f590">Join the Crew:</b> If you participate in the hunt (even once), you will be rewarded with all of the rewards unlocked by the crew! Help them rack up points and earn as many rewards as possible! <span style="white-space:nowrap;font-weight:700">Current Unlocked Rewards: <span id="hero-rewards" style="font-weight:700;color:#fff">&hellip;</span></span></p>
         </div>
         <p style="font-size:15px;line-height:1.55;color:#0b170f;font-weight:700;font-style:italic;margin:26px 0 0;max-width:820px">The Treasure and Act prizes run as two promotions: one for U.S. residents and one for UK residents, each 18+. Digital rewards are open to everyone. See <a href="https://africhmaurice.github.io/site/preview-next/rules.html" style="color:#0b170f;text-decoration:underline" class="hv7">Official Rules</a>.</p>
       </div>
     </div>
     <style>
-.h-btns{max-width:1440px;margin:72px auto 0;display:flex;flex-wrap:wrap;justify-content:center;gap:24px}
-.h-btn{flex:0 1 calc(25% - 19px);min-width:0;display:flex;align-items:center;justify-content:center;text-align:center;background:#0f2e0a;border:1px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);color:#fff !important;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(13px,1.02vw,16px);letter-spacing:.06em;white-space:nowrap;padding:18px 16px;text-decoration:none !important;transition:transform .15s ease,background .15s ease}
+.h-btns{max-width:1180px;margin:72px auto 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.h-btn{min-width:0;display:flex;align-items:center;justify-content:center;text-align:center;background:#0f2e0a;border:1px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);color:#fff !important;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(13px,1.02vw,16px);letter-spacing:.06em;white-space:nowrap;padding:18px 16px;text-decoration:none !important;transition:transform .15s ease,background .15s ease}
 .h-btn:hover{transform:scale(1.04);background:#1a4512}
 .h-btn.h-red{background:#c1330a}
 .h-btn.h-red:hover{background:#e04a12}
 .h-sweep{max-width:1240px;margin:72px auto 0;text-align:center}
-.h-sweep>p{font-size:22px;line-height:1.55;color:#fff;max-width:1000px;margin:0 auto 32px}
+.h-sweep>p{font-size:21px;line-height:1.55;color:#fff;max-width:1200px;margin:0 auto 32px;text-wrap:balance}
 .h-acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 .h-act{background:rgba(8,34,6,.55);border:1px solid rgba(243,234,217,.6);padding:26px 18px 24px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .h-act b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2vw,30px);color:#fff;line-height:1.15}
@@ -222,8 +242,8 @@ section[data-screen-label="Social bar"] a[style*="width:36px"]{width:45px !impor
 .h-act i{display:none;font-style:normal;font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.14em;color:#fff;background:#c1330a;border:1px solid #f3ead9;padding:5px 10px}
 .h-act.h-now{border-color:#ff4c0f;box-shadow:0 0 0 2px #ff4c0f}
 .h-act.h-now i{display:inline-block}
-@media (max-width:900px){.h-btn{flex-basis:calc(50% - 12px);font-size:14px}.h-acts{grid-template-columns:1fr}.h-sweep>p{font-size:19px}}
-@media (max-width:420px){.h-btn{flex-basis:100%}}
+@media (max-width:900px){.h-btns{grid-template-columns:repeat(2,minmax(0,1fr))}.h-btn{font-size:14px;white-space:normal}.h-acts{grid-template-columns:1fr}.h-sweep>p{font-size:19px}}
+@media (max-width:420px){.h-btns{grid-template-columns:1fr}}
 </style>
 <div class="h-btns">
       <a href="https://africhmaurice.github.io/site/preview-next/preorder.html" class="h-btn h-red">PRE-ORDER CELLO’S GATE</a>
@@ -232,7 +252,6 @@ section[data-screen-label="Social bar"] a[style*="width:36px"]{width:45px !impor
       <a href="https://africhmaurice.github.io/site/preview-next/lootbox-clue.html" class="h-btn">FIND A LOOT BOX</a>
       <a href="https://africhmaurice.github.io/site/preview-next/games.html" class="h-btn">PLAY A GAME</a>
       <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html#map" class="h-btn h-red">CHOOSE YOUR OWN ADVENTURE</a>
-      <a href="https://africhmaurice.github.io/site/preview-next/contests.html" class="h-btn">ENTER A CONTEST</a>
     </div>
     <div class="h-sweep">
       <p>During the hunt, there will be three different sweepstakes, each with better/more prizes than the last. All you have to do to enter each sweepstakes is complete 1 task during the allotted time period for that sweepstakes.</p>
@@ -371,7 +390,7 @@ window.maConfetti = function(from){
     <div class="m-grid3" style="max-width:1460px;margin:0 auto 56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:36px">
       <div style="border:3px solid #111;padding:44px 32px;font-size:26px;line-height:1.5;color:#111">The hunt runs in three time-locked acts from:<br><span style="font-family:'Almarai',sans-serif;font-weight:700;color:#c53200;font-size:30px;letter-spacing:.03em;display:inline-block;margin-top:18px">SEPTEMBER 21<sup style="font-size: 0.55em;">ST</sup> - NOVEMBER 1<sup style="font-size: 0.55em;">ST</sup></span></div>
       <div style="border:3px solid #111;padding:44px 32px;font-size:26px;line-height:1.5;color:#111;display:flex;align-items:center;justify-content:center">Each act comes with new challenges, new tasks, and new opportunities to earn points.</div>
-      <div style="border:3px solid #111;padding:44px 32px;font-size:26px;line-height:1.5;color:#111;display:flex;align-items:center;justify-content:center"><span><strong style="color:#c53200">Complete 1 task and win!</strong> It really is that simple.</span></div>
+      <div style="border:3px solid #111;padding:44px 32px;font-size:26px;line-height:1.5;color:#111;display:flex;align-items:center;justify-content:center"><span><strong style="color:#c53200">Complete 1 task and win!</strong><br>It really is that simple.</span></div>
     </div>
   </section>
 
@@ -400,8 +419,8 @@ window.maConfetti = function(from){
         <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">25 POINTS<br>(LIMIT: 3 LIBRARIES)</div>
         <div style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">Indie Bookstores</div><div style="font-size:16px;line-height:1.5;font-weight:400">Contact an indie bookstore in your area and request that they stock <a href="https://linktr.ee/mauriceafrich" target="_blank" rel="noopener" style="color:#c11212;font-weight:700;text-decoration:underline" class="hv7">“Cello’s Gate.”</a></div></div>
         <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">25 POINTS<br>(LIMIT: 3 BOOKSTORES)</div>
-        <div style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">Share the Hunt</div><div style="font-size:16px;line-height:1.5;font-weight:400">Share a link to the <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html" target="_blank" rel="noopener" style="color:#c11212;font-weight:700;text-decoration:underline" class="hv7">Treasure Hunt page</a> to your IG or TikTok story and spread the word!<br><br><span style="font-size:13px">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count.</span></div></div>
-        <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">25 POINTS<br>(LIMIT: ONCE PER DAY)</div>
+        <div style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">Share the Hunt</div><div style="font-size:16px;line-height:1.5;font-weight:400">Share a link to the <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html" target="_blank" rel="noopener" style="color:#c11212;font-weight:700;text-decoration:underline" class="hv7">Treasure Hunt page</a> on your social media and spread the word! Accepted accounts: Instagram, TikTok, YouTube, Reddit, X, Threads, and Facebook.<br><br><span style="font-size:13px">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count.</span></div></div>
+        <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">25 POINTS<br>(LIMIT: ONCE PER DAY, PER SOCIAL MEDIA ACCOUNT)</div>
         <div data-task="scorecard-post" style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">Show Off Your Loot Box Scorecard</div><div style="font-size:16px;line-height:1.5;font-weight:400">Post a screenshot of your current <a href="https://africhmaurice.github.io/site/preview-next/loot.html" target="_blank" rel="noopener" style="color:#c11212;font-weight:700;text-decoration:underline" class="hv7">Loot Box scorecard</a> on your social media page and tell your followers what it is!<br><br><span style="font-size:13px">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count.</span></div></div>
         <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">50 POINTS<br>(LIMIT: ONCE PER DAY)</div>
         <div style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px"><a href="https://africhmaurice.github.io/site/preview-next/contests.html" style="color:#c11212;font-weight:700;text-decoration:underline" class="hv7">Enter a Contest</a></div><div style="font-size:16px;line-height:1.5;font-weight:400">Enter the <a href="https://africhmaurice.github.io/site/preview-next/contests.html" style="color:#c11212;font-weight:700;text-decoration:underline" class="hv7">Fan Fiction Contest</a> or the <a href="https://africhmaurice.github.io/site/preview-next/contests.html" style="color:#c11212;font-weight:700;text-decoration:underline" class="hv7">Fan Art Contest</a>! Write a “Sky Pirate” story (500 word minimum, 3,000 word limit, any subgenre, set in the Sky Pirates world), or make “Sky Pirate” fan art: draw a character, sketch a goma, build a model ship. Just make it an honest effort, and you might win a $100 cash prize! Enter as many times as you like.</div></div>
@@ -494,7 +513,7 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
   <section id="map" data-screen-label="Choose your own adventure" style="background:linear-gradient(160deg,#8f2f08 0%,#c9440c 45%,#e05310 100%);padding:120px 72px 130px;text-align:center">
     <h2 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(44px,5.5vw,80px);color:#fff;margin:0 0 40px;line-height:1.15">CHOOSE YOUR OWN ADVENTURE</h2>
     <p style="font-size:26px;line-height:1.6;color:#fff;max-width:1180px;margin:0 auto 36px">As you progress through the hunt, you will be presented with choices, votes, dice rolls, games of chance, and more! The maps update as you progress through the hunt.</p>
-    <div style="margin:0 0 90px"><a href="https://africhmaurice.github.io/site/preview-next/red-city.html" class="mh-cta" style="margin-top:0;font-size:17px;padding:16px 38px">VOTE NOW!</a></div>
+    <div style="margin:0 0 90px"><a href="https://africhmaurice.github.io/site/preview-next/red-city.html" class="mh-cta" style="margin-top:0;font-size:18px;padding:18px clamp(70px,10vw,140px);background:#482d85">VOTE NOW!</a></div>
     <div class="m-frame" style="max-width:1160px;margin:0 auto;position:relative;padding:36px">
       <div class="m-deco" style="position:absolute;top:0;right:-24px;width:60%;height:52%;border:14px solid #eac9a4;border-left:none;border-bottom:none"></div>
       <div class="m-deco" style="position:absolute;bottom:0;left:-24px;width:60%;height:52%;border:14px solid #eac9a4;border-right:none;border-top:none"></div>
@@ -608,8 +627,8 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
     <script>window.__rewardsTab=function(w){var sw=document.getElementById('rw-sweep'),uk=document.getElementById('rw-uk'),note=document.getElementById('rw-note');if(sw)sw.style.display=w==='us'?'':'none';if(uk)uk.style.display=w==='uk'?'':'none';if(note)note.style.display=w==='us'?'':'none';var rc=document.querySelectorAll('.rw-count');for(var j=0;j<rc.length;j++){rc[j].textContent=w==='other'?'five':'six';}var ru=document.querySelectorAll('.rw-end-ru'),ac=document.querySelectorAll('.rw-end-ac');for(var i=0;i<ru.length;i++){ru[i].style.display=w==='other'?'none':'';}for(var i2=0;i2<ac.length;i2++){ac[i2].style.display=w==='other'?'':'none';}var d=document.getElementById('rw-disc'),dt=document.getElementById('rw-disc-text');['us','uk','other'].forEach(function(k){var t=document.getElementById('rtab-'+k);if(!t)return;var on=k===w;t.style.background=on?'#111':'transparent';t.style.color=on?'#fff':'#111';});};</script>
     <div style="max-width:1220px;margin:0 auto;display:flex;flex-direction:column;gap:96px">
       <div>
-        <div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 12px">SEPTEMBER 21<sup style="font-size:.6em">ST</sup> – SEPTEMBER 30<sup style="font-size:.6em">TH</sup></div>
-        <div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin-bottom:70px">ACT ONE</div>
+        <div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin:20px 0 10px">ACT ONE</div>
+        <div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 90px">SEPTEMBER 21<sup style="font-size:.6em">ST</sup> – SEPTEMBER 30<sup style="font-size:.6em">TH</sup></div>
         <div class="m-prog" style="display:flex;align-items:center;gap:36px;margin:88px 0 44px">
           <div style="flex:1;height:44px;background:#e5e5e5;position:relative">
             <div id="act1-fill" style="position:absolute;top:0;bottom:0;left:0;width:0%;background:#c1330a"></div><div style="position:absolute;top:0;bottom:0;left:10%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:20%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:30%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:40%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:60%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:70%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:80%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:90%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;left:20%;width:3px;height:12px;background:#c1330a"></div><div class="rw-tlab" style="position:absolute;bottom:100%;left:20%;width:0;display:flex;justify-content:flex-end;margin-bottom:8px"><div style="transform:rotate(24deg);transform-origin:right bottom;font-family:'Atomic Marker',cursive;font-size:14px;letter-spacing:.03em;color:#c1330a;white-space:nowrap">REWARD UNLOCKED!</div></div><div style="position:absolute;top:0;left:40%;width:3px;height:12px;background:#c1330a"></div><div class="rw-tlab" style="position:absolute;bottom:100%;left:40%;width:0;display:flex;justify-content:flex-end;margin-bottom:8px"><div style="transform:rotate(24deg);transform-origin:right bottom;font-family:'Atomic Marker',cursive;font-size:14px;letter-spacing:.03em;color:#c1330a;white-space:nowrap">REWARD UNLOCKED!</div></div><div style="position:absolute;top:0;left:60%;width:3px;height:12px;background:#c1330a"></div><div class="rw-tlab" style="position:absolute;bottom:100%;left:60%;width:0;display:flex;justify-content:flex-end;margin-bottom:8px"><div style="transform:rotate(24deg);transform-origin:right bottom;font-family:'Atomic Marker',cursive;font-size:14px;letter-spacing:.03em;color:#c1330a;white-space:nowrap">REWARD UNLOCKED!</div></div><div style="position:absolute;top:0;left:75%;width:3px;height:12px;background:#c1330a"></div><div class="rw-tlab" style="position:absolute;bottom:100%;left:75%;width:0;display:flex;justify-content:flex-end;margin-bottom:8px"><div style="transform:rotate(24deg);transform-origin:right bottom;font-family:'Atomic Marker',cursive;font-size:14px;letter-spacing:.03em;color:#c1330a;white-space:nowrap">REWARD UNLOCKED!</div></div><div style="position:absolute;top:0;left:80%;width:3px;height:12px;background:#c1330a"></div><div class="rw-tlab" style="position:absolute;bottom:100%;left:80%;width:0;display:flex;justify-content:flex-end;margin-bottom:8px"><div style="transform:rotate(24deg);transform-origin:right bottom;font-family:'Atomic Marker',cursive;font-size:14px;letter-spacing:.03em;color:#c1330a;white-space:nowrap">REWARD UNLOCKED!</div></div>
@@ -668,8 +687,8 @@ if(window.fetch)fetch(BOARD+'?t='+Math.floor(Date.now()/300000)).then(function(r
         <div id="act1-release" style="font-family:'Almarai',sans-serif;font-size:16px;color:#111;text-align:center;margin-top:12px">*All rewards will be released at the conclusion of the hunt!</div>
       </div>
       <div>
-        <div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 12px">OCTOBER 1<sup style="font-size:.6em">ST</sup> – OCTOBER 15<sup style="font-size:.6em">TH</sup></div>
-        <div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin-bottom:70px">ACT TWO</div>
+        <div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin:20px 0 10px">ACT TWO</div>
+        <div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 90px">OCTOBER 1<sup style="font-size:.6em">ST</sup> – OCTOBER 15<sup style="font-size:.6em">TH</sup></div>
         <div class="m-prog" style="display:flex;align-items:center;gap:36px;margin:88px 0 44px">
           <div style="flex:1;height:44px;background:#e5e5e5;position:relative">
             <div style="position:absolute;top:0;bottom:0;left:0;width:0%;background:#c1330a"></div><div style="position:absolute;top:0;bottom:0;left:10%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:20%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:30%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:40%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:60%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:70%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:80%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:90%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;left:25%;width:3px;height:12px;background:#c1330a"></div><div style="position:absolute;bottom:100%;left:25%;width:0;display:flex;justify-content:flex-end;margin-bottom:8px"><div style="transform:rotate(24deg);transform-origin:right bottom;font-family:'Atomic Marker',cursive;font-size:14px;letter-spacing:.03em;color:#c1330a;white-space:nowrap">REWARD UNLOCKED!</div></div><div style="position:absolute;top:0;left:50%;width:3px;height:12px;background:#c1330a"></div><div style="position:absolute;bottom:100%;left:50%;width:0;display:flex;justify-content:flex-end;margin-bottom:8px"><div style="transform:rotate(24deg);transform-origin:right bottom;font-family:'Atomic Marker',cursive;font-size:14px;letter-spacing:.03em;color:#c1330a;white-space:nowrap">REWARD UNLOCKED!</div></div><div style="position:absolute;top:0;left:75%;width:3px;height:12px;background:#c1330a"></div><div class="rw-tlab" style="position:absolute;bottom:100%;left:75%;width:0;display:flex;justify-content:flex-end;margin-bottom:8px"><div style="transform:rotate(24deg);transform-origin:right bottom;font-family:'Atomic Marker',cursive;font-size:14px;letter-spacing:.03em;color:#c1330a;white-space:nowrap">REWARD UNLOCKED!</div></div>
@@ -686,8 +705,8 @@ if(window.fetch)fetch(BOARD+'?t='+Math.floor(Date.now()/300000)).then(function(r
         </div>
       </div>
       <div>
-        <div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 12px">OCTOBER 16<sup style="font-size:.6em">TH</sup> – NOVEMBER 1<sup style="font-size:.6em">ST</sup></div>
-        <div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin-bottom:70px">ACT THREE</div>
+        <div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin:20px 0 10px">ACT THREE</div>
+        <div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 90px">OCTOBER 16<sup style="font-size:.6em">TH</sup> – NOVEMBER 1<sup style="font-size:.6em">ST</sup></div>
         <div class="m-prog" style="display:flex;align-items:center;gap:36px;margin:88px 0 44px">
           <div style="flex:1;height:44px;background:#e5e5e5;position:relative">
             <div style="position:absolute;top:0;bottom:0;left:0;width:0%;background:#c1330a"></div><div style="position:absolute;top:0;bottom:0;left:10%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:20%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:30%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:40%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:60%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:70%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:80%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;bottom:0;left:90%;width:2px;background:rgba(0,0,0,.18)"></div><div style="position:absolute;top:0;left:25%;width:3px;height:12px;background:#c1330a"></div><div style="position:absolute;bottom:100%;left:25%;width:0;display:flex;justify-content:flex-end;margin-bottom:8px"><div style="transform:rotate(24deg);transform-origin:right bottom;font-family:'Atomic Marker',cursive;font-size:14px;letter-spacing:.03em;color:#c1330a;white-space:nowrap">REWARD UNLOCKED!</div></div><div style="position:absolute;top:0;left:50%;width:3px;height:12px;background:#c1330a"></div><div style="position:absolute;bottom:100%;left:50%;width:0;display:flex;justify-content:flex-end;margin-bottom:8px"><div style="transform:rotate(24deg);transform-origin:right bottom;font-family:'Atomic Marker',cursive;font-size:14px;letter-spacing:.03em;color:#c1330a;white-space:nowrap">REWARD UNLOCKED!</div></div><div style="position:absolute;top:0;left:75%;width:3px;height:12px;background:#c1330a"></div><div class="rw-tlab" style="position:absolute;bottom:100%;left:75%;width:0;display:flex;justify-content:flex-end;margin-bottom:8px"><div style="transform:rotate(24deg);transform-origin:right bottom;font-family:'Atomic Marker',cursive;font-size:14px;letter-spacing:.03em;color:#c1330a;white-space:nowrap">REWARD UNLOCKED!</div></div>
@@ -704,7 +723,7 @@ if(window.fetch)fetch(BOARD+'?t='+Math.floor(Date.now()/300000)).then(function(r
         </div>
       </div>
     </div>
-    <div id="rw-disc" style="font-size:12px;color:#111;max-width:720px;margin:80px auto 0;text-align:center"><b id="rw-disc-text">Digital rewards are available to everyone, everywhere. The Act sweepstakes and The Treasure are open only to legal residents of the 50 United States and D.C. who are 18 or older. Void where prohibited.</b></div>
+    <div id="rw-disc" style="font-size:12px;color:#111;max-width:980px;margin:80px auto 0;text-align:center;text-wrap:balance"><b id="rw-disc-text">Digital rewards are available to everyone, everywhere. The Act sweepstakes and The Treasure are open only to legal residents of the 50 United States and D.C. who are 18 or older. Void where prohibited.</b></div>
   </section>
 
   <div id="book-lb" onclick="this.style.display='none'" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:center;justify-content:center;cursor:pointer;padding:24px">
@@ -765,8 +784,8 @@ if(window.fetch)fetch(BOARD+'?t='+Math.floor(Date.now()/300000)).then(function(r
       </div>
       <div class="tm-card" style="border-radius:10px;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
         <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">SHARE THE HUNT</div>
-        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#c3a6ff;margin:8px 0 22px">50 POINTS PER POST<br>(Limit: Once Per Day)</div>
-        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 30px;flex:1;text-align:left">Make a post hyping up <b>THE TREASURE HUNT</b> and post it on social media.</p><div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count.</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#c3a6ff;margin:8px 0 22px">50 POINTS PER POST<br>(Limit: Once Per Day, Per Social Media Account)</div>
+        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 30px;flex:1;text-align:left">Make a post hyping up <b>THE TREASURE HUNT</b> and post it on social media. Accepted accounts: Instagram, TikTok, YouTube, Reddit, X, Threads, and Facebook.</p><div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count.</div>
         <div><a href="https://africhmaurice.github.io/site/preview-next/points.html" target="_blank" rel="noopener" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:999px;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT POINTS!</a></div>
       </div>
       <div class="tm-card" style="border-radius:10px;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">

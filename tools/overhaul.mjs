@@ -10,6 +10,7 @@ import { readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync, exis
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LAYOUT, swapBlocks } from './lib.mjs';
+import { profilePage } from './profile-page.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const BOT = resolve(ROOT, '../treasure-hunt-leaderboard');
@@ -32,29 +33,53 @@ function cut(s, start, end, what) {
 
 // ---------------------------------------------------------------- the hunt menu
 const NAV_CSS = `<style>
-#hunt-nav .mn-row{justify-content:space-between;gap:clamp(8px,1.05vw,18px)}
-#hunt-nav .mn-link{font-size:clamp(10px,.8vw,13px);letter-spacing:.05em}
-#hunt-nav .mn-logo{display:flex;align-items:center;flex:none;margin-right:clamp(2px,.8vw,14px);transition:transform .15s ease}
+html body{text-wrap:pretty}
+h1,h2,h3{text-wrap:balance}
+#hunt-nav{padding:14px clamp(28px,3.2vw,60px) 14px clamp(20px,2.4vw,44px)}
+#hunt-nav .mn-row{max-width:none;justify-content:space-between;gap:clamp(8px,1.2vw,22px)}
+#hunt-nav .mn-link{font-size:clamp(10px,.86vw,14px);letter-spacing:.05em}
+#hunt-nav .mn-logo{display:flex;align-items:center;flex:none;margin-right:clamp(18px,2.8vw,56px);transition:transform .15s ease}
 #hunt-nav .mn-logo:hover{transform:scale(1.05)}
-#hunt-nav .mn-logo img{height:clamp(30px,2.5vw,40px);width:auto;display:block;filter:drop-shadow(0 1px 6px rgba(0,0,0,.45))}
-@media (max-width:1240px){
+#hunt-nav .mn-logo img{height:clamp(42px,3.6vw,60px);width:auto;display:block;filter:drop-shadow(0 1px 6px rgba(0,0,0,.45))}
+#hunt-nav .mn-drop-cta{margin-left:clamp(6px,1vw,18px)}
+#hunt-nav .mn-dd-in a.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}
+#hunt-nav .mn-dd-in a.mn-profile:hover{background:#e04a12;color:#fff}
+#hunt-nav .mn-dd-in a.mn-profile svg{width:16px;height:16px;flex:none}
+@media (max-width:1100px){
   #hunt-nav{padding:10px 0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
   #hunt-nav .mn-row{display:none}
   #hunt-nav .mn-burger{display:flex}
 }
-#hunt-nav-ov{gap:16px;overflow-y:auto;justify-content:flex-start;padding-top:84px}
+#hunt-nav-ov{gap:14px;overflow-y:auto;justify-content:flex-start;padding-top:88px}
 #hunt-nav-ov a{font-size:17px}
-#hunt-nav-ov .mn-ovlogo{position:absolute;top:18px;left:20px}
-#hunt-nav-ov .mn-ovlogo img{height:38px;width:auto;display:block}
-@media (min-height:760px){#hunt-nav-ov{justify-content:center;padding-top:32px}}
+#hunt-nav-ov .mn-ovlogo{position:absolute;top:16px;left:20px}
+#hunt-nav-ov .mn-ovlogo img{height:44px;width:auto;display:block}
+#hunt-nav-ov .mn-ovgroup{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(243,234,217,.3);padding:14px 26px 16px}
+#hunt-nav-ov .mn-ovgroup span{font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590}
+#hunt-nav-ov .mn-ovgroup a{font-size:15px}
+#hunt-nav-ov .mn-ovgroup a.mn-profile{background:#c1330a;border:1.5px solid #f3ead9;padding:9px 16px}
+@media (min-height:860px){#hunt-nav-ov{justify-content:center;padding-top:32px}}
 </style>
 `;
 const LINKS = [
   ['THE HUNT', '/the-hunt'], ['TASKS', '/the-hunt#tasks'], ['RIDDLES', '/the-hunt#riddles'], ['CLUES', '/lootbox-clue'],
-  ['GAMES', '/games'], ['REWARDS', '/the-hunt#rewards'], ['CONTESTS', '/contests'], ['GLOBAL LEADERBOARD', '/leaderboard'],
-  ['LOOT BOX SCORECARD', '/loot'], ['QUESTIONS?', '/questions'], ['VOTE NOW!', '/red-city'],
+  ['GAMES', '/games'], ['CONTESTS', '/contests'], 'PROGRESS', ['QUESTIONS?', '/questions'], ['VOTE NOW!', '/red-city'],
 ];
+// The Current Progress dropdown; the profile is its highlighted first item.
+const PROGRESS = [['TREASURE HUNTER PROFILE', '/profile', 'mn-profile'], ['GLOBAL LEADERBOARD', '/leaderboard'], ['LOOT BOX SCORECARD', '/loot'], ['REWARDS', '/the-hunt#rewards']];
+const STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"></path></svg>';
 const vote = (label) => label === 'VOTE NOW!' ? ' style="color:#ff4c0f"' : '';
+const deskLink = (item) => item === 'PROGRESS'
+  ? `    <div class="mn-drop">
+      <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">CURRENT PROGRESS &#9662;</a>
+      <div class="mn-dd"><div class="mn-dd-in">
+${PROGRESS.map(([l, h, c]) => `        <a href="${U(h)}"${c ? ` class="${c}"` : ''}>${c ? STAR : ''}${l}</a>`).join('\n')}
+      </div></div>
+    </div>`
+  : `    <a href="${U(item[1])}" class="mn-link"${vote(item[0])}>${item[0]}</a>`;
+const ovLink = (item) => item === 'PROGRESS'
+  ? `  <div class="mn-ovgroup"><span>CURRENT PROGRESS</span>\n${PROGRESS.map(([l, h, c]) => `    <a href="${U(h)}"${c ? ` class="${c}"` : ''}>${l}</a>`).join('\n')}\n  </div>`
+  : `  <a href="${U(item[1])}"${vote(item[0])}>${item[0]}</a>`;
 
 function nav(s, file) {
   const [a] = cut(s, '<nav id="hunt-nav">', '</nav>', `the hunt menu in ${file}`);
@@ -67,13 +92,13 @@ function nav(s, file) {
   const fresh = `<nav id="hunt-nav">
   <div class="mn-row">
     <a href="${LIVE}" class="mn-logo" aria-label="Maurice Africh home"><img src="${LOGO}" alt="Maurice Africh"></a>
-${LINKS.map(([l, h]) => `    <a href="${U(h)}" class="mn-link"${vote(l)}>${l}</a>`).join('\n')}
+${LINKS.map(deskLink).join('\n')}
     ${dd.trim()}
   ${burger.trim()}
 </nav>
 ${ovHead.trimEnd()}
   <a href="${LIVE}" class="mn-ovlogo" aria-label="Maurice Africh home"><img src="${LOGO}" alt="Maurice Africh"></a>
-${LINKS.map(([l, h]) => `  <a href="${U(h)}"${vote(l)}>${l}</a>`).join('\n')}
+${LINKS.map(ovLink).join('\n')}
   <a href="${U('/preorder')}" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
 </div>`;
   return s.slice(0, a) + NAV_CSS + fresh + s.slice(ovEnd);
@@ -86,18 +111,18 @@ const heroCopy = `<h1 style="font-family:'Atomic Marker',cursive;font-weight:400
         <div class="h-ways" style="display:flex;flex-direction:column;gap:20px;max-width:820px">
           <p style="font-size:21px;line-height:1.55;color:#fff;margin:0"><b style="color:#a2f590">Enter the Sweepstakes:</b> 1 Completed Task = 1 Entry into the Sky Pirate Sweepstakes. All you have to do is participate in the hunt, and you will be entered for a chance to win incredible prizes!</p>
           <p style="font-size:21px;line-height:1.55;color:#fff;margin:0"><b style="color:#a2f590">Climb the Leaderboard:</b> Compete against other sky pirates for a spot on the <a href="${U('/leaderboard')}" style="color:#fff;font-weight:700;text-decoration:underline" class="hv0">leaderboard</a>! The top three sky pirates at the end of the hunt will win <a href="${U('/the-treasure')}" style="color:#fff;font-weight:700;text-decoration:underline" class="hv0">the Treasure</a>!</p>
-          <p style="font-size:21px;line-height:1.55;color:#fff;margin:0"><b style="color:#a2f590">Join the Crew:</b> If you participate in the hunt (even once), you will be rewarded with all of the rewards unlocked by the crew! Help them rack up points and earn as many rewards as possible! <span style="white-space:nowrap;font-weight:700">Current Reward Count: <span id="hero-rewards" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:1.35em;color:#fd7547;line-height:1">&hellip;</span></span></p>
+          <p style="font-size:21px;line-height:1.55;color:#fff;margin:0"><b style="color:#a2f590">Join the Crew:</b> If you participate in the hunt (even once), you will be rewarded with all of the rewards unlocked by the crew! Help them rack up points and earn as many rewards as possible! <span style="white-space:nowrap;font-weight:700">Current Unlocked Rewards: <span id="hero-rewards" style="font-weight:700;color:#fff">&hellip;</span></span></p>
         </div>
         `;
 
 const BTN_CSS = `<style>
-.h-btns{max-width:1440px;margin:72px auto 0;display:flex;flex-wrap:wrap;justify-content:center;gap:24px}
-.h-btn{flex:0 1 calc(25% - 19px);min-width:0;display:flex;align-items:center;justify-content:center;text-align:center;background:#0f2e0a;border:1px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);color:#fff !important;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(13px,1.02vw,16px);letter-spacing:.06em;white-space:nowrap;padding:18px 16px;text-decoration:none !important;transition:transform .15s ease,background .15s ease}
+.h-btns{max-width:1180px;margin:72px auto 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.h-btn{min-width:0;display:flex;align-items:center;justify-content:center;text-align:center;background:#0f2e0a;border:1px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);color:#fff !important;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(13px,1.02vw,16px);letter-spacing:.06em;white-space:nowrap;padding:18px 16px;text-decoration:none !important;transition:transform .15s ease,background .15s ease}
 .h-btn:hover{transform:scale(1.04);background:#1a4512}
 .h-btn.h-red{background:#c1330a}
 .h-btn.h-red:hover{background:#e04a12}
 .h-sweep{max-width:1240px;margin:72px auto 0;text-align:center}
-.h-sweep>p{font-size:22px;line-height:1.55;color:#fff;max-width:1000px;margin:0 auto 32px}
+.h-sweep>p{font-size:21px;line-height:1.55;color:#fff;max-width:1200px;margin:0 auto 32px;text-wrap:balance}
 .h-acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 .h-act{background:rgba(8,34,6,.55);border:1px solid rgba(243,234,217,.6);padding:26px 18px 24px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .h-act b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2vw,30px);color:#fff;line-height:1.15}
@@ -105,8 +130,8 @@ const BTN_CSS = `<style>
 .h-act i{display:none;font-style:normal;font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.14em;color:#fff;background:#c1330a;border:1px solid #f3ead9;padding:5px 10px}
 .h-act.h-now{border-color:#ff4c0f;box-shadow:0 0 0 2px #ff4c0f}
 .h-act.h-now i{display:inline-block}
-@media (max-width:900px){.h-btn{flex-basis:calc(50% - 12px);font-size:14px}.h-acts{grid-template-columns:1fr}.h-sweep>p{font-size:19px}}
-@media (max-width:420px){.h-btn{flex-basis:100%}}
+@media (max-width:900px){.h-btns{grid-template-columns:repeat(2,minmax(0,1fr))}.h-btn{font-size:14px;white-space:normal}.h-acts{grid-template-columns:1fr}.h-sweep>p{font-size:19px}}
+@media (max-width:420px){.h-btns{grid-template-columns:1fr}}
 </style>
 `;
 const heroButtons = `<div class="h-btns">
@@ -116,7 +141,6 @@ const heroButtons = `<div class="h-btns">
       <a href="${U('/lootbox-clue')}" class="h-btn">FIND A LOOT BOX</a>
       <a href="${U('/games')}" class="h-btn">PLAY A GAME</a>
       <a href="${U('/the-hunt#map')}" class="h-btn h-red">CHOOSE YOUR OWN ADVENTURE</a>
-      <a href="${U('/contests')}" class="h-btn">ENTER A CONTEST</a>
     </div>
     <div class="h-sweep">
       <p>During the hunt, there will be three different sweepstakes, each with better/more prizes than the last. All you have to do to enter each sweepstakes is complete 1 task during the allotted time period for that sweepstakes.</p>
@@ -176,7 +200,8 @@ function pointsTable(s) {
     retitle(get('Secret Loot Boxes'), '>Secret Loot Boxes<', '>Find a Loot Box<'),
     get('Choose Your Own Ad'),
     retitle(get('Stay in the Know'), '>Stay in the Know<', '>Sign Up for Maurice’s Newsletter<'),
-    get('Reading Apps'), get('Libraries'), get('Indie Bookstores'), get('Share the Hunt'),
+    get('Reading Apps'), get('Libraries'), get('Indie Bookstores'),
+    [...withDesc(get('Share the Hunt'), 'to your IG or TikTok story and spread the word!', 'on your social media and spread the word! Accepted accounts: Instagram, TikTok, YouTube, Reddit, X, Threads, and Facebook.').slice(0, 1), pts('25 POINTS<br>(LIMIT: ONCE PER DAY, PER SOCIAL MEDIA ACCOUNT)')],
     retitle(get('Show Off Your Scor'), '>Show Off Your Scorecard<', '>Show Off Your Loot Box Scorecard<'),
     [cell(`<a href="${U('/contests')}" ${T}>Enter a Contest</a>`,
       `Enter the <a href="${U('/contests')}" ${T}>Fan Fiction Contest</a> or the <a href="${U('/contests')}" ${T}>Fan Art Contest</a>! Write a “Sky Pirate” story (500 word minimum, 3,000 word limit, any subgenre, set in the Sky Pirates world), or make “Sky Pirate” fan art: draw a character, sketch a goma, build a model ship. Just make it an honest effort, and you might win a $100 cash prize! Enter as many times as you like.`),
@@ -215,7 +240,7 @@ function huntPage(s) {
   s = swap(s, 'Every pre-order receipt, completed task, secret loot box uncovered, and solved riddle will help you unlock rewards, reveal new milestones, and get us one step closer to finding the treasure!',
     'Every pre-order received, completed task, secret loot box found, riddle solved, and game played will help you unlock rewards, reveal new milestones, and get us one step closer to finding the stone!', 'the mechanics copy');
   s = s.replace(/<span>The <strong style="color:#c53200">3 SKY PIRATES<\/strong> with the most points by the end of the hunt will earn <a href="#grand-prize"[^>]*>THE TREASURE<\/a>!<\/span>/,
-    () => '<span><strong style="color:#c53200">Complete 1 task and win!</strong> It really is that simple.</span>');
+    () => '<span><strong style="color:#c53200">Complete 1 task and win!</strong><br>It really is that simple.</span>');
   if (!s.includes('Complete 1 task and win!')) throw new Error('Could not find the third mechanics box');
   const [b1] = cut(s, '<div class="m-pointsbox"', '</ul>', 'the What do points do box');
   const b2 = s.indexOf('</div>', s.indexOf('</ul>', b1)) + 6;
@@ -223,6 +248,10 @@ function huntPage(s) {
 
   // How to earn points
   s = pointsTable(s);
+
+  // The Share the Hunt task card: once a day on each social media account
+  s = swap(s, '50 POINTS PER POST<br>(Limit: Once Per Day)', '50 POINTS PER POST<br>(Limit: Once Per Day, Per Social Media Account)', 'the Share the Hunt card limit');
+  s = swap(s, 'hyping up <b>THE TREASURE HUNT</b> and post it on social media.', 'hyping up <b>THE TREASURE HUNT</b> and post it on social media. Accepted accounts: Instagram, TikTok, YouTube, Reddit, X, Threads, and Facebook.', 'the Share the Hunt card text');
 
   // Build a crew
   s = s.replace(/<p style="margin:0 0 36px">Invite your frens![\s\S]*?<\/p>/, () =>
@@ -234,14 +263,17 @@ function huntPage(s) {
   s = swap(s, 'line-height:1.15">FOLLOW ALONG</h2>', 'line-height:1.15">CHOOSE YOUR OWN ADVENTURE</h2>', 'the map heading');
   s = swap(s, 'max-width:1180px;margin:0 auto 90px">The map updates as the crew moves through the hunt. Earn as many points as you can to explore the map, unlock secret paths, discover areas yet unexplored, and find the treasure!</p>',
     `max-width:1180px;margin:0 auto 36px">As you progress through the hunt, you will be presented with choices, votes, dice rolls, games of chance, and more! The maps update as you progress through the hunt.</p>
-    <div style="margin:0 0 90px"><a href="${U('/red-city')}" class="mh-cta" style="margin-top:0;font-size:17px;padding:16px 38px">VOTE NOW!</a></div>`, 'the map copy');
+    <div style="margin:0 0 90px"><a href="${U('/red-city')}" class="mh-cta" style="margin-top:0;font-size:18px;padding:18px clamp(70px,10vw,140px);background:#482d85">VOTE NOW!</a></div>`, 'the map copy');
 
   // Rewards unlocked: dates over each act, new notes
   const ACTS = { 'ACT ONE': 'SEPTEMBER 21<sup style="font-size:.6em">ST</sup> – SEPTEMBER 30<sup style="font-size:.6em">TH</sup>', 'ACT TWO': 'OCTOBER 1<sup style="font-size:.6em">ST</sup> – OCTOBER 15<sup style="font-size:.6em">TH</sup>', 'ACT THREE': 'OCTOBER 16<sup style="font-size:.6em">TH</sup> – NOVEMBER 1<sup style="font-size:.6em">ST</sup>' };
   for (const [act, when] of Object.entries(ACTS)) {
     s = swap(s, `<div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin-bottom:70px">${act}</div>`,
-      `<div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 12px">${when}</div>\n        <div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin-bottom:70px">${act}</div>`, `the ${act} title`);
+      `<div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin:20px 0 10px">${act}</div>\n        <div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 90px">${when}</div>`, `the ${act} title`);
   }
+  // The small print under the rewards: two even lines, not one long line and a few stray words
+  s = s.replace('<div id="rw-disc" style="font-size:12px;color:#111;max-width:720px;margin:80px auto 0;text-align:center">', '<div id="rw-disc" style="font-size:12px;color:#111;max-width:980px;margin:80px auto 0;text-align:center;text-wrap:balance">');
+  if (!s.includes('max-width:980px;margin:80px auto 0;text-align:center;text-wrap:balance')) throw new Error('Could not find the rewards small print');
   s = s.replace(/(<div id="rw-note"[^>]*>)[^<]*(<\/div>)/, (m, a, b) => a + '*Every successful task completed will earn an entry into the sweepstakes!' + b);
   s = s.replace(/<div id="act1-release"[^>]*>[^<]*<\/div>/, () =>
     '<div id="act1-release" style="font-family:\'Almarai\',sans-serif;font-size:16px;color:#111;text-align:center;margin-top:12px">*All rewards will be released at the conclusion of the hunt!</div>');
@@ -267,9 +299,13 @@ function treasurePage(hunt, menu) {
   const head = hunt.slice(hunt.indexOf('<style>'), hunt.indexOf('</style>') + 8);
   const [t1] = cut(hunt, '  <!-- ============ THE TREASURE ============ -->', '  <!-- ============ ACT 1', 'the Treasure section');
   let sec = hunt.slice(t1, hunt.indexOf('  <!-- ============ ACT 1', t1));
-  sec = sec.replace('padding:110px 72px 100px;text-align:center">', 'padding:150px 72px 110px;text-align:center">');
+  sec = sec.replace('padding:110px 72px 100px;text-align:center">', 'padding:150px 72px 80px;text-align:center">');
+  // Its own backdrop (one no other page uses) under the brand red at 90%
+  const bg = sec.replace(/background:#c9440c url\([^)]*\) center\/cover;/,"background:linear-gradient(rgba(197,50,0,.9),rgba(197,50,0,.9)),url('https://africhmaurice.github.io/site/assets/bg/city-skyline-panorama-as348070597.webp') center/cover;");
+  if (bg === sec) throw new Error('Could not find the Treasure background');
+  sec = bg;
   sec = sec.replace(/\n  <\/section>\s*$/, `
-    <div class="tr-more" style="display:flex;flex-wrap:wrap;justify-content:center;gap:20px;margin:56px 0 0">
+    <div class="tr-more" style="display:flex;flex-wrap:wrap;justify-content:center;gap:20px;margin:48px 0 0">
       <a href="${U('/leaderboard')}" class="hv1" style="display:inline-block;background:#0f2e0a;border:1px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:16px;letter-spacing:.08em;padding:18px 34px;text-decoration:none;transition:transform .15s ease">SEE THE LEADERBOARD</a>
       <a href="${U('/the-hunt#tasks')}" class="hv1" style="display:inline-block;background:#0f2e0a;border:1px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:16px;letter-spacing:.08em;padding:18px 34px;text-decoration:none;transition:transform .15s ease">EARN MORE POINTS</a>
     </div>
@@ -285,7 +321,7 @@ function questionsPage(menu) {
 <style>
 @font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
 html,body{margin:0 !important;padding:0 !important}
-#hq{background:linear-gradient(178deg,rgba(10,35,8,.92) 0%,rgba(30,100,23,.9) 60%,rgba(63,163,47,.9) 100%),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;background-attachment:fixed;padding:150px 24px 110px;font-family:'Almarai',sans-serif;color:#fff}
+#hq{background:linear-gradient(178deg,rgba(10,35,8,.92) 0%,rgba(30,100,23,.9) 60%,rgba(63,163,47,.9) 100%),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;background-attachment:fixed;padding:150px 24px 48px;font-family:'Almarai',sans-serif;color:#fff}
 #hq .hq-in{max-width:720px;margin:0 auto}
 #hq h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(54px,8vw,110px);line-height:1.1;margin:0 0 18px;text-align:center}
 #hq .hq-lede{font-size:21px;line-height:1.55;text-align:center;margin:0 auto 44px;max-width:620px}
@@ -300,12 +336,13 @@ html,body{margin:0 !important;padding:0 !important}
 #hq button{margin-top:26px;align-self:center;font:inherit;font-weight:800;font-size:17px;letter-spacing:.1em;color:#fff;background:#c1330a;border:1.5px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);padding:16px 44px;cursor:pointer;transition:transform .15s ease,background .15s ease}
 #hq button:hover:not(:disabled){background:#e04a12;transform:scale(1.04)}
 #hq button:disabled{opacity:.7;cursor:wait}
-#hq .hq-err{min-height:1.4em;margin:12px 0 0;text-align:center;color:#ffc0ab;font-weight:700}
+#hq .hq-err{margin:12px 0 0;text-align:center;color:#ffc0ab;font-weight:700}
+#hq .hq-err:empty{display:none}
 #hq .hq-done{text-align:center;padding:24px 0 8px}
 #hq .hq-done b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,5vw,54px);margin-bottom:12px}
 #hq .hq-done a{display:inline-block;margin-top:22px;color:#fff;background:#c1330a;border:1.5px solid #f3ead9;padding:14px 30px;font-weight:800;letter-spacing:.1em;text-decoration:none}
 @media (max-width:900px){#hq{background-attachment:scroll}}
-@media (max-width:560px){#hq{padding:110px 16px 80px}#hq form{padding:26px 18px 24px}#hq .hq-lede{font-size:18px}}
+@media (max-width:560px){#hq{padding:110px 16px 48px}#hq form{padding:26px 18px 24px}#hq .hq-lede{font-size:18px}}
 </style>
 <section id="hq" data-screen-label="Questions">
   <div class="hq-in">
@@ -378,28 +415,28 @@ html,body{margin:0 !important;padding:0 !important}
 }
 
 // ---------------------------------------------------------------- the other pages
-const topBar = (id, buttons) => `<style>
-#${id}{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;padding:112px 16px 30px;background:#0b170f;position:relative;z-index:3;width:100vw;left:50%;margin-left:-50vw;box-sizing:border-box}
-#${id} a{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.1em;color:#fff;text-decoration:none;background:#0f2e0a;border:1.5px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);padding:15px 30px;transition:transform .15s ease,background .15s ease}
-#${id} a:hover{transform:scale(1.04);background:#1a4512}
-#${id} a.red{background:#c1330a}
-#${id} a.red:hover{background:#e04a12}
-@media (max-width:1240px){#${id}{padding-top:76px}}
-@media (max-width:560px){#${id} a{flex:1 1 100%;text-align:center}}
-</style>
-<div id="${id}">
-${buttons.map(([label, href, cls]) => `  <a href="${U(href)}"${cls ? ` class="${cls}"` : ''}>${label}</a>`).join('\n')}
-</div>
-`;
 
 const EDITS = {
   // mauriceafrich-site pages
   'hunt-menu': (s) => nav(s, 'the hunt menu'),
-  'lootbox-clue': (s) => nav(s, 'the clues page'),
+  'lootbox-clue': (s) => tighten(nav(s, 'the clues page'), 'padding:150px 32px 110px', 'padding:150px 32px 64px', 'the clues page padding'),
   contests: (s) => {
     s = nav(s, 'the contests page');
-    s = swap(s, '<div id="contests">', topBar('ct-top', [['PLAY GAMES', '/games', 'red'], ['FIND A LOOT BOX', '/lootbox-clue']]) + '<div id="contests">', 'the contests grid');
-    return swap(s, '#contests .ct-panel{display:flex;flex-direction:column;align-items:center;text-align:center;padding:170px 56px 110px;', '#contests .ct-panel{display:flex;flex-direction:column;align-items:center;text-align:center;padding:90px 56px 110px;', 'the contests panel padding');
+    // A mood board for the fan art contest: genre inspiration, clearly not Sky Pirates of Imperia artwork
+    s = swap(s, '#contests .ct-btn:hover{transform:scale(1.04)}', `#contests .ct-btn:hover{transform:scale(1.04)}
+#contests .ct-inspo{max-width:560px;margin:-24px 0 56px;border:1.5px dashed rgba(162,245,144,.6);padding:26px 28px 28px;text-align:center}
+#contests .ct-inspo b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(24px,2.2vw,32px);color:#a2f590;margin:0 0 10px}
+#contests .ct-inspo p{font-size:16px;line-height:1.55;margin:0 0 18px}
+#contests .ct-inspo small{display:block;font-size:13px;line-height:1.5;color:rgba(255,255,255,.75);margin:14px 0 0}
+#contests .ct-inspo a{display:inline-block;font-weight:800;font-size:14px;letter-spacing:.1em;color:#0c2308;background:#a2f590;padding:13px 26px;text-decoration:none;box-shadow:4px 5px 0 rgba(0,0,0,.4);transition:transform .15s ease}
+#contests .ct-inspo a:hover{transform:scale(1.04)}`, 'the contests button style');
+    return swap(s, '    <div><a href="https://www.mauriceafrich.com/points" class="ct-btn">SUBMIT FAN ART</a></div>', `    <div class="ct-inspo">
+      <b>NEED SOME INSPIRATION?</b>
+      <p>I made a Pinterest board of science fantasy art and illustrations to get your creative juices flowing.</p>
+      <a href="https://www.pinterest.com/africhmaurice/science-fantasy-artillustrations/" target="_blank" rel="noopener">SEE THE INSPIRATION BOARD</a>
+      <small>Heads up: this isn&rsquo;t Sky Pirates of Imperia artwork. It&rsquo;s inspiration from the genre the sky pirates live in.</small>
+    </div>
+    <div><a href="https://www.mauriceafrich.com/points" class="ct-btn">SUBMIT FAN ART</a></div>`, 'the fan art submit button');
   },
   rules: (s) => {
     s = nav(s, 'the rules page');
@@ -409,19 +446,32 @@ const EDITS = {
       "(a) Entries. During each Act, every verified task completion earns one entry into that Act's UK prize draw. Task completions include verified form submissions, correctly solved riddles, secret loot boxes found, daily game wins, and sealed Choose Your Own Adventure votes.", 'the UK entries rule');
     return swap(s, 'treasure box as shown on the Hunt page', `treasure box as shown on <a href="${U('/the-treasure')}">The Treasure page</a>`, 'the Treasure description in the rules');
   },
-  leaderboard: (s) => swap(s, '<div class="th-lb-wrap">', topBar('lb-top', [['PLAY GAMES', '/games', 'red'], ['FIND A LOOT BOX', '/lootbox-clue'], ['SEE THE TREASURE', '/the-treasure']]) + '<div class="th-lb-wrap">', 'the leaderboard frame'),
-  'home-slider': (s) => { const out = s.replace(/<a href="https:\/\/www\.mauriceafrich\.com\/the-hunt" target="_blank" rel="noopener" style="display:inline-block;margin-top:2\.25cqw;([^"]*)" class="hv0">JOIN THE HUNT!<\/a>/, (m, rest) =>
-    `<div style="display:flex;gap:1.2cqw;justify-content:center;flex-wrap:wrap;margin-top:2.25cqw"><a href="https://www.mauriceafrich.com/the-hunt" target="_blank" rel="noopener" style="display:inline-block;${rest}" class="hv0">JOIN THE HUNT!</a><a href="https://www.mauriceafrich.com/the-treasure" target="_blank" rel="noopener" style="display:inline-block;${rest.replace('background:#c1330a', 'background:rgba(0,0,0,.28)')}" class="hv0">SEE THE TREASURE</a></div>`); if (out === s) throw new Error('Could not find the home slider button'); return out; },
+  // Three buttons under the board, on the same red: teal, green and purple
+  leaderboard: (s) => swap(s, '</iframe>', `</iframe>
+  <style>
+  #lb-more{position:relative;z-index:3;display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:8px 16px 64px}
+  #lb-more a{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.1em;color:#fff;text-decoration:none;border:1.5px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);padding:16px 32px;transition:transform .15s ease,filter .15s ease}
+  #lb-more a:hover{transform:scale(1.04);filter:brightness(1.12)}
+  @media (max-width:560px){#lb-more a{flex:1 1 100%;text-align:center}}
+  </style>
+  <div id="lb-more">
+    <a href="${U('/games')}" style="background:#268e62">PLAY GAMES</a>
+    <a href="${U('/lootbox-clue')}" style="background:#2c6021">FIND A LOOT BOX</a>
+    <a href="${U('/the-treasure')}" style="background:#482d85">SEE THE TREASURE</a>
+  </div>`, 'the leaderboard frame'),
   // hunt bot pages (the same edits work on the bot sources and on their published copies)
   'the-hunt': huntPage,
-  loot: (s) => swap(nav(s, 'the loot page'), '<a class="lb-btn" href="https://www.mauriceafrich.com/lootbox-clue">See the clues</a>', '<a class="lb-btn" href="https://www.mauriceafrich.com/lootbox-clue">Find another loot box</a>', 'the loot box button'),
-  games: (s) => swap(nav(s, 'the Skyword page'),
+  loot: (s) => swap(tighten(nav(s, 'the loot page'), 'id="loot-boxes" style="padding:150px 72px 100px"', 'id="loot-boxes" style="padding:150px 72px 64px"', 'the loot page padding'), '<a class="lb-btn" href="https://www.mauriceafrich.com/lootbox-clue">See the clues</a>', '<a class="lb-btn" href="https://www.mauriceafrich.com/lootbox-clue">Find another loot box</a>', 'the loot box button'),
+  games: (s) => swap(tighten(nav(s, 'the Skyword page'), 'id="daily-word" style="position:relative;overflow-x:hidden;padding:150px 72px 100px', 'id="daily-word" style="position:relative;overflow-x:hidden;padding:150px 72px 64px', 'the Skyword padding'),
     "        : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>';\n  }",
     "        : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>' +\n      '<a class=\"thw-next\" href=\"https://www.mauriceafrich.com/sort-the-shelf\">CONGRATS! PLAY SORT THE SHELF</a>';\n  }", 'the Skyword claimed message')
     .replace('</style>', '.thw-next{display:inline-block;margin-top:18px;font-family:\'Almarai\',sans-serif;font-weight:800;font-size:15px;letter-spacing:.08em;color:#fffffe !important;background:#c53200;border:2px solid #fffffe;padding:13px 24px;text-decoration:none !important;transition:transform .15s ease}.thw-next:hover{transform:scale(1.04);background:#ff4c0f}\n</style>'),
-  redcity: (s) => swap(s, `var NEXT = '<div class="rc-next"><p>Want to find more loot boxes? Follow the clues!</p><a class="rc-cta" href="https://www.mauriceafrich.com/lootbox-clue">SEE THE CLUES</a></div>';`,
+  redcity: (s) => swap(tighten(s, 'padding-top:clamp(140px,12vw,180px);padding-bottom:110px;', 'padding-top:clamp(140px,12vw,180px);padding-bottom:64px;', 'the vote page padding'), `var NEXT = '<div class="rc-next"><p>Want to find more loot boxes? Follow the clues!</p><a class="rc-cta" href="https://www.mauriceafrich.com/lootbox-clue">SEE THE CLUES</a></div>';`,
     `var NEXT = '<div class="rc-next"><a class="rc-cta" style="white-space:normal;max-width:560px;line-height:1.4" href="${DISCORD}" target="_blank" rel="noopener">JOIN THE DISCORD TO TALK TO OTHER ADVENTURERS AND DISCUSS YOUR VOTE!</a></div>';`, 'the vote page follow-up button'),
 };
+// The same bottom breathing room on every hunt page (about 64px of padding under the last thing on it).
+const tighten = (s, from, to, what) => swap(s, from, to, what);
+
 // The daily games share one script and one frame.
 const GAME_NEXT = `var NEXT_GAME = { shelf_sort: ['CONGRATS! PLAY BOOK ICONS', 'https://www.mauriceafrich.com/book-icons'], emoji_reads: ['CONGRATS! PLAY BOOKISH CROSSWORD', 'https://www.mauriceafrich.com/crossword'], crossword: ['CONGRATS! PLAY SKYWORD', 'https://www.mauriceafrich.com/games'] };\n`;
 function gameCommon(s) {
@@ -429,7 +479,7 @@ function gameCommon(s) {
   return swap(s, "            : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>';\n        }",
     "            : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>' +\n            (NEXT_GAME[o.key] ? '<a class=\"hg-claim hg-next\" href=\"' + NEXT_GAME[o.key][1] + '\">' + NEXT_GAME[o.key][0] + '</a>' : '');\n        }", 'the games claimed message');
 }
-const gameFrame = (s) => nav(s, 'the games frame').replace('.hg-claim:hover{', '.hg-next{text-decoration:none;color:#fffffe !important}\n.hg-claim:hover{');
+const gameFrame = (s) => tighten(nav(s, 'the games frame'), '.hg-section{position:relative;overflow-x:hidden;padding:150px 72px 100px;', '.hg-section{position:relative;overflow-x:hidden;padding:150px 72px 64px;', 'the games padding').replace('.hg-claim:hover{', '.hg-next{text-decoration:none;color:#fffffe !important}\n.hg-claim:hover{');
 for (const g of ['game-shelf-sort', 'game-emoji-reads', 'game-crossword', 'game-word-search', 'game-first-lines', 'game-title-scramble']) EDITS[g] = (s) => gameCommon(gameFrame(s));
 
 // ---------------------------------------------------------------- the Apps Script side (Questions tab)
@@ -474,10 +524,11 @@ if (mode === 'stage') {
   const menu = readFileSync(join(PAGES, 'hunt-menu.html'), 'utf8');
   writeFileSync(join(PAGES, 'the-treasure.html'), treasurePage(huntSrc, menu));
   writeFileSync(join(PAGES, 'questions.html'), questionsPage(menu));
-  console.log('✓ next/pages/the-treasure.html, next/pages/questions.html');
+  writeFileSync(join(PAGES, 'profile.html'), profilePage(menu));
+  console.log('✓ next/pages/the-treasure.html, questions.html, profile.html');
   // Keep clicks inside the preview: live links become their preview pages.
   const PV = site.publicBase + 'preview-next/';
-  const SHELLS = { ...LAYOUT, 'red-city': ['redcity'], 'sort-the-shelf': ['game-shelf-sort'], 'book-icons': ['game-emoji-reads'], crossword: ['game-crossword'], 'the-treasure': ['the-treasure'], questions: ['questions'] };
+  const SHELLS = { ...LAYOUT, 'red-city': ['redcity'], 'sort-the-shelf': ['game-shelf-sort'], 'book-icons': ['game-emoji-reads'], crossword: ['game-crossword'], 'the-treasure': ['the-treasure'], questions: ['questions'], profile: ['profile'] };
   const inPreview = (slug) => Object.prototype.hasOwnProperty.call(SHELLS, slug === '' ? 'home' : slug);
   const relink = (html) => html.replace(/https:\/\/www\.mauriceafrich\.com(\/[a-z0-9-]*)?(#[a-z0-9-]+)?(?=["'])/gi, (m, path = '/', hash = '') => {
     const slug = path.slice(1);
@@ -488,7 +539,7 @@ if (mode === 'stage') {
   const banner = `<div id="ma-preview-bar" style="position:fixed;left:12px;bottom:12px;z-index:2147483647;display:flex;gap:8px;align-items:center;background:rgba(11,23,15,.94);color:#fff;border:1px solid rgba(255,76,15,.6);border-radius:999px;padding:6px 8px 6px 14px;font:600 12px/1.2 system-ui,sans-serif;letter-spacing:.04em;box-shadow:0 6px 20px rgba(0,0,0,.4)">PREVIEW: NEW VERSION<button type="button" onclick="this.parentNode.remove()" aria-label="Hide" style="background:none;border:0;color:#8fa596;font-size:16px;cursor:pointer;padding:0 4px">×</button></div>
 <script>document.addEventListener('submit', function (e) { e.preventDefault(); e.stopImmediatePropagation(); alert('Preview only: forms are switched off here. Nothing was sent.'); }, true);</script>`;
   for (const [page, slugs] of Object.entries(SHELLS)) {
-    const from = page === 'the-treasure' || page === 'questions' ? 'contests' : page;
+    const from = ['the-treasure', 'questions', 'profile'].includes(page) ? 'contests' : page;
     const res = await fetch(`${LIVE}/${from === 'home' ? '' : from}`, { headers: { 'user-agent': 'Mozilla/5.0 (site preview builder)' } });
     if (!res.ok) { console.error(`✗ ${page}: live page returned ${res.status}`); continue; }
     let html = await res.text();
@@ -496,6 +547,7 @@ if (mode === 'stage') {
     html = swapped.replace(/href="\/([a-z0-9-]*)"(?=[\s>])/gi, (m, slug) => inPreview(slug) ? `href="${PV}${slug || 'home'}.html"` : `href="${LIVE}/${slug}"`);
     html = relink(html).split(site.publicBase + 'loader.js').join(site.publicBase + 'next/loader.js');
     if (page === 'the-treasure') html = html.replace(/<title>[^<]*<\/title>/, '<title>The Treasure — Maurice Africh</title>');
+    if (page === 'profile') html = html.replace(/<title>[^<]*<\/title>/,'<title>Treasure Hunter Profile — Maurice Africh</title>');
     if (page === 'questions') html = html.replace(/<title>[^<]*<\/title>/, '<title>Questions — Maurice Africh</title>');
     html = html.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${LIVE}/">\n<meta name="robots" content="noindex,nofollow">`).replace(/<\/body>/i, `${banner}\n</body>`);
     writeFileSync(join(ROOT, 'preview-next', `${page}.html`), html);
@@ -509,7 +561,7 @@ if (mode === 'stage') {
 if (mode === 'launch') {
   const edit = (file, fn) => { const f = resolve(file); writeFileSync(f, fn(readFileSync(f, 'utf8'))); console.log(`✓ ${file.replace(ROOT, '').replace(BOT, 'bot')}`); };
   const huntBefore = readFileSync(join(BOT, 'squarespace-hunt.html'), 'utf8');
-  for (const slug of ['hunt-menu', 'lootbox-clue', 'contests', 'rules', 'leaderboard', 'home-slider']) edit(join(ROOT, 'pages', slug + '.html'), EDITS[slug]);
+  for (const slug of ['hunt-menu', 'lootbox-clue', 'contests', 'rules', 'leaderboard']) edit(join(ROOT, 'pages', slug + '.html'), EDITS[slug]);
   edit(join(BOT, 'squarespace-hunt.html'), EDITS['the-hunt']);
   edit(join(BOT, 'squarespace-lootbox.html'), EDITS.loot);
   edit(join(BOT, 'squarespace-wordle.html'), EDITS.games);
@@ -518,9 +570,26 @@ if (mode === 'launch') {
   edit(join(BOT, 'games/_frame.html'), gameFrame);
   edit(join(BOT, 'games/common.js'), gameCommon);
   edit(join(BOT, 'apps-script/lootbox.gs'), lootboxGs);
+  // Share the Hunt and the hype post: once per day on each social media account, not once per day in total.
+  edit(join(BOT, 'config/rules.json'), (s) => { const r = JSON.parse(s); for (const k of ['share_hunt', 'social_post']) r.categories[k].limit = 'per_item'; return JSON.stringify(r, null, 2) + '\n'; });
+  edit(join(BOT, 'scripts/import.mjs'), (s) => swap(s, "  if (rule?.limit === 'per_day') item = dayOf(sub.timestamp);",
+    "  if (rule?.limit === 'per_day') item = dayOf(sub.timestamp);\n" +
+    "  // Shares count once a day per social media account: the day plus the platform named in the submission\n" +
+    "  // (or, when none is named, the proof image, so a second account's share goes to review instead of being refused).\n" +
+    "  if (['share_hunt', 'social_post'].includes(category)) {\n" +
+    "    const said = norm(`${sub.raw_type} ${sub.raw_item}`);\n" +
+    "    const where = [['instagram', /insta|\\big\\b/], ['tiktok', /tik ?tok/], ['youtube', /youtube|\\byt\\b/], ['reddit', /reddit/], ['x', /twitter|\\bx\\b/], ['threads', /threads/], ['facebook', /facebook|\\bfb\\b/]].find(([, re]) => re.test(said));\n" +
+    "    item = dayOf(sub.timestamp) + '|' + (where ? where[0] : sub.proof_file || '');\n" +
+    "  }", 'the per-day limit in the importer'));
   const menu = readFileSync(join(ROOT, 'pages/hunt-menu.html'), 'utf8');
   writeFileSync(join(ROOT, 'pages/the-treasure.html'), treasurePage(huntBefore, menu));
   writeFileSync(join(ROOT, 'pages/questions.html'), questionsPage(menu));
-  console.log('✓ pages/the-treasure.html, pages/questions.html');
-  console.log('\nNext: rebuild the games (node scripts/build-games.mjs in the bot folder), add the-treasure and questions to site.json and tools/lib.mjs, then npm run publish.');
+  writeFileSync(join(ROOT, 'pages/profile.html'), profilePage(menu));
+  console.log('✓ pages/the-treasure.html, pages/questions.html, pages/profile.html');
+  // The profile data: written next to leaderboard.json at every build
+  const LIBLINE = "import { P, ROOT, readJson, readCsvObjects, writeCsvObjects, loadPeople, isExcluded } from './lib.mjs';";
+  const WRITE = "  fs.writeFileSync(P.board, JSON.stringify(board, null, 2) + '\\n');";
+  edit(join(BOT, 'scripts/build.mjs'), (s) => swap(swap(s, LIBLINE, LIBLINE + "\nimport { profiles } from './profiles.mjs';", 'the build imports'),
+    WRITE, WRITE + '\n  profiles();   // the Treasure Hunter Profile data, one entry per player under a hash of their email', 'the board write'));
+  console.log('\nNext: rebuild the games (node scripts/build-games.mjs in the bot folder), add the-treasure, questions and profile to site.json and tools/lib.mjs, then npm run publish.');
 }
