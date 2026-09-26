@@ -4,6 +4,7 @@ export const LAYOUT = {
   home: ['home-slider', 'home-widget-1', 'home-widget-2'], 'the-hunt': ['the-hunt'], points: ['hunt-menu'], solve: ['hunt-menu'],
   leaderboard: ['leaderboard', 'hunt-menu'], contests: ['contests'], 'lootbox-clue': ['lootbox-clue'], games: ['games'], preorder: ['preorder'],
   loot: ['loot'], rules: ['rules'], 'privacy-policy': ['privacy-policy'], newsletter: [],
+  'the-treasure': ['the-treasure'], questions: ['questions'], profile: ['profile'],
 };
 
 // Replace each code block's .sqs-block-content body in the raw HTML, skipping <script>/<style> bodies while matching divs.

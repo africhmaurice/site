@@ -127,3 +127,18 @@ sup{font-size:.42em !important;line-height:0 !important;vertical-align:.95em !im
   <a href="https://www.mauriceafrich.com/preorder" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
 </div>
 <!-- END OF FILE — if you cannot find this comment after pasting, the paste was truncated -->
+<script>
+// Submit Points and Solve a Riddle: their Squarespace form section ends in empty grid rows; trim them so the footer sits closer.
+(function () {
+  if (!/^\/(points|solve)\/?$/.test(location.pathname)) return;
+  function trim() {
+    var sec = document.querySelector('section.page-section'), cw = sec && sec.querySelector('.content-wrapper');
+    if (!cw) return;
+    cw.style.marginBottom = '0px';
+    var last = 0; sec.querySelectorAll('.fe-block').forEach(function (b) { last = Math.max(last, b.getBoundingClientRect().bottom); });
+    var extra = Math.round(sec.getBoundingClientRect().bottom - last - 32);
+    if (extra > 0) cw.style.marginBottom = (-extra) + 'px';
+  }
+  trim(); addEventListener('load', trim); addEventListener('resize', trim); setTimeout(trim, 1500);
+})();
+</script>
