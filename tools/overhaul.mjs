@@ -82,7 +82,7 @@ const STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
 const CARET = '<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg>';
 // Pre-order retailers in this order; the Walmart link is the special edition. [label, link, label in the old menu]
 const RETAIL = [['WALMART SPECIAL EDITION', 'https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704'], ['WATERSTONES'], ['BARNES &amp; NOBLE', null, 'BARNES &AMP; NOBLE'], ['AMAZON'], ['AUDIBLE']];
-const vote = (label) => label === 'VOTE NOW!' ? ' style="color:#ff4c0f"' : '';
+const vote = (label) => label === 'VOTE NOW!' ? ' style="color:#a2f590"' : '';
 const deskLink = (item) => item === 'PROGRESS'
   ? `      <div class="mn-drop">
         <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">CURRENT PROGRESS${CARET}</a>
@@ -291,7 +291,17 @@ function huntPage(s) {
   s = swap(s, 'line-height:1.15">FOLLOW ALONG</h2>', 'line-height:1.15">CHOOSE YOUR OWN ADVENTURE</h2>', 'the map heading');
   s = swap(s, 'max-width:1180px;margin:0 auto 90px">The map updates as the crew moves through the hunt. Earn as many points as you can to explore the map, unlock secret paths, discover areas yet unexplored, and find the treasure!</p>',
     `max-width:1180px;margin:0 auto 36px">As you progress through the hunt, you will be presented with choices, votes, dice rolls, games of chance, and more! The maps update as you progress through the hunt.</p>
-    <div style="margin:0 0 90px"><a href="${U('/red-city')}" class="mh-cta" style="margin-top:0;font-size:18px;padding:18px clamp(70px,10vw,140px);background:#c53200">VOTE NOW!</a></div>`, 'the map copy');
+    <div style="margin:0 0 90px"><a href="${U('/red-city')}" class="mh-cta mh-vote" style="margin-top:0;font-size:18px;padding:18px clamp(70px,10vw,140px)">VOTE NOW!</a></div>`, 'the map copy');
+
+  // The map: white frame bars, and a white VOTE NOW! button with dark red lettering and outline
+  {
+    const m1 = s.indexOf('<section id="map"'), m2 = s.indexOf('</section>', m1);
+    if (m1 < 0 || m2 < 0) throw new Error('Could not find the map section');
+    const sec = s.slice(m1, m2), bars = sec.split('#eac9a4').join('#fff');
+    if (bars === sec) throw new Error('Could not find the map frame bars');
+    s = s.slice(0, m1) + bars + s.slice(m2);
+    s = swap(s, '.mh-cta:hover{transform:scale(1.04)}', '.mh-cta:hover{transform:scale(1.04)}\n#map .mh-vote{background:#fff !important;color:#912501 !important;border:2px solid #912501 !important}\n#map .mh-vote:hover{background:#912501 !important;color:#fff !important;border-color:#fff !important}', 'the map button style');
+  }
 
   // Rewards unlocked: dates over each act, new notes
   const ACTS = { 'ACT ONE': 'SEPTEMBER 21<sup style="font-size:.6em">ST</sup> – SEPTEMBER 30<sup style="font-size:.6em">TH</sup>', 'ACT TWO': 'OCTOBER 1<sup style="font-size:.6em">ST</sup> – OCTOBER 15<sup style="font-size:.6em">TH</sup>', 'ACT THREE': 'OCTOBER 16<sup style="font-size:.6em">TH</sup> – NOVEMBER 1<sup style="font-size:.6em">ST</sup>' };
