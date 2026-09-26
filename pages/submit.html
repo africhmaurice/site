@@ -253,6 +253,24 @@ h1,h2,h3{text-wrap:balance}
       ov = document.getElementById('hunt-nav-ov');
   if (nav && nav.parentNode !== document.body) document.body.appendChild(nav);
   if (ov && ov.parentNode !== document.body) document.body.appendChild(ov);
+  // The Squarespace section around this block keeps the grid rows, padding and picture of the blocks
+  // that used to be on the page, which left a band of the old background under the form and could clip
+  // the form when it grew. Let the section take exactly the form's height.
+  function fitSection() {
+    if (!page) return;
+    var set = function (el, prop, val) { if (el) el.style.setProperty(prop, val, 'important'); };
+    var fe = page.closest('.fluid-engine');
+    set(fe, 'display', 'block');
+    set(fe, 'min-height', '0');
+    set(page.closest('.fe-block'), 'grid-area', 'auto');
+    set(page.closest('.content-wrapper'), 'padding', '0');
+    var sec = page.closest('section.page-section');
+    set(sec, 'min-height', '0');
+    set(sec, 'padding', '0');
+    var bg = sec && sec.querySelector('.section-background');
+    set(bg, 'display', 'none');
+  }
+  fitSection();
   function fullBleed() {
     if (!page) return;
     page.style.marginLeft = '0';
