@@ -161,8 +161,8 @@ sup{font-size:.42em !important;line-height:0 !important;vertical-align:.95em !im
 #hunt-nav .mn-logo{display:flex;align-items:center;flex:none}
 #hunt-nav .mn-logo img{width:clamp(88px,8.3vw,120px);height:auto;display:block}
 #hunt-nav .mn-right{display:flex;align-items:center;gap:clamp(14px,1.9vw,32px)}
-#hunt-nav .mn-links{display:flex;align-items:center;gap:clamp(11px,1.55vw,29px)}
-#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,.92vw,14.4px);letter-spacing:.07em;line-height:48px;text-shadow:none;color:#fff;white-space:nowrap}
+#hunt-nav .mn-links{display:flex;align-items:center;gap:clamp(9px,1.2vw,29px)}
+#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(10.5px,.88vw,14.4px);letter-spacing:.07em;line-height:48px;text-shadow:none;color:#fff;white-space:nowrap}
 #hunt-nav .mn-link:hover,#hunt-nav .mn-drop:hover>.mn-link{color:#a2f590}
 #hunt-nav .mn-caret{display:inline-block;width:11px;height:11px;margin-left:8px;vertical-align:1px;transition:transform .15s ease}
 #hunt-nav .mn-drop:hover .mn-caret,#hunt-nav .mn-drop:focus-within .mn-caret{transform:rotate(180deg)}
@@ -173,7 +173,7 @@ sup{font-size:.42em !important;line-height:0 !important;vertical-align:.95em !im
 #hunt-nav .mn-dd-in a.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}
 #hunt-nav .mn-dd-in a.mn-profile:hover{background:#e04a12;color:#fff}
 #hunt-nav .mn-dd-in a.mn-profile svg{width:16px;height:16px;flex:none}
-@media (max-width:1180px){
+@media (max-width:1240px){
   #hunt-nav{padding:10px 0;background:none}
   #hunt-nav .mn-row{display:none}
   #hunt-nav .mn-burger{display:flex}
@@ -199,6 +199,13 @@ sup{font-size:.42em !important;line-height:0 !important;vertical-align:.95em !im
       <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
       <a href="https://www.mauriceafrich.com/games" class="mn-link">GAMES</a>
       <a href="https://www.mauriceafrich.com/contests" class="mn-link">CONTESTS</a>
+      <div class="mn-drop">
+        <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">SUBMIT<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+          <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
+        </div></div>
+      </div>
       <div class="mn-drop">
         <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">CURRENT PROGRESS<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
         <div class="mn-dd"><div class="mn-dd-in">
@@ -239,6 +246,10 @@ sup{font-size:.42em !important;line-height:0 !important;vertical-align:.95em !im
   <a href="https://www.mauriceafrich.com/lootbox-clue">CLUES</a>
   <a href="https://www.mauriceafrich.com/games">GAMES</a>
   <a href="https://www.mauriceafrich.com/contests">CONTESTS</a>
+  <div class="mn-ovgroup"><span>SUBMIT</span>
+    <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+    <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
+  </div>
   <div class="mn-ovgroup"><span>CURRENT PROGRESS</span>
     <a href="https://www.mauriceafrich.com/profile" class="mn-profile">TREASURE HUNTER PROFILE</a>
     <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>

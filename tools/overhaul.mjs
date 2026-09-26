@@ -43,8 +43,8 @@ sup{font-size:.42em !important;line-height:0 !important;vertical-align:.95em !im
 #hunt-nav .mn-logo{display:flex;align-items:center;flex:none}
 #hunt-nav .mn-logo img{width:clamp(88px,8.3vw,120px);height:auto;display:block}
 #hunt-nav .mn-right{display:flex;align-items:center;gap:clamp(14px,1.9vw,32px)}
-#hunt-nav .mn-links{display:flex;align-items:center;gap:clamp(11px,1.55vw,29px)}
-#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,.92vw,14.4px);letter-spacing:.07em;line-height:48px;text-shadow:none;color:#fff;white-space:nowrap}
+#hunt-nav .mn-links{display:flex;align-items:center;gap:clamp(9px,1.2vw,29px)}
+#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(10.5px,.88vw,14.4px);letter-spacing:.07em;line-height:48px;text-shadow:none;color:#fff;white-space:nowrap}
 #hunt-nav .mn-link:hover,#hunt-nav .mn-drop:hover>.mn-link{color:#a2f590}
 #hunt-nav .mn-caret{display:inline-block;width:11px;height:11px;margin-left:8px;vertical-align:1px;transition:transform .15s ease}
 #hunt-nav .mn-drop:hover .mn-caret,#hunt-nav .mn-drop:focus-within .mn-caret{transform:rotate(180deg)}
@@ -55,7 +55,7 @@ sup{font-size:.42em !important;line-height:0 !important;vertical-align:.95em !im
 #hunt-nav .mn-dd-in a.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}
 #hunt-nav .mn-dd-in a.mn-profile:hover{background:#e04a12;color:#fff}
 #hunt-nav .mn-dd-in a.mn-profile svg{width:16px;height:16px;flex:none}
-@media (max-width:1180px){
+@media (max-width:1240px){
   #hunt-nav{padding:10px 0;background:none}
   #hunt-nav .mn-row{display:none}
   #hunt-nav .mn-burger{display:flex}

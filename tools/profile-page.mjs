@@ -23,7 +23,8 @@ html,body{margin:0 !important;padding:0 !important}
 #hp .hp-find small{display:block;margin-top:14px;font-size:13px;color:rgba(255,255,255,.7);line-height:1.5}
 #hp .hp-err{color:#ffc0ab;font-weight:700;min-height:1.3em;margin:12px 0 0}
 #hp .hp-card[hidden],#hp .hp-find[hidden]{display:none}
-#hp .hp-head{display:flex;align-items:center;gap:22px;margin:0 0 26px}
+#hp .hp-head{display:flex;align-items:center;gap:22px;margin:0 0 12px}
+#hp .hp-when{margin:0 0 22px;font-size:14px;line-height:1.5;color:rgba(255,255,255,.75)}
 #hp .hp-name{font-family:'Atomic Marker',cursive;font-size:clamp(34px,4vw,54px);line-height:1}
 #hp .hp-sub{margin-top:8px;font-weight:700;font-size:15px;letter-spacing:.08em;color:var(--lav)}
 #hp .hp-sub b{display:inline-block;margin-left:10px;color:#fff;background:var(--hi);padding:3px 9px;font-size:12px;letter-spacing:.12em}
@@ -116,6 +117,7 @@ html,body{margin:0 !important;padding:0 !important}
     card.innerHTML =
       '<div class="hp-head"><div><div class="hp-name">' + esc(p.n || p.h) + '</div>' +
       '<div class="hp-sub">' + esc(p.h) + '<b>' + esc(p.rl).toUpperCase() + ' BOARD</b></div></div></div>' +
+      '<p class="hp-when">Points are added at each tally, 10 AM and 7 PM ET. Anything you earned since the last one will show up at the next.</p>' +
       '<div class="hp-tiles">' +
         '<div class="hp-tile hp-hot"><i>RANK</i><b>#' + p.rank + '</b><span>of ' + fmt(p.of) + ' on the board</span></div>' +
         '<div class="hp-tile"><i>POINTS</i><b>' + fmt(p.pts) + '</b><span>and counting</span></div>' +
@@ -135,7 +137,7 @@ html,body{margin:0 !important;padding:0 !important}
       '<h2>LATEST LOOT</h2><ul class="hp-recent">' + p.recent.map(function (r) { return '<li><time>' + esc(day(r[0])) + '</time><span>' + esc(r[1]) + '</span><b>+' + fmt(r[2]) + '</b></li>'; }).join('') + '</ul>' +
       '<p class="hp-crew">You’ve earned <b>' + (crewTotal ? (p.pts / crewTotal * 100).toFixed(1) : '0') + '%</b> of the crew’s ' + fmt(crewTotal) + ' points. Every one of them helps unlock rewards for everyone!</p>' +
       '<div class="hp-more"><a class="hp-btn" href="' + U + '/the-hunt#tasks">EARN MORE POINTS</a><a class="hp-btn alt" href="' + U + '/leaderboard">LEADERBOARD</a><a class="hp-btn alt" href="' + U + '/loot">LOOT BOX SCORECARD</a></div>' +
-      '<p class="hp-foot">Stats update at each tally (10 AM and 7 PM ET).' + (EXAMPLE ? '' : ' Not you? <a id="hp-switch">Use a different email</a>') + '</p>';
+      (EXAMPLE ? '' : '<p class="hp-foot">Not you? <a id="hp-switch">Use a different email</a></p>');
     card.hidden = false; find.hidden = true;
     var sw = document.getElementById('hp-switch');
     if (sw) sw.onclick = function () { remember(''); card.hidden = true; find.hidden = false; document.getElementById('hp-email').value = ''; };
