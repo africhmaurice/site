@@ -68,7 +68,7 @@ to find their prize.`],
   [23, 'Telekinetic Swords & 12ish Children'],
   [24, 'Getting the Band Back Together'],
   // After sunset (Eastern time) this clue wakes up: click it and "/in-the-dark" flashes for a split second.
-  [25, 'In the dark', { night: '/in-the-dark' }],
+  [25, '“In the dark”', { night: '/in-the-dark' }],
   [26, "It'll come to you."],
   [27, "Your Loot Box"],
 ];
