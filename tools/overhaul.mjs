@@ -35,25 +35,27 @@ function cut(s, start, end, what) {
 const NAV_CSS = `<style>
 html body{text-wrap:pretty}
 h1,h2,h3{text-wrap:balance}
+/* Date endings (21st, 30th) small and tucked up, not as big as the numbers */
+sup{font-size:.42em !important;line-height:0 !important;vertical-align:.95em !important;letter-spacing:.04em}
 /* The hunt menu matches the main site header: same green, logo size, type, spacing and outlined pre-order button */
-#hunt-nav{background:#1a5e41;backdrop-filter:none;-webkit-backdrop-filter:none;padding:9px 58px}
+#hunt-nav{background:#1a5e41;backdrop-filter:none;-webkit-backdrop-filter:none;padding:9px clamp(24px,4vw,58px)}
 #hunt-nav .mn-row{max-width:none;display:flex;align-items:center;justify-content:space-between;gap:24px}
 #hunt-nav .mn-logo{display:flex;align-items:center;flex:none}
-#hunt-nav .mn-logo img{width:120px;height:auto;display:block}
-#hunt-nav .mn-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-#hunt-nav .mn-links{display:flex;align-items:center;gap:29px}
-#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:14.4px;letter-spacing:1.008px;line-height:48px;text-shadow:none;color:#fff}
+#hunt-nav .mn-logo img{width:clamp(88px,8.3vw,120px);height:auto;display:block}
+#hunt-nav .mn-right{display:flex;align-items:center;gap:clamp(14px,1.9vw,32px)}
+#hunt-nav .mn-links{display:flex;align-items:center;gap:clamp(11px,1.55vw,29px)}
+#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,.92vw,14.4px);letter-spacing:.07em;line-height:48px;text-shadow:none;color:#fff;white-space:nowrap}
 #hunt-nav .mn-link:hover,#hunt-nav .mn-drop:hover>.mn-link{color:#a2f590}
 #hunt-nav .mn-caret{display:inline-block;width:11px;height:11px;margin-left:8px;vertical-align:1px;transition:transform .15s ease}
 #hunt-nav .mn-drop:hover .mn-caret,#hunt-nav .mn-drop:focus-within .mn-caret{transform:rotate(180deg)}
-#hunt-nav .mn-cta{line-height:17px;padding:8px 20px;border:2px solid #f3ead9;background:rgba(12,26,8,.35)}
+#hunt-nav .mn-cta{line-height:17px;padding:8px clamp(12px,1.3vw,20px);border:2px solid #f3ead9;background:rgba(12,26,8,.35)}
 #hunt-nav .mn-drop-cta>.mn-link.mn-cta:hover,#hunt-nav .mn-drop-cta:hover>.mn-link.mn-cta{color:#a2f590;background:rgba(12,26,8,.35);transform:none}
 #hunt-nav .mn-dd{padding-top:6px}
-#hunt-nav .mn-dd-in a{font-size:14.4px;letter-spacing:1.008px;padding:13px 18px}
+#hunt-nav .mn-dd-in a{font-size:clamp(12px,.92vw,14.4px);letter-spacing:.07em;padding:13px 18px}
 #hunt-nav .mn-dd-in a.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}
 #hunt-nav .mn-dd-in a.mn-profile:hover{background:#e04a12;color:#fff}
 #hunt-nav .mn-dd-in a.mn-profile svg{width:16px;height:16px;flex:none}
-@media (max-width:1260px){
+@media (max-width:1180px){
   #hunt-nav{padding:10px 0;background:none}
   #hunt-nav .mn-row{display:none}
   #hunt-nav .mn-burger{display:flex}
@@ -342,7 +344,7 @@ function huntPage(s) {
   s = s.replace('<h3 class="m-taskhead" style', '<h3 class="m-taskhead" id="tasks" style');
   s = s.replace('<h3 class="m-taskhead" style', '<h3 class="m-taskhead" id="riddles" style');
   if (!s.includes('id="riddles"')) throw new Error('Could not find the Riddles heading');
-  s = s.replace('<style>\n#hunt-nav{', '<style>\n#tasks,#riddles{scroll-margin-top:140px}\n#map,#rewards,#points{scroll-margin-top:120px}\n#hunt-nav{');
+  s = s.replace('<style>\n#hunt-nav{', '<style>\n#tasks,#riddles{scroll-margin-top:110px}\n#map,#rewards,#points{scroll-margin-top:90px}\n#hunt-nav{');
   return s;
 }
 
@@ -586,6 +588,28 @@ function glide(s) {
 ` + s.slice(b);
 }
 
+// ---------------------------------------------------------------- the main site header
+// One row: logo, links and the pre-order button side by side; the type shrinks with the window instead of wrapping.
+function oneRow(css) {
+  if (css.includes('/* One row */')) return css;
+  return css + `
+/* Date endings (21st, 30th) small and tucked up */
+sup { font-size: .42em !important; line-height: 0 !important; vertical-align: .95em !important; }
+
+/* One row */
+@media (min-width: 768px) {
+  #header .header-display-desktop .header-title-nav-wrapper { flex-wrap: nowrap !important; align-items: center !important; }
+  #header .header-display-desktop .header-nav, #header .header-display-desktop .header-nav-wrapper { flex: 1 1 auto !important; min-width: 0 !important; }
+  #header .header-display-desktop .header-nav-list { flex-wrap: nowrap !important; justify-content: flex-end !important; align-items: center !important; row-gap: 0 !important; }
+  #header .header-display-desktop .header-nav-item { margin: 0 clamp(5px, .8vw, 14px) !important; flex: none !important; }
+  #header .header-display-desktop .header-nav-item:last-child { margin-right: 0 !important; }
+  #header .header-display-desktop .header-nav-item > a,
+  #header .header-display-desktop .header-nav-folder-title { font-size: clamp(11px, .92vw, 14.4px) !important; white-space: nowrap !important; }
+  #header .header-display-desktop .header-title-logo img { max-height: none !important; width: clamp(88px, 8.3vw, 120px) !important; height: auto !important; }
+}
+`;
+}
+
 // ---------------------------------------------------------------- run
 const mode = process.argv.includes('--launch') ? 'launch' : process.argv.includes('--stage') ? 'stage' : null;
 if (!mode) { console.error('Pass --stage (build the preview) or --launch (apply to the real site).'); process.exit(1); }
@@ -594,6 +618,7 @@ if (mode === 'stage') {
   const NEXT = join(ROOT, 'next'), PAGES = join(NEXT, 'pages');
   mkdirSync(PAGES, { recursive: true });
   writeFileSync(join(NEXT, 'loader.js'), glide(readFileSync(join(ROOT, 'loader.js'), 'utf8')));
+  writeFileSync(join(NEXT, 'site.css'), oneRow(readFileSync(join(ROOT, 'site.css'), 'utf8')));
   for (const f of readdirSync(join(ROOT, 'pages')).filter((f) => f.endsWith('.html'))) copyFileSync(join(ROOT, 'pages', f), join(PAGES, f));
   const huntSrc = readFileSync(join(ROOT, 'pages/the-hunt.html'), 'utf8');
   for (const [slug, edit] of Object.entries(EDITS)) {
@@ -626,7 +651,9 @@ if (mode === 'stage') {
     let html = await res.text();
     const { html: swapped, swapped: n } = swapBlocks(html, slugs, site.publicBase + 'next/loader.js');
     html = swapped.replace(/href="\/([a-z0-9-]*)"(?=[\s>])/gi, (m, slug) => inPreview(slug) ? `href="${PV}${slug || 'home'}.html"` : `href="${LIVE}/${slug}"`);
-    html = relink(html).split(site.publicBase + 'loader.js').join(site.publicBase + 'next/loader.js');
+    html = relink(html).split(site.publicBase + 'loader.js').join(site.publicBase + 'next/loader.js').split(site.publicBase + 'site.css').join(site.publicBase + 'next/site.css');
+    // Preview only: hide the three main-menu links that come out in Squarespace at launch (Sky Pirates, About, Press)
+    html = html.replace('</head>', '<style>#header .header-nav-item:has(a[href$="#cello"]),#header .header-nav-item:has(a[href$="#about"]),#header .header-nav-item:has(a[href$="#press"]){display:none !important}</style></head>');
     if (page === 'the-treasure') html = html.replace(/<title>[^<]*<\/title>/, '<title>The Treasure — Maurice Africh</title>');
     if (page === 'profile') html = html.replace(/<title>[^<]*<\/title>/,'<title>Treasure Hunter Profile — Maurice Africh</title>');
     if (page === 'questions') html = html.replace(/<title>[^<]*<\/title>/, '<title>Questions — Maurice Africh</title>');
@@ -643,6 +670,7 @@ if (mode === 'launch') {
   const edit = (file, fn) => { const f = resolve(file); writeFileSync(f, fn(readFileSync(f, 'utf8'))); console.log(`✓ ${file.replace(ROOT, '').replace(BOT, 'bot')}`); };
   const huntBefore = readFileSync(join(BOT, 'squarespace-hunt.html'), 'utf8');
   edit(join(ROOT, 'loader.js'), glide);
+  edit(join(ROOT, 'site.css'), oneRow);
   for (const slug of ['hunt-menu', 'lootbox-clue', 'contests', 'rules', 'leaderboard']) edit(join(ROOT, 'pages', slug + '.html'), EDITS[slug]);
   edit(join(BOT, 'squarespace-hunt.html'), EDITS['the-hunt']);
   edit(join(BOT, 'squarespace-lootbox.html'), EDITS.loot);

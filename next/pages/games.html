@@ -153,25 +153,27 @@ button.thw-submit{cursor:pointer}
 <style>
 html body{text-wrap:pretty}
 h1,h2,h3{text-wrap:balance}
+/* Date endings (21st, 30th) small and tucked up, not as big as the numbers */
+sup{font-size:.42em !important;line-height:0 !important;vertical-align:.95em !important;letter-spacing:.04em}
 /* The hunt menu matches the main site header: same green, logo size, type, spacing and outlined pre-order button */
-#hunt-nav{background:#1a5e41;backdrop-filter:none;-webkit-backdrop-filter:none;padding:9px 58px}
+#hunt-nav{background:#1a5e41;backdrop-filter:none;-webkit-backdrop-filter:none;padding:9px clamp(24px,4vw,58px)}
 #hunt-nav .mn-row{max-width:none;display:flex;align-items:center;justify-content:space-between;gap:24px}
 #hunt-nav .mn-logo{display:flex;align-items:center;flex:none}
-#hunt-nav .mn-logo img{width:120px;height:auto;display:block}
-#hunt-nav .mn-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-#hunt-nav .mn-links{display:flex;align-items:center;gap:29px}
-#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:14.4px;letter-spacing:1.008px;line-height:48px;text-shadow:none;color:#fff}
+#hunt-nav .mn-logo img{width:clamp(88px,8.3vw,120px);height:auto;display:block}
+#hunt-nav .mn-right{display:flex;align-items:center;gap:clamp(14px,1.9vw,32px)}
+#hunt-nav .mn-links{display:flex;align-items:center;gap:clamp(11px,1.55vw,29px)}
+#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,.92vw,14.4px);letter-spacing:.07em;line-height:48px;text-shadow:none;color:#fff;white-space:nowrap}
 #hunt-nav .mn-link:hover,#hunt-nav .mn-drop:hover>.mn-link{color:#a2f590}
 #hunt-nav .mn-caret{display:inline-block;width:11px;height:11px;margin-left:8px;vertical-align:1px;transition:transform .15s ease}
 #hunt-nav .mn-drop:hover .mn-caret,#hunt-nav .mn-drop:focus-within .mn-caret{transform:rotate(180deg)}
-#hunt-nav .mn-cta{line-height:17px;padding:8px 20px;border:2px solid #f3ead9;background:rgba(12,26,8,.35)}
+#hunt-nav .mn-cta{line-height:17px;padding:8px clamp(12px,1.3vw,20px);border:2px solid #f3ead9;background:rgba(12,26,8,.35)}
 #hunt-nav .mn-drop-cta>.mn-link.mn-cta:hover,#hunt-nav .mn-drop-cta:hover>.mn-link.mn-cta{color:#a2f590;background:rgba(12,26,8,.35);transform:none}
 #hunt-nav .mn-dd{padding-top:6px}
-#hunt-nav .mn-dd-in a{font-size:14.4px;letter-spacing:1.008px;padding:13px 18px}
+#hunt-nav .mn-dd-in a{font-size:clamp(12px,.92vw,14.4px);letter-spacing:.07em;padding:13px 18px}
 #hunt-nav .mn-dd-in a.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}
 #hunt-nav .mn-dd-in a.mn-profile:hover{background:#e04a12;color:#fff}
 #hunt-nav .mn-dd-in a.mn-profile svg{width:16px;height:16px;flex:none}
-@media (max-width:1260px){
+@media (max-width:1180px){
   #hunt-nav{padding:10px 0;background:none}
   #hunt-nav .mn-row{display:none}
   #hunt-nav .mn-burger{display:flex}
