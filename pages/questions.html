@@ -2,27 +2,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&display=swap" rel="stylesheet">
 <style>
-@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
-html,body{margin:0 !important;padding:0 !important}
-#loot-clue{min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;padding:150px 32px 64px;background:linear-gradient(rgba(26,94,65,.9),rgba(26,94,65,.9)),url(https://africhmaurice.github.io/site/assets/img/d53309446757362e.jpg) center/cover no-repeat fixed}
-@media (max-width:900px){#loot-clue{background-attachment:scroll}}
-#loot-clue .lc-board{background:rgba(38,142,98,.9);max-width:860px;width:100%;padding:72px 56px 64px;text-align:center;box-shadow:6px 8px 0 rgba(0,0,0,.35)}
-#loot-clue .lc-eyebrow{font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(16px,1.5vw,21px);letter-spacing:.14em;color:#fffffe;text-transform:uppercase;margin:0 0 28px}
-#loot-clue .lc-clue{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(40px,6vw,84px);line-height:1.15;color:#89fbcb;margin:0}
-#loot-clue .lc-poem{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(24px,3vw,40px);line-height:1.35;color:#89fbcb;margin:0;white-space:pre-line}
-#loot-clue p{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(16px,1.4vw,20px);letter-spacing:.05em;line-height:1.65;color:#fffffe;text-transform:uppercase;max-width:640px;margin:0 auto}
-#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;max-width:1240px;width:100%;align-items:stretch}
-#loot-clue .lc-board{box-sizing:border-box;max-width:none;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 44px 52px}
-#loot-clue .lc-num{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,3.4vw,52px);line-height:1;color:#89fbcb;margin:0 0 22px}
-#loot-clue .lc-text{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(18px,1.6vw,23px);line-height:1.55;letter-spacing:.02em;color:#fffffe;white-space:pre-line;text-transform:none;margin:0}
-#loot-clue .lc-link{text-decoration:underline;text-underline-offset:4px;cursor:default}#loot-clue .lc-link:hover{color:#fffffe}
-#loot-clue .lc-flash,#loot-clue .lc-flash *{cursor:default}
-#loot-clue .lc-img{display:block;width:100%;max-width:420px;height:auto;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}
-.lc-flash-ov{position:fixed;inset:0;z-index:2147483646;background:#fffffe;display:flex;align-items:center;justify-content:center;pointer-events:none}.lc-flash-ov img{width:min(60vw,448px);height:auto}.lc-flash-ov.fill{background:#0b170f}.lc-flash-ov.fill img{width:100%;height:100%;object-fit:cover}
-@media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}}
-@media (max-width:760px){#loot-clue{padding:130px 20px 70px}#loot-clue .lc-board{padding:48px 26px 44px}}
-</style>
-<style>
 #hunt-nav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(12,35,8,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:18px 16px}
 #hunt-nav .mn-row{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:clamp(12px,1.8vw,30px)}
 #hunt-nav .mn-link{white-space:nowrap;color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.07em;text-decoration:none;text-shadow:0 1px 6px rgba(0,0,0,.55);transition:color .15s ease}
@@ -147,111 +126,99 @@ sup{font-size:.42em !important;line-height:0 !important;vertical-align:.95em !im
   <a href="https://www.mauriceafrich.com/red-city" style="color:#a2f590">VOTE NOW!</a>
   <a href="https://www.mauriceafrich.com/preorder" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
 </div>
-
-<section id="loot-clue">
-  <div class="lc-grid">
-  <div class="lc-board" data-clue="0">
-    <div class="lc-num">#0</div>
-    <div class="lc-text">CLICK IT</div>
-  </div>
-  <div class="lc-board" data-clue="1">
-    <div class="lc-num">#1</div>
-    <div class="lc-text">The Quiet One waits
-hanging, listless and forgotten
-at the base of a
-tree without leaves
-no branches linking it
-to the imperia
-but carrying it out
-into the world
-far and away.
-Within a liminal space
-the Quiet One waits.</div>
-  </div>
-  <div class="lc-board" data-clue="2">
-    <div class="lc-num">#2</div>
-    <div class="lc-text">“I would have lived in war
-but my enemies brought me loot.”
-— RR's #1 Fan</div>
-  </div>
-  <div class="lc-board" data-clue="3">
-    <div class="lc-num">#3</div>
-    <div class="lc-text">If you like this game, open this loot box!</div>
-  </div>
-  <div class="lc-board" data-clue="4">
-    <div class="lc-num">#4</div>
-    <div class="lc-text">Down the
-rabbit hole you
-eager heathens!
-Remember to
-eat your veggies
-and
-drown your enemies in the
-slow-cooked abyss!</div>
-  </div>
-  <div class="lc-board" data-clue="5">
-    <div class="lc-num">#5</div>
-    <div class="lc-text">WINE DADDY 45</div>
-  </div>
-  <div class="lc-board" data-clue="6">
-    <div class="lc-num">#6</div>
-    <div class="lc-text">NEEWWWW ACHIEVEMENT! This loot box is shaped like a cat girl, you dirty little lynx! I bet you like that, don't you?</div>
-  </div>
-  <div class="lc-board" data-clue="7">
-    <div class="lc-num">#7</div>
-    <div class="lc-text">Keep yapping and you never know.</div>
-  </div>
-  <div class="lc-board" data-clue="9">
-    <div class="lc-num">#9</div>
-    <div class="lc-text">Destination X</div>
-  </div>
-  <div class="lc-board" data-clue="10">
-    <div class="lc-num">#10</div>
-    <div class="lc-text">nuh ay thuh nuh sih buh oof kuh tuh ock</div>
-  </div>
-  <div class="lc-board" data-clue="11">
-    <div class="lc-num">#11</div>
-    <div class="lc-text">the clock says tik.
-the clock says tok.
-a certaiN guy has hidden a prize.
-no dragon’s hoard, no kings chest.
-but a clever doom scroller might do bEst.
-start with the clock.
-fInd the guy.
-only his personaL story
-holds the key,
-to the room for fans of fiction
-(some might say addict),
-to find their prize.</div>
-  </div>
-  <div class="lc-board" data-clue="12">
-    <div class="lc-num">#12</div>
-    <div class="lc-text">Samuel Chastain Rogers aka &quot;Pops&quot;</div>
-  </div>
-  <div class="lc-board lc-flash" data-clue="13" data-flash="https://africhmaurice.github.io/site/assets/clues/clue-13-flash.webp" role="button" tabindex="0">
-    <div class="lc-num">#13</div>
-    <div class="lc-text">In the Dark (Visually)</div>
-  </div>
-  <div class="lc-board" data-clue="14">
-    <div class="lc-num">#14</div>
-    <div class="lc-text">Them: &quot;As an author, you're not supposed to do this!&quot;</div>
-  </div>
-  <div class="lc-board" data-clue="15">
-    <div class="lc-num">#15</div>
-    <div class="lc-text">“You're doing great, kid. I love your passion, your work ethic, your commitment to always being you. And that's what's important to me because <em>you're</em> important to me. I couldn't be more proud to be your dad.”</div>
-  </div>
-  <div class="lc-board lc-flash" data-clue="17" data-flash="https://africhmaurice.github.io/site/assets/clues/clue-17-flash.webp" data-fill role="button" tabindex="0">
-    <div class="lc-num">#17</div>
-    <img class="lc-img" src="https://africhmaurice.github.io/site/assets/clues/clue-17.webp" alt="A barrel smoker with a coffee can on its chimney" loading="lazy">
-  </div>
-  <div class="lc-board" data-clue="18">
-    <div class="lc-num">#18</div>
-    <a class="lc-text lc-link" href="https://www.mauriceafrich.com/the-void">click this</a>
-  </div>
-  </div>
-  <script>(function(){var s=document.getElementById('loot-clue');if(!s)return;
-    Array.prototype.forEach.call(s.querySelectorAll('.lc-flash'),function(b){var src=b.getAttribute('data-flash');new Image().src=src;
-      function go(){var o=document.createElement('div');o.className='lc-flash-ov'+(b.hasAttribute('data-fill')?' fill':'');o.innerHTML='<img loading="lazy" decoding="async" alt="" src="'+src+'">';document.body.appendChild(o);setTimeout(function(){o.remove();},110);}
-      b.addEventListener('click',go);b.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});});})();</script>
-</section>
 <!-- END OF FILE — if you cannot find this comment after pasting, the paste was truncated -->
+<style>
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+html,body{margin:0 !important;padding:0 !important}
+#hq{background:linear-gradient(178deg,rgba(10,35,8,.92) 0%,rgba(30,100,23,.9) 60%,rgba(63,163,47,.9) 100%),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;background-attachment:fixed;padding:150px 24px 48px;font-family:'Almarai',sans-serif;color:#fff}
+#hq .hq-in{max-width:720px;margin:0 auto;width:100%}
+#hq h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(54px,8vw,110px);line-height:1.1;margin:0 0 18px;text-align:center}
+#hq .hq-lede{font-size:21px;line-height:1.55;text-align:center;margin:0 auto 44px;max-width:620px}
+#hq .hq-lede a{color:#a2f590;font-weight:700}
+#hq form{background:rgba(8,34,6,.6);border:1px solid rgba(243,234,217,.5);box-shadow:6px 7px 0 rgba(0,0,0,.35);padding:36px 34px 32px;display:flex;flex-direction:column;gap:8px}
+#hq label{font-weight:700;font-size:14px;letter-spacing:.1em;color:#a2f590;margin-top:14px}
+#hq label:first-child{margin-top:0}
+#hq label small{color:rgba(255,255,255,.65);font-weight:400;letter-spacing:.02em;font-size:13px}
+#hq input,#hq textarea{font:inherit;font-size:17px;color:#0b170f;background:#fffffe;border:2px solid #0b170f;padding:12px 14px;border-radius:0;box-sizing:border-box;width:100%}
+#hq textarea{min-height:170px;resize:vertical;line-height:1.5}
+#hq input:focus,#hq textarea:focus{outline:3px solid #ff4c0f;outline-offset:1px}
+#hq button{margin-top:26px;align-self:center;font:inherit;font-weight:800;font-size:17px;letter-spacing:.1em;color:#fff;background:#c1330a;border:1.5px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);padding:16px 44px;cursor:pointer;transition:transform .15s ease,background .15s ease}
+#hq button:hover:not(:disabled){background:#e04a12;transform:scale(1.04)}
+#hq button:disabled{opacity:.7;cursor:wait}
+#hq .hq-err{margin:12px 0 0;text-align:center;color:#ffc0ab;font-weight:700}
+#hq .hq-err:empty{display:none}
+#hq .hq-done{text-align:center;padding:24px 0 8px}
+#hq .hq-done b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,5vw,54px);margin-bottom:12px}
+#hq .hq-done a{display:inline-block;margin-top:22px;color:#fff;background:#c1330a;border:1.5px solid #f3ead9;padding:14px 30px;font-weight:800;letter-spacing:.1em;text-decoration:none}
+@media (max-width:900px){#hq{background-attachment:scroll}}
+@media (max-width:560px){#hq{padding:110px 16px 48px}#hq form{padding:26px 18px 24px}#hq .hq-lede{font-size:18px}}
+</style>
+<section id="hq" data-screen-label="Questions">
+  <div class="hq-in">
+    <h1>QUESTIONS?</h1>
+    <p class="hq-lede">Stuck on a task, a riddle, a loot box, or your points? Ask me anything about the hunt and I’ll get back to you by email. You might also find the answer in the <a href="https://www.mauriceafrich.com/rules">Official Rules</a>.</p>
+    <form id="hq-form" novalidate>
+      <label for="hq-name">NAME</label>
+      <input id="hq-name" autocomplete="given-name" required>
+      <label for="hq-email">EMAIL <small>(so I can reply)</small></label>
+      <input id="hq-email" type="email" inputmode="email" autocomplete="email" required>
+      <label for="hq-handle">HUNT USERNAME <small>(optional)</small></label>
+      <input id="hq-handle" placeholder="@yourname" autocomplete="off">
+      <label for="hq-q">YOUR QUESTION</label>
+      <textarea id="hq-q" required maxlength="4000"></textarea>
+      <button type="submit" id="hq-send">SEND MY QUESTION</button>
+      <p class="hq-err" id="hq-err" role="alert"></p>
+    </form>
+  </div>
+</section>
+<script>
+(function () {
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var form = document.getElementById('hq-form'), err = document.getElementById('hq-err'), btn = document.getElementById('hq-send');
+  var val = function (id) { return document.getElementById(id).value.trim(); };
+  try { var me = JSON.parse(localStorage.getItem('thLoot:me') || '{}'); if (me.first_name) document.getElementById('hq-name').value = me.first_name; if (me.email) document.getElementById('hq-email').value = me.email; if (me.handle) document.getElementById('hq-handle').value = me.handle; } catch (e) {}
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var p = { action: 'question', name: val('hq-name'), email: val('hq-email'), handle: val('hq-handle'), question: val('hq-q') };
+    if (!p.name) { err.textContent = 'Tell me your name.'; return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email)) { err.textContent = 'That email does not look right.'; return; }
+    if (p.question.length < 5) { err.textContent = 'What would you like to ask?'; return; }
+    err.textContent = ''; btn.disabled = true; btn.textContent = 'SENDING...';
+    send(p, function (res) {
+      if (res && res.ok) {
+        form.innerHTML = '<div class="hq-done"><b>GOT IT!</b>Thanks, ' + p.name.replace(/[<>&]/g, '') + '. I’ll reply to ' + p.email.replace(/[<>&]/g, '') + ' as soon as I can.<br><a href="https://www.mauriceafrich.com/the-hunt#tasks">BACK TO THE HUNT</a></div>';
+        return;
+      }
+      btn.disabled = false; btn.textContent = 'TRY AGAIN';
+      err.textContent = res && res.error === 'email' ? 'That email does not look right.' : res && res.error === 'question' ? 'What would you like to ask?' : 'The ship is slow today. Give it another go in a moment.';
+    });
+  });
+  // A simple POST, JSONP if that is blocked, and one quiet retry because Apps Script is sometimes slow.
+  function send(payload, done, attempt) {
+    attempt = attempt || 1;
+    var settled = false;
+    var finish = function (res) {
+      if (settled) return; settled = true;
+      var flaky = !res || (!res.ok && (res.error === 'network' || res.error === 'server'));
+      if (flaky && attempt < 2) return setTimeout(function () { send(payload, done, attempt + 1); }, 1500);
+      done(res);
+    };
+    try {
+      fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(payload) }).then(function (r) { return r.json(); }).then(finish).catch(function () { jsonp(payload, finish); });
+    } catch (e) { jsonp(payload, finish); }
+  }
+  function jsonp(payload, done) {
+    var name = 'hqcb' + Math.random().toString(36).slice(2), q = ['callback=' + name];
+    for (var k in payload) if (payload[k]) q.push(encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]));
+    var s = document.createElement('script');
+    var timer = setTimeout(function () { cleanup(); done({ ok: false, error: 'network' }); }, 30000);
+    function cleanup() { clearTimeout(timer); delete window[name]; if (s.parentNode) s.parentNode.removeChild(s); }
+    window[name] = function (res) { cleanup(); done(res); };
+    s.onerror = function () { cleanup(); done({ ok: false, error: 'network' }); };
+    s.src = ENDPOINT + '?' + q.join('&');
+    document.body.appendChild(s);
+  }
+})();
+</script>
+<style>#siteWrapper{display:flex !important;flex-direction:column !important}#siteWrapper>*{flex:none}#siteWrapper>#footer-sections{flex:1 0 auto}</style>
+<script>(function(){var p=document.getElementById('hq'),cw=p&&p.closest('.content-wrapper'),sec=p&&p.closest('.page-section');if(cw){cw.style.paddingTop='0';cw.style.paddingBottom='0';}if(sec)sec.style.minHeight='0';var fe=p&&p.closest('.fluid-engine');if(fe)fe.style.display='block';})();</script>

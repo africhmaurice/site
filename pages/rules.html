@@ -52,34 +52,78 @@ html,body{margin:0 !important;padding:0 !important}
 @media (max-width:700px){#rules-body .r-free-cols{grid-template-columns:1fr}}
 @media (max-width:760px){#rules-hero{padding:130px 20px 50px}#rules-body{padding:50px 20px 70px}}
 </style>
+<style>
+html body{text-wrap:pretty}
+h1,h2,h3{text-wrap:balance}
+/* Date endings (21st, 30th) small and tucked up, not as big as the numbers */
+sup{font-size:.42em !important;line-height:0 !important;vertical-align:.95em !important;letter-spacing:.04em}
+/* The hunt menu matches the main site header: same green, logo size, type, spacing and outlined pre-order button */
+#hunt-nav{background:#1a5e41;backdrop-filter:none;-webkit-backdrop-filter:none;padding:9px clamp(24px,4vw,58px)}
+#hunt-nav .mn-row{max-width:none;display:flex;align-items:center;justify-content:space-between;gap:24px}
+#hunt-nav .mn-logo{display:flex;align-items:center;flex:none}
+#hunt-nav .mn-logo img{width:clamp(88px,8.3vw,120px);height:auto;display:block}
+#hunt-nav .mn-right{display:flex;align-items:center;gap:clamp(14px,1.9vw,32px)}
+#hunt-nav .mn-links{display:flex;align-items:center;gap:clamp(11px,1.55vw,29px)}
+#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,.92vw,14.4px);letter-spacing:.07em;line-height:48px;text-shadow:none;color:#fff;white-space:nowrap}
+#hunt-nav .mn-link:hover,#hunt-nav .mn-drop:hover>.mn-link{color:#a2f590}
+#hunt-nav .mn-caret{display:inline-block;width:11px;height:11px;margin-left:8px;vertical-align:1px;transition:transform .15s ease}
+#hunt-nav .mn-drop:hover .mn-caret,#hunt-nav .mn-drop:focus-within .mn-caret{transform:rotate(180deg)}
+#hunt-nav .mn-cta{line-height:17px;padding:8px clamp(12px,1.3vw,20px);border:2px solid #f3ead9;background:rgba(12,26,8,.35)}
+#hunt-nav .mn-drop-cta>.mn-link.mn-cta:hover,#hunt-nav .mn-drop-cta:hover>.mn-link.mn-cta{color:#a2f590;background:rgba(12,26,8,.35);transform:none}
+#hunt-nav .mn-dd{padding-top:6px}
+#hunt-nav .mn-dd-in a{font-size:clamp(12px,.92vw,14.4px);letter-spacing:.07em;padding:13px 18px}
+#hunt-nav .mn-dd-in a.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}
+#hunt-nav .mn-dd-in a.mn-profile:hover{background:#e04a12;color:#fff}
+#hunt-nav .mn-dd-in a.mn-profile svg{width:16px;height:16px;flex:none}
+@media (max-width:1180px){
+  #hunt-nav{padding:10px 0;background:none}
+  #hunt-nav .mn-row{display:none}
+  #hunt-nav .mn-burger{display:flex}
+}
+#hunt-nav-ov{gap:14px;overflow-y:auto;justify-content:flex-start;padding-top:88px}
+#hunt-nav-ov a{font-size:17px}
+#hunt-nav-ov .mn-ovlogo{position:absolute;top:16px;left:20px}
+#hunt-nav-ov .mn-ovlogo img{width:96px;height:auto;display:block}
+#hunt-nav-ov .mn-ovgroup{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(243,234,217,.3);padding:14px 26px 16px}
+#hunt-nav-ov .mn-ovgroup span{font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590}
+#hunt-nav-ov .mn-ovgroup a{font-size:15px}
+#hunt-nav-ov .mn-ovgroup a.mn-profile{background:#c1330a;border:1.5px solid #f3ead9;padding:9px 16px}
+@media (min-height:860px){#hunt-nav-ov{justify-content:center;padding-top:32px}}
+</style>
 <nav id="hunt-nav">
   <div class="mn-row">
-    <a href="https://www.mauriceafrich.com" class="mn-link">HOME</a>
-    <a href="https://www.mauriceafrich.com/the-hunt" class="mn-link">HUNT</a>
-    <a href="https://www.mauriceafrich.com/leaderboard" class="mn-link">LEADERBOARD</a>
-    <div class="mn-drop">
-      <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">SUBMIT &#9662;</a>
-      <div class="mn-dd"><div class="mn-dd-in">
-        <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
-        <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
-      </div></div>
-    </div>
-    <a href="https://www.mauriceafrich.com/contests" class="mn-link">CONTESTS</a>
-    <a href="https://www.mauriceafrich.com/the-hunt#rewards" class="mn-link">REWARDS</a>
-    <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
-    <a href="https://www.mauriceafrich.com/loot" class="mn-link">LOOT</a>
-    <a href="https://www.mauriceafrich.com/games" class="mn-link">GAMES</a>
-    <a href="https://www.mauriceafrich.com/red-city" class="mn-link" style="color:#ff4c0f">VOTE NOW!</a>
-    <div class="mn-drop mn-drop-cta">
-      <a href="https://www.mauriceafrich.com/preorder" class="mn-link mn-cta" aria-haspopup="true">PRE-ORDER CELLO'S GATE &#9662;</a>
-      <div class="mn-dd"><div class="mn-dd-in">
-        <a href="https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834" target="_blank" rel="noopener">BARNES &AMP; NOBLE</a>
-        <a href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399763073" target="_blank" rel="noopener">WATERSTONES</a>
-        <a href="https://www.amazon.com/Audible-Cellos-Gate/dp/B0GKZWW416/ref=tmm_aud_swatch_0?_encoding=UTF8&amp;dib_tag=se&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;qid=1770340593&amp;sr=8-1&amp;ascsubtag=srctok-d4f496760f7c524a&amp;btn_ref=srctok-d4f496760f7c524a" target="_blank" rel="noopener">AUDIBLE</a>
-        <a href="https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834/ref=sr_1_1?crid=279A8MV3ZYP0T&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;dib_tag=se&amp;keywords=cellos+gate&amp;qid=1770340593&amp;sprefix=cellos%27+gate%2Caps%2C179&amp;sr=8-1&amp;ascsubtag=srctok-f7d285c3c39c18b3&amp;btn_ref=srctok-f7d285c3c39c18b3" target="_blank" rel="noopener">AMAZON</a>
-        <a href="https://bookshop.org/p/books/cello-s-gate-maurice-africh/867e45638f69e94f?ean=9781668242834&amp;next=t" target="_blank" rel="noopener">BOOKSHOP.ORG</a>
-        <a href="https://www.mauriceafrich.com/preorder" class="mn-all">ALL RETAILERS &rarr;</a>
-      </div></div>
+    <a href="https://www.mauriceafrich.com" class="mn-logo" aria-label="Maurice Africh home"><img src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
+    <div class="mn-right">
+      <div class="mn-links">
+      <a href="https://www.mauriceafrich.com/the-hunt" class="mn-link">THE HUNT</a>
+      <a href="https://www.mauriceafrich.com/the-hunt#tasks" class="mn-link">TASKS</a>
+      <a href="https://www.mauriceafrich.com/the-hunt#riddles" class="mn-link">RIDDLES</a>
+      <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
+      <a href="https://www.mauriceafrich.com/games" class="mn-link">GAMES</a>
+      <a href="https://www.mauriceafrich.com/contests" class="mn-link">CONTESTS</a>
+      <div class="mn-drop">
+        <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">CURRENT PROGRESS<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.mauriceafrich.com/profile" class="mn-profile"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"></path></svg>TREASURE HUNTER PROFILE</a>
+          <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
+          <a href="https://www.mauriceafrich.com/loot">LOOT BOX SCORECARD</a>
+          <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+        </div></div>
+      </div>
+      <a href="https://www.mauriceafrich.com/questions" class="mn-link">QUESTIONS?</a>
+      <a href="https://www.mauriceafrich.com/red-city" class="mn-link" style="color:#a2f590">VOTE NOW!</a>
+      </div>
+      <div class="mn-drop mn-drop-cta">
+        <a href="https://www.mauriceafrich.com/preorder" class="mn-link mn-cta" aria-haspopup="true">PRE-ORDER CELLO'S GATE<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener">WALMART SPECIAL EDITION</a>
+          <a href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399763073" target="_blank" rel="noopener">WATERSTONES</a>
+          <a href="https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834" target="_blank" rel="noopener">BARNES &amp; NOBLE</a>
+          <a href="https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834/ref=sr_1_1?crid=279A8MV3ZYP0T&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;dib_tag=se&amp;keywords=cellos+gate&amp;qid=1770340593&amp;sprefix=cellos%27+gate%2Caps%2C179&amp;sr=8-1&amp;ascsubtag=srctok-f7d285c3c39c18b3&amp;btn_ref=srctok-f7d285c3c39c18b3" target="_blank" rel="noopener">AMAZON</a>
+          <a href="https://www.amazon.com/Audible-Cellos-Gate/dp/B0GKZWW416/ref=tmm_aud_swatch_0?_encoding=UTF8&amp;dib_tag=se&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;qid=1770340593&amp;sr=8-1&amp;ascsubtag=srctok-d4f496760f7c524a&amp;btn_ref=srctok-d4f496760f7c524a" target="_blank" rel="noopener">AUDIBLE</a>
+          <a href="https://www.mauriceafrich.com/preorder" class="mn-all">ALL RETAILERS &rarr;</a>
+        </div></div>
+      </div>
     </div>
   </div>
   <div class="mn-burger" role="button" aria-label="Open menu" onclick="var o=document.getElementById('hunt-nav-ov');if(o.parentNode!==document.body){document.body.appendChild(o);}o.style.display='flex'">
@@ -90,17 +134,21 @@ html,body{margin:0 !important;padding:0 !important}
   <div class="mn-x" role="button" aria-label="Close menu">
     <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M5 5l14 14"></path><path d="M19 5L5 19"></path></svg>
   </div>
-  <a href="https://www.mauriceafrich.com">HOME</a>
-  <a href="https://www.mauriceafrich.com/the-hunt">HUNT</a>
-  <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
-  <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
-  <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
-  <a href="https://www.mauriceafrich.com/contests">CONTESTS</a>
-  <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+  <a href="https://www.mauriceafrich.com" class="mn-ovlogo" aria-label="Maurice Africh home"><img loading="lazy" decoding="async" src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
+  <a href="https://www.mauriceafrich.com/the-hunt">THE HUNT</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#tasks">TASKS</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#riddles">RIDDLES</a>
   <a href="https://www.mauriceafrich.com/lootbox-clue">CLUES</a>
-  <a href="https://www.mauriceafrich.com/loot">LOOT</a>
   <a href="https://www.mauriceafrich.com/games">GAMES</a>
-  <a href="https://www.mauriceafrich.com/red-city" style="color:#ff4c0f">VOTE NOW!</a>
+  <a href="https://www.mauriceafrich.com/contests">CONTESTS</a>
+  <div class="mn-ovgroup"><span>CURRENT PROGRESS</span>
+    <a href="https://www.mauriceafrich.com/profile" class="mn-profile">TREASURE HUNTER PROFILE</a>
+    <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
+    <a href="https://www.mauriceafrich.com/loot">LOOT BOX SCORECARD</a>
+    <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+  </div>
+  <a href="https://www.mauriceafrich.com/questions">QUESTIONS?</a>
+  <a href="https://www.mauriceafrich.com/red-city" style="color:#a2f590">VOTE NOW!</a>
   <a href="https://www.mauriceafrich.com/preorder" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
 </div>
 <section id="rules-hero" data-screen-label="Official Rules header">
@@ -161,13 +209,13 @@ html,body{margin:0 !important;padding:0 !important}
       <p>(c) Free alternative. To receive the same points and the same sweepstakes entry without a purchase, hand-print your name, email address, Hunt username, and the words "Sky Pirates Free Entry" on a 3x5 card or piece of paper and mail it in a stamped envelope to Maurice Africh, 125 S Lexington Ave, Suite 101A, PMB 159, Asheville, NC 28801. Each mailed request earns 100 points and one additional entry in the sweepstakes for the Act in which it is received. There is no limit on the number of mailed requests that earn points or entries. One request per envelope; each must be individually hand-printed and mailed separately. Photocopied, mechanically reproduced, or bulk-mailed requests are void. Requests must be postmarked by October 28, 2026 and received by November 1, 2026.</p>
 
       <h3>7. Act Sweepstakes.</h3>
-      <p>(a) Entries. During each Act, every verified form submission and every correctly solved riddle earns one entry into that Act's sweepstakes. Each verified receipt or free-alternative request under Section 6 earns one additional entry. Entries don't carry over between Acts.</p>
+      <p>(a) Entries. During each Act, every verified task completion earns one entry into that Act's sweepstakes. Task completions include verified form submissions, correctly solved riddles, secret loot boxes found, daily game wins, and sealed Choose Your Own Adventure votes. Each verified receipt or free-alternative request under Section 6 earns one additional entry. Entries don't carry over between Acts.</p>
       <p>(b) Drawing. Within 7 days after each Act ends, Sponsor will randomly draw winners from all eligible entries received during that Act. Odds of winning depend on the number of eligible entries received.</p>
       <p>(c) Prizes.<br>Act One: five (5) winners each receive one Signed Deluxe Edition of Cello's Gate. Approximate retail value (ARV): $40 each.<br>Act Two: <mark>[ACT TWO PRIZE]</mark>. ARV: <mark>[ ]</mark>.<br>Act Three: <mark>[ACT THREE PRIZE]</mark>. ARV: <mark>[ ]</mark>.</p>
       <p>Limit one sweepstakes prize per person per Act. Sweepstakes prizes ship to U.S. addresses only. Books ship on or after publication.</p>
 
       <h3>8. The Treasure Contest.</h3>
-      <p>(a) After the Hunt Period ends, the three eligible participants with the highest verified individual point totals each win The Treasure: a Sky Pirates treasure box as shown on the Hunt page, including a Signed Deluxe Edition and a Signed Walmart Special Edition of Cello's Gate, a custom "Mark of the Crest" 3D-printed bookmark, a Stay Sturdy, Fren t-shirt, three custom foil bookmarks, art, map, and special-edition prints, a hoard of Sky Pirate stickers, three "Mark of the Crest" temporary tattoos, and an Advanced Listener Copy of the Cello's Gate audiobook. ARV: <mark>$250 (estimate)</mark> each.</p>
+      <p>(a) After the Hunt Period ends, the three eligible participants with the highest verified individual point totals each win The Treasure: a Sky Pirates treasure box as shown on <a href="https://www.mauriceafrich.com/the-treasure">The Treasure page</a>, including a Signed Deluxe Edition and a Signed Walmart Special Edition of Cello's Gate, a custom "Mark of the Crest" 3D-printed bookmark, a Stay Sturdy, Fren t-shirt, three custom foil bookmarks, art, map, and special-edition prints, a hoard of Sky Pirate stickers, three "Mark of the Crest" temporary tattoos, and an Advanced Listener Copy of the Cello's Gate audiobook. ARV: <mark>$250 (estimate)</mark> each.</p>
       <p>(b) Ties. A tie is broken in favor of the participant with the most riddles solved correctly; then the participant who reached the tied point total first, by Sponsor's submission timestamps.</p>
       <p>(c) Verification. Before The Treasure is awarded, Sponsor may require a potential winner to show that every receipt counted toward their total is for an order that was not cancelled, refunded, or returned. Points from any order that can't be verified are removed and rankings are recalculated.</p>
       <p>(d) Participants outside the U.S. and the UK may appear on the leaderboard and earn Rewards but are not eligible for The Treasure. UK residents compete for the UK Treasure under <a href="#uk">Part 2</a>.</p>
@@ -244,13 +292,13 @@ html,body{margin:0 !important;padding:0 !important}
       <p>(c) Free entry. You do not need to buy anything to take part or to win. To receive the same 100 points and the same prize draw entry without a purchase, select "Free Entry" on the Submit Points form and enter your name, email address, and Hunt username. Free entries are treated identically to receipt entries, up to the same limits. There is no limit on the number of free entries that earn points. Free entry closes at the same time as the Hunt.</p>
 
       <h3>7. UK Act Prize Draws.</h3>
-      <p>(a) Entries. During each Act, every verified form submission and every correctly solved riddle earns one entry into that Act's UK prize draw. Each verified receipt or free entry under Section 6 earns one additional entry. Entries do not carry over between Acts.</p>
+      <p>(a) Entries. During each Act, every verified task completion earns one entry into that Act's UK prize draw. Task completions include verified form submissions, correctly solved riddles, secret loot boxes found, daily game wins, and sealed Choose Your Own Adventure votes. Each verified receipt or free entry under Section 6 earns one additional entry. Entries do not carry over between Acts.</p>
       <p>(b) Draw. Within 7 days after each Act ends, winners will be selected at random from all eligible UK entries received during that Act, either by a verifiably random computer process or under the supervision of an independent person. A record of each draw is kept.</p>
       <p>(c) Prizes.<br>Act One: five (5) winners each receive one Signed Deluxe Edition of Cello's Gate. Value: <mark>£30 (estimate)</mark> each.<br>Act Two: <mark>[UK ACT TWO PRIZE]</mark>. Value: £<mark>[ ]</mark>.<br>Act Three: <mark>[UK ACT THREE PRIZE]</mark>. Value: £<mark>[ ]</mark>.</p>
       <p>One prize per person per Act. Prizes are posted to UK addresses only. Books are dispatched on or after publication.</p>
 
       <h3>8. The UK Treasure.</h3>
-      <p>(a) After the Hunt closes, the three eligible UK participants with the highest verified individual point totals each win the UK Treasure: a Sky Pirates treasure box as shown on the Hunt page, including a Signed Deluxe Edition and a Signed Walmart Special Edition of Cello's Gate, a custom "Mark of the Crest" 3D-printed bookmark, a Stay Sturdy, Fren t-shirt, three custom foil bookmarks, art, map, and special-edition prints, a hoard of Sky Pirate stickers, three "Mark of the Crest" temporary tattoos, and an Advanced Listener Copy of the Cello's Gate audiobook. Value: <mark>£190 (estimate)</mark> each.</p>
+      <p>(a) After the Hunt closes, the three eligible UK participants with the highest verified individual point totals each win the UK Treasure: a Sky Pirates treasure box as shown on <a href="https://www.mauriceafrich.com/the-treasure">The Treasure page</a>, including a Signed Deluxe Edition and a Signed Walmart Special Edition of Cello's Gate, a custom "Mark of the Crest" 3D-printed bookmark, a Stay Sturdy, Fren t-shirt, three custom foil bookmarks, art, map, and special-edition prints, a hoard of Sky Pirate stickers, three "Mark of the Crest" temporary tattoos, and an Advanced Listener Copy of the Cello's Gate audiobook. Value: <mark>£190 (estimate)</mark> each.</p>
       <p>(b) Ties. A tie is broken in favour of the participant with the most riddles solved correctly; then the participant who reached the tied total first, by the Promoter's submission timestamps.</p>
       <p>(c) Verification. Before the UK Treasure is awarded, the Promoter may ask a potential winner to confirm that every receipt counted toward their total is for an order that was not cancelled, refunded, or returned. Points from any order that cannot be verified are removed and rankings are recalculated.</p>
 

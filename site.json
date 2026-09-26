@@ -127,6 +127,24 @@
       "url": "(preview only: the next Hunt page, not live)",
       "title": "The Hunt (next version, preview)",
       "source": "bot:squarespace-hunt.next.html"
+    },
+    {
+      "slug": "the-treasure",
+      "url": "/the-treasure",
+      "title": "The Treasure (moved off the Hunt page)",
+      "source": "pages/the-treasure.html"
+    },
+    {
+      "slug": "questions",
+      "url": "/questions",
+      "title": "Questions? (hunt question form)",
+      "source": "pages/questions.html"
+    },
+    {
+      "slug": "profile",
+      "url": "/profile",
+      "title": "Treasure Hunter Profile",
+      "source": "pages/profile.html"
     }
   ],
   "staysInSquarespace": [
