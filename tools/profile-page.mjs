@@ -6,13 +6,13 @@ export function profilePage(menu) {
 <style>
 @font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
 html,body{margin:0 !important;padding:0 !important}
-#hp{--ink:#0b170f;--violet:#482d85;--lav:#c3a6ff;--ember:#ff4c0f;--red:#c53200;--mint:#a2f590;--cream:#f3ead9;
+#hp{--ink:#0b170f;--violet:#482d85;--lav:#c3a6ff;--ember:#ff4c0f;--red:#c53200;--hi:#c53200;--hitext:#fd7547;--cream:#f3ead9;
   background:linear-gradient(rgba(29,16,58,.9),rgba(29,16,58,.93)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover;background-attachment:fixed;
   padding:150px 24px 72px;font-family:'Almarai',sans-serif;color:#fff}
-#hp .hp-in{max-width:1080px;margin:0 auto}
+#hp .hp-in{max-width:810px;margin:0 auto}
 #hp .hp-eyebrow{font-family:'Atomic Marker',cursive;font-size:clamp(22px,2.4vw,34px);color:var(--lav);text-align:center;margin:0 0 6px}
 #hp h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(46px,6.6vw,96px);line-height:1.05;margin:0 0 36px;text-align:center}
-#hp .hp-example{display:none;max-width:680px;margin:-12px auto 30px;text-align:center;font-weight:800;font-size:13px;letter-spacing:.12em;color:var(--ink);background:var(--mint);padding:10px 14px}
+#hp .hp-example{display:none;max-width:680px;margin:-12px auto 30px;text-align:center;font-weight:800;font-size:13px;letter-spacing:.12em;color:#fff;background:var(--hi);padding:10px 14px}
 #hp.is-example .hp-example{display:block}
 #hp .hp-find{max-width:560px;margin:0 auto;background:rgba(11,23,15,.55);border:1px solid rgba(195,166,255,.5);padding:30px 30px 26px;text-align:center;box-shadow:6px 7px 0 rgba(0,0,0,.35)}
 #hp .hp-find p{font-size:18px;line-height:1.5;margin:0 0 18px}
@@ -24,10 +24,9 @@ html,body{margin:0 !important;padding:0 !important}
 #hp .hp-err{color:#ffc0ab;font-weight:700;min-height:1.3em;margin:12px 0 0}
 #hp .hp-card[hidden],#hp .hp-find[hidden]{display:none}
 #hp .hp-head{display:flex;align-items:center;gap:22px;margin:0 0 26px}
-#hp .hp-av{flex:none;width:84px;height:84px;border-radius:50%;background:var(--red);border:3px solid var(--cream);display:flex;align-items:center;justify-content:center;font-family:'Atomic Marker',cursive;font-size:44px;box-shadow:4px 5px 0 rgba(0,0,0,.35)}
 #hp .hp-name{font-family:'Atomic Marker',cursive;font-size:clamp(34px,4vw,54px);line-height:1}
 #hp .hp-sub{margin-top:8px;font-weight:700;font-size:15px;letter-spacing:.08em;color:var(--lav)}
-#hp .hp-sub b{display:inline-block;margin-left:10px;color:var(--ink);background:var(--mint);padding:3px 9px;font-size:12px;letter-spacing:.12em}
+#hp .hp-sub b{display:inline-block;margin-left:10px;color:#fff;background:var(--hi);padding:3px 9px;font-size:12px;letter-spacing:.12em}
 #hp .hp-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:0 0 18px}
 #hp .hp-tile{background:rgba(11,23,15,.55);border:1px solid rgba(195,166,255,.45);padding:20px 18px;text-align:center}
 #hp .hp-tile i{display:block;font-style:normal;font-weight:800;font-size:12px;letter-spacing:.14em;color:var(--lav);margin-bottom:8px}
@@ -37,7 +36,7 @@ html,body{margin:0 !important;padding:0 !important}
 #hp .hp-tile.hp-hot i{color:#ffd9c4}
 #hp .hp-race{background:rgba(11,23,15,.55);border:1px solid rgba(195,166,255,.45);padding:20px 22px;margin:0 0 18px}
 #hp .hp-race p{margin:0 0 12px;font-size:17px;line-height:1.5}
-#hp .hp-race p a{color:var(--mint);font-weight:700}
+#hp .hp-race p a{color:var(--hitext);font-weight:700}
 #hp .hp-bar{height:16px;background:rgba(255,255,255,.12);position:relative}
 #hp .hp-bar>div{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--red),var(--ember))}
 #hp .hp-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:0 0 18px}
@@ -50,25 +49,25 @@ html,body{margin:0 !important;padding:0 !important}
 #hp h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(26px,2.6vw,36px);margin:34px 0 14px}
 #hp .hp-days{display:grid;grid-template-columns:repeat(21,minmax(0,1fr));gap:6px}
 #hp .hp-day{aspect-ratio:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14)}
-#hp .hp-day.on{background:var(--mint);border-color:var(--mint)}
-#hp .hp-day.today{outline:2px solid var(--ember);outline-offset:1px}
+#hp .hp-day.on{background:var(--hi);border-color:#fd7547}
+#hp .hp-day.today{outline:2px solid #fff;outline-offset:1px}
 #hp .hp-day.later{opacity:.35}
 #hp .hp-daykey{margin-top:12px;font-size:14px;color:rgba(255,255,255,.75)}
-#hp .hp-daykey b{color:var(--mint)}
+#hp .hp-daykey b{color:var(--hitext)}
 #hp .hp-recent{list-style:none;margin:0;padding:0;border-top:1px solid rgba(195,166,255,.35)}
 #hp .hp-recent li{display:flex;gap:16px;align-items:baseline;padding:12px 4px;border-bottom:1px solid rgba(195,166,255,.2);font-size:16px}
 #hp .hp-recent time{flex:none;width:92px;color:var(--lav);font-weight:700;font-size:14px;letter-spacing:.04em}
 #hp .hp-recent span{flex:1}
-#hp .hp-recent b{color:var(--mint)}
+#hp .hp-recent b{color:var(--hitext)}
 #hp .hp-crew{margin:26px 0 0;text-align:center;font-size:18px;line-height:1.6}
-#hp .hp-crew b{color:var(--mint)}
+#hp .hp-crew b{color:var(--hitext)}
 #hp .hp-more{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin:30px 0 0}
 #hp .hp-btn.alt{background:var(--violet)}
 #hp .hp-btn.alt:hover{background:#5b3aa6}
 #hp .hp-foot{text-align:center;margin:22px 0 0;font-size:13px;color:rgba(255,255,255,.65)}
 #hp .hp-foot a{color:#fff;cursor:pointer;text-decoration:underline}
 @media (max-width:900px){#hp{background-attachment:scroll}#hp .hp-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}#hp .hp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#hp .hp-days{grid-template-columns:repeat(14,minmax(0,1fr))}}
-@media (max-width:560px){#hp{padding:110px 16px 56px}#hp .hp-head{gap:16px}#hp .hp-av{width:64px;height:64px;font-size:34px}#hp .hp-tile b{font-size:36px}#hp .hp-days{grid-template-columns:repeat(7,minmax(0,1fr))}#hp .hp-recent time{width:74px}}
+@media (max-width:560px){#hp{padding:110px 16px 56px}#hp .hp-head{gap:16px}#hp .hp-tile b{font-size:36px}#hp .hp-days{grid-template-columns:repeat(7,minmax(0,1fr))}#hp .hp-recent time{width:74px}}
 </style>
 <section id="hp" data-screen-label="Treasure Hunter Profile">
   <div class="hp-in">
@@ -114,7 +113,7 @@ html,body{margin:0 !important;padding:0 !important}
     for (var i = 0; i < 42; i++) days += '<div class="hp-day' + (p.days.charAt(i) === '1' ? ' on' : '') + (i === idx ? ' today' : '') + (i > idx ? ' later' : '') + '" title="' + day(new Date(Date.UTC(2026, 8, 21 + i)).toISOString().slice(0, 10)) + '"></div>';
     var acts = ['Act One', 'Act Two', 'Act Three'], actNow = today <= '2026-09-30' ? 0 : today <= '2026-10-15' ? 1 : 2;
     card.innerHTML =
-      '<div class="hp-head"><div class="hp-av">' + esc((p.n || p.h || '?').replace(/^@/, '').charAt(0).toUpperCase()) + '</div><div><div class="hp-name">' + esc(p.n || p.h) + '</div>' +
+      '<div class="hp-head"><div><div class="hp-name">' + esc(p.n || p.h) + '</div>' +
       '<div class="hp-sub">' + esc(p.h) + '<b>' + esc(p.rl).toUpperCase() + ' BOARD</b></div></div></div>' +
       '<div class="hp-tiles">' +
         '<div class="hp-tile hp-hot"><i>RANK</i><b>#' + p.rank + '</b><span>of ' + fmt(p.of) + ' on the board</span></div>' +
@@ -131,7 +130,7 @@ html,body{margin:0 !important;padding:0 !important}
         '<div class="hp-stat"><i>PRE-ORDERS</i><b>' + p.pre + '</b><small>100 points each</small></div>' +
         '<div class="hp-stat"><i>TASKS COMPLETED</i><b>' + p.tasks + '</b><small>Shares, apps, libraries, and more</small></div>' +
       '</div>' +
-      '<h2>DAYS ON THE HUNT</h2><div class="hp-days">' + days + '</div><div class="hp-daykey"><span>One square for each day of the hunt, Sept 21 to Nov 1. <b>Green</b> means you earned points that day.</span></div>' +
+      '<h2>DAYS ON THE HUNT</h2><div class="hp-days">' + days + '</div><div class="hp-daykey"><span>One square for each day of the hunt, Sept 21 to Nov 1. <b>Red</b> means you earned points that day.</span></div>' +
       '<h2>LATEST LOOT</h2><ul class="hp-recent">' + p.recent.map(function (r) { return '<li><time>' + esc(day(r[0])) + '</time><span>' + esc(r[1]) + '</span><b>+' + fmt(r[2]) + '</b></li>'; }).join('') + '</ul>' +
       '<p class="hp-crew">You’ve earned <b>' + (crewTotal ? (p.pts / crewTotal * 100).toFixed(1) : '0') + '%</b> of the crew’s ' + fmt(crewTotal) + ' points. Every one of them helps unlock rewards for everyone!</p>' +
       '<div class="hp-more"><a class="hp-btn" href="' + U + '/the-hunt#tasks">EARN MORE POINTS</a><a class="hp-btn alt" href="' + U + '/leaderboard">GLOBAL LEADERBOARD</a><a class="hp-btn alt" href="' + U + '/loot">LOOT BOX SCORECARD</a></div>' +
@@ -165,6 +164,15 @@ html,body{margin:0 !important;padding:0 !important}
         (b && b.crewTotal) || 51170, b);
     });
   } else if (saved()) lookup(saved());
+  // On a tall screen Squarespace stretches a short page and paints the rest in its own colour; grow this section instead.
+  function fit() {
+    var foot = document.querySelector('footer, #footer-sections'); if (!root || !foot) return;
+    root.style.minHeight = '';
+    var gap = foot.getBoundingClientRect().top - root.getBoundingClientRect().bottom;
+    if (gap > 1) root.style.minHeight = (root.offsetHeight + gap) + 'px';
+  }
+  fit(); addEventListener('load', fit); addEventListener('resize', fit); setTimeout(fit, 1500);
+  new MutationObserver(function () { setTimeout(fit, 50); }).observe(card, { childList: true });
 })();
 </script>
 `;

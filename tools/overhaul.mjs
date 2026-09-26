@@ -263,13 +263,39 @@ function huntPage(s) {
   s = swap(s, 'line-height:1.15">FOLLOW ALONG</h2>', 'line-height:1.15">CHOOSE YOUR OWN ADVENTURE</h2>', 'the map heading');
   s = swap(s, 'max-width:1180px;margin:0 auto 90px">The map updates as the crew moves through the hunt. Earn as many points as you can to explore the map, unlock secret paths, discover areas yet unexplored, and find the treasure!</p>',
     `max-width:1180px;margin:0 auto 36px">As you progress through the hunt, you will be presented with choices, votes, dice rolls, games of chance, and more! The maps update as you progress through the hunt.</p>
-    <div style="margin:0 0 90px"><a href="${U('/red-city')}" class="mh-cta" style="margin-top:0;font-size:18px;padding:18px clamp(70px,10vw,140px);background:#482d85">VOTE NOW!</a></div>`, 'the map copy');
+    <div style="margin:0 0 90px"><a href="${U('/red-city')}" class="mh-cta" style="margin-top:0;font-size:18px;padding:18px clamp(70px,10vw,140px);background:#912501">VOTE NOW!</a></div>`, 'the map copy');
 
   // Rewards unlocked: dates over each act, new notes
   const ACTS = { 'ACT ONE': 'SEPTEMBER 21<sup style="font-size:.6em">ST</sup> – SEPTEMBER 30<sup style="font-size:.6em">TH</sup>', 'ACT TWO': 'OCTOBER 1<sup style="font-size:.6em">ST</sup> – OCTOBER 15<sup style="font-size:.6em">TH</sup>', 'ACT THREE': 'OCTOBER 16<sup style="font-size:.6em">TH</sup> – NOVEMBER 1<sup style="font-size:.6em">ST</sup>' };
   for (const [act, when] of Object.entries(ACTS)) {
     s = swap(s, `<div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin-bottom:70px">${act}</div>`,
-      `<div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin:20px 0 10px">${act}</div>\n        <div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 90px">${when}</div>`, `the ${act} title`);
+      `<div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin:20px 0 10px">${act}</div>\n        <div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 110px">${when}</div>`, `the ${act} title`);
+  }
+  // The progress bars: every "reward unlocked" label at the same angle, Acts Two and Three marked every 20%,
+  // and no separate "bonus unlock" flag on the stretch-goal bar (its "Next bonus" label says it).
+  {
+    const r1 = s.indexOf('<section id="rewards"'), r2 = s.indexOf('<!-- ============ THE TREASURE', r1);
+    if (r1 < 0 || r2 < 0) throw new Error('Could not find the rewards section');
+    let r = s.slice(r1, r2);
+    r = r.split('transform:rotate(24deg);transform-origin:right bottom;').join('transform:rotate(40deg);transform-origin:right bottom;');
+    const flag = /<div style="position:absolute;top:0;left:100%;width:3px;height:10px;margin-left:-3px;background:#912501"><\/div><div style="position:absolute;bottom:100%;right:0;transform:rotate\(40deg\)[^>]*>BONUS UNLOCK[^<]*<\/div>/;
+    if (!flag.test(r)) throw new Error('Could not find the bonus unlock flag');
+    r = r.replace(flag, '');
+    r = swap(r, '<div class="m-prog" style="display:flex;align-items:center;gap:36px;margin:64px 0 0">', '<div class="m-prog" style="display:flex;align-items:center;gap:36px;margin:30px 0 0">', 'the bonus bar spacing');
+    const LAB = (at, cls) => `<div style="position:absolute;top:0;left:${at}%;width:3px;height:12px;background:#c1330a"></div><div${cls ? ' class="rw-tlab"' : ''} style="position:absolute;bottom:100%;left:${at}%;width:0;display:flex;justify-content:flex-end;margin-bottom:8px"><div style="transform:rotate(40deg);transform-origin:right bottom;font-family:'Atomic Marker',cursive;font-size:14px;letter-spacing:.03em;color:#c1330a;white-space:nowrap">REWARD UNLOCKED!</div></div>`;
+    for (const act of ['>ACT TWO</div>', '>ACT THREE</div>']) {
+      const a = r.indexOf(act);
+      const first = r.indexOf('<div style="position:absolute;top:0;left:25%;width:3px;height:12px;background:#c1330a">', a);
+      const end = r.indexOf('<div style="position:absolute;top:0;left:100%;width:3px;height:12px;margin-left:-3px;background:#c1330a">', a);
+      if (a < 0 || first < 0 || end < first) throw new Error(`Could not find the ${act} markers`);
+      r = r.slice(0, first) + LAB(20) + LAB(40) + LAB(60) + LAB(80, true) + r.slice(end);
+      // Five markers, so five locked slots
+      const list = r.indexOf('<div class="m-list"', a), listEnd = r.indexOf('\n        </div>', list);
+      const slots = r.slice(list, listEnd).match(/\n          <div style="width:min\(560px,100%\)[^\n]*/g) || [];
+      if (slots.length !== 4) throw new Error(`Expected four locked slots under ${act}`);
+      r = r.slice(0, listEnd) + slots[3] + r.slice(listEnd);
+    }
+    s = s.slice(0, r1) + r + s.slice(r2);
   }
   // The small print under the rewards: two even lines, not one long line and a few stray words
   s = s.replace('<div id="rw-disc" style="font-size:12px;color:#111;max-width:720px;margin:80px auto 0;text-align:center">', '<div id="rw-disc" style="font-size:12px;color:#111;max-width:980px;margin:80px auto 0;text-align:center;text-wrap:balance">');
@@ -312,7 +338,7 @@ function treasurePage(hunt, menu) {
   </section>
 `);
   const script = hunt.slice(hunt.lastIndexOf('<script>\nwindow.__openBook'), hunt.indexOf('</script>', hunt.lastIndexOf('<script>\nwindow.__openBook')) + 9);
-  return `${menu.trim()}\n${head}\n<style>@media (max-width:760px){#grand-prize{padding:120px 22px 80px !important}}</style>\n<div id="hunt-page">\n<div data-screen-label="The Treasure" style="width:100%;overflow-x:hidden">\n${sec}\n</div>\n</div>\n${script}\n`;
+  return `${menu.trim()}\n${head}\n<style>@media (max-width:760px){#grand-prize{padding:120px 22px 80px !important}}</style>\n<div id="hunt-page">\n<div data-screen-label="The Treasure" style="width:100%;overflow-x:hidden">\n${sec}\n</div>\n</div>\n${script}\n${FILL('grand-prize')}\n`;
 }
 
 // The Questions page: a short form that lands in the Questions tab of the hunt sheet.
@@ -322,7 +348,8 @@ function questionsPage(menu) {
 @font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
 html,body{margin:0 !important;padding:0 !important}
 #hq{background:linear-gradient(178deg,rgba(10,35,8,.92) 0%,rgba(30,100,23,.9) 60%,rgba(63,163,47,.9) 100%),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;background-attachment:fixed;padding:150px 24px 48px;font-family:'Almarai',sans-serif;color:#fff}
-#hq .hq-in{max-width:720px;margin:0 auto}
+#hq{display:flex;flex-direction:column;justify-content:center;box-sizing:border-box}
+#hq .hq-in{max-width:720px;margin:0 auto;width:100%}
 #hq h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(54px,8vw,110px);line-height:1.1;margin:0 0 18px;text-align:center}
 #hq .hq-lede{font-size:21px;line-height:1.55;text-align:center;margin:0 auto 44px;max-width:620px}
 #hq .hq-lede a{color:#a2f590;font-weight:700}
@@ -411,8 +438,22 @@ html,body{margin:0 !important;padding:0 !important}
   }
 })();
 </script>
+${FILL('hq')}
 `;
 }
+
+// On a tall screen Squarespace stretches a short page to the window and paints the rest in its own colour.
+// This grows the page's own section down to the footer instead.
+const FILL = (id) => `<script>(function () {
+  var sec = document.getElementById('${id}');
+  function fit() {
+    var foot = document.querySelector('footer, #footer-sections'); if (!sec || !foot) return;
+    sec.style.minHeight = '';
+    var gap = foot.getBoundingClientRect().top - sec.getBoundingClientRect().bottom;
+    if (gap > 1) sec.style.minHeight = (sec.offsetHeight + gap) + 'px';
+  }
+  fit(); addEventListener('load', fit); addEventListener('resize', fit); setTimeout(fit, 1500);
+})();</script>`;
 
 // ---------------------------------------------------------------- the other pages
 
@@ -449,15 +490,15 @@ const EDITS = {
   // Three buttons under the board, on the same red: teal, green and purple
   leaderboard: (s) => swap(s, '</iframe>', `</iframe>
   <style>
-  #lb-more{position:relative;z-index:3;display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:8px 16px 64px}
-  #lb-more a{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.1em;color:#fff;text-decoration:none;border:1.5px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);padding:16px 32px;transition:transform .15s ease,filter .15s ease}
-  #lb-more a:hover{transform:scale(1.04);filter:brightness(1.12)}
+  #lb-more{position:relative;z-index:3;display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:8px 16px 64px;background:rgba(193,51,10,.9)}
+  #lb-more a{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.1em;color:#fff;background:#912501;text-decoration:none;border:2px solid #912501;box-shadow:4px 5px 0 rgba(0,0,0,.35);padding:16px 32px;transition:transform .15s ease,background .15s ease,color .15s ease}
+  #lb-more a:hover{transform:scale(1.04);background:#fff;color:#912501}
   @media (max-width:560px){#lb-more a{flex:1 1 100%;text-align:center}}
   </style>
   <div id="lb-more">
-    <a href="${U('/games')}" style="background:#268e62">PLAY GAMES</a>
-    <a href="${U('/lootbox-clue')}" style="background:#2c6021">FIND A LOOT BOX</a>
-    <a href="${U('/the-treasure')}" style="background:#482d85">SEE THE TREASURE</a>
+    <a href="${U('/games')}">PLAY GAMES</a>
+    <a href="${U('/lootbox-clue')}">FIND A LOOT BOX</a>
+    <a href="${U('/the-treasure')}">SEE THE TREASURE</a>
   </div>`, 'the leaderboard frame'),
   // hunt bot pages (the same edits work on the bot sources and on their published copies)
   'the-hunt': huntPage,

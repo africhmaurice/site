@@ -273,3 +273,13 @@ window.__openBook=function(el){var i=document.getElementById('book-lb-img');i.sr
 
 window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=document.getElementById('prize-lb-img'),ph=document.getElementById('prize-ph');if(img){i.src=img;i.style.display='block';ph.style.display='none';}else{i.style.display='none';ph.style.display='flex';}document.getElementById('prize-lb').style.display='flex';};
 </script>
+<script>(function () {
+  var sec = document.getElementById('grand-prize');
+  function fit() {
+    var foot = document.querySelector('footer, #footer-sections'); if (!sec || !foot) return;
+    sec.style.minHeight = '';
+    var gap = foot.getBoundingClientRect().top - sec.getBoundingClientRect().bottom;
+    if (gap > 1) sec.style.minHeight = (sec.offsetHeight + gap) + 'px';
+  }
+  fit(); addEventListener('load', fit); addEventListener('resize', fit); setTimeout(fit, 1500);
+})();</script>
