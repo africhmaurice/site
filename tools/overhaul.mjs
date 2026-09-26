@@ -1,0 +1,526 @@
+// The Hunt overhaul (September 2026): new hunt menu, new Hunt page layout, The Treasure and Questions pages,
+// and the "what next" buttons after every way to earn points.
+//
+//   node tools/overhaul.mjs --stage    builds next/ and preview-next/ (a full preview; nothing live changes)
+//   node tools/overhaul.mjs --launch   applies the same edits to the real sources (pages/ and the hunt bot files)
+//
+// Every edit is a plain text replacement that must find its target, so a page that changed underneath
+// stops the run instead of half-applying.
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync, existsSync } from 'node:fs';
+import { join, resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { LAYOUT, swapBlocks } from './lib.mjs';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const BOT = resolve(ROOT, '../treasure-hunt-leaderboard');
+const site = JSON.parse(readFileSync(join(ROOT, 'site.json'), 'utf8'));
+const LIVE = 'https://www.mauriceafrich.com';
+const U = (p) => LIVE + p;
+const DISCORD = 'https://discord.gg/TV8SNnSGdb';
+const LOGO = 'https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w';
+const ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+
+function swap(s, from, to, what) {
+  if (!s.includes(from)) throw new Error(`Could not find ${what}`);
+  return s.split(from).join(to);
+}
+function cut(s, start, end, what) {
+  const a = s.indexOf(start); if (a < 0) throw new Error(`Could not find the start of ${what}`);
+  const b = s.indexOf(end, a); if (b < 0) throw new Error(`Could not find the end of ${what}`);
+  return [a, b];
+}
+
+// ---------------------------------------------------------------- the hunt menu
+const NAV_CSS = `<style>
+#hunt-nav .mn-row{justify-content:space-between;gap:clamp(8px,1.05vw,18px)}
+#hunt-nav .mn-link{font-size:clamp(10px,.8vw,13px);letter-spacing:.05em}
+#hunt-nav .mn-logo{display:flex;align-items:center;flex:none;margin-right:clamp(2px,.8vw,14px);transition:transform .15s ease}
+#hunt-nav .mn-logo:hover{transform:scale(1.05)}
+#hunt-nav .mn-logo img{height:clamp(30px,2.5vw,40px);width:auto;display:block;filter:drop-shadow(0 1px 6px rgba(0,0,0,.45))}
+@media (max-width:1240px){
+  #hunt-nav{padding:10px 0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  #hunt-nav .mn-row{display:none}
+  #hunt-nav .mn-burger{display:flex}
+}
+#hunt-nav-ov{gap:16px;overflow-y:auto;justify-content:flex-start;padding-top:84px}
+#hunt-nav-ov a{font-size:17px}
+#hunt-nav-ov .mn-ovlogo{position:absolute;top:18px;left:20px}
+#hunt-nav-ov .mn-ovlogo img{height:38px;width:auto;display:block}
+@media (min-height:760px){#hunt-nav-ov{justify-content:center;padding-top:32px}}
+</style>
+`;
+const LINKS = [
+  ['THE HUNT', '/the-hunt'], ['TASKS', '/the-hunt#tasks'], ['RIDDLES', '/the-hunt#riddles'], ['CLUES', '/lootbox-clue'],
+  ['GAMES', '/games'], ['REWARDS', '/the-hunt#rewards'], ['CONTESTS', '/contests'], ['GLOBAL LEADERBOARD', '/leaderboard'],
+  ['LOOT BOX SCORECARD', '/loot'], ['QUESTIONS?', '/questions'], ['VOTE NOW!', '/red-city'],
+];
+const vote = (label) => label === 'VOTE NOW!' ? ' style="color:#ff4c0f"' : '';
+
+function nav(s, file) {
+  const [a] = cut(s, '<nav id="hunt-nav">', '</nav>', `the hunt menu in ${file}`);
+  const ov = s.indexOf('<div id="hunt-nav-ov"', a);
+  const ovEnd = s.indexOf('</div>', s.indexOf('class="mn-cta">PRE-ORDER', ov)) + 6;
+  const old = s.slice(a, ovEnd);
+  const dd = old.slice(old.indexOf('<div class="mn-drop mn-drop-cta">'), old.indexOf('<div class="mn-burger"'));
+  const burger = old.slice(old.indexOf('<div class="mn-burger"'), old.indexOf('</nav>'));
+  const ovHead = old.slice(old.indexOf('<div id="hunt-nav-ov"'), old.indexOf('<a href=', old.indexOf('<div id="hunt-nav-ov"')));
+  const fresh = `<nav id="hunt-nav">
+  <div class="mn-row">
+    <a href="${LIVE}" class="mn-logo" aria-label="Maurice Africh home"><img src="${LOGO}" alt="Maurice Africh"></a>
+${LINKS.map(([l, h]) => `    <a href="${U(h)}" class="mn-link"${vote(l)}>${l}</a>`).join('\n')}
+    ${dd.trim()}
+  ${burger.trim()}
+</nav>
+${ovHead.trimEnd()}
+  <a href="${LIVE}" class="mn-ovlogo" aria-label="Maurice Africh home"><img src="${LOGO}" alt="Maurice Africh"></a>
+${LINKS.map(([l, h]) => `  <a href="${U(h)}"${vote(l)}>${l}</a>`).join('\n')}
+  <a href="${U('/preorder')}" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
+</div>`;
+  return s.slice(0, a) + NAV_CSS + fresh + s.slice(ovEnd);
+}
+
+// ---------------------------------------------------------------- the Hunt page
+const HB = `display:flex;align-items:center;justify-content:center;text-align:center`;
+const heroCopy = `<h1 style="font-family:'Atomic Marker',cursive;font-weight:400;color:#fff;font-size:clamp(48px,7.4vw,160px);line-height:1.15;margin:20px 0 28px">WELCOME TO<br>THE HUNT!</h1>
+        <div class="h-3ways" style="font-family:'Atomic Marker',cursive;font-weight:400;color:#a2f590;font-size:clamp(28px,3.1vw,50px);line-height:1.15;margin:0 0 26px">THERE ARE 3 WAYS TO WIN!</div>
+        <div class="h-ways" style="display:flex;flex-direction:column;gap:20px;max-width:820px">
+          <p style="font-size:21px;line-height:1.55;color:#fff;margin:0"><b style="color:#a2f590">Enter the Sweepstakes:</b> 1 Completed Task = 1 Entry into the Sky Pirate Sweepstakes. All you have to do is participate in the hunt, and you will be entered for a chance to win incredible prizes!</p>
+          <p style="font-size:21px;line-height:1.55;color:#fff;margin:0"><b style="color:#a2f590">Climb the Leaderboard:</b> Compete against other sky pirates for a spot on the <a href="${U('/leaderboard')}" style="color:#fff;font-weight:700;text-decoration:underline" class="hv0">leaderboard</a>! The top three sky pirates at the end of the hunt will win <a href="${U('/the-treasure')}" style="color:#fff;font-weight:700;text-decoration:underline" class="hv0">the Treasure</a>!</p>
+          <p style="font-size:21px;line-height:1.55;color:#fff;margin:0"><b style="color:#a2f590">Join the Crew:</b> If you participate in the hunt (even once), you will be rewarded with all of the rewards unlocked by the crew! Help them rack up points and earn as many rewards as possible! <span style="white-space:nowrap;font-weight:700">Current Reward Count: <span id="hero-rewards" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:1.35em;color:#fd7547;line-height:1">&hellip;</span></span></p>
+        </div>
+        `;
+
+const BTN_CSS = `<style>
+.h-btns{max-width:1440px;margin:72px auto 0;display:flex;flex-wrap:wrap;justify-content:center;gap:24px}
+.h-btn{flex:0 1 calc(25% - 19px);min-width:0;display:flex;align-items:center;justify-content:center;text-align:center;background:#0f2e0a;border:1px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);color:#fff !important;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(13px,1.02vw,16px);letter-spacing:.06em;white-space:nowrap;padding:18px 16px;text-decoration:none !important;transition:transform .15s ease,background .15s ease}
+.h-btn:hover{transform:scale(1.04);background:#1a4512}
+.h-btn.h-red{background:#c1330a}
+.h-btn.h-red:hover{background:#e04a12}
+.h-sweep{max-width:1240px;margin:72px auto 0;text-align:center}
+.h-sweep>p{font-size:22px;line-height:1.55;color:#fff;max-width:1000px;margin:0 auto 32px}
+.h-acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.h-act{background:rgba(8,34,6,.55);border:1px solid rgba(243,234,217,.6);padding:26px 18px 24px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.h-act b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2vw,30px);color:#fff;line-height:1.15}
+.h-act span{font-family:'Almarai',sans-serif;font-weight:700;font-size:16px;letter-spacing:.08em;color:#a2f590}
+.h-act i{display:none;font-style:normal;font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.14em;color:#fff;background:#c1330a;border:1px solid #f3ead9;padding:5px 10px}
+.h-act.h-now{border-color:#ff4c0f;box-shadow:0 0 0 2px #ff4c0f}
+.h-act.h-now i{display:inline-block}
+@media (max-width:900px){.h-btn{flex-basis:calc(50% - 12px);font-size:14px}.h-acts{grid-template-columns:1fr}.h-sweep>p{font-size:19px}}
+@media (max-width:420px){.h-btn{flex-basis:100%}}
+</style>
+`;
+const heroButtons = `<div class="h-btns">
+      <a href="${U('/preorder')}" class="h-btn h-red">PRE-ORDER CELLO’S GATE</a>
+      <a href="${U('/the-hunt#tasks')}" class="h-btn">COMPLETE A TASK</a>
+      <a href="${U('/the-hunt#riddles')}" class="h-btn">SOLVE A RIDDLE</a>
+      <a href="${U('/lootbox-clue')}" class="h-btn">FIND A LOOT BOX</a>
+      <a href="${U('/games')}" class="h-btn">PLAY A GAME</a>
+      <a href="${U('/the-hunt#map')}" class="h-btn h-red">CHOOSE YOUR OWN ADVENTURE</a>
+      <a href="${U('/contests')}" class="h-btn">ENTER A CONTEST</a>
+    </div>
+    <div class="h-sweep">
+      <p>During the hunt, there will be three different sweepstakes, each with better/more prizes than the last. All you have to do to enter each sweepstakes is complete 1 task during the allotted time period for that sweepstakes.</p>
+      <div class="h-acts">
+        <div class="h-act" data-from="2026-09-21" data-to="2026-09-30"><b>Sweepstakes (Act One)</b><span>SEPTEMBER 21<sup style="font-size:.6em">ST</sup> – SEPTEMBER 30<sup style="font-size:.6em">TH</sup></span><i>OPEN NOW</i></div>
+        <div class="h-act" data-from="2026-10-01" data-to="2026-10-15"><b>Sweepstakes (Act Two)</b><span>OCTOBER 1<sup style="font-size:.6em">ST</sup> – OCTOBER 15<sup style="font-size:.6em">TH</sup></span><i>OPEN NOW</i></div>
+        <div class="h-act" data-from="2026-10-16" data-to="2026-11-01"><b>Sweepstakes (Act Three)</b><span>OCTOBER 16<sup style="font-size:.6em">TH</sup> – NOVEMBER 1<sup style="font-size:.6em">ST</sup></span><i>OPEN NOW</i></div>
+      </div>
+    </div>
+    <script>(function(){
+      // Marks the sweepstakes that is open today (New York calendar day).
+      var d = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date());
+      var acts = document.querySelectorAll('.h-act');
+      for (var i = 0; i < acts.length; i++) if (d >= acts[i].getAttribute('data-from') && d <= acts[i].getAttribute('data-to')) acts[i].classList.add('h-now');
+      // Current Reward Count: the digital rewards the crew has unlocked so far, from the live leaderboard total.
+      var el = document.getElementById('hero-rewards'); if (!el || !window.fetch) return;
+      var GOAL = 40000, TIERS = [20, 40, 60, 75, 80], BONUS = [{ at: 50000, named: true }, { at: 75000, named: false }];
+      fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t=' + Math.floor(Date.now() / 300000))
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (b) {
+          if (!b || typeof b.crewTotal !== 'number') { el.textContent = '?'; return; }
+          var pct = b.crewTotal / GOAL * 100, n = 0;
+          TIERS.forEach(function (t) { if (pct >= t) n++; });
+          BONUS.forEach(function (t) { if (t.named && b.crewTotal >= t.at) n++; });
+          var show = function (v) { el.textContent = Math.round(v); };
+          if (window.maFillOnView && window.maAnimate) window.maFillOnView(el, function () { window.maAnimate(0, n, 1400, show); });
+          else show(n);
+        }).catch(function () { el.textContent = '?'; });
+    })();</script>`;
+
+// The How to Earn Points table, rebuilt in the new order from the rows it already has.
+const T = 'style="color:#c11212;font-weight:700;text-decoration:underline" class="hv7"';
+const cell = (title, desc, attr = '') => `<div${attr} style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">${title}</div><div style="font-size:16px;line-height:1.5;font-weight:400">${desc}</div></div>`;
+const pts = (html) => `<div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">${html}</div>`;
+
+function pointsTable(s) {
+  const open = s.indexOf('<div class="m-table"'); if (open < 0) throw new Error('Could not find the points table');
+  const st = s.indexOf('>', open) + 1;
+  const end = s.indexOf('\n      </div>\n    </div>\n    <div class="m-ptsnote"', st); if (end < 0) throw new Error('Could not find the end of the points table');
+  const lines = s.slice(st, end).split('\n').map((l) => l.trim()).filter(Boolean);
+  const rows = {};
+  for (let i = 0; i < lines.length; i += 2) {
+    const title = lines[i].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    rows[title.slice(0, 18)] = [lines[i], lines[i + 1]];
+  }
+  const get = (start) => { const k = Object.keys(rows).find((t) => t.startsWith(start)); if (!k) throw new Error(`Points table row "${start}" is missing`); return rows[k]; };
+  const retitle = ([d, p], from, to) => [swap(d, from, to, `the title "${from}"`), p];
+  const withDesc = ([d, p], from, to) => [swap(d, from, to, `the text "${from.slice(0, 30)}"`), p];
+
+  const order = [
+    get('Buy the Book'),
+    withDesc(get('Complete a Task'), 'tasks listed below', `<a href="#tasks" ${T}>tasks listed below</a>`),
+    withDesc(get('Solve a Riddle'), 'riddles listed below', `<a href="#riddles" ${T}>riddles listed below</a>`),
+    [cell(`<a href="${U('/games')}" ${T}>Play a Game</a>`,
+      `Play the daily games: <a href="${U('/games')}" ${T}>Skyword</a>, <a href="${U('/sort-the-shelf')}" ${T}>Sort the Shelf</a>, <a href="${U('/book-icons')}" ${T}>Book Icons</a>, and <a href="${U('/crossword')}" ${T}>The Bookish Crossword</a>! Solve today’s puzzle and claim your points right on the game page, no screenshot needed. New puzzles appear every day at midnight EDT.`),
+     pts('10–40 POINTS PER GAME<br>(LIMIT: ONCE PER GAME, PER DAY)')],
+    retitle(get('Secret Loot Boxes'), '>Secret Loot Boxes<', '>Find a Loot Box<'),
+    get('Choose Your Own Ad'),
+    retitle(get('Stay in the Know'), '>Stay in the Know<', '>Sign Up for Maurice’s Newsletter<'),
+    get('Reading Apps'), get('Libraries'), get('Indie Bookstores'), get('Share the Hunt'),
+    retitle(get('Show Off Your Scor'), '>Show Off Your Scorecard<', '>Show Off Your Loot Box Scorecard<'),
+    [cell(`<a href="${U('/contests')}" ${T}>Enter a Contest</a>`,
+      `Enter the <a href="${U('/contests')}" ${T}>Fan Fiction Contest</a> or the <a href="${U('/contests')}" ${T}>Fan Art Contest</a>! Write a “Sky Pirate” story (500 word minimum, 3,000 word limit, any subgenre, set in the Sky Pirates world), or make “Sky Pirate” fan art: draw a character, sketch a goma, build a model ship. Just make it an honest effort, and you might win a $100 cash prize! Enter as many times as you like.`),
+     pts('100 POINTS PER ENTRY')],
+    withDesc(retitle(get('Crew Roll Call'), '>Crew Roll Call<', '>Join the Discord Community<'),
+      /<a href="#map"[^>]*>Follow Along on the Map<\/a>/.exec(get('Crew Roll Call')[0])?.[0] || 'Follow Along on the Map',
+      `<a href="#map" ${T}>Choose Your Own Adventure</a>`),
+    [cell(`Reach Level 10, 25, &amp; 50 (Become a Crest Knight)`,
+      `Join the <a href="${DISCORD}" target="_blank" rel="noopener" ${T}><i>Trench</i> Community Discord</a> and level up by joining the daily tournament, talking about books, answering daily questions, and more! Reach Level 10 for 50 points, Level 25 for another 100, and Level 50 to become a Crest Knight for another 100 (<a href="${DISCORD}" target="_blank" rel="noopener" ${T}>learn how</a>).<br><br>Or you can cheat your way to Crest Knight: get the Mark of the Crest tattoo, and the title is yours! You’ll have to put some real skin in the game, though. It’s not for everyone! If you’ve already earned your mark, submit proof for points.`),
+     pts('LEVEL 10: 50 POINTS<br>LEVEL 25: 100 POINTS<br>LEVEL 50: 100 POINTS')],
+  ];
+  const body = '\n        ' + order.map(([d, p]) => d + '\n        ' + p).join('\n        ');
+  return s.slice(0, st) + body + s.slice(end);
+}
+
+function huntPage(s) {
+  s = nav(s, 'the Hunt page');
+
+  // Hero: welcome, three ways to win, seven buttons, the three sweepstakes
+  const h1 = s.indexOf('<h1 style="font-family:\'Atomic Marker\'');
+  const legal = s.indexOf('<p style="font-size:15px;line-height:1.55;color:#0b170f;font-weight:700;font-style:italic;margin:14px 0 0;max-width:820px">The Treasure and Act prizes');
+  if (h1 < 0 || legal < 0 || legal < h1) throw new Error('Could not find the hero copy');
+  s = s.slice(0, h1) + heroCopy + s.slice(legal).replace('margin:14px 0 0;max-width:820px">The Treasure', 'margin:26px 0 0;max-width:820px">The Treasure');
+  const [c1] = cut(s, '<div class="m-ctas"', '<div class="m-prog"', 'the hero buttons');
+  const c2 = s.indexOf('<div class="m-prog"', c1);
+  s = s.slice(0, c1) + BTN_CSS + heroButtons + '\n    ' + s.slice(c2);
+
+  // How does it work: no tutorial video, new copy, new last box, no "What do points do?"
+  const [v1] = cut(s, '<style>\n/* Our play button sits exactly over Loom', '</script>', 'the tutorial video');
+  const v2 = s.indexOf('</script>', s.indexOf('id="hunt-video-overlay"', v1)) + '</script>'.length;
+  s = s.slice(0, v1) + s.slice(v2).replace(/^\s*\n/, '\n');
+  const p1 = s.indexOf('<p style="font-size:26px;line-height:1.6;max-width:1140px;margin:0 auto 40px;color:#111">Assemble a crew');
+  const p2 = s.indexOf('<div style="margin:-8px 0 56px;display:flex;justify-content:center">', p1);
+  if (p1 < 0 || p2 < 0) throw new Error('Could not find the How does it work copy');
+  s = s.slice(0, p1) + `<p style="font-size:26px;line-height:1.6;max-width:1140px;margin:0 auto 56px;color:#111">Join the crew and go on an adventure! There are dozens of ways to earn points. Everyone who enters the hunt is <strong>guaranteed</strong> to win a reward.</p>\n    ` + s.slice(p2);
+  s = swap(s, 'Every pre-order receipt, completed task, secret loot box uncovered, and solved riddle will help you unlock rewards, reveal new milestones, and get us one step closer to finding the treasure!',
+    'Every pre-order received, completed task, secret loot box found, riddle solved, and game played will help you unlock rewards, reveal new milestones, and get us one step closer to finding the stone!', 'the mechanics copy');
+  s = s.replace(/<span>The <strong style="color:#c53200">3 SKY PIRATES<\/strong> with the most points by the end of the hunt will earn <a href="#grand-prize"[^>]*>THE TREASURE<\/a>!<\/span>/,
+    () => '<span><strong style="color:#c53200">Complete 1 task and win!</strong> It really is that simple.</span>');
+  if (!s.includes('Complete 1 task and win!')) throw new Error('Could not find the third mechanics box');
+  const [b1] = cut(s, '<div class="m-pointsbox"', '</ul>', 'the What do points do box');
+  const b2 = s.indexOf('</div>', s.indexOf('</ul>', b1)) + 6;
+  s = s.slice(0, b1).replace(/\s*$/, '\n') + s.slice(b2).replace(/^\s*\n/, '');
+
+  // How to earn points
+  s = pointsTable(s);
+
+  // Build a crew
+  s = s.replace(/<p style="margin:0 0 36px">Invite your frens![\s\S]*?<\/p>/, () =>
+    `<p style="margin:0 0 36px">Invite your frens, spread the word, make a post on social media, or start a phone bank! The more people who get involved, the more points you earn, and <strong>the more <a href="#rewards" style="color:#c53200;font-weight:700;text-decoration:underline" class="hv7">rewards</a> you unlock.</strong></p>`);
+  s = swap(s, '*THERE ARE 13-20 POTENTIAL REWARDS AVAILABLE DURING THE HUNT', '*THERE ARE 20+ POTENTIAL REWARDS AVAILABLE DURING THE HUNT', 'the rewards count line');
+
+  // Follow along -> Choose your own adventure
+  s = swap(s, 'data-screen-label="Follow along on the map"', 'data-screen-label="Choose your own adventure"', 'the map section');
+  s = swap(s, 'line-height:1.15">FOLLOW ALONG</h2>', 'line-height:1.15">CHOOSE YOUR OWN ADVENTURE</h2>', 'the map heading');
+  s = swap(s, 'max-width:1180px;margin:0 auto 90px">The map updates as the crew moves through the hunt. Earn as many points as you can to explore the map, unlock secret paths, discover areas yet unexplored, and find the treasure!</p>',
+    `max-width:1180px;margin:0 auto 36px">As you progress through the hunt, you will be presented with choices, votes, dice rolls, games of chance, and more! The maps update as you progress through the hunt.</p>
+    <div style="margin:0 0 90px"><a href="${U('/red-city')}" class="mh-cta" style="margin-top:0;font-size:17px;padding:16px 38px">VOTE NOW!</a></div>`, 'the map copy');
+
+  // Rewards unlocked: dates over each act, new notes
+  const ACTS = { 'ACT ONE': 'SEPTEMBER 21<sup style="font-size:.6em">ST</sup> – SEPTEMBER 30<sup style="font-size:.6em">TH</sup>', 'ACT TWO': 'OCTOBER 1<sup style="font-size:.6em">ST</sup> – OCTOBER 15<sup style="font-size:.6em">TH</sup>', 'ACT THREE': 'OCTOBER 16<sup style="font-size:.6em">TH</sup> – NOVEMBER 1<sup style="font-size:.6em">ST</sup>' };
+  for (const [act, when] of Object.entries(ACTS)) {
+    s = swap(s, `<div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin-bottom:70px">${act}</div>`,
+      `<div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 12px">${when}</div>\n        <div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin-bottom:70px">${act}</div>`, `the ${act} title`);
+  }
+  s = s.replace(/(<div id="rw-note"[^>]*>)[^<]*(<\/div>)/, (m, a, b) => a + '*Every successful task completed will earn an entry into the sweepstakes!' + b);
+  s = s.replace(/<div id="act1-release"[^>]*>[^<]*<\/div>/, () =>
+    '<div id="act1-release" style="font-family:\'Almarai\',sans-serif;font-size:16px;color:#111;text-align:center;margin-top:12px">*All rewards will be released at the conclusion of the hunt!</div>');
+  if (!s.includes('*All rewards will be released')) throw new Error('Could not find the rewards release note');
+
+  // The Treasure moves to its own page; the book pop-up the hero uses stays here
+  const [t1] = cut(s, '  <!-- ============ THE TREASURE ============ -->', '  <!-- ============ ACT 1', 'the Treasure section');
+  const t2 = s.indexOf('  <!-- ============ ACT 1', t1);
+  const book = /<div id="book-lb"[\s\S]*?<\/div>/.exec(s.slice(t1, t2))[0];
+  s = s.slice(0, t1) + '  ' + book + '\n' + s.slice(t2);
+  s = s.split('href="#grand-prize"').join(`href="${U('/the-treasure')}"`);
+
+  // Anchors the menu and buttons scroll to
+  s = s.replace('<h3 class="m-taskhead" style', '<h3 class="m-taskhead" id="tasks" style');
+  s = s.replace('<h3 class="m-taskhead" style', '<h3 class="m-taskhead" id="riddles" style');
+  if (!s.includes('id="riddles"')) throw new Error('Could not find the Riddles heading');
+  s = s.replace('<style>\n#hunt-nav{', '<style>\n#tasks,#riddles,#map,#rewards,#points{scroll-margin-top:84px}\n#hunt-nav{');
+  return s;
+}
+
+// The Treasure page: the section that left the Hunt page, under the hunt menu.
+function treasurePage(hunt, menu) {
+  const head = hunt.slice(hunt.indexOf('<style>'), hunt.indexOf('</style>') + 8);
+  const [t1] = cut(hunt, '  <!-- ============ THE TREASURE ============ -->', '  <!-- ============ ACT 1', 'the Treasure section');
+  let sec = hunt.slice(t1, hunt.indexOf('  <!-- ============ ACT 1', t1));
+  sec = sec.replace('padding:110px 72px 100px;text-align:center">', 'padding:150px 72px 110px;text-align:center">');
+  sec = sec.replace(/\n  <\/section>\s*$/, `
+    <div class="tr-more" style="display:flex;flex-wrap:wrap;justify-content:center;gap:20px;margin:56px 0 0">
+      <a href="${U('/leaderboard')}" class="hv1" style="display:inline-block;background:#0f2e0a;border:1px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:16px;letter-spacing:.08em;padding:18px 34px;text-decoration:none;transition:transform .15s ease">SEE THE LEADERBOARD</a>
+      <a href="${U('/the-hunt#tasks')}" class="hv1" style="display:inline-block;background:#0f2e0a;border:1px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:16px;letter-spacing:.08em;padding:18px 34px;text-decoration:none;transition:transform .15s ease">EARN MORE POINTS</a>
+    </div>
+  </section>
+`);
+  const script = hunt.slice(hunt.lastIndexOf('<script>\nwindow.__openBook'), hunt.indexOf('</script>', hunt.lastIndexOf('<script>\nwindow.__openBook')) + 9);
+  return `${menu.trim()}\n${head}\n<style>@media (max-width:760px){#grand-prize{padding:120px 22px 80px !important}}</style>\n<div id="hunt-page">\n<div data-screen-label="The Treasure" style="width:100%;overflow-x:hidden">\n${sec}\n</div>\n</div>\n${script}\n`;
+}
+
+// The Questions page: a short form that lands in the Questions tab of the hunt sheet.
+function questionsPage(menu) {
+  return `${menu.trim()}
+<style>
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+html,body{margin:0 !important;padding:0 !important}
+#hq{background:linear-gradient(178deg,rgba(10,35,8,.92) 0%,rgba(30,100,23,.9) 60%,rgba(63,163,47,.9) 100%),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;background-attachment:fixed;padding:150px 24px 110px;font-family:'Almarai',sans-serif;color:#fff}
+#hq .hq-in{max-width:720px;margin:0 auto}
+#hq h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(54px,8vw,110px);line-height:1.1;margin:0 0 18px;text-align:center}
+#hq .hq-lede{font-size:21px;line-height:1.55;text-align:center;margin:0 auto 44px;max-width:620px}
+#hq .hq-lede a{color:#a2f590;font-weight:700}
+#hq form{background:rgba(8,34,6,.6);border:1px solid rgba(243,234,217,.5);box-shadow:6px 7px 0 rgba(0,0,0,.35);padding:36px 34px 32px;display:flex;flex-direction:column;gap:8px}
+#hq label{font-weight:700;font-size:14px;letter-spacing:.1em;color:#a2f590;margin-top:14px}
+#hq label:first-child{margin-top:0}
+#hq label small{color:rgba(255,255,255,.65);font-weight:400;letter-spacing:.02em;font-size:13px}
+#hq input,#hq textarea{font:inherit;font-size:17px;color:#0b170f;background:#fffffe;border:2px solid #0b170f;padding:12px 14px;border-radius:0;box-sizing:border-box;width:100%}
+#hq textarea{min-height:170px;resize:vertical;line-height:1.5}
+#hq input:focus,#hq textarea:focus{outline:3px solid #ff4c0f;outline-offset:1px}
+#hq button{margin-top:26px;align-self:center;font:inherit;font-weight:800;font-size:17px;letter-spacing:.1em;color:#fff;background:#c1330a;border:1.5px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);padding:16px 44px;cursor:pointer;transition:transform .15s ease,background .15s ease}
+#hq button:hover:not(:disabled){background:#e04a12;transform:scale(1.04)}
+#hq button:disabled{opacity:.7;cursor:wait}
+#hq .hq-err{min-height:1.4em;margin:12px 0 0;text-align:center;color:#ffc0ab;font-weight:700}
+#hq .hq-done{text-align:center;padding:24px 0 8px}
+#hq .hq-done b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,5vw,54px);margin-bottom:12px}
+#hq .hq-done a{display:inline-block;margin-top:22px;color:#fff;background:#c1330a;border:1.5px solid #f3ead9;padding:14px 30px;font-weight:800;letter-spacing:.1em;text-decoration:none}
+@media (max-width:900px){#hq{background-attachment:scroll}}
+@media (max-width:560px){#hq{padding:110px 16px 80px}#hq form{padding:26px 18px 24px}#hq .hq-lede{font-size:18px}}
+</style>
+<section id="hq" data-screen-label="Questions">
+  <div class="hq-in">
+    <h1>QUESTIONS?</h1>
+    <p class="hq-lede">Stuck on a task, a riddle, a loot box, or your points? Ask me anything about the hunt and I’ll get back to you by email. You might also find the answer in the <a href="${U('/rules')}">Official Rules</a>.</p>
+    <form id="hq-form" novalidate>
+      <label for="hq-name">NAME</label>
+      <input id="hq-name" autocomplete="given-name" required>
+      <label for="hq-email">EMAIL <small>(so I can reply)</small></label>
+      <input id="hq-email" type="email" inputmode="email" autocomplete="email" required>
+      <label for="hq-handle">HUNT USERNAME <small>(optional)</small></label>
+      <input id="hq-handle" placeholder="@yourname" autocomplete="off">
+      <label for="hq-q">YOUR QUESTION</label>
+      <textarea id="hq-q" required maxlength="4000"></textarea>
+      <button type="submit" id="hq-send">SEND MY QUESTION</button>
+      <p class="hq-err" id="hq-err" role="alert"></p>
+    </form>
+  </div>
+</section>
+<script>
+(function () {
+  var ENDPOINT = '${ENDPOINT}';
+  var form = document.getElementById('hq-form'), err = document.getElementById('hq-err'), btn = document.getElementById('hq-send');
+  var val = function (id) { return document.getElementById(id).value.trim(); };
+  try { var me = JSON.parse(localStorage.getItem('thLoot:me') || '{}'); if (me.first_name) document.getElementById('hq-name').value = me.first_name; if (me.email) document.getElementById('hq-email').value = me.email; if (me.handle) document.getElementById('hq-handle').value = me.handle; } catch (e) {}
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var p = { action: 'question', name: val('hq-name'), email: val('hq-email'), handle: val('hq-handle'), question: val('hq-q') };
+    if (!p.name) { err.textContent = 'Tell me your name.'; return; }
+    if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(p.email)) { err.textContent = 'That email does not look right.'; return; }
+    if (p.question.length < 5) { err.textContent = 'What would you like to ask?'; return; }
+    err.textContent = ''; btn.disabled = true; btn.textContent = 'SENDING...';
+    send(p, function (res) {
+      if (res && res.ok) {
+        form.innerHTML = '<div class="hq-done"><b>GOT IT!</b>Thanks, ' + p.name.replace(/[<>&]/g, '') + '. I’ll reply to ' + p.email.replace(/[<>&]/g, '') + ' as soon as I can.<br><a href="${U('/the-hunt#tasks')}">BACK TO THE HUNT</a></div>';
+        return;
+      }
+      btn.disabled = false; btn.textContent = 'TRY AGAIN';
+      err.textContent = res && res.error === 'email' ? 'That email does not look right.' : res && res.error === 'question' ? 'What would you like to ask?' : 'The ship is slow today. Give it another go in a moment.';
+    });
+  });
+  // A simple POST, JSONP if that is blocked, and one quiet retry because Apps Script is sometimes slow.
+  function send(payload, done, attempt) {
+    attempt = attempt || 1;
+    var settled = false;
+    var finish = function (res) {
+      if (settled) return; settled = true;
+      var flaky = !res || (!res.ok && (res.error === 'network' || res.error === 'server'));
+      if (flaky && attempt < 2) return setTimeout(function () { send(payload, done, attempt + 1); }, 1500);
+      done(res);
+    };
+    try {
+      fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(payload) }).then(function (r) { return r.json(); }).then(finish).catch(function () { jsonp(payload, finish); });
+    } catch (e) { jsonp(payload, finish); }
+  }
+  function jsonp(payload, done) {
+    var name = 'hqcb' + Math.random().toString(36).slice(2), q = ['callback=' + name];
+    for (var k in payload) if (payload[k]) q.push(encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]));
+    var s = document.createElement('script');
+    var timer = setTimeout(function () { cleanup(); done({ ok: false, error: 'network' }); }, 30000);
+    function cleanup() { clearTimeout(timer); delete window[name]; if (s.parentNode) s.parentNode.removeChild(s); }
+    window[name] = function (res) { cleanup(); done(res); };
+    s.onerror = function () { cleanup(); done({ ok: false, error: 'network' }); };
+    s.src = ENDPOINT + '?' + q.join('&');
+    document.body.appendChild(s);
+  }
+})();
+</script>
+`;
+}
+
+// ---------------------------------------------------------------- the other pages
+const topBar = (id, buttons) => `<style>
+#${id}{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;padding:112px 16px 30px;background:#0b170f;position:relative;z-index:3;width:100vw;left:50%;margin-left:-50vw;box-sizing:border-box}
+#${id} a{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.1em;color:#fff;text-decoration:none;background:#0f2e0a;border:1.5px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);padding:15px 30px;transition:transform .15s ease,background .15s ease}
+#${id} a:hover{transform:scale(1.04);background:#1a4512}
+#${id} a.red{background:#c1330a}
+#${id} a.red:hover{background:#e04a12}
+@media (max-width:1240px){#${id}{padding-top:76px}}
+@media (max-width:560px){#${id} a{flex:1 1 100%;text-align:center}}
+</style>
+<div id="${id}">
+${buttons.map(([label, href, cls]) => `  <a href="${U(href)}"${cls ? ` class="${cls}"` : ''}>${label}</a>`).join('\n')}
+</div>
+`;
+
+const EDITS = {
+  // mauriceafrich-site pages
+  'hunt-menu': (s) => nav(s, 'the hunt menu'),
+  'lootbox-clue': (s) => nav(s, 'the clues page'),
+  contests: (s) => {
+    s = nav(s, 'the contests page');
+    s = swap(s, '<div id="contests">', topBar('ct-top', [['PLAY GAMES', '/games', 'red'], ['FIND A LOOT BOX', '/lootbox-clue']]) + '<div id="contests">', 'the contests grid');
+    return swap(s, '#contests .ct-panel{display:flex;flex-direction:column;align-items:center;text-align:center;padding:170px 56px 110px;', '#contests .ct-panel{display:flex;flex-direction:column;align-items:center;text-align:center;padding:90px 56px 110px;', 'the contests panel padding');
+  },
+  rules: (s) => {
+    s = nav(s, 'the rules page');
+    s = swap(s, "(a) Entries. During each Act, every verified form submission and every correctly solved riddle earns one entry into that Act's sweepstakes.",
+      "(a) Entries. During each Act, every verified task completion earns one entry into that Act's sweepstakes. Task completions include verified form submissions, correctly solved riddles, secret loot boxes found, daily game wins, and sealed Choose Your Own Adventure votes.", 'the US entries rule');
+    s = swap(s, "(a) Entries. During each Act, every verified form submission and every correctly solved riddle earns one entry into that Act's UK prize draw.",
+      "(a) Entries. During each Act, every verified task completion earns one entry into that Act's UK prize draw. Task completions include verified form submissions, correctly solved riddles, secret loot boxes found, daily game wins, and sealed Choose Your Own Adventure votes.", 'the UK entries rule');
+    return swap(s, 'treasure box as shown on the Hunt page', `treasure box as shown on <a href="${U('/the-treasure')}">The Treasure page</a>`, 'the Treasure description in the rules');
+  },
+  leaderboard: (s) => swap(s, '<div class="th-lb-wrap">', topBar('lb-top', [['PLAY GAMES', '/games', 'red'], ['FIND A LOOT BOX', '/lootbox-clue'], ['SEE THE TREASURE', '/the-treasure']]) + '<div class="th-lb-wrap">', 'the leaderboard frame'),
+  'home-slider': (s) => { const out = s.replace(/<a href="https:\/\/www\.mauriceafrich\.com\/the-hunt" target="_blank" rel="noopener" style="display:inline-block;margin-top:2\.25cqw;([^"]*)" class="hv0">JOIN THE HUNT!<\/a>/, (m, rest) =>
+    `<div style="display:flex;gap:1.2cqw;justify-content:center;flex-wrap:wrap;margin-top:2.25cqw"><a href="https://www.mauriceafrich.com/the-hunt" target="_blank" rel="noopener" style="display:inline-block;${rest}" class="hv0">JOIN THE HUNT!</a><a href="https://www.mauriceafrich.com/the-treasure" target="_blank" rel="noopener" style="display:inline-block;${rest.replace('background:#c1330a', 'background:rgba(0,0,0,.28)')}" class="hv0">SEE THE TREASURE</a></div>`); if (out === s) throw new Error('Could not find the home slider button'); return out; },
+  // hunt bot pages (the same edits work on the bot sources and on their published copies)
+  'the-hunt': huntPage,
+  loot: (s) => swap(nav(s, 'the loot page'), '<a class="lb-btn" href="https://www.mauriceafrich.com/lootbox-clue">See the clues</a>', '<a class="lb-btn" href="https://www.mauriceafrich.com/lootbox-clue">Find another loot box</a>', 'the loot box button'),
+  games: (s) => swap(nav(s, 'the Skyword page'),
+    "        : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>';\n  }",
+    "        : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>' +\n      '<a class=\"thw-next\" href=\"https://www.mauriceafrich.com/sort-the-shelf\">CONGRATS! PLAY SORT THE SHELF</a>';\n  }", 'the Skyword claimed message')
+    .replace('</style>', '.thw-next{display:inline-block;margin-top:18px;font-family:\'Almarai\',sans-serif;font-weight:800;font-size:15px;letter-spacing:.08em;color:#fffffe !important;background:#c53200;border:2px solid #fffffe;padding:13px 24px;text-decoration:none !important;transition:transform .15s ease}.thw-next:hover{transform:scale(1.04);background:#ff4c0f}\n</style>'),
+  redcity: (s) => swap(s, `var NEXT = '<div class="rc-next"><p>Want to find more loot boxes? Follow the clues!</p><a class="rc-cta" href="https://www.mauriceafrich.com/lootbox-clue">SEE THE CLUES</a></div>';`,
+    `var NEXT = '<div class="rc-next"><a class="rc-cta" style="white-space:normal;max-width:560px;line-height:1.4" href="${DISCORD}" target="_blank" rel="noopener">JOIN THE DISCORD TO TALK TO OTHER ADVENTURERS AND DISCUSS YOUR VOTE!</a></div>';`, 'the vote page follow-up button'),
+};
+// The daily games share one script and one frame.
+const GAME_NEXT = `var NEXT_GAME = { shelf_sort: ['CONGRATS! PLAY BOOK ICONS', 'https://www.mauriceafrich.com/book-icons'], emoji_reads: ['CONGRATS! PLAY BOOKISH CROSSWORD', 'https://www.mauriceafrich.com/crossword'], crossword: ['CONGRATS! PLAY SKYWORD', 'https://www.mauriceafrich.com/games'] };\n`;
+function gameCommon(s) {
+  s = swap(s, "  var ME = 'thLoot:me';\n", "  var ME = 'thLoot:me';\n  // After a claimed win: the next game in the rotation.\n  " + GAME_NEXT, 'the games setup');
+  return swap(s, "            : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>';\n        }",
+    "            : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>' +\n            (NEXT_GAME[o.key] ? '<a class=\"hg-claim hg-next\" href=\"' + NEXT_GAME[o.key][1] + '\">' + NEXT_GAME[o.key][0] + '</a>' : '');\n        }", 'the games claimed message');
+}
+const gameFrame = (s) => nav(s, 'the games frame').replace('.hg-claim:hover{', '.hg-next{text-decoration:none;color:#fffffe !important}\n.hg-claim:hover{');
+for (const g of ['game-shelf-sort', 'game-emoji-reads', 'game-crossword', 'game-word-search', 'game-first-lines', 'game-title-scramble']) EDITS[g] = (s) => gameCommon(gameFrame(s));
+
+// ---------------------------------------------------------------- the Apps Script side (Questions tab)
+function lootboxGs(s) {
+  s = swap(s, "var TAB = { boxes: 'Boxes', claims: 'Claims', card: 'Scorecard', exp: 'Export', games: 'Games', votes: 'Votes', rolls: 'Rolls' };",
+    "var TAB = { boxes: 'Boxes', claims: 'Claims', card: 'Scorecard', exp: 'Export', games: 'Games', votes: 'Votes', rolls: 'Rolls', questions: 'Questions' };", 'the tab list');
+  s = swap(s, "p.action === 'votecount' ? voteCount_() : p.action === 'roll' ? roll_(p) : claim_(p);",
+    "p.action === 'votecount' ? voteCount_() : p.action === 'roll' ? roll_(p) :\n          p.action === 'question' ? question_(p) : claim_(p);", 'the action switch');
+  return swap(s, 'function tab_(name) {', `// The Questions page: one row per question, newest at the bottom. Nothing is sent back but ok.
+function question_(p) {
+  var email = String(p.email || '').trim().toLowerCase();
+  if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) return { ok: false, error: 'email' };
+  var q = String(p.question || '').trim().slice(0, 4000);
+  if (q.length < 5) return { ok: false, error: 'question' };
+  var sheet = tab_(TAB.questions);
+  if (sheet.getLastRow() === 0) sheet.appendRow(['asked_at', 'name', 'email', 'handle', 'question', 'answered']);
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try { sheet.appendRow([stamp_(), String(p.name || '').trim().slice(0, 120), email, normHandle_(p.handle), q, '']); } finally { lock.releaseLock(); }
+  return { ok: true };
+}
+
+function tab_(name) {`, 'the sheet helpers');
+}
+
+// ---------------------------------------------------------------- run
+const mode = process.argv.includes('--launch') ? 'launch' : process.argv.includes('--stage') ? 'stage' : null;
+if (!mode) { console.error('Pass --stage (build the preview) or --launch (apply to the real site).'); process.exit(1); }
+
+if (mode === 'stage') {
+  const NEXT = join(ROOT, 'next'), PAGES = join(NEXT, 'pages');
+  mkdirSync(PAGES, { recursive: true });
+  copyFileSync(join(ROOT, 'loader.js'), join(NEXT, 'loader.js'));
+  for (const f of readdirSync(join(ROOT, 'pages')).filter((f) => f.endsWith('.html'))) copyFileSync(join(ROOT, 'pages', f), join(PAGES, f));
+  const huntSrc = readFileSync(join(ROOT, 'pages/the-hunt.html'), 'utf8');
+  for (const [slug, edit] of Object.entries(EDITS)) {
+    const f = join(PAGES, slug + '.html');
+    if (!existsSync(f)) { console.warn(`! no pages/${slug}.html, skipped`); continue; }
+    writeFileSync(f, edit(readFileSync(f, 'utf8')));
+    console.log(`✓ next/pages/${slug}.html`);
+  }
+  const menu = readFileSync(join(PAGES, 'hunt-menu.html'), 'utf8');
+  writeFileSync(join(PAGES, 'the-treasure.html'), treasurePage(huntSrc, menu));
+  writeFileSync(join(PAGES, 'questions.html'), questionsPage(menu));
+  console.log('✓ next/pages/the-treasure.html, next/pages/questions.html');
+  // Keep clicks inside the preview: live links become their preview pages.
+  const PV = site.publicBase + 'preview-next/';
+  const SHELLS = { ...LAYOUT, 'red-city': ['redcity'], 'sort-the-shelf': ['game-shelf-sort'], 'book-icons': ['game-emoji-reads'], crossword: ['game-crossword'], 'the-treasure': ['the-treasure'], questions: ['questions'] };
+  const inPreview = (slug) => Object.prototype.hasOwnProperty.call(SHELLS, slug === '' ? 'home' : slug);
+  const relink = (html) => html.replace(/https:\/\/www\.mauriceafrich\.com(\/[a-z0-9-]*)?(#[a-z0-9-]+)?(?=["'])/gi, (m, path = '/', hash = '') => {
+    const slug = path.slice(1);
+    return inPreview(slug) ? PV + (slug || 'home') + '.html' + hash : m;
+  });
+  for (const f of readdirSync(PAGES)) writeFileSync(join(PAGES, f), relink(readFileSync(join(PAGES, f), 'utf8')));
+  mkdirSync(join(ROOT, 'preview-next'), { recursive: true });
+  const banner = `<div id="ma-preview-bar" style="position:fixed;left:12px;bottom:12px;z-index:2147483647;display:flex;gap:8px;align-items:center;background:rgba(11,23,15,.94);color:#fff;border:1px solid rgba(255,76,15,.6);border-radius:999px;padding:6px 8px 6px 14px;font:600 12px/1.2 system-ui,sans-serif;letter-spacing:.04em;box-shadow:0 6px 20px rgba(0,0,0,.4)">PREVIEW: NEW VERSION<button type="button" onclick="this.parentNode.remove()" aria-label="Hide" style="background:none;border:0;color:#8fa596;font-size:16px;cursor:pointer;padding:0 4px">×</button></div>
+<script>document.addEventListener('submit', function (e) { e.preventDefault(); e.stopImmediatePropagation(); alert('Preview only: forms are switched off here. Nothing was sent.'); }, true);</script>`;
+  for (const [page, slugs] of Object.entries(SHELLS)) {
+    const from = page === 'the-treasure' || page === 'questions' ? 'contests' : page;
+    const res = await fetch(`${LIVE}/${from === 'home' ? '' : from}`, { headers: { 'user-agent': 'Mozilla/5.0 (site preview builder)' } });
+    if (!res.ok) { console.error(`✗ ${page}: live page returned ${res.status}`); continue; }
+    let html = await res.text();
+    const { html: swapped, swapped: n } = swapBlocks(html, slugs, site.publicBase + 'next/loader.js');
+    html = swapped.replace(/href="\/([a-z0-9-]*)"(?=[\s>])/gi, (m, slug) => inPreview(slug) ? `href="${PV}${slug || 'home'}.html"` : `href="${LIVE}/${slug}"`);
+    html = relink(html).split(site.publicBase + 'loader.js').join(site.publicBase + 'next/loader.js');
+    if (page === 'the-treasure') html = html.replace(/<title>[^<]*<\/title>/, '<title>The Treasure — Maurice Africh</title>');
+    if (page === 'questions') html = html.replace(/<title>[^<]*<\/title>/, '<title>Questions — Maurice Africh</title>');
+    html = html.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${LIVE}/">\n<meta name="robots" content="noindex,nofollow">`).replace(/<\/body>/i, `${banner}\n</body>`);
+    writeFileSync(join(ROOT, 'preview-next', `${page}.html`), html);
+    console.log(`✓ preview-next/${page}.html (${n} block${n === 1 ? '' : 's'})`);
+  }
+  // The Apps Script change, staged next to the real file for pasting at launch
+  writeFileSync(join(BOT, 'private', 'lootbox.next.gs'), lootboxGs(readFileSync(join(BOT, 'apps-script/lootbox.gs'), 'utf8')));
+  console.log('✓ lootbox.gs with the Questions tab staged in the bot folder (private/lootbox.next.gs)');
+}
+
+if (mode === 'launch') {
+  const edit = (file, fn) => { const f = resolve(file); writeFileSync(f, fn(readFileSync(f, 'utf8'))); console.log(`✓ ${file.replace(ROOT, '').replace(BOT, 'bot')}`); };
+  const huntBefore = readFileSync(join(BOT, 'squarespace-hunt.html'), 'utf8');
+  for (const slug of ['hunt-menu', 'lootbox-clue', 'contests', 'rules', 'leaderboard', 'home-slider']) edit(join(ROOT, 'pages', slug + '.html'), EDITS[slug]);
+  edit(join(BOT, 'squarespace-hunt.html'), EDITS['the-hunt']);
+  edit(join(BOT, 'squarespace-lootbox.html'), EDITS.loot);
+  edit(join(BOT, 'squarespace-wordle.html'), EDITS.games);
+  edit(join(BOT, 'squarespace-redcity.html'), EDITS.redcity);
+  edit(join(BOT, 'games/redcity.template.html'), EDITS.redcity);
+  edit(join(BOT, 'games/_frame.html'), gameFrame);
+  edit(join(BOT, 'games/common.js'), gameCommon);
+  edit(join(BOT, 'apps-script/lootbox.gs'), lootboxGs);
+  const menu = readFileSync(join(ROOT, 'pages/hunt-menu.html'), 'utf8');
+  writeFileSync(join(ROOT, 'pages/the-treasure.html'), treasurePage(huntBefore, menu));
+  writeFileSync(join(ROOT, 'pages/questions.html'), questionsPage(menu));
+  console.log('✓ pages/the-treasure.html, pages/questions.html');
+  console.log('\nNext: rebuild the games (node scripts/build-games.mjs in the bot folder), add the-treasure and questions to site.json and tools/lib.mjs, then npm run publish.');
+}

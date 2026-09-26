@@ -1,0 +1,1159 @@
+<!-- Generated copy of squarespace-redcity.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
+<!-- ============================================================
+     THE RED CITY VOTE - provisioning in Pontune before Act Two.
+     Built by scripts/build-redcity.mjs from config/red-city.json into
+     squarespace-redcity.html. Edit the JSON (or this template), rebuild,
+     never the built file.
+
+     Every fren votes once (and may change their vote until it closes):
+     three recruits from three different jobs (the five most voted make the
+     crew), a shopping list paid from the
+     crew purse (1 point = 1 credit, read live from the leaderboard's crew
+     total) and four plan questions. The vote posts action=vote to the Loot
+     Boxes web app, which checks it against its own copy of the catalog.
+     The first vote pays the voting points through the Games tab.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* Styled after the pre-order page (pages/preorder.html in the site project): a fixed background under a
+   deep green veil, Atomic Marker headings, square panels with pale hairlines, outlined buttons that fill red. */
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+#rc{--cream:#f3ead9;--paper:#ede9dc;--hair:rgba(243,234,217,.18);--hair2:rgba(243,234,217,.4);--mint:#c53200;--lime:#a2f590;--ember:#fd7547;--red:#c1330a;--well:rgba(12,26,8,.35);--panel:rgba(38,142,98,.16);--muted:rgba(237,233,220,.72);
+  box-sizing:border-box;position:relative;width:100vw;overflow-x:clip;
+  background:linear-gradient(rgba(9,23,7,.72),rgba(9,23,7,.84)),url('https://africhmaurice.github.io/site/assets/bg/red-sun-ruins-as360866146.webp') center/cover no-repeat fixed;
+  padding-top:clamp(140px,12vw,180px);padding-bottom:110px;color:#fffffe;font-family:'Almarai',sans-serif;letter-spacing:.03em;font-size:16px;line-height:1.55;text-align:left}
+#rc *,#rc *::before,#rc *::after{box-sizing:border-box}
+#rc [hidden]{display:none!important}
+#rc h1,#rc h2{font-family:'Atomic Marker',cursive;font-weight:400;margin:0;text-transform:none;letter-spacing:.02em}
+#rc h3{font-family:'Almarai',sans-serif!important;font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--ember);margin:0}
+#rc p{margin:0}
+#rc button{font:inherit;color:inherit;letter-spacing:inherit;cursor:pointer}
+#rc button:focus-visible,#rc a:focus-visible,#rc input:focus-visible,#rc select:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+#rc .rc-num{font-variant-numeric:tabular-nums}
+#rc .rc-kick{font-weight:700;font-size:14px;letter-spacing:.14em;color:var(--lime);margin:0 0 14px}
+
+/* hero: the pitch on the left, the three numbers on the right */
+@media (max-width:560px){#rc .rc-player{gap:12px;padding:12px}#rc .rc-pbtn{width:42px;height:42px}#rc .rc-plabel{font-size:11px}}
+#rc .rc-hero{max-width:1180px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:56px;align-items:center}
+#rc .rc-hero h1{font-size:clamp(30px,4.2vw,62px);line-height:1.02;margin-bottom:20px;color:#fffffe}
+#rc .rc-hero h1 span{color:var(--ember)}
+#rc .rc-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.6;color:var(--paper);max-width:600px}
+/* recordings: the same transmission player as the Hunt page, on a dark ground */
+#rc .rc-rec{margin-top:26px;max-width:600px}
+#rc .rc-player{display:flex;align-items:center;gap:16px;background:rgba(45,28,83,.55);border:1px solid rgba(195,166,255,.35);padding:14px 18px}
+#rc .rc-pbtn{flex:none;width:52px;height:52px;border-radius:50%;background:#482d85;border:0;display:flex;align-items:center;justify-content:center;padding:0;transition:transform .15s ease}
+#rc .rc-pbtn:hover{transform:scale(1.06)}
+#rc .rc-pbtn svg{width:22px;height:22px;fill:#c3a6ff}
+#rc .rc-pbtn .play{margin-left:3px}
+#rc .rc-pmid{flex:1;min-width:0}
+#rc .rc-plabel{font-weight:700;font-size:13px;letter-spacing:.1em;color:#c3a6ff;margin-bottom:10px}
+#rc .rc-ptrack{position:relative;height:10px;background:rgba(195,166,255,.2);cursor:pointer}
+#rc .rc-pfill{position:absolute;top:0;bottom:0;left:0;width:0;background:#9e74fd}
+#rc .rc-ptime{flex:none;font-weight:700;font-size:15px;letter-spacing:.05em;color:#c3a6ff;font-variant-numeric:tabular-nums}
+#rc .rc-tx{margin-top:10px;font-size:14px}
+#rc .rc-tx summary{cursor:pointer;color:var(--muted);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;width:max-content}
+#rc .rc-tx summary:hover{color:#fff}
+#rc .rc-tx div{margin-top:10px;display:grid;gap:8px;color:var(--paper);line-height:1.6;border-left:2px solid rgba(195,166,255,.35);padding-left:14px}
+#rc .rc-tx b{font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#c3a6ff;margin-right:6px}
+#rc .rc-tx i{color:var(--muted)}
+#rc .rc-stats{display:grid;gap:12px}
+#rc .rc-stat{background:var(--panel);border:1px solid var(--hair);padding:16px 20px}
+#rc .rc-stat .k{font-weight:800;font-size:13px;letter-spacing:.12em;color:var(--mint)}
+#rc .rc-stat .v{font-family:'Atomic Marker',cursive;font-size:34px;line-height:1.2;margin-top:4px}
+#rc .rc-stat .v.e{color:var(--ember)}
+#rc .rc-stat small{display:block;color:var(--muted);font-size:13px;line-height:1.45;margin-top:2px}
+
+/* step pills + purse, pinned while voting */
+#rc .rc-bar{position:sticky;top:0;z-index:5;max-width:1180px;margin:64px auto 0;padding:12px 32px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;background:rgba(9,23,7,.9);border-bottom:1px solid var(--hair)}
+#rc .rc-chip{color:#fff;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:.08em;border:1px solid var(--hair2);border-radius:999px;padding:10px 20px;transition:color .15s ease,border-color .15s ease}
+#rc .rc-chip:hover{color:var(--lime);border-color:var(--lime)}
+#rc .rc-chip.done{color:var(--lime);border-color:var(--lime)}
+#rc .rc-wallet{font-weight:800;font-size:14px;letter-spacing:.1em;padding:10px 4px}
+#rc .rc-wallet .l{color:var(--lime)} #rc .rc-wallet.over .l{color:var(--ember)}
+
+/* each step is a panel, like a region on the pre-order page */
+#rc .rc-step{max-width:1180px;margin:40px auto 0;padding:44px 48px 40px;background:var(--panel);border:1px solid var(--hair);scroll-margin-top:90px}
+#rc .rc-step>header{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;max-width:760px}
+#rc .rc-step h2{font-size:clamp(28px,2.6vw,40px);line-height:1.1;color:var(--mint)}
+#rc .rc-step header p{color:var(--paper);line-height:1.6}
+#rc .rc-step header .rc-kick{margin:0}
+#rc .rc-rule{font-size:14px;color:var(--muted)}
+#rc .rc-rule b{color:var(--lime)}
+
+#rc .rc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}
+#rc .rc-card{background:var(--well);border:1px solid var(--hair);padding:20px;display:flex;flex-direction:column;gap:12px}
+#rc .rc-card.taken{border-color:var(--lime)}
+#rc .rc-card>h3{font-size:15px}
+#rc .rc-jd{font-size:14px;color:var(--muted);line-height:1.5}
+#rc .rc-perk{font-size:14px;line-height:1.5;color:var(--paper);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:10px 0}
+#rc .rc-perk b{display:block;font-weight:800;font-size:12px;letter-spacing:.12em;color:var(--lime)}
+
+/* recruits: outlined buttons that fill red when chosen */
+#rc .rc-arches{display:flex;flex-direction:column;gap:8px}
+#rc .rc-arch{text-align:left;background:rgba(12,26,8,.45);border:1.5px solid rgba(243,234,217,.55);padding:10px 14px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;transition:background .15s ease,border-color .15s ease}
+#rc .rc-arch:hover{border-color:var(--cream)}
+#rc .rc-arch .n{font-weight:700;font-size:16px;letter-spacing:.05em}
+#rc .rc-arch .c{font-weight:700;font-size:13px;color:var(--mint);align-self:center}
+#rc .rc-arch .q{grid-column:1/-1;font-size:13px;color:var(--muted);line-height:1.45}
+#rc .rc-arch .kit{grid-column:1/-1;font-size:12px;display:none;color:#fff;line-height:1.45;margin-top:4px}
+#rc .rc-arch[aria-pressed="true"]{background:var(--red);border-color:var(--cream)}
+#rc .rc-arch[aria-pressed="true"] .q,#rc .rc-arch[aria-pressed="true"] .c{color:#fff}
+#rc .rc-arch[aria-pressed="true"] .kit{display:block}
+#rc .rc-arch:disabled{opacity:.35;cursor:not-allowed}
+
+/* market */
+#rc .rc-sd{font-size:13px;color:var(--muted);line-height:1.5}
+#rc .rc-item{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 0;border-top:1px solid rgba(243,234,217,.12);align-items:center}
+#rc .rc-item .n{font-weight:700;font-size:15px;letter-spacing:.04em}
+#rc .rc-item .lv{font-weight:800;font-size:11px;color:var(--ember);margin-left:8px;letter-spacing:.12em}
+#rc .rc-item .d{font-size:12px;color:var(--muted)}
+#rc .rc-item.on .n{color:var(--lime)}
+#rc .rc-qty{display:flex;align-items:center;gap:8px;grid-row:1/3;grid-column:2;justify-self:end}
+#rc .rc-qty button{width:32px;height:32px;border:1.5px solid var(--cream);background:var(--well);font-size:17px;line-height:1;padding:0;transition:background .15s ease}
+#rc .rc-qty button:hover:not(:disabled){background:var(--red)}
+#rc .rc-qty button:disabled{opacity:.3;cursor:not-allowed}
+#rc .rc-qty .q{min-width:20px;text-align:center;font-weight:800;font-size:16px}
+#rc .rc-price{display:flex;flex-direction:column;align-items:flex-end;font-weight:700;font-size:14px;color:var(--mint);margin-right:4px}
+#rc .rc-locked{opacity:.5}
+#rc .rc-need{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ember)}
+
+/* the plan */
+#rc .rc-qs{display:grid;gap:18px}
+#rc .rc-qs .rc-card>h3{color:#fffffe;font-size:16px;letter-spacing:.06em;text-transform:none;font-weight:800}
+#rc .rc-set{color:var(--muted);font-size:14px}
+#rc .rc-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+#rc .rc-opts.multi{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+#rc .rc-opt{text-align:left;transition:background .15s ease,border-color .15s ease,transform .18s ease;background:rgba(12,26,8,.45);border:1.5px solid rgba(243,234,217,.55);padding:12px 16px;transition:background .15s ease,border-color .15s ease}
+#rc .rc-opt:hover{border-color:var(--cream)}
+#rc .rc-opt:not([disabled]):hover,#rc .rc-kit:hover{transform:scale(1.03);position:relative;z-index:1}
+#rc .rc-kit{transition:transform .18s ease}
+#rc .rc-jobs{grid-auto-rows:1fr}
+#rc .rc-jobs .rc-opt{display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;height:100%}
+#rc .rc-jobs .rc-opt b{text-transform:uppercase;color:var(--mint);font-size:16px;letter-spacing:.08em}
+#rc .rc-jobs .rc-opt[aria-pressed="true"] b{color:#fff}
+#rc .rc-opt b{display:block;font-weight:700;font-size:15px;letter-spacing:.05em}
+#rc .rc-opt span{font-size:13px;color:var(--muted);line-height:1.45}
+#rc .rc-opt[aria-pressed="true"]{background:var(--red);border-color:var(--cream)}
+#rc .rc-opt[aria-pressed="true"] span{color:#fff}
+#rc .rc-opt .rc-gear{display:block;align-self:stretch;font-style:normal;font-size:12.5px;line-height:1.45;color:var(--cream);margin-top:8px;padding-top:8px;border-top:1px solid rgba(243,234,217,.22)}#rc .rc-opt .rc-gear i{display:block;font-style:normal;font-weight:800;letter-spacing:.1em;font-size:11.5px;color:var(--muted);margin-bottom:4px}#rc .rc-opt .rc-gear u{display:block;text-decoration:none}#rc .rc-opt[aria-pressed="true"] .rc-gear,#rc .rc-opt[aria-pressed="true"] .rc-gear i{color:#fff}
+#rc .rc-std{font-size:14px;line-height:1.5;color:var(--cream);margin:0 0 14px}#rc .rc-std b{letter-spacing:.04em}
+
+/* the d20 */
+#rc .rc-whobox:not(:empty){margin:0 0 26px}
+#rc .rc-dice{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 20px;align-items:center;margin-top:8px;padding-top:18px;border-top:1px solid var(--hair)}
+#rc .rc-die{grid-row:1/4;position:relative;width:88px;height:88px}
+#rc .rc-die .rc-die-cv,#rc .rc-die .rc-die-shadow{display:none}
+#rc .rc-die.is3d{width:120px;height:120px}
+#rc .rc-die.is3d>svg,#rc .rc-die.is3d .rc-dn{display:none}
+#rc .rc-die.is3d .rc-die-cv{display:block;position:relative;z-index:1;width:100%;height:100%}
+#rc .rc-die.is3d .rc-die-shadow{display:block;position:absolute;left:50%;bottom:6px;width:62%;height:13%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),transparent)}
+#rc .rc-die.is3d.rolling,#rc .rc-die.is3d.landed{animation:none}
+#rc .rc-die.is3d.crit .rc-die-cv{filter:drop-shadow(0 0 12px rgba(162,245,144,.85))}
+#rc .rc-die.is3d.fumble .rc-die-cv{filter:drop-shadow(0 0 12px rgba(255,76,15,.8))}
+#rc .rc-sound{align-self:flex-start;background:none;border:1px solid var(--hair2);border-radius:999px;color:var(--muted);padding:6px 14px;font-weight:700;font-size:12px;letter-spacing:.1em}
+#rc .rc-sound:hover{color:#fff;border-color:var(--cream)}
+#rc .rc-die svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 6px 8px rgba(0,0,0,.45))}
+#rc .rc-die .face{fill:rgba(12,26,8,.7);stroke:var(--cream);stroke-width:2.5;stroke-linejoin:round}
+#rc .rc-die .edge{fill:none;stroke:rgba(243,234,217,.45);stroke-width:1.5;stroke-linejoin:round}
+#rc .rc-dn{position:absolute;left:0;right:0;top:42%;text-align:center;font-family:'Atomic Marker',cursive;font-size:22px;line-height:1;color:#fff}
+#rc .rc-die.rolling svg{animation:rc-tumble .45s linear infinite}
+#rc .rc-die.rolling{animation:rc-hop .45s ease-in-out infinite}
+#rc .rc-die.landed{animation:rc-land .5s cubic-bezier(.2,1.8,.4,1)}
+#rc .rc-die.crit .face{fill:#1a5e41;stroke:var(--lime)}
+#rc .rc-die.fumble .face{fill:#912501;stroke:var(--ember)}
+@keyframes rc-tumble{to{transform:rotate(360deg)}}
+@keyframes rc-hop{50%{transform:translateY(-8px) scale(1.06)}}
+@keyframes rc-land{0%{transform:scale(1.35)}100%{transform:scale(1)}}
+#rc .rc-roll{justify-self:start;background:var(--red);color:#fff;border:1.5px solid var(--cream);padding:10px 20px;font-weight:800;font-size:14px;letter-spacing:.1em;transition:transform .15s ease}
+#rc .rc-roll:hover:not(:disabled){transform:scale(1.04)}
+#rc .rc-roll:disabled{opacity:.6;cursor:wait}
+#rc .rc-rollres{font-weight:800;font-size:15px;letter-spacing:.06em;color:#fff}
+#rc .rc-rollres.crit{color:var(--lime)}
+#rc .rc-rollres.fumble{color:var(--ember)}
+#rc .rc-rollnote{font-size:13px;color:var(--muted);line-height:1.5}
+#rc .rc-jobs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+#rc .rc-kitlist{margin:0;padding-left:18px;font-size:14px;line-height:1.7;color:var(--paper)}
+#rc .rc-kitfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:auto;padding-top:12px;border-top:1px solid var(--hair)}
+#rc .rc-kitfoot .rc-price{font-size:16px}
+#rc .rc-kitbtn{padding:10px 16px}
+#rc .rc-kitbtn b{font-size:14px}
+#rc .rc-kit .rc-need{font-size:12px}
+#rc .rc-rngnote{margin-top:24px;font-size:13px;line-height:1.6;color:var(--muted);max-width:760px}
+#rc .rc-rngnote b{color:var(--paper)}
+@media (prefers-reduced-motion:reduce){#rc .rc-die.rolling,#rc .rc-die.rolling svg,#rc .rc-die.landed{animation:none}}
+
+/* seal it */
+#rc .rc-orders{border-color:rgba(253,117,71,.5)}
+#rc .rc-olist{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;margin-bottom:24px}
+#rc .rc-olist h4{font-weight:800;font-size:13px;letter-spacing:.12em;color:var(--ember);margin:0 0 8px}
+#rc .rc-olist ul{margin:0;padding-left:18px;font-size:14px;line-height:1.7}
+#rc .rc-empty{color:var(--muted);font-size:14px}
+#rc .rc-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:6px}
+#rc .rc-form label{display:grid;gap:6px;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--mint)}
+#rc .rc-form input,#rc .rc-form select{font:15px 'Almarai',sans-serif;letter-spacing:.02em;color:#fff;background:var(--well);border:1.5px solid rgba(243,234,217,.55);border-radius:0;padding:10px 12px;width:100%}
+#rc .rc-form select option{color:#111}
+#rc .rc-cta{display:inline-block;margin-top:18px;background:var(--red);color:#fff;border:1.5px solid var(--cream);padding:14px 30px;font-weight:800;font-size:16px;letter-spacing:.1em;transition:transform .15s ease,background .15s ease}
+#rc .rc-cta:hover:not(:disabled){transform:scale(1.04)}
+#rc .rc-cta:disabled{background:var(--well);border-color:var(--hair2);color:var(--muted);cursor:not-allowed}
+#rc .rc-msg{font-size:14px;color:var(--ember);margin-top:14px}
+#rc .rc-ok{font-size:15px;color:var(--paper);margin-top:16px;line-height:1.6}
+#rc .rc-next{margin-top:22px;padding-top:18px;border-top:1px solid var(--hair)}#rc .rc-next p{font-weight:800;font-size:17px;color:var(--cream);margin:0 0 12px}
+#rc .rc-cta{display:inline-block;font-weight:800;font-size:15px;letter-spacing:.09em;text-decoration:none;color:#fff;background:#c53200;border:2px solid var(--cream);padding:13px 26px;transition:transform .15s ease,background .15s ease}#rc .rc-cta:hover{background:#ff4c0f;transform:scale(1.03)}
+#rc .rc-ok b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:34px;color:var(--lime);display:block}
+#rc .rc-quiet{font-size:14px;color:var(--muted)}
+#rc .rc-quiet a{color:#fff;text-decoration:underline;cursor:pointer}
+#rc.rc-closed .rc-arch,#rc.rc-closed .rc-opt,#rc.rc-closed .rc-qty button{pointer-events:none;opacity:.6}
+
+@media (max-width:860px){
+  #rc{padding-top:120px}
+  #rc .rc-hero{grid-template-columns:1fr;gap:28px;padding:0 20px}
+  #rc .rc-bar{margin-top:44px;padding:10px 16px;gap:8px}
+  #rc .rc-chip{padding:8px 14px;font-size:13px}
+  #rc .rc-step{margin:28px 16px 0;padding:32px 20px 24px}
+  #rc .rc-grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){#rc *{transition:none!important}#rc .rc-cta:hover:not(:disabled){transform:none}}
+</style>
+
+<div id="rc">
+  <header class="rc-hero">
+    <div>
+      <p class="rc-kick">THE SKY PIRATES OF IMPERIA · BEFORE ACT TWO: THE ISLAND</p>
+      <h1>Shopping in <span>the Red City</span></h1>
+      <p class="rc-lede">The crew lands in Pontune, the Red City, a freecity on the eastern continent that borders the Woján Desert. Every point the frens have earned is a credit in the crew's purse, and the purse is shared. Recruit your crew, choose your kits, and make a plan. Majority rules.</p>
+      <div class="rc-rec" data-slot="hero" hidden></div>
+    </div>
+    <div class="rc-stats">
+      <div class="rc-stat"><div class="k">CREW PURSE</div><div class="v e rc-num" id="rc-purse">…</div><small>1 point = 1 credit. The purse grows with every point until voting closes.</small></div>
+      <div class="rc-stat"><div class="k">FRENS WHO HAVE VOTED</div><div class="v rc-num" id="rc-count">…</div><small>One vote each. You can change yours until <span id="rc-close"></span>.</small></div>
+      <div class="rc-stat"><div class="k">FOR VOTING</div><div class="v rc-num" id="rc-pts"></div><small>Seal your orders and the points go straight to the leaderboard.</small></div>
+    </div>
+  </header>
+
+  <nav class="rc-bar" aria-label="Voting steps">
+    <a class="rc-chip" id="rc-c1" href="#rc-recruit">1 · Recruit</a>
+    <a class="rc-chip" id="rc-c2" href="#rc-market">2 · Market</a>
+    <a class="rc-chip" id="rc-c3" href="#rc-plan">3 · The Plan</a>
+    <a class="rc-chip" id="rc-c4" href="#rc-orders">Seal It</a>
+    <div class="rc-wallet rc-num" id="rc-wallet">KITS <span id="rc-spent">0</span> / <span id="rc-kmax">3</span> · PURSE <span id="rc-total">…</span></div>
+  </nav>
+
+  <section class="rc-step" id="rc-recruit">
+    <header>
+      <p class="rc-kick">STEP ONE</p>
+      <h2>Recruit the crew</h2>
+      <p>Pick three jobs you want on the crew. The five most wanted across all the frens make the crew.</p>
+    </header>
+    <p class="rc-std" id="rc-std"></p>
+    <div class="rc-jobs" id="rc-jobs"></div>
+  </section>
+
+  <section class="rc-step" id="rc-market">
+    <header>
+      <p class="rc-kick">STEP TWO</p>
+      <h2>Work the Pontune market</h2>
+      <p>Seven kits, each packed for the whole crew and priced in credits. <b>You can pick 3 kits.</b> The kits with the most votes will be purchased until you run out of credits.</p>
+      <div class="rc-rec" data-slot="market" hidden></div>
+    </header>
+    <div class="rc-grid" id="rc-stalls"></div>
+  </section>
+
+  <section class="rc-step" id="rc-plan">
+    <header>
+      <p class="rc-kick">STEP THREE</p>
+      <h2>The plan</h2>
+      <p>Three decisions for the island. Two of them are encounters: everyone rolls a d20, and the crew's average roll decides how the chosen option plays out. There are no wrong answers, only consequences.</p>
+      <button type="button" class="rc-sound" id="rc-sound"></button>
+    </header>
+    <div id="rc-who" class="rc-whobox"></div>
+    <div class="rc-qs" id="rc-qs"></div>
+    <p class="rc-rngnote"><b>About the dice:</b> the rolling die is a visualization. Your actual roll is made by a random number generator on my server the moment you press Roll. It is recorded straight away and can't be changed or rerolled, and the die simply shows the number it gave.</p>
+  </section>
+
+  <section class="rc-step rc-orders" id="rc-orders">
+    <header>
+      <p class="rc-kick">YOUR ORDERS</p>
+      <h2>Seal your vote</h2>
+    </header>
+    <div class="rc-olist" id="rc-olist"></div>
+    <p class="rc-msg" id="rc-msg"></p>
+    <button class="rc-cta" id="rc-seal" type="button">SEAL MY ORDERS</button>
+    <div id="rc-result"></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var DATA = {"key":"red_city_vote","points":50,"opens":"2026-09-25T20:25:00-04:00","closes":"2026-09-26T20:25:00-04:00","crewSize":5,"picks":3,"kitPicks":3,"recordings":[{"slot":"hero","label":"INCOMING TRANSMISSION · CPT. GREY SHIMADA","src":"https://africhmaurice.github.io/site/assets/audio/red-city-grey.m4a","transcript":[["Grey","First stop, we’ve got a date with a one-eyed sewer rat. Put together your inventory list. Buckle up, frens. We’re settin’ sail for the Red City. I hope you brought sunblock."]]},{"slot":"market","label":"BENJI'S BARGAIN SHOP","src":"https://africhmaurice.github.io/site/assets/audio/red-city-felix-benji.m4a","transcript":[["Felix","No fuckin’ way! Grey sent you? What is this, some kind of shopping trip? I don’t even know your names… The boss ain’t gonna like him sendin’ people his way without a word or nothing. Tell him the next time it happens, I’ll send their heads back in a box. Now get the fu—"],["Benji (far away)","Felix, who is it?!"],["Felix (calling back)","Sky pirates! From the redcoat!"],["Benji (far away)","*Laughs* Let em in, let em in!"],["","*Door creaking*"],["Benji","Hello, hello. Welcome to the Red City. I hope you’re good and lubed up, cause Sola don’t give a shit what backwater city you call home, it’ll burn your ass and charge a cover fee. Grey told me you were comin’. I forgot to tell Felix. That’s on me. What can I getcha?"]]}],"rollNote":"Your roll is averaged with the rest of the crew's and applied to whichever option the crew chooses. A natural 1 counts as two 0s, and a natural 20 counts as two 20s. The collective dice roll directly correlates to your success on the hunt! Because it's a group roll, there is a curve applied to the difficulty level of every task.","standardGear":["2 × Minor Med Pack","Shield Belt","Stim","Comms Earpiece","Wrist Display"],"jobs":[{"key":"gunslinger","name":"Gunslinger","d":"Agility- and intuition-based ranged fighter with a gift for gunnery.","gear":["Brass Point Revolver","2 × Speedloader","Prism Blade"]},{"key":"guardian","name":"Guardian","d":"Brawn-based melee fighter with a gift for improvised weapons.","gear":["Mechaxe","Cleave"]},{"key":"crest_knight","name":"Crest Knight","d":"Agility- and intellect-based melee fighter, magically enhanced, with martial skill.","gear":["Torch Longsword","Crest-Marked Cloak","Extra Shield Belt"]},{"key":"imperial","name":"Imperial","d":"Intuition- and vitality-based magical support and fighter.","gear":["Bo Staff","Cooking Supplies"]},{"key":"intangible","name":"Intangible","d":"Agility- and intuition-based magical fighter. Teleporter.","gear":["2 × Vibroblade","3 × Flasher"]},{"key":"oracle","name":"Oracle","d":"Intuition- and charm-based magical support and ranged fighter.","gear":["Morton M8 Revolver","Prism Blade","Bo Staff"]},{"key":"techtailor","name":"Techtailor","d":"Intellect-based support and melee or ranged fighter.","gear":["Bomber Kit: 1 × Cuss, 3 × Stunner, 5 × Flare"]},{"key":"beast","name":"Goma","d":"Adolescent Goma (the size of a silverback gorilla).","gear":["Carrying Harness","Pet Food","Nail Trimming Kit","Stone Polish"],"familiar":true}],"kits":[{"name":"Breach Kit","price":10000,"d":"For getting through doors that would rather stay shut.","items":["Lock Breaker","Pry Bar","Glass Cutter","Panel Bypass Shunt","3 × Flasher","Disintegrator Disc","2 × Go & Blow Bot"]},{"name":"EMP Kit","price":25000,"d":"For turning the lights, locks and cameras off.","items":["2 × EMP Charge","Signal Jammer","Spare Battery","Pocket Radar","3 × Flasher","Surveillance Drone","10 × Small EMP Grenade"]},{"name":"Climbing Kit","price":20000,"d":"For cliffs, walls and anything the island puts in the way.","items":["50 m Nylon Rope","Grappling Hook Launcher","Harness & Carabiners","Glide Chute","Zipper (Automatic Zipline)","5 × Jetpack"]},{"name":"Field Medic Kit","price":15000,"d":"For patching up the crew far from a doctor.","items":["10 × Med Pack","Cauterizer","10 × Stim","5 × Antitoxin","Bandages","Antibiotic Salve (2 Tubes)","100 × Pain Killer"]},{"name":"Demolition Kit","price":22000,"d":"For making a mess on purpose.","items":["2 × Cuss","5 × Stunner","3 × Flare","Remote Detonator","3 × Mine Kit"]},{"name":"Survival Kit","price":6000,"d":"For living off an island that doesn't want you there.","items":["5 Days of Rations (×5)","2 × Water Purifier","5 × Bedroll","Satellite Radar","Compass","Satellite Comms","3 × AutoTent Kit","Inflatable Life Raft"]},{"name":"Defense Kit","price":20000,"d":"For taking a hit and walking it off.","items":["5 × Spare Shield Belt","2 × Remote Shield Belt Charger","100-Meter Alarm Kit","20 × Mini Sound Mine"]}],"questions":[{"id":"split","t":"When you get to the island, will you…?","s":"The island is big, and the crew is only so many pairs of boots.","o":[["Divide and Conquer","Split up and cover more ground. Faster, but nobody has your back."],["Stick Together","Move as one crew. Slower, but safer."]],"roll":true},{"id":"approach","t":"How do you want to approach the island?","s":"First impressions matter, even to an island.","o":[["Recon First","Gather information before anyone sets foot on the sand."],["Land Fast","Get boots on the ground and avoid detection."]],"roll":true},{"id":"landmarks","t":"Which landmarks do you want to see first?","s":"Pick up to three.","max":3,"o":[["Goma Skull",""],["Faces in the Rock",""],["Sword",""],["Temple",""],["Well",""],["South Tunnel",""],["Central Tunnel",""]]}]};
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
+  var TZ = 'America/New_York';
+  var STORE = 'thRedCity:v1', ME = 'thLoot:me';
+
+  var root = document.getElementById('rc');
+  var $ = function (id) { return document.getElementById(id); };
+  var fmt = function (n) { return Number(n).toLocaleString('en-US'); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  function load(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+  function store(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+  var S = load(STORE) || {};
+  S.recruits = S.recruits || {}; S.cart = S.cart || {}; S.plan = S.plan || {};
+  var me = load(ME) || {};
+  var basePurse = null;
+  // On the github.io preview the dice roll here and nothing is sent; on mauriceafrich.com the sheet rolls.
+  var PREVIEW = /github\.io$/.test(location.hostname);
+  S.rolls = S.rolls || {};
+  var rolling = {}, flick = {};
+  var D20 = '<svg viewBox="0 0 100 100"><polygon class="face" points="50,3 91,26 91,74 50,97 9,74 9,26"/><polygon class="edge" points="50,22 78,68 22,68"/><path class="edge" d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68"/></svg>';
+  function rollText(r) {
+    if (r === 20) return 'NATURAL 20! It counts as two 20s.';
+    if (r === 1) return 'NATURAL 1. It counts as two 0s.';
+    return 'You rolled ' + r + '.' + (PREVIEW ? ' (Preview roll, not recorded.)' : '');
+  }
+  // ---- the 3D d20 ------------------------------------------------------
+  // A real twenty-sided die in red metal (three.js, MIT licence, from cdnjs), numbered like a table die: opposite
+  // faces add up to 21. It tumbles while the roll is on its way, then bounces and settles with the
+  // rolled face up. The clatter is made on the spot with Web Audio, so there is no sound file.
+  // If three.js cannot load, the flat die (D20 above) stays and everything else works the same.
+  var Dice = (function () {
+    var URL3 = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    var T = null, loading = null, faces = null, numbers = null, faceOf = null, targets = {}, TILT = null, dice = {};
+    var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var muted = false;
+    try { muted = localStorage.getItem('thDice:muted') === '1'; } catch (e) {}
+
+    function load() {
+      if (T) return Promise.resolve(T);
+      if (loading) return loading;
+      loading = new Promise(function (ok, no) {
+        if (window.THREE) return ok(window.THREE);
+        var s = document.createElement('script');
+        s.src = URL3; s.async = true;
+        s.onload = function () { window.THREE ? ok(window.THREE) : no(); };
+        s.onerror = no;
+        document.head.appendChild(s);
+      }).then(function (three) { T = three; setup(); return T; });
+      return loading;
+    }
+
+    // The icosahedron's 20 faces, which number each one shows, and the turn that brings it face up.
+    function setup() {
+      var g = new T.IcosahedronGeometry(1, 0), p = g.getAttribute('position');
+      faces = [];
+      for (var f = 0; f < 20; f++) {
+        var a = new T.Vector3().fromBufferAttribute(p, f * 3), b = new T.Vector3().fromBufferAttribute(p, f * 3 + 1), c = new T.Vector3().fromBufferAttribute(p, f * 3 + 2);
+        var mid = a.clone().add(b).add(c).divideScalar(3);
+        faces.push({ a: a, b: b, c: c, mid: mid, n: mid.clone().normalize() });
+      }
+      numbers = new Array(20);
+      var next = 1;
+      for (var i = 0; i < 20; i++) {
+        if (numbers[i]) continue;
+        var opp = 0, best = 2;
+        for (var j = 0; j < 20; j++) { var dot = faces[i].n.dot(faces[j].n); if (dot < best) { best = dot; opp = j; } }
+        numbers[i] = next; numbers[opp] = 21 - next; next++;
+      }
+      for (var k = 0; k < 20; k++) {
+        var z = faces[k].n, y = faces[k].a.clone().sub(faces[k].mid).normalize(), x = new T.Vector3().crossVectors(y, z);
+        var m = new T.Matrix4().makeBasis(x, y, z).transpose();
+        targets[numbers[k]] = new T.Quaternion().setFromRotationMatrix(m);
+      }
+      faceOf = {}; for (var q = 0; q < 20; q++) faceOf[numbers[q]] = q;
+      TILT = new T.Quaternion().setFromEuler(new T.Euler(-0.42, 0.3, 0.06));
+    }
+
+    function faceTexture(n) {
+      var c = document.createElement('canvas'); c.width = c.height = 256;
+      var g = c.getContext('2d');
+      var grad = g.createLinearGradient(0, 0, 0, 256);
+      grad.addColorStop(0, '#d23a12'); grad.addColorStop(1, '#8e1a06');
+      g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
+      g.fillStyle = '#ffe2a8'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.font = '700 ' + (n > 9 ? 78 : 92) + 'px Almarai, Arial, sans-serif';
+      g.fillText(n === 6 || n === 9 ? n + '.' : String(n), 128, 150);
+      var t = new T.CanvasTexture(c);
+      t.encoding = T.sRGBEncoding;
+      return t;
+    }
+
+    function studio() {
+      var c = document.createElement('canvas'); c.width = 512; c.height = 256;
+      var g = c.getContext('2d'), sky = g.createLinearGradient(0, 0, 0, 256);
+      sky.addColorStop(0, '#fff6e8'); sky.addColorStop(0.45, '#8c6a58'); sky.addColorStop(0.55, '#3a2418'); sky.addColorStop(1, '#0c0706');
+      g.fillStyle = sky; g.fillRect(0, 0, 512, 256);
+      [[110, 70, 70], [360, 60, 55], [250, 30, 40]].forEach(function (s) {
+        var l = g.createRadialGradient(s[0], s[1], 0, s[0], s[1], s[2]);
+        l.addColorStop(0, 'rgba(255,255,255,1)'); l.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = l; g.fillRect(0, 0, 512, 256);
+      });
+      var tex = new T.CanvasTexture(c);
+      tex.mapping = T.EquirectangularReflectionMapping; tex.encoding = T.sRGBEncoding;
+      return tex;
+    }
+
+    // A rolled number sits flat, facing the viewer square-on. Only a die still waiting to be rolled is tilted.
+    function pose(n) { return targets[n].clone(); }
+    function idle() { return targets[20].clone().premultiply(TILT); }
+
+    function dieGeometry() {
+      var geo = new T.IcosahedronGeometry(1, 0), uv = [];
+      geo.clearGroups();
+      for (var f = 0; f < 20; f++) { uv.push(0.5, 0.95, 0.05, 0.2, 0.95, 0.2); geo.addGroup(f * 3, 3, f); }
+      geo.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+      return geo;
+    }
+    function dieMaterials() {
+      var mats = [];
+      for (var k = 0; k < 20; k++) mats.push(new T.MeshStandardMaterial({ map: faceTexture(numbers[k]), roughness: 0.3, metalness: 0.85, envMapIntensity: 1.2, flatShading: true }));
+      return mats;
+    }
+
+    function build(id, node) {
+      var cv = node.querySelector('canvas');
+      var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+      r.outputEncoding = T.sRGBEncoding;
+      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      r.setSize(120, 120, false);
+      var scene = new T.Scene(), cam = new T.PerspectiveCamera(30, 1, 0.1, 50);
+      cam.position.set(0, 0, 6.4); cam.lookAt(0, 0, 0);
+      var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
+      scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
+      var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-3, 5, 5); scene.add(sun);
+      var mesh = new T.Mesh(dieGeometry(), dieMaterials());
+      mesh.quaternion.copy(idle());
+      scene.add(mesh);
+      var d = { r: r, scene: scene, cam: cam, mesh: mesh, node: node, shadow: node.querySelector('.rc-die-shadow'), raf: 0, y: 0 };
+      dice[id] = d;
+      return d;
+    }
+
+    function draw(d) {
+      d.mesh.position.y = d.y;
+      if (d.shadow) { d.shadow.style.transform = 'translateX(-50%) scale(' + (1 - d.y * 0.45).toFixed(3) + ')'; d.shadow.style.opacity = (0.9 - d.y * 0.6).toFixed(2); }
+      d.r.render(d.scene, d.cam);
+    }
+
+    // ---- sound: a hard little knock plus a burst of clatter, a bit different every time
+    var ctx = null;
+    function audio() {
+      if (muted) return null;
+      var A = window.AudioContext || window.webkitAudioContext;
+      if (!A) return null;
+      if (!ctx) ctx = new A();
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }
+    function clack(vol) {
+      var a = audio(); if (!a) return;
+      var t = a.currentTime, len = Math.floor(a.sampleRate * 0.045), buf = a.createBuffer(1, len, a.sampleRate), ch = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 5);
+      var src = a.createBufferSource(); src.buffer = buf;
+      var bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2400 + Math.random() * 2200; bp.Q.value = 3;
+      var g = a.createGain(); g.gain.value = vol;
+      src.connect(bp); bp.connect(g); g.connect(a.destination); src.start(t);
+      var o = a.createOscillator(), og = a.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(380 + Math.random() * 300, t);
+      o.frequency.exponentialRampToValueAtTime(160, t + 0.07);
+      og.gain.setValueAtTime(vol * 0.7, t);
+      og.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+      o.connect(og); og.connect(a.destination); o.start(t); o.stop(t + 0.1);
+    }
+
+    function stopLoop(d) { if (d.raf) cancelAnimationFrame(d.raf); d.raf = 0; }
+
+    // ---- the throw: a real physics roll (cannon.js, MIT licence, from cdnjs) -----------------
+    // The die is thrown from its card with a random force, spin and angle, and the physics decides
+    // everything after that: the tumbling, the bounces off the table and the screen edges, and where
+    // it comes to rest. Nothing steers it. Every face of a d20 is the same shape, so the numbers can
+    // be painted on to match the roll before it is thrown (the sheet's random number generator has
+    // already chosen it); that changes which number is on the face it lands on, not how it moves.
+    // A few throws are worked out in a blink and the one whose number lands most upright is shown.
+    var URLP = 'https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js', P = null, loadingP = null;
+    function loadPhysics() {
+      if (P) return Promise.resolve(P);
+      if (loadingP) return loadingP;
+      loadingP = new Promise(function (ok, no) {
+        if (window.CANNON) return ok(window.CANNON);
+        var s = document.createElement('script');
+        s.src = URLP; s.async = true;
+        s.onload = function () { window.CANNON ? ok(window.CANNON) : no(); };
+        s.onerror = no;
+        document.head.appendChild(s);
+      }).then(function (c) { P = c; return P; });
+      return loadingP;
+    }
+
+    var ov = null;
+    function overlay() {
+      if (ov) return ov;
+      var cv = document.createElement('canvas');
+      cv.setAttribute('aria-hidden', 'true');
+      cv.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147482000;display:none';
+      document.body.appendChild(cv);
+      var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+      r.outputEncoding = T.sRGBEncoding;
+      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      var scene = new T.Scene(), cam = new T.OrthographicCamera(-1, 1, 1, -1, -1000, 1000);
+      cam.position.set(0, 0, 500); cam.lookAt(0, 0, 0);
+      var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
+      scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
+      var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-300, 500, 500); scene.add(sun);
+      var mesh = new T.Mesh(dieGeometry(), dieMaterials()); scene.add(mesh);
+      var sc = document.createElement('canvas'); sc.width = sc.height = 128;
+      var sg = sc.getContext('2d'), rg = sg.createRadialGradient(64, 64, 0, 64, 64, 64);
+      rg.addColorStop(0, 'rgba(0,0,0,.55)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
+      sg.fillStyle = rg; sg.fillRect(0, 0, 128, 128);
+      var shadow = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: new T.CanvasTexture(sc), transparent: true, depthWrite: false }));
+      shadow.position.z = -200; scene.add(shadow);
+      ov = { cv: cv, r: r, scene: scene, cam: cam, mesh: mesh, shadow: shadow, raf: 0, st: null };
+      function size() {
+        var w = window.innerWidth, h = window.innerHeight;
+        r.setSize(w, h, false);
+        cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2; cam.bottom = -h / 2; cam.updateProjectionMatrix();
+        ov.w = w; ov.h = h; ov.R = Math.max(34, Math.min(62, Math.min(w, h) * 0.075));
+      }
+      size(); window.addEventListener('resize', size);
+      return ov;
+    }
+    function slotCenter(id) {
+      var b = dice[id].node.getBoundingClientRect();
+      return { x: b.left + b.width / 2 - window.innerWidth / 2, y: window.innerHeight / 2 - (b.top + b.height / 2) };
+    }
+
+    var hull = null;
+    function hullShape() {
+      if (!hull) {
+        var pts = [], idx = [], seen = {};
+        faces.forEach(function (f) {
+          idx.push([f.a, f.b, f.c].map(function (v) {
+            var k = v.x.toFixed(4) + ',' + v.y.toFixed(4) + ',' + v.z.toFixed(4);
+            if (!(k in seen)) { seen[k] = pts.length; pts.push([v.x, v.y, v.z]); }
+            return seen[k];
+          }));
+        });
+        hull = { pts: pts, idx: idx };
+      }
+      return new P.ConvexPolyhedron(hull.pts.map(function (p) { return new P.Vec3(p[0], p[1], p[2]); }), hull.idx.map(function (f) { return f.slice(); }));
+    }
+
+    // One throw, worked out ahead at 60 steps a second: where the die is at every step, and when it hits something.
+    function simulate(start, Wu, Hu) {
+      var world = new P.World();
+      world.gravity.set(0, 0, -40);
+      world.broadphase = new P.NaiveBroadphase();
+      world.solver.iterations = 12;
+      world.allowSleep = true;
+      world.defaultContactMaterial.friction = 0.28;
+      world.defaultContactMaterial.restitution = 0.38;
+      function wall(x, y, axis, ang) {
+        var b = new P.Body({ mass: 0 }); b.addShape(new P.Plane()); b.position.set(x, y, 0);
+        if (axis) b.quaternion.setFromAxisAngle(axis, ang);
+        world.addBody(b);
+      }
+      wall(0, 0);                                                    // the table
+      wall(-Wu, 0, new P.Vec3(0, 1, 0), Math.PI / 2); wall(Wu, 0, new P.Vec3(0, 1, 0), -Math.PI / 2);
+      wall(0, -Hu, new P.Vec3(1, 0, 0), -Math.PI / 2); wall(0, Hu, new P.Vec3(1, 0, 0), Math.PI / 2);
+      var die = new P.Body({ mass: 1 });
+      die.addShape(hullShape());
+      die.linearDamping = 0.1; die.angularDamping = 0.1;
+      die.allowSleep = true; die.sleepSpeedLimit = 0.15; die.sleepTimeLimit = 0.25;
+      die.position.set(start.x, start.y, 2.2 + Math.random() * 1.5);
+      die.quaternion.setFromEuler(Math.random() * 6.283, Math.random() * 6.283, Math.random() * 6.283);
+      var ang = Math.atan2(-start.y, -start.x) + (Math.random() - 0.5) * 1.6, sp = 14 + Math.random() * 12;
+      die.velocity.set(Math.cos(ang) * sp, Math.sin(ang) * sp, 2 + Math.random() * 5);
+      die.angularVelocity.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 30);
+      world.addBody(die);
+      var frames = [], hits = [], stepNo = 0, lastHit = -9;
+      die.addEventListener('collide', function (e) {
+        var v = Math.abs(e.contact.getImpactVelocityAlongNormal());
+        if (v > 1.2 && stepNo - lastHit > 3) { hits.push([stepNo, Math.min(0.55, v * 0.035)]); lastHit = stepNo; }
+      });
+      for (stepNo = 0; stepNo < 540; stepNo++) {
+        world.step(1 / 60);
+        frames.push([die.position.x, die.position.y, die.position.z, die.quaternion.x, die.quaternion.y, die.quaternion.z, die.quaternion.w]);
+        if (stepNo > 40 && die.sleepState === P.Body.SLEEPING) break;
+      }
+      return { frames: frames, hits: hits };
+    }
+
+    // Which face ended up facing the viewer.
+    function topFace(f) {
+      var q = new T.Quaternion(f[3], f[4], f[5], f[6]), best = -2, k = 0;
+      for (var i = 0; i < 20; i++) { var z = faces[i].n.clone().applyQuaternion(q).z; if (z > best) { best = z; k = i; } }
+      return { k: k, q: q, flat: best };
+    }
+    function frameOf(face, v) {
+      var z = face.n, y = v.clone().sub(face.mid).normalize(), x = new T.Vector3().crossVectors(y, z);
+      return new T.Matrix4().makeBasis(x, y, z);
+    }
+    // The turn of the die onto itself that puts number n on the face that landed up. Of the three
+    // ways to do it, the one that reads most upright.
+    function relabel(n, top) {
+      var ft = faces[faceOf[n]], f = faces[top.k], toCanon = frameOf(ft, ft.a).transpose(), best = null;
+      [f.a, f.b, f.c].forEach(function (v) {
+        var g = new T.Quaternion().setFromRotationMatrix(new T.Matrix4().multiplyMatrices(frameOf(f, v), toCanon));
+        var up = v.clone().sub(f.mid).normalize().applyQuaternion(top.q), ang = Math.atan2(up.x, up.y), tilt = Math.abs(ang);
+        if (!best || tilt < best.tilt) best = { g: g, tilt: tilt, ang: ang };
+      });
+      return best;
+    }
+
+    function throwIt(id, n, done) {
+      if (!P) return false;
+      var d = dice[id], o = overlay(), s = slotCenter(id), Wu = o.w / 2 / o.R, Hu = o.h / 2 / o.R;
+      var start = { x: Math.max(-Wu + 1.3, Math.min(Wu - 1.3, s.x / o.R)), y: Math.max(-Hu + 1.3, Math.min(Hu - 1.3, s.y / o.R)) };
+      var best = null, t0 = performance.now();
+      for (var i = 0; i < 8; i++) {
+        var sim = simulate(start, Wu, Hu), top = topFace(sim.frames[sim.frames.length - 1]);
+        if (top.flat < 0.97) continue;                               // still moving when time ran out: throw again
+        sim.top = top;
+        if (n == null) { sim.g = new T.Quaternion(); sim.tilt = 0; best = sim; break; }   // number not in yet: set later
+        var rl = relabel(n, top);
+        sim.g = rl.g; sim.tilt = rl.tilt; sim.ang = rl.ang;
+        if (!best || rl.tilt < best.tilt) best = sim;
+        if (rl.tilt < 0.35 || performance.now() - t0 > 150) break;
+      }
+      if (!best) return false;
+      if (ov.raf) cancelAnimationFrame(ov.raf);
+      stopLoop(d); d.y = 0; d.node.style.visibility = 'hidden';
+      o.st = { id: id, n: n, sim: best, done: done, start: performance.now(), hit: 0, fixFrom: 0, fix: n == null ? 0 : -(best.ang || 0) };
+      o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
+      clack(0.3);
+      o.raf = requestAnimationFrame(play);
+      return true;
+    }
+    // The sheet's number arrives while the die is already in the air: paint it on the face that will land up,
+    // and turn the die a little over the rest of the flight so the number ends up upright.
+    function setNumber(id, n, done) {
+      var st = ov && ov.st; if (!st || st.id !== id || st.n != null) return false;
+      var rl = relabel(n, st.sim.top), fr = st.sim.frames;
+      st.sim.g = rl.g; st.n = n; st.done = done;
+      st.fixFrom = Math.max(0, Math.min(fr.length - 1, Math.floor((performance.now() - st.start) / (1000 / 60))));
+      st.fix = -rl.ang;
+      return true;
+    }
+    // Safety net: if a frame ever fails, the die drops back into its card with the number, never stuck.
+    function play(now) {
+      try { playFrame(now); }
+      catch (e) {
+        var st = ov && ov.st; if (!st) return;
+        dropThrow(st.id);
+        var d = dice[st.id]; if (d) { d.y = 0; d.mesh.quaternion.copy(pose(st.n)); draw(d); }
+        if (st.done) st.done();
+      }
+    }
+    function playFrame(now) {
+      var o = ov, st = o.st;
+      if (!st) return;
+      // A frame can be stamped a moment before the throw began, so never ask for a step before the first.
+      var fr = st.sim.frames, i = Math.max(0, Math.min(fr.length - 1, Math.floor((now - st.start) / (1000 / 60))));
+      while (st.hit < st.sim.hits.length && st.sim.hits[st.hit][0] <= i) { clack(st.sim.hits[st.hit][1]); st.hit++; }
+      var span = Math.max(1, fr.length - 1 - st.fixFrom), k = Math.max(0, Math.min(1, (i - st.fixFrom) / span));
+      paintFrame(fr[i], st.sim.g, st.n == null ? 0 : st.fix * k * k * (3 - 2 * k));
+      if (i < fr.length - 1 || st.n == null) { o.raf = requestAnimationFrame(play); return; }   // at rest but no number yet: wait
+      // At rest. Hold it so everyone can read it, then the table fades and the card has the number.
+      o.raf = 0;
+      if (PREVIEW || window.__diceDebug) {   // preview/testing only: which number really ended up facing the viewer
+        var lf = fr[fr.length - 1], qq = new T.Quaternion(lf[3], lf[4], lf[5], lf[6]).multiply(st.sim.g), bk = 0, bz = -2;
+        for (var i2 = 0; i2 < 20; i2++) { var zz = faces[i2].n.clone().applyQuaternion(qq).z; if (zz > bz) { bz = zz; bk = i2; } }
+        (window.__diceLog = window.__diceLog || []).push({ rolled: st.n, showing: numbers[bk], flat: +bz.toFixed(3), tiltDeg: Math.round(st.sim.tilt * 57.3), seconds: +(fr.length / 60).toFixed(2), bounces: st.sim.hits.length });
+      }
+      setTimeout(function () {
+        if (o.st !== st) return;
+        var d = dice[st.id];
+        if (d) { d.y = 0; d.mesh.quaternion.copy(pose(st.n)); draw(d); d.node.style.visibility = ''; }
+        o.cv.style.transition = 'opacity .45s ease'; o.cv.style.opacity = '0';
+        setTimeout(function () { if (o.st === st) { o.cv.style.display = 'none'; o.st = null; } }, 480);
+        if (st.done) st.done();
+      }, 1400);
+    }
+    function paintFrame(f, g, turn) {
+      var o = ov, z = Math.max(0, f[2] - 0.8), sc = 1 + z * 0.07;
+      o.mesh.position.set(f[0] * o.R, f[1] * o.R, 0);
+      o.mesh.quaternion.set(f[3], f[4], f[5], f[6]).multiply(g);
+      if (turn) o.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 0, 1), turn));
+      o.mesh.scale.setScalar(o.R * sc);
+      o.shadow.position.set(f[0] * o.R + 6 + z * 10, f[1] * o.R - 8 - z * 10, -200);
+      o.shadow.scale.setScalar(o.R * 2.4 * (1 - Math.min(0.5, z * 0.08)));
+      o.shadow.material.opacity = 0.9 - Math.min(0.6, z * 0.1);
+      o.r.render(o.scene, o.cam);
+    }
+    function dropThrow(id) {
+      if (!ov || !ov.st || ov.st.id !== id) return;
+      if (ov.raf) cancelAnimationFrame(ov.raf);
+      ov.raf = 0; ov.st = null; ov.cv.style.display = 'none';
+      if (dice[id]) dice[id].node.style.visibility = '';
+    }
+
+    return {
+      // Builds the die in this node once three.js is in; the node shows the flat die until then.
+      attach: function (id, node, n) {
+        load().then(function () {
+          if (dice[id]) return;
+          if (!calm) loadPhysics().catch(function () {});
+          var d = build(id, node);
+          node.classList.add('is3d');
+          if (n) d.mesh.quaternion.copy(pose(n));
+          draw(d);
+        }).catch(function () {});
+      },
+      ready: function (id) { return !!dice[id]; },
+      // Throw straight away, before the number is known; set it with number() when it arrives.
+      throwNow: function (id) { if (calm || !dice[id]) return false; try { return throwIt(id, null, null); } catch (e) { dropThrow(id); return false; } },
+      number: function (id, n, done) { try { return setNumber(id, n, done); } catch (e) { dropThrow(id); return false; } },
+      drop: function (id) { dropThrow(id); },
+      show: function (id, n) { var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(pose(n)); draw(d); },
+      // Shaken in the card (like dice in a cupped hand) until the sheet's number is in, then thrown
+      // across the screen with physics. In the card instead when motion is reduced or physics won't load.
+      spin: function (id) { this.spinCard(id); },
+      land: function (id, n, done) {
+        if (!calm && dice[id]) { try { if (throwIt(id, n, done)) return; } catch (e) { dropThrow(id); } }
+        this.landCard(id, n, done);
+      },
+      // Tumbling in the card until the number is known.
+      spinCard: function (id) {
+        var d = dice[id]; if (!d) return;
+        stopLoop(d);
+        var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), last = performance.now(), start = last, tick = 0;
+        d.axis = axis;
+        (function frame(now) {
+          var dt = Math.min(0.05, (now - last) / 1000); last = now;
+          if (!calm) d.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(axis, 13 * dt));
+          d.y = calm ? 0 : Math.abs(Math.sin((now - start) / 110)) * 0.35;
+          if (now - tick > 95) { tick = now; clack(0.05 + Math.random() * 0.06); }
+          draw(d);
+          d.raf = requestAnimationFrame(frame);
+        })(last);
+      },
+      // In the card: three bounces, a clack on each, and it settles on n.
+      landCard: function (id, n, done) {
+        var d = dice[id]; if (!d) return done();
+        stopLoop(d);
+        var q0 = d.mesh.quaternion.clone(), q1 = pose(n), axis = d.axis || new T.Vector3(1, 0, 0), dur = calm ? 1 : 1150, t0 = performance.now(), hits = [0.286, 0.571, 0.857], hit = 0;
+        (function frame(now) {
+          var t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3);
+          var q = q0.clone().slerp(q1, e);
+          q.premultiply(new T.Quaternion().setFromAxisAngle(axis, (1 - e) * 7));
+          d.mesh.quaternion.copy(q);
+          d.y = Math.abs(Math.sin(Math.PI * 3.5 * t)) * 0.85 * Math.pow(1 - t, 2);
+          while (hit < hits.length && t >= hits[hit]) { clack([0.5, 0.28, 0.14][hit]); hit++; }
+          draw(d);
+          if (t < 1) d.raf = requestAnimationFrame(frame);
+          else { d.raf = 0; d.mesh.quaternion.copy(q1); d.y = 0; draw(d); done(); }
+        })(t0);
+      },
+      stop: function (id) { dropThrow(id); var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(idle()); draw(d); },
+      muted: function () { return muted; },
+      setMuted: function (m) { muted = !!m; try { localStorage.setItem('thDice:muted', muted ? '1' : '0'); } catch (e) {} }
+    };
+  })();
+  var dieEls = {};
+  function dieNode(id) {
+    var el = dieEls[id];
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'rc-die-' + id;
+      el.setAttribute('aria-hidden', 'true');
+      el.innerHTML = D20 + '<span class="rc-dn" id="rc-dn-' + id + '">?</span><i class="rc-die-shadow"></i><canvas class="rc-die-cv" width="240" height="240"></canvas>';
+      dieEls[id] = el;
+      Dice.attach(id, el, S.rolls[id]);
+    }
+    return el;
+  }
+  function rollFor(q) {
+    if (rolling[q.id] || S.rolls[q.id] || locked) return;
+    var who = PREVIEW ? me : readWho();
+    if (typeof who === 'string') {
+      var o = document.getElementById('rc-rr-' + q.id);
+      if (o) o.textContent = who + ' Fill in who you are above, then roll.';
+      $('rc-who').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (!PREVIEW) { me = who; store(ME, me); renderWho(); }
+    rolling[q.id] = true; renderQs();
+    // The die leaves the card the moment Roll is pressed; the sheet's number is painted on while it flies.
+    var thrown = Dice.throwNow(q.id);
+    if (!thrown) Dice.spin(q.id);
+    var started = Date.now();
+    flick[q.id] = setInterval(function () { var n = document.getElementById('rc-dn-' + q.id); if (n) n.textContent = 1 + Math.floor(Math.random() * 20); }, 70);
+    var land = function (res) {
+      setTimeout(function () {
+        clearInterval(flick[q.id]);
+        var ok = res && res.ok && res.roll, n = ok ? Number(res.roll) : 0;
+        var finish = function () {
+          rolling[q.id] = false;
+          if (ok) {
+            S.rolls[q.id] = n; store(STORE, S); render();
+            var d = document.getElementById('rc-die-' + q.id); if (d && !Dice.ready(q.id)) d.classList.add('landed');
+          } else {
+            Dice.stop(q.id); render();
+            var o = document.getElementById('rc-rr-' + q.id);
+            if (o) o.textContent = ({ closed: 'Voting has closed.', notopen: 'Voting opens ' + when(OPENS) + '.', email: 'That email does not look right.' })[res && res.error] || 'The die rolled off the table. Give it another go.';
+          }
+        };
+        if (thrown) { if (ok && Dice.number(q.id, n, finish)) return; Dice.drop(q.id); finish(); return; }
+        if (ok && Dice.ready(q.id)) Dice.land(q.id, n, finish); else finish();
+      }, thrown ? 0 : Math.max(0, 1500 - (Date.now() - started)));
+    };
+    if (PREVIEW) land({ ok: true, roll: 1 + Math.floor(Math.random() * 20) });
+    else send({ action: 'roll', q: q.id, email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country }, land);
+  }
+  // The vote runs between exact times (DATA.opens, DATA.closes). Before it opens, frens can look around and pick,
+  // but rolling and sealing wait. The preview ignores the clock so it can always be tried out.
+  var NOW = Date.now(), OPENS = DATA.opens ? Date.parse(DATA.opens) : 0, CLOSES = Date.parse(DATA.closes);
+  var notYet = !PREVIEW && NOW < OPENS, closed = !PREVIEW && NOW > CLOSES, locked = notYet || closed;
+  function when(ms) { return new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(ms)).replace(':00', '') + ' ET'; }
+  if (notYet && OPENS - NOW < 864e5) setTimeout(function () { location.reload(); }, OPENS - NOW + 1500);   // open the moment it opens
+
+  var arch = {}, items = {};
+  DATA.jobs.forEach(function (j) { arch[j.name] = { job: j }; });
+  DATA.kits.forEach(function (k) { items[k.name] = k; });
+
+  function purse() {
+    if (basePurse == null) return null;
+    return basePurse;
+  }
+  function spent() { var t = 0; for (var n in S.cart) t += items[n].price; return t; }
+  function answered(q) { var v = S.plan[q.id]; return q.max ? !!(v && v.length) : !!v; }
+  function changed() { S.sealed = false; store(STORE, S); render(); }
+
+  var std = document.getElementById('rc-std');
+  if (std && DATA.standardGear && DATA.standardGear.length) std.innerHTML = '<b>Every crew member carries:</b> ' + DATA.standardGear.map(esc).join(' · ') + '. Each class adds its own gear below (the Goma is a familiar and carries only its own).';
+
+  function renderJobs() {
+    var box = $('rc-jobs'), count = Object.keys(S.recruits).length;
+    box.innerHTML = '';
+    DATA.jobs.forEach(function (j) {
+      var on = !!S.recruits[j.key], b = document.createElement('button');
+      b.type = 'button'; b.className = 'rc-opt';
+      b.setAttribute('aria-pressed', on);
+      b.disabled = !on && count >= DATA.picks;
+      b.innerHTML = '<b>' + esc(j.name) + '</b><span>' + esc(j.d) + '</span>' +
+        (j.gear && j.gear.length ? '<em class="rc-gear"><i>CLASS GEAR' + (j.familiar ? ' (A FAMILIAR)' : '') + '</i>' + j.gear.map(function (g) { return '<u>' + esc(g) + '</u>'; }).join('') + '</em>' : '');
+      b.onclick = function () { if (on) delete S.recruits[j.key]; else S.recruits[j.key] = j.name; changed(); };
+      box.appendChild(b);
+    });
+  }
+
+  function renderStalls() {
+    var box = $('rc-stalls'), picked = Object.keys(S.cart).length, max = DATA.kitPicks || DATA.kits.length;
+    box.innerHTML = '';
+    DATA.kits.forEach(function (k) {
+      var on = !!S.cart[k.name], full = !on && picked >= max, el = document.createElement('article');
+      el.className = 'rc-card rc-kit' + (on ? ' taken' : '');
+      el.innerHTML = '<h3>' + esc(k.name) + '</h3><p class="rc-sd">' + esc(k.d) + '</p>' +
+        '<ul class="rc-kitlist">' + k.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>' +
+        '<div class="rc-kitfoot"><span class="rc-price rc-num">' + fmt(k.price) + ' credits</span>' +
+        '<button type="button" class="rc-opt rc-kitbtn" aria-pressed="' + on + '"' + (full ? ' disabled' : '') + '><b>' + (on ? 'PICKED' : 'PICK THIS KIT') + '</b></button></div>' +
+        (full ? '<p class="rc-need">You have picked ' + max + ' kits. Unpick one to swap.</p>' : '');
+      el.querySelector('.rc-kitbtn').onclick = function () { if (on) delete S.cart[k.name]; else S.cart[k.name] = 1; changed(); };
+      box.appendChild(el);
+    });
+  }
+
+  function renderQs() {
+    var box = $('rc-qs');
+    box.innerHTML = '';
+    DATA.questions.forEach(function (q) {
+      var el = document.createElement('article');
+      el.className = 'rc-card';
+      el.innerHTML = '<h3>' + esc(q.t) + '</h3><p class="rc-set">' + esc(q.s) + '</p><div class="rc-opts' + (q.max ? ' multi' : '') + '" role="group"></div>';
+      var g = el.querySelector('.rc-opts');
+      g.setAttribute('aria-label', q.t);
+      q.o.forEach(function (o) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'rc-opt';
+        var picked = q.max ? (S.plan[q.id] || []).indexOf(o[0]) >= 0 : S.plan[q.id] === o[0];
+        b.setAttribute('aria-pressed', picked);
+        if (q.max && !picked && (S.plan[q.id] || []).length >= q.max) b.disabled = true;
+        b.innerHTML = '<b>' + esc(o[0]) + '</b><span>' + esc(o[1]) + '</span>';
+        b.onclick = function () {
+          if (!q.max) S.plan[q.id] = o[0];
+          else {
+            var list = (S.plan[q.id] || []).slice(), at = list.indexOf(o[0]);
+            if (at >= 0) list.splice(at, 1); else list.push(o[0]);
+            S.plan[q.id] = list;
+          }
+          changed();
+        };
+        g.appendChild(b);
+      });
+      if (q.roll) {
+        var r = S.rolls[q.id], d = document.createElement('div'), tone = r === 20 ? ' crit' : r === 1 ? ' fumble' : '';
+        d.className = 'rc-dice';
+        d.innerHTML = (r ? '<p class="rc-rollres' + tone + '" id="rc-rr-' + q.id + '" aria-live="polite">' + rollText(r) + '</p>'
+             : '<button type="button" class="rc-roll"' + (rolling[q.id] || locked ? ' disabled' : '') + '>' + (rolling[q.id] ? 'ROLLING…' : 'ROLL THE D20') + '</button>' +
+               '<p class="rc-rollres" id="rc-rr-' + q.id + '" aria-live="polite"></p>') +
+          '<p class="rc-rollnote">' + esc(DATA.rollNote) + '</p>';
+        var die = dieNode(q.id);
+        die.className = 'rc-die' + (Dice.ready(q.id) ? ' is3d' : '') + (rolling[q.id] ? ' rolling' : tone);
+        if (!rolling[q.id]) die.querySelector('.rc-dn').textContent = r || '?';
+        if (r && Dice.ready(q.id) && !rolling[q.id]) Dice.show(q.id, r);
+        d.insertBefore(die, d.firstChild);
+        var rb = d.querySelector('.rc-roll');
+        if (rb) rb.onclick = function () { rollFor(q); };
+        el.appendChild(d);
+      }
+      box.appendChild(el);
+    });
+  }
+
+  function missing() {
+    var m = [], r = Object.keys(S.recruits).length, p = purse();
+    if (r < DATA.picks) m.push('recruit ' + (DATA.picks - r) + ' more');
+    if (!Object.keys(S.cart).length) m.push('pick at least one kit');
+    var un = DATA.questions.filter(function (q) { return !answered(q); }).length;
+    if (un) m.push('answer ' + un + ' more plan question' + (un > 1 ? 's' : ''));
+    var nr = DATA.questions.filter(function (q) { return q.roll && !S.rolls[q.id]; }).length;
+    if (nr) m.push('roll the d20 for ' + nr + ' more encounter' + (nr > 1 ? 's' : ''));
+    return m;
+  }
+
+  function renderOrders() {
+    var li = function (a) { return a.length ? '<ul>' + a.join('') + '</ul>' : '<p class="rc-empty">Nothing yet.</p>'; };
+    var r = [], c = [], pl = [];
+    for (var k in S.recruits) r.push('<li>' + esc(S.recruits[k]) + '</li>');
+    for (var n in S.cart) c.push('<li>' + esc(n) + '</li>');
+    DATA.questions.forEach(function (q) { if (answered(q)) pl.push('<li>' + esc(q.max ? S.plan[q.id].join(', ') : S.plan[q.id]) + (q.roll && S.rolls[q.id] ? ' <span style="color:var(--muted)">· rolled ' + S.rolls[q.id] + '</span>' : '') + '</li>'); });
+    $('rc-olist').innerHTML =
+      '<div><h4>YOUR CREW PICKS (' + r.length + '/' + DATA.picks + ')</h4>' + li(r) + '</div>' +
+      '<div><h4>CARGO · ' + fmt(spent()) + ' CREDITS</h4>' + li(c) + '</div>' +
+      '<div><h4>THE PLAN</h4>' + li(pl) + '</div>';
+
+    var seal = $('rc-seal'), msg = $('rc-msg'), m = missing();
+    if (locked) {
+      seal.hidden = true; $('rc-who').innerHTML = '';
+      msg.textContent = notYet ? 'Voting opens ' + when(OPENS) + '. Look around and plan your picks; you can roll and seal your orders then.'
+        : 'Voting has closed. The crew has set sail for the island.';
+      return;
+    }
+    msg.textContent = m.length ? 'Before you seal it: ' + m.join(', ') + '.' : '';
+    seal.disabled = !!m.length;
+    seal.textContent = S.sealed ? 'ORDERS SEALED' : (S.voted ? 'UPDATE MY ORDERS' : 'SEAL MY ORDERS');
+    if (S.sealed) seal.disabled = true;
+    renderWho();
+  }
+
+  // The same questions the loot box page and the Daily Word ask, saved the same way.
+  function renderWho() {
+    var who = $('rc-who');
+    if (me.email) {
+      if (who.getAttribute('data-me') === me.email) return;
+      who.setAttribute('data-me', me.email);
+      who.innerHTML = '<p class="rc-quiet">Rolling and voting as ' + esc(me.first_name || me.email) + '. <a id="rc-notme">Not you?</a></p>';
+      $('rc-notme').onclick = function () { try { localStorage.removeItem(ME); } catch (e) {} me = {}; S.rolls = {}; store(STORE, S); for (var k in dieEls) Dice.stop(k); who.removeAttribute('data-me'); render(); };
+      return;
+    }
+    if (who.getAttribute('data-me') === '') return;
+    who.setAttribute('data-me', '');
+    who.innerHTML = '<p class="rc-quiet" style="margin-bottom:10px">Before you roll, tell the Captain who you are. You only do this once; the loot box page and the Daily Word remember you too.</p>' +
+      '<div class="rc-form">' +
+      '<label>First name<input id="rc-first" autocomplete="given-name"></label>' +
+      '<label>Email you use for the hunt<input id="rc-email" type="email" autocomplete="email" inputmode="email"></label>' +
+      '<label>Social handle<input id="rc-handle" placeholder="@yourname" autocomplete="off"></label>' +
+      '<label>Where that handle lives<select id="rc-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select></label>' +
+      '<label>Country<select id="rc-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select></label>' +
+      '<label id="rc-otherl" hidden>Which country?<input id="rc-other"></label>' +
+      '</div>';
+    $('rc-country').onchange = function () { $('rc-otherl').hidden = this.value !== '__other'; };
+  }
+
+  function readWho() {
+    if (me.email) return me;
+    var country = $('rc-country').value;
+    var p = { first_name: $('rc-first').value.trim(), email: $('rc-email').value.trim(), handle: $('rc-handle').value.trim(),
+              platform: $('rc-platform').value, country: country === '__other' ? $('rc-other').value.trim() : country };
+    if (!p.first_name) return 'A first name, please.';
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email)) return 'That email does not look right.';
+    if (!p.country) return 'Which country are you hunting from?';
+    return p;
+  }
+
+  function renderWallet() {
+    var p = purse(), s = spent();
+    $('rc-purse').textContent = p == null ? '…' : fmt(p);
+    $('rc-total').textContent = p == null ? '…' : fmt(p);
+    $('rc-spent').textContent = Object.keys(S.cart).length; $('rc-kmax').textContent = DATA.kitPicks || DATA.kits.length;
+    $('rc-wallet').className = 'rc-wallet rc-num';
+    $('rc-c1').className = 'rc-chip' + (Object.keys(S.recruits).length === DATA.picks ? ' done' : '');
+    $('rc-c2').className = 'rc-chip' + (Object.keys(S.cart).length && (p == null || s <= p) ? ' done' : '');
+    $('rc-c3').className = 'rc-chip' + (DATA.questions.every(answered) ? ' done' : '');
+    $('rc-c4').className = 'rc-chip' + (S.sealed ? ' done' : '');
+  }
+
+  function render() { renderJobs(); renderStalls(); renderQs(); renderOrders(); renderWallet(); }
+  // Preview only: a button (and ?reset-rolls) to wipe this browser's preview rolls and roll again.
+  if (PREVIEW) {
+    if (location.search.indexOf('reset-rolls') >= 0) { S.rolls = {}; store(STORE, S); }
+    var again = document.createElement('button');
+    again.type = 'button'; again.className = 'rc-sound'; again.textContent = 'PREVIEW: ROLL AGAIN';
+    again.onclick = function () { S.rolls = {}; S.sealed = false; store(STORE, S); for (var k in dieEls) Dice.stop(k); render(); };
+    $('rc-sound').insertAdjacentElement('afterend', again);
+  }
+  function paintSound() { $('rc-sound').textContent = 'DICE SOUND: ' + (Dice.muted() ? 'OFF' : 'ON'); $('rc-sound').setAttribute('aria-pressed', !Dice.muted()); }
+  $('rc-sound').onclick = function () { Dice.setMuted(!Dice.muted()); paintSound(); };
+  paintSound();
+
+  // After a vote: point them at the loot box clues.
+  var NEXT = '<div class="rc-next"><a class="rc-cta" style="white-space:normal;max-width:560px;line-height:1.4" href="https://discord.gg/TV8SNnSGdb" target="_blank" rel="noopener">JOIN THE DISCORD TO TALK TO OTHER ADVENTURERS AND DISCUSS YOUR VOTE!</a></div>';
+  $('rc-seal').onclick = function () {
+    var who = readWho(), msg = $('rc-msg'), btn = this;
+    if (PREVIEW) {
+      $('rc-result').innerHTML = '<p class="rc-ok"><b>PREVIEW</b>Your orders look good. On the live page, this sends them to the Captain and pays the voting points.</p>' + NEXT;
+      return;
+    }
+    if (typeof who === 'string') { msg.textContent = who; $('rc-who').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    me = who; store(ME, me);
+    var cart = []; for (var n in S.cart) cart.push(n + ':' + S.cart[n]);
+    var payload = { action: 'vote', email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country,
+                    recruits: Object.keys(S.recruits).map(function (k) { return S.recruits[k]; }).join(','), cart: cart.join('|') };
+    DATA.questions.forEach(function (q) { payload[q.id] = q.max ? S.plan[q.id].join(';') : S.plan[q.id]; });
+    btn.disabled = true; btn.textContent = 'SEALING...'; msg.textContent = '';
+    send(payload, function (res) {
+      if (res && res.ok) {
+        S.sealed = true; S.voted = true; store(STORE, S);
+        if (res.count) $('rc-count').textContent = fmt(res.count);
+        $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.status === 'new' ? '+' + res.points + ' POINTS' : 'ORDERS UPDATED') + '</b>' +
+          (res.status === 'new' ? 'Your orders are with the Captain. The points land on the leaderboard at the next tally.' : 'Your new orders replace your old ones. No extra points, but your vote counts as it stands now.') +
+          ' You can change your vote until it closes.</p>' + NEXT;
+        renderOrders(); renderWallet();
+        return;
+      }
+      btn.disabled = false; btn.textContent = 'TRY AGAIN';
+      msg.textContent = ({ closed: 'Voting has closed.', notopen: 'Voting opens ' + when(OPENS) + '.', email: 'That email does not look right.',
+        recruits: 'The Captain could not read your crew. Pick three recruits from three different jobs.',
+        cart: 'The Captain could not read your shopping list. Check it and try again.',
+        plan: 'Answer every plan question, then try again.',
+        rolls: 'Roll the d20 for every encounter, then try again.' })[res && res.error] || 'The ship is slow today. Give it another go in a moment.';
+    });
+  };
+
+  // Same round trip as the loot box page: a simple POST, JSONP if that is
+  // blocked, and one quiet retry because Apps Script is sometimes slow.
+  function send(payload, done, attempt) {
+    attempt = attempt || 1;
+    var settled = false;
+    var finish = function (res) {
+      if (settled) return;
+      settled = true;
+      var flaky = !res || (!res.ok && (res.error === 'network' || res.error === 'server'));
+      if (flaky && attempt < 2) return setTimeout(function () { send(payload, done, attempt + 1); }, 1500);
+      done(res);
+    };
+    try {
+      fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(payload) })
+        .then(function (r) { return r.json(); }).then(finish)
+        .catch(function () { jsonp(payload, finish); });
+    } catch (e) { jsonp(payload, finish); }
+  }
+  function jsonp(payload, done) {
+    var name = 'rccb' + Math.random().toString(36).slice(2), q = ['callback=' + name];
+    for (var k in payload) if (payload[k] != null && payload[k] !== '') q.push(encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]));
+    var s = document.createElement('script');
+    var timer = setTimeout(function () { cleanup(); done({ ok: false, error: 'network' }); }, 30000);
+    function cleanup() { clearTimeout(timer); delete window[name]; if (s.parentNode) s.parentNode.removeChild(s); }
+    window[name] = function (res) { cleanup(); done(res); };
+    s.onerror = function () { cleanup(); done({ ok: false, error: 'network' }); };
+    s.src = ENDPOINT + '?' + q.join('&');
+    document.body.appendChild(s);
+  }
+
+  // A stale recruit or item (renamed in the catalog since this browser voted) is dropped quietly.
+  for (var k in S.recruits) if (!arch[S.recruits[k]]) delete S.recruits[k];
+  for (var n in S.cart) { if (!items[n]) delete S.cart[n]; else S.cart[n] = 1; }
+  Object.keys(S.cart).slice(DATA.kitPicks || 99).forEach(function (k) { delete S.cart[k]; });
+  var planIds = {};
+  DATA.questions.forEach(function (q) {
+    planIds[q.id] = true;
+    var names = q.o.map(function (o) { return o[0]; }), v = S.plan[q.id];
+    if (q.max) S.plan[q.id] = (Array.isArray(v) ? v : []).filter(function (x) { return names.indexOf(x) >= 0; }).slice(0, q.max);
+    else if (v && names.indexOf(v) < 0) delete S.plan[q.id];
+  });
+  for (var pk in S.plan) if (!planIds[pk]) delete S.plan[pk];
+  var rk = Object.keys(S.recruits); if (rk.length > DATA.picks) rk.slice(DATA.picks).forEach(function (k) { delete S.recruits[k]; });
+
+  $('rc-close').textContent = when(CLOSES);
+  $('rc-pts').textContent = '+' + DATA.points;
+  // The recordings: Grey's message up top, Felix and Benji at the market door. One plays at a time.
+  var players = [];
+  (DATA.recordings || []).forEach(function (r) {
+    var slot = root.querySelector('.rc-rec[data-slot="' + r.slot + '"]');
+    if (!slot || !r.src) return;
+    slot.innerHTML =
+      '<div class="rc-player"><button type="button" class="rc-pbtn" aria-label="Play ' + esc(r.label) + '">' +
+      '<svg class="play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg>' +
+      '<svg class="pause" viewBox="0 0 24 24" style="display:none"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>' +
+      '<div class="rc-pmid"><div class="rc-plabel">' + esc(r.label) + '</div><div class="rc-ptrack"><div class="rc-pfill"></div></div></div>' +
+      '<div class="rc-ptime">0:00</div><audio preload="metadata"></audio></div>' +
+      (r.transcript && r.transcript.length ? '<details class="rc-tx"><summary>Read the transcript</summary><div>' +
+        r.transcript.map(function (l) {
+          var text = esc(l[1]).replace(/\*([^*]+)\*/g, '<i>$1</i>');
+          return '<p>' + (l[0] ? '<b>' + esc(l[0]) + '</b>' : '') + text + '</p>';
+        }).join('') + '</div></details>' : '');
+    slot.hidden = false;
+    var a = slot.querySelector('audio'), btn = slot.querySelector('.rc-pbtn'), fill = slot.querySelector('.rc-pfill'),
+        time = slot.querySelector('.rc-ptime'), ip = slot.querySelector('.play'), ib = slot.querySelector('.pause');
+    a.src = r.src;
+    var clock = function (s) { s = Math.floor(s || 0); return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); };
+    var paint = function () {
+      fill.style.width = (a.duration ? a.currentTime / a.duration * 100 : 0) + '%';
+      time.textContent = clock(a.paused && !a.currentTime ? a.duration : a.currentTime);
+      ip.style.display = a.paused ? '' : 'none'; ib.style.display = a.paused ? 'none' : '';
+      btn.setAttribute('aria-label', (a.paused ? 'Play ' : 'Pause ') + r.label);
+    };
+    ['timeupdate', 'loadedmetadata', 'play', 'pause', 'ended'].forEach(function (ev) { a.addEventListener(ev, paint); });
+    a.addEventListener('ended', function () { a.currentTime = 0; paint(); });
+    btn.onclick = function () {
+      if (a.paused) { players.forEach(function (o) { if (o !== a) o.pause(); }); a.play(); } else a.pause();
+    };
+    slot.querySelector('.rc-ptrack').onclick = function (e) {
+      if (!a.duration) return;
+      var box = this.getBoundingClientRect();
+      a.currentTime = Math.max(0, Math.min(1, (e.clientX - box.left) / box.width)) * a.duration;
+    };
+    players.push(a);
+  });
+  if (closed) root.className = 'rc-closed';
+
+  // Stretch edge to edge, wherever the Squarespace block sits (the same fit as the pre-order page).
+  function fit() {
+    var sec = root.closest('section');
+    if (sec) {
+      Array.prototype.forEach.call(sec.querySelectorAll('.content-wrapper, .fluid-engine'), function (x) {
+        x.style.setProperty('padding-top', '0', 'important'); x.style.setProperty('padding-bottom', '0', 'important');
+      });
+      sec.style.setProperty('padding-top', '0', 'important'); sec.style.setProperty('padding-bottom', '0', 'important');
+    }
+    root.style.marginLeft = '0px';
+    root.style.marginLeft = -root.getBoundingClientRect().left + 'px';
+    root.style.width = document.documentElement.clientWidth + 'px';
+  }
+  fit(); addEventListener('resize', fit); addEventListener('load', fit); setTimeout(fit, 600);
+
+  // The step pills scroll within the page (a plain #link would leave it, because the site sets a base address).
+  Array.prototype.forEach.call(root.querySelectorAll('.rc-chip'), function (a) {
+    a.addEventListener('click', function (e) {
+      var el = document.getElementById(a.getAttribute('href').slice(1));
+      if (!el) return;
+      e.preventDefault();
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+  render();
+
+  // The purse is the crew's live point total, so it grows during the vote: re-read it every few minutes.
+  function loadPurse() {
+    if (!window.fetch) return;
+    fetch(BOARD + '?t=' + Math.floor(Date.now() / 120000))
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d && typeof d.crewTotal === 'number' && d.crewTotal !== basePurse) { basePurse = d.crewTotal; render(); } })
+      .catch(function () {});
+  }
+  loadPurse();
+  if (!closed) setInterval(loadPurse, 300000);
+  jsonp({ action: 'votecount' }, function (res) { $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
+})();
+</script>

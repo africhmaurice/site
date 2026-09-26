@@ -1,0 +1,38 @@
+<style>
+  /* The artwork is a real fixed background on this page (same technique as the Hunt page sections); the board
+     frame is transparent and lays its 90% ember wash over it. Phones and 900px and under scroll normally, like the Hunt page. */
+  .th-lb-wrap{width:100vw;position:relative;left:50%;margin-left:-50vw;overflow:hidden;z-index:2;
+    background:#c1330a url('https://africhmaurice.github.io/leaderboard/leaderboard-bg-storm.webp') center/cover no-repeat;background-attachment:fixed}
+  @media (max-width:900px),(hover:none){.th-lb-wrap{background-attachment:scroll}}
+</style>
+<style>
+#lb-top{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;padding:112px 16px 30px;background:#0b170f;position:relative;z-index:3;width:100vw;left:50%;margin-left:-50vw;box-sizing:border-box}
+#lb-top a{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.1em;color:#fff;text-decoration:none;background:#0f2e0a;border:1.5px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);padding:15px 30px;transition:transform .15s ease,background .15s ease}
+#lb-top a:hover{transform:scale(1.04);background:#1a4512}
+#lb-top a.red{background:#c1330a}
+#lb-top a.red:hover{background:#e04a12}
+@media (max-width:1240px){#lb-top{padding-top:76px}}
+@media (max-width:560px){#lb-top a{flex:1 1 100%;text-align:center}}
+</style>
+<div id="lb-top">
+  <a href="https://africhmaurice.github.io/site/preview-next/games.html" class="red">PLAY GAMES</a>
+  <a href="https://africhmaurice.github.io/site/preview-next/lootbox-clue.html">FIND A LOOT BOX</a>
+  <a href="https://africhmaurice.github.io/site/preview-next/the-treasure.html">SEE THE TREASURE</a>
+</div>
+<div class="th-lb-wrap">
+  <iframe id="th-leaderboard" src="https://africhmaurice.github.io/leaderboard/?v=9&amp;embed=1" title="Treasure Hunt Leaderboard" loading="lazy" allowtransparency="true" style="width:100%;height:1200px;border:0;display:block;background:transparent;color-scheme:normal;position:relative;z-index:2;pointer-events:auto"></iframe>
+</div>
+<script>
+  (function () {
+    var f = document.getElementById('th-leaderboard');
+    // A transformed Squarespace container would turn the fixed background back into a scrolling one.
+    var sec = f.closest('section');
+    for (var a = f.parentElement.parentElement; a && sec && sec.contains(a); a = a.parentElement) {
+      var cs = getComputedStyle(a);
+      if (cs.transform !== 'none' || cs.willChange.indexOf('transform') >= 0 || cs.filter !== 'none') { a.style.setProperty('transform', 'none', 'important'); a.style.setProperty('will-change', 'auto', 'important'); a.style.setProperty('filter', 'none', 'important'); }
+    }
+    window.addEventListener('message', function (e) {
+      if (e.source === f.contentWindow && e.data && e.data.thLeaderboardHeight) f.style.height = e.data.thLeaderboardHeight + 'px';
+    });
+  })();
+</script>

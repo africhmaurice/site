@@ -1,0 +1,805 @@
+<!-- Generated copy of squarespace-wordle.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
+<!-- ============================================================
+     DAILY WORD (SKYWORD) - a daily word game for the Cello's Gate Treasure Hunt.
+     From Sept 26 the words come from all of science fiction and fantasy.
+     Paste this whole thing into a Squarespace Code Block on its own page.
+
+     HOW THE WORDS WORK
+       One word per day, rotating at midnight America/New_York (EDT now,
+       EST after Nov 1 - i.e. always local midnight in New York).
+       WORDS[0] is the word for START_DATE and is shown as Word #0, the
+       early bird puzzle. WORDS[1] is the day after and is Word #1, and so
+       on, so the puzzle number always matches the position in the list.
+       As set up now: #0 plays Sept 20 2026 and the last word plays Nov 1.
+       Any length works; the grid and the letters resize themselves.
+       Six guesses either way. Three to eight letters reads best on a phone.
+       "hint" is optional. Leave it as "" to show no hint that day.
+
+       Words are base64 so the list is not readable to anyone who views the
+       page source - which is also why the plain words are not written in
+       the comments here. To encode one, open any browser console and run:
+           btoa('YOURWORD')
+       Or run the word list through the build script.
+       Letters only - accents and apostrophes are stripped (DE'GATE to DEGATE).
+
+     FULL WIDTH ON DESKTOP
+       Squarespace drops a code block inside a narrow content column. The
+       script pulls the green section out to the full window width and hangs
+       the menu off <body> so it stays pinned edge to edge. Nothing to set
+       up - it measures the window itself and re-measures on resize.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+html,body{margin:0 !important;padding:0 !important}
+
+/* ---- site header menu ---- */
+#hunt-nav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(12,35,8,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:18px 16px}
+#hunt-nav .mn-row{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:clamp(12px,1.8vw,30px)}
+#hunt-nav .mn-link{white-space:nowrap;color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.07em;text-decoration:none;text-shadow:0 1px 6px rgba(0,0,0,.55);transition:color .15s ease}
+#hunt-nav .mn-link:hover{color:#a2f590}
+#hunt-nav .mn-cta{border:2px solid #f3ead9;padding:8px clamp(10px,1.4vw,20px);background:rgba(12,26,8,.35);transition:transform .15s ease,background .15s ease}
+#hunt-nav .mn-cta:hover{background:#c1330a;color:#fff;transform:scale(1.04)}
+#hunt-nav .mn-drop{position:relative;display:flex}
+#hunt-nav .mn-dd{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:14px}
+#hunt-nav .mn-dd-in{background:rgba(9,23,7,.95);border:1px solid rgba(243,234,217,.25);min-width:170px;display:flex;flex-direction:column}
+#hunt-nav .mn-dd-in a{display:block;padding:13px 18px;color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.07em;text-decoration:none;white-space:nowrap}
+#hunt-nav .mn-dd-in a:hover{color:#a2f590;background:rgba(255,255,255,.06)}
+#hunt-nav .mn-drop:hover .mn-dd,#hunt-nav .mn-drop:focus-within .mn-dd{display:block}
+#hunt-nav .mn-drop-cta .mn-dd{left:auto;right:0;transform:none}
+#hunt-nav .mn-dd-in a.mn-all{border-top:1px solid rgba(243,234,217,.25)}
+#hunt-nav .mn-burger{display:none;width:46px;height:46px;margin:0 auto;align-items:center;justify-content:center;cursor:pointer}
+#hunt-nav-ov{display:none;position:fixed;inset:0;background:rgba(9,23,7,.97);z-index:10000;flex-direction:column;align-items:center;justify-content:center;gap:30px;padding:32px}
+#hunt-nav-ov a{color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:20px;letter-spacing:.08em;text-decoration:none}
+#hunt-nav-ov .mn-cta{border:2px solid #f3ead9;padding:12px 26px;background:rgba(12,26,8,.35);text-align:center}
+#hunt-nav-ov .mn-x{position:absolute;top:16px;right:16px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* Break out of Squarespace's content column. The script refines this to the
+   exact window width so the scrollbar never forces a sideways scroll. */
+#word-page{font-family:'Almarai',sans-serif;letter-spacing:0;color:#111;
+  position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow-x:hidden}
+#word-page *{box-sizing:border-box}
+.wv2:hover{background:#e04a12 !important;transform:scale(1.04) !important}
+
+/* ---- the backdrop ---- */
+/* 90% green wash over the neon street art. "fixed" is the parallax. */
+#daily-word{background:linear-gradient(178deg,rgba(10,35,8,.8) 0%,rgba(30,100,23,.8) 55%,rgba(63,163,47,.8) 100%),url(https://africhmaurice.github.io/site/assets/bg/neon-street-as1928158052.webp) center/cover;background-color:#0a2308;background-attachment:fixed}
+
+/* ---- the board ---- */
+.thw-wrap{max-width:560px;margin:0 auto}
+.thw-grid{display:grid;gap:var(--gap,9px);width:100%;max-width:calc(var(--n) * 78px);margin:0 auto;
+  font-size:clamp(18px,6vw,34px)} /* JS overrides gap and font-size to match the real tile size */
+.thw-row{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:var(--gap,9px)}
+.thw-tile{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+  font-family:'Almarai',sans-serif;font-weight:800;font-size:inherit;letter-spacing:.02em;line-height:1;
+  background:#fff;border:3px solid #111;color:#111;text-transform:uppercase;user-select:none;
+  transition:transform .12s ease}
+.thw-tile.pop{transform:scale(1.07)}
+.thw-tile.flip{transform:scaleY(.05);transition:transform .22s ease}
+/* Brand colours: emerald-700 = right letter, right spot; ember-700 = right
+   letter, wrong spot; dark ink (#213226, brand) = not in the word. The key above the board uses the same. */
+.thw-tile.correct{background:#268e62;border-color:#1a5e41;color:#fff}
+.thw-tile.present{background:#c53200;border-color:#912501;color:#fff}
+.thw-tile.absent{background:#213226;border-color:#0b170f;color:#fff}
+.thw-legend{display:flex;flex-direction:column;align-items:flex-start;gap:8px;width:100%;max-width:calc(var(--n) * 78px);margin:0 auto clamp(18px,3vw,26px);
+  font-weight:700;font-size:clamp(13px,1.6vw,15px);letter-spacing:.03em;color:#111}
+.thw-legend span{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.thw-legend i{display:inline-block;width:22px;height:22px;border:2px solid #111;flex:none}
+.thw-legend .correct{background:#268e62;border-color:#1a5e41}
+.thw-legend .present{background:#c53200;border-color:#912501}
+.thw-legend .absent{background:#213226;border-color:#0b170f}
+.thw-row.shake{animation:thwShake .42s}
+@keyframes thwShake{10%,90%{transform:translateX(-3px)}20%,80%{transform:translateX(5px)}30%,50%,70%{transform:translateX(-8px)}40%,60%{transform:translateX(8px)}}
+
+/* ---- the keyboard ---- */
+.thw-keys{margin:clamp(20px,4vw,30px) auto 0;max-width:560px}
+.thw-krow{display:flex;justify-content:center;gap:6px;margin-bottom:7px}
+.thw-key{flex:1 1 0;min-width:0;padding:14px 2px;cursor:pointer;touch-action:manipulation;
+  font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(12px,3.4vw,16px);letter-spacing:.04em;
+  background:#f3ead9;border:2px solid #111;color:#111;text-transform:uppercase;
+  transition:transform .12s ease,background .12s ease,color .12s ease}
+.thw-key:hover{transform:scale(1.06)}
+.thw-key:focus-visible{outline:3px solid #c53200;outline-offset:2px}
+.thw-key.wide{flex:1.9 1 0;font-size:clamp(10px,2.7vw,13px);letter-spacing:0;padding-left:1px;padding-right:1px}
+.thw-key.correct{background:#268e62;border-color:#1a5e41;color:#fff}
+.thw-key.present{background:#c53200;border-color:#912501;color:#fff}
+.thw-key.absent{background:#213226;border-color:#0b170f;color:#fff}
+
+/* ---- messages ---- */
+.thw-early{display:inline-block;background:#c53200;color:#fff;font-weight:700;font-size:clamp(11px,1.4vw,13px);letter-spacing:.09em;padding:5px 11px;margin-bottom:10px}
+.thw-toast{min-height:30px;text-align:center;font-weight:700;font-size:17px;letter-spacing:.05em;color:#c11212;margin:16px 0 0}
+.thw-result{display:none;border:3px solid #111;padding:clamp(24px,4vw,38px) clamp(18px,3vw,34px);margin:clamp(22px,4vw,34px) auto 0;text-align:center}
+.thw-result.win{background:#1e6417;border-color:#0d3309;color:#fff}
+.thw-result.lose{background:#fff;border-color:#111;color:#111}
+.thw-result .thw-bang{font-family:'Atomic Marker',cursive;font-size:clamp(40px,7vw,70px);line-height:1.05;margin:0 0 14px}
+.thw-result.win .thw-bang{color:#a2f590}
+.thw-result.lose .thw-bang{color:#c11212}
+.thw-result p{font-size:clamp(17px,2.2vw,22px);line-height:1.55;margin:0 auto;max-width:520px}
+.thw-answer{font-family:'Atomic Marker',cursive;font-size:1.5em;color:#c53200;letter-spacing:.03em;margin:0 .14em;display:inline-block}
+.thw-submit{display:inline-block;margin-top:24px;font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;
+  letter-spacing:.08em;text-decoration:none;color:#fff;background:#c1330a;border:2px solid #f3ead9;
+  padding:14px 30px;transition:transform .15s ease,background .15s ease}
+.thw-result .thw-quiet{font-size:clamp(14px,1.7vw,16px);margin-top:16px;opacity:.9}
+.thw-result .thw-quiet a{color:#fff;text-decoration:underline;cursor:pointer}
+.thw-submit[disabled]{opacity:.7;cursor:wait;transform:none !important}
+button.thw-submit{cursor:pointer}
+.thw-pts{display:inline-block;font-family:'Atomic Marker',cursive;font-size:clamp(30px,5vw,46px);color:#fff;background:#c1330a;border:2px solid #f3ead9;padding:6px 22px;margin-top:10px}
+.thw-form{max-width:380px;margin:20px auto 0;text-align:left}
+.thw-form label{display:block;font-weight:700;font-size:14px;letter-spacing:.06em;margin:12px 0 5px}
+.thw-form input,.thw-form select{width:100%;font-family:'Almarai',sans-serif;font-size:16px;padding:11px 12px;border:2px solid #111;background:#fff;color:#111;border-radius:0}
+.thw-form .thw-submit{width:100%;text-align:center}
+.thw-err{color:#ffd9c4;font-weight:700;min-height:1.4em;margin-top:10px !important;font-size:16px !important}
+.thw-next{text-align:center;font-weight:700;font-size:15px;letter-spacing:.08em;color:#607667;margin:26px 0 0}
+.thw-next strong{color:#c53200;font-size:18px}
+
+@media (max-width:900px){
+  #daily-word{background-attachment:scroll}
+  #hunt-nav{padding:10px 0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  #hunt-nav .mn-row{display:none}
+  #hunt-nav .mn-burger{display:flex}
+}
+@media (max-width:760px){
+  #word-page section[data-screen-label]{padding:88px 18px 56px !important}
+  .thw-keys{max-width:100%}
+  .thw-krow{gap:4px}
+  .thw-key{padding:15px 1px}
+}
+.thw-next{display:inline-block;margin-top:18px;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.08em;color:#fffffe !important;background:#c53200;border:2px solid #fffffe;padding:13px 24px;text-decoration:none !important;transition:transform .15s ease}.thw-next:hover{transform:scale(1.04);background:#ff4c0f}
+</style>
+
+<style>
+#hunt-nav .mn-row{justify-content:space-between;gap:clamp(8px,1.05vw,18px)}
+#hunt-nav .mn-link{font-size:clamp(10px,.8vw,13px);letter-spacing:.05em}
+#hunt-nav .mn-logo{display:flex;align-items:center;flex:none;margin-right:clamp(2px,.8vw,14px);transition:transform .15s ease}
+#hunt-nav .mn-logo:hover{transform:scale(1.05)}
+#hunt-nav .mn-logo img{height:clamp(30px,2.5vw,40px);width:auto;display:block;filter:drop-shadow(0 1px 6px rgba(0,0,0,.45))}
+@media (max-width:1240px){
+  #hunt-nav{padding:10px 0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  #hunt-nav .mn-row{display:none}
+  #hunt-nav .mn-burger{display:flex}
+}
+#hunt-nav-ov{gap:16px;overflow-y:auto;justify-content:flex-start;padding-top:84px}
+#hunt-nav-ov a{font-size:17px}
+#hunt-nav-ov .mn-ovlogo{position:absolute;top:18px;left:20px}
+#hunt-nav-ov .mn-ovlogo img{height:38px;width:auto;display:block}
+@media (min-height:760px){#hunt-nav-ov{justify-content:center;padding-top:32px}}
+</style>
+<nav id="hunt-nav">
+  <div class="mn-row">
+    <a href="https://africhmaurice.github.io/site/preview-next/home.html" class="mn-logo" aria-label="Maurice Africh home"><img src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
+    <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html" class="mn-link">THE HUNT</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html#tasks" class="mn-link">TASKS</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html#riddles" class="mn-link">RIDDLES</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/lootbox-clue.html" class="mn-link">CLUES</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/games.html" class="mn-link">GAMES</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html#rewards" class="mn-link">REWARDS</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/contests.html" class="mn-link">CONTESTS</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/leaderboard.html" class="mn-link">GLOBAL LEADERBOARD</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/loot.html" class="mn-link">LOOT BOX SCORECARD</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/questions.html" class="mn-link">QUESTIONS?</a>
+    <a href="https://africhmaurice.github.io/site/preview-next/red-city.html" class="mn-link" style="color:#ff4c0f">VOTE NOW!</a>
+    <div class="mn-drop mn-drop-cta">
+      <a href="https://africhmaurice.github.io/site/preview-next/preorder.html" class="mn-link mn-cta" aria-haspopup="true">PRE-ORDER CELLO'S GATE &#9662;</a>
+      <div class="mn-dd"><div class="mn-dd-in">
+        <a href="https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834" target="_blank" rel="noopener">BARNES &AMP; NOBLE</a>
+        <a href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399763073" target="_blank" rel="noopener">WATERSTONES</a>
+        <a href="https://www.amazon.com/Audible-Cellos-Gate/dp/B0GKZWW416/ref=tmm_aud_swatch_0?_encoding=UTF8&amp;dib_tag=se&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;qid=1770340593&amp;sr=8-1&amp;ascsubtag=srctok-d4f496760f7c524a&amp;btn_ref=srctok-d4f496760f7c524a" target="_blank" rel="noopener">AUDIBLE</a>
+        <a href="https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834/ref=sr_1_1?crid=279A8MV3ZYP0T&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;dib_tag=se&amp;keywords=cellos+gate&amp;qid=1770340593&amp;sprefix=cellos%27+gate%2Caps%2C179&amp;sr=8-1&amp;ascsubtag=srctok-f7d285c3c39c18b3&amp;btn_ref=srctok-f7d285c3c39c18b3" target="_blank" rel="noopener">AMAZON</a>
+        <a href="https://bookshop.org/p/books/cello-s-gate-maurice-africh/867e45638f69e94f?ean=9781668242834&amp;next=t" target="_blank" rel="noopener">BOOKSHOP.ORG</a>
+        <a href="https://africhmaurice.github.io/site/preview-next/preorder.html" class="mn-all">ALL RETAILERS &rarr;</a>
+      </div></div>
+    </div>
+  </div>
+  <div class="mn-burger" role="button" aria-label="Open menu" onclick="var o=document.getElementById('hunt-nav-ov');if(o.parentNode!==document.body){document.body.appendChild(o);}o.style.display='flex'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M3 6h18"></path><path d="M3 12h18"></path><path d="M3 18h18"></path></svg>
+  </div>
+</nav>
+<div id="hunt-nav-ov" onclick="if(event.target.tagName==='A'||event.target.closest('.mn-x'))this.style.display='none'">
+  <div class="mn-x" role="button" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M5 5l14 14"></path><path d="M19 5L5 19"></path></svg>
+  </div>
+  <a href="https://africhmaurice.github.io/site/preview-next/home.html" class="mn-ovlogo" aria-label="Maurice Africh home"><img src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
+  <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html">THE HUNT</a>
+  <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html#tasks">TASKS</a>
+  <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html#riddles">RIDDLES</a>
+  <a href="https://africhmaurice.github.io/site/preview-next/lootbox-clue.html">CLUES</a>
+  <a href="https://africhmaurice.github.io/site/preview-next/games.html">GAMES</a>
+  <a href="https://africhmaurice.github.io/site/preview-next/the-hunt.html#rewards">REWARDS</a>
+  <a href="https://africhmaurice.github.io/site/preview-next/contests.html">CONTESTS</a>
+  <a href="https://africhmaurice.github.io/site/preview-next/leaderboard.html">GLOBAL LEADERBOARD</a>
+  <a href="https://africhmaurice.github.io/site/preview-next/loot.html">LOOT BOX SCORECARD</a>
+  <a href="https://africhmaurice.github.io/site/preview-next/questions.html">QUESTIONS?</a>
+  <a href="https://africhmaurice.github.io/site/preview-next/red-city.html" style="color:#ff4c0f">VOTE NOW!</a>
+  <a href="https://africhmaurice.github.io/site/preview-next/preorder.html" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
+</div>
+
+<div id="word-page">
+<section data-screen-label="Skyword" id="daily-word" style="position:relative;overflow-x:hidden;padding:150px 72px 100px">
+
+  <div style="text-align:center;max-width:1000px;margin:0 auto clamp(30px,4vw,46px)">
+    <style>.hg-tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:0 auto 38px;position:relative;z-index:2}.hg-tabs a{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(13px,1.2vw,16px);letter-spacing:.08em;text-decoration:none;border:2px solid #fffffe;padding:11px 24px;color:#fffffe;background:rgba(11,23,15,.4);transition:background .15s ease,color .15s ease}.hg-tabs a:hover{background:rgba(255,255,255,.14);color:#fffffe}.hg-tabs a[hidden]{display:none!important}.hg-tabs a.on,.hg-tabs a.on:hover{background:#fffffe;color:#111}@media (max-width:560px){.hg-tabs{gap:6px}.hg-tabs a{padding:8px 9px;font-size:11.5px;letter-spacing:.04em}}</style>
+    <nav class="hg-tabs" data-on="skyword" aria-label="Daily games">
+      <a href="https://africhmaurice.github.io/site/preview-next/games.html" data-k="skyword">SKYWORD</a>
+      <a href="https://africhmaurice.github.io/site/preview-next/sort-the-shelf.html" data-k="shelf_sort">SORT THE SHELF</a>
+      <a href="https://africhmaurice.github.io/site/preview-next/book-icons.html" data-k="emoji_reads">BOOK ICONS</a>
+      <a href="https://africhmaurice.github.io/site/preview-next/crossword.html" data-k="crossword" data-unlock="50000" hidden>CROSSWORD</a>
+    </nav>
+    <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++)if((+d.crewTotal||0)>=+lk[j].getAttribute('data-unlock')){lk[j].hidden=false;if(lk[j].hasAttribute('data-soon'))lk[j].textContent='CROSSWORD (COMING SOON!)';}}).catch(function(){});})();</script>
+    <script>(function(){function fit(){var t=document.querySelectorAll('.hg-tag');for(var i=0;i<t.length;i++){var e=t[i],w=e.parentNode.clientWidth;e.style.fontSize='';var fs=parseFloat(getComputedStyle(e).fontSize);while(e.scrollWidth>w&&fs>10){fs-=.5;e.style.fontSize=fs+'px';}}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fit);else setTimeout(fit,0);window.addEventListener('load',fit);window.addEventListener('resize',fit);})();</script>
+    <div class="m-eyebrow" style="font-family:'Atomic Marker',cursive;font-size:clamp(24px,3.4vw,44px);color:#ffd9c4;margin-bottom:12px">The Treasure Hunt</div>
+    <h1 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(52px,9vw,124px);line-height:1.04;color:#fff;margin:0 0 22px">SKYWORD</h1>
+    <p class="hg-tag" style="white-space:nowrap;font-weight:700;font-size:clamp(15px,1.8vw,19px);letter-spacing:.05em;line-height:1.6;color:#ffd9c4;text-shadow:0 1px 6px rgba(0,0,0,.4);margin:0 auto">One word from all of SFF, six guesses. New every midnight EDT.</p>
+  </div>
+
+  <main style="background:rgba(255,255,255,.94);border:3px solid #111;max-width:780px;margin:0 auto;padding:clamp(26px,4vw,48px) clamp(16px,3.5vw,44px) clamp(28px,4vw,44px)">
+
+    <div id="thw-badge" style="text-align:center"></div>
+    <div id="thw-stamp" style="text-align:center;font-weight:700;font-size:clamp(12px,1.5vw,14px);letter-spacing:.09em;text-transform:uppercase;color:#607667;margin:0 0 6px">&nbsp;</div>
+    <p id="thw-note" style="text-align:center;font-weight:700;font-size:clamp(14px,1.7vw,16px);line-height:1.5;color:#c53200;max-width:560px;margin:4px auto 0">Starting September 26, Skyword words come from all of science fiction and fantasy, not just <em>Cello&rsquo;s Gate</em>!</p>
+    <div id="thw-hint" style="display:none;text-align:center;font-size:clamp(15px,1.9vw,19px);line-height:1.5;color:#111;margin:0 0 22px"></div>
+    <div id="thw-spacer" style="height:22px"></div>
+
+    <div class="thw-wrap">
+      <div class="thw-legend" id="thw-legend" aria-label="Colour key">
+        <span><i class="correct"></i>Right letter, right spot</span>
+        <span><i class="present"></i>Right letter, wrong spot</span>
+        <span><i class="absent"></i>Not in the word</span>
+      </div>
+      <div class="thw-grid" id="thw-grid" role="group" aria-label="Guess grid"></div>
+      <p class="thw-toast" id="thw-toast" role="status" aria-live="polite"></p>
+      <div class="thw-keys" id="thw-keys" aria-label="Keyboard"></div>
+      <div class="thw-result" id="thw-result" aria-live="polite"></div>
+      <p class="thw-next" id="thw-next"></p>
+    </div>
+
+  </main>
+</section>
+</div>
+
+<script>
+// ---- full width, wherever Squarespace puts this block ------------------
+(function () {
+  var page = document.getElementById('word-page'),
+      nav = document.getElementById('hunt-nav'),
+      ov = document.getElementById('hunt-nav-ov');
+
+  // A transformed or filtered Squarespace ancestor would trap position:fixed
+  // and pin the menu to the content column instead of the window. Hanging the
+  // menu off <body> keeps it edge to edge no matter where the block lands.
+  if (nav && nav.parentNode !== document.body) document.body.appendChild(nav);
+  if (ov && ov.parentNode !== document.body) document.body.appendChild(ov);
+
+  // 100vw counts the scrollbar and would force a sideways scroll, so measure
+  // the real window instead: reset, read where the column starts, pull left.
+  function fullBleed() {
+    if (!page) return;
+    page.style.marginLeft = '0';
+    page.style.width = 'auto';
+    var left = page.getBoundingClientRect().left;
+    page.style.width = document.documentElement.clientWidth + 'px';
+    page.style.marginLeft = (-left) + 'px';
+  }
+  fullBleed();
+  window.addEventListener('resize', fullBleed);
+  window.addEventListener('load', fullBleed);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fullBleed);
+})();
+
+// ---- the game -----------------------------------------------------------
+(function () {
+  /* ============================================================
+     EDIT HERE - the word list and the day it starts.
+     WORDS[0] plays on START_DATE as Word #0, WORDS[1] as Word #1, etc.
+     43 words: #0 on Sept 20 2026 through #42 on Nov 1 2026.
+     ============================================================ */
+  var START_DATE = '2026-09-20';   // the date WORDS[0] is played, in New York
+  var WORDS = [
+    { w: 'RlJFTlM=', hint: '' }, // #0  Sep 20, 5 letters
+    { w: 'QUlSU0hJUA==', hint: '' }, // #1  Sep 21, 7 letters
+    { w: 'R0hBTg==', hint: '' }, // #2  Sep 22, 4 letters
+    { w: 'R09NQQ==', hint: '' }, // #3  Sep 23, 4 letters
+    { w: 'VFJFTkNI', hint: '' }, // #4  Sep 24, 6 letters
+    { w: 'UElSQVRF', hint: '' }, // #5  Sep 25, 6 letters
+    { w: 'RFJBR09O', hint: '' }, // #6  Sep 26, 6 letters
+    { w: 'SE9CQklU', hint: '' }, // #7  Sep 27, 6 letters
+    { w: 'V0FSUA==', hint: '' }, // #8  Sep 28, 4 letters
+    { w: 'U1BJQ0U=', hint: '' }, // #9  Sep 29, 5 letters
+    { w: 'V0laQVJE', hint: '' }, // #10 Sep 30, 6 letters
+    { w: 'Uk9CT1Q=', hint: '' }, // #11 Oct 01, 5 letters
+    { w: 'R1JJTURBUks=', hint: '' }, // #12 Oct 02, 8 letters
+    { w: 'R0FMQVhZ', hint: '' }, // #13 Oct 03, 6 letters
+    { w: 'RElSRVdPTEY=', hint: '' }, // #14 Oct 04, 8 letters
+    { w: 'UE9SVEFM', hint: '' }, // #15 Oct 05, 6 letters
+    { w: 'R09MRU0=', hint: '' }, // #16 Oct 06, 5 letters
+    { w: 'QU5EUk9JRA==', hint: '' }, // #17 Oct 07, 7 letters
+    { w: 'S1JBS0VO', hint: '' }, // #18 Oct 08, 6 letters
+    { w: 'TUFHRQ==', hint: '' }, // #19 Oct 09, 4 letters
+    { w: 'U1RBUlNISVA=', hint: '' }, // #20 Oct 10, 8 letters
+    { w: 'V1lWRVJO', hint: '' }, // #21 Oct 11, 6 letters
+    { w: 'TVVUQU5U', hint: '' }, // #22 Oct 12, 6 letters
+    { w: 'UVVFU1Q=', hint: '' }, // #23 Oct 13, 5 letters
+    { w: 'Q1lCT1JH', hint: '' }, // #24 Oct 14, 6 letters
+    { w: 'UEhPRU5JWA==', hint: '' }, // #25 Oct 15, 7 letters
+    { w: 'V1lSTQ==', hint: '' }, // #26 Oct 16, 4 letters
+    { w: 'R1JJRkZJTg==', hint: '' }, // #27 Oct 17, 7 letters
+    { w: 'TkVCVUxB', hint: '' }, // #28 Oct 18, 6 letters
+    { w: 'RUxWRU4=', hint: '' }, // #29 Oct 19, 5 letters
+    { w: 'TUFHSUM=', hint: '' }, // #30 Oct 20, 5 letters
+    { w: 'T1JD', hint: '' }, // #31 Oct 21, 3 letters
+    { w: 'QkxBREU=', hint: '' }, // #32 Oct 22, 5 letters
+    { w: 'TElUUlBH', hint: '' }, // #33 Oct 23, 6 letters
+    { w: 'R09CTElO', hint: '' }, // #34 Oct 24, 6 letters
+    { w: 'V0FSRw==', hint: '' }, // #35 Oct 25, 4 letters
+    { w: 'UlVORVM=', hint: '' }, // #36 Oct 26, 5 letters
+    { w: 'V0VSRVdPTEY=', hint: '' }, // #37 Oct 27, 8 letters
+    { w: 'VkFNUElSRQ==', hint: '' }, // #38 Oct 28, 7 letters
+    { w: 'QkFOU0hFRQ==', hint: '' }, // #39 Oct 29, 7 letters
+    { w: 'V1JBSVRI', hint: '' }, // #40 Oct 30, 6 letters
+    { w: 'V0lUQ0g=', hint: '' }, // #41 Oct 31, 5 letters
+    { w: 'VFJFQVNVUkU=', hint: '' }  // #42 Nov 01, 8 letters
+  ];
+  var SUBMIT_URL = 'https://africhmaurice.github.io/site/preview-next/points.html';
+  var TRIES = 6;
+  /* A win is claimed straight from the page: the Loot Boxes web app checks the
+     guesses against its own copy of WORDS (apps-script/lootbox.gs) and records
+     it in its Games tab, and the twice-daily run awards it. Same URL as
+     ENDPOINT in squarespace-lootbox.html. Set to '' to go back to "screenshot
+     this and submit it". */
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var POINTS = 25;
+  /* ==================== stop editing ==================== */
+
+  var TZ = 'America/New_York';
+  var gridEl = document.getElementById('thw-grid'),
+      keysEl = document.getElementById('thw-keys'),
+      toastEl = document.getElementById('thw-toast'),
+      resultEl = document.getElementById('thw-result'),
+      badgeEl = document.getElementById('thw-badge'),
+      stampEl = document.getElementById('thw-stamp'),
+      hintEl = document.getElementById('thw-hint'),
+      spacerEl = document.getElementById('thw-spacer'),
+      nextEl = document.getElementById('thw-next');
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // Letters only, so accents and punctuation never block a guess.
+  function clean(s) {
+    s = String(s || '').toUpperCase();
+    if (s.normalize) s = s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+    return s.replace(/[^A-Z]/g, '');
+  }
+
+  function decode(b64) {
+    try { return clean(atob(b64)); } catch (e) { return ''; }
+  }
+
+  // The calendar date in New York right now. It rolls over at local midnight,
+  // so it is EDT through Nov 1 and EST after, with nothing to change here.
+  function parts() {
+    var f = new Intl.DateTimeFormat('en-US', {
+      timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+    }).formatToParts(new Date());
+    var o = {};
+    for (var i = 0; i < f.length; i++) o[f[i].type] = f[i].value;
+    if (o.hour === '24') o.hour = '00';
+    return o;
+  }
+  function today() { var p = parts(); return p.year + '-' + p.month + '-' + p.day; }
+  function dayNum(ds) { var p = ds.split('-'); return Math.round(Date.UTC(+p[0], +p[1] - 1, +p[2]) / 86400000); }
+
+  function prettyDate(ds) {
+    var p = ds.split('-');
+    return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).toLocaleDateString('en-US', {
+      timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+    });
+  }
+
+  // ---- today's puzzle -------------------------------------------------
+  var dateStr = today(),
+      index = dayNum(dateStr) - dayNum(START_DATE),
+      entry = (index >= 0 && index < WORDS.length) ? WORDS[index] : null,
+      answer = entry ? decode(entry.w) : '',
+      N = answer.length,
+      KEY = 'thWordle:' + dateStr;
+
+  var guesses = [], over = false, won = false, current = '', claimed = false;
+
+  function notLive(msg) {
+    gridEl.style.display = 'none';
+    keysEl.style.display = 'none';
+    nextEl.style.display = 'none';
+    spacerEl.style.display = 'none';
+    stampEl.innerHTML = '&nbsp;';
+    resultEl.className = 'thw-result lose';
+    resultEl.style.display = 'block';
+    resultEl.innerHTML = msg;
+  }
+
+  if (!entry || !N) {
+    if (index < 0) {
+      notLive('<div class="thw-bang">NOT YET!</div><p>The first Daily Word unlocks on <span class="thw-answer">' +
+        esc(prettyDate(START_DATE)) + '</span>. Sharpen your quills.</p>');
+    } else {
+      notLive('<div class="thw-bang">THAT IS ALL OF THEM!</div><p>Every Daily Word has been played. Keep an eye on the hunt &mdash; more are coming.</p>');
+    }
+    return;
+  }
+
+  // ---- saved progress -------------------------------------------------
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (saved && saved.a === answer && saved.g) { guesses = saved.g; claimed = !!saved.c; }
+    // Yesterday's boards are no use to anyone.
+    for (var i = localStorage.length - 1; i >= 0; i--) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf('thWordle:') === 0 && k !== KEY) localStorage.removeItem(k);
+    }
+  } catch (e) { /* private browsing - the board just will not persist */ }
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify({ a: answer, g: guesses, c: claimed })); } catch (e) {}
+  }
+
+  // Who this browser belongs to. The loot box page saves the same record under
+  // the same key, and both pages live on mauriceafrich.com, so a finder who has
+  // opened a loot box is never asked again.
+  var ME = 'thLoot:me';
+  function loadMe() { try { return JSON.parse(localStorage.getItem(ME) || 'null') || {}; } catch (e) { return {}; } }
+  function saveMe(v) { try { localStorage.setItem(ME, JSON.stringify(v)); } catch (e) {} }
+  var me = loadMe();
+
+  // ---- scoring --------------------------------------------------------
+  // Two passes so repeated letters are marked the way Wordle marks them:
+  // exact positions claim their letter first, the rest take what is left over.
+  function score(guess) {
+    var res = [], used = [], i, j;
+    for (i = 0; i < N; i++) { res.push('absent'); used.push(false); }
+    for (i = 0; i < N; i++) if (guess.charAt(i) === answer.charAt(i)) { res[i] = 'correct'; used[i] = true; }
+    for (i = 0; i < N; i++) {
+      if (res[i] === 'correct') continue;
+      for (j = 0; j < N; j++) {
+        if (!used[j] && guess.charAt(i) === answer.charAt(j)) { res[i] = 'present'; used[j] = true; break; }
+      }
+    }
+    return res;
+  }
+
+  // ---- building the board ---------------------------------------------
+  gridEl.style.setProperty('--n', N);
+  document.getElementById('thw-legend').style.setProperty('--n', N);   // the key lines up with the board's left edge
+  var rows = [];
+  for (var r = 0; r < TRIES; r++) {
+    var row = document.createElement('div');
+    row.className = 'thw-row';
+    row.style.setProperty('--n', N);
+    for (var c = 0; c < N; c++) {
+      var t = document.createElement('div');
+      t.className = 'thw-tile';
+      t.setAttribute('role', 'img');
+      t.setAttribute('aria-label', 'empty');
+      row.appendChild(t);
+    }
+    gridEl.appendChild(row);
+    rows.push(row);
+  }
+
+  // A tile is only as wide as the panel allows, so the gaps tighten and the
+  // letters are sized from the tile itself. An eleven-letter word on a phone
+  // stays readable this way.
+  function sizeTiles() {
+    var narrow = window.innerWidth < 600;
+    var gap = N >= 10 ? (narrow ? 3 : 5) : N >= 8 ? (narrow ? 5 : 7) : (narrow ? 7 : 9);
+    gridEl.style.setProperty('--gap', gap + 'px');
+    var w = rows[0].children[0].getBoundingClientRect().width;
+    if (w) gridEl.style.fontSize = Math.max(11, Math.min(34, w * 0.52)) + 'px';
+  }
+  sizeTiles();
+  window.addEventListener('resize', sizeTiles);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeTiles);
+
+  var KEY_ROWS = ['QWERTYUIOP', 'ASDFGHJKL', '↵ZXCVBNM⌫'];
+  var keyEls = {};
+  KEY_ROWS.forEach(function (rowStr) {
+    var kr = document.createElement('div');
+    kr.className = 'thw-krow';
+    rowStr.split('').forEach(function (ch) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'thw-key' + (ch === '↵' || ch === '⌫' ? ' wide' : '');
+      b.textContent = ch === '↵' ? 'ENTER' : (ch === '⌫' ? 'DEL' : ch);
+      b.setAttribute('aria-label', ch === '↵' ? 'Enter' : (ch === '⌫' ? 'Delete' : ch));
+      b.onclick = function () {
+        if (ch === '↵') submit();
+        else if (ch === '⌫') back();
+        else letter(ch);
+      };
+      if (ch !== '↵' && ch !== '⌫') keyEls[ch] = b;
+      kr.appendChild(b);
+    });
+    keysEl.appendChild(kr);
+  });
+
+  var STATE_RANK = { absent: 1, present: 2, correct: 3 };
+  function markKey(ch, state) {
+    var b = keyEls[ch];
+    if (!b) return;
+    var now = b.className.indexOf('correct') > -1 ? 'correct'
+            : b.className.indexOf('present') > -1 ? 'present'
+            : b.className.indexOf('absent') > -1 ? 'absent' : null;
+    if (now && STATE_RANK[now] >= STATE_RANK[state]) return;
+    b.className = 'thw-key' + (b.className.indexOf('wide') > -1 ? ' wide' : '') + ' ' + state;
+  }
+
+  function paintRow(r, guess, states, animate) {
+    var tiles = rows[r].children;
+    for (var i = 0; i < N; i++) {
+      (function (i) {
+        var tile = tiles[i];
+        function apply() {
+          tile.textContent = guess.charAt(i);
+          tile.className = 'thw-tile ' + states[i];
+          tile.setAttribute('aria-label', guess.charAt(i) + ', ' +
+            (states[i] === 'correct' ? 'in the word and in the right spot'
+             : states[i] === 'present' ? 'in the word but the wrong spot'
+             : 'not in the word'));
+          markKey(guess.charAt(i), states[i]);
+        }
+        if (!animate) { apply(); return; }
+        setTimeout(function () {
+          tile.className = 'thw-tile flip';
+          tile.textContent = guess.charAt(i);
+          setTimeout(apply, 220);
+        }, i * 190);
+      })(i);
+    }
+  }
+
+  function drawCurrent() {
+    var row = rows[guesses.length];
+    if (!row) return;
+    var tiles = row.children;
+    for (var i = 0; i < N; i++) {
+      var ch = current.charAt(i) || '';
+      tiles[i].textContent = ch;
+      tiles[i].className = 'thw-tile' + (ch && i === current.length - 1 ? ' pop' : '');
+      tiles[i].setAttribute('aria-label', ch || 'empty');
+    }
+    setTimeout(function () {
+      for (var j = 0; j < N; j++) tiles[j].className = 'thw-tile';
+    }, 120);
+  }
+
+  var toastTimer = null;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.textContent = ''; }, 2200);
+  }
+
+  function letter(ch) {
+    if (over || current.length >= N) return;
+    current += ch;
+    drawCurrent();
+  }
+  function back() {
+    if (over || !current.length) return;
+    current = current.slice(0, -1);
+    drawCurrent();
+  }
+  function submit() {
+    if (over) return;
+    var row = rows[guesses.length];
+    if (current.length < N) {
+      row.className = 'thw-row shake';
+      setTimeout(function () { row.className = 'thw-row'; }, 430);
+      toast(N - current.length === 1 ? 'One more letter!' : 'Needs ' + N + ' letters!');
+      return;
+    }
+    var guess = current, r = guesses.length;
+    guesses.push(guess);
+    current = '';
+    save();
+    paintRow(r, guess, score(guess), true);
+    setTimeout(function () {
+      if (guess === answer) { over = true; won = true; showResult(); }
+      else if (guesses.length >= TRIES) { over = true; won = false; showResult(); }
+    }, N * 190 + 300);
+  }
+
+  function showResult() {
+    if (won) {
+      resultEl.className = 'thw-result win';
+      if (!ENDPOINT) {
+        resultEl.innerHTML =
+          '<div class="thw-bang">CONGRATS!</div>' +
+          '<p>Screenshot this and submit it for 25 points in the Treasure Hunt!</p>' +
+          '<a class="thw-submit wv2" href="' + esc(SUBMIT_URL) + '">SUBMIT YOUR POINTS</a>';
+      } else if (claimed) showClaimed('new');
+      else if (me.email) showClaimButton();
+      else showClaimForm();
+    } else {
+      resultEl.className = 'thw-result lose';
+      resultEl.innerHTML =
+        '<div class="thw-bang">GHANDAMMIT!</div>' +
+        '<p>The word was <span class="thw-answer">' + esc(answer) + '</span>. ' +
+        'Better luck next time! Come back tomorrow for a new word.</p>';
+    }
+    resultEl.style.display = 'block';
+  }
+
+  // ---- claiming the points --------------------------------------------
+  var WIN = '<div class="thw-bang">CONGRATS!</div>';
+
+  function showClaimButton() {
+    resultEl.innerHTML = WIN +
+      '<p>You cracked it. Claim your ' + POINTS + ' points for today.</p>' +
+      '<button type="button" class="thw-submit wv2" id="thw-claim">CLAIM ' + POINTS + ' POINTS</button>' +
+      '<p class="thw-quiet">Claiming as ' + esc(me.first_name || me.email) + '. <a id="thw-notme">Not you?</a></p>' +
+      '<p class="thw-err" id="thw-err"></p>';
+    document.getElementById('thw-claim').onclick = claim;
+    document.getElementById('thw-notme').onclick = function () {
+      try { localStorage.removeItem(ME); } catch (e) {}
+      me = {};
+      showClaimForm();
+    };
+  }
+
+  // The same questions the loot box page asks, saved the same way.
+  function showClaimForm() {
+    resultEl.innerHTML = WIN +
+      '<p>Tell the Captain who you are and your ' + POINTS + ' points go straight to the leaderboard. ' +
+      'Only the first time &mdash; after this it is one click.</p>' +
+      '<div class="thw-form">' +
+      '<label for="thw-first">First name</label><input id="thw-first" autocomplete="given-name">' +
+      '<label for="thw-email">Email you use for the hunt</label><input id="thw-email" type="email" autocomplete="email" inputmode="email">' +
+      '<label for="thw-handle">Social handle</label><input id="thw-handle" placeholder="@yourname" autocomplete="off">' +
+      '<label for="thw-platform">Where that handle lives</label>' +
+      '<select id="thw-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option>' +
+      '<option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option>' +
+      '<option>Discord</option><option>Bluesky</option><option>Substack</option></select>' +
+      '<label for="thw-country">Country</label>' +
+      '<select id="thw-country"><option value="">Pick one</option><option>United States</option>' +
+      '<option>United Kingdom</option><option value="__other">Somewhere else</option></select>' +
+      '<input id="thw-other" placeholder="Which country?" style="display:none;margin-top:8px">' +
+      '<button type="button" class="thw-submit wv2" id="thw-claim">CLAIM ' + POINTS + ' POINTS</button>' +
+      '<p class="thw-err" id="thw-err"></p>' +
+      '</div>';
+    var country = document.getElementById('thw-country'), other = document.getElementById('thw-other');
+    country.onchange = function () {
+      other.style.display = country.value === '__other' ? 'block' : 'none';
+      if (country.value === '__other') other.focus();
+    };
+    document.getElementById('thw-claim').onclick = function () {
+      var err = document.getElementById('thw-err');
+      var person = {
+        first_name: document.getElementById('thw-first').value.trim(),
+        email: document.getElementById('thw-email').value.trim(),
+        handle: document.getElementById('thw-handle').value.trim(),
+        platform: document.getElementById('thw-platform').value,
+        country: country.value === '__other' ? other.value.trim() : country.value
+      };
+      if (!person.first_name) return (err.textContent = 'A first name, please.');
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(person.email)) return (err.textContent = 'That email does not look right.');
+      if (!person.country) return (err.textContent = 'Which country are you hunting from?');
+      err.textContent = '';
+      me = person;
+      saveMe(me);
+      claim();
+    };
+  }
+
+  function claim() {
+    var btn = document.getElementById('thw-claim'), err = document.getElementById('thw-err');
+    btn.disabled = true;
+    btn.textContent = 'CLAIMING...';
+    send({ action: 'game', game: 'daily_word', day: dateStr, guesses: guesses.join(','),
+           email: me.email, first_name: me.first_name, handle: me.handle,
+           platform: me.platform, country: me.country }, function (res) {
+      if (res && res.ok) {
+        claimed = true;
+        save();
+        return showClaimed(res.status);
+      }
+      btn.disabled = false;
+      btn.textContent = 'TRY AGAIN';
+      var why = {
+        stale: 'That puzzle has closed &mdash; only today\'s word pays out.',
+        closed: 'The hunt is over, so the Daily Word no longer earns points.',
+        email: 'That email does not look right.',
+        unsolved: 'The Captain could not match your answer to today\'s word.'
+      }[res && res.error] || 'The ship is slow today. Give it another go in a moment.';
+      err.innerHTML = why + ' Or <a href="' + esc(SUBMIT_URL) + '" style="color:#fff">submit a screenshot</a> instead.';
+    });
+  }
+
+  function showClaimed(status) {
+    resultEl.innerHTML = WIN +
+      '<div class="thw-pts">+' + POINTS + ' POINTS</div>' +
+      '<p class="thw-quiet">' + (status === 'already'
+        ? 'Already claimed for today &mdash; no need to submit anything.'
+        : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>' +
+      '<a class="thw-next" href="https://africhmaurice.github.io/site/preview-next/sort-the-shelf.html">CONGRATS! PLAY SORT THE SHELF</a>';
+  }
+
+  // Same round trip as the loot box page: a simple POST, JSONP if that is
+  // blocked, and one quiet retry because Apps Script is sometimes slow.
+  function send(payload, done, attempt) {
+    attempt = attempt || 1;
+    var settled = false;
+    var finish = function (res) {
+      if (settled) return;
+      settled = true;
+      var flaky = !res || (!res.ok && (res.error === 'network' || res.error === 'server'));
+      if (flaky && attempt < 2) return setTimeout(function () { send(payload, done, attempt + 1); }, 1500);
+      done(res);
+    };
+    try {
+      fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(payload) })
+        .then(function (r) { return r.json(); })
+        .then(finish)
+        .catch(function () { jsonp(payload, finish); });
+    } catch (e) { jsonp(payload, finish); }
+  }
+
+  function jsonp(payload, done) {
+    var name = 'thwcb' + Math.random().toString(36).slice(2);
+    var q = ['callback=' + name];
+    for (var k in payload) if (payload[k] != null && payload[k] !== '') {
+      q.push(encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]));
+    }
+    var s = document.createElement('script');
+    var timer = setTimeout(function () { cleanup(); done({ ok: false, error: 'network' }); }, 30000);
+    function cleanup() { clearTimeout(timer); delete window[name]; if (s.parentNode) s.parentNode.removeChild(s); }
+    window[name] = function (res) { cleanup(); done(res); };
+    s.onerror = function () { cleanup(); done({ ok: false, error: 'network' }); };
+    s.src = ENDPOINT + '?' + q.join('&');
+    document.body.appendChild(s);
+  }
+
+  // ---- replay whatever was already guessed today ----------------------
+  for (var g = 0; g < guesses.length; g++) paintRow(g, guesses[g], score(guesses[g]), false);
+  if (guesses[guesses.length - 1] === answer) { over = true; won = true; showResult(); }
+  else if (guesses.length >= TRIES) { over = true; won = false; showResult(); }
+
+  // The date and word number ride along in every screenshot, so it is easy to
+  // tell which day a submitted picture is from. Word #0 is the early bird.
+  if (index === 0) badgeEl.innerHTML = '<span class="thw-early">EARLY BIRD PUZZLE</span>';
+  stampEl.innerHTML = esc(prettyDate(dateStr)) +
+    ' <span style="white-space:nowrap">· Word #' + index + '</span>';
+  if (entry.hint) {
+    hintEl.innerHTML = '<strong>Hint:</strong> ' + esc(entry.hint);
+    hintEl.style.display = 'block';
+    spacerEl.style.display = 'none';
+  }
+
+  // ---- typing ---------------------------------------------------------
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+    if (e.key === 'Enter') { e.preventDefault(); submit(); }
+    else if (e.key === 'Backspace') { e.preventDefault(); back(); }
+    else if (/^[a-zA-Z]$/.test(e.key)) { e.preventDefault(); letter(e.key.toUpperCase()); }
+  });
+
+  // ---- countdown to the next word -------------------------------------
+  function tick() {
+    if (today() !== dateStr) { location.reload(); return; }
+    var p = parts();
+    var left = 86400 - (+p.hour * 3600 + +p.minute * 60 + +p.second);
+    var h = Math.floor(left / 3600), m = Math.floor(left % 3600 / 60), s = left % 60;
+    nextEl.innerHTML = 'NEXT WORD IN <strong>' + h + 'h ' + ('0' + m).slice(-2) + 'm ' + ('0' + s).slice(-2) + 's</strong>';
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+<!-- END OF FILE - if you cannot find this comment after pasting, the paste was truncated -->
