@@ -16,8 +16,13 @@
        (localStorage thLoot:me), so a returning hunter only picks a task and
        adds a screenshot.
 
-       Land on #riddle (or ?riddle) to open on the riddle tab, which is what
-       the /solve link should point at.
+       On /solve (or with #riddle / ?riddle) it opens as the riddle form.
+
+     LOOKS
+       Matches the Squarespace forms it replaces: /points is green (#1a5e41
+       wash, #268e62 lines), /solve is rust (#c53200), each over its own
+       picture, with white panels, 2px outlined fields and a solid button.
+       The wording of each question is theirs.
 
        The task text sent to the sheet is what `npm run import` classifies, so
        keep TASKS' `send` wording in step with config/rules.json's match words.
@@ -51,65 +56,72 @@ html,body{margin:0 !important;padding:0 !important}
 #hunt-nav-ov .mn-cta{border:2px solid #f3ead9;padding:12px 26px;background:rgba(12,26,8,.35);text-align:center}
 #hunt-nav-ov .mn-x{position:absolute;top:16px;right:16px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 
-#sub-page{font-family:'Almarai',sans-serif;letter-spacing:0;color:#111;
+/* ---- the page: the Squarespace form look, green for points, rust for riddles ---- */
+#sub-page{--acc:#268e62;--wash:rgba(26,94,65,.9);--ink:#0b170f;--paper:#fafafa;
+  --pic:url("https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/549ac65b-0086-428a-a246-95169ef198fa/AdobeStock_227243151.jpeg?format=1500w");
+  font-family:'Almarai',sans-serif;letter-spacing:0;color:var(--ink);
   position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow-x:hidden}
+#sub-page.riddle{--acc:#c53200;--wash:rgba(197,50,0,.9);
+  --pic:url("https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/418aa7cc-9c02-41a8-8740-fccf00cf1141/solve-reactor-hall.jpg?format=1500w")}
 #sub-page *{box-sizing:border-box}
-
-/* ---- the backdrop: the loot box painting under the rust wash ---- */
-#submit{position:relative;overflow-x:hidden;background:#3d0e03}
-#submit::before{content:"";position:absolute;inset:0;z-index:0;
-  background:url("https://africhmaurice.github.io/leaderboard/loot/bg.jpg") center center/cover fixed no-repeat}
-#submit::after{content:"";position:absolute;inset:0;z-index:1;
-  background:linear-gradient(178deg,rgba(74,18,4,.9) 0%,rgba(193,51,10,.9) 62%,rgba(193,51,10,.9) 100%)}
+#submit{position:relative;overflow-x:hidden;background:var(--acc);padding:130px 24px 80px}
+#submit::before{content:"";position:absolute;inset:0;z-index:0;background:var(--pic) center center/cover no-repeat}
+#submit::after{content:"";position:absolute;inset:0;z-index:1;background:var(--wash)}
 #submit > *{position:relative;z-index:2}
-@media (hover:none),(prefers-reduced-motion:reduce){ #submit::before{background-attachment:scroll} }
 
-/* ---- the card ---- */
-.sb-tabs{display:flex;border:3px solid #111;border-bottom:0;max-width:780px;margin:0 auto}
-.sb-tab{flex:1;font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(14px,1.8vw,17px);letter-spacing:.09em;text-transform:uppercase;
-  padding:16px 10px;border:0;cursor:pointer;background:rgba(17,17,17,.55);color:#ffd9c4}
-.sb-tab+.sb-tab{border-left:3px solid #111}
-.sb-tab[aria-selected="true"]{background:rgba(255,255,255,.94);color:#c53200}
-.sb-card{background:rgba(255,255,255,.94);border:3px solid #111;max-width:780px;margin:0 auto;padding:clamp(24px,4vw,44px) clamp(16px,3.5vw,44px) clamp(26px,4vw,40px)}
-.sb-bang{font-family:'Atomic Marker',cursive;font-size:clamp(34px,6vw,58px);line-height:1.05;margin:0 0 10px;color:#1e6417;text-align:center}
-.sb-bang.miss{color:#c11212}
-.sb-say{font-size:clamp(16px,2vw,19px);line-height:1.55;margin:0 auto;max-width:540px;color:#111;text-align:center}
-.sb-quiet{font-size:clamp(13px,1.6vw,15px);color:#607667;margin:10px auto 0;max-width:540px;line-height:1.5;text-align:center}
+.sb-panel{max-width:760px;margin:0 auto;border:2px solid var(--acc)}
+.sb-head{background:rgba(250,250,250,.92);padding:clamp(26px,4vw,44px) clamp(22px,4vw,46px);margin-bottom:clamp(20px,3vw,32px)}
+.sb-head h1{font-family:'Atomic Marker',cursive;font-weight:400;text-transform:uppercase;text-align:center;color:var(--ink);
+  font-size:clamp(31px,4.6vw,52px);line-height:1.3;margin:0 0 18px}
+.sb-head p{font-size:clamp(16px,1.6vw,17.5px);line-height:1.5;margin:0}
+.sb-head p + p{margin-top:12px}
+.sb-head a{color:var(--acc);font-weight:700}
+.sb-switch{display:inline-block;margin-top:16px;font-weight:700;color:var(--acc);text-decoration:underline;cursor:pointer;background:none;border:0;padding:0;font:inherit;font-size:15.5px}
 
-.sb-form{max-width:520px;margin:0 auto;text-align:left}
-.sb-form h3{font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#c53200;margin:26px 0 2px;padding-top:18px;border-top:2px solid rgba(17,17,17,.12)}
-.sb-form > h3:first-child{margin-top:0;padding-top:0;border-top:0}
-.sb-form label{display:block;font-weight:800;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:#607667;margin:14px 0 5px}
-.sb-form input[type=text],.sb-form input[type=email],.sb-form input[type=number],.sb-form select,.sb-form textarea{width:100%;font-family:'Almarai',sans-serif;font-size:16px;font-weight:700;
-  color:#111;background:#fff;border:2px solid #111;padding:12px 13px;border-radius:0;-webkit-appearance:none;appearance:none}
-.sb-form textarea{min-height:110px;resize:vertical;font-weight:400;line-height:1.45}
-.sb-form select{background-image:linear-gradient(45deg,transparent 50%,#111 50%),linear-gradient(135deg,#111 50%,transparent 50%);background-position:calc(100% - 19px) 20px,calc(100% - 13px) 20px;background-size:6px 6px,6px 6px;background-repeat:no-repeat;padding-right:36px}
-.sb-hint{font-size:14px;line-height:1.5;color:#333;background:#f6efe4;border-left:4px solid #c1330a;padding:10px 12px;margin:10px 0 0}
-.sb-hint:empty{display:none}
-.sb-me{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#f4f7f4;border:2px solid #d3dcd4;padding:12px 14px;font-size:15px;line-height:1.4}
-.sb-me b{font-weight:800}
-.sb-me a{color:#c53200;font-weight:700;text-decoration:underline;cursor:pointer;white-space:nowrap}
+.sb-card{background:rgba(250,250,250,.86);padding:clamp(24px,4.5vw,45px)}
+.sb-form{text-align:left}
+.sb-item{margin:0 0 26px}
+.sb-title{display:block;font-size:16.5px;font-weight:400;line-height:1.4;margin:0 0 2px;color:var(--ink)}
+.sb-req{font-size:13px;opacity:.7;margin-left:4px}
+.sb-desc{font-size:15.5px;line-height:1.5;margin:4px 0 10px;color:var(--ink)}
+.sb-desc a{color:var(--acc);font-weight:700}
+.sb-sub{font-size:15.5px;margin:10px 0 4px;display:block}
+.sb-pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.sb-form input[type=text],.sb-form input[type=email],.sb-form input[type=number],.sb-form select,.sb-form textarea{
+  width:100%;font-family:'Almarai',sans-serif;font-size:16.5px;font-weight:400;line-height:1.5;color:var(--ink);
+  background:var(--paper);border:2px solid var(--acc);border-radius:0;padding:10px 20px;-webkit-appearance:none;appearance:none}
+.sb-form textarea{min-height:120px;resize:vertical}
+.sb-form select{padding-right:42px;background-image:linear-gradient(45deg,transparent 50%,var(--ink) 50%),linear-gradient(135deg,var(--ink) 50%,transparent 50%);
+  background-position:calc(100% - 22px) 50%,calc(100% - 16px) 50%;background-size:6px 6px,6px 6px;background-repeat:no-repeat}
+.sb-form select:invalid,.sb-form select.empty{color:rgba(11,23,15,.55)}
+.sb-form input:focus,.sb-form select:focus,.sb-form textarea:focus{outline:2px solid var(--acc);outline-offset:2px}
+.sb-check{display:flex;gap:10px;align-items:flex-start;font-size:15.5px;line-height:1.5;cursor:pointer}
+.sb-check input{width:18px;height:18px;flex:none;margin:3px 0 0;accent-color:var(--acc)}
+.sb-me{border:2px solid var(--acc);background:var(--paper);padding:12px 20px;font-size:16px;line-height:1.5;display:flex;justify-content:space-between;gap:14px;align-items:center}
+.sb-me a{color:var(--acc);font-weight:700;text-decoration:underline;cursor:pointer;white-space:nowrap}
 
-.sb-drop{display:block;border:2px dashed #111;background:#fff;padding:18px;text-align:center;cursor:pointer;font-weight:700;font-size:15px;color:#333}
-.sb-drop:hover,.sb-drop.over{background:#fdf3ec;border-color:#c1330a}
-.sb-drop input{display:none}
-.sb-thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:10px}
-.sb-thumb{position:relative;aspect-ratio:9/16;background:#eee center/cover no-repeat;border:2px solid #111}
-.sb-thumb button{position:absolute;top:-9px;right:-9px;width:24px;height:24px;border-radius:50%;border:2px solid #111;background:#c1330a;color:#fff;font-weight:800;line-height:18px;padding:0;cursor:pointer}
-.sb-form label.sb-check{display:flex;gap:10px;align-items:flex-start;margin:22px 0 0;font-size:14px;line-height:1.45;text-transform:none;letter-spacing:0;font-weight:400;color:#111}
-.sb-check input{width:20px;height:20px;flex:none;margin:1px 0 0;accent-color:#c1330a}
-.sb-check a{color:#c53200;font-weight:700}
+.sb-add{display:inline-block;font-family:'Almarai',sans-serif;font-size:16.5px;color:var(--ink);background:var(--paper);border:2px solid var(--acc);padding:10px 20px;cursor:pointer}
+.sb-add:hover,.sb-add.over{background:#fff;box-shadow:0 0 0 2px var(--acc) inset}
+.sb-add input{display:none}
+.sb-thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;margin-top:12px}
+.sb-thumbs:empty{display:none}
+.sb-thumb{position:relative;aspect-ratio:9/16;background:#eee center/cover no-repeat;border:2px solid var(--acc);font-size:11px;overflow-wrap:anywhere;padding:4px}
+.sb-thumb button{position:absolute;top:-9px;right:-9px;width:24px;height:24px;border-radius:50%;border:0;background:var(--acc);color:#fff;font-weight:800;line-height:24px;padding:0;cursor:pointer}
 
-.sb-btn{display:inline-block;width:100%;margin-top:22px;cursor:pointer;font-family:'Almarai',sans-serif;font-weight:800;font-size:17px;
-  letter-spacing:.09em;text-transform:uppercase;color:#fff;background:#c1330a;border:2px solid #111;
-  padding:15px 28px;transition:transform .15s ease,background .15s ease;text-align:center;text-decoration:none}
-.sb-btn:hover{background:#e04a12;transform:scale(1.02)}
-.sb-btn[disabled]{background:#9aa79b;cursor:default;transform:none}
-.sb-btn.ghost{background:#fff;color:#111}
-.sb-err{color:#c11212;font-weight:700;font-size:15px;margin:14px 0 0;text-align:center;min-height:20px}
+.sb-btn{display:inline-block;cursor:pointer;font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;text-transform:uppercase;
+  color:#fafafa;background:var(--acc);border:0;border-radius:0;padding:16px 28px;text-decoration:none;transition:opacity .15s ease}
+.sb-btn:hover{opacity:.85}
+.sb-btn[disabled]{opacity:.5;cursor:default}
+.sb-btn.ghost{background:transparent;color:var(--acc);box-shadow:0 0 0 2px var(--acc) inset;margin-left:10px}
+.sb-err{color:#b00020;font-weight:700;font-size:15.5px;margin:14px 0 0;min-height:20px}
+.sb-done{text-align:center}
+.sb-done h2{font-family:'Atomic Marker',cursive;font-weight:400;text-transform:uppercase;color:var(--ink);font-size:clamp(28px,4vw,44px);margin:0 0 12px}
+.sb-done p{font-size:17px;line-height:1.5;margin:0 0 8px}
 
 @media (max-width:760px){
-  #sub-page section[data-screen-label]{padding:88px 16px 56px !important}
+  #submit{padding:96px 14px 56px}
+  .sb-pair{grid-template-columns:1fr}
+  .sb-btn.ghost{margin:12px 0 0}
 }
 </style>
 
@@ -222,19 +234,9 @@ h1,h2,h3{text-wrap:balance}
 </div>
 
 <div id="sub-page">
-<section data-screen-label="Submit" id="submit" style="padding:150px 72px 64px">
-
-  <div style="text-align:center;max-width:1000px;margin:0 auto clamp(28px,4vw,42px)">
-    <div style="font-family:'Atomic Marker',cursive;font-size:clamp(24px,3.4vw,44px);color:#ffd9c4;margin-bottom:12px">The Treasure Hunt</div>
-    <h1 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(48px,8.5vw,116px);line-height:1.04;color:#fff;margin:0 0 20px">CLAIM YOUR POINTS</h1>
-    <p style="font-weight:700;font-size:clamp(15px,1.8vw,19px);letter-spacing:.05em;line-height:1.6;color:#ffd9c4;text-shadow:0 1px 6px rgba(0,0,0,.4);max-width:720px;margin:0 auto">Done a task? Cracked a riddle? Tell the Captain here. Points land on the board at the next tally.</p>
-  </div>
-
-  <div class="sb-tabs" role="tablist">
-    <button class="sb-tab" role="tab" id="tab-points" aria-selected="true">Submit points</button>
-    <button class="sb-tab" role="tab" id="tab-riddle" aria-selected="false">Solve a riddle</button>
-  </div>
-  <main class="sb-card" id="sb-card" aria-live="polite"></main>
+<section data-screen-label="Submit" id="submit">
+  <div class="sb-panel sb-head" id="sb-head"></div>
+  <div class="sb-panel sb-card" id="sb-card" aria-live="polite"></div>
 </section>
 </div>
 
@@ -267,138 +269,176 @@ h1,h2,h3{text-wrap:balance}
   var ME = 'thLoot:me';          // shared with the loot box page and the games
   var RIDDLES = 6;               // riddles #1 to #6 are live; keep in step with RIDDLES_LIVE in lootbox.gs
   var MAX_FILES = 6, MAX_EDGE = 2200;
+  var DOCS = { pdf: 'application/pdf', doc: 'application/msword', txt: 'text/plain',
+               docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' };
 
-  // `send` is the task text the sheet stores and `npm run import` classifies.
-  // detail: a typed field that becomes the item (app, library, ...).
-  // pick: a choice that goes into the task text, e.g. "Share the Hunt (Instagram)".
-  var SOCIAL = ['Instagram', 'TikTok', 'YouTube', 'Reddit', 'X', 'Threads', 'Facebook'];
+  // label: what the dropdown says (the old form's wording). send: the task text the sheet stores
+  // and `npm run import` classifies. detail/area: a typed field that becomes the item.
+  // The Daily Word Game is left out: the games pay themselves when you finish on the page.
   var TASKS = [
-    { group: 'Books', label: "Pre-order Cello's Gate", send: "Pre-Order Cello's Gate", copies: true,
-      hint: "Your receipt or order confirmation. It has to show Cello's Gate, how many copies, and the order date. Each copy counts." },
-    { group: 'Books', label: 'Reading apps', send: 'Reading Apps', detail: 'Which app?',
+    { label: "Pre-Order Cello's Gate", send: "Pre-Order Cello's Gate", copies: true,
+      hint: "Your receipt or order confirmation. It has to show Cello's Gate, how many copies, and the order date. Every copy counts." },
+    { label: 'Become a Crest Knight', send: 'Become a Crest Knight', hint: 'Your level 50 or Crest Knight role in the Discord, or your Mark of the Crest.' },
+    { label: 'Submit Fan Art', send: 'Submit Fan Art', hint: 'A PNG or JPEG of your fan art. Each entry counts.' },
+    { label: 'Submit Fan Fiction', send: 'Submit Fan Fiction', docs: true, hint: 'Your fan fiction as a .docx, .doc, .pdf, or .txt. Each entry counts.' },
+    { label: 'Join the Trench Community Discord', send: 'Join the Trench Community Discord', hint: 'Any screenshot from inside the Discord: a post, your role, the server list.' },
+    { label: "Join Maurice's Newsletter (Limit: 1)", send: "Join Maurice's Newsletter", hint: 'The confirmation email or the welcome screen.' },
+    { label: 'Reach level 10', send: 'Reach Level 10', hint: 'Your level in the Discord.' },
+    { label: 'Reach Level 25', send: 'Reach Level 25', hint: 'Your level in the Discord.' },
+    { label: 'Reading Apps', send: 'Reading Apps', detail: 'Which reading app did you add Cello\'s Gate to?',
       hint: "Cello's Gate shelved as Want to Read (or Read). One app per submission; each app counts once." },
-    { group: 'Books', label: 'Library request', send: 'Library Request', detail: 'Which library?',
-      hint: 'The request form filled in, or your message to the library. Up to three libraries.' },
-    { group: 'Books', label: 'Indie bookstore request', send: 'Indie Bookstore Request', detail: 'Which bookstore?',
-      hint: 'Your request or message to the shop. Up to three bookstores.' },
-    { group: 'The crew', label: 'Join the Trench Discord', send: 'Join the Trench Community Discord',
-      hint: 'Any screenshot from inside the Discord: a post, your role, the server list.' },
-    { group: 'The crew', label: "Join Maurice's newsletter", send: "Join Maurice's Newsletter",
-      hint: 'The confirmation email or the welcome screen.' },
-    { group: 'The crew', label: 'Recruit three frens', send: 'Recruit Three Frens',
-      hint: 'Your comment tagging three frens on the launch video.' },
-    { group: 'The crew', label: 'Comment "HUNT"', send: 'Comment "HUNT"',
-      hint: 'Your HUNT comment.' },
-    { group: 'Social', label: 'Share the hunt', send: 'Share the Hunt', pick: ['Where did you post it?', SOCIAL],
-      hint: 'Your post or story. Once a day per social account.' },
-    { group: 'Social', label: 'Show off your scorecard', send: 'Show Off Your Scorecard',
-      hint: 'Your post of your own Loot Box scorecard. #SkyPiratesHunt and #sweepstakes (US) or #competition (UK) must be visible. Once a day.' },
-    { group: 'Social', label: 'Boost the carousel', send: 'Boost the Carousel', pick: ['Which app?', ['Instagram', 'TikTok']],
-      hint: 'One screenshot for each step: like, comment your favourite character, share to your story, save, repost, and tag three frens. Add them all here, together.' },
-    { group: 'Contests', label: 'Fan art', send: 'Submit Fan Art', hint: 'Your artwork. Each entry counts.' },
-    { group: 'Contests', label: 'Fan fiction', send: 'Submit Fan Fiction', hint: 'A screenshot of your story, or where you posted it.' },
-    { group: 'Contests', label: 'Write a riddle for Act Two', send: 'Write a Riddle for Act Two', area: 'Your riddle, and its answer', noProof: true,
-      hint: 'Maurice picks which riddles make it into Act Two. Up to three. By submitting, you agree it may be featured, credited to your handle.' },
-    { group: 'Discord levels', label: 'Reach level 10', send: 'Reach Level 10', hint: 'Your level in the Discord.' },
-    { group: 'Discord levels', label: 'Reach level 25', send: 'Reach Level 25', hint: 'Your level in the Discord.' },
-    { group: 'Discord levels', label: 'Become a Crest Knight (level 50)', send: 'Become a Crest Knight', hint: 'Your level or the Crest Knight role in the Discord.' }
+    { label: 'Libraries', send: 'Library Request', detail: 'Which library did you contact?', hint: 'The request form filled in, or your message to the library. Up to three libraries.' },
+    { label: 'Indie Bookstores', send: 'Indie Bookstore Request', detail: 'Which indie bookstore did you contact?', hint: 'Your request or message to the shop. Up to three bookstores.' },
+    { label: 'Comment "Hunt"', send: 'Comment "HUNT"', hint: 'Your HUNT comment.' },
+    { label: 'Share the Hunt', send: 'Share the Hunt', pick: ['Where did you post it?', ['Instagram', 'TikTok', 'YouTube', 'Reddit', 'X', 'Threads', 'Facebook']],
+      hint: 'Your post, with #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK). Once a day per social media account.' },
+    { label: 'Recruit Three Frens', send: 'Recruit Three Frens', hint: 'Your comment tagging three frens on the launch video.' },
+    { label: 'Show Off Your Scorecard', send: 'Show Off Your Scorecard',
+      hint: 'Your post of your own Loot Box scorecard, with #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) visible. Once a day.' },
+    { label: 'Write a Riddle for Act Two', send: 'Write a Riddle for Act Two', area: 'Your riddle and its answer', noProof: true,
+      hint: 'Riddles must be your own work. By submitting, you agree it may be featured on this site and in Maurice’s channels, credited to your handle.' },
+    { label: 'Boost the Carousel (Instagram)', send: 'Boost the Carousel (Instagram)',
+      hint: 'One screenshot for each step: like, comment your favorite fictional character, share to your story, save, repost, and tag three frens. Add them all here, together.' },
+    { label: 'Boost the Carousel (TikTok)', send: 'Boost the Carousel (TikTok)',
+      hint: 'One screenshot for each step: like, comment your favorite fictional character, share to your story, save, repost, and tag three frens. Add them all here, together.' }
   ];
 
-  var card = document.getElementById('sb-card'),
-      tabP = document.getElementById('tab-points'),
-      tabR = document.getElementById('tab-riddle');
+  var page = document.getElementById('sub-page'),
+      head = document.getElementById('sb-head'),
+      card = document.getElementById('sb-card');
 
   function load(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function $(id) { return document.getElementById(id); }
+  function req() { return '<span class="sb-req">(required)</span>'; }
+  function item(title, desc, body, id) {
+    return '<div class="sb-item"><label class="sb-title"' + (id ? ' for="' + id + '"' : '') + '>' + title + req() + '</label>' +
+      (desc ? '<p class="sb-desc">' + desc + '</p>' : '') + body + '</div>';
+  }
 
   var me = load(ME) || {};
+  if (me.name && !me.last_name && me.name.indexOf(' ') > 0) { me.first_name = me.first_name || me.name.split(/\s+/)[0]; me.last_name = me.name.split(/\s+/).slice(1).join(' '); }
   var editingMe = !me.email || !(me.name || me.first_name);
   var mode = /riddle|solve/i.test(location.hash + location.search + (location.protocol === 'data:' ? '' : location.pathname)) ? 'riddle' : 'points';
-  var files = [];   // { url (data URL, shrunk), name }
+  var files = [];   // { url (data URL, images shrunk), name }
+
+  // ---- the intro panel, in the old forms' words -----------------------------
+  function drawHead() {
+    page.className = mode === 'riddle' ? 'riddle' : '';
+    head.innerHTML = mode === 'points'
+      ? '<h1>Submit Points!</h1><p>Use the form below to submit points for the Treasure Hunt. You may only submit <b><i>one task at a time</i></b>, with up to ' + MAX_FILES +
+        ' screenshots. Please keep in mind that you can\'t claim some tasks more than once. If you have any questions or concerns, visit ' +
+        '<a href="https://www.mauriceafrich.com/the-hunt">THE HUNT</a> main page to re-read the rules or <a href="https://discord.gg/TV8SNnSGdb" target="_blank" rel="noopener">TAG A GOVERNOR</a> in the <b><i>Trench Community Discord</i></b>!</p>' +
+        '<button class="sb-switch" id="sb-switch">Solving a riddle instead? &rarr;</button>'
+      : '<h1>Solve a Riddle!</h1><p>Use the form below to solve a riddle and earn points for the Treasure Hunt. You may only submit <b><i>one answer at a time</i></b>. ' +
+        'You are allotted <b><i>one attempt per riddle</i></b>. If you have any questions or concerns, visit <a href="https://www.mauriceafrich.com/the-hunt#riddles">THE HUNT</a> main page to re-read the rules or ' +
+        '<a href="https://discord.gg/TV8SNnSGdb" target="_blank" rel="noopener">TAG A GOVERNOR</a> in the <b><i>Trench Community Discord</i></b>!</p>' +
+        '<button class="sb-switch" id="sb-switch">Submitting a task instead? &rarr;</button>';
+    $('sb-switch').onclick = function () { mode = mode === 'points' ? 'riddle' : 'points'; draw(); head.scrollIntoView({ behavior: 'smooth' }); };
+  }
 
   // ---- who you are --------------------------------------------------------
   function meBlock() {
     if (!editingMe) {
-      return '<div class="sb-me"><span>Submitting as <b>' + esc(me.name || me.first_name) + '</b>' +
-        (me.handle ? ' (' + esc(me.handle) + ')' : '') + '<br>' + esc(me.email) + ' &middot; ' + esc(me.country || '') + '</span>' +
-        '<a id="sb-edit">Not you?</a></div>';
+      return '<div class="sb-item"><span class="sb-title">You</span><div class="sb-me"><span>' + esc(me.name || me.first_name) +
+        (me.handle ? ' &middot; ' + esc(me.handle) : '') + '<br>' + esc(me.email) + ' &middot; ' + esc(me.country || '') + '</span>' +
+        '<a id="sb-edit">Not you?</a></div></div>';
     }
     var c = me.country || '', other = c && c !== 'United States' && c !== 'United Kingdom';
-    return '<label for="sb-name">Full name</label><input type="text" id="sb-name" autocomplete="name" value="' + esc(me.name || me.first_name || '') + '">' +
-      '<label for="sb-email">Email</label><input type="email" id="sb-email" autocomplete="email" inputmode="email" value="' + esc(me.email || '') + '">' +
-      '<label for="sb-handle">Social handle</label><input type="text" id="sb-handle" placeholder="@yourname" autocomplete="off" value="' + esc(me.handle || '') + '">' +
-      '<label for="sb-platform">Where that handle lives</label><select id="sb-platform"><option value="">Pick one</option>' +
-      ['Instagram', 'TikTok', 'YouTube', 'X', 'Threads', 'Facebook', 'Discord', 'Bluesky', 'Substack'].map(function (p) {
-        return '<option' + (me.platform === p ? ' selected' : '') + '>' + p + '</option>'; }).join('') + '</select>' +
-      '<label for="sb-country">Country</label><select id="sb-country"><option value="">Pick one</option>' +
-      '<option' + (c === 'United States' ? ' selected' : '') + '>United States</option>' +
-      '<option' + (c === 'United Kingdom' ? ' selected' : '') + '>United Kingdom</option>' +
-      '<option value="__other"' + (other ? ' selected' : '') + '>Somewhere else</option></select>' +
-      '<input type="text" id="sb-other" placeholder="Which country?" value="' + esc(other ? c : '') + '" style="' + (other ? '' : 'display:none;') + 'margin-top:8px">';
+    var first = me.first_name || (me.name || '').split(/\s+/)[0] || '', last = me.last_name || '';
+    var plat = me.platform || '';
+    var platOpts = ['Instagram', 'TikTok', 'YouTube', 'None'];
+    if (plat && platOpts.indexOf(plat) < 0) platOpts.splice(3, 0, plat);
+    return item('Full Name', 'Your first name and social media handle will be listed on the leaderboard.',
+        '<div class="sb-pair"><div><span class="sb-sub">First Name ' + req() + '</span><input type="text" id="sb-first" autocomplete="given-name" value="' + esc(first) + '"></div>' +
+        '<div><span class="sb-sub">Last Name ' + req() + '</span><input type="text" id="sb-last" autocomplete="family-name" value="' + esc(last) + '"></div></div>') +
+      item('What Country Do You Live In?', 'United States and United Kingdom residents enter separate promotions with separate prizes. Everyone else can earn points and unlock digital rewards.',
+        '<select id="sb-country" class="' + (c ? '' : 'empty') + '"><option value="">Select an option</option>' +
+        '<option' + (c === 'United States' ? ' selected' : '') + '>United States</option>' +
+        '<option' + (c === 'United Kingdom' ? ' selected' : '') + '>United Kingdom</option>' +
+        '<option value="__other"' + (other ? ' selected' : '') + '>Other Country</option></select>' +
+        '<input type="text" id="sb-other" placeholder="Which country?" value="' + esc(other ? c : '') + '" style="' + (other ? '' : 'display:none;') + 'margin-top:10px">', 'sb-country') +
+      item('Preferred Social Media Handle', 'Please choose the social media platform you\'d like to be featured on the leaderboard.',
+        '<select id="sb-platform" class="' + (plat ? '' : 'empty') + '"><option value="">Choose an option.</option>' +
+        platOpts.map(function (p) { return '<option' + (plat === p ? ' selected' : '') + '>' + p + '</option>'; }).join('') + '</select>' +
+        '<input type="text" id="sb-handle" placeholder="@yourname" autocomplete="off" value="' + esc(me.handle || '') + '" style="' + (plat && plat !== 'None' ? '' : 'display:none;') + 'margin-top:10px">', 'sb-platform') +
+      item('Email Address', 'We\'ll use your email to run the Treasure Hunt, including verifying submissions and contacting you if you win.',
+        '<input type="email" id="sb-email" autocomplete="email" inputmode="email" value="' + esc(me.email || '') + '">', 'sb-email');
   }
   function wireMe() {
     var e = $('sb-edit');
     if (e) e.onclick = function () { editingMe = true; draw(); };
-    var c = $('sb-country'), o = $('sb-other');
-    if (c) c.onchange = function () { o.style.display = c.value === '__other' ? 'block' : 'none'; if (c.value === '__other') o.focus(); };
+    var c = $('sb-country'), o = $('sb-other'), p = $('sb-platform'), h = $('sb-handle');
+    if (c) c.onchange = function () { c.className = c.value ? '' : 'empty'; o.style.display = c.value === '__other' ? 'block' : 'none'; if (c.value === '__other') o.focus(); };
+    if (p) p.onchange = function () {
+      p.className = p.value ? '' : 'empty';
+      h.style.display = p.value && p.value !== 'None' ? 'block' : 'none';
+      h.placeholder = p.value && p.value !== 'None' ? 'Your ' + p.value + ' handle' : '@yourname';
+      if (h.style.display === 'block') h.focus();
+    };
   }
   function readMe() {
     if (!editingMe) return me;
-    var c = $('sb-country').value;
-    return { name: $('sb-name').value.trim(), first_name: $('sb-name').value.trim().split(/\s+/)[0],
-      email: $('sb-email').value.trim(), handle: $('sb-handle').value.trim(), platform: $('sb-platform').value,
+    var c = $('sb-country').value, first = $('sb-first').value.trim(), last = $('sb-last').value.trim(), plat = $('sb-platform').value;
+    return { first_name: first, last_name: last, name: (first + ' ' + last).trim(), email: $('sb-email').value.trim(),
+      platform: plat === 'None' ? '' : plat, handle: plat === 'None' ? '' : $('sb-handle').value.trim(), plat_choice: plat,
       country: c === '__other' ? $('sb-other').value.trim() : c };
   }
 
-  // ---- the two tabs -------------------------------------------------------
+  // ---- the form -------------------------------------------------------------
   function draw() {
-    tabP.setAttribute('aria-selected', mode === 'points'); tabR.setAttribute('aria-selected', mode === 'riddle');
-    var html = '<div class="sb-form"><h3>You</h3>' + meBlock();
+    drawHead();
+    var html = '<div class="sb-form">' + meBlock();
     if (mode === 'points') {
-      var groups = [], opts = '';
-      TASKS.forEach(function (t) { if (groups.indexOf(t.group) < 0) groups.push(t.group); });
-      groups.forEach(function (g) {
-        opts += '<optgroup label="' + g + '">' + TASKS.map(function (t, i) {
-          return t.group === g ? '<option value="' + i + '">' + esc(t.label) + '</option>' : ''; }).join('') + '</optgroup>';
-      });
-      html += '<h3>The task</h3><label for="sb-task">Which task?</label><select id="sb-task"><option value="">Pick one</option>' + opts + '</select>' +
-        '<p class="sb-hint" id="sb-hint"></p><div id="sb-extra"></div>' +
-        '<div id="sb-proofwrap"><h3>Proof</h3><label class="sb-drop" id="sb-drop">' +
-        '<input type="file" id="sb-files" accept="image/*" multiple>Add screenshots (up to ' + MAX_FILES + ')</label>' +
-        '<div class="sb-thumbs" id="sb-thumbs"></div></div>';
+      html += item('Which task would you like to submit?', 'Choose the task that you\'d like to submit from the dropdown menu.',
+          '<select id="sb-task" class="empty"><option value="">Choose an option.</option>' +
+          TASKS.map(function (t, i) { return '<option value="' + i + '">' + esc(t.label) + '</option>'; }).join('') + '</select>' +
+          '<p class="sb-desc" id="sb-hint" style="margin-top:10px"></p>', 'sb-task') +
+        '<div id="sb-extra"></div>';
     } else {
       var ro = '';
-      for (var n = 1; n <= RIDDLES; n++) ro += '<option value="' + n + '">Riddle #' + n + '</option>';
-      html += '<h3>The riddle</h3><label for="sb-riddle">Which riddle?</label><select id="sb-riddle"><option value="">Pick one</option>' + ro + '</select>' +
-        '<label for="sb-answer">Your answer</label><input type="text" id="sb-answer" autocomplete="off">' +
-        '<p class="sb-hint">One attempt per riddle. A wrong answer is final, so be sure before you send it. ' +
-        'The riddles are on <a href="https://www.mauriceafrich.com/the-hunt#riddles" style="color:#c53200;font-weight:700">the hunt page</a>.</p>';
+      for (var n = 1; n <= RIDDLES; n++) ro += '<option value="' + n + '">#' + n + '</option>';
+      html += item('Which riddle would you like to solve?', 'Choose the riddle you\'d like to submit a solution for.',
+          '<select id="sb-riddle" class="empty"><option value="">Choose an option.</option>' + ro + '</select>', 'sb-riddle') +
+        item('Your Answer', 'One attempt per riddle. A wrong answer is final, so be sure before you send it.',
+          '<input type="text" id="sb-answer" autocomplete="off">', 'sb-answer');
     }
-    html += '<label class="sb-check"><input type="checkbox" id="sb-agree"><span>I have read the <a href="https://www.mauriceafrich.com/rules" target="_blank" rel="noopener">official rules</a> and <a href="https://www.mauriceafrich.com/privacy-policy" target="_blank" rel="noopener">privacy policy</a>, I am old enough to enter, and this is my own work (no AI).</span></label>' +
-      '<button class="sb-btn" id="sb-go">' + (mode === 'points' ? 'Send it to the Captain' : 'Lock in my answer') + '</button>' +
-      '<p class="sb-err" id="sb-err"></p></div>';
+    html += item('Official Rules and Privacy Policy', 'They can be found at <a href="https://www.mauriceafrich.com/rules" target="_blank" rel="noopener">mauriceafrich.com/rules</a> and ' +
+        '<a href="https://www.mauriceafrich.com/privacy-policy" target="_blank" rel="noopener">mauriceafrich.com/privacy-policy</a>',
+        '<label class="sb-check"><input type="checkbox" id="sb-agree"><span>I\'ve read and agree to the Official Rules and Privacy Policy. I understand The Treasure and the Act prize draws are open only to U.S. and UK residents 18+, under the rules for their country.</span></label>');
+    if (mode === 'points') {
+      html += '<div id="sb-proofwrap">' + item('Upload Proof of Task Completion',
+        'Please upload clear and easy-to-read images or screenshots that prove the completion of the task, up to ' + MAX_FILES + '.</p>' +
+        '<p class="sb-desc"><b>Fan Fiction:</b> Please upload your fan fiction as a .docx, .doc, .pdf, or .txt.<br><b>Fan Art:</b> Please upload a PNG or JPEG of your fan art.</p>' +
+        '<p class="sb-desc"><i>All entries will be manually reviewed by one overworked sky pirate captain (self-imposed), and he is grateful for your patience.</i>',
+        '<label class="sb-add" id="sb-drop"><input type="file" id="sb-files" accept="image/*" multiple>Add a File</label>' +
+        '<div class="sb-thumbs" id="sb-thumbs"></div>') + '</div>';
+    }
+    html += '<button class="sb-btn" id="sb-go">' + (mode === 'points' ? 'Submit Points!' : 'Submit Answer!') + '</button>' +
+      '<p class="sb-err" id="sb-err" role="alert"></p></div>';
     card.innerHTML = html;
     wireMe();
     if (mode === 'points') wireTask();
+    else $('sb-riddle').onchange = function () { this.className = this.value ? '' : 'empty'; };
     $('sb-go').onclick = go;
   }
-  tabP.onclick = function () { if (mode !== 'points') { mode = 'points'; draw(); } };
-  tabR.onclick = function () { if (mode !== 'riddle') { mode = 'riddle'; draw(); } };
 
   function wireTask() {
     var sel = $('sb-task');
     sel.onchange = function () {
       var t = TASKS[sel.value], extra = '';
+      sel.className = t ? '' : 'empty';
       $('sb-hint').textContent = t ? t.hint : '';
-      if (t && t.copies) extra = '<label for="sb-copies">How many copies?</label><input type="number" id="sb-copies" min="1" max="20" value="1" inputmode="numeric">';
-      if (t && t.detail) extra = '<label for="sb-detail">' + esc(t.detail) + '</label><input type="text" id="sb-detail" autocomplete="off">';
-      if (t && t.area) extra = '<label for="sb-detail">' + esc(t.area) + '</label><textarea id="sb-detail"></textarea>';
-      if (t && t.pick) extra = '<label for="sb-pick">' + esc(t.pick[0]) + '</label><select id="sb-pick"><option value="">Pick one</option>' +
-        t.pick[1].map(function (p) { return '<option>' + p + '</option>'; }).join('') + '</select>';
+      if (t && t.copies) extra = item('How many copies?', 'Each copy of Cello\'s Gate counts.', '<input type="number" id="sb-copies" min="1" max="20" value="1" inputmode="numeric">', 'sb-copies');
+      if (t && t.detail) extra = item(esc(t.detail), '', '<input type="text" id="sb-detail" autocomplete="off">', 'sb-detail');
+      if (t && t.area) extra = item(esc(t.area), '', '<textarea id="sb-detail"></textarea>', 'sb-detail');
+      if (t && t.pick) extra = item(esc(t.pick[0]), '', '<select id="sb-pick" class="empty"><option value="">Choose an option.</option>' +
+        t.pick[1].map(function (p) { return '<option>' + p + '</option>'; }).join('') + '</select>', 'sb-pick');
       $('sb-extra').innerHTML = extra;
+      var pk = $('sb-pick'); if (pk) pk.onchange = function () { pk.className = pk.value ? '' : 'empty'; };
       $('sb-proofwrap').style.display = t && t.noProof ? 'none' : '';
+      $('sb-files').accept = t && t.docs ? 'image/*,.pdf,.doc,.docx,.txt' : 'image/*';
     };
     var input = $('sb-files'), drop = $('sb-drop');
     input.onchange = function () { addFiles(input.files); input.value = ''; };
@@ -408,21 +448,32 @@ h1,h2,h3{text-wrap:balance}
     thumbs();
   }
 
-  // ---- screenshots: shrunk here so a phone's 5MB PNG goes up as a few hundred KB ----
+  // ---- files: screenshots are shrunk here, so a phone's 5MB PNG goes up as a few hundred KB ----
   function addFiles(list) {
     var err = $('sb-err');
     Array.prototype.slice.call(list || []).forEach(function (f) {
-      if (!/^image\//.test(f.type) && !/\.(heic|heif)$/i.test(f.name)) { err.textContent = f.name + ' is not an image.'; return; }
-      if (files.length >= MAX_FILES) { err.textContent = 'Up to ' + MAX_FILES + ' screenshots per submission.'; return; }
-      var slot = { url: '', name: f.name };
+      var ext = (f.name.match(/\.([a-z0-9]+)$/i) || [])[1];
+      ext = ext ? ext.toLowerCase() : '';
+      var isDoc = !!DOCS[ext] && !/^image\//.test(f.type);
+      if (!isDoc && !/^image\//.test(f.type) && !/^(heic|heif)$/.test(ext)) { err.textContent = f.name + ' is not an image or a document we can take.'; return; }
+      if (files.length >= MAX_FILES) { err.textContent = 'Up to ' + MAX_FILES + ' files per submission.'; return; }
+      if (isDoc && f.size > 6 * 1024 * 1024) { err.textContent = f.name + ' is over 6MB.'; return; }
+      var slot = { url: '', name: f.name, doc: isDoc };
       files.push(slot);
-      shrink(f, function (url) {
+      var ready = function (url) {
         if (!url) { files.splice(files.indexOf(slot), 1); err.textContent = 'Could not read ' + f.name + '. Try a PNG or JPG screenshot.'; }
         else slot.url = url;
         thumbs();
-      });
+      };
+      if (isDoc) readDoc(f, DOCS[ext], ready); else shrink(f, ready);
     });
     thumbs();
+  }
+  function readDoc(file, mime, done) {
+    var reader = new FileReader();
+    reader.onerror = function () { done(''); };
+    reader.onload = function () { done(String(reader.result).replace(/^data:[^;]*;/, 'data:' + mime + ';')); };
+    reader.readAsDataURL(file);
   }
   function shrink(file, done) {
     var reader = new FileReader();
@@ -446,8 +497,9 @@ h1,h2,h3{text-wrap:balance}
     var box = $('sb-thumbs');
     if (!box) return;
     box.innerHTML = files.map(function (f, i) {
-      var bg = f.url && !/^data:image\/heic/.test(f.url) ? 'background-image:url(' + f.url + ')' : '';
-      return '<div class="sb-thumb" style="' + bg + '" title="' + esc(f.name) + '">' + (f.url ? '' : '<span style="font-size:11px;padding:4px;display:block">reading…</span>') +
+      var pic = f.url && !f.doc && !/^data:image\/heic/.test(f.url);
+      return '<div class="sb-thumb" style="' + (pic ? 'background-image:url(' + f.url + ')' : '') + '" title="' + esc(f.name) + '">' +
+        (pic ? '' : (f.url ? esc(f.name) : 'reading…')) +
         '<button type="button" data-i="' + i + '" aria-label="Remove ' + esc(f.name) + '">&times;</button></div>';
     }).join('');
     Array.prototype.forEach.call(box.getElementsByTagName('button'), function (b) {
@@ -457,7 +509,7 @@ h1,h2,h3{text-wrap:balance}
 
   // ---- sending --------------------------------------------------------------
   // A plain POST (no custom headers) so the browser does not preflight it. No JSONP
-  // fallback here: images cannot ride in a URL. One quiet retry, with the same ref,
+  // fallback here: files cannot ride in a URL. One quiet retry, with the same ref,
   // so a lost answer never turns into two submissions.
   function send(payload, done, attempt) {
     attempt = attempt || 1;
@@ -474,19 +526,22 @@ h1,h2,h3{text-wrap:balance}
   }
 
   var ERR = {
-    email: 'That email does not look right.', name: 'Your name, please.', task: 'Pick a task.', agree: 'Tick the box to confirm the rules.',
-    proof: 'Add at least one screenshot.', answer: 'Type your answer.', toobig: 'One of the screenshots is too big. Try a smaller one.',
-    answered: 'You have already answered that riddle. Each riddle gets one attempt.', closed: 'The hunt is over. Thank you for hunting!',
-    network: 'The ship is slow today and the submission did not go through. Try again in a minute.', server: 'Something went wrong. Try again in a minute.'
+    email: 'That email address does not look right.', name: 'Please fill in your first and last name.', task: 'Choose the task you\'d like to submit.',
+    agree: 'Please agree to the Official Rules and Privacy Policy.', proof: 'Please add at least one file as proof.', answer: 'Please type your answer.',
+    toobig: 'One of the files is too big. Try a smaller one.', answered: 'You have already answered that riddle. Each riddle gets one attempt.',
+    closed: 'The hunt is over. Thank you for hunting!', network: 'The ship is slow today and your submission did not go through. Please try again in a minute.',
+    server: 'Something went wrong. Please try again in a minute.'
   };
 
   function go() {
     var err = $('sb-err'), btn = $('sb-go'), who = readMe();
-    if (!who.name) return (err.textContent = ERR.name);
+    if (editingMe && (!who.first_name || !who.last_name)) return (err.textContent = ERR.name);
+    if (!who.country) return (err.textContent = 'Please choose the country you live in.');
+    if (editingMe && !who.plat_choice) return (err.textContent = 'Please choose your preferred social media handle, or None.');
+    if (editingMe && who.platform && !who.handle) return (err.textContent = 'Please type your ' + who.platform + ' handle.');
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(who.email)) return (err.textContent = ERR.email);
-    if (!who.country) return (err.textContent = 'Which country are you hunting from?');
     var payload = { action: 'submit', ref: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
-      name: who.name, email: who.email, handle: who.handle, platform: who.platform, country: who.country, agree: $('sb-agree').checked };
+      name: who.name || who.first_name, email: who.email, handle: who.handle, platform: who.platform, country: who.country, agree: $('sb-agree').checked };
     var label;
     if (mode === 'points') {
       var t = TASKS[$('sb-task').value];
@@ -495,29 +550,31 @@ h1,h2,h3{text-wrap:balance}
       if (t.copies) { var n = Math.max(1, Math.min(20, parseInt($('sb-copies').value, 10) || 1)); if (n > 1) payload.task += ' (' + n + ' copies)'; }
       if (t.pick) { var p = $('sb-pick').value; if (!p) return (err.textContent = t.pick[0]); payload.task += ' (' + p + ')'; }
       if (t.detail || t.area) { payload.details = $('sb-detail').value.trim(); if (!payload.details) return (err.textContent = t.detail || t.area); }
+      if (!payload.agree) return (err.textContent = ERR.agree);
       if (!t.noProof) {
-        if (files.some(function (f) { return !f.url; })) return (err.textContent = 'Still reading your screenshots. One moment.');
+        if (files.some(function (f) { return !f.url; })) return (err.textContent = 'Still reading your files. One moment.');
         if (!files.length) return (err.textContent = ERR.proof);
         payload.files = files.map(function (f) { return f.url; });
       }
       label = t.label;
     } else {
       var r = $('sb-riddle').value;
-      if (!r) return (err.textContent = 'Pick a riddle.');
+      if (!r) return (err.textContent = 'Choose the riddle you\'d like to solve.');
       payload.task = 'Solve a Riddle #' + r;
       payload.details = $('sb-answer').value.trim();
       if (!payload.details) return (err.textContent = ERR.answer);
+      if (!payload.agree) return (err.textContent = ERR.agree);
       label = 'Riddle #' + r;
     }
-    if (!payload.agree) return (err.textContent = ERR.agree);
     err.textContent = '';
     btn.disabled = true;
-    btn.textContent = payload.files ? 'Sending ' + payload.files.length + ' screenshot' + (payload.files.length > 1 ? 's' : '') + '…' : 'Sending…';
-    me = { name: who.name, first_name: who.first_name || who.name.split(/\s+/)[0], email: who.email, handle: who.handle, platform: who.platform, country: who.country };
+    btn.textContent = payload.files ? 'Sending ' + payload.files.length + ' file' + (payload.files.length > 1 ? 's' : '') + '…' : 'Sending…';
+    me = { name: who.name || who.first_name, first_name: who.first_name, last_name: who.last_name || '', email: who.email,
+           handle: who.handle, platform: who.platform, country: who.country };
     save(ME, me);
     send(payload, function (res) {
       if (!res || !res.ok) {
-        btn.disabled = false; btn.textContent = mode === 'points' ? 'Send it to the Captain' : 'Lock in my answer';
+        btn.disabled = false; btn.textContent = mode === 'points' ? 'Submit Points!' : 'Submit Answer!';
         return (err.textContent = ERR[(res && res.error)] || ERR.server);
       }
       done(label);
@@ -526,15 +583,15 @@ h1,h2,h3{text-wrap:balance}
 
   function done(label) {
     files = []; editingMe = false;
-    card.innerHTML = '<p class="sb-bang">GOT IT!</p>' +
-      '<p class="sb-say"><b>' + esc(label) + '</b> is with the Captain.</p>' +
-      '<p class="sb-quiet">' + (mode === 'riddle'
-        ? 'Your answer is locked in. Right answers land on the board at the next tally.'
-        : 'Every screenshot is checked by hand. Points land on the board at the next tally, usually within half a day.') + '</p>' +
-      '<div class="sb-form"><button class="sb-btn" id="sb-again">' + (mode === 'riddle' ? 'Solve another riddle' : 'Submit another task') + '</button>' +
-      '<a class="sb-btn ghost" href="https://www.mauriceafrich.com/leaderboard">See the leaderboard</a></div>';
+    card.innerHTML = '<div class="sb-done"><h2>Thank you!</h2>' +
+      '<p><b>' + esc(label) + '</b> is with the Captain.</p>' +
+      '<p>' + (mode === 'riddle'
+        ? 'Your answer is locked in. Right answers land on the leaderboard at the next tally.'
+        : 'Every entry is reviewed by hand. Points land on the leaderboard at the next tally, usually within half a day.') + '</p>' +
+      '<p style="margin-top:22px"><button class="sb-btn" id="sb-again">' + (mode === 'riddle' ? 'Solve another riddle' : 'Submit another task') + '</button>' +
+      '<a class="sb-btn ghost" href="https://www.mauriceafrich.com/leaderboard">See the leaderboard</a></p></div>';
     $('sb-again').onclick = draw;
-    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    head.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   draw();
