@@ -40,9 +40,11 @@
     if (!id) return;
     var target = document.getElementById(id);
     if (!target || !el.contains(target)) return;
-    var go = function () { target.scrollIntoView({ block: 'start' }); };
+    // Jump, don't glide: the site's smooth scrolling gets cut short while the page is still settling.
+    var go = function () { window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset, behavior: 'instant' }); };
     go();
     setTimeout(go, 400); setTimeout(go, 1500); // again after late images and fonts settle the layout
+    window.maAfterLoading(function () { go(); setTimeout(go, 600); });
   }
 
   function mount(el) {
