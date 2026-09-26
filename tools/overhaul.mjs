@@ -152,12 +152,14 @@ const BTN_CSS = `<style>
 .h-sweep{max-width:1240px;margin:72px auto 0;text-align:center}
 .h-sweep>p{font-size:21px;line-height:1.55;color:#fff;max-width:1200px;margin:0 auto 32px;text-wrap:balance}
 .h-acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
-.h-act{background:rgba(8,34,6,.55);border:1px solid rgba(243,234,217,.6);padding:26px 18px 24px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.h-act{text-decoration:none !important;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,background .2s ease;background:rgba(8,34,6,.55);border:1px solid rgba(243,234,217,.6);padding:26px 18px 24px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .h-act b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2vw,30px);color:#fff;line-height:1.15}
 .h-act span{font-family:'Almarai',sans-serif;font-weight:700;font-size:16px;letter-spacing:.08em;color:#a2f590}
 .h-act i{display:none;font-style:normal;font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.14em;color:#fff;background:#c1330a;border:1px solid #f3ead9;padding:5px 10px}
 .h-act.h-now{border-color:#ff4c0f;box-shadow:0 0 0 2px #ff4c0f}
 .h-act.h-now i{display:inline-block}
+.h-act:hover{transform:scale(1.05);background:rgba(8,34,6,.75);box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.h-act.h-now:hover{box-shadow:0 0 0 2px #ff4c0f,0 10px 24px rgba(0,0,0,.35)}
 @media (max-width:900px){.h-btns{grid-template-columns:repeat(2,minmax(0,1fr))}.h-btn{font-size:14px;white-space:normal}.h-acts{grid-template-columns:1fr}.h-sweep>p{font-size:19px}}
 @media (max-width:420px){.h-btns{grid-template-columns:1fr}}
 </style>
@@ -173,9 +175,9 @@ const heroButtons = `<div class="h-btns">
     <div class="h-sweep">
       <p>During the hunt, there will be three different sweepstakes, each with better/more prizes than the last. All you have to do to enter each sweepstakes is complete 1 task during the allotted time period for that sweepstakes.</p>
       <div class="h-acts">
-        <div class="h-act" data-from="2026-09-21" data-to="2026-09-30"><b>Sweepstakes (Act One)</b><span>SEPTEMBER 21<sup style="font-size:.6em">ST</sup> – SEPTEMBER 30<sup style="font-size:.6em">TH</sup></span><i>OPEN NOW</i></div>
-        <div class="h-act" data-from="2026-10-01" data-to="2026-10-15"><b>Sweepstakes (Act Two)</b><span>OCTOBER 1<sup style="font-size:.6em">ST</sup> – OCTOBER 15<sup style="font-size:.6em">TH</sup></span><i>OPEN NOW</i></div>
-        <div class="h-act" data-from="2026-10-16" data-to="2026-11-01"><b>Sweepstakes (Act Three)</b><span>OCTOBER 16<sup style="font-size:.6em">TH</sup> – NOVEMBER 1<sup style="font-size:.6em">ST</sup></span><i>OPEN NOW</i></div>
+        <a class="h-act" href="#rewards" data-from="2026-09-21" data-to="2026-09-30"><b>Sweepstakes (Act One)</b><span>SEPTEMBER 21<sup style="font-size:.6em">ST</sup> – SEPTEMBER 30<sup style="font-size:.6em">TH</sup></span><i>OPEN NOW</i></a>
+        <a class="h-act" href="#rewards" data-from="2026-10-01" data-to="2026-10-15"><b>Sweepstakes (Act Two)</b><span>OCTOBER 1<sup style="font-size:.6em">ST</sup> – OCTOBER 15<sup style="font-size:.6em">TH</sup></span><i>OPEN NOW</i></a>
+        <a class="h-act" href="#rewards" data-from="2026-10-16" data-to="2026-11-01"><b>Sweepstakes (Act Three)</b><span>OCTOBER 16<sup style="font-size:.6em">TH</sup> – NOVEMBER 1<sup style="font-size:.6em">ST</sup></span><i>OPEN NOW</i></a>
       </div>
     </div>
     <script>(function(){

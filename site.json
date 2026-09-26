@@ -141,6 +141,12 @@
       "source": "pages/questions.html"
     },
     {
+      "slug": "submit",
+      "url": "(preview only: will replace /points and /solve once approved)",
+      "title": "Submit points and riddles (Drive form)",
+      "source": "bot:squarespace-submit.html"
+    },
+    {
       "slug": "profile",
       "url": "/profile",
       "title": "Treasure Hunter Profile",
