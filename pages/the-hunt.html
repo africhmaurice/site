@@ -541,7 +541,7 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
         var need = Math.min(e.boundingClientRect.height, window.innerHeight) * 0.6;
-        if (e.isIntersecting && e.intersectionRect.height >= need) { map.classList.add('mh-zoomed'); io.disconnect(); remember('zoom'); }
+        if (e.isIntersecting && e.intersectionRect.height >= need) { io.disconnect(); remember('zoom'); (window.maAfterLoading || function (f) { f(); })(function () { setTimeout(function () { map.classList.add('mh-zoomed'); }, 250); }); }   // wait for the loading screen, so a direct link to #map still sees the whole zoom
       });
     }, { threshold: steps });
     io.observe(map);
