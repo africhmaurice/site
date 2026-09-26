@@ -606,15 +606,15 @@ function oneRow(css) {
 /* Date endings (21st, 30th) small and tucked up */
 sup { font-size: .42em !important; line-height: 0 !important; vertical-align: .95em !important; }
 
-/* One row */
-@media (min-width: 768px) {
+/* One row (from 1000px wide; narrower desktop windows wrap to two rows) */
+@media (min-width: 1000px) {
   #header .header-display-desktop .header-title-nav-wrapper { flex-wrap: nowrap !important; align-items: center !important; }
   #header .header-display-desktop .header-nav, #header .header-display-desktop .header-nav-wrapper { flex: 1 1 auto !important; min-width: 0 !important; }
   #header .header-display-desktop .header-nav-list { flex-wrap: nowrap !important; justify-content: flex-end !important; align-items: center !important; row-gap: 0 !important; }
-  #header .header-display-desktop .header-nav-item { margin: 0 clamp(5px, .8vw, 14px) !important; flex: none !important; }
+  #header .header-display-desktop .header-nav-item { margin: 0 clamp(4px, .7vw, 14px) !important; flex: none !important; }
   #header .header-display-desktop .header-nav-item:last-child { margin-right: 0 !important; }
   #header .header-display-desktop .header-nav-item > a,
-  #header .header-display-desktop .header-nav-folder-title { font-size: clamp(11px, .92vw, 14.4px) !important; white-space: nowrap !important; }
+  #header .header-display-desktop .header-nav-folder-title { font-size: clamp(10.5px, .88vw, 14.4px) !important; white-space: nowrap !important; }
   #header .header-display-desktop .header-title-logo img { max-height: none !important; width: clamp(88px, 8.3vw, 120px) !important; height: auto !important; }
 }
 `;
