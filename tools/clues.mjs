@@ -70,6 +70,7 @@ to find their prize.`],
   // After sunset (Eastern time) this clue wakes up: click it and "/in-the-dark" flashes for a split second.
   [25, 'In the dark', { night: '/in-the-dark' }],
   [26, "It'll come to you."],
+  [27, "Your Loot Box"],
 ];
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

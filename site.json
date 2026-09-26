@@ -163,6 +163,18 @@
       "url": "(preview only: new home page media section, needs a code block on /home)",
       "title": "Home: As Featured In",
       "source": "pages/home-press.html (built by tools/press.mjs)"
+    },
+    {
+      "slug": "in-the-dark",
+      "url": "(preview only, not on Squarespace yet)",
+      "title": "In the Dark (clue 25)",
+      "source": "pages/in-the-dark.html"
+    },
+    {
+      "slug": "profile-next",
+      "url": "(preview only, not on Squarespace yet)",
+      "title": "Profile preview",
+      "source": "pages/profile-next.html"
     }
   ],
   "staysInSquarespace": [
