@@ -590,9 +590,14 @@ h1,h2,h3{text-wrap:balance}
       '<p>' + (mode === 'riddle'
         ? 'Your answer is locked in. Right answers land on the leaderboard at the next tally.'
         : 'Every entry is reviewed by hand. Points land on the leaderboard at the next tally, usually within half a day.') + '</p>' +
-      '<p style="margin-top:22px"><button class="sb-btn" id="sb-again">' + (mode === 'riddle' ? 'Solve another riddle' : 'Submit another task') + '</button>' +
+      '<p style="margin-top:22px"><button class="sb-btn" id="sb-again">' + (mode === 'riddle' ? 'Solve Another Riddle!' : 'Submit More Points!') + '</button>' +
       '<a class="sb-btn ghost" href="https://www.mauriceafrich.com/leaderboard">See the leaderboard</a></p></div>';
-    $('sb-again').onclick = draw;
+    // A fresh page for the next one, on the same tab (points or riddle) they just used.
+    $('sb-again').onclick = function () {
+      var want = mode === 'riddle' ? '#riddle' : '';
+      if (location.hash === want) location.reload();
+      else { location.hash = want; location.reload(); }
+    };
     head.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
