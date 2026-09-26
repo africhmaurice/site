@@ -242,7 +242,8 @@ html,body{margin:0 !important;padding:0 !important}
     var active = (p.days.match(/1/g) || []).length, sofar = Math.max(1, Math.min(42, idx + 1));
     var third = 0, reg = board && board.regions ? board.regions.filter(function (r) { return r.key === p.r; })[0] : null;
     if (reg && reg.top && reg.top[2]) third = reg.top[2].points;
-    var race = !p.tr ? 'Keep climbing! The more points you earn, the more rewards the whole crew unlocks.'
+    var race = !p.rank ? 'You’re playing as crew staff, so you’re not ranked on the public board. Every point you earn still counts toward the crew’s rewards!'
+      : !p.tr ? 'Keep climbing! The more points you earn, the more rewards the whole crew unlocks.'
       : p.rank <= 3 ? '<b>You’re in Treasure position!</b> The top 3 at the end of the hunt win <a href="' + U + '/the-treasure">The Treasure</a>. Hold on to it!'
       : '<b>' + fmt(p.next) + ' points</b> to pass #' + (p.rank - 1) + (third ? ', and ' + fmt(third - p.pts + 1) + ' to crack the top 3' : '') + '. The top 3 at the end of the hunt win <a href="' + U + '/the-treasure">The Treasure</a>!';
     var pct = third ? Math.min(100, p.pts / third * 100) : 100;
@@ -254,12 +255,12 @@ html,body{margin:0 !important;padding:0 !important}
       '<div class="hp-sub">' + esc(p.h) + '<b>' + esc(p.rl).toUpperCase() + ' BOARD</b></div></div></div>' +
       '<p class="hp-when">Points are added at each tally, 10 AM and 7 PM ET. Anything you earned since the last one will show up at the next.</p>' +
       '<div class="hp-tiles">' +
-        '<div class="hp-tile hp-hot"><i>RANK</i><b>#' + p.rank + '</b><span>of ' + fmt(p.of) + ' on the board</span></div>' +
+        (p.rank ? '<div class="hp-tile hp-hot"><i>RANK</i><b>#' + p.rank + '</b><span>of ' + fmt(p.of) + ' on the board</span></div>' : '<div class="hp-tile hp-hot"><i>RANK</i><b>CREW</b><span>not on the public board</span></div>') +
         '<div class="hp-tile"><i>POINTS</i><b>' + fmt(p.pts) + '</b><span>and counting</span></div>' +
         '<div class="hp-tile"><i>SWEEPSTAKES ENTRIES</i><b>' + fmt(p.ent) + '</b><span>' + fmt(p.act[actNow]) + ' in ' + acts[actNow] + '</span></div>' +
         '<div class="hp-tile"><i>DAYS ACTIVE</i><b>' + active + '</b><span>of ' + sofar + ' days so far</span></div>' +
       '</div>' +
-      '<div class="hp-race"><p>' + race + '</p>' + (p.tr ? '<div class="hp-bar"><div style="width:' + pct.toFixed(1) + '%"></div></div>' : '') + '</div>' +
+      '<div class="hp-race"><p>' + race + '</p>' + (p.tr && p.rank ? '<div class="hp-bar"><div style="width:' + pct.toFixed(1) + '%"></div></div>' : '') + '</div>' +
       '<div class="hp-grid">' +
         '<div class="hp-stat"><i>SECRET LOOT BOXES</i><b>' + p.loot + ' <small>/ ' + BOXES + '</small></b><div class="hp-bar"><div style="width:' + (p.loot / BOXES * 100).toFixed(1) + '%"></div></div></div>' +
         '<div class="hp-stat"><i>DAILY GAME WINS</i><b>' + p.games + '</b><small>Skyword, Sort the Shelf, Book Icons, Crossword</small></div>' +
