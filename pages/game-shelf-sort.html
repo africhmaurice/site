@@ -83,7 +83,7 @@ html,body{margin:0 !important;padding:0 !important}
 .ss-case{position:relative;width:100%;aspect-ratio:803/1300;background:url(https://africhmaurice.github.io/site/assets/shelf/bookcase-narrow.webp) center/100% 100% no-repeat;container-type:inline-size;--inset:7%}
 .ss-slot{position:absolute;left:var(--inset);right:var(--inset);display:flex;justify-content:center;align-items:flex-end;gap:1.2cqw}
 .ss-spine{position:relative;height:90%;aspect-ratio:92/463;background:center/100% 100% no-repeat;display:flex;align-items:center;justify-content:center;transform-origin:left center}
-.ss-spine span{writing-mode:vertical-rl;font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(7px,2.3cqw,14px);letter-spacing:.03em;line-height:1;white-space:nowrap;max-height:94%;overflow:hidden;text-overflow:ellipsis}
+.ss-spine span{writing-mode:vertical-rl;font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(7px,2.3cqw,14px);letter-spacing:.03em;line-height:1;white-space:nowrap;max-height:94%;overflow:hidden}
 .ss-spine.in{animation:ss-turn .42s cubic-bezier(.2,.8,.3,1) both}
 @keyframes ss-turn{from{transform:perspective(500px) rotateY(-88deg);opacity:.2}to{transform:none;opacity:1}}
 .ss-sticker{position:absolute;left:50%;transform:translate(-50%,-50%) rotate(-2deg);white-space:nowrap;overflow:hidden;text-align:center;width:max-content;max-width:86%;background:#fffffe;color:#0b170f;border:2px solid #0b170f;border-radius:6px;padding:.5cqw 2.2cqw;font-family:'Bebas Neue','Almarai',sans-serif;font-weight:400;font-size:clamp(14px,5.2cqw,26px);letter-spacing:.04em;line-height:1.1;box-shadow:2px 3px 0 rgba(0,0,0,.4);z-index:3}
@@ -95,7 +95,7 @@ html,body{margin:0 !important;padding:0 !important}
 .ss-board.done{grid-template-columns:1fr}.ss-board.done .ss-case{max-width:440px;margin:0 auto}.ss-board.done .ss-grid{display:none}
 @media (max-width:700px){.ss-board{grid-template-columns:1fr;gap:16px}.ss-case{max-width:600px;margin:0 auto;aspect-ratio:1400/1404;background-image:url(https://africhmaurice.github.io/site/assets/shelf/bookcase.webp);--inset:5%}.ss-sticker{font-size:clamp(14px,4.2cqw,26px)}}
 .ss-book{position:relative;aspect-ratio:360/417;background:center/100% 100% no-repeat;border:0;padding:0;cursor:grab;touch-action:none;transition:transform .15s ease,filter .15s ease;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
-.ss-book span{position:absolute;left:10%;right:8%;top:30%;bottom:30%;display:flex;align-items:center;justify-content:center;text-align:center;font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(9px,1.55vw,14px);letter-spacing:.03em;line-height:1.15;overflow-wrap:normal;word-break:normal;hyphens:none;overflow:hidden}
+.ss-book span{position:absolute;left:8%;right:6%;top:27%;bottom:27%;display:flex;align-items:center;justify-content:center;text-align:center;font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(9px,1.55vw,14px);letter-spacing:.03em;line-height:1.15;overflow-wrap:normal;word-break:normal;hyphens:none;overflow:hidden}
 .ss-book:hover{transform:translateY(-3px)}
 .ss-book.on{transform:translateY(-9px) rotate(-3deg);filter:drop-shadow(0 8px 10px rgba(0,0,0,.45));outline:3px solid #0b170f;outline-offset:3px}
 .ss-book.shake{animation:ss-shake .4s}
@@ -535,7 +535,7 @@ var HG_GAME = {"key":"shelf_sort","label":"Sort the Shelf","points":40,"startDat
       tag.style.top = EDGE[k] + '%'; if (fresh === gi) tag.style.animationDelay = '420ms';
       tag.textContent = groups[gi].name; tag.title = groups[gi].name; caseEl.appendChild(tag);
     });
-    fitStickers();
+    fitStickers(); if (typeof fit === 'function') fit();
   }
   // shelf labels stay on one line: shrink the text until it fits
   function fitStickers() {
@@ -568,10 +568,17 @@ var HG_GAME = {"key":"shelf_sort","label":"Sort the Shelf","points":40,"startDat
   // long words shrink until they fit their cover instead of being cut off
   function fit() {
     Array.prototype.forEach.call(gridEl.querySelectorAll('.ss-book span'), function (s) {
+      var w = s.parentNode.clientWidth; if (!w) return;
+      var fs = Math.min(18, Math.max(8, w * 0.15)); s.style.fontSize = fs + 'px';
+      while ((s.scrollWidth > s.clientWidth || s.scrollHeight > s.clientHeight) && fs > 6) { fs -= 0.25; s.style.fontSize = fs + 'px'; }
+    });
+    Array.prototype.forEach.call(caseEl.querySelectorAll('.ss-spine span'), function (s) {
       s.style.fontSize = ''; var fs = parseFloat(getComputedStyle(s).fontSize);
-      while ((s.scrollWidth > s.clientWidth || s.scrollHeight > s.clientHeight) && fs > 6) { fs -= 0.5; s.style.fontSize = fs + 'px'; }
+      while (s.scrollHeight > s.clientHeight + 1 && fs > 6) { fs -= 0.25; s.style.fontSize = fs + 'px'; }
     });
   }
+  window.addEventListener('resize', function () { fit(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { fit(); });
   function paint(fresh) { paintCase(fresh); paintBooks(); }
   function toggle(it) {
     if (st.done || animating) return;
