@@ -81,7 +81,7 @@ const STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><p
 // The same open chevron the main header uses on its dropdowns
 const CARET = '<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg>';
 // Pre-order retailers in this order; the Walmart link is the special edition. [label, link, label in the old menu]
-const RETAIL = [['WALMART SPECIAL EDITION', 'https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704'], ['WATERSTONES'], ['BARNES &amp; NOBLE', null, 'BARNES &AMP; NOBLE'], ['AMAZON'], ['AUDIBLE']];
+const RETAIL = [['WATERSTONES'], ['BARNES &amp; NOBLE', null, 'BARNES &AMP; NOBLE'], ['AMAZON'], ['AUDIBLE'], ['WALMART SPECIAL EDITION', 'https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704']];
 const vote = (label) => label === 'VOTE NOW!' ? ' data-vote' : '';
 const deskLink = (item) => item === 'PROGRESS'
   ? `      <div class="mn-drop">
