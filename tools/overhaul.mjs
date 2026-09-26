@@ -189,7 +189,7 @@ const heroButtons = `<div class="h-btns">
       for (var i = 0; i < acts.length; i++) if (d >= acts[i].getAttribute('data-from') && d <= acts[i].getAttribute('data-to')) acts[i].classList.add('h-now');
       // Current Reward Count: the digital rewards the crew has unlocked so far, from the live leaderboard total.
       var el = document.getElementById('hero-rewards'); if (!el || !window.fetch) return;
-      var GOAL = 40000, TIERS = [20, 40, 60, 75, 80], BONUS = [{ at: 50000, named: true }, { at: 75000, named: false }];
+      var GOAL = 40000, TIERS = [20, 40, 60, 75, 80], BONUS = [{ at: 50000, named: true }, { at: 75000, named: true }];
       fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t=' + Math.floor(Date.now() / 300000))
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (b) {
