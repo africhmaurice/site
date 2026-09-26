@@ -4,13 +4,14 @@
 <style>
 @font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
 html,body{margin:0 !important;padding:0 !important}
-#loot-clue{min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;padding:150px 32px 110px;background:linear-gradient(rgba(26,94,65,.9),rgba(26,94,65,.9)),url(https://africhmaurice.github.io/site/assets/img/d53309446757362e.jpg) center/cover no-repeat fixed}
+#loot-clue{min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;padding:150px 32px 64px;background:linear-gradient(rgba(26,94,65,.9),rgba(26,94,65,.9)),url(https://africhmaurice.github.io/site/assets/img/d53309446757362e.jpg) center/cover no-repeat fixed}
 @media (max-width:900px){#loot-clue{background-attachment:scroll}}
 #loot-clue .lc-board{background:rgba(38,142,98,.9);max-width:860px;width:100%;padding:72px 56px 64px;text-align:center;box-shadow:6px 8px 0 rgba(0,0,0,.35)}
 #loot-clue .lc-eyebrow{font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(16px,1.5vw,21px);letter-spacing:.14em;color:#fffffe;text-transform:uppercase;margin:0 0 28px}
 #loot-clue .lc-clue{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(40px,6vw,84px);line-height:1.15;color:#89fbcb;margin:0}
 #loot-clue .lc-poem{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(24px,3vw,40px);line-height:1.35;color:#89fbcb;margin:0;white-space:pre-line}
 #loot-clue p{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(16px,1.4vw,20px);letter-spacing:.05em;line-height:1.65;color:#fffffe;text-transform:uppercase;max-width:640px;margin:0 auto}
+
 #loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;max-width:1240px;width:100%;align-items:stretch}
 #loot-clue .lc-board{box-sizing:border-box;max-width:none;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 44px 52px}
 #loot-clue .lc-num{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,3.4vw,52px);line-height:1;color:#89fbcb;margin:0 0 22px}
@@ -19,6 +20,8 @@ html,body{margin:0 !important;padding:0 !important}
 #loot-clue .lc-flash,#loot-clue .lc-flash *{cursor:default}
 #loot-clue .lc-img{display:block;width:100%;max-width:420px;height:auto;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}
 .lc-flash-ov{position:fixed;inset:0;z-index:2147483646;background:#fffffe;display:flex;align-items:center;justify-content:center;pointer-events:none}.lc-flash-ov img{width:min(60vw,448px);height:auto}.lc-flash-ov.fill{background:#0b170f}.lc-flash-ov.fill img{width:100%;height:100%;object-fit:cover}
+.lc-flash-ov.lc-say{background:#0b170f;color:#fffffe;font-family:'Atomic Marker',cursive;font-size:clamp(44px,9vw,120px);letter-spacing:.02em}
+#loot-clue .lc-night.on .lc-text{text-decoration:underline;text-underline-offset:4px}
 @media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}}
 @media (max-width:760px){#loot-clue{padding:130px 20px 70px}#loot-clue .lc-board{padding:48px 26px 44px}}
 </style>
@@ -48,33 +51,87 @@ html,body{margin:0 !important;padding:0 !important}
   #hunt-nav .mn-burger{display:flex}
 }
 </style>
+<style>
+html body{text-wrap:pretty}
+h1,h2,h3{text-wrap:balance}
+/* Date endings (21st, 30th) small and tucked up, not as big as the numbers */
+sup{font-size:.6em !important;line-height:0 !important;display:inline-block !important;transform:scale(.72) !important;transform-origin:left 30% !important;vertical-align:.7em !important;letter-spacing:.02em;margin-right:-.12em}
+/* The hunt menu matches the main site header: same green, logo size, type, spacing and outlined pre-order button */
+#hunt-nav{background:#1a5e41;backdrop-filter:none;-webkit-backdrop-filter:none;padding:9px clamp(24px,4vw,58px)}
+#hunt-nav .mn-row{max-width:none;display:flex;align-items:center;justify-content:space-between;gap:24px}
+#hunt-nav .mn-logo{display:flex;align-items:center;flex:none}
+#hunt-nav .mn-logo img{width:clamp(88px,8.3vw,120px);height:auto;display:block}
+#hunt-nav .mn-right{display:flex;align-items:center;gap:clamp(14px,1.9vw,32px)}
+#hunt-nav .mn-links{display:flex;align-items:center;gap:clamp(9px,1.2vw,29px)}
+#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(10.5px,.88vw,14.4px);letter-spacing:.07em;line-height:48px;text-shadow:none;color:#fff;white-space:nowrap}
+#hunt-nav .mn-vote,#hunt-nav-ov .mn-vote{color:#a2f590 !important;transition:color .15s ease}
+#hunt-nav .mn-vote:hover,#hunt-nav-ov .mn-vote:hover{color:#ff4c0f !important}
+#hunt-nav .mn-link:hover,#hunt-nav .mn-drop:hover>.mn-link{color:#a2f590}
+#hunt-nav .mn-caret{display:inline-block;width:11px;height:11px;margin-left:8px;vertical-align:1px;transition:transform .15s ease}
+#hunt-nav .mn-drop:hover .mn-caret,#hunt-nav .mn-drop:focus-within .mn-caret{transform:rotate(180deg)}
+#hunt-nav .mn-cta{line-height:17px;padding:8px clamp(12px,1.3vw,20px);border:2px solid #f3ead9;background:rgba(12,26,8,.35)}
+#hunt-nav .mn-drop-cta>.mn-link.mn-cta:hover,#hunt-nav .mn-drop-cta:hover>.mn-link.mn-cta{color:#a2f590;background:rgba(12,26,8,.35);transform:none}
+#hunt-nav .mn-dd{padding-top:6px}
+#hunt-nav .mn-dd-in a{font-size:clamp(12px,.92vw,14.4px);letter-spacing:.07em;padding:13px 18px}
+#hunt-nav .mn-dd-in a.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}
+#hunt-nav .mn-dd-in a.mn-profile:hover{background:#e04a12;color:#fff}
+#hunt-nav .mn-dd-in a.mn-profile svg{width:16px;height:16px;flex:none}
+@media (max-width:1240px){
+  #hunt-nav{padding:10px 0;background:none}
+  #hunt-nav .mn-row{display:none}
+  #hunt-nav .mn-burger{display:flex}
+}
+#hunt-nav-ov{gap:14px;overflow-y:auto;justify-content:flex-start;padding-top:88px}
+#hunt-nav-ov a{font-size:17px}
+#hunt-nav-ov .mn-ovlogo{position:absolute;top:16px;left:20px}
+#hunt-nav-ov .mn-ovlogo img{width:96px;height:auto;display:block}
+#hunt-nav-ov .mn-ovgroup{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(243,234,217,.3);padding:14px 26px 16px}
+#hunt-nav-ov .mn-ovgroup span{font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590}
+#hunt-nav-ov .mn-ovgroup a{font-size:15px}
+#hunt-nav-ov .mn-ovgroup a.mn-profile{background:#c1330a;border:1.5px solid #f3ead9;padding:9px 16px}
+@media (min-height:860px){#hunt-nav-ov{justify-content:center;padding-top:32px}}
+</style>
 <nav id="hunt-nav">
   <div class="mn-row">
-    <a href="https://www.mauriceafrich.com" class="mn-link">HOME</a>
-    <a href="https://www.mauriceafrich.com/the-hunt" class="mn-link">HUNT</a>
-    <a href="https://www.mauriceafrich.com/leaderboard" class="mn-link">LEADERBOARD</a>
-    <div class="mn-drop">
-      <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">SUBMIT &#9662;</a>
-      <div class="mn-dd"><div class="mn-dd-in">
-        <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
-        <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
-      </div></div>
-    </div>
-    <a href="https://www.mauriceafrich.com/contests" class="mn-link">CONTESTS</a>
-    <a href="https://www.mauriceafrich.com/the-hunt#rewards" class="mn-link">REWARDS</a>
-    <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
-    <a href="https://www.mauriceafrich.com/loot" class="mn-link">LOOT</a>
-    <a href="https://www.mauriceafrich.com/games" class="mn-link">GAMES</a>
-    <div class="mn-drop mn-drop-cta">
-      <a href="https://www.mauriceafrich.com/preorder" class="mn-link mn-cta" aria-haspopup="true">PRE-ORDER CELLO'S GATE &#9662;</a>
-      <div class="mn-dd"><div class="mn-dd-in">
-        <a href="https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834" target="_blank" rel="noopener">BARNES &AMP; NOBLE</a>
-        <a href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399763073" target="_blank" rel="noopener">WATERSTONES</a>
-        <a href="https://www.amazon.com/Audible-Cellos-Gate/dp/B0GKZWW416/ref=tmm_aud_swatch_0?_encoding=UTF8&amp;dib_tag=se&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;qid=1770340593&amp;sr=8-1&amp;ascsubtag=srctok-d4f496760f7c524a&amp;btn_ref=srctok-d4f496760f7c524a" target="_blank" rel="noopener">AUDIBLE</a>
-        <a href="https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834/ref=sr_1_1?crid=279A8MV3ZYP0T&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;dib_tag=se&amp;keywords=cellos+gate&amp;qid=1770340593&amp;sprefix=cellos%27+gate%2Caps%2C179&amp;sr=8-1&amp;ascsubtag=srctok-f7d285c3c39c18b3&amp;btn_ref=srctok-f7d285c3c39c18b3" target="_blank" rel="noopener">AMAZON</a>
-        <a href="https://bookshop.org/p/books/cello-s-gate-maurice-africh/867e45638f69e94f?ean=9781668242834&amp;next=t" target="_blank" rel="noopener">BOOKSHOP.ORG</a>
-        <a href="https://www.mauriceafrich.com/preorder" class="mn-all">ALL RETAILERS &rarr;</a>
-      </div></div>
+    <a href="https://www.mauriceafrich.com" class="mn-logo" aria-label="Maurice Africh home"><img src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
+    <div class="mn-right">
+      <div class="mn-links">
+      <a href="https://www.mauriceafrich.com/the-hunt" class="mn-link">THE HUNT</a>
+      <a href="https://www.mauriceafrich.com/the-hunt#tasks" class="mn-link">TASKS</a>
+      <a href="https://www.mauriceafrich.com/the-hunt#riddles" class="mn-link">RIDDLES</a>
+      <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
+      <a href="https://www.mauriceafrich.com/games" class="mn-link">GAMES</a>
+      <a href="https://www.mauriceafrich.com/contests" class="mn-link">CONTESTS</a>
+      <div class="mn-drop">
+        <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">SUBMIT<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+          <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
+        </div></div>
+      </div>
+      <div class="mn-drop">
+        <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">CURRENT PROGRESS<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.mauriceafrich.com/profile" class="mn-profile"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"></path></svg>TREASURE HUNTER PROFILE</a>
+          <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
+          <a href="https://www.mauriceafrich.com/loot">LOOT BOX SCORECARD</a>
+          <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+        </div></div>
+      </div>
+      <a href="https://www.mauriceafrich.com/questions" class="mn-link">QUESTIONS?</a>
+      <a href="https://www.mauriceafrich.com/red-city" class="mn-link mn-vote">VOTE NOW!</a>
+      </div>
+      <div class="mn-drop mn-drop-cta">
+        <a href="https://www.mauriceafrich.com/preorder" class="mn-link mn-cta" aria-haspopup="true">PRE-ORDER CELLO'S GATE<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399763073" target="_blank" rel="noopener">WATERSTONES</a>
+          <a href="https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834" target="_blank" rel="noopener">BARNES &amp; NOBLE</a>
+          <a href="https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834/ref=sr_1_1?crid=279A8MV3ZYP0T&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;dib_tag=se&amp;keywords=cellos+gate&amp;qid=1770340593&amp;sprefix=cellos%27+gate%2Caps%2C179&amp;sr=8-1&amp;ascsubtag=srctok-f7d285c3c39c18b3&amp;btn_ref=srctok-f7d285c3c39c18b3" target="_blank" rel="noopener">AMAZON</a>
+          <a href="https://www.amazon.com/Audible-Cellos-Gate/dp/B0GKZWW416/ref=tmm_aud_swatch_0?_encoding=UTF8&amp;dib_tag=se&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;qid=1770340593&amp;sr=8-1&amp;ascsubtag=srctok-d4f496760f7c524a&amp;btn_ref=srctok-d4f496760f7c524a" target="_blank" rel="noopener">AUDIBLE</a>
+          <a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener">WALMART SPECIAL EDITION</a>
+          <a href="https://www.mauriceafrich.com/preorder" class="mn-all">ALL RETAILERS &rarr;</a>
+        </div></div>
+      </div>
     </div>
   </div>
   <div class="mn-burger" role="button" aria-label="Open menu" onclick="var o=document.getElementById('hunt-nav-ov');if(o.parentNode!==document.body){document.body.appendChild(o);}o.style.display='flex'">
@@ -85,16 +142,25 @@ html,body{margin:0 !important;padding:0 !important}
   <div class="mn-x" role="button" aria-label="Close menu">
     <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M5 5l14 14"></path><path d="M19 5L5 19"></path></svg>
   </div>
-  <a href="https://www.mauriceafrich.com">HOME</a>
-  <a href="https://www.mauriceafrich.com/the-hunt">HUNT</a>
-  <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
-  <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
-  <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
-  <a href="https://www.mauriceafrich.com/contests">CONTESTS</a>
-  <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+  <a href="https://www.mauriceafrich.com" class="mn-ovlogo" aria-label="Maurice Africh home"><img loading="lazy" decoding="async" src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
+  <a href="https://www.mauriceafrich.com/the-hunt">THE HUNT</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#tasks">TASKS</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#riddles">RIDDLES</a>
   <a href="https://www.mauriceafrich.com/lootbox-clue">CLUES</a>
-  <a href="https://www.mauriceafrich.com/loot">LOOT</a>
   <a href="https://www.mauriceafrich.com/games">GAMES</a>
+  <a href="https://www.mauriceafrich.com/contests">CONTESTS</a>
+  <div class="mn-ovgroup"><span>SUBMIT</span>
+    <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+    <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
+  </div>
+  <div class="mn-ovgroup"><span>CURRENT PROGRESS</span>
+    <a href="https://www.mauriceafrich.com/profile" class="mn-profile">TREASURE HUNTER PROFILE</a>
+    <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
+    <a href="https://www.mauriceafrich.com/loot">LOOT BOX SCORECARD</a>
+    <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+  </div>
+  <a href="https://www.mauriceafrich.com/questions">QUESTIONS?</a>
+  <a href="https://www.mauriceafrich.com/red-city" class="mn-vote">VOTE NOW!</a>
   <a href="https://www.mauriceafrich.com/preorder" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
 </div>
 
@@ -198,10 +264,45 @@ to find their prize.</div>
     <div class="lc-num">#18</div>
     <a class="lc-text lc-link" href="https://africhmaurice.github.io/site/preview/the-void.html">click this</a>
   </div>
+  <div class="lc-board" data-clue="21">
+    <div class="lc-num">#21</div>
+    <div class="lc-text">It's in my linktree</div>
+  </div>
+  <div class="lc-board" data-clue="22">
+    <div class="lc-num">#22</div>
+    <div class="lc-text">&quot;The Angel Sun&quot; by Pinkman, Daughter of Arathorn and Gilrean</div>
+  </div>
+  <div class="lc-board" data-clue="23">
+    <div class="lc-num">#23</div>
+    <div class="lc-text">Telekinetic Swords &amp; 12ish Children</div>
+  </div>
+  <div class="lc-board" data-clue="24">
+    <div class="lc-num">#24</div>
+    <div class="lc-text">Getting the Band Back Together</div>
+  </div>
+  <div class="lc-board lc-night" data-clue="25" data-night="/in-the-dark">
+    <div class="lc-num">#25</div>
+    <div class="lc-text">In the dark</div>
+  </div>
+  <div class="lc-board" data-clue="26">
+    <div class="lc-num">#26</div>
+    <div class="lc-text">It'll come to you.</div>
+  </div>
   </div>
   <script>(function(){var s=document.getElementById('loot-clue');if(!s)return;
     Array.prototype.forEach.call(s.querySelectorAll('.lc-flash'),function(b){var src=b.getAttribute('data-flash');new Image().src=src;
       function go(){var o=document.createElement('div');o.className='lc-flash-ov'+(b.hasAttribute('data-fill')?' fill':'');o.innerHTML='<img alt="" src="'+src+'">';document.body.appendChild(o);setTimeout(function(){o.remove();},110);}
       b.addEventListener('click',go);b.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});});})();</script>
+  <script>(function(){function maIsNight(){if(/[?&]night=1/.test(location.search))return true;if(/[?&]night=0/.test(location.search))return false;
+  var r=Math.PI/180,lat=35.595*r,lng=-82.551,now=Date.now(),n0=Math.round(now/864e5+2440587.5-2451545);
+  function sun(n){var J=n-lng/360,M=(357.5291+.98560028*J)%360,C=1.9148*Math.sin(M*r)+.02*Math.sin(2*M*r)+.0003*Math.sin(3*M*r),L=(M+C+282.9372)%360,
+    Jt=2451545+J+.0053*Math.sin(M*r)-.0069*Math.sin(2*L*r),d=Math.asin(Math.sin(L*r)*Math.sin(23.4397*r)),
+    w=Math.acos((Math.sin(-.833*r)-Math.sin(lat)*Math.sin(d))/(Math.cos(lat)*Math.cos(d)))/r,ms=function(j){return (j-2440587.5)*864e5;};
+    return {rise:ms(Jt-w/360),set:ms(Jt+w/360)};}
+  for(var k=-2;k<=1;k++){if(now>=sun(n0+k).set&&now<sun(n0+k+1).rise)return true;}return false;}var s=document.getElementById('loot-clue');if(!s)return;
+    Array.prototype.forEach.call(s.querySelectorAll('.lc-night'),function(b){var said=b.getAttribute('data-night');
+      function wake(){var on=maIsNight();b.classList.toggle('on',on);if(on){b.setAttribute('role','button');b.tabIndex=0;}else{b.removeAttribute('role');b.removeAttribute('tabindex');}}
+      function go(){if(!b.classList.contains('on'))return;var o=document.createElement('div');o.className='lc-flash-ov lc-say';o.textContent=said;document.body.appendChild(o);setTimeout(function(){o.remove();},160);}
+      wake();setInterval(wake,60000);b.addEventListener('click',go);b.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});});})();</script>
 </section>
 <!-- END OF FILE — if you cannot find this comment after pasting, the paste was truncated -->

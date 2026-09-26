@@ -1,0 +1,51 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>In the Dark (preview)</title><link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&display=swap" rel="stylesheet"><style>@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype')}</style></head><body><!-- ============================================================
+     IN THE DARK - clue #25. The Night Box shows here only between sunset and sunrise
+     (Asheville, NC, Eastern time). By day the page is empty. Clicking the box opens loot box 25.
+     ============================================================ -->
+<style>
+html,body{margin:0 !important;padding:0 !important;background:#060d08 !important}
+#ma-dark{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:60px 20px;box-sizing:border-box;
+  background:radial-gradient(ellipse at 50% 38%,#12241a 0%,#060d08 70%);font-family:'Almarai',sans-serif;color:#fffffe;text-align:center;overflow:hidden}
+#ma-dark .d-stars{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 2s ease}
+#ma-dark.night .d-stars{opacity:1}
+#ma-dark .d-stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fffffe;opacity:.7;animation:d-tw 3.5s ease-in-out infinite}
+@keyframes d-tw{50%{opacity:.15}}
+#ma-dark .d-day{font-weight:700;font-size:15px;letter-spacing:.18em;color:rgba(255,255,254,.28)}
+#ma-dark .d-box{display:none;width:min(62vw,360px);cursor:default;filter:drop-shadow(0 0 40px rgba(255,76,15,.35));animation:d-bob 4s ease-in-out infinite;border:0;background:none;padding:0}
+#ma-dark .d-box img{width:100%;height:auto;display:block}
+#ma-dark .d-say{display:none;font-family:'Atomic Marker',cursive;font-size:clamp(28px,4vw,44px);color:#fd7547}
+#ma-dark.night .d-box,#ma-dark.night .d-say{display:block}
+#ma-dark.night .d-day{display:none}
+@keyframes d-bob{50%{transform:translateY(-12px)}}
+@media (prefers-reduced-motion:reduce){#ma-dark .d-box,#ma-dark .d-stars i{animation:none}}
+</style>
+<section id="ma-dark" aria-label="In the dark">
+  <div class="d-stars"></div>
+  <div class="d-day">NOTHING HERE. NOT YET.</div>
+  <div class="d-say">The Night Box</div>
+  <button class="d-box" type="button" aria-label="Open the Night Box"><img src="https://africhmaurice.github.io/site/assets/clues/night-box.webp" alt="The Night Box, loot box 25"></button>
+</section>
+<script>
+(function(){
+  function maIsNight(){if(/[?&]night=1/.test(location.search))return true;if(/[?&]night=0/.test(location.search))return false;
+  var r=Math.PI/180,lat=35.595*r,lng=-82.551,now=Date.now(),n0=Math.round(now/864e5+2440587.5-2451545);
+  function sun(n){var J=n-lng/360,M=(357.5291+.98560028*J)%360,C=1.9148*Math.sin(M*r)+.02*Math.sin(2*M*r)+.0003*Math.sin(3*M*r),L=(M+C+282.9372)%360,
+    Jt=2451545+J+.0053*Math.sin(M*r)-.0069*Math.sin(2*L*r),d=Math.asin(Math.sin(L*r)*Math.sin(23.4397*r)),
+    w=Math.acos((Math.sin(-.833*r)-Math.sin(lat)*Math.sin(d))/(Math.cos(lat)*Math.cos(d)))/r,ms=function(j){return (j-2440587.5)*864e5;};
+    return {rise:ms(Jt-w/360),set:ms(Jt+w/360)};}
+  for(var k=-2;k<=1;k++){if(now>=sun(n0+k).set&&now<sun(n0+k+1).rise)return true;}return false;}
+  var d=document.getElementById('ma-dark');
+  // Fill the whole window: no Squarespace padding, colours or header space around it.
+  var sec=d.closest('section.page-section')||d.parentElement.closest('section');if(sec){sec.style.background='#060d08';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#060d08';
+  var st=d.querySelector('.d-stars');for(var i=0;i<70;i++){var s=document.createElement('i');s.style.left=(Math.random()*100)+'%';s.style.top=(Math.random()*100)+'%';s.style.animationDelay=(Math.random()*3.5)+'s';if(Math.random()<.25){s.style.width=s.style.height='3px';}st.appendChild(s);}
+  function wake(){d.classList.toggle('night',maIsNight());}wake();setInterval(wake,60000);
+  var k='UEZERFNDM1Y9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  d.querySelector('.d-box').addEventListener('click',function(){
+    if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 25 opens.');return;}
+    location.href=atob(k).split('').reverse().join('');
+  });
+})();
+</script>
+<div style="position:fixed;left:12px;bottom:12px;z-index:99;display:flex;gap:8px;align-items:center;background:rgba(11,23,15,.94);color:#fff;border:1px solid rgba(255,76,15,.6);border-radius:999px;padding:6px 8px 6px 14px;font:600 12px/1.2 system-ui,sans-serif;letter-spacing:.04em">PREVIEW <a href="?night=1" style="color:#0b170f;background:#89fbcb;border-radius:999px;padding:5px 10px;text-decoration:none">See it at night</a><a href="?night=0" style="color:#0b170f;background:#fffffe;border-radius:999px;padding:5px 10px;text-decoration:none">See it by day</a></div></body></html>
