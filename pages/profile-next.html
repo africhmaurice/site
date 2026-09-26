@@ -218,10 +218,10 @@ html,body{margin:0 !important;padding:0 !important}
 #hp .hp-more{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin:30px 0 0}
 #hp .hp-btn.alt{background:var(--violet)}
 #hp .hp-btn.alt:hover{background:#5b3aa6}
-#hp{position:relative}
-#hp .hp-lb{position:absolute;right:12px;bottom:12px;width:13px;height:13px;border:0;padding:0;margin:0;background:#3b2470;cursor:default;
+#hp .hp-card{position:relative}
+#hp .hp-lb{position:absolute;right:2px;bottom:-34px;width:13px;height:13px;border:0;padding:0;margin:0;background:#2a1852;cursor:default;
   -webkit-mask:url(https://africhmaurice.github.io/site/assets/clues/box-26.webp) center/contain no-repeat;mask:url(https://africhmaurice.github.io/site/assets/clues/box-26.webp) center/contain no-repeat}
-@media (max-width:560px){#hp .hp-lb{width:11px;height:11px;right:8px;bottom:8px}}
+@media (max-width:560px){#hp .hp-lb{width:11px;height:11px;bottom:-30px}}
 #hp .hp-foot{text-align:center;margin:22px 0 0;font-size:13px;color:rgba(255,255,255,.65)}
 #hp .hp-foot a{color:#fff;cursor:pointer;text-decoration:underline}
 @media (max-width:900px){#hp{background-attachment:scroll}#hp .hp-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}#hp .hp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#hp .hp-days{grid-template-columns:repeat(14,minmax(0,1fr))}}
@@ -298,7 +298,7 @@ html,body{margin:0 !important;padding:0 !important}
       (EXAMPLE ? '' : '<p class="hp-foot">Not you? <a id="hp-switch">Use a different email</a></p>');
     card.hidden = false; find.hidden = true;
     // Loot box 27 hides in the corner of every profile.
-    var lb = root.querySelector('.hp-lb'); if (!lb) { lb = document.createElement('button'); lb.className = 'hp-lb'; lb.type = 'button'; lb.setAttribute('aria-label', ' '); lb.tabIndex = -1; root.appendChild(lb); }
+    var lb = card.querySelector('.hp-lb'); if (!lb) { lb = document.createElement('button'); lb.className = 'hp-lb'; lb.type = 'button'; lb.setAttribute('aria-label', ' '); lb.tabIndex = -1; card.appendChild(lb); }
     lb.onclick = function () { if (EXAMPLE) { alert('Preview: this is where loot box 27 opens.'); return; } location.href = atob('Q0U3U01VMkM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo').split('').reverse().join(''); };
     var sw = document.getElementById('hp-switch');
     if (sw) sw.onclick = function () { remember(''); card.hidden = true; find.hidden = false; document.getElementById('hp-email').value = ''; };

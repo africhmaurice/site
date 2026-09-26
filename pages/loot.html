@@ -85,6 +85,7 @@ html,body{margin:0 !important;padding:0 !important}
 .lb-quiet{font-size:clamp(13px,1.6vw,15px);color:#607667;margin:10px auto 0;max-width:540px;line-height:1.5}
 .lb-pts{display:inline-block;background:#1e6417;color:#fff;font-weight:800;font-size:clamp(14px,1.8vw,17px);letter-spacing:.09em;padding:8px 16px;margin:14px 0 4px}
 .lb-pts.dim{background:#607667}
+.lb-bonus{margin:30px auto 0;padding-top:24px;border-top:2px solid rgba(17,17,17,.12);max-width:540px}
 .lb-cta{margin:26px auto 0;padding-top:22px;border-top:2px solid rgba(17,17,17,.12);max-width:540px}
 .lb-cta p{text-wrap:balance;font-weight:800;font-size:clamp(16px,2vw,19px);color:#111;margin:0}
 .lb-cta .lb-btn{width:auto;margin-top:14px;text-decoration:none}
@@ -503,8 +504,16 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         '<p class="lb-quiet">' + (left > 0
             ? left + ' still out there. Keep your eyes open.'
             : 'That is all fifty-one. Nobody has ever looked harder.') + '</p>' +
+        (res.bonus ? bonusHtml(res.bonus) : '') +
         (left > 0 ? cta() : ''));
     drawCard(res.found, n);
+  }
+  // Box 26 comes to you: it arrives on its own with the 25th find.
+  function bonusHtml(b) {
+    return '<div class="lb-bonus">' + (ART ? '<img loading="lazy" decoding="async" class="lb-chest pop" src="' + chestUrl(b.n) + '" alt="Loot box #' + b.n + '">' : '') +
+      '<p class="lb-bang">IT CAME TO YOU!</p>' +
+      '<p class="lb-say">Twenty-five boxes found, so loot box #' + b.n + ' found you. It is on your scorecard already.</p>' +
+      '<div class="lb-pts">+' + (b.points || 50) + ' POINTS</div></div>';
   }
 
   function showAlready(res) {
@@ -533,6 +542,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
   function showError(err) {
     var lines = {
+      notyet: ['NOT YET', 'This one comes to you. Find twenty-five loot boxes and it lands on your scorecard by itself.'],
       badcode: ['NOT A LOOT BOX', 'That code does not match any of the fifty-one. Check the link you followed &mdash; or someone is having you on.'],
       closed: ['THE HUNT IS OVER', 'Loot boxes stopped counting on November 1st. Thank you for hunting.'],
       email: ['THAT EMAIL LOOKS OFF', 'Have another go &mdash; it has to be the address you use for the hunt.'],
