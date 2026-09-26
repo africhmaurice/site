@@ -58,14 +58,17 @@ html,body{margin:0 !important;padding:0 !important}
 
 /* ---- the page: the Squarespace form look, green for points, rust for riddles ---- */
 #sub-page{--acc:#268e62;--wash:rgba(26,94,65,.9);--ink:#0b170f;--paper:#fafafa;
-  --pic:url("https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/549ac65b-0086-428a-a246-95169ef198fa/AdobeStock_227243151.jpeg?format=1500w");
+  --pic:url("https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/549ac65b-0086-428a-a246-95169ef198fa/AdobeStock_227243151.jpeg?format=2500w");
   font-family:'Almarai',sans-serif;letter-spacing:0;color:var(--ink);
   position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow-x:hidden}
 #sub-page.riddle{--acc:#c53200;--wash:rgba(197,50,0,.9);
-  --pic:url("https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/418aa7cc-9c02-41a8-8740-fccf00cf1141/solve-reactor-hall.jpg?format=1500w")}
+  --pic:url("https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/418aa7cc-9c02-41a8-8740-fccf00cf1141/solve-reactor-hall.jpg?format=2500w")}
 #sub-page *{box-sizing:border-box}
 #submit{position:relative;overflow-x:hidden;background:var(--acc);padding:130px 24px 80px}
-#submit::before{content:"";position:absolute;inset:0;z-index:0;background:var(--pic) center center/cover no-repeat}
+#submit::before{content:"";position:absolute;inset:0;z-index:0;background:var(--pic) center center/cover no-repeat fixed}
+/* Like the old Squarespace parallax (and the Hunt page), the picture holds still while the form scrolls over it.
+   Phones don't support fixed backgrounds, so 900px and narrower scroll it with the page. */
+@media (max-width:900px),(hover:none){#submit::before{background-attachment:scroll}}
 #submit::after{content:"";position:absolute;inset:0;z-index:1;background:var(--wash)}
 #submit > *{position:relative;z-index:2}
 
