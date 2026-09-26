@@ -247,7 +247,7 @@ html,body{margin:0 !important;padding:0 !important}
   var DATA = 'https://africhmaurice.github.io/leaderboard/profiles.json', BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var SALT = 'thp1:', KEY = 'thProfile:email', U = 'https://www.mauriceafrich.com';
   var root = document.getElementById('hp'), card = document.getElementById('hp-card'), find = document.getElementById('hp-find'), err = document.getElementById('hp-err');
-  var EXAMPLE = /\/preview-next\//.test(location.pathname), BOXES = 51;
+  var EXAMPLE = /\/preview\//.test(location.pathname), BOXES = 51;
   var fmt = function (n) { return Number(n || 0).toLocaleString('en-US'); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var get = function (u) { return fetch(u + '?t=' + Math.floor(Date.now() / 300000)).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); };
