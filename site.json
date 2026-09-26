@@ -151,6 +151,18 @@
       "url": "/profile",
       "title": "Treasure Hunter Profile",
       "source": "pages/profile.html"
+    },
+    {
+      "slug": "press",
+      "url": "(preview only: will be /press once the Squarespace page exists)",
+      "title": "Press Room (contacts, press kit, features)",
+      "source": "pages/press.html (built by tools/press.mjs)"
+    },
+    {
+      "slug": "home-press",
+      "url": "(preview only: new home page media section, needs a code block on /home)",
+      "title": "Home: As Featured In",
+      "source": "pages/home-press.html (built by tools/press.mjs)"
     }
   ],
   "staysInSquarespace": [
