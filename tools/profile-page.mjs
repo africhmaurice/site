@@ -119,7 +119,7 @@ html,body{margin:0 !important;padding:0 !important}
     card.innerHTML =
       '<div class="hp-head"><div><div class="hp-name">' + esc(p.n || p.h) + '</div>' +
       '<div class="hp-sub">' + esc(p.h) + '<b>' + esc(p.rl).toUpperCase() + ' BOARD</b></div></div></div>' +
-      '<p class="hp-when">Points are added at each tally, 10 AM and 7 PM ET. Anything you earned since the last one will show up at the next.</p>' +
+      '<p class="hp-when">Points are added at each tally, 10 AM and 7 PM ET. Anything you earned since the last one will show up at the next. Remember: there’s one man running all of this and he’s doing his best. ;)</p>' +
       '<div class="hp-tiles">' +
         (p.rank ? '<div class="hp-tile hp-hot"><i>RANK</i><b>#' + p.rank + '</b><span>of ' + fmt(p.of) + ' on the board</span></div>' : '<div class="hp-tile hp-hot"><i>RANK</i><b>CREW</b><span>not on the public board</span></div>') +
         '<div class="hp-tile"><i>POINTS</i><b>' + fmt(p.pts) + '</b><span>and counting</span></div>' +

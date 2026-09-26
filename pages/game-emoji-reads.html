@@ -61,7 +61,7 @@ html,body{margin:0 !important;padding:0 !important}
 .hg-answer{font-family:'Atomic Marker',cursive;font-size:1.35em;color:#c53200;letter-spacing:.02em}
 .hg-result.win .hg-answer{color:#a2f590}
 .hg-claim{display:inline-block;margin-top:22px;font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#fffffe;background:#c53200;border:2px solid #fffffe;padding:14px 30px;cursor:pointer;transition:transform .15s ease,background .15s ease}
-.hg-next{text-decoration:none;color:#fffffe !important}
+.hg-go{text-decoration:none;color:#fffffe !important}
 .hg-claim:hover{background:#ff4c0f;transform:scale(1.04)}
 .hg-claim[disabled]{opacity:.7;cursor:wait;transform:none}
 .hg-quiet{font-size:clamp(14px,1.7vw,16px) !important;margin-top:16px !important;opacity:.92}
@@ -418,7 +418,7 @@ var HG = (function () {
           resultEl.innerHTML = head + '<div class="hg-pts">+' + points + ' POINTS</div><p class="hg-quiet">' + (status === 'already'
             ? 'Already claimed for today &mdash; no need to submit anything.'
             : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>' +
-            (NEXT_GAME[o.key] ? '<a class="hg-claim hg-next" href="' + NEXT_GAME[o.key][1] + '">' + NEXT_GAME[o.key][0] + '</a>' : '');
+            (NEXT_GAME[o.key] ? '<a class="hg-claim hg-go" href="' + NEXT_GAME[o.key][1] + '">' + NEXT_GAME[o.key][0] + '</a>' : '');
         }
       },
       lose: function (html, title) {
