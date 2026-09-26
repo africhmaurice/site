@@ -35,25 +35,33 @@ function cut(s, start, end, what) {
 const NAV_CSS = `<style>
 html body{text-wrap:pretty}
 h1,h2,h3{text-wrap:balance}
-#hunt-nav{padding:14px clamp(28px,3.2vw,60px) 14px clamp(20px,2.4vw,44px)}
-#hunt-nav .mn-row{max-width:none;justify-content:space-between;gap:clamp(8px,1.2vw,22px)}
-#hunt-nav .mn-link{font-size:clamp(10px,.86vw,14px);letter-spacing:.05em}
-#hunt-nav .mn-logo{display:flex;align-items:center;flex:none;margin-right:clamp(18px,2.8vw,56px);transition:transform .15s ease}
-#hunt-nav .mn-logo:hover{transform:scale(1.05)}
-#hunt-nav .mn-logo img{height:clamp(42px,3.6vw,60px);width:auto;display:block;filter:drop-shadow(0 1px 6px rgba(0,0,0,.45))}
-#hunt-nav .mn-drop-cta{margin-left:clamp(6px,1vw,18px)}
+/* The hunt menu matches the main site header: same green, logo size, type, spacing and outlined pre-order button */
+#hunt-nav{background:#1a5e41;backdrop-filter:none;-webkit-backdrop-filter:none;padding:9px 58px}
+#hunt-nav .mn-row{max-width:none;display:flex;align-items:center;justify-content:space-between;gap:24px}
+#hunt-nav .mn-logo{display:flex;align-items:center;flex:none}
+#hunt-nav .mn-logo img{width:120px;height:auto;display:block}
+#hunt-nav .mn-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+#hunt-nav .mn-links{display:flex;align-items:center;gap:29px}
+#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:14.4px;letter-spacing:1.008px;line-height:48px;text-shadow:none;color:#fff}
+#hunt-nav .mn-link:hover,#hunt-nav .mn-drop:hover>.mn-link{color:#a2f590}
+#hunt-nav .mn-caret{display:inline-block;width:11px;height:11px;margin-left:8px;vertical-align:1px;transition:transform .15s ease}
+#hunt-nav .mn-drop:hover .mn-caret,#hunt-nav .mn-drop:focus-within .mn-caret{transform:rotate(180deg)}
+#hunt-nav .mn-cta{line-height:17px;padding:8px 20px;border:2px solid #f3ead9;background:rgba(12,26,8,.35)}
+#hunt-nav .mn-drop-cta>.mn-link.mn-cta:hover,#hunt-nav .mn-drop-cta:hover>.mn-link.mn-cta{color:#a2f590;background:rgba(12,26,8,.35);transform:none}
+#hunt-nav .mn-dd{padding-top:6px}
+#hunt-nav .mn-dd-in a{font-size:14.4px;letter-spacing:1.008px;padding:13px 18px}
 #hunt-nav .mn-dd-in a.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}
 #hunt-nav .mn-dd-in a.mn-profile:hover{background:#e04a12;color:#fff}
 #hunt-nav .mn-dd-in a.mn-profile svg{width:16px;height:16px;flex:none}
-@media (max-width:1100px){
-  #hunt-nav{padding:10px 0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+@media (max-width:1260px){
+  #hunt-nav{padding:10px 0;background:none}
   #hunt-nav .mn-row{display:none}
   #hunt-nav .mn-burger{display:flex}
 }
 #hunt-nav-ov{gap:14px;overflow-y:auto;justify-content:flex-start;padding-top:88px}
 #hunt-nav-ov a{font-size:17px}
 #hunt-nav-ov .mn-ovlogo{position:absolute;top:16px;left:20px}
-#hunt-nav-ov .mn-ovlogo img{height:44px;width:auto;display:block}
+#hunt-nav-ov .mn-ovlogo img{width:96px;height:auto;display:block}
 #hunt-nav-ov .mn-ovgroup{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(243,234,217,.3);padding:14px 26px 16px}
 #hunt-nav-ov .mn-ovgroup span{font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590}
 #hunt-nav-ov .mn-ovgroup a{font-size:15px}
@@ -66,17 +74,21 @@ const LINKS = [
   ['GAMES', '/games'], ['CONTESTS', '/contests'], 'PROGRESS', ['QUESTIONS?', '/questions'], ['VOTE NOW!', '/red-city'],
 ];
 // The Current Progress dropdown; the profile is its highlighted first item.
-const PROGRESS = [['TREASURE HUNTER PROFILE', '/profile', 'mn-profile'], ['GLOBAL LEADERBOARD', '/leaderboard'], ['LOOT BOX SCORECARD', '/loot'], ['REWARDS', '/the-hunt#rewards']];
+const PROGRESS = [['TREASURE HUNTER PROFILE', '/profile', 'mn-profile'], ['LEADERBOARD', '/leaderboard'], ['LOOT BOX SCORECARD', '/loot'], ['REWARDS', '/the-hunt#rewards']];
 const STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"></path></svg>';
+// The same open chevron the main header uses on its dropdowns
+const CARET = '<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg>';
+// Pre-order retailers in this order; the Walmart link is the special edition. [label, link, label in the old menu]
+const RETAIL = [['WALMART SPECIAL EDITION', 'https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704'], ['WATERSTONES'], ['BARNES &amp; NOBLE', null, 'BARNES &AMP; NOBLE'], ['AMAZON'], ['AUDIBLE']];
 const vote = (label) => label === 'VOTE NOW!' ? ' style="color:#ff4c0f"' : '';
 const deskLink = (item) => item === 'PROGRESS'
-  ? `    <div class="mn-drop">
-      <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">CURRENT PROGRESS &#9662;</a>
-      <div class="mn-dd"><div class="mn-dd-in">
-${PROGRESS.map(([l, h, c]) => `        <a href="${U(h)}"${c ? ` class="${c}"` : ''}>${c ? STAR : ''}${l}</a>`).join('\n')}
-      </div></div>
-    </div>`
-  : `    <a href="${U(item[1])}" class="mn-link"${vote(item[0])}>${item[0]}</a>`;
+  ? `      <div class="mn-drop">
+        <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">CURRENT PROGRESS${CARET}</a>
+        <div class="mn-dd"><div class="mn-dd-in">
+${PROGRESS.map(([l, h, c]) => `          <a href="${U(h)}"${c ? ` class="${c}"` : ''}>${c ? STAR : ''}${l}</a>`).join('\n')}
+        </div></div>
+      </div>`
+  : `      <a href="${U(item[1])}" class="mn-link"${vote(item[0])}>${item[0]}</a>`;
 const ovLink = (item) => item === 'PROGRESS'
   ? `  <div class="mn-ovgroup"><span>CURRENT PROGRESS</span>\n${PROGRESS.map(([l, h, c]) => `    <a href="${U(h)}"${c ? ` class="${c}"` : ''}>${l}</a>`).join('\n')}\n  </div>`
   : `  <a href="${U(item[1])}"${vote(item[0])}>${item[0]}</a>`;
@@ -86,14 +98,27 @@ function nav(s, file) {
   const ov = s.indexOf('<div id="hunt-nav-ov"', a);
   const ovEnd = s.indexOf('</div>', s.indexOf('class="mn-cta">PRE-ORDER', ov)) + 6;
   const old = s.slice(a, ovEnd);
-  const dd = old.slice(old.indexOf('<div class="mn-drop mn-drop-cta">'), old.indexOf('<div class="mn-burger"'));
   const burger = old.slice(old.indexOf('<div class="mn-burger"'), old.indexOf('</nav>'));
   const ovHead = old.slice(old.indexOf('<div id="hunt-nav-ov"'), old.indexOf('<a href=', old.indexOf('<div id="hunt-nav-ov"')));
+  // Retailer links come from the old menu (they carry their tracking codes), in the new order
+  const hrefOf = (name) => { const m = new RegExp('<a href="([^"]+)"[^>]*>' + name + '</a>').exec(old); if (!m) throw new Error(`No ${name} link in ${file}`); return m[1]; };
+  const retail = RETAIL.map(([label, href, was]) => `          <a href="${href || hrefOf(was || label)}" target="_blank" rel="noopener">${label}</a>`).join('\n');
   const fresh = `<nav id="hunt-nav">
   <div class="mn-row">
     <a href="${LIVE}" class="mn-logo" aria-label="Maurice Africh home"><img src="${LOGO}" alt="Maurice Africh"></a>
+    <div class="mn-right">
+      <div class="mn-links">
 ${LINKS.map(deskLink).join('\n')}
-    ${dd.trim()}
+      </div>
+      <div class="mn-drop mn-drop-cta">
+        <a href="${U('/preorder')}" class="mn-link mn-cta" aria-haspopup="true">PRE-ORDER CELLO'S GATE${CARET}</a>
+        <div class="mn-dd"><div class="mn-dd-in">
+${retail}
+          <a href="${U('/preorder')}" class="mn-all">ALL RETAILERS &rarr;</a>
+        </div></div>
+      </div>
+    </div>
+  </div>
   ${burger.trim()}
 </nav>
 ${ovHead.trimEnd()}
@@ -116,6 +141,7 @@ const heroCopy = `<h1 style="font-family:'Atomic Marker',cursive;font-weight:400
         `;
 
 const BTN_CSS = `<style>
+.h-ways b,.h-ways a,.h-ways p>span{text-transform:uppercase;letter-spacing:.03em}
 .h-btns{max-width:1180px;margin:72px auto 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 .h-btn{min-width:0;display:flex;align-items:center;justify-content:center;text-align:center;background:#0f2e0a;border:1px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.4);color:#fff !important;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(13px,1.02vw,16px);letter-spacing:.06em;white-space:nowrap;padding:18px 16px;text-decoration:none !important;transition:transform .15s ease,background .15s ease}
 .h-btn:hover{transform:scale(1.04);background:#1a4512}
@@ -263,7 +289,7 @@ function huntPage(s) {
   s = swap(s, 'line-height:1.15">FOLLOW ALONG</h2>', 'line-height:1.15">CHOOSE YOUR OWN ADVENTURE</h2>', 'the map heading');
   s = swap(s, 'max-width:1180px;margin:0 auto 90px">The map updates as the crew moves through the hunt. Earn as many points as you can to explore the map, unlock secret paths, discover areas yet unexplored, and find the treasure!</p>',
     `max-width:1180px;margin:0 auto 36px">As you progress through the hunt, you will be presented with choices, votes, dice rolls, games of chance, and more! The maps update as you progress through the hunt.</p>
-    <div style="margin:0 0 90px"><a href="${U('/red-city')}" class="mh-cta" style="margin-top:0;font-size:18px;padding:18px clamp(70px,10vw,140px);background:#912501">VOTE NOW!</a></div>`, 'the map copy');
+    <div style="margin:0 0 90px"><a href="${U('/red-city')}" class="mh-cta" style="margin-top:0;font-size:18px;padding:18px clamp(70px,10vw,140px);background:#c53200">VOTE NOW!</a></div>`, 'the map copy');
 
   // Rewards unlocked: dates over each act, new notes
   const ACTS = { 'ACT ONE': 'SEPTEMBER 21<sup style="font-size:.6em">ST</sup> – SEPTEMBER 30<sup style="font-size:.6em">TH</sup>', 'ACT TWO': 'OCTOBER 1<sup style="font-size:.6em">ST</sup> – OCTOBER 15<sup style="font-size:.6em">TH</sup>', 'ACT THREE': 'OCTOBER 16<sup style="font-size:.6em">TH</sup> – NOVEMBER 1<sup style="font-size:.6em">ST</sup>' };
@@ -316,7 +342,7 @@ function huntPage(s) {
   s = s.replace('<h3 class="m-taskhead" style', '<h3 class="m-taskhead" id="tasks" style');
   s = s.replace('<h3 class="m-taskhead" style', '<h3 class="m-taskhead" id="riddles" style');
   if (!s.includes('id="riddles"')) throw new Error('Could not find the Riddles heading');
-  s = s.replace('<style>\n#hunt-nav{', '<style>\n#tasks,#riddles,#map,#rewards,#points{scroll-margin-top:84px}\n#hunt-nav{');
+  s = s.replace('<style>\n#hunt-nav{', '<style>\n#tasks,#riddles{scroll-margin-top:140px}\n#map,#rewards,#points{scroll-margin-top:120px}\n#hunt-nav{');
   return s;
 }
 
@@ -338,7 +364,7 @@ function treasurePage(hunt, menu) {
   </section>
 `);
   const script = hunt.slice(hunt.lastIndexOf('<script>\nwindow.__openBook'), hunt.indexOf('</script>', hunt.lastIndexOf('<script>\nwindow.__openBook')) + 9);
-  return `${menu.trim()}\n${head}\n<style>@media (max-width:760px){#grand-prize{padding:120px 22px 80px !important}}</style>\n<div id="hunt-page">\n<div data-screen-label="The Treasure" style="width:100%;overflow-x:hidden">\n${sec}\n</div>\n</div>\n${script}\n${FILL('grand-prize')}\n`;
+  return `${menu.trim()}\n${head}\n<style>@media (max-width:760px){#grand-prize{padding:120px 22px 80px !important}}</style>\n<div id="hunt-page">\n<div data-screen-label="The Treasure" style="width:100%;overflow-x:hidden">\n${sec}\n</div>\n</div>\n${script}\n${FOOTER_FILL}\n${BLEED('grand-prize')}\n`;
 }
 
 // The Questions page: a short form that lands in the Questions tab of the hunt sheet.
@@ -348,7 +374,6 @@ function questionsPage(menu) {
 @font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
 html,body{margin:0 !important;padding:0 !important}
 #hq{background:linear-gradient(178deg,rgba(10,35,8,.92) 0%,rgba(30,100,23,.9) 60%,rgba(63,163,47,.9) 100%),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;background-attachment:fixed;padding:150px 24px 48px;font-family:'Almarai',sans-serif;color:#fff}
-#hq{display:flex;flex-direction:column;justify-content:center;box-sizing:border-box}
 #hq .hq-in{max-width:720px;margin:0 auto;width:100%}
 #hq h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(54px,8vw,110px);line-height:1.1;margin:0 0 18px;text-align:center}
 #hq .hq-lede{font-size:21px;line-height:1.55;text-align:center;margin:0 auto 44px;max-width:620px}
@@ -438,22 +463,16 @@ html,body{margin:0 !important;padding:0 !important}
   }
 })();
 </script>
-${FILL('hq')}
+${FOOTER_FILL}
+${BLEED('hq')}
 `;
 }
 
 // On a tall screen Squarespace stretches a short page to the window and paints the rest in its own colour.
-// This grows the page's own section down to the footer instead.
-const FILL = (id) => `<script>(function () {
-  var sec = document.getElementById('${id}');
-  function fit() {
-    var foot = document.querySelector('footer, #footer-sections'); if (!sec || !foot) return;
-    sec.style.minHeight = '';
-    var gap = foot.getBoundingClientRect().top - sec.getBoundingClientRect().bottom;
-    if (gap > 1) sec.style.minHeight = (sec.offsetHeight + gap) + 'px';
-  }
-  fit(); addEventListener('load', fit); addEventListener('resize', fit); setTimeout(fit, 1500);
-})();</script>`;
+// These pages hand that leftover space to the dark footer instead, so there is no big empty band.
+const FOOTER_FILL = '<style>#siteWrapper{display:flex !important;flex-direction:column !important}#siteWrapper>*{flex:none}#siteWrapper>#footer-sections{flex:1 0 auto}</style>';
+// The Squarespace block around a page keeps the height of its grid cell; let it shrink to the page (as the game pages do).
+const BLEED = (id) => `<script>(function(){var p=document.getElementById('${id}'),cw=p&&p.closest('.content-wrapper'),sec=p&&p.closest('.page-section');if(cw){cw.style.paddingTop='0';cw.style.paddingBottom='0';}if(sec)sec.style.minHeight='0';var fe=p&&p.closest('.fluid-engine');if(fe)fe.style.display='block';})();</script>`;
 
 // ---------------------------------------------------------------- the other pages
 
@@ -546,6 +565,27 @@ function question_(p) {
 function tab_(name) {`, 'the sheet helpers');
 }
 
+// ---------------------------------------------------------------- the loader
+// Arriving from another page on a link like /the-hunt#tasks: wait for the loading screen, then glide down to the
+// section (stopping clear of the menu), and nudge once more if late images moved it.
+function glide(s) {
+  const a = s.indexOf('    // Jump, don\'t glide:'), b = s.indexOf('  function mount(el)', a);
+  if (a < 0 || b < 0) throw new Error('Could not find the loader scroll');
+  return s.slice(0, a) + `    var margin = function () { return parseFloat(getComputedStyle(target).scrollMarginTop) || 0; };
+    var y = function () { return target.getBoundingClientRect().top + window.pageYOffset - margin(); };
+    window.maAfterLoading(function () {
+      setTimeout(function () {
+        window.scrollTo({ top: y(), behavior: 'smooth' });
+        // Images above it can still be loading and push it down; check back a few times and nudge it into place.
+        var tries = 0, settle = function () { if (Math.abs(target.getBoundingClientRect().top - margin()) > 24 && Math.abs(window.pageYOffset - y()) < 4000) window.scrollTo({ top: y(), behavior: 'smooth' }); if (++tries < 5) setTimeout(settle, 900); };
+        setTimeout(settle, 1300);
+      }, 300);
+    });
+  }
+
+` + s.slice(b);
+}
+
 // ---------------------------------------------------------------- run
 const mode = process.argv.includes('--launch') ? 'launch' : process.argv.includes('--stage') ? 'stage' : null;
 if (!mode) { console.error('Pass --stage (build the preview) or --launch (apply to the real site).'); process.exit(1); }
@@ -553,7 +593,7 @@ if (!mode) { console.error('Pass --stage (build the preview) or --launch (apply 
 if (mode === 'stage') {
   const NEXT = join(ROOT, 'next'), PAGES = join(NEXT, 'pages');
   mkdirSync(PAGES, { recursive: true });
-  copyFileSync(join(ROOT, 'loader.js'), join(NEXT, 'loader.js'));
+  writeFileSync(join(NEXT, 'loader.js'), glide(readFileSync(join(ROOT, 'loader.js'), 'utf8')));
   for (const f of readdirSync(join(ROOT, 'pages')).filter((f) => f.endsWith('.html'))) copyFileSync(join(ROOT, 'pages', f), join(PAGES, f));
   const huntSrc = readFileSync(join(ROOT, 'pages/the-hunt.html'), 'utf8');
   for (const [slug, edit] of Object.entries(EDITS)) {
@@ -602,6 +642,7 @@ if (mode === 'stage') {
 if (mode === 'launch') {
   const edit = (file, fn) => { const f = resolve(file); writeFileSync(f, fn(readFileSync(f, 'utf8'))); console.log(`✓ ${file.replace(ROOT, '').replace(BOT, 'bot')}`); };
   const huntBefore = readFileSync(join(BOT, 'squarespace-hunt.html'), 'utf8');
+  edit(join(ROOT, 'loader.js'), glide);
   for (const slug of ['hunt-menu', 'lootbox-clue', 'contests', 'rules', 'leaderboard']) edit(join(ROOT, 'pages', slug + '.html'), EDITS[slug]);
   edit(join(BOT, 'squarespace-hunt.html'), EDITS['the-hunt']);
   edit(join(BOT, 'squarespace-lootbox.html'), EDITS.loot);

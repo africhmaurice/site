@@ -69,6 +69,7 @@ html,body{margin:0 !important;padding:0 !important}
 @media (max-width:900px){#hp{background-attachment:scroll}#hp .hp-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}#hp .hp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#hp .hp-days{grid-template-columns:repeat(14,minmax(0,1fr))}}
 @media (max-width:560px){#hp{padding:110px 16px 56px}#hp .hp-head{gap:16px}#hp .hp-tile b{font-size:36px}#hp .hp-days{grid-template-columns:repeat(7,minmax(0,1fr))}#hp .hp-recent time{width:74px}}
 </style>
+<style>#siteWrapper{display:flex !important;flex-direction:column !important}#siteWrapper>*{flex:none}#siteWrapper>#footer-sections{flex:1 0 auto}</style>
 <section id="hp" data-screen-label="Treasure Hunter Profile">
   <div class="hp-in">
     <div class="hp-eyebrow">THE TREASURE HUNT</div>
@@ -133,7 +134,7 @@ html,body{margin:0 !important;padding:0 !important}
       '<h2>DAYS ON THE HUNT</h2><div class="hp-days">' + days + '</div><div class="hp-daykey"><span>One square for each day of the hunt, Sept 21 to Nov 1. <b>Red</b> means you earned points that day.</span></div>' +
       '<h2>LATEST LOOT</h2><ul class="hp-recent">' + p.recent.map(function (r) { return '<li><time>' + esc(day(r[0])) + '</time><span>' + esc(r[1]) + '</span><b>+' + fmt(r[2]) + '</b></li>'; }).join('') + '</ul>' +
       '<p class="hp-crew">You’ve earned <b>' + (crewTotal ? (p.pts / crewTotal * 100).toFixed(1) : '0') + '%</b> of the crew’s ' + fmt(crewTotal) + ' points. Every one of them helps unlock rewards for everyone!</p>' +
-      '<div class="hp-more"><a class="hp-btn" href="' + U + '/the-hunt#tasks">EARN MORE POINTS</a><a class="hp-btn alt" href="' + U + '/leaderboard">GLOBAL LEADERBOARD</a><a class="hp-btn alt" href="' + U + '/loot">LOOT BOX SCORECARD</a></div>' +
+      '<div class="hp-more"><a class="hp-btn" href="' + U + '/the-hunt#tasks">EARN MORE POINTS</a><a class="hp-btn alt" href="' + U + '/leaderboard">LEADERBOARD</a><a class="hp-btn alt" href="' + U + '/loot">LOOT BOX SCORECARD</a></div>' +
       '<p class="hp-foot">Stats update at each tally (10 AM and 7 PM ET).' + (EXAMPLE ? '' : ' Not you? <a id="hp-switch">Use a different email</a>') + '</p>';
     card.hidden = false; find.hidden = true;
     var sw = document.getElementById('hp-switch');
@@ -164,15 +165,9 @@ html,body{margin:0 !important;padding:0 !important}
         (b && b.crewTotal) || 51170, b);
     });
   } else if (saved()) lookup(saved());
-  // On a tall screen Squarespace stretches a short page and paints the rest in its own colour; grow this section instead.
-  function fit() {
-    var foot = document.querySelector('footer, #footer-sections'); if (!root || !foot) return;
-    root.style.minHeight = '';
-    var gap = foot.getBoundingClientRect().top - root.getBoundingClientRect().bottom;
-    if (gap > 1) root.style.minHeight = (root.offsetHeight + gap) + 'px';
-  }
-  fit(); addEventListener('load', fit); addEventListener('resize', fit); setTimeout(fit, 1500);
-  new MutationObserver(function () { setTimeout(fit, 50); }).observe(card, { childList: true });
+  // The Squarespace block around the page keeps its grid cell's height; let it shrink to the page.
+  var cw = root.closest('.content-wrapper'), sec = root.closest('.page-section'), fe = root.closest('.fluid-engine');
+  if (cw) { cw.style.paddingTop = '0'; cw.style.paddingBottom = '0'; } if (sec) sec.style.minHeight = '0'; if (fe) fe.style.display = 'block';
 })();
 </script>
 `;

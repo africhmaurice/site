@@ -40,11 +40,16 @@
     if (!id) return;
     var target = document.getElementById(id);
     if (!target || !el.contains(target)) return;
-    // Jump, don't glide: the site's smooth scrolling gets cut short while the page is still settling.
-    var go = function () { window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset, behavior: 'instant' }); };
-    go();
-    setTimeout(go, 400); setTimeout(go, 1500); // again after late images and fonts settle the layout
-    window.maAfterLoading(function () { go(); setTimeout(go, 600); });
+    var margin = function () { return parseFloat(getComputedStyle(target).scrollMarginTop) || 0; };
+    var y = function () { return target.getBoundingClientRect().top + window.pageYOffset - margin(); };
+    window.maAfterLoading(function () {
+      setTimeout(function () {
+        window.scrollTo({ top: y(), behavior: 'smooth' });
+        // Images above it can still be loading and push it down; check back a few times and nudge it into place.
+        var tries = 0, settle = function () { if (Math.abs(target.getBoundingClientRect().top - margin()) > 24 && Math.abs(window.pageYOffset - y()) < 4000) window.scrollTo({ top: y(), behavior: 'smooth' }); if (++tries < 5) setTimeout(settle, 900); };
+        setTimeout(settle, 1300);
+      }, 300);
+    });
   }
 
   function mount(el) {
