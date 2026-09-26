@@ -99,7 +99,7 @@ const flashJs = `  <script>(function(){var s=document.getElementById('loot-clue'
 
 // Night clues and the /in-the-dark page: awake only between sunset and sunrise in Asheville, NC (Eastern time).
 // ?night=1 or ?night=0 on the page address forces one or the other, for checking.
-export const NIGHT_JS = `function maIsNight(){if(/[?&]night=1/.test(location.search))return true;if(/[?&]night=0/.test(location.search))return false;
+export const NIGHT_JS = `function maIsNight(){var pv=/github\.io$/.test(location.hostname);if(pv&&/[?&]night=1/.test(location.search))return true;if(pv&&/[?&]night=0/.test(location.search))return false;
   var r=Math.PI/180,lat=35.595*r,lng=-82.551,now=Date.now(),n0=Math.round(now/864e5+2440587.5-2451545);
   function sun(n){var J=n-lng/360,M=(357.5291+.98560028*J)%360,C=1.9148*Math.sin(M*r)+.02*Math.sin(2*M*r)+.0003*Math.sin(3*M*r),L=(M+C+282.9372)%360,
     Jt=2451545+J+.0053*Math.sin(M*r)-.0069*Math.sin(2*L*r),d=Math.asin(Math.sin(L*r)*Math.sin(23.4397*r)),
