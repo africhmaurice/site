@@ -449,6 +449,12 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc.cw .rc-die.fumble .face{fill:#1b3b15;stroke:#fffffe}
 #rc.cw .rc-die.is3d.fumble .rc-die-cv{filter:drop-shadow(0 0 12px rgba(255,255,254,.6))}
 #rc.cw .rc-die .face{fill:#1b3b15;stroke:#a2f590}
+
+/* The boxes are about 25% more opaque on this page */
+#rc.cw{--panel:rgba(38,142,98,.2);--well:rgba(12,26,8,.44)}
+#rc.cw .rc-opt,#rc.cw .rc-arch,#rc.cw .cw-color{background-color:rgba(12,26,8,.56)}
+#rc.cw .rc-opt[aria-pressed="true"],#rc.cw .cw-color[aria-pressed="true"]{background-color:#2c6021}
+#rc.cw .rc-bar{background:rgba(9,23,7,.95)}
 </style>
 
 <div id="rc" class="cw">
