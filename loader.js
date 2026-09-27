@@ -42,11 +42,16 @@
     if (!target || !el.contains(target)) return;
     var margin = function () { return parseFloat(getComputedStyle(target).scrollMarginTop) || 0; };
     var y = function () { return target.getBoundingClientRect().top + window.pageYOffset - margin(); };
+    // The moment the reader scrolls, taps or presses a key, the page is theirs: no more jumping back.
+    var theirs = false, EV = ['wheel', 'touchstart', 'pointerdown', 'keydown'];
+    var mine = function () { theirs = true; EV.forEach(function (e) { window.removeEventListener(e, mine, true); }); };
+    EV.forEach(function (e) { window.addEventListener(e, mine, { capture: true, passive: true }); });
     window.maAfterLoading(function () {
       setTimeout(function () {
+        if (theirs) return;
         window.scrollTo({ top: y(), behavior: 'smooth' });
         // Images above it can still be loading and push it down; check back a few times and nudge it into place.
-        var tries = 0, settle = function () { if (Math.abs(target.getBoundingClientRect().top - margin()) > 24 && Math.abs(window.pageYOffset - y()) < 4000) window.scrollTo({ top: y(), behavior: 'smooth' }); if (++tries < 5) setTimeout(settle, 900); };
+        var tries = 0, settle = function () { if (theirs) return; if (Math.abs(target.getBoundingClientRect().top - margin()) > 24) window.scrollTo({ top: y(), behavior: 'smooth' }); if (++tries < 5) setTimeout(settle, 900); else mine(); };
         setTimeout(settle, 1300);
       }, 300);
     });
