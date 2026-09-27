@@ -455,6 +455,9 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc.cw .rc-opt,#rc.cw .rc-arch,#rc.cw .cw-color{background-color:rgba(12,26,8,.56)}
 #rc.cw .rc-opt[aria-pressed="true"],#rc.cw .cw-color[aria-pressed="true"]{background-color:#2c6021}
 #rc.cw .rc-bar{background:rgba(9,23,7,.95)}
+
+/* the rolled pronoun, just under the die */
+#rc .rc-dice .cw-pron{grid-column:1;grid-row:4;margin:6px 0 0;text-align:center;font-family:"Atomic Marker",cursive;font-size:26px;line-height:1;color:#a2f590}
 </style>
 
 <div id="rc" class="cw">
@@ -1144,6 +1147,11 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     if (!rolling[id]) { var dn = die.querySelector('.rc-dn'); dn.textContent = r ? (isGender(id) ? (LAB[r] === DATA.die.reroll ? '↻' : LAB[r]) : r) : '?'; }
     if (r && Dice.ready(id) && !rolling[id]) Dice.show(id, r);
     d.insertBefore(die, d.firstChild);
+    if (face && !again && !rolling[id] && DATA.die.names[face]) {
+      var pron = document.createElement('p'); pron.className = 'cw-pron';
+      pron.textContent = face + ' ' + DATA.die.names[face].toUpperCase();
+      d.insertBefore(pron, die.nextSibling);
+    }
     var rb = d.querySelector('.rc-roll');
     if (rb) rb.onclick = function () { rollFor(id); };
     return d;
@@ -1329,7 +1337,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   // the gender dice show symbols on their faces
   // each face shows its symbol with the pronoun under it; REROLL stays a word
   var FACES = LAB.map(function (f) { return DATA.die.names[f] ? f + '|' + DATA.die.names[f].toUpperCase() : f; });
-  DATA.jobs.forEach(function (j) { Dice.labels('g_' + j.key, FACES); });
+  // the faces show only the symbols; the pronoun appears under the die once it has landed
+  DATA.jobs.forEach(function (j) { Dice.labels('g_' + j.key, LAB); });
   $('rc-pts').textContent = '+' + DATA.points;
   $('rc-close').textContent = when(CLOSES);
   $('rc-count').textContent = PREVIEW ? '—' : '…';
