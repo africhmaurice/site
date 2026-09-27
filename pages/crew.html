@@ -432,6 +432,23 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cw-submit{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px;padding-top:20px;border-top:1px solid var(--hair)}
 #rc .cw-submit .rc-cta{margin-top:0}
 #rc .cw-submit .rc-msg{margin:0}
+
+/* The crew page lives in the forest greens (#1b3b15, #2c6021, #57bb41, #a2f590); red text is white */
+#rc.cw{--mint:#fffffe;--ember:#a2f590;--red:#2c6021;--lime:#a2f590}
+#rc.cw .rc-hero h1 span{color:#a2f590}
+#rc.cw .rc-stat .v.e{color:#a2f590}
+#rc.cw .rc-cta{background:#2c6021;border-color:#f3ead9;color:#fff}
+#rc.cw .rc-cta:hover:not(:disabled){background:#57bb41;color:#0b170f}
+#rc.cw .rc-cta:disabled{background:rgba(12,26,8,.45);border-color:rgba(243,234,217,.4);color:rgba(237,233,220,.6)}
+#rc.cw .rc-roll{background:#2c6021}
+#rc.cw .rc-roll:hover:not(:disabled){background:#57bb41;color:#0b170f}
+#rc.cw .rc-opt[aria-pressed="true"],#rc.cw .cw-color[aria-pressed="true"],#rc.cw .cw-chips .rc-chip.on{background:#2c6021;border-color:#a2f590}
+#rc.cw .rc-orders{border-color:rgba(162,245,144,.45)}
+#rc.cw .rc-msg{color:#fffffe}
+#rc.cw .rc-rollres.fumble{color:#fffffe}
+#rc.cw .rc-die.fumble .face{fill:#1b3b15;stroke:#fffffe}
+#rc.cw .rc-die.is3d.fumble .rc-die-cv{filter:drop-shadow(0 0 12px rgba(255,255,254,.6))}
+#rc.cw .rc-die .face{fill:#1b3b15;stroke:#a2f590}
 </style>
 
 <div id="rc" class="cw">
@@ -566,9 +583,9 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       var c = document.createElement('canvas'); c.width = c.height = 256;
       var g = c.getContext('2d');
       var grad = g.createLinearGradient(0, 0, 0, 256);
-      grad.addColorStop(0, '#d23a12'); grad.addColorStop(1, '#8e1a06');
+      grad.addColorStop(0, '#57bb41'); grad.addColorStop(1, '#1b3b15');
       g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
-      g.fillStyle = '#ffe2a8'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillStyle = '#f2ffe9'; g.textAlign = 'center'; g.textBaseline = 'middle';
       var word = lab ? String(lab[n]) : null;
       if (word && word.length > 2) { g.font = '800 40px Almarai, Arial, sans-serif'; g.fillText(word, 128, 150); }
       else if (word) { g.font = '400 118px "Segoe UI Symbol", "Noto Sans Symbols 2", "Apple Symbols", "DejaVu Sans", sans-serif'; g.fillText(word, 128, 146); }
