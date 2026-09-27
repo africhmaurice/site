@@ -63,6 +63,7 @@ to find their prize.`],
   [15, `“You're doing great, kid. I love your passion, your work ethic, your commitment to always being you. And that's what's important to me because *you're* important to me. I couldn't be more proud to be your dad.”`],
   [17, '', { img: ART + 'clue-17.webp', alt: 'A barrel smoker with a coffee can on its chimney', flash: ART + 'clue-17-flash.webp', flashFill: true }],
   [18, 'click this', { href: VOID }],
+  [20, 'Princess (with an H) + Wei Shi Capaldi'],
   [21, "It's in my linktree"],
   [22, '"The Angel Sun" by Pinkman, Daughter of Arathorn and Gilrean'],
   [23, 'Telekinetic Swords & 12ish Children'],
@@ -71,6 +72,8 @@ to find their prize.`],
   [25, '“In the dark”', { night: '/in-the-dark' }],
   [26, "It'll come to you."],
   [27, "Your Loot Box"],
+  [29, 'Catch Me If You Can'],
+  [30, "I'm stuck!"],
 ];
 
 // The few lines above the cards that say what they are.
