@@ -245,11 +245,22 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #av .av-box ol li{display:flex;justify-content:space-between;gap:12px;font-weight:700;font-size:15px}
 #av .av-box ol li span{color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
 #av .av-note{margin:10px 0 0;font-size:13px;color:var(--muted)}
-#av .av-plan{margin:0;padding:0;list-style:none;display:grid;gap:14px}
-#av .av-plan li{font-weight:800;font-size:17px}
-#av .av-plan b{display:block;font-weight:400;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:2px}
-#av .av-plan span{font-weight:400;font-size:14px;color:var(--muted)}
-#av .av-plan em{display:block;font-style:normal;font-weight:400;font-size:14px;color:var(--accent);margin-top:2px}
+#av .av-box h4 small{float:right;font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:800}
+#av .av-plan{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px}
+#av .av-enc{display:flex;align-items:center;gap:16px}
+#av .av-die{position:relative;flex:none;width:92px;height:92px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}
+#av .av-die svg{width:100%;height:100%;display:block}
+#av .av-die span{position:absolute;left:0;right:0;top:43%;text-align:center;font-family:'Atomic Marker',cursive;font-size:22px;line-height:1;color:#fffffe}
+#av .av-enc p{margin:0}
+#av .av-enc .q{font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+#av .av-enc .a{font-family:'Atomic Marker',cursive;font-size:clamp(24px,2.6vw,30px);line-height:1.15;margin:2px 0 4px}
+#av .av-enc .v{font-size:14px;color:var(--body)}
+#av .av-enc .crit{font-size:12px;letter-spacing:.1em;margin-top:2px}
+#av .av-enc .c20{color:#a2f590}
+#av .av-enc .c1{color:#fd7547}
+#av .av-band[data-theme="red"] .av-enc .c1{color:#f3ead9}
+#av .av-band[data-theme="bone"] .av-enc .c20{color:#1a5e41}
+#av .av-band[data-theme="bone"] .av-enc .c1{color:#c53200}
 #av .av-marks{display:flex;flex-wrap:wrap;gap:10px;margin:0}
 #av .av-marks span{font-weight:800;font-size:14px;letter-spacing:.06em;border:1.5px solid var(--accent);padding:7px 14px}
 
@@ -268,7 +279,10 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #av .av-next p{color:var(--body);margin:0 auto;max-width:620px}
 
 @media (max-width:700px){
-  #av .av-grid{grid-template-columns:1fr}
+  #av .av-grid,#av .av-plan{grid-template-columns:1fr}
+  #av .av-die{width:80px;height:80px}
+  #av .av-die span{font-size:19px}
+  #av .av-box h4 small{float:none;display:block;margin-top:4px}
   #av .av-live{grid-template-columns:1fr 1fr}
   #av .av-live>div:last-child{grid-column:1/-1}
   #av .av-player{gap:12px;padding:12px}
@@ -324,12 +338,16 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
             <div class="av-box"><h4>THE CREW</h4><ol><li>Crest Knight <span>34</span></li><li>Gunslinger <span>25</span></li><li>Oracle <span>19</span></li><li>Techtailor <span>14</span></li><li>Intangible <span>11</span></li></ol></div>
             <div class="av-box"><h4>THE CARGO BAY</h4><ol><li>Survival Kit <span>6,000</span></li><li>Field Medic Kit <span>15,000</span></li><li>Breach Kit <span>10,000</span></li><li>Defense Kit <span>20,000</span></li><li>Climbing Kit <span>20,000</span></li></ol>
               <p class="av-note">71,000 of the 91,720-credit purse spent. 20,720 left over.</p></div>
-            <div class="av-box wide"><h4>THE PLAN</h4><ul class="av-plan">
-            <li><b>When you get to the island, will you…?</b>Stick Together <span>(31 to 11)</span>
-            <em>Group roll 11.22 · 3 nat 20s · 1 nat 1</em></li>
-            <li><b>How do you want to approach the island?</b>Recon First <span>(25 to 17)</span>
-            <em>Group roll 9.57 · 3 nat 20s · 6 nat 1s</em></li>
-            </ul></div>
+            <div class="av-box wide"><h4>THE PLAN <small>THE CREW'S AVERAGE D20</small></h4><div class="av-plan">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-split" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4c0f"/><stop offset="1" stop-color="#912501"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-split)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>11.22</span></div><div>
+              <p class="q">On the island</p><p class="a">Stick Together</p>
+              <p class="v">31 votes to 11</p>
+              <p class="crit"><b class="c20">3 NAT 20s</b> · <b class="c1">1 NAT 1</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-approach" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4c0f"/><stop offset="1" stop-color="#912501"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-approach)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9.57</span></div><div>
+              <p class="q">The approach</p><p class="a">Recon First</p>
+              <p class="v">25 votes to 17</p>
+              <p class="crit"><b class="c20">3 NAT 20s</b> · <b class="c1">6 NAT 1s</b></p></div></div>
+            </div></div>
             <div class="av-box wide"><h4>LANDMARKS TO SEARCH</h4><p class="av-marks"><span>Temple</span><span>Goma Skull</span><span>Sword</span></p></div>
           </div>
       <a class="av-cta" href="https://www.mauriceafrich.com/red-city">SEE THE FULL RESULTS</a>
