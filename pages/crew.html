@@ -593,7 +593,10 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
       g.fillStyle = '#f2ffe9'; g.textAlign = 'center'; g.textBaseline = 'middle';
       var word = lab ? String(lab[n]) : null;
-      if (word && word.length > 2) { g.font = '800 40px Almarai, Arial, sans-serif'; g.fillText(word, 128, 150); }
+      if (word && word.indexOf('|') > 0) { var sw = word.split('|');
+        g.font = '400 92px "Segoe UI Symbol", "Noto Sans Symbols 2", "Apple Symbols", "DejaVu Sans", sans-serif'; g.fillText(sw[0], 128, 124);
+        g.font = '800 34px Almarai, Arial, sans-serif'; g.fillText(sw[1], 128, 188); }
+      else if (word && word.length > 2) { g.font = '800 40px Almarai, Arial, sans-serif'; g.fillText(word, 128, 150); }
       else if (word) { g.font = '400 118px "Segoe UI Symbol", "Noto Sans Symbols 2", "Apple Symbols", "DejaVu Sans", sans-serif'; g.fillText(word, 128, 146); }
       else { g.font = '700 ' + (n > 9 ? 78 : 92) + 'px Almarai, Arial, sans-serif'; g.fillText(n === 6 || n === 9 ? n + '.' : String(n), 128, 150); }
       var t = new T.CanvasTexture(c);
@@ -1324,7 +1327,9 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   }
 
   // the gender dice show symbols on their faces
-  DATA.jobs.forEach(function (j) { Dice.labels('g_' + j.key, LAB); });
+  // each face shows its symbol with the pronoun under it; REROLL stays a word
+  var FACES = LAB.map(function (f) { return DATA.die.names[f] ? f + '|' + DATA.die.names[f].toUpperCase() : f; });
+  DATA.jobs.forEach(function (j) { Dice.labels('g_' + j.key, FACES); });
   $('rc-pts').textContent = '+' + DATA.points;
   $('rc-close').textContent = when(CLOSES);
   $('rc-count').textContent = PREVIEW ? '—' : '…';
