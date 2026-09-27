@@ -457,7 +457,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc.cw .rc-bar{background:rgba(9,23,7,.95)}
 
 /* the rolled pronoun, just under the die */
-#rc .rc-dice .cw-pron{grid-column:1;grid-row:4;margin:6px 0 0;text-align:center;font-family:"Atomic Marker",cursive;font-size:26px;line-height:1;color:#a2f590}
+#rc .cw-diecol{grid-row:1/4;display:flex;flex-direction:column;align-items:center;gap:4px}
+#rc .cw-pron{margin:0;text-align:center;font-family:"Atomic Marker",cursive;font-size:26px;line-height:1;color:#a2f590}
 </style>
 
 <div id="rc" class="cw">
@@ -1146,12 +1147,15 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     die.className = 'rc-die' + (Dice.ready(id) ? ' is3d' : '') + (rolling[id] ? ' rolling' : tone);
     if (!rolling[id]) { var dn = die.querySelector('.rc-dn'); dn.textContent = r ? (isGender(id) ? (LAB[r] === DATA.die.reroll ? '↻' : LAB[r]) : r) : '?'; }
     if (r && Dice.ready(id) && !rolling[id]) Dice.show(id, r);
-    d.insertBefore(die, d.firstChild);
+    // the die and, once it has landed, the pronoun right under it, together in the first column
+    var col = document.createElement('div'); col.className = 'cw-diecol';
+    col.appendChild(die);
     if (face && !again && !rolling[id] && DATA.die.names[face]) {
       var pron = document.createElement('p'); pron.className = 'cw-pron';
       pron.textContent = face + ' ' + DATA.die.names[face].toUpperCase();
-      d.insertBefore(pron, die.nextSibling);
+      col.appendChild(pron);
     }
+    d.insertBefore(col, d.firstChild);
     var rb = d.querySelector('.rc-roll');
     if (rb) rb.onclick = function () { rollFor(id); };
     return d;
