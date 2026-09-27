@@ -65,7 +65,7 @@
       })
       .then(function () {
         el.setAttribute('data-ma-state', 'ready');
-        pending--; reveal(el);
+        pending--; reveal(el); fitNavs();
         // Pages that size themselves on window load get a second chance now that they exist.
         try { window.dispatchEvent(new Event('resize')); } catch (e) {}
         // A link like /the-hunt#rewards arrives before its section exists; scroll once it does.
@@ -214,6 +214,58 @@
     });
     reveal(document.body.querySelector('#sections') || document.body.querySelector('#page') || document.body);
   }
+  // The hunt menu (#hunt-nav, in every hunt page) on a screen too narrow for the whole row: Tasks, Riddles,
+  // Clues, Games and Contests fold into one EARN POINTS dropdown (Maurice, 2026-09-27). It measures whether the
+  // row really fits, so a browser's larger minimum font size counts too. If even that doesn't fit, the phone
+  // menu button takes over. Phones and tablets already get the phone menu from each page's own styles.
+  var EARN = /\/the-hunt#tasks$|\/the-hunt#riddles$|\/lootbox-clue$|\/games$|\/contests$/;
+  function navCss() {
+    if (document.getElementById('ma-nav-fit')) return;
+    var st = document.createElement('style'); st.id = 'ma-nav-fit';
+    // Pages switch to the phone menu below 1240px; with the fold the full row can stay down to 1100px,
+    // where the pages' own phone layout starts, so a narrow laptop never gets a phone menu over a desktop page.
+    st.textContent = '@media (min-width:1101px) and (max-width:1240px){#hunt-nav{background:#1a5e41!important;padding:9px clamp(24px,4vw,58px)!important}' +
+      '#hunt-nav .mn-row{display:flex!important}#hunt-nav .mn-burger{display:none!important}}' +
+      '#hunt-nav .mn-earn{display:none}#hunt-nav.mn-compact .mn-earn{display:flex}#hunt-nav.mn-compact .mn-links>a.mn-ep{display:none}' +
+      '#hunt-nav.mn-burgered .mn-row{display:none!important}#hunt-nav.mn-burgered .mn-burger{display:flex!important}';
+    document.head.appendChild(st);
+  }
+  function navSetup(nav) {
+    if (nav.getAttribute('data-fit')) return;
+    var links = nav.querySelector('.mn-links'); if (!links) return;
+    var eps = Array.prototype.filter.call(links.children, function (a) { return a.tagName === 'A' && EARN.test(a.href); });
+    if (eps.length < 2) return;
+    nav.setAttribute('data-fit', '1'); navCss();
+    eps.forEach(function (a) { a.classList.add('mn-ep'); });
+    var caret = nav.querySelector('.mn-caret');
+    var d = document.createElement('div'); d.className = 'mn-drop mn-earn';
+    d.innerHTML = '<a href="javascript:void(0)" class="mn-link" aria-haspopup="true">EARN POINTS' + (caret ? caret.outerHTML : '') + '</a><div class="mn-dd"><div class="mn-dd-in"></div></div>';
+    var list = d.querySelector('.mn-dd-in');
+    eps.forEach(function (a) { var c = document.createElement('a'); c.href = a.href; c.textContent = a.textContent; list.appendChild(c); });
+    links.insertBefore(d, eps[0]);
+  }
+  function navFits(nav) {
+    var row = nav.querySelector('.mn-row'); if (!row) return true;
+    var last = nav.querySelector('.mn-drop-cta') || row.lastElementChild;
+    return row.scrollWidth <= row.clientWidth + 1 && (!last || last.getBoundingClientRect().right <= Math.min(row.getBoundingClientRect().right, window.innerWidth) + 1);
+  }
+  function fitNavs() {
+    Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
+      navSetup(nav);
+      if (!nav.getAttribute('data-fit')) return;
+      nav.classList.remove('mn-compact', 'mn-burgered');
+      var row = nav.querySelector('.mn-row');
+      if (!row || getComputedStyle(row).display === 'none') return;   // the page's own phone menu is showing
+      if (navFits(nav)) return;
+      nav.classList.add('mn-compact');
+      if (!navFits(nav)) nav.classList.add('mn-burgered');
+    });
+  }
+  var fitTimer;
+  window.addEventListener('resize', function () { clearTimeout(fitTimer); fitTimer = setTimeout(fitNavs, 120); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNavs);
+  window.maFitNavs = fitNavs;
+
   function scan() {
     fixedBackgrounds();
     nativeReveal();

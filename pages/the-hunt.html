@@ -24,8 +24,10 @@ html,body{margin:0 !important;padding:0 !important}
 .hv10:hover{background:rgba(255,255,255,.14) !important;transform:scale(1.05) !important}
 .hv11:hover{color:#c3a6ff !important}
 .hv12:hover{transform:scale(1.08) !important;color:#fff !important}
-@media (max-width:1100px) and (min-width:761px){.m-cards{grid-template-columns:repeat(2,minmax(0,1fr)) !important}}
-@media (max-width:760px){
+/* On a tablet the one-column phone cards stay a readable width. */
+@media (max-width:1100px) and (min-width:761px){.m-cards{max-width:680px !important;margin-left:auto !important;margin-right:auto !important}.m-hero{max-width:680px !important}}
+/* Phones and tablets share the phone layout (tablets used to get the desktop one squeezed; Maurice, 2026-09-27). */
+@media (max-width:1100px){
 section[data-screen-label]{padding:56px 24px !important;background-attachment:scroll !important}
 .m-hero{margin-top:48px !important}
 .m-acttitle{margin-bottom:44px !important}
@@ -83,7 +85,7 @@ h3{font-size:26px !important;line-height:1.15 !important}
 #grey-play{width:38px !important;height:38px !important}
 #grey-play svg{width:16px !important;height:16px !important}
 }
-@media (min-width:761px){
+@media (min-width:1101px){
 section[data-screen-label="Social bar"] a[style*="width:26px"]{width:33px !important}
 section[data-screen-label="Social bar"] a[style*="width:30px"]{width:38px !important}
 section[data-screen-label="Social bar"] a[style*="width:32px"]{width:40px !important}
