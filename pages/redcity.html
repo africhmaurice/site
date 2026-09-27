@@ -203,6 +203,44 @@
 #rc .rc-ok b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:34px;color:var(--lime);display:block}
 #rc .rc-quiet{font-size:14px;color:var(--muted)}
 #rc .rc-quiet a{color:#fff;text-decoration:underline;cursor:pointer}
+
+/* results: shown once the count is in (config results) */
+#rc.rc-done .rc-bar,#rc.rc-done .rc-step:not(.rc-res){display:none}
+#rc .rc-rcrew{display:grid;gap:10px}
+#rc .rc-rrow{display:grid;grid-template-columns:minmax(120px,200px) 1fr 44px;align-items:center;gap:16px;font-weight:800;font-size:17px;letter-spacing:.08em;text-transform:uppercase}
+#rc .rc-rrow .rc-num{text-align:right}
+#rc .rc-rbar{height:14px;background:var(--well);border:1px solid var(--hair)}
+#rc .rc-rbar i{display:block;height:100%;background:linear-gradient(90deg,#8e1a06,#c53200 60%,var(--ember))}
+#rc .rc-rrow.out{color:rgba(237,233,220,.5)}
+#rc .rc-rrow.out .rc-rbar i{background:rgba(237,233,220,.3)}
+#rc .rc-rrow.first{border-top:1px dashed var(--hair2);padding-top:12px;margin-top:4px}
+#rc .rc-kit.rc-skip{opacity:.55}
+#rc .rc-kit.rc-skip h3{text-decoration:line-through;text-decoration-color:var(--ember)}
+#rc .rc-tag{font-weight:800;font-size:12px;letter-spacing:.12em;color:var(--lime)}
+#rc .rc-kit.rc-skip .rc-tag{color:var(--muted)}
+#rc .rc-encrow{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+#rc .rc-rdie{position:relative;width:104px;height:104px;flex:none;filter:drop-shadow(0 8px 10px rgba(0,0,0,.5))}
+#rc .rc-rdie svg{width:100%;height:100%;display:block}
+#rc .rc-rdie .face{fill:#b3200a;stroke:#ffd9a0;stroke-width:2.5;stroke-linejoin:round}
+#rc .rc-rdie .edge{fill:none;stroke:rgba(255,226,168,.5);stroke-width:1.5}
+#rc .rc-rdie span{position:absolute;left:0;right:0;top:43%;text-align:center;font-family:'Atomic Marker',cursive;font-size:22px;color:#ffe2a8}
+#rc .rc-choice{font-family:'Atomic Marker',cursive!important;font-size:30px;letter-spacing:.02em;text-transform:none;color:#fffffe;margin:0 0 6px}
+#rc .rc-crits{font-weight:800;font-size:13px;letter-spacing:.1em;color:var(--muted);margin-top:6px}
+#rc .rc-crits .c20{color:var(--lime)}
+#rc .rc-crits .c1{color:var(--ember)}
+#rc .rc-band{display:inline-block;margin-top:12px;font-weight:800;font-size:14px;letter-spacing:.12em;padding:8px 14px;border:1.5px solid}
+#rc .rc-band.win{background:var(--lime);color:#0b170f;border-color:var(--lime)}
+#rc .rc-band.ok{color:var(--lime);border-color:var(--lime)}
+#rc .rc-band.meh{color:var(--ember);border-color:var(--ember)}
+#rc .rc-band.bad{background:#c53200;color:#fff;border-color:#c53200}
+#rc .rc-bands{margin-top:24px;padding-top:18px;border-top:1px solid var(--hair)}
+#rc .rc-bands ul{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 20px;margin-top:10px;font-size:14px;color:var(--muted)}
+#rc .rc-bands b{display:block;color:#fffffe;font-size:15px;letter-spacing:.04em}
+#rc .rc-lm{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px 24px}
+#rc .rc-lm li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--hair);font-weight:700;font-size:17px;color:rgba(237,233,220,.6)}
+#rc .rc-lm li.top{color:#fffffe}
+#rc .rc-lm li.top span:first-child::before{content:'';display:inline-block;width:10px;height:10px;background:#c53200;margin-right:10px;transform:rotate(45deg);vertical-align:1px}
+#rc .rc-next .rc-cta{margin-top:0}
 #rc.rc-closed .rc-arch,#rc.rc-closed .rc-opt,#rc.rc-closed .rc-qty button{pointer-events:none;opacity:.6}
 
 @media (max-width:860px){
@@ -230,6 +268,8 @@
       <div class="rc-stat"><div class="k">FOR VOTING</div><div class="v rc-num" id="rc-pts"></div><small>Seal your orders and the points go straight to the leaderboard.</small></div>
     </div>
   </header>
+
+  <div id="rc-results" hidden></div>
 
   <nav class="rc-bar" aria-label="Voting steps">
     <a class="rc-chip" id="rc-c1" href="#rc-recruit">1 · Recruit</a>
@@ -285,7 +325,7 @@
 
 <script>
 (function () {
-  var DATA = {"key":"red_city_vote","points":50,"opens":"2026-09-25T20:25:00-04:00","closes":"2026-09-26T20:25:00-04:00","crewSize":5,"picks":3,"kitPicks":3,"recordings":[{"slot":"hero","label":"INCOMING TRANSMISSION · CPT. GREY SHIMADA","src":"https://africhmaurice.github.io/site/assets/audio/red-city-grey.m4a","transcript":[["Grey","First stop, we’ve got a date with a one-eyed sewer rat. Put together your inventory list. Buckle up, frens. We’re settin’ sail for the Red City. I hope you brought sunblock."]]},{"slot":"market","label":"BENJI'S BARGAIN SHOP","src":"https://africhmaurice.github.io/site/assets/audio/red-city-felix-benji.m4a","transcript":[["Felix","No fuckin’ way! Grey sent you? What is this, some kind of shopping trip? I don’t even know your names… The boss ain’t gonna like him sendin’ people his way without a word or nothing. Tell him the next time it happens, I’ll send their heads back in a box. Now get the fu—"],["Benji (far away)","Felix, who is it?!"],["Felix (calling back)","Sky pirates! From the redcoat!"],["Benji (far away)","*Laughs* Let em in, let em in!"],["","*Door creaking*"],["Benji","Hello, hello. Welcome to the Red City. I hope you’re good and lubed up, cause Sola don’t give a shit what backwater city you call home, it’ll burn your ass and charge a cover fee. Grey told me you were comin’. I forgot to tell Felix. That’s on me. What can I getcha?"]]}],"rollNote":"Your roll is averaged with the rest of the crew's and applied to whichever option the crew chooses. A natural 1 counts as two 0s, and a natural 20 counts as two 20s. The collective dice roll directly correlates to your success on the hunt! Because it's a group roll, there is a curve applied to the difficulty level of every task.","standardGear":["2 × Minor Med Pack","Shield Belt","Stim","Comms Earpiece","Wrist Display"],"jobs":[{"key":"gunslinger","name":"Gunslinger","d":"Agility- and intuition-based ranged fighter with a gift for gunnery.","gear":["Brass Point Revolver","2 × Speedloader","Prism Blade"]},{"key":"guardian","name":"Guardian","d":"Brawn-based melee fighter with a gift for improvised weapons.","gear":["Mechaxe","Cleave"]},{"key":"crest_knight","name":"Crest Knight","d":"Agility- and intellect-based melee fighter, magically enhanced, with martial skill.","gear":["Torch Longsword","Crest-Marked Cloak","Extra Shield Belt"]},{"key":"imperial","name":"Imperial","d":"Intuition- and vitality-based magical support and fighter.","gear":["Bo Staff","Cooking Supplies"]},{"key":"intangible","name":"Intangible","d":"Agility- and intuition-based magical fighter. Teleporter.","gear":["2 × Vibroblade","3 × Flasher"]},{"key":"oracle","name":"Oracle","d":"Intuition- and charm-based magical support and ranged fighter.","gear":["Morton M8 Revolver","Prism Blade","Bo Staff"]},{"key":"techtailor","name":"Techtailor","d":"Intellect-based support and melee or ranged fighter.","gear":["Bomber Kit: 1 × Cuss, 3 × Stunner, 5 × Flare"]},{"key":"beast","name":"Goma","d":"Adolescent Goma (the size of a silverback gorilla).","gear":["Carrying Harness","Pet Food","Nail Trimming Kit","Stone Polish"],"familiar":true}],"kits":[{"name":"Breach Kit","price":10000,"d":"For getting through doors that would rather stay shut.","items":["Lock Breaker","Pry Bar","Glass Cutter","Panel Bypass Shunt","3 × Flasher","Disintegrator Disc","2 × Go & Blow Bot"]},{"name":"EMP Kit","price":25000,"d":"For turning the lights, locks and cameras off.","items":["2 × EMP Charge","Signal Jammer","Spare Battery","Pocket Radar","3 × Flasher","Surveillance Drone","10 × Small EMP Grenade"]},{"name":"Climbing Kit","price":20000,"d":"For cliffs, walls and anything the island puts in the way.","items":["50 m Nylon Rope","Grappling Hook Launcher","Harness & Carabiners","Glide Chute","Zipper (Automatic Zipline)","5 × Jetpack"]},{"name":"Field Medic Kit","price":15000,"d":"For patching up the crew far from a doctor.","items":["10 × Med Pack","Cauterizer","10 × Stim","5 × Antitoxin","Bandages","Antibiotic Salve (2 Tubes)","100 × Pain Killer"]},{"name":"Demolition Kit","price":22000,"d":"For making a mess on purpose.","items":["2 × Cuss","5 × Stunner","3 × Flare","Remote Detonator","3 × Mine Kit"]},{"name":"Survival Kit","price":6000,"d":"For living off an island that doesn't want you there.","items":["5 Days of Rations (×5)","2 × Water Purifier","5 × Bedroll","Satellite Radar","Compass","Satellite Comms","3 × AutoTent Kit","Inflatable Life Raft"]},{"name":"Defense Kit","price":20000,"d":"For taking a hit and walking it off.","items":["5 × Spare Shield Belt","2 × Remote Shield Belt Charger","100-Meter Alarm Kit","20 × Mini Sound Mine"]}],"questions":[{"id":"split","t":"When you get to the island, will you…?","s":"The island is big, and the crew is only so many pairs of boots.","o":[["Divide and Conquer","Split up and cover more ground. Faster, but nobody has your back."],["Stick Together","Move as one crew. Slower, but safer."]],"roll":true},{"id":"approach","t":"How do you want to approach the island?","s":"First impressions matter, even to an island.","o":[["Recon First","Gather information before anyone sets foot on the sand."],["Land Fast","Get boots on the ground and avoid detection."]],"roll":true},{"id":"landmarks","t":"Which landmarks do you want to see first?","s":"Pick up to three.","max":3,"o":[["Goma Skull",""],["Faces in the Rock",""],["Sword",""],["Temple",""],["Well",""],["South Tunnel",""],["Central Tunnel",""]]}]};
+  var DATA = {"key":"red_city_vote","points":50,"opens":"2026-09-25T20:25:00-04:00","closes":"2026-09-26T20:25:00-04:00","crewSize":5,"picks":3,"kitPicks":3,"recordings":[{"slot":"hero","label":"INCOMING TRANSMISSION · CPT. GREY SHIMADA","src":"https://africhmaurice.github.io/site/assets/audio/red-city-grey.m4a","transcript":[["Grey","First stop, we’ve got a date with a one-eyed sewer rat. Put together your inventory list. Buckle up, frens. We’re settin’ sail for the Red City. I hope you brought sunblock."]]},{"slot":"market","label":"BENJI'S BARGAIN SHOP","src":"https://africhmaurice.github.io/site/assets/audio/red-city-felix-benji.m4a","transcript":[["Felix","No fuckin’ way! Grey sent you? What is this, some kind of shopping trip? I don’t even know your names… The boss ain’t gonna like him sendin’ people his way without a word or nothing. Tell him the next time it happens, I’ll send their heads back in a box. Now get the fu—"],["Benji (far away)","Felix, who is it?!"],["Felix (calling back)","Sky pirates! From the redcoat!"],["Benji (far away)","*Laughs* Let em in, let em in!"],["","*Door creaking*"],["Benji","Hello, hello. Welcome to the Red City. I hope you’re good and lubed up, cause Sola don’t give a shit what backwater city you call home, it’ll burn your ass and charge a cover fee. Grey told me you were comin’. I forgot to tell Felix. That’s on me. What can I getcha?"]]}],"rollNote":"Your roll is averaged with the rest of the crew's and applied to whichever option the crew chooses. A natural 1 counts as two 0s, and a natural 20 counts as two 20s. The collective dice roll directly correlates to your success on the hunt! Because it's a group roll, there is a curve applied to the difficulty level of every task.","standardGear":["2 × Minor Med Pack","Shield Belt","Stim","Comms Earpiece","Wrist Display"],"jobs":[{"key":"gunslinger","name":"Gunslinger","d":"Agility- and intuition-based ranged fighter with a gift for gunnery.","gear":["Brass Point Revolver","2 × Speedloader","Prism Blade"]},{"key":"guardian","name":"Guardian","d":"Brawn-based melee fighter with a gift for improvised weapons.","gear":["Mechaxe","Cleave"]},{"key":"crest_knight","name":"Crest Knight","d":"Agility- and intellect-based melee fighter, magically enhanced, with martial skill.","gear":["Torch Longsword","Crest-Marked Cloak","Extra Shield Belt"]},{"key":"imperial","name":"Imperial","d":"Intuition- and vitality-based magical support and fighter.","gear":["Bo Staff","Cooking Supplies"]},{"key":"intangible","name":"Intangible","d":"Agility- and intuition-based magical fighter. Teleporter.","gear":["2 × Vibroblade","3 × Flasher"]},{"key":"oracle","name":"Oracle","d":"Intuition- and charm-based magical support and ranged fighter.","gear":["Morton M8 Revolver","Prism Blade","Bo Staff"]},{"key":"techtailor","name":"Techtailor","d":"Intellect-based support and melee or ranged fighter.","gear":["Bomber Kit: 1 × Cuss, 3 × Stunner, 5 × Flare"]},{"key":"beast","name":"Goma","d":"Adolescent Goma (the size of a silverback gorilla).","gear":["Carrying Harness","Pet Food","Nail Trimming Kit","Stone Polish"],"familiar":true}],"kits":[{"name":"Breach Kit","price":10000,"d":"For getting through doors that would rather stay shut.","items":["Lock Breaker","Pry Bar","Glass Cutter","Panel Bypass Shunt","3 × Flasher","Disintegrator Disc","2 × Go & Blow Bot"]},{"name":"EMP Kit","price":25000,"d":"For turning the lights, locks and cameras off.","items":["2 × EMP Charge","Signal Jammer","Spare Battery","Pocket Radar","3 × Flasher","Surveillance Drone","10 × Small EMP Grenade"]},{"name":"Climbing Kit","price":20000,"d":"For cliffs, walls and anything the island puts in the way.","items":["50 m Nylon Rope","Grappling Hook Launcher","Harness & Carabiners","Glide Chute","Zipper (Automatic Zipline)","5 × Jetpack"]},{"name":"Field Medic Kit","price":15000,"d":"For patching up the crew far from a doctor.","items":["10 × Med Pack","Cauterizer","10 × Stim","5 × Antitoxin","Bandages","Antibiotic Salve (2 Tubes)","100 × Pain Killer"]},{"name":"Demolition Kit","price":22000,"d":"For making a mess on purpose.","items":["2 × Cuss","5 × Stunner","3 × Flare","Remote Detonator","3 × Mine Kit"]},{"name":"Survival Kit","price":6000,"d":"For living off an island that doesn't want you there.","items":["5 Days of Rations (×5)","2 × Water Purifier","5 × Bedroll","Satellite Radar","Compass","Satellite Comms","3 × AutoTent Kit","Inflatable Life Raft"]},{"name":"Defense Kit","price":20000,"d":"For taking a hit and walking it off.","items":["5 × Spare Shield Belt","2 × Remote Shield Belt Charger","100-Meter Alarm Kit","20 × Mini Sound Mine"]}],"questions":[{"id":"split","t":"When you get to the island, will you…?","s":"The island is big, and the crew is only so many pairs of boots.","o":[["Divide and Conquer","Split up and cover more ground. Faster, but nobody has your back."],["Stick Together","Move as one crew. Slower, but safer."]],"roll":true},{"id":"approach","t":"How do you want to approach the island?","s":"First impressions matter, even to an island.","o":[["Recon First","Gather information before anyone sets foot on the sand."],["Land Fast","Get boots on the ground and avoid detection."]],"roll":true},{"id":"landmarks","t":"Which landmarks do you want to see first?","s":"Pick up to three.","max":3,"o":[["Goma Skull",""],["Faces in the Rock",""],["Sword",""],["Temple",""],["Well",""],["South Tunnel",""],["Central Tunnel",""]]}],"results":{"votes":42,"purse":91720,"left":20720,"crew":[{"name":"Crest Knight","votes":34,"crew":true},{"name":"Gunslinger","votes":25,"crew":true},{"name":"Oracle","votes":19,"crew":true},{"name":"Techtailor","votes":14,"crew":true},{"name":"Intangible","votes":11,"crew":true},{"name":"Imperial","votes":9,"crew":false},{"name":"Goma","votes":9,"crew":false},{"name":"Guardian","votes":5,"crew":false}],"kits":[{"name":"Survival Kit","price":6000,"lists":30,"bought":true},{"name":"Field Medic Kit","price":15000,"lists":26,"bought":true},{"name":"Breach Kit","price":10000,"lists":18,"bought":true},{"name":"Defense Kit","price":20000,"lists":14,"bought":true},{"name":"Climbing Kit","price":20000,"lists":12,"bought":true},{"name":"EMP Kit","price":25000,"lists":11,"bought":false},{"name":"Demolition Kit","price":22000,"lists":6,"bought":false}],"encounters":[{"id":"split","question":"When you get to the island, will you…?","choice":"Stick Together","options":[{"name":"Stick Together","votes":31},{"name":"Divide and Conquer","votes":11}],"average":11.22,"nat20":3,"nat1":1,"rolls":42,"result":"Totally succeed"},{"id":"approach","question":"How do you want to approach the island?","choice":"Recon First","options":[{"name":"Recon First","votes":25},{"name":"Land Fast","votes":17}],"average":9.57,"nat20":3,"nat1":6,"rolls":42,"result":"Fail a little"}],"landmarks":[{"name":"Temple","votes":30,"top":true},{"name":"Goma Skull","votes":18,"top":true},{"name":"Sword","votes":18,"top":true},{"name":"Faces in the Rock","votes":17,"top":false},{"name":"Well","votes":12,"top":false},{"name":"South Tunnel","votes":7,"top":false},{"name":"Central Tunnel","votes":6,"top":false}],"bands":[{"label":"Outright fail","range":"below 9.5"},{"label":"Fail a little","range":"9.5 to 10.49"},{"label":"Succeed a little","range":"10.5 to 11.19"},{"label":"Totally succeed","range":"11.2 and up"}]}};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
@@ -984,6 +1024,59 @@
     $('rc-c4').className = 'rc-chip' + (S.sealed ? ' done' : '');
   }
 
+
+  // ---- the results: once the count is in (config results), the page shows what the crew decided ----
+  function renderResults() {
+    var R = DATA.results;
+    if (!R) return false;
+    root.classList.add('rc-done');
+    var kick = root.querySelector('.rc-hero .rc-kick'), lede = root.querySelector('.rc-hero .rc-lede'), stats = root.querySelector('.rc-stats');
+    if (kick) kick.textContent = 'THE SKY PIRATES OF IMPERIA · THE VOTES ARE IN';
+    if (lede) lede.textContent = R.votes + ' frens voted, and the crew has spoken. Here is who is sailing, what is in the cargo bay, and how the dice fell.';
+    if (stats) stats.innerHTML =
+      '<div class="rc-stat"><div class="k">FRENS WHO VOTED</div><div class="v rc-num">' + fmt(R.votes) + '</div><small>Majority rules.</small></div>' +
+      '<div class="rc-stat"><div class="k">CREW PURSE</div><div class="v e rc-num">' + fmt(R.purse) + '</div><small>1 point = 1 credit.</small></div>' +
+      '<div class="rc-stat"><div class="k">LEFT IN THE PURSE</div><div class="v rc-num">' + fmt(R.left) + '</div><small>After the kits were bought.</small></div>';
+
+    var kitOf = {}; DATA.kits.forEach(function (k) { kitOf[k.name] = k; });
+    var top = Math.max.apply(null, R.crew.map(function (c) { return c.votes; })) || 1;
+    var crew = R.crew.map(function (c, i) {
+      var first = !c.crew && (i === 0 || R.crew[i - 1].crew);
+      return '<div class="rc-rrow' + (c.crew ? '' : ' out') + (first ? ' first' : '') + '"><span>' + esc(c.name) + '</span>' +
+        '<div class="rc-rbar"><i style="width:' + (c.votes / top * 100).toFixed(1) + '%"></i></div><span class="rc-num">' + c.votes + '</span></div>';
+    }).join('');
+    var kits = R.kits.map(function (k) {
+      var info = kitOf[k.name] || { items: [] };
+      return '<article class="rc-card rc-kit' + (k.bought ? ' taken' : ' rc-skip') + '"><h3>' + esc(k.name) + '</h3>' +
+        (k.bought ? '<ul class="rc-kitlist">' + (info.items || []).map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>' : '<p class="rc-sd">The purse ran dry before this one.</p>') +
+        '<div class="rc-kitfoot"><span class="rc-price rc-num">' + fmt(k.price) + ' credits</span><span class="rc-tag">' + (k.bought ? 'IN THE CARGO BAY' : 'NOT BOUGHT') + ' · ' + k.lists + ' VOTES</span></div></article>';
+    }).join('');
+    var enc = R.encounters.map(function (e) {
+      var tone = /^Totally/.test(e.result) ? 'win' : /^Succeed/.test(e.result) ? 'ok' : /^Fail/.test(e.result) ? 'meh' : 'bad';
+      return '<article class="rc-card rc-enc">' +
+        '<p class="rc-sd">' + esc(e.question) + '</p>' +
+        '<div class="rc-encrow"><div class="rc-rdie" aria-hidden="true">' + D20 + '<span>' + e.average.toFixed(2) + '</span></div>' +
+        '<div><h3 class="rc-choice">' + esc(e.choice) + '</h3>' +
+        '<p class="rc-sd">' + e.options.map(function (o) { return esc(o.name) + ' ' + o.votes; }).join(' · ') + '</p>' +
+        '<p class="rc-crits"><b class="c20">' + e.nat20 + ' NAT 20' + (e.nat20 === 1 ? '' : 's') + '</b> · <b class="c1">' + e.nat1 + ' NAT 1' + (e.nat1 === 1 ? '' : 's') + '</b> · ' + e.rolls + ' ROLLS</p></div></div></article>';
+    }).join('');
+    var bands = R.bands.map(function (b) { return '<li><b>' + esc(b.label) + '</b> ' + esc(b.range) + '</li>'; }).join('');
+    var lm = R.landmarks.map(function (l) {
+      return '<li class="' + (l.top ? 'top' : '') + '"><span>' + esc(l.name) + '</span><span class="rc-num">' + l.votes + '</span></li>';
+    }).join('');
+
+    $('rc-results').innerHTML =
+      '<section class="rc-step rc-res"><header><p class="rc-kick">THE CREW</p><h2>Who is sailing</h2><p>The five most wanted jobs make the crew.</p></header><div class="rc-rcrew">' + crew + '</div></section>' +
+      '<section class="rc-step rc-res"><header><p class="rc-kick">THE CARGO</p><h2>What is in the cargo bay</h2><p>The most wanted kits were bought first, until the purse ran out.</p></header><div class="rc-grid">' + kits + '</div></section>' +
+      '<section class="rc-step rc-res"><header><p class="rc-kick">THE PLAN</p><h2>How the dice fell</h2><p>Every fren rolled a d20 for each encounter, and the crew\'s average decides how the chosen option plays out. A natural 1 counts as two 0s, and a natural 20 as two 20s.</p></header>' +
+        '<div class="rc-qs">' + enc + '</div></section>' +
+      '<section class="rc-step rc-res"><header><p class="rc-kick">THE LANDMARKS</p><h2>Where we look first</h2><p>Frens picked up to three. The top three lead the way.</p></header><ol class="rc-lm">' + lm + '</ol></section>' +
+      '<section class="rc-step rc-res rc-next"><header><p class="rc-kick">WHAT HAPPENS NEXT</p><h2>Next stop: the island</h2><p>The crew sets sail with what the frens chose. Act Two picks up on the island.</p></header>' +
+        '<a class="rc-cta" href="https://www.mauriceafrich.com/the-hunt">BACK TO THE HUNT</a></section>';
+    $('rc-results').hidden = false;
+    return true;
+  }
+
   function render() { renderJobs(); renderStalls(); renderQs(); renderOrders(); renderWallet(); }
   // Preview only: a button (and ?reset-rolls) to wipe this browser's preview rolls and roll again.
   if (PREVIEW) {
@@ -1143,6 +1236,7 @@
     });
   });
   render();
+  renderResults();
 
   // The purse is the crew's live point total, so it grows during the vote: re-read it every few minutes.
   function loadPurse() {
