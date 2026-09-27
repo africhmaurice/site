@@ -33,6 +33,25 @@
 #press .pp-facts dt,#press .pp-facts dd{margin:0;padding:12px 0;border-top:1px solid rgba(243,234,217,.12);font-size:15px;line-height:1.5}
 #press .pp-facts dt{font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#a2f590;padding-top:14px}
 #press .pp-bio{font-size:16px;line-height:1.65;color:#ede9dc;margin:26px 0 0}
+#press .pp-hunt{background:rgba(145,37,1,.22);border-color:rgba(253,117,71,.35)}
+#press .pp-hunt h2{color:#fd7547}
+#press .pp-hunt-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.65;color:#ede9dc;margin:0 0 28px;max-width:820px}
+#press .pp-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 10px}
+#press .pp-stat{padding:20px 18px;background:rgba(11,23,15,.62);border:1px solid rgba(255,255,254,.16);text-align:center}
+#press .pp-stat b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(30px,3vw,44px);line-height:1.1;color:#fffffe}
+#press .pp-stat span{display:block;margin-top:6px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fd7547}
+#press .pp-asof{font-size:13px;color:rgba(255,255,254,.6);margin:0 0 30px}
+#press .pp-quote{margin:0 0 30px;padding:4px 0 4px 22px;border-left:3px solid #ff4c0f;font-size:18px;line-height:1.6;font-style:italic;color:#fffffe}
+#press .pp-quote cite{display:block;margin-top:8px;font-style:normal;font-size:14px;font-weight:700;letter-spacing:.08em;color:#fd7547}
+#press .pp-hunt .pp-facts{grid-template-columns:120px minmax(0,1fr)}
+#press .pp-hunt .pp-facts dt{color:#fd7547}
+#press .pp-phones{display:flex;gap:16px;overflow-x:auto;padding:30px 0 10px;scroll-snap-type:x mandatory}
+#press .pp-phone{flex:0 0 180px;scroll-snap-align:start;display:flex;flex-direction:column;gap:8px;color:#fffffe;text-decoration:none;font-size:13px;font-weight:700;letter-spacing:.04em}
+#press .pp-phone img{width:100%;height:auto;display:block;border:1px solid rgba(255,255,254,.16)}
+#press .pp-phone span{color:#fd7547}
+#press .pp-phone:hover span{color:#3adb97}
+#press .pp-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+#press .pp-cta .pp-btn{display:inline-block;margin:0;padding:12px 22px}
 
 #press .pr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
 #press .pr-card{display:flex;flex-direction:column;gap:10px;padding:22px 22px 20px;background:rgba(11,23,15,.62);border:1px solid rgba(255,255,254,.16);color:#fffffe;text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}
@@ -45,6 +64,10 @@
 #press .pr-quote{font-size:15px;line-height:1.55;color:rgba(255,255,254,.82);font-style:italic}
 #press .pr-go{margin-top:auto;padding-top:6px;font-size:13px;font-weight:700;letter-spacing:.05em;color:#fd7547}
 @media (max-width:860px){
+  #press .pp-stats{grid-template-columns:1fr 1fr}
+  #press .pp-hunt .pp-facts{grid-template-columns:1fr}
+  #press .pp-hunt .pp-facts dd{border-top:0;padding-top:0}
+  #press .pp-phone{flex-basis:150px}
   #press{padding-top:120px}
   #press .pp-wrap{padding:0 16px}
   #press .pp-section{margin-top:36px;padding:32px 20px 28px}
@@ -57,6 +80,17 @@
     <p class="pp-kicker">PRESS AND MEDIA</p>
     <h1>Press Room</h1>
     <p class="pp-lede">Reviews, interviews, and who to talk to about Cello’s Gate. For review copies and interviews, reach out to the right person below.</p>
+
+    <section class="pp-section pp-hunt" id="pp-hunt">
+      <h2>The Cello’s Gate Treasure Hunt</h2>
+      <p class="pp-hunt-lede">From September 20 to November 1, readers are playing a treasure hunt that runs across my website, social media, Discord, and newsletter. They solve riddles, follow clues, play daily word games, hunt down hidden loot boxes, and vote on where the story goes next. The three hunters with the most points at the end win a real treasure chest.</p>
+      <div class="pp-stats"><div class="pp-stat"><b>147</b><span>hunters</span></div><div class="pp-stat"><b>103,675</b><span>crew points earned</span></div><div class="pp-stat"><b>228</b><span>Trench Discord members</span></div><div class="pp-stat"><b>51</b><span>hidden loot boxes</span></div></div>
+      <p class="pp-asof">As of September 27, 2026.</p>
+      <blockquote class="pp-quote">“[A LINE OR TWO FROM YOU: WHY YOU MADE THE HUNT]”<cite>Maurice Africh</cite></blockquote>
+      <dl class="pp-facts"><dt>Dates</dt><dd>September 20 to November 1, 2026. It ends two days before Cello’s Gate comes out.</dd><dt>Where</dt><dd>mauriceafrich.com/the-hunt</dd><dt>Who</dt><dd>Free and open to everyone, everywhere. The Treasure and sweepstakes prizes are for U.S. and UK residents, 18 and older.</dd><dt>Play</dt><dd>Tasks, riddles, clues, the daily Skyword game, a crossword, 51 hidden loot boxes, and a fan fiction contest.</dd><dt>Story</dt><dd>Choose-your-own-adventure votes. Hunters picked the crew’s route to Red City and are now creating new crew members and their ship.</dd><dt>Crew</dt><dd>Every point also counts toward a shared crew total that unlocks rewards for all players.</dd><dt>Acts</dt><dd>Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1).</dd><dt>Treasure</dt><dd>The top three on the U.S. and UK leaderboards win The Treasure: signed editions, art prints, custom bookmarks, enamel pins, an advance audiobook, and more.</dd></dl>
+      <div class="pp-phones"><a class="pp-phone" href="https://africhmaurice.github.io/site/assets/press/hunt-welcome.webp" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/press/hunt-welcome.webp" width="900" height="1543" alt="Welcome to the Hunt" loading="lazy"><span>Welcome to the Hunt ↓</span></a><a class="pp-phone" href="https://africhmaurice.github.io/site/assets/press/hunt-treasure.webp" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/press/hunt-treasure.webp" width="900" height="1543" alt="The Treasure" loading="lazy"><span>The Treasure ↓</span></a><a class="pp-phone" href="https://africhmaurice.github.io/site/assets/press/hunt-adventure.webp" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/press/hunt-adventure.webp" width="900" height="1543" alt="Choose Your Own Adventure" loading="lazy"><span>Choose Your Own Adventure ↓</span></a><a class="pp-phone" href="https://africhmaurice.github.io/site/assets/press/hunt-skyword.webp" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/press/hunt-skyword.webp" width="900" height="1543" alt="Skyword daily game" loading="lazy"><span>Skyword daily game ↓</span></a><a class="pp-phone" href="https://africhmaurice.github.io/site/assets/press/hunt-loot-boxes.webp" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/press/hunt-loot-boxes.webp" width="900" height="1543" alt="Fifty-one loot boxes" loading="lazy"><span>Fifty-one loot boxes ↓</span></a></div>
+      <div class="pp-cta"><a class="pp-btn" href="/the-hunt">See the hunt</a><a class="pp-btn" href="/leaderboard">Live leaderboard</a></div>
+    </section>
 
     <section class="pp-section" id="pp-contacts">
       <h2>Contacts</h2>
@@ -219,5 +253,10 @@
     e.style.width = document.documentElement.clientWidth + 'px';
   }
   fit(); addEventListener('resize', fit); addEventListener('load', fit); setTimeout(fit, 600);
+})();
+// The page loads after the browser has already looked for #pp-hunt etc., so jump there once it's in.
+(function () {
+  var id = location.hash.slice(1), el = id && /^pp-/.test(id) && document.getElementById(id);
+  if (el) setTimeout(function () { el.scrollIntoView({ block: 'start' }); }, 700);
 })();
 </script>
