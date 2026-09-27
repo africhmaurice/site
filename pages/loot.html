@@ -89,6 +89,8 @@ html,body{margin:0 !important;padding:0 !important}
 .lb-cta{margin:26px auto 0;padding-top:22px;border-top:2px solid rgba(17,17,17,.12);max-width:540px}
 .lb-cta p{text-wrap:balance;font-weight:800;font-size:clamp(16px,2vw,19px);color:#111;margin:0}
 .lb-cta .lb-btn{width:auto;margin-top:14px;text-decoration:none}
+.lb-cta .lb-btn2{display:table;margin:12px auto 0;background:#fff;color:#111}
+.lb-cta .lb-btn2:hover{background:#111;color:#fff}
 
 /* ---- the scorecard ---- */
 .lb-tally{text-align:center;font-weight:800;letter-spacing:.09em;text-transform:uppercase;font-size:clamp(12px,1.5vw,14px);color:#607667;margin:34px 0 14px}
@@ -484,7 +486,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   // After every find: point them at the clue page for the next one.
   function cta() {
     return '<div class="lb-cta"><p>Want to find more loot boxes? Follow the clues!</p>' +
-      '<a class="lb-btn" href="https://www.mauriceafrich.com/lootbox-clue">Find another loot box</a></div>';
+      '<a class="lb-btn" href="https://www.mauriceafrich.com/lootbox-clue">Find another loot box</a>' +
+      '<a class="lb-btn lb-btn2" href="https://www.mauriceafrich.com/the-hunt#points">How to earn more entries</a></div>';
   }
 
   // ---- states -------------------------------------------------------------

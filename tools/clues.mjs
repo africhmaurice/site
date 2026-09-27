@@ -73,6 +73,13 @@ to find their prize.`],
   [27, "Your Loot Box"],
 ];
 
+// The few lines above the cards that say what they are.
+const INTRO = `  <div class="lc-intro">
+    <h1 class="lc-title">The Clues</h1>
+    <p>Loot boxes are hidden all over the internet. On social media, reading apps, author websites, and more! Every card below is a clue that leads to one of them. Some are riddles, some are pictures, and some are hiding in plain sight.</p>
+    <p>When you find a box, click it to claim it and earn points. Every loot box found earns you an extra entry into the sweepstakes!</p>
+  </div>`;
+
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const boards = CLUES.map(([n, text, o = {}]) => {
   // *word* in a clue is shown in italics.
@@ -115,10 +122,13 @@ const nightJs = `  <script>(function(){${NIGHT_JS}var s=document.getElementById(
 let h = readFileSync(NEXT ? LIVE_F : F, 'utf8');
 const a = h.indexOf('<section id="loot-clue">'); const b = h.indexOf('</section>', a);
 if (a < 0 || b < 0) throw new Error('clue section not found');
-h = h.slice(0, a) + `<section id="loot-clue">\n  <div class="lc-grid">\n${boards}\n  </div>\n${flashJs}\n${nightJs}\n` + h.slice(b);
+h = h.slice(0, a) + `<section id="loot-clue">\n${INTRO}\n  <div class="lc-grid">\n${boards}\n  </div>\n${flashJs}\n${nightJs}\n` + h.slice(b);
 
 // Styles: number in Atomic Marker, clue in Almarai (no forced capitals), two boards per row.
 const css = `#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;max-width:1240px;width:100%;align-items:stretch}
+#loot-clue .lc-intro{max-width:760px;width:100%;text-align:center}
+#loot-clue .lc-title{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(44px,5.4vw,76px);line-height:1.1;color:#89fbcb;margin:0 0 22px;text-wrap:balance}
+#loot-clue .lc-intro p{text-transform:none;letter-spacing:.02em;font-size:clamp(17px,1.5vw,21px);line-height:1.6;text-wrap:pretty;margin:0 auto 14px}
 #loot-clue .lc-board{box-sizing:border-box;max-width:none;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 44px 52px}
 #loot-clue .lc-num{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,3.4vw,52px);line-height:1;color:#89fbcb;margin:0 0 22px}
 #loot-clue .lc-text{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(18px,1.6vw,23px);line-height:1.55;letter-spacing:.02em;color:#fffffe;white-space:pre-line;text-transform:none;margin:0}
