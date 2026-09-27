@@ -168,13 +168,14 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 </script>
 <style>
 @font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
-#av{box-sizing:border-box;position:relative;width:100vw;overflow-x:clip;color:#fffffe;font-family:'Almarai',sans-serif;letter-spacing:.03em;font-size:16px;line-height:1.6;text-align:left;
-  background:linear-gradient(rgba(11,23,15,.78),rgba(11,23,15,.9)),url('https://africhmaurice.github.io/site/assets/bg/desert-airship-as434518151.webp') center/cover no-repeat fixed;
-  padding:clamp(140px,12vw,180px) 0 90px}
+#av{box-sizing:border-box;position:relative;width:100vw;overflow-x:clip;color:#fffffe;font-family:'Almarai',sans-serif;letter-spacing:.03em;font-size:16px;line-height:1.6;text-align:left;background:#0b170f}
 #av *,#av *::before,#av *::after{box-sizing:border-box}
 #av [hidden]{display:none!important}
 #av .av-wrap{max-width:1000px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
 #av h1,#av h2{font-family:'Atomic Marker',cursive;font-weight:400;margin:0;text-transform:none;letter-spacing:.02em;line-height:1.08}
+
+/* the top of the page */
+#av .av-hero{background:linear-gradient(rgba(11,23,15,.62),rgba(11,23,15,.92)),url('https://africhmaurice.github.io/site/assets/bg/city-skyline-panorama-as348070597.webp') center/cover no-repeat;padding:clamp(140px,12vw,180px) 0 clamp(56px,6vw,80px)}
 #av h1{font-size:clamp(46px,7.5vw,96px);color:#fffffe}
 #av h1 span{color:#a2f590}
 #av .av-top{font-weight:800;font-size:13px;letter-spacing:.16em;color:#a2f590;margin:0 0 14px}
@@ -183,78 +184,88 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #av .av-chip{color:#fffffe;text-decoration:none;font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;border:1.5px solid rgba(243,234,217,.55);padding:9px 16px;transition:border-color .15s ease,color .15s ease}
 #av .av-chip:hover{border-color:#a2f590;color:#a2f590}
 
-/* the route: the map's white dots down the left, a marker on each chapter */
-#av .av-line{position:relative;margin-top:56px;padding-left:clamp(44px,7vw,78px)}
-#av .av-line::before{content:'';position:absolute;left:calc(clamp(44px,7vw,78px) / 2 - 3px);top:24px;bottom:40px;width:6px;
-  background:radial-gradient(circle,#fffffe 2.6px,transparent 3px) center top/6px 16px repeat-y;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
-#av .av-ch{position:relative;margin-bottom:34px;scroll-margin-top:120px}
-#av .av-dot{position:absolute;left:calc(clamp(44px,7vw,78px) / -2);top:18px;width:clamp(34px,4.4vw,52px);height:clamp(34px,4.4vw,52px);transform:translateX(-50%);filter:drop-shadow(0 4px 4px rgba(0,0,0,.55))}
+/* The color stories. Each band sets its own; everything below reads them. */
+#av .av-band[data-theme="green"]{--shade:27,59,21;--deep:11,23,15;--accent:#a2f590;--accent2:#57bb41;--cta:#2c6021;--cta-hover:#57bb41;--cta-ink:#fffffe;--cta-hover-ink:#0b170f;--ink:#fffffe;--body:#ede9dc;--muted:rgba(237,233,220,.7);--line:#fffffe}
+#av .av-band[data-theme="red"]{--shade:145,37,1;--deep:48,12,0;--accent:#fd7547;--accent2:#ff4c0f;--cta:#c53200;--cta-hover:#ff4c0f;--cta-ink:#fffffe;--cta-hover-ink:#fffffe;--ink:#fffffe;--body:#f3ead9;--muted:rgba(243,234,217,.72);--line:#fffffe}
+#av .av-band[data-theme="teal"]{--shade:26,94,65;--deep:6,32,21;--accent:#89fbcb;--accent2:#3adb97;--cta:#268e62;--cta-hover:#3adb97;--cta-ink:#fffffe;--cta-hover-ink:#0b170f;--ink:#fffffe;--body:#ede9dc;--muted:rgba(237,233,220,.72);--line:#fffffe}
+#av .av-band[data-theme="purple"]{--shade:45,28,83;--deep:21,13,40;--accent:#9e74fd;--accent2:#7b4ee1;--cta:#482d85;--cta-hover:#7b4ee1;--cta-ink:#fffffe;--cta-hover-ink:#fffffe;--ink:#fffffe;--body:#ede9dc;--muted:rgba(237,233,220,.72);--line:#fffffe}
+#av .av-band[data-theme="bone"]{--shade:243,234,217;--deep:237,233,220;--accent:#1a5e41;--accent2:#268e62;--cta:#0b170f;--cta-hover:#213226;--cta-ink:#fffffe;--cta-hover-ink:#fffffe;--ink:#0b170f;--body:#213226;--muted:#607667;--line:#0b170f}
+#av .av-band[data-theme="olive"]{--shade:33,50,38;--deep:11,23,15;--accent:#ede9dc;--accent2:#607667;--cta:#607667;--cta-hover:#213226;--cta-ink:#fffffe;--cta-hover-ink:#fffffe;--ink:#fffffe;--body:#ede9dc;--muted:rgba(237,233,220,.66);--line:#ede9dc}
+#av .av-band{position:relative;color:var(--ink);padding:clamp(48px,6vw,80px) 0;
+  background:linear-gradient(rgba(var(--shade),.8),rgba(var(--deep),.93)),var(--img) center/cover no-repeat}
+#av .av-band[data-theme="bone"]{background:linear-gradient(rgba(var(--shade),.86),rgba(var(--deep),.94)),var(--img) center/cover no-repeat}
+
+/* the route: the map's dotted line down the left, through every band, a marker on each chapter */
+#av .av-line{position:relative;padding-left:clamp(44px,7vw,78px)}
+#av .av-line::before{content:'';position:absolute;left:calc(clamp(44px,7vw,78px) / 2 - 3px);top:calc(-1 * clamp(48px,6vw,80px));bottom:calc(-1 * clamp(48px,6vw,80px));width:6px;
+  background:radial-gradient(circle,var(--line) 2.6px,transparent 3px) center top/6px 16px repeat-y;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+#av .av-hero + .av-band .av-line::before{top:30px}
+#av .av-ch{position:relative;scroll-margin-top:120px}
+#av .av-dot{position:absolute;left:calc(clamp(44px,7vw,78px) / -2);top:18px;width:clamp(34px,4.4vw,52px);height:clamp(34px,4.4vw,52px);transform:translateX(-50%);filter:drop-shadow(0 4px 4px rgba(0,0,0,.5))}
 #av .av-dot svg{width:100%;height:100%;overflow:visible;display:block}
-#av .av-dot .core{fill:#fffffe}
-#av .av-dot .ring{fill:none;stroke:#fffffe;stroke-width:5;stroke-linecap:round;stroke-dasharray:62 38;transform-origin:50px 50px;animation:av-spin 8s linear infinite}
-#av .av-dot .glow{fill:#fffffe;opacity:0}
+#av .av-dot .core{fill:var(--line)}
+#av .av-dot .ring{fill:none;stroke:var(--line);stroke-width:5;stroke-linecap:round;stroke-dasharray:62 38;transform-origin:50px 50px;animation:av-spin 8s linear infinite}
+#av .av-dot .glow{fill:var(--line);opacity:0}
 #av .av-ch[data-status="vote"] .av-dot .glow{transform-origin:50px 50px;animation:av-pulse 2.4s ease-out infinite}
 @keyframes av-spin{to{transform:rotate(360deg)}}
 @keyframes av-pulse{0%{transform:scale(.4);opacity:.55}100%{transform:scale(1.3);opacity:0}}
 @media (prefers-reduced-motion:reduce){#av .av-dot .ring,#av .av-dot .glow{animation:none}}
 
-#av .av-card{background:rgba(33,50,38,.78);border:1px solid rgba(243,234,217,.18);padding:clamp(24px,3.4vw,40px);box-shadow:0 18px 40px rgba(0,0,0,.35)}
-#av .av-ch[data-status="vote"] .av-card{border-color:rgba(162,245,144,.55)}
-#av .av-kick{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590;margin:0 0 12px}
-#av .av-pill{font-size:11px;letter-spacing:.14em;padding:5px 10px;border:1.5px solid #89fbcb;color:#89fbcb}
-#av .av-ch[data-status="vote"] .av-pill{background:#c53200;border-color:#f3ead9;color:#fffffe}
-#av .av-ch[data-status="closed"] .av-pill{border-color:#f3ead9;color:#f3ead9}
-#av h2{font-size:clamp(32px,4.4vw,52px);color:#fffffe;margin-bottom:14px}
-#av .av-lede{font-size:17px;line-height:1.65;color:#ede9dc;margin:0 0 20px;max-width:720px}
+#av .av-card{background:rgba(var(--shade),.62);border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);padding:clamp(24px,3.4vw,40px);box-shadow:0 18px 40px rgba(0,0,0,.3);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+#av .av-ch[data-status="vote"] .av-card{border-color:var(--accent)}
+#av .av-kick{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;font-weight:800;font-size:12px;letter-spacing:.16em;color:var(--accent);margin:0 0 12px}
+#av .av-pill{font-size:11px;letter-spacing:.14em;padding:5px 10px;border:1.5px solid var(--accent);color:var(--accent)}
+#av .av-ch[data-status="vote"] .av-pill{background:var(--cta);border-color:var(--cta);color:var(--cta-ink)}
+#av h2{font-size:clamp(32px,4.4vw,52px);color:var(--ink);margin-bottom:14px}
+#av .av-lede{font-size:17px;line-height:1.65;color:var(--body);margin:0 0 20px;max-width:720px}
 
-#av .av-player{display:flex;align-items:center;gap:16px;background:rgba(45,28,83,.6);border:1px solid rgba(195,166,255,.35);padding:14px 18px;max-width:620px}
+#av .av-player{display:flex;align-items:center;gap:16px;background:rgba(45,28,83,.78);border:1px solid rgba(158,116,253,.45);padding:14px 18px;max-width:620px;color:#fffffe}
 #av .av-pbtn{flex:none;width:52px;height:52px;border-radius:50%;background:#482d85;border:0;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
-#av .av-pbtn svg{width:22px;height:22px;fill:#c3a6ff}
+#av .av-pbtn svg{width:22px;height:22px;fill:#9e74fd}
 #av .av-pbtn svg.p{margin-left:3px}
 #av .av-pmid{flex:1;min-width:0}
-#av .av-plabel{font-weight:700;font-size:13px;letter-spacing:.1em;color:#c3a6ff;margin-bottom:10px}
-#av .av-ptrack{position:relative;height:10px;background:rgba(195,166,255,.2);cursor:pointer}
+#av .av-plabel{font-weight:700;font-size:13px;letter-spacing:.1em;color:#9e74fd;margin-bottom:10px}
+#av .av-ptrack{position:relative;height:10px;background:rgba(158,116,253,.22);cursor:pointer}
 #av .av-pfill{position:absolute;top:0;bottom:0;left:0;width:0;background:#9e74fd}
-#av .av-ptime{flex:none;font-weight:700;font-size:15px;color:#c3a6ff;font-variant-numeric:tabular-nums}
+#av .av-ptime{flex:none;font-weight:700;font-size:15px;color:#9e74fd;font-variant-numeric:tabular-nums}
+#av .av-band[data-theme="purple"] .av-player{background:rgba(11,23,15,.5)}
 #av .av-tx{margin-top:12px;max-width:620px}
-#av .av-tx summary{cursor:pointer;width:max-content;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(237,233,220,.72)}
-#av .av-tx summary:hover{color:#fffffe}
-#av .av-tx div{margin-top:10px;display:grid;gap:8px;font-size:14px;line-height:1.6;color:#ede9dc;border-left:2px solid rgba(195,166,255,.35);padding-left:14px}
+#av .av-tx summary{cursor:pointer;width:max-content;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+#av .av-tx summary:hover{color:var(--ink)}
+#av .av-tx div{margin-top:10px;display:grid;gap:8px;font-size:14px;line-height:1.6;color:var(--body);border-left:2px solid var(--accent);padding-left:14px}
 #av .av-tx p{margin:0}
-#av .av-tx b{font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#c3a6ff;margin-right:6px}
-#av .av-tx i{color:rgba(237,233,220,.72)}
+#av .av-tx b{font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-right:6px}
+#av .av-tx i{color:var(--muted)}
 
 #av .av-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:26px}
-#av .av-box{background:rgba(11,23,15,.55);border:1px solid rgba(243,234,217,.14);padding:18px 20px}
+#av .av-box{background:rgba(var(--deep),.55);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);padding:18px 20px}
 #av .av-box.wide{grid-column:1/-1}
-#av .av-box h4{margin:0 0 10px;font-family:'Almarai',sans-serif!important;text-transform:none;line-height:1.4;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590}
+#av .av-box h4{margin:0 0 10px;font-family:'Almarai',sans-serif!important;text-transform:none;line-height:1.4;font-weight:800;font-size:12px;letter-spacing:.16em;color:var(--accent)}
 #av .av-box ol{margin:0;padding:0;list-style:none;display:grid;gap:6px}
 #av .av-box ol li{display:flex;justify-content:space-between;gap:12px;font-weight:700;font-size:15px}
-#av .av-box ol li span{color:rgba(237,233,220,.62);font-weight:400;font-variant-numeric:tabular-nums}
-#av .av-note{margin:10px 0 0;font-size:13px;color:rgba(237,233,220,.72)}
+#av .av-box ol li span{color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
+#av .av-note{margin:10px 0 0;font-size:13px;color:var(--muted)}
 #av .av-plan{margin:0;padding:0;list-style:none;display:grid;gap:14px}
 #av .av-plan li{font-weight:800;font-size:17px}
-#av .av-plan b{display:block;font-weight:400;font-size:13px;color:rgba(237,233,220,.72);letter-spacing:.04em;margin-bottom:2px}
-#av .av-plan span{font-weight:400;font-size:14px;color:rgba(237,233,220,.62)}
-#av .av-plan em{display:block;font-style:normal;font-weight:400;font-size:14px;color:#89fbcb;margin-top:2px}
+#av .av-plan b{display:block;font-weight:400;font-size:13px;color:var(--muted);letter-spacing:.04em;margin-bottom:2px}
+#av .av-plan span{font-weight:400;font-size:14px;color:var(--muted)}
+#av .av-plan em{display:block;font-style:normal;font-weight:400;font-size:14px;color:var(--accent);margin-top:2px}
 #av .av-marks{display:flex;flex-wrap:wrap;gap:10px;margin:0}
-#av .av-marks span{font-weight:800;font-size:14px;letter-spacing:.06em;border:1.5px solid rgba(162,245,144,.6);padding:7px 14px}
+#av .av-marks span{font-weight:800;font-size:14px;letter-spacing:.06em;border:1.5px solid var(--accent);padding:7px 14px}
 
 #av .av-live{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:4px 0 0}
-#av .av-live>div{background:rgba(11,23,15,.55);border:1px solid rgba(243,234,217,.14);padding:14px 16px}
-#av .av-live .k{font-weight:800;font-size:11px;letter-spacing:.14em;color:#a2f590;margin-bottom:6px}
+#av .av-live>div{background:rgba(var(--deep),.55);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);padding:14px 16px}
+#av .av-live .k{font-weight:800;font-size:11px;letter-spacing:.14em;color:var(--accent);margin-bottom:6px}
 #av .av-live .v{font-family:'Atomic Marker',cursive;font-size:clamp(28px,3.2vw,40px);line-height:1.1}
 #av .av-live .v.sm{font-size:clamp(18px,1.9vw,24px);line-height:1.25}
-#av .av-cta{display:inline-block;margin-top:24px;color:#fffffe!important;text-decoration:none!important;font-weight:800;font-size:15px;letter-spacing:.1em;border:1.5px solid #f3ead9;background:#c53200;padding:14px 26px;transition:transform .15s ease,background .15s ease}
-#av .av-cta:hover{transform:scale(1.04);background:#ff4c0f}
-#av .av-ch[data-status="done"] .av-cta{background:rgba(11,23,15,.55)}
-#av .av-ch[data-status="done"] .av-cta:hover{background:#1a5e41}
+#av .av-cta{display:inline-block;margin-top:24px;color:var(--cta-ink)!important;text-decoration:none!important;font-weight:800;font-size:15px;letter-spacing:.1em;border:1.5px solid var(--cta);background:var(--cta);padding:14px 26px;transition:transform .15s ease,background .15s ease,color .15s ease}
+#av .av-cta:hover{transform:scale(1.04);background:var(--cta-hover);border-color:var(--cta-hover);color:var(--cta-hover-ink)!important}
 
-#av .av-next{text-align:center;margin-top:56px}
+/* the last band: what comes next */
+#av .av-next{text-align:center}
+#av .av-next .av-wrap{padding-top:clamp(8px,2vw,20px);padding-bottom:clamp(8px,2vw,20px)}
 #av .av-next h2{font-size:clamp(28px,3.6vw,44px);margin-bottom:12px}
-#av .av-next p{color:#ede9dc;margin:0 auto;max-width:620px}
-#av .av-next .av-cta{background:rgba(11,23,15,.55)}
-#av .av-next .av-cta:hover{background:#1a5e41}
+#av .av-next p{color:var(--body);margin:0 auto;max-width:620px}
 
 @media (max-width:700px){
   #av .av-grid{grid-template-columns:1fr}
@@ -265,32 +276,43 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 }
 </style>
 <div id="av">
-  <div class="av-wrap">
-    <p class="av-top">THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE</p>
-    <h1>The Adventure <span>So Far</span></h1>
-    <p class="av-intro">Every choice in the hunt so far, in order. I post a choice, the frens vote together, and majority rules. Where the crew goes next is up to you, and every vote you seal earns 50 points.</p>
-    <nav class="av-chips" aria-label="Chapters"><a class="av-chip" href="#av-fenna">A New Transmission</a><a class="av-chip" href="#av-red-city">Shopping in the Red City</a><a class="av-chip" href="#av-the-crew">Meet the Crew</a></nav>
-    <div class="av-line">
-    <section class="av-ch" id="av-fenna" data-status="done">
-      <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
-      <div class="av-card">
-        <p class="av-kick">CHAPTER 1 · FENNA'S SOUL<span class="av-pill">DECIDED</span></p>
-        <h2>A New Transmission</h2>
-        <p class="av-lede">Grey had a job for the crew before anyone set sail for the island: go shopping in the Red City and find a one-eyed sewer rat.</p>
+  <div class="av-hero">
+    <div class="av-wrap">
+      <p class="av-top">THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE</p>
+      <h1>The Adventure <span>So Far</span></h1>
+      <p class="av-intro">Every choice in the hunt so far, in order. I post a choice, the frens vote together, and majority rules. Where the crew goes next is up to you, and every vote you seal earns 50 points.</p>
+      <nav class="av-chips" aria-label="Chapters"><a class="av-chip" href="#av-fenna">A New Transmission</a><a class="av-chip" href="#av-red-city">Shopping in the Red City</a><a class="av-chip" href="#av-the-crew">Meet the Crew</a></nav>
+    </div>
+  </div>
+  <div class="av-band" data-theme="green" style="--img:url('https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-fenna" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 1 · FENNA'S SOUL<span class="av-pill">DECIDED</span></p>
+            <h2>A New Transmission</h2>
+            <p class="av-lede">Grey had a job for the crew before anyone set sail for the island: go shopping in the Red City and find a one-eyed sewer rat.</p>
       <div class="av-player" data-audio>
         <button type="button" class="av-pbtn" aria-label="Play INCOMING TRANSMISSION · CPT. GREY SHIMADA"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
         <div class="av-pmid"><div class="av-plabel">INCOMING TRANSMISSION · CPT. GREY SHIMADA</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
         <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/red-city-grey.m4a"></audio>
       </div>
       <details class="av-tx"><summary>Read the transcript</summary><div><p><b>Grey</b>First stop, we’ve got a date with a one-eyed sewer rat. Put together your inventory list. Buckle up, frens. We’re settin’ sail for the Red City. I hope you brought sunblock.</p></div></details>
+          </div>
+        </section>
       </div>
-    </section>
-    <section class="av-ch" id="av-red-city" data-status="done">
-      <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
-      <div class="av-card">
-        <p class="av-kick">CHAPTER 2 · PONTUNE · THE RED CITY<span class="av-pill">DECIDED</span></p>
-        <h2>Shopping in the Red City</h2>
-        <p class="av-lede">Benji was expecting you. Felix wasn't. 42 frens voted on who to recruit, which kits to buy, and how to take the island.</p>
+    </div>
+  </div>
+  <div class="av-band" data-theme="red" style="--img:url('https://africhmaurice.github.io/site/assets/bg/red-sun-ruins-as360866146.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-red-city" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 2 · PONTUNE · THE RED CITY<span class="av-pill">DECIDED</span></p>
+            <h2>Shopping in the Red City</h2>
+            <p class="av-lede">Benji was expecting you. Felix wasn't. 42 frens voted on who to recruit, which kits to buy, and how to take the island.</p>
       <div class="av-player" data-audio>
         <button type="button" class="av-pbtn" aria-label="Play BENJI'S BARGAIN SHOP"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
         <div class="av-pmid"><div class="av-plabel">BENJI'S BARGAIN SHOP</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
@@ -311,24 +333,33 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
             <div class="av-box wide"><h4>LANDMARKS TO SEARCH</h4><p class="av-marks"><span>Temple</span><span>Goma Skull</span><span>Sword</span></p></div>
           </div>
       <a class="av-cta" href="https://www.mauriceafrich.com/red-city">SEE THE FULL RESULTS</a>
+          </div>
+        </section>
       </div>
-    </section>
-    <section class="av-ch" id="av-the-crew" data-status="vote" data-closes="2026-09-28T18:50:00Z">
-      <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
-      <div class="av-card">
-        <p class="av-kick">CHAPTER 3 · THE GRESNICK OCEAN<span class="av-pill">VOTING NOW</span></p>
-        <h2>Meet the Crew</h2>
-        <p class="av-lede">The kits are loaded and Pontune is behind you. Before the island, the crew needs faces, names, and a ship. Roll for each crew member, pick their names, specialties, and weapons, then roll for the ship that carries them. Majority rules.</p>
+    </div>
+  </div>
+  <div class="av-band" data-theme="teal" style="--img:url('https://africhmaurice.github.io/site/assets/bg/crystal-towers-lake-as395045722.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-the-crew" data-status="vote" data-closes="2026-09-28T18:50:00Z">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 3 · THE GRESNICK OCEAN<span class="av-pill">VOTING NOW</span></p>
+            <h2>Meet the Crew</h2>
+            <p class="av-lede">The kits are loaded and Pontune is behind you. Before the island, the crew needs faces, names, and a ship. Roll for each crew member, pick their names, specialties, and weapons, then roll for the ship that carries them. Majority rules.</p>
       <div class="av-live">
         <div><div class="k">FRENS WHO HAVE VOTED</div><div class="v" data-count>…</div></div>
         <div><div class="k">FOR VOTING</div><div class="v">+50</div></div>
         <div><div class="k" data-when-k>VOTING CLOSES</div><div class="v sm" data-when>Monday, September 28 at 2:50 PM ET</div></div>
       </div>
       <a class="av-cta" data-vote-cta href="https://www.mauriceafrich.com/the-crew">MEET THE CREW</a>
+          </div>
+        </section>
       </div>
-    </section>
     </div>
-    <div class="av-next">
+  </div>
+  <div class="av-band av-next" data-theme="purple" style="--img:url('https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp')">
+    <div class="av-wrap">
       <h2>Next Stop: The Island</h2>
       <p>The map updates as the crew moves. Watch it for the next choice.</p>
       <a class="av-cta" href="https://www.mauriceafrich.com/the-hunt#map">SEE THE MAP</a>
