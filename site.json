@@ -129,6 +129,12 @@
       "source": "bot:squarespace-crew.html"
     },
     {
+      "slug": "adventure",
+      "url": "/adventure",
+      "title": "The Adventure So Far (every Choose Your Own Adventure beat)",
+      "source": "bot:squarespace-adventure.html"
+    },
+    {
       "slug": "the-hunt-next",
       "url": "(preview only: the next Hunt page, not live)",
       "title": "The Hunt (next version, preview)",
