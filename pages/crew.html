@@ -421,6 +421,17 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cw-orders h4{font-weight:800;font-size:13px;letter-spacing:.12em;color:var(--ember);margin:0 0 8px}
 #rc .cw-orders ul{margin:0;padding-left:18px;font-size:14px;line-height:1.7}
 #rc .cw-orders .rc-empty{font-size:14px}
+
+#rc .cw-tabs{flex-direction:column;align-items:stretch;gap:10px}
+#rc .cw-how{margin:0;text-align:center;font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime)}
+#rc .cw-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+#rc .cw-chips .rc-chip{cursor:pointer;background:none;font:inherit;font-weight:700;font-size:14px;letter-spacing:.08em}
+#rc .cw-chips .rc-chip.on{background:var(--red);border-color:var(--cream);color:#fff}
+#rc .cw-chips .rc-chip.done:not(.on){color:var(--lime);border-color:var(--lime)}
+#rc .cw-step:not(.cw-on){display:none}
+#rc .cw-submit{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px;padding-top:20px;border-top:1px solid var(--hair)}
+#rc .cw-submit .rc-cta{margin-top:0}
+#rc .cw-submit .rc-msg{margin:0}
 </style>
 
 <div id="rc" class="cw">
@@ -437,31 +448,31 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     </div>
   </header>
 
-  <nav class="rc-bar" aria-label="Voting steps" id="cw-bar"></nav>
-
   <section class="rc-step" id="cw-start">
     <header>
       <p class="rc-kick">BEFORE YOU ROLL</p>
       <h2>Who is rolling?</h2>
-      <p>Every roll is made by the Captain and recorded the moment you press Roll, so the Captain needs to know whose roll it is.</p>
       <button type="button" class="rc-sound" id="rc-sound"></button>
     </header>
     <div id="rc-who" class="rc-whobox"></div>
   </section>
 
+  <nav class="rc-bar cw-tabs" aria-label="Characters" id="cw-bar"><p class="cw-how">Click a Character + Create Them + Submit + Move to the Next Character</p><div class="cw-chips" id="cw-chips"></div></nav>
+
   <div id="cw-jobs"></div>
 
-  <section class="rc-step" id="cw-ship">
+  <section class="rc-step cw-step" id="cw-ship">
     <header>
       <p class="rc-kick">THE SHIP</p>
       <h2>The ship that carries them</h2>
       <p>Pick her color and her name, then roll for the rest. The crew's average roll decides each one.</p>
     </header>
     <div id="cw-shipbody"></div>
+    <div class="cw-submit" id="cw-submit-ship"></div>
     <p class="rc-rngnote"><b>About the dice:</b> the rolling die is a visualization. Your actual roll is made by a random number generator on our server the moment you press Roll. It is recorded straight away and can't be changed, and the die simply shows the number it gave.</p>
   </section>
 
-  <section class="rc-step rc-orders" id="rc-orders">
+  <section class="rc-step rc-orders cw-step" id="rc-orders">
     <header>
       <p class="rc-kick">YOUR ORDERS</p>
       <h2>Seal your vote</h2>
@@ -1139,7 +1150,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     var box = $('cw-jobs'); box.innerHTML = '';
     DATA.jobs.forEach(function (j, i) {
       var sec = document.createElement('section');
-      sec.className = 'rc-step'; sec.id = 'cw-' + j.key;
+      sec.className = 'rc-step cw-step' + (S.tab === j.key ? ' cw-on' : ''); sec.id = 'cw-' + j.key;
       sec.innerHTML = '<header><p class="rc-kick">CREW MEMBER ' + (i + 1) + ' OF ' + DATA.jobs.length + '</p><h2>The ' + esc(j.name) + '</h2></header>';
       var grid = document.createElement('div'); grid.className = 'cw-grid';
       var g = genderOf(j.key);
@@ -1157,6 +1168,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       grid.appendChild(card('Specialty', null, [optButtons(j.specs, S.spec[j.key], function (n) { S.spec[j.key] = n; })]));
       grid.appendChild(card('Weapon', null, [optButtons(j.weapons, S.weap[j.key], function (n) { S.weap[j.key] = n; })]));
       sec.appendChild(grid);
+      sec.appendChild(submitRow(j.key, i < DATA.jobs.length - 1 ? DATA.jobs[i + 1].key : 'ship', 'SUBMIT THE ' + j.name.toUpperCase()));
       box.appendChild(sec);
     });
   }
@@ -1225,17 +1237,49 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     seal.textContent = S.sealed ? 'ORDERS SEALED' : (S.voted ? 'UPDATE MY ORDERS' : 'SEAL MY ORDERS');
   }
 
+  // One character at a time. The chips switch between them; Submit checks the character, marks it done and
+  // moves on. Sealing at the end sends the whole vote.
+  var STEPS = DATA.jobs.map(function (j) { return { key: j.key, name: j.name }; }).concat([{ key: 'ship', name: 'The Ship' }, { key: 'seal', name: 'Seal It' }]);
+  S.done = S.done || {};
+  if (!S.tab) { var first = STEPS.filter(function (s) { return !S.done[s.key]; })[0]; S.tab = first ? first.key : 'seal'; }
+  function stepEl(key) { return key === 'ship' ? $('cw-ship') : key === 'seal' ? $('rc-orders') : $('cw-' + key); }
+  function goTo(key) { S.tab = key; store(STORE, S); render(); var bar = $('cw-bar'); if (bar) bar.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   function renderBar() {
-    var bar = $('cw-bar');
-    if (bar.childNodes.length) return;
-    DATA.jobs.forEach(function (j) { bar.insertAdjacentHTML('beforeend', '<a class="rc-chip" href="#cw-' + j.key + '">' + esc(j.name) + '</a>'); });
-    bar.insertAdjacentHTML('beforeend', '<a class="rc-chip" href="#cw-ship">The Ship</a><a class="rc-chip" href="#rc-orders">Seal It</a>');
-    Array.prototype.forEach.call(bar.querySelectorAll('a'), function (a) {
-      a.addEventListener('click', function (e) { var el = document.getElementById(a.getAttribute('href').slice(1)); if (!el) return; e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
-    });
+    $('cw-chips').innerHTML = STEPS.map(function (s) {
+      return '<button type="button" class="rc-chip' + (S.tab === s.key ? ' on' : '') + (S.done[s.key] ? ' done' : '') + '" data-step="' + s.key + '" aria-pressed="' + (S.tab === s.key) + '">' + (S.done[s.key] ? '✓ ' : '') + esc(s.name) + '</button>';
+    }).join('');
+    Array.prototype.forEach.call($('cw-chips').querySelectorAll('button'), function (b) { b.onclick = function () { goTo(b.getAttribute('data-step')); }; });
+    ['ship', 'seal'].forEach(function (k) { var el = stepEl(k); if (el) el.classList.toggle('cw-on', S.tab === k); });
   }
+  // What a step still needs before it can be submitted.
+  function stepMissing(key) {
+    var m = [];
+    if (key === 'ship') {
+      if (!S.color) m.push('pick a hull color');
+      if (!S.shipName) m.push('pick her name');
+      var r = DATA.ship.rolls.filter(function (x) { return !S.rolls['s_' + x.id]; }).length;
+      if (r) m.push('roll ' + r + ' more d20' + (r > 1 ? 's' : ''));
+      return m;
+    }
+    var g = S.rolls['g_' + key], nm = S.names[key] || {};
+    if (!g || LAB[g] === DATA.die.reroll) m.push('roll the die');
+    var n = SYMS.filter(function (s) { return !nm[s]; }).length;
+    if (n) m.push('pick ' + n + ' more name' + (n > 1 ? 's' : ''));
+    if (!S.spec[key]) m.push('pick a specialty');
+    if (!S.weap[key]) m.push('pick a weapon');
+    return m;
+  }
+  function submitRow(key, next, label) {
+    var row = document.createElement('div'); row.className = 'cw-submit';
+    var m = stepMissing(key);
+    row.innerHTML = '<button type="button" class="rc-cta"' + (m.length ? ' disabled' : '') + '>' + esc(label) + '</button>' +
+      '<p class="rc-msg">' + (m.length ? 'Still to do: ' + esc(m.join(', ')) + '.' : (S.done[key] ? 'Submitted. You can still change anything before you seal your vote.' : '')) + '</p>';
+    row.querySelector('button').onclick = function () { if (stepMissing(key).length) return; S.done[key] = true; goTo(next); };
+    return row;
+  }
+  function renderShipSubmit() { var box = $('cw-submit-ship'); box.innerHTML = ''; var r = submitRow('ship', 'seal', 'SUBMIT THE SHIP'); while (r.firstChild) box.appendChild(r.firstChild); }
 
-  function render() { renderBar(); renderJobs(); renderShip(); renderOrders(); renderWho(); }
+  function render() { renderJobs(); renderShip(); renderShipSubmit(); renderBar(); renderOrders(); renderWho(); }
 
   $('rc-seal').onclick = function () {
     var msg = $('rc-msg');
@@ -1252,7 +1296,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   if (PREVIEW) {
     var again = document.createElement('button');
     again.type = 'button'; again.className = 'rc-sound'; again.textContent = 'PREVIEW: START OVER';
-    again.onclick = function () { S = { rolls: {}, names: {}, spec: {}, weap: {} }; store(STORE, S); for (var k in dieEls) Dice.stop(k); render(); };
+    again.onclick = function () { S = { rolls: {}, names: {}, spec: {}, weap: {}, done: {}, tab: DATA.jobs[0].key }; store(STORE, S); for (var k in dieEls) Dice.stop(k); render(); };
     $('rc-sound').insertAdjacentElement('afterend', again);
   }
 
