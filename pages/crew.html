@@ -643,7 +643,8 @@
       var o0 = overlay(), key = LAB[id] ? 'lab' : 'num';
       if (o0.labKey !== key) { o0.mesh.material = MATS[key] || (MATS[key] = dieMaterials(LAB[id])); o0.labKey = key; }
       if (!P) return false;
-      var d = dice[id], o = overlay(), s = slotCenter(id), Wu = o.w / 2 / o.R, Hu = o.h / 2 / o.R;
+      // Never a table smaller than a few dice wide, even if the window reports no size (a hidden tab).
+      var d = dice[id], o = overlay(), s = slotCenter(id), Wu = Math.max(5, o.w / 2 / o.R), Hu = Math.max(4, o.h / 2 / o.R);
       var start = { x: Math.max(-Wu + 1.3, Math.min(Wu - 1.3, s.x / o.R)), y: Math.max(-Hu + 1.3, Math.min(Hu - 1.3, s.y / o.R)) };
       var best = null, t0 = performance.now();
       for (var i = 0; i < 8; i++) {
