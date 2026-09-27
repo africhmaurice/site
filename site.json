@@ -123,6 +123,12 @@
       "source": "bot:squarespace-redcity.html"
     },
     {
+      "slug": "crew",
+      "url": "/the-crew",
+      "title": "Meet the Crew Vote (after Red City)",
+      "source": "bot:squarespace-crew.html"
+    },
+    {
       "slug": "the-hunt-next",
       "url": "(preview only: the next Hunt page, not live)",
       "title": "The Hunt (next version, preview)",
