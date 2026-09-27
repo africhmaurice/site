@@ -1093,7 +1093,8 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
         if(fresh)results={};
         results._who=low(me.email);results[n]=res.verdict||'check';save(DONE,results);
         Object.keys(cards).forEach(function(k){if(k===n||fresh||cards[k].editing||cards[k].open){cards[k].editing=cards[k].open=false;draw(k,'',k===n?'':(cards[k].box.querySelector('[data-f="answer"]')||{}).value);}});
-        if(fresh)lookup();
+        // A retried send comes back "already" with no verdict (the first reply was lost on the way): ask the server how it went.
+        if(fresh||!res.verdict)lookup();
         return;
       }
       var ERR={closed:'The hunt is over. Thank you for hunting!',email:'That email address does not look right.',task:'This riddle isn’t open yet.',
