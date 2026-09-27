@@ -1032,7 +1032,7 @@
     root.classList.add('rc-done');
     var kick = root.querySelector('.rc-hero .rc-kick'), lede = root.querySelector('.rc-hero .rc-lede'), stats = root.querySelector('.rc-stats');
     if (kick) kick.textContent = 'THE SKY PIRATES OF IMPERIA · THE VOTES ARE IN';
-    if (lede) lede.textContent = R.votes + ' frens voted, and the crew has spoken. Here is who is sailing, what is in the hold, and how the dice fell.';
+    if (lede) lede.textContent = R.votes + ' frens voted, and the crew has spoken. Here is who is sailing, what is in the cargo bay, and how the dice fell.';
     if (stats) stats.innerHTML =
       '<div class="rc-stat"><div class="k">FRENS WHO VOTED</div><div class="v rc-num">' + fmt(R.votes) + '</div><small>Majority rules.</small></div>' +
       '<div class="rc-stat"><div class="k">CREW PURSE</div><div class="v e rc-num">' + fmt(R.purse) + '</div><small>1 point = 1 credit.</small></div>' +
@@ -1049,7 +1049,7 @@
       var info = kitOf[k.name] || { items: [] };
       return '<article class="rc-card rc-kit' + (k.bought ? ' taken' : ' rc-skip') + '"><h3>' + esc(k.name) + '</h3>' +
         (k.bought ? '<ul class="rc-kitlist">' + (info.items || []).map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>' : '<p class="rc-sd">The purse ran dry before this one.</p>') +
-        '<div class="rc-kitfoot"><span class="rc-price rc-num">' + fmt(k.price) + ' credits</span><span class="rc-tag">' + (k.bought ? 'IN THE HOLD' : 'NOT BOUGHT') + ' · ' + k.lists + ' VOTES</span></div></article>';
+        '<div class="rc-kitfoot"><span class="rc-price rc-num">' + fmt(k.price) + ' credits</span><span class="rc-tag">' + (k.bought ? 'IN THE CARGO BAY' : 'NOT BOUGHT') + ' · ' + k.lists + ' VOTES</span></div></article>';
     }).join('');
     var enc = R.encounters.map(function (e) {
       var tone = /^Totally/.test(e.result) ? 'win' : /^Succeed/.test(e.result) ? 'ok' : /^Fail/.test(e.result) ? 'meh' : 'bad';
@@ -1058,8 +1058,7 @@
         '<div class="rc-encrow"><div class="rc-rdie" aria-hidden="true">' + D20 + '<span>' + e.average.toFixed(2) + '</span></div>' +
         '<div><h3 class="rc-choice">' + esc(e.choice) + '</h3>' +
         '<p class="rc-sd">' + e.options.map(function (o) { return esc(o.name) + ' ' + o.votes; }).join(' · ') + '</p>' +
-        '<p class="rc-crits"><b class="c20">' + e.nat20 + ' NAT 20' + (e.nat20 === 1 ? '' : 's') + '</b> · <b class="c1">' + e.nat1 + ' NAT 1' + (e.nat1 === 1 ? '' : 's') + '</b> · ' + e.rolls + ' ROLLS</p>' +
-        '<p class="rc-band ' + tone + '">' + esc(e.result.toUpperCase()) + '</p></div></div></article>';
+        '<p class="rc-crits"><b class="c20">' + e.nat20 + ' NAT 20' + (e.nat20 === 1 ? '' : 's') + '</b> · <b class="c1">' + e.nat1 + ' NAT 1' + (e.nat1 === 1 ? '' : 's') + '</b> · ' + e.rolls + ' ROLLS</p></div></div></article>';
     }).join('');
     var bands = R.bands.map(function (b) { return '<li><b>' + esc(b.label) + '</b> ' + esc(b.range) + '</li>'; }).join('');
     var lm = R.landmarks.map(function (l) {
@@ -1068,9 +1067,9 @@
 
     $('rc-results').innerHTML =
       '<section class="rc-step rc-res"><header><p class="rc-kick">THE CREW</p><h2>Who is sailing</h2><p>The five most wanted jobs make the crew.</p></header><div class="rc-rcrew">' + crew + '</div></section>' +
-      '<section class="rc-step rc-res"><header><p class="rc-kick">THE CARGO</p><h2>What is in the hold</h2><p>The most wanted kits were bought first, until the purse ran out.</p></header><div class="rc-grid">' + kits + '</div></section>' +
+      '<section class="rc-step rc-res"><header><p class="rc-kick">THE CARGO</p><h2>What is in the cargo bay</h2><p>The most wanted kits were bought first, until the purse ran out.</p></header><div class="rc-grid">' + kits + '</div></section>' +
       '<section class="rc-step rc-res"><header><p class="rc-kick">THE PLAN</p><h2>How the dice fell</h2><p>Every fren rolled a d20 for each encounter, and the crew\'s average decides how the chosen option plays out. A natural 1 counts as two 0s, and a natural 20 as two 20s.</p></header>' +
-        '<div class="rc-qs">' + enc + '</div><div class="rc-bands"><p class="rc-kick">THE RESULT BANDS FOR A GROUP ROLL</p><ul>' + bands + '</ul></div></section>' +
+        '<div class="rc-qs">' + enc + '</div></section>' +
       '<section class="rc-step rc-res"><header><p class="rc-kick">THE LANDMARKS</p><h2>Where we look first</h2><p>Frens picked up to three. The top three lead the way.</p></header><ol class="rc-lm">' + lm + '</ol></section>' +
       '<section class="rc-step rc-res rc-next"><header><p class="rc-kick">WHAT HAPPENS NEXT</p><h2>Next stop: the island</h2><p>The crew sets sail with what the frens chose. Act Two picks up on the island.</p></header>' +
         '<a class="rc-cta" href="https://www.mauriceafrich.com/the-hunt">BACK TO THE HUNT</a></section>';
