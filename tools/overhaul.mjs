@@ -73,7 +73,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 `;
 const LINKS = [
   ['THE HUNT', '/the-hunt'], ['TASKS', '/the-hunt#tasks'], ['RIDDLES', '/the-hunt#riddles'], ['CLUES', '/lootbox-clue'],
-  ['GAMES', '/games'], ['CONTESTS', '/contests'], 'PROGRESS', ['QUESTIONS?', '/questions'], ['VOTE NOW!', '/red-city'],
+  ['GAMES', '/games'], ['CONTESTS', '/contests'], 'PROGRESS', ['QUESTIONS?', '/questions'],
 ];
 // The Current Progress dropdown; the profile is its highlighted first item.
 const PROGRESS = [['TREASURE HUNTER PROFILE', '/profile', 'mn-profile'], ['LEADERBOARD', '/leaderboard'], ['LOOT BOX SCORECARD', '/loot'], ['REWARDS', '/the-hunt#rewards']];
