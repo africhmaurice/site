@@ -1520,5 +1520,15 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     };
   }
 
+  // The Squarespace section around this page keeps its own (red) background and a fixed height; when the page is
+  // shorter than the section, stretch it so none of that color shows below.
+  function fillSection() {
+    var sec = root.closest('section'); if (!sec) return;
+    root.style.minHeight = '';
+    var gap = sec.getBoundingClientRect().bottom - root.getBoundingClientRect().bottom;
+    if (gap > 0) root.style.minHeight = Math.ceil(root.offsetHeight + gap) + 'px';
+  }
+  fillSection(); addEventListener('resize', fillSection); addEventListener('load', fillSection); setTimeout(fillSection, 800); setTimeout(fillSection, 2500);
+
 })();
 </script>

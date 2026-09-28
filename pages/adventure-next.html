@@ -459,6 +459,14 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     root.style.width = document.documentElement.clientWidth + 'px';
   }
   fit(); addEventListener('resize', fit); addEventListener('load', fit); setTimeout(fit, 600);
+  // The Squarespace section keeps its own background and height; stretch the page so none of it shows below.
+  function fillSection() {
+    var sec = root.closest('section'); if (!sec) return;
+    root.style.minHeight = '';
+    var gap = sec.getBoundingClientRect().bottom - root.getBoundingClientRect().bottom;
+    if (gap > 0) root.style.minHeight = Math.ceil(root.offsetHeight + gap) + 'px';
+  }
+  fillSection(); addEventListener('resize', fillSection); addEventListener('load', fillSection); setTimeout(fillSection, 800); setTimeout(fillSection, 2500);
 
   // The recordings: one plays at a time.
   var players = root.querySelectorAll('[data-audio]');
