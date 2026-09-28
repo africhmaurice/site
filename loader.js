@@ -231,7 +231,7 @@
     // where the pages' own phone layout starts, so a narrow laptop never gets a phone menu over a desktop page.
     st.textContent = '@media (min-width:1101px) and (max-width:1240px){#hunt-nav{background:#1a5e41!important;padding:9px clamp(24px,4vw,58px)!important}' +
       '#hunt-nav .mn-row{display:flex!important}#hunt-nav .mn-burger{display:none!important}}' +
-      '#hunt-nav .mn-earn{display:none}#hunt-nav.mn-compact .mn-earn{display:flex}#hunt-nav.mn-compact .mn-links>a.mn-ep{display:none}' +
+      '#hunt-nav .mn-links>.mn-drop.mn-earn{display:none}#hunt-nav.mn-compact .mn-links>.mn-drop.mn-earn{display:flex}#hunt-nav.mn-compact .mn-links>a.mn-ep{display:none}' +
       // folded, the row also sits a little tighter, so it still fits at larger font sizes
       '#hunt-nav.mn-compact{padding-left:clamp(16px,2.4vw,40px)!important;padding-right:clamp(16px,2.4vw,40px)!important}' +
       '#hunt-nav.mn-compact .mn-links{gap:clamp(10px,1vw,18px)}#hunt-nav.mn-compact .mn-right{gap:clamp(12px,1.4vw,24px)}#hunt-nav.mn-compact .mn-row{gap:16px}' +
@@ -257,9 +257,35 @@
     var last = nav.querySelector('.mn-drop-cta') || row.lastElementChild;
     return row.scrollWidth <= row.clientWidth + 1 && (!last || last.getBoundingClientRect().right <= Math.min(row.getBoundingClientRect().right, window.innerWidth) + 1);
   }
+  // The hunt menu's dropdowns get the phone menu's look (Maurice, 2026-09-27): one box per dropdown with a small
+  // green heading, links centered under it, the profile as a red button. The pre-order list stays as it is.
+  function boxDrops(nav) {
+    if (nav.getAttribute('data-boxed')) return;
+    var drops = nav.querySelectorAll('.mn-links .mn-drop:not(.mn-drop-cta)');
+    if (!drops.length) return;
+    nav.setAttribute('data-boxed', '1');
+    if (!document.getElementById('ma-nav-box')) {
+      var st = document.createElement('style'); st.id = 'ma-nav-box';
+      st.textContent = '#hunt-nav .mn-dd-in.ma-boxed{padding:12px}' +
+        '#hunt-nav .ma-grp{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid rgba(243,234,217,.3);padding:12px 14px 10px}' +
+        '#hunt-nav .ma-grp>span{font-family:\'Almarai\',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590;text-transform:uppercase;margin-bottom:4px;white-space:nowrap}' +
+        '#hunt-nav .ma-grp a{text-align:center;padding:8px 14px!important}' +
+        '#hunt-nav .ma-grp a.mn-profile{justify-content:center;border:1.5px solid #f3ead9;margin:4px 0;padding:9px 16px!important}#hunt-nav .ma-grp a.mn-profile svg{display:none}';
+      document.head.appendChild(st);
+    }
+    Array.prototype.forEach.call(drops, function (d) {
+      var inner = d.querySelector('.mn-dd-in'), head = d.querySelector('.mn-link');
+      if (!inner || !head || inner.querySelector('.ma-grp')) return;
+      var g = document.createElement('div'); g.className = 'ma-grp';
+      var h = document.createElement('span'); h.textContent = (head.textContent || '').replace(/\s+/g, ' ').trim(); g.appendChild(h);
+      while (inner.firstChild) g.appendChild(inner.firstChild);
+      inner.appendChild(g); inner.classList.add('ma-boxed');
+    });
+  }
   function fitNavs() {
     Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
       navSetup(nav);
+      boxDrops(nav);
       if (!nav.getAttribute('data-fit')) return;
       nav.classList.remove('mn-compact', 'mn-burgered');
       var row = nav.querySelector('.mn-row');
