@@ -76,7 +76,7 @@ to find their prize.`],
   [29, 'Catch Me If You Can'],
   [30, "I'm stuck!"],
   // The shop's "Find a loot box" button is box 31, and the button literally says it.
-  [31, 'IT LITERALLY SAYS IT', { img: ART + 'clue-31.webp', alt: 'The side-eye meme, cut out as a sticker', sticker: true }],
+  [31, 'IT LITERALLY SAYS IT', { img: ART + 'clue-31.webp', alt: 'The confused side-eye meme', sticker: true }],
 ];
 
 // The few lines above the cards that say what they are.
