@@ -1,0 +1,497 @@
+<!-- Generated copy of squarespace-adventure.html from the treasure-hunt-leaderboard project. Preview only. -->
+<!-- ============================================================
+     THE ADVENTURE SO FAR - every choice in the hunt, in order.
+     Built by scripts/build-adventure.mjs from config/red-city.json and config/crew.json.
+     Edit those (or the chapters in the script) and rebuild, never this file.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* ---- site header menu ---- */
+#hunt-nav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(12,35,8,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:18px 16px}
+#hunt-nav .mn-row{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:clamp(12px,1.8vw,30px)}
+#hunt-nav .mn-link{white-space:nowrap;color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.07em;text-decoration:none;text-shadow:0 1px 6px rgba(0,0,0,.55);transition:color .15s ease}
+#hunt-nav .mn-link:hover{color:#a2f590}
+#hunt-nav .mn-cta{border:2px solid #f3ead9;padding:8px clamp(10px,1.4vw,20px);background:rgba(12,26,8,.35);transition:transform .15s ease,background .15s ease}
+#hunt-nav .mn-cta:hover{background:#c1330a;color:#fff;transform:scale(1.04)}
+#hunt-nav .mn-drop{position:relative;display:flex}
+#hunt-nav .mn-dd{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:14px}
+#hunt-nav .mn-dd-in{background:rgba(9,23,7,.95);border:1px solid rgba(243,234,217,.25);min-width:170px;display:flex;flex-direction:column}
+#hunt-nav .mn-dd-in a{display:block;padding:13px 18px;color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.07em;text-decoration:none;white-space:nowrap}
+#hunt-nav .mn-dd-in a:hover{color:#a2f590;background:rgba(255,255,255,.06)}
+#hunt-nav .mn-drop:hover .mn-dd,#hunt-nav .mn-drop:focus-within .mn-dd{display:block}
+#hunt-nav .mn-drop-cta .mn-dd{left:auto;right:0;transform:none}
+#hunt-nav .mn-dd-in a.mn-all{border-top:1px solid rgba(243,234,217,.25)}
+#hunt-nav .mn-burger{display:none;width:46px;height:46px;margin:0 auto;align-items:center;justify-content:center;cursor:pointer}
+#hunt-nav-ov{display:none;position:fixed;inset:0;background:rgba(9,23,7,.97);z-index:10000;flex-direction:column;align-items:center;justify-content:center;gap:30px;padding:32px}
+#hunt-nav-ov a{color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:20px;letter-spacing:.08em;text-decoration:none}
+#hunt-nav-ov .mn-cta{border:2px solid #f3ead9;padding:12px 26px;background:rgba(12,26,8,.35);text-align:center}
+#hunt-nav-ov .mn-x{position:absolute;top:16px;right:16px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* ---- the page ---- */
+.hg-page{font-family:'Almarai',sans-serif;letter-spacing:0;color:#111;position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow-x:hidden}
+.hg-page *{box-sizing:border-box}
+@media (max-width:900px){
+  #hunt-nav{padding:10px 0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  #hunt-nav .mn-row{display:none}
+  #hunt-nav .mn-burger{display:flex}
+}
+html body{text-wrap:pretty}
+h1,h2,h3{text-wrap:balance}
+/* Date endings (21st, 30th) small and tucked up, not as big as the numbers */
+sup{font-size:.6em !important;line-height:0 !important;display:inline-block !important;transform:scale(.72) !important;transform-origin:left 30% !important;vertical-align:.7em !important;letter-spacing:.02em;margin-right:-.12em}
+/* The hunt menu matches the main site header: same green, logo size, type, spacing and outlined pre-order button */
+#hunt-nav{background:#1a5e41;backdrop-filter:none;-webkit-backdrop-filter:none;padding:9px clamp(24px,4vw,58px)}
+#hunt-nav .mn-row{max-width:none;display:flex;align-items:center;justify-content:space-between;gap:24px}
+#hunt-nav .mn-logo{display:flex;align-items:center;flex:none}
+#hunt-nav .mn-logo img{width:clamp(88px,8.3vw,120px);height:auto;display:block}
+#hunt-nav .mn-right{display:flex;align-items:center;gap:clamp(14px,1.9vw,32px)}
+#hunt-nav .mn-links{display:flex;align-items:center;gap:clamp(9px,1.2vw,29px)}
+#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(10.5px,.88vw,14.4px);letter-spacing:.07em;line-height:48px;text-shadow:none;color:#fff;white-space:nowrap}
+#hunt-nav .mn-vote,#hunt-nav-ov .mn-vote{color:#a2f590 !important;transition:color .15s ease}
+#hunt-nav .mn-vote:hover,#hunt-nav-ov .mn-vote:hover{color:#ff4c0f !important}
+#hunt-nav .mn-link:hover,#hunt-nav .mn-drop:hover>.mn-link{color:#a2f590}
+#hunt-nav .mn-caret{display:inline-block;width:11px;height:11px;margin-left:8px;vertical-align:1px;transition:transform .15s ease}
+#hunt-nav .mn-drop:hover .mn-caret,#hunt-nav .mn-drop:focus-within .mn-caret{transform:rotate(180deg)}
+#hunt-nav .mn-cta{line-height:17px;padding:8px clamp(12px,1.3vw,20px);border:2px solid #f3ead9;background:rgba(12,26,8,.35)}
+#hunt-nav .mn-drop-cta>.mn-link.mn-cta:hover,#hunt-nav .mn-drop-cta:hover>.mn-link.mn-cta{color:#a2f590;background:rgba(12,26,8,.35);transform:none}
+#hunt-nav .mn-dd{padding-top:6px}
+#hunt-nav .mn-dd-in a{font-size:clamp(12px,.92vw,14.4px);letter-spacing:.07em;padding:13px 18px}
+#hunt-nav .mn-dd-in a.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}
+#hunt-nav .mn-dd-in a.mn-profile:hover{background:#e04a12;color:#fff}
+#hunt-nav .mn-dd-in a.mn-profile svg{width:16px;height:16px;flex:none}
+@media (max-width:1240px){
+  #hunt-nav{padding:10px 0;background:none}
+  #hunt-nav .mn-row{display:none}
+  #hunt-nav .mn-burger{display:flex}
+}
+#hunt-nav-ov{gap:14px;overflow-y:auto;justify-content:flex-start;padding-top:88px}
+#hunt-nav-ov a{font-size:17px}
+#hunt-nav-ov .mn-ovlogo{position:absolute;top:16px;left:20px}
+#hunt-nav-ov .mn-ovlogo img{width:96px;height:auto;display:block}
+#hunt-nav-ov .mn-ovgroup{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(243,234,217,.3);padding:14px 26px 16px}
+#hunt-nav-ov .mn-ovgroup span{font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590}
+#hunt-nav-ov .mn-ovgroup a{font-size:15px}
+#hunt-nav-ov .mn-ovgroup a.mn-profile{background:#c1330a;border:1.5px solid #f3ead9;padding:9px 16px}
+@media (min-height:860px){#hunt-nav-ov{justify-content:center;padding-top:32px}}
+
+/* this page carries the hunt menu, so the main Squarespace header stays out of the way */
+#header,.header-announcement-bar-wrapper{display:none !important}
+</style>
+<nav id="hunt-nav">
+  <div class="mn-row">
+    <a href="https://www.mauriceafrich.com" class="mn-logo" aria-label="Maurice Africh home"><img src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
+    <div class="mn-right">
+      <div class="mn-links">
+      <a href="https://www.mauriceafrich.com/the-hunt" class="mn-link">THE HUNT</a>
+      <a href="https://www.mauriceafrich.com/the-hunt#tasks" class="mn-link">TASKS</a>
+      <a href="https://www.mauriceafrich.com/the-hunt#riddles" class="mn-link">RIDDLES</a>
+      <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
+      <a href="https://www.mauriceafrich.com/games" class="mn-link">GAMES</a>
+      <a href="https://www.mauriceafrich.com/contests" class="mn-link">CONTESTS</a>
+      <div class="mn-drop">
+        <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">SUBMIT<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+          <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
+        </div></div>
+      </div>
+      <div class="mn-drop">
+        <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">CURRENT PROGRESS<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.mauriceafrich.com/profile" class="mn-profile"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"></path></svg>TREASURE HUNTER PROFILE</a>
+          <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
+          <a href="https://www.mauriceafrich.com/loot">LOOT BOX SCORECARD</a>
+          <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+        </div></div>
+      </div>
+      <a href="https://www.mauriceafrich.com/questions" class="mn-link">QUESTIONS?</a>
+      <div class="mn-drop">
+        <a href="https://www.mauriceafrich.com/adventure" class="mn-link mn-vote" aria-haspopup="true">ADVENTURE<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.mauriceafrich.com/red-city">RED CITY</a>
+          <a href="https://www.mauriceafrich.com/the-crew">MEET THE CREW</a>
+        </div></div>
+      </div>
+      </div>
+      <div class="mn-drop mn-drop-cta">
+        <a href="https://www.mauriceafrich.com/preorder" class="mn-link mn-cta" aria-haspopup="true">PRE-ORDER CELLO'S GATE<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399763073" target="_blank" rel="noopener">WATERSTONES</a>
+          <a href="https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834" target="_blank" rel="noopener">BARNES &amp; NOBLE</a>
+          <a href="https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834/ref=sr_1_1?crid=279A8MV3ZYP0T&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;dib_tag=se&amp;keywords=cellos+gate&amp;qid=1770340593&amp;sprefix=cellos%27+gate%2Caps%2C179&amp;sr=8-1&amp;ascsubtag=srctok-f7d285c3c39c18b3&amp;btn_ref=srctok-f7d285c3c39c18b3" target="_blank" rel="noopener">AMAZON</a>
+          <a href="https://www.amazon.com/Audible-Cellos-Gate/dp/B0GKZWW416/ref=tmm_aud_swatch_0?_encoding=UTF8&amp;dib_tag=se&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;qid=1770340593&amp;sr=8-1&amp;ascsubtag=srctok-d4f496760f7c524a&amp;btn_ref=srctok-d4f496760f7c524a" target="_blank" rel="noopener">AUDIBLE</a>
+          <a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener">WALMART SPECIAL EDITION</a>
+          <a href="https://www.mauriceafrich.com/preorder" class="mn-all">ALL RETAILERS &rarr;</a>
+        </div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mn-burger" role="button" aria-label="Open menu" onclick="var o=document.getElementById('hunt-nav-ov');if(o.parentNode!==document.body){document.body.appendChild(o);}o.style.display='flex'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M3 6h18"></path><path d="M3 12h18"></path><path d="M3 18h18"></path></svg>
+  </div>
+</nav>
+<div id="hunt-nav-ov" onclick="if(event.target.tagName==='A'||event.target.closest('.mn-x'))this.style.display='none'">
+  <div class="mn-x" role="button" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M5 5l14 14"></path><path d="M19 5L5 19"></path></svg>
+  </div>
+  <a href="https://www.mauriceafrich.com" class="mn-ovlogo" aria-label="Maurice Africh home"><img src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
+  <a href="https://www.mauriceafrich.com/the-hunt">THE HUNT</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#tasks">TASKS</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#riddles">RIDDLES</a>
+  <a href="https://www.mauriceafrich.com/lootbox-clue">CLUES</a>
+  <a href="https://www.mauriceafrich.com/games">GAMES</a>
+  <a href="https://www.mauriceafrich.com/contests">CONTESTS</a>
+  <div class="mn-ovgroup"><span>SUBMIT</span>
+    <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+    <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
+  </div>
+  <div class="mn-ovgroup"><span>CURRENT PROGRESS</span>
+    <a href="https://www.mauriceafrich.com/profile" class="mn-profile">TREASURE HUNTER PROFILE</a>
+    <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
+    <a href="https://www.mauriceafrich.com/loot">LOOT BOX SCORECARD</a>
+    <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+  </div>
+  <a href="https://www.mauriceafrich.com/questions">QUESTIONS?</a>
+  <div class="mn-ovgroup"><span>ADVENTURE</span>
+    <a href="https://www.mauriceafrich.com/adventure">THE ADVENTURE SO FAR</a>
+    <a href="https://www.mauriceafrich.com/red-city">RED CITY</a>
+    <a href="https://www.mauriceafrich.com/the-crew">MEET THE CREW</a>
+  </div>
+  <a href="https://www.mauriceafrich.com/preorder" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
+</div>
+<script>
+(function () {
+  var nav = document.getElementById('hunt-nav'), ov = document.getElementById('hunt-nav-ov');
+  if (nav && nav.parentNode !== document.body) document.body.appendChild(nav);
+  if (ov && ov.parentNode !== document.body) document.body.appendChild(ov);
+})();
+</script>
+<style>
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+#av{box-sizing:border-box;position:relative;width:100vw;overflow-x:clip;color:#fffffe;font-family:'Almarai',sans-serif;letter-spacing:.03em;font-size:16px;line-height:1.6;text-align:left;background:#0b170f}
+#av *,#av *::before,#av *::after{box-sizing:border-box}
+#av [hidden]{display:none!important}
+#av .av-wrap{max-width:1000px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+#av h1,#av h2{font-family:'Atomic Marker',cursive;font-weight:400;margin:0;text-transform:none;letter-spacing:.02em;line-height:1.08}
+
+/* the top of the page */
+#av .av-hero{background:linear-gradient(rgba(11,23,15,.62),rgba(11,23,15,.92)),url('https://africhmaurice.github.io/site/assets/bg/city-skyline-panorama-as348070597.webp') center/cover no-repeat;padding:clamp(140px,12vw,180px) 0 clamp(56px,6vw,80px)}
+#av h1{font-size:clamp(46px,7.5vw,96px);color:#fffffe}
+#av h1 span{color:#a2f590}
+#av .av-top{font-weight:800;font-size:13px;letter-spacing:.16em;color:#a2f590;margin:0 0 14px}
+#av .av-intro{font-size:clamp(17px,1.6vw,20px);line-height:1.6;color:#ede9dc;max-width:760px;margin:22px 0 0}
+#av .av-chips{display:flex;flex-wrap:wrap;gap:10px;margin:32px 0 0}
+#av .av-chip{color:#fffffe;text-decoration:none;font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;border:1.5px solid rgba(243,234,217,.55);padding:9px 16px;transition:border-color .15s ease,color .15s ease}
+#av .av-chip:hover{border-color:#a2f590;color:#a2f590}
+
+/* The color stories. Each band sets its own; everything below reads them. */
+#av .av-band[data-theme="green"]{--shade:27,59,21;--deep:11,23,15;--accent:#a2f590;--accent2:#57bb41;--cta:#2c6021;--cta-hover:#57bb41;--cta-ink:#fffffe;--cta-hover-ink:#0b170f;--ink:#fffffe;--body:#ede9dc;--muted:rgba(237,233,220,.7);--line:#fffffe}
+#av .av-band[data-theme="red"]{--shade:145,37,1;--deep:48,12,0;--accent:#fd7547;--accent2:#ff4c0f;--cta:#c53200;--cta-hover:#ff4c0f;--cta-ink:#fffffe;--cta-hover-ink:#fffffe;--ink:#fffffe;--body:#f3ead9;--muted:rgba(243,234,217,.72);--line:#fffffe}
+#av .av-band[data-theme="teal"]{--shade:26,94,65;--deep:6,32,21;--accent:#89fbcb;--accent2:#3adb97;--cta:#268e62;--cta-hover:#3adb97;--cta-ink:#fffffe;--cta-hover-ink:#0b170f;--ink:#fffffe;--body:#ede9dc;--muted:rgba(237,233,220,.72);--line:#fffffe}
+#av .av-band[data-theme="purple"]{--shade:45,28,83;--deep:21,13,40;--accent:#9e74fd;--accent2:#7b4ee1;--cta:#482d85;--cta-hover:#7b4ee1;--cta-ink:#fffffe;--cta-hover-ink:#fffffe;--ink:#fffffe;--body:#ede9dc;--muted:rgba(237,233,220,.72);--line:#fffffe}
+#av .av-band[data-theme="bone"]{--shade:243,234,217;--deep:237,233,220;--accent:#1a5e41;--accent2:#268e62;--cta:#0b170f;--cta-hover:#213226;--cta-ink:#fffffe;--cta-hover-ink:#fffffe;--ink:#0b170f;--body:#213226;--muted:#607667;--line:#0b170f}
+#av .av-band[data-theme="olive"]{--shade:33,50,38;--deep:11,23,15;--accent:#ede9dc;--accent2:#607667;--cta:#607667;--cta-hover:#213226;--cta-ink:#fffffe;--cta-hover-ink:#fffffe;--ink:#fffffe;--body:#ede9dc;--muted:rgba(237,233,220,.66);--line:#ede9dc}
+#av .av-band{position:relative;color:var(--ink);padding:clamp(48px,6vw,80px) 0;
+  background:linear-gradient(rgba(var(--shade),.8),rgba(var(--deep),.93)),var(--img) center/cover no-repeat}
+#av .av-band[data-theme="bone"]{background:linear-gradient(rgba(var(--shade),.86),rgba(var(--deep),.94)),var(--img) center/cover no-repeat}
+
+/* the route: the map's dotted line down the left, through every band, a marker on each chapter */
+#av .av-line{position:relative;padding-left:clamp(44px,7vw,78px)}
+#av .av-line::before{content:'';position:absolute;left:calc(clamp(44px,7vw,78px) / 2 - 3px);top:calc(-1 * clamp(48px,6vw,80px));bottom:calc(-1 * clamp(48px,6vw,80px));width:6px;
+  background:radial-gradient(circle,var(--line) 2.6px,transparent 3px) center top/6px 16px repeat-y;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+#av .av-hero + .av-band .av-line::before{top:30px}
+#av .av-ch{position:relative;scroll-margin-top:120px}
+#av .av-dot{position:absolute;left:calc(clamp(44px,7vw,78px) / -2);top:18px;width:clamp(34px,4.4vw,52px);height:clamp(34px,4.4vw,52px);transform:translateX(-50%);filter:drop-shadow(0 4px 4px rgba(0,0,0,.5))}
+#av .av-dot svg{width:100%;height:100%;overflow:visible;display:block}
+#av .av-dot .core{fill:var(--line)}
+#av .av-dot .ring{fill:none;stroke:var(--line);stroke-width:5;stroke-linecap:round;stroke-dasharray:62 38;transform-origin:50px 50px;animation:av-spin 8s linear infinite}
+#av .av-dot .glow{fill:var(--line);opacity:0}
+#av .av-ch[data-status="vote"] .av-dot .glow{transform-origin:50px 50px;animation:av-pulse 2.4s ease-out infinite}
+@keyframes av-spin{to{transform:rotate(360deg)}}
+@keyframes av-pulse{0%{transform:scale(.4);opacity:.55}100%{transform:scale(1.3);opacity:0}}
+@media (prefers-reduced-motion:reduce){#av .av-dot .ring,#av .av-dot .glow{animation:none}}
+
+#av .av-card{background:rgba(var(--shade),.62);border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);padding:clamp(24px,3.4vw,40px);box-shadow:0 18px 40px rgba(0,0,0,.3);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+#av .av-ch[data-status="vote"] .av-card{border-color:var(--accent)}
+#av .av-kick{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;font-weight:800;font-size:12px;letter-spacing:.16em;color:var(--accent);margin:0 0 12px}
+#av .av-pill{font-size:11px;letter-spacing:.14em;padding:5px 10px;border:1.5px solid var(--accent);color:var(--accent)}
+#av .av-ch[data-status="vote"] .av-pill{background:var(--cta);border-color:var(--cta);color:var(--cta-ink)}
+#av h2{font-size:clamp(32px,4.4vw,52px);color:var(--ink);margin-bottom:14px}
+#av .av-lede{font-size:17px;line-height:1.65;color:var(--body);margin:0 0 20px;max-width:720px}
+
+#av .av-player{display:flex;align-items:center;gap:16px;background:rgba(45,28,83,.78);border:1px solid rgba(158,116,253,.45);padding:14px 18px;max-width:620px;color:#fffffe}
+#av .av-pbtn{flex:none;width:52px;height:52px;border-radius:50%;background:#482d85;border:0;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
+#av .av-pbtn svg{width:22px;height:22px;fill:#9e74fd}
+#av .av-pbtn svg.p{margin-left:3px}
+#av .av-pmid{flex:1;min-width:0}
+#av .av-plabel{font-weight:700;font-size:13px;letter-spacing:.1em;color:#9e74fd;margin-bottom:10px}
+#av .av-ptrack{position:relative;height:10px;background:rgba(158,116,253,.22);cursor:pointer}
+#av .av-pfill{position:absolute;top:0;bottom:0;left:0;width:0;background:#9e74fd}
+#av .av-ptime{flex:none;font-weight:700;font-size:15px;color:#9e74fd;font-variant-numeric:tabular-nums}
+#av .av-band[data-theme="purple"] .av-player{background:rgba(11,23,15,.5)}
+#av .av-tx{margin-top:12px;max-width:620px}
+#av .av-tx summary{cursor:pointer;width:max-content;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+#av .av-tx summary:hover{color:var(--ink)}
+#av .av-tx div{margin-top:10px;display:grid;gap:8px;font-size:14px;line-height:1.6;color:var(--body);border-left:2px solid var(--accent);padding-left:14px}
+#av .av-tx p{margin:0}
+#av .av-tx b{font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-right:6px}
+#av .av-tx i{color:var(--muted)}
+
+#av .av-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:26px}
+#av .av-box{background:rgba(var(--deep),.55);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);padding:18px 20px}
+#av .av-box.wide{grid-column:1/-1}
+#av .av-box h4{margin:0 0 10px;font-family:'Almarai',sans-serif!important;text-transform:none;line-height:1.4;font-weight:800;font-size:12px;letter-spacing:.16em;color:var(--accent)}
+#av .av-box ol{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+#av .av-box ol li{display:flex;justify-content:space-between;gap:12px;font-weight:700;font-size:15px}
+#av .av-box ol li span{color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
+#av .av-note{margin:10px 0 0;font-size:13px;color:var(--muted)}
+#av .av-box h4 small{float:right;font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:800}
+#av .av-plan{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px}
+#av .av-enc{display:flex;align-items:center;gap:16px}
+#av .av-die{position:relative;flex:none;width:92px;height:92px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}
+#av .av-die svg{width:100%;height:100%;display:block}
+#av .av-die span{position:absolute;left:0;right:0;top:43%;text-align:center;font-family:'Atomic Marker',cursive;font-size:22px;line-height:1;color:#fffffe}
+#av .av-enc p{margin:0}
+#av .av-enc .q{font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+#av .av-enc .a{font-family:'Atomic Marker',cursive;font-size:clamp(24px,2.6vw,30px);line-height:1.15;margin:2px 0 4px}
+#av .av-enc .v{font-size:14px;color:var(--body)}
+#av .av-enc .crit{font-size:12px;letter-spacing:.1em;margin-top:2px}
+#av .av-enc .c20{color:#a2f590}
+#av .av-enc .c1{color:#fd7547}
+#av .av-crew{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px}
+#av .av-mem{display:flex;align-items:center;gap:14px}
+#av .av-mem p{margin:0}
+#av .av-mem .q{font-weight:800;font-size:12px;letter-spacing:.14em;color:var(--muted)}
+#av .av-mem .a{font-family:'Atomic Marker',cursive;font-size:clamp(22px,2.4vw,28px);line-height:1.15;margin:2px 0 3px}
+#av .av-mem .v{font-size:14px;color:var(--body)}
+#av .av-mem .v span,#av .av-color span{display:block;font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-top:3px}
+#av .av-pron{flex:none;width:62px;display:flex;flex-direction:column;align-items:center;gap:2px;background:rgba(var(--deep),.6);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:7px 0}
+#av .av-pron b{font-family:'Segoe UI Symbol','Noto Sans Symbols 2','Apple Symbols',sans-serif;font-weight:400;font-size:26px;line-height:1;color:var(--accent)}
+#av .av-pron span{font-family:'Atomic Marker',cursive;font-size:16px}
+#av .av-color{display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;margin:0 0 18px;font-family:'Atomic Marker',cursive;font-size:24px}
+#av .av-color i{width:26px;height:26px;border:1.5px solid #f3ead9;flex:none}
+#av .av-color span{flex-basis:100%;font-family:'Almarai',sans-serif;margin-top:0}
+#av .av-band[data-theme="red"] .av-enc .c1{color:#f3ead9}
+#av .av-band[data-theme="bone"] .av-enc .c20{color:#1a5e41}
+#av .av-band[data-theme="bone"] .av-enc .c1{color:#c53200}
+#av .av-marks{display:flex;flex-wrap:wrap;gap:10px;margin:0}
+#av .av-marks span{font-weight:800;font-size:14px;letter-spacing:.06em;border:1.5px solid var(--accent);padding:7px 14px}
+
+#av .av-live{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:4px 0 0}
+#av .av-live>div{background:rgba(var(--deep),.55);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);padding:14px 16px}
+#av .av-live .k{font-weight:800;font-size:11px;letter-spacing:.14em;color:var(--accent);margin-bottom:6px}
+#av .av-live .v{font-family:'Atomic Marker',cursive;font-size:clamp(28px,3.2vw,40px);line-height:1.1}
+#av .av-live .v.sm{font-size:clamp(18px,1.9vw,24px);line-height:1.25}
+#av .av-cta{display:inline-block;margin-top:24px;color:var(--cta-ink)!important;text-decoration:none!important;font-weight:800;font-size:15px;letter-spacing:.1em;border:1.5px solid var(--cta);background:var(--cta);padding:14px 26px;transition:transform .15s ease,background .15s ease,color .15s ease}
+#av .av-cta:hover{transform:scale(1.04);background:var(--cta-hover);border-color:var(--cta-hover);color:var(--cta-hover-ink)!important}
+
+/* the last band: what comes next */
+#av .av-next{text-align:center}
+#av .av-next .av-wrap{padding-top:clamp(8px,2vw,20px);padding-bottom:clamp(8px,2vw,20px)}
+#av .av-next h2{font-size:clamp(28px,3.6vw,44px);margin-bottom:12px}
+#av .av-next p{color:var(--body);margin:0 auto;max-width:620px}
+
+@media (max-width:700px){
+  #av .av-grid,#av .av-plan,#av .av-crew{grid-template-columns:1fr}
+  #av .av-die{width:80px;height:80px}
+  #av .av-die span{font-size:19px}
+  #av .av-box h4 small{float:none;display:block;margin-top:4px}
+  #av .av-live{grid-template-columns:1fr 1fr}
+  #av .av-live>div:last-child{grid-column:1/-1}
+  #av .av-player{gap:12px;padding:12px}
+  #av .av-pbtn{width:44px;height:44px}
+}
+</style>
+<div id="av">
+  <div class="av-hero">
+    <div class="av-wrap">
+      <p class="av-top">THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE</p>
+      <h1>The Adventure <span>So Far</span></h1>
+      <p class="av-intro">Every choice in the hunt so far, in order. I post a choice, the frens vote together, and majority rules. Where the crew goes next is up to you, and every vote you seal earns 50 points.</p>
+      <nav class="av-chips" aria-label="Chapters"><a class="av-chip" href="#av-fenna">A New Transmission</a><a class="av-chip" href="#av-red-city">Shopping in the Red City</a><a class="av-chip" href="#av-the-crew">Meet the Crew</a></nav>
+    </div>
+  </div>
+  <div class="av-band" data-theme="green" style="--img:url('https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-fenna" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 1 · FENNA'S SOUL<span class="av-pill">DECIDED</span></p>
+            <h2>A New Transmission</h2>
+            <p class="av-lede">Grey had a job for the crew before anyone set sail for the island: go shopping in the Red City and find a one-eyed sewer rat.</p>
+      <div class="av-player" data-audio>
+        <button type="button" class="av-pbtn" aria-label="Play INCOMING TRANSMISSION · CPT. GREY SHIMADA"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+        <div class="av-pmid"><div class="av-plabel">INCOMING TRANSMISSION · CPT. GREY SHIMADA</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
+        <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/red-city-grey.m4a"></audio>
+      </div>
+      <details class="av-tx"><summary>Read the transcript</summary><div><p><b>Grey</b>First stop, we’ve got a date with a one-eyed sewer rat. Put together your inventory list. Buckle up, frens. We’re settin’ sail for the Red City. I hope you brought sunblock.</p></div></details>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="red" style="--img:url('https://africhmaurice.github.io/site/assets/bg/red-sun-ruins-as360866146.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-red-city" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 2 · PONTUNE · THE RED CITY<span class="av-pill">DECIDED</span></p>
+            <h2>Shopping in the Red City</h2>
+            <p class="av-lede">Benji was expecting you. Felix wasn't. 42 frens voted on who to recruit, which kits to buy, and how to take the island.</p>
+      <div class="av-player" data-audio>
+        <button type="button" class="av-pbtn" aria-label="Play BENJI'S BARGAIN SHOP"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+        <div class="av-pmid"><div class="av-plabel">BENJI'S BARGAIN SHOP</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
+        <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/red-city-felix-benji.m4a"></audio>
+      </div>
+      <details class="av-tx"><summary>Read the transcript</summary><div><p><b>Felix</b>No fuckin’ way! Grey sent you? What is this, some kind of shopping trip? I don’t even know your names… The boss ain’t gonna like him sendin’ people his way without a word or nothing. Tell him the next time it happens, I’ll send their heads back in a box. Now get the fu—</p><p><b>Benji (far away)</b>Felix, who is it?!</p><p><b>Felix (calling back)</b>Sky pirates! From the redcoat!</p><p><b>Benji (far away)</b><i>Laughs</i> Let em in, let em in!</p><p><i>Door creaking</i></p><p><b>Benji</b>Hello, hello. Welcome to the Red City. I hope you’re good and lubed up, cause Sola don’t give a shit what backwater city you call home, it’ll burn your ass and charge a cover fee. Grey told me you were comin’. I forgot to tell Felix. That’s on me. What can I getcha?</p></div></details>
+      
+          <div class="av-grid">
+            <div class="av-box"><h4>THE CREW</h4><ol><li>Crest Knight <span>34</span></li><li>Gunslinger <span>25</span></li><li>Oracle <span>19</span></li><li>Techtailor <span>14</span></li><li>Intangible <span>11</span></li></ol></div>
+            <div class="av-box"><h4>THE CARGO BAY</h4><ol><li>Survival Kit <span>6,000</span></li><li>Field Medic Kit <span>15,000</span></li><li>Breach Kit <span>10,000</span></li><li>Defense Kit <span>20,000</span></li><li>Climbing Kit <span>20,000</span></li></ol>
+              <p class="av-note">71,000 of the 91,720-credit purse spent. 20,720 left over.</p></div>
+            <div class="av-box wide"><h4>THE PLAN <small>THE CREW'S AVERAGE D20</small></h4><div class="av-plan">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-split" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4c0f"/><stop offset="1" stop-color="#912501"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-split)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>11.22</span></div><div>
+              <p class="q">On the island</p><p class="a">Stick Together</p>
+              <p class="v">31 votes to 11</p>
+              <p class="crit"><b class="c20">3 NAT 20s</b> · <b class="c1">1 NAT 1</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-approach" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4c0f"/><stop offset="1" stop-color="#912501"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-approach)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9.57</span></div><div>
+              <p class="q">The approach</p><p class="a">Recon First</p>
+              <p class="v">25 votes to 17</p>
+              <p class="crit"><b class="c20">3 NAT 20s</b> · <b class="c1">6 NAT 1s</b></p></div></div>
+            </div></div>
+            <div class="av-box wide"><h4>LANDMARKS TO SEARCH</h4><p class="av-marks"><span>Temple</span><span>Goma Skull</span><span>Sword</span></p></div>
+          </div>
+      <a class="av-cta" href="https://www.mauriceafrich.com/red-city">SEE THE FULL RESULTS</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="teal" style="--img:url('https://africhmaurice.github.io/site/assets/bg/crystal-towers-lake-as395045722.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-the-crew" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 3 · THE GRESNICK OCEAN<span class="av-pill">DECIDED</span></p>
+            <h2>Meet the Crew</h2>
+            <p class="av-lede">33 frens rolled for the crew and voted on their names, specialties, and weapons, and on the ship that carries them. Two ties went to the Captain's roll.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE CREW <small>ONE ROLL DRAWN AT RANDOM DECIDED WHO</small></h4><div class="av-crew">
+            <div class="av-mem"><div class="av-pron"><b>♂</b><span>He</span></div><div>
+              <p class="q">CREST KNIGHT</p><p class="a">Hale</p>
+              <p class="v">Sapphire (Water) · Twin Torches</p></div></div>
+            <div class="av-mem"><div class="av-pron"><b>♀</b><span>She</span></div><div>
+              <p class="q">GUNSLINGER</p><p class="a">Scarlett Holster</p>
+              <p class="v">Deadeye · Elia Noma T11 + Morton M8</p></div></div>
+            <div class="av-mem"><div class="av-pron"><b>♂</b><span>He</span></div><div>
+              <p class="q">ORACLE</p><p class="a">Orion Squints</p>
+              <p class="v">Seer · Bolt Staff</p></div></div>
+            <div class="av-mem"><div class="av-pron"><b>♂</b><span>He</span></div><div>
+              <p class="q">TECHTAILOR</p><p class="a">Rune Overclock</p>
+              <p class="v">Stitcher · Gunner Drone + Prismblade</p></div></div>
+            <div class="av-mem"><div class="av-pron"><b>♀</b><span>She</span></div><div>
+              <p class="q">INTANGIBLE</p><p class="a">Sparrow Zipmeister</p>
+              <p class="v">Ghost · Twin Vibroblades <span>Won the Captain's roll (7)</span></p></div></div>
+            </div></div>
+            <div class="av-box wide"><h4>THE SECOND WIND <small>THE CREW'S AVERAGE D20</small></h4>
+              <p class="av-color"><i style="background:#482d85"></i>Violet <span>Won the Captain's roll (14)</span></p>
+              <div class="av-plan">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ship-ship_type" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ship-ship_type)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10.41</span></div><div>
+              <p class="q">Ship type</p><p class="a">FINE</p>
+              <p class="v">Corvette</p>
+              <p class="crit"><b class="c20">1 NAT 20</b> · <b class="c1">0 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ship-weapon_systems" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ship-weapon_systems)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9.14</span></div><div>
+              <p class="q">Weapon systems</p><p class="a">WORST</p>
+              <p class="v">Rail Guns That Only Work Half the Time</p>
+              <p class="crit"><b class="c20">1 NAT 20</b> · <b class="c1">2 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ship-top_speed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ship-top_speed)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9.86</span></div><div>
+              <p class="q">Top speed</p><p class="a">BAD</p>
+              <p class="v">Commercial Jetliner Speeds</p>
+              <p class="crit"><b class="c20">1 NAT 20</b> · <b class="c1">2 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ship-stealth" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ship-stealth)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10.24</span></div><div>
+              <p class="q">Stealth</p><p class="a">FINE</p>
+              <p class="v">Hums</p>
+              <p class="crit"><b class="c20">2 NAT 20s</b> · <b class="c1">2 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ship-housing" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ship-housing)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9.77</span></div><div>
+              <p class="q">Housing</p><p class="a">BAD</p>
+              <p class="v">Bunk Room</p>
+              <p class="crit"><b class="c20">1 NAT 20</b> · <b class="c1">1 NAT 1</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ship-shields" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ship-shields)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9.51</span></div><div>
+              <p class="q">Shields</p><p class="a">BAD</p>
+              <p class="v">Repurposed Kinetic Shielding</p>
+              <p class="crit"><b class="c20">0 NAT 20s</b> · <b class="c1">2 NAT 1s</b></p></div></div>
+              </div></div>
+          </div>
+      <a class="av-cta" href="https://www.mauriceafrich.com/the-crew">SEE THE FULL RESULTS</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band av-next" data-theme="purple" style="--img:url('https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp')">
+    <div class="av-wrap">
+      <h2>Next Stop: The Island</h2>
+      <p>The map updates as the crew moves. Watch it for the next choice.</p>
+      <a class="av-cta" href="https://www.mauriceafrich.com/the-hunt#map">SEE THE MAP</a>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var root = document.getElementById('av'); if (!root) return;
+  var API = "" || 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  // Stretch edge to edge, wherever the Squarespace block sits (the same fit as the vote pages).
+  function fit() {
+    var sec = root.closest('section');
+    if (sec) {
+      Array.prototype.forEach.call(sec.querySelectorAll('.content-wrapper, .fluid-engine'), function (x) {
+        x.style.setProperty('padding-top', '0', 'important'); x.style.setProperty('padding-bottom', '0', 'important');
+      });
+      sec.style.setProperty('padding-top', '0', 'important'); sec.style.setProperty('padding-bottom', '0', 'important');
+    }
+    root.style.marginLeft = '0px';
+    root.style.marginLeft = -root.getBoundingClientRect().left + 'px';
+    root.style.width = document.documentElement.clientWidth + 'px';
+  }
+  fit(); addEventListener('resize', fit); addEventListener('load', fit); setTimeout(fit, 600);
+
+  // The recordings: one plays at a time.
+  var players = root.querySelectorAll('[data-audio]');
+  function clock(s){s=Math.floor(s||0);return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
+  function stopAll(){Array.prototype.forEach.call(players,function(p){p.querySelector('audio').pause();});}
+  Array.prototype.forEach.call(players, function (p) {
+    var a = p.querySelector('audio'), btn = p.querySelector('.av-pbtn'), fill = p.querySelector('.av-pfill'), t = p.querySelector('.av-ptime'),
+        ip = p.querySelector('svg.p'), is = p.querySelector('svg.s'), label = p.querySelector('.av-plabel').textContent;
+    function paint(){fill.style.width=(a.duration?a.currentTime/a.duration*100:0)+'%';t.textContent=clock(a.paused&&!a.currentTime?a.duration:a.currentTime);
+      ip.hidden=!a.paused;is.hidden=a.paused;btn.setAttribute('aria-label',(a.paused?'Play ':'Pause ')+label);}
+    ['timeupdate','loadedmetadata','play','pause'].forEach(function(ev){a.addEventListener(ev,paint);});
+    a.addEventListener('ended',function(){a.currentTime=0;paint();});
+    btn.addEventListener('click',function(){if(a.paused){stopAll();a.play();}else a.pause();});
+    p.querySelector('.av-ptrack').addEventListener('click',function(e){if(!a.duration)return;var r=this.getBoundingClientRect();a.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*a.duration;});
+  });
+
+  // The chapter being voted on: the live count, and a closed state once time is up.
+  Array.prototype.forEach.call(root.querySelectorAll('.av-ch[data-closes]'), function (ch) {
+    var closes = Date.parse(ch.getAttribute('data-closes'));
+    function shut() {
+      ch.setAttribute('data-status', 'closed');
+      ch.querySelector('.av-pill').textContent = 'VOTING CLOSED';
+      var k = ch.querySelector('[data-when-k]'); if (k) k.textContent = 'VOTING CLOSED';
+      var cta = ch.querySelector('[data-vote-cta]'); if (cta) cta.textContent = 'SEE THE CREW PAGE';
+    }
+    if (Date.now() >= closes) shut();
+    else if (closes - Date.now() < 2147483647) setTimeout(shut, closes - Date.now() + 500);
+    var out = ch.querySelector('[data-count]'); if (!out) return;
+    var cb = 'avCount' + Math.random().toString(36).slice(2), s = document.createElement('script');
+    window[cb] = function (res) { out.textContent = res && res.ok ? Number(res.count).toLocaleString('en-US') : '—'; try { delete window[cb]; } catch (e) {} s.remove(); };
+    s.src = API + '?action=crewcount&callback=' + cb;
+    s.onerror = function () { out.textContent = '—'; };
+    document.head.appendChild(s);
+  });
+})();
+</script>
