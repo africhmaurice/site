@@ -277,7 +277,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   <div style="text-align:center;max-width:1000px;margin:0 auto clamp(30px,4vw,46px)">
     <div style="font-family:'Atomic Marker',cursive;font-size:clamp(24px,3.4vw,44px);color:#ffd9c4;margin-bottom:12px">The Treasure Hunt</div>
     <h1 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(52px,9vw,124px);line-height:1.04;color:#fff;margin:0 0 22px">LOOT BOXES</h1>
-    <p style="font-weight:700;font-size:clamp(15px,1.8vw,19px);letter-spacing:.05em;line-height:1.6;color:#ffd9c4;text-shadow:0 1px 6px rgba(0,0,0,.4);max-width:720px;margin:0 auto">Fifty-one of them are hidden out there on the internet. Spot one, click it, and it is yours. 50 points each.</p>
+    <p style="font-weight:700;font-size:clamp(15px,1.8vw,19px);letter-spacing:.05em;line-height:1.6;color:#ffd9c4;text-shadow:0 1px 6px rgba(0,0,0,.4);max-width:720px;margin:0 auto">A hundred and one of them are hidden out there on the internet. Spot one, click it, and it is yours. 50 points each.</p>
   </div>
 
   <main style="background:rgba(255,255,255,.94);border:3px solid #111;max-width:780px;margin:0 auto;padding:clamp(26px,4vw,48px) clamp(16px,3.5vw,44px) clamp(28px,4vw,44px)">
@@ -335,7 +335,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
      plain numbered squares. */
   var ART = 'https://africhmaurice.github.io/leaderboard/loot/';
 
-  var TOTAL = 51;
+  var TOTAL = 101;
   var ME = 'thLoot:me';      // who this browser belongs to
   var CARD = 'thLoot:card';  // last scorecard we saw, so the grid paints instantly
 
@@ -537,7 +537,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     say((ART ? '<img loading="lazy" decoding="async" class="lb-chest" src="' + chestUrl(n) + '" alt="' + title + '">' : '') +
         '<p class="lb-bang miss">ALREADY YOURS</p>' +
         '<p class="lb-say">You found ' + title + ' once already, so no second helping of points.</p>' +
-        '<p class="lb-quiet">' + (res.total - res.count) + ' of the fifty-one are still out there.</p>' +
+        '<p class="lb-quiet">' + (res.total - res.count) + ' of the hundred and one are still out there.</p>' +
         (res.total - res.count > 0 ? cta() : ''));
     drawCard(res.found, -1);
   }
@@ -558,7 +558,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   function showError(err) {
     var lines = {
       notyet: ['NOT YET', 'This one comes to you. Find twenty-five loot boxes and it lands on your scorecard by itself.'],
-      badcode: ['NOT A LOOT BOX', 'That code does not match any of the fifty-one. Check the link you followed &mdash; or someone is having you on.'],
+      badcode: ['NOT A LOOT BOX', 'That code does not match any of the hundred and one. Check the link you followed &mdash; or someone is having you on.'],
       closed: ['THE HUNT IS OVER', 'Loot boxes stopped counting on November 1st. Thank you for hunting.'],
       email: ['THAT EMAIL LOOKS OFF', 'Have another go &mdash; it has to be the address you use for the hunt.'],
       endpoint: ['NOT WIRED UP YET', 'This page has no sheet behind it. (Paste the web app URL into ENDPOINT.)'],
