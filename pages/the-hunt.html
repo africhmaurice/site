@@ -176,6 +176,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     <div class="mn-right">
       <div class="mn-links">
       <a href="https://www.mauriceafrich.com/the-hunt" class="mn-link">THE HUNT</a>
+      <a href="https://shop.mauriceafrich.com/" class="mn-link mn-merch">MERCH</a>
       <a href="https://www.mauriceafrich.com/the-hunt#tasks" class="mn-link">TASKS</a>
       <a href="https://www.mauriceafrich.com/the-hunt#riddles" class="mn-link">RIDDLES</a>
       <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
@@ -229,6 +230,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   </div>
   <a href="https://www.mauriceafrich.com" class="mn-ovlogo" aria-label="Maurice Africh home"><img loading="lazy" decoding="async" src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
   <a href="https://www.mauriceafrich.com/the-hunt">THE HUNT</a>
+  <a href="https://shop.mauriceafrich.com/" class="mn-merch">MERCH</a>
   <a href="https://www.mauriceafrich.com/the-hunt#tasks">TASKS</a>
   <a href="https://www.mauriceafrich.com/the-hunt#riddles">RIDDLES</a>
   <a href="https://www.mauriceafrich.com/lootbox-clue">CLUES</a>
@@ -796,6 +798,32 @@ if(window.fetch)fetch(BOARD+'?t='+Math.floor(Date.now()/300000)).then(function(r
     </div>
     <div id="rw-disc" style="font-size:12px;color:#111;max-width:980px;margin:80px auto 0;text-align:center;text-wrap:balance"><b id="rw-disc-text">Digital rewards are available to everyone, everywhere. The Act sweepstakes and The Treasure are open only to legal residents of the 50 United States and D.C. who are 18 or older. Void where prohibited.</b></div>
   </section>
+
+  <!-- ============ TRENCH MARKET (merch shop) ============ -->
+  <section id="merch" data-screen-label="Trench Market" style="background:linear-gradient(rgba(27,59,21,.9),rgba(11,23,15,.93)),url('https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp') center/cover;background-attachment:fixed;padding:100px 48px 110px;text-align:center">
+    <style>
+      #merch .tm-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:18px;max-width:1100px;margin:44px auto 48px}
+      #merch .tm-row a{display:block;width:clamp(120px,15vw,170px);transition:transform .2s ease}
+      #merch .tm-row a:nth-child(odd){transform:rotate(-4deg)}#merch .tm-row a:nth-child(even){transform:rotate(3deg)}
+      #merch .tm-row a:hover{transform:rotate(0) scale(1.06)}
+      #merch .tm-row img{width:100%;height:auto;display:block}
+      #merch .tm-go{display:inline-block;background:#c1330a;border:1px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.35);color:#fff;font-family:'Almarai',sans-serif;font-weight:800;font-size:20px;letter-spacing:.05em;padding:16px 44px;text-decoration:none;transition:background .15s ease}
+      #merch .tm-go:hover{background:#e04a12;color:#fff}
+      @media (max-width:760px){#merch{padding:64px 22px 72px !important}#merch .tm-row a{width:40%}}
+    </style>
+    <div style="font-family:'Almarai',sans-serif;font-weight:800;font-size:16px;letter-spacing:.18em;color:#a2f590">NEW: THE OFFICIAL MERCH SHOP</div>
+    <h2 style="font-family:'Atomic Marker',cursive;font-weight:400;color:#fff;font-size:clamp(46px,6vw,84px);line-height:1;margin:14px 0 0;text-shadow:0 4px 18px rgba(0,0,0,.35)">Trench Market is open!</h2>
+    <p style="font-family:'Almarai',sans-serif;font-weight:700;color:#fff;font-size:clamp(17px,1.6vw,22px);line-height:1.55;max-width:760px;margin:22px auto 0">Stickers, shirts, hoodies, hats, mugs, puzzles, and art prints from the Sky Pirates of Imperia, all printed to order. And yes, there might be a loot box hiding in there somewhere.</p>
+    <div class="tm-row">
+      <a href="https://shop.mauriceafrich.com/products/i-survived-loot-box-13-tee"><img src="https://africhmaurice.github.io/site/assets/merch/lootbox13-tee.webp" alt="I Survived Loot Box 13 Tee" loading="lazy"></a>
+      <a href="https://shop.mauriceafrich.com/products/kid-crew-sticker-set-12-stickers"><img src="https://africhmaurice.github.io/site/assets/merch/kid-crew-set.webp" alt="Kid Crew Sticker Set" loading="lazy"></a>
+      <a href="https://shop.mauriceafrich.com/products/the-crew-hoodie"><img src="https://africhmaurice.github.io/site/assets/merch/crew-hoodie.webp" alt="The Crew Hoodie" loading="lazy"></a>
+      <a href="https://shop.mauriceafrich.com/products/little-dot-dad-hat"><img src="https://africhmaurice.github.io/site/assets/merch/dot-hat.webp" alt="Little Dot Dad Hat" loading="lazy"></a>
+      <a href="https://shop.mauriceafrich.com/products/heart-eyes-skull-sticker-set-9-stickers"><img src="https://africhmaurice.github.io/site/assets/merch/heart-eyes-set.webp" alt="Heart-Eyes Skull Sticker Set" loading="lazy"></a>
+    </div>
+    <a class="tm-go" href="https://shop.mauriceafrich.com/">SHOP TRENCH MARKET</a>
+  </section>
+
 
   <div id="book-lb" onclick="this.style.display='none'" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:center;justify-content:center;cursor:pointer;padding:24px">
         <img loading="lazy" decoding="async" id="book-lb-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Cello's Gate" style="max-width:min(720px,90vw);max-height:88vh;width:auto;height:auto;filter:drop-shadow(0 30px 60px rgba(0,0,0,.7))">

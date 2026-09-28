@@ -365,7 +365,7 @@
       mega.appendChild(left); mega.appendChild(right);
       Array.prototype.forEach.call((ov || src).children, function (el) {
         if (el.matches('.mn-ovlogo,.mn-x,.mn-cta')) return;
-        if (el.tagName === 'A') { left.appendChild(link(el)); return; }
+        if (el.tagName === 'A') { if (!el.classList.contains('mn-merch')) left.appendChild(link(el)); return; }
         var box = document.createElement('div'); box.className = 'ma-grp';
         if (el.classList.contains('mn-ovgroup')) {
           Array.prototype.forEach.call(el.children, function (c) {
@@ -386,7 +386,7 @@
       if (!panel || !ov) return;
       Array.prototype.forEach.call(panel.querySelectorAll('.header-menu-nav-item:not(.header-menu-controls)'), function (r) { r.remove(); });
       Array.prototype.forEach.call(ov.children, function (el) {
-        if (el.matches('.mn-ovlogo,.mn-x,.mn-cta') || (el.tagName !== 'A' && !el.classList.contains('mn-ovgroup'))) return;
+        if (el.matches('.mn-ovlogo,.mn-x,.mn-cta,.mn-merch') || (el.tagName !== 'A' && !el.classList.contains('mn-ovgroup'))) return;
         var row = document.createElement('div'); row.className = 'container header-menu-nav-item';
         if (el.tagName === 'A') {
           var a = document.createElement('a'); a.href = el.getAttribute('href'); a.tabIndex = -1;
@@ -406,7 +406,38 @@
     }).catch(function () {});
   }
 
+  // Main menu: MERCH (the Trench Market shop) sits right before The Treasure Hunt (Maurice, 2026-09-28). It replaces
+  // the old Merch folder, whose partner shops are now listed inside the shop itself.
+  var MERCH_URL = 'https://shop.mauriceafrich.com/', OLD_MERCH = '/new-dropdown', merchBuilt = false;
+  function mainMerch() {
+    if (merchBuilt || !document.getElementById('header')) return;
+    var lists = document.querySelectorAll('#header .header-nav-list');
+    if (!lists.length) return;
+    merchBuilt = true;
+    Array.prototype.forEach.call(lists, function (list) {
+      var hunt = list.querySelector('.header-nav-folder-title[data-href="' + HUNT + '"]');
+      var old = list.querySelector('.header-nav-folder-title[data-href="' + OLD_MERCH + '"]');
+      var tpl = list.querySelector('.header-nav-item--external') || list.querySelector('.header-nav-item--collection');
+      if (old) old.closest('.header-nav-item').style.display = 'none';
+      if (!hunt || !tpl) return;
+      var item = tpl.cloneNode(true), a = item.querySelector('a');
+      a.href = MERCH_URL; a.removeAttribute('target'); a.textContent = 'Merch';
+      hunt.closest('.header-nav-item').parentNode.insertBefore(item, hunt.closest('.header-nav-item'));
+    });
+    var root = document.querySelector('.header-menu-nav [data-folder="root"]');
+    if (!root) return;
+    var oldRow = root.querySelector('a[data-folder-id="' + OLD_MERCH + '"]');
+    if (oldRow) oldRow.closest('.header-menu-nav-item').style.display = 'none';
+    var huntRow = root.querySelector('a[data-folder-id="' + HUNT + '"]');
+    var tplRow = root.querySelector('.header-menu-nav-item--external');
+    if (!huntRow || !tplRow) return;
+    var row = tplRow.cloneNode(true), ra = row.querySelector('a');
+    ra.href = MERCH_URL; ra.removeAttribute('target'); ra.textContent = 'Merch';
+    huntRow.closest('.header-menu-nav-item').parentNode.insertBefore(row, huntRow.closest('.header-menu-nav-item'));
+  }
+
   function scan() {
+    mainMerch();
     huntDropdown();
     fixedBackgrounds();
     nativeReveal();
