@@ -283,19 +283,18 @@
   function huntCss() {
     var st = document.createElement('style');
     var box = 'background:rgba(9,23,7,.95);border:1px solid rgba(243,234,217,.25);min-width:170px;padding:0;';
-    var link = 'display:block;padding:13px 18px;color:#fff;font-family:\'Almarai\',sans-serif;font-weight:700;font-size:clamp(12px,.92vw,14.4px);letter-spacing:.07em;text-transform:uppercase;text-decoration:none;white-space:nowrap;line-height:1.2;width:100%;box-sizing:border-box;';
     st.textContent =
-      '#header .ma-hunt-dd{' + box + '}' +
-      '#header .ma-hunt-dd .ma-hd,#header .ma-hunt-dd .ma-hd-list{position:relative;margin:0;padding:0}' +
-      '#header .ma-hunt-dd a.ma-hl{' + link + '}' +
-      '#header .ma-hunt-dd a.ma-hl:hover,#header .ma-hunt-dd .ma-sub:hover>a.ma-hl{color:#a2f590;background:rgba(255,255,255,.06)}' +
-      '#header .ma-hunt-dd a.ma-hl.mn-vote{color:#a2f590!important}#header .ma-hunt-dd a.ma-hl.mn-vote:hover,#header .ma-hunt-dd .ma-sub:hover>a.ma-hl.mn-vote{color:#ff4c0f!important}' +
-      '#header .ma-hunt-dd a.ma-hl.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}' +
-      '#header .ma-hunt-dd a.ma-hl.mn-profile:hover{background:#e04a12;color:#fff}#header .ma-hunt-dd a.ma-hl.mn-profile svg{width:16px;height:16px;flex:none}' +
-      '#header .ma-hunt-dd .ma-sub>a.ma-hl{display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer}' +
-      '#header .ma-hunt-dd .ma-sub>a.ma-hl:after{content:"\\203A";font-size:1.3em;line-height:1;margin-left:.6em}' +
-      '#header .ma-hunt-dd .ma-hd-list{display:none;position:absolute;left:100%;top:-1px;z-index:10;' + box + '}' +
-      '#header .ma-hunt-dd .ma-sub:hover>.ma-hd-list,#header .ma-hunt-dd .ma-sub:focus-within>.ma-hd-list{display:block}' +
+      '#header .header-display-desktop .ma-hunt-dd{' + box + '}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-mega{display:grid;grid-template-columns:auto auto;gap:16px;padding:16px;align-items:start}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-mega-links{display:flex;flex-direction:column}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups{display:flex;flex-direction:column;gap:12px}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-grp{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid rgba(243,234,217,.3);padding:12px 14px 10px}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-grp>span{font-family:\'Almarai\',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590;text-transform:uppercase;margin-bottom:4px}' +
+      '#header .header-display-desktop .ma-hunt-dd a.ma-hl{display:block!important;margin:0!important;padding:11px 18px!important;color:#fff!important;background:none!important;font-family:\'Almarai\',sans-serif!important;font-weight:700!important;font-size:clamp(12px,.92vw,14.4px)!important;letter-spacing:.07em!important;text-transform:uppercase!important;text-decoration:none!important;white-space:nowrap;line-height:1.2!important;text-align:left!important;box-sizing:border-box}' +
+      '#header .header-display-desktop .ma-hunt-dd a.ma-hl:hover{color:#a2f590!important;background:rgba(255,255,255,.06)!important}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-grp a.ma-hl{text-align:center!important;padding:8px 14px!important}' +
+      '#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-vote{color:#a2f590!important}#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-vote:hover{color:#ff4c0f!important}' +
+      '#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-profile{background:#c1330a!important;border:1.5px solid #f3ead9;margin:4px 0!important;padding:9px 16px!important}#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-profile:hover{background:#e04a12!important;color:#fff!important}#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-profile svg{display:none}' +
       '#header .header-display-desktop .ma-hunt-dd{overflow:visible}' +
       // phone menu: the hunt phone menu's boxed groups
       '#header .header-menu .ma-ovgroup{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(243,234,217,.3);padding:14px 16px 16px;margin:10px auto;width:86%;box-sizing:border-box}' +
@@ -332,20 +331,29 @@
         n.appendChild(document.createTextNode(plainText(a)));
         return n;
       }
-      Array.prototype.forEach.call(src.children, function (el) {
-        var row = document.createElement('div'); row.className = 'header-nav-folder-item ma-hd';
-        if (el.tagName === 'A') row.appendChild(link(el));
-        else if (el.classList.contains('mn-drop')) {
+      // Desktop looks like the phone menu (Maurice, 2026-09-27): the plain links in a column on the left, and the
+      // phone menu's boxed groups (small green heading, links under it) in a column on the right.
+      var mega = document.createElement('div'); mega.className = 'ma-mega';
+      var left = document.createElement('div'); left.className = 'ma-mega-links';
+      var right = document.createElement('div'); right.className = 'ma-mega-groups';
+      mega.appendChild(left); mega.appendChild(right);
+      Array.prototype.forEach.call((ov || src).children, function (el) {
+        if (el.matches('.mn-ovlogo,.mn-x,.mn-cta')) return;
+        if (el.tagName === 'A') { left.appendChild(link(el)); return; }
+        var box = document.createElement('div'); box.className = 'ma-grp';
+        if (el.classList.contains('mn-ovgroup')) {
+          Array.prototype.forEach.call(el.children, function (c) {
+            if (c.tagName === 'A') box.appendChild(link(c));
+            else { var h = document.createElement('span'); h.textContent = plainText(c); box.appendChild(h); }
+          });
+        } else if (el.classList.contains('mn-drop')) {
           var head = el.querySelector('.mn-link'); if (!head) return;
-          row.classList.add('ma-sub');
-          var h = link(head); if (/^javascript:/i.test(head.getAttribute('href') || '')) { h.removeAttribute('href'); h.tabIndex = 0; }
-          h.setAttribute('aria-haspopup', 'true'); row.appendChild(h);
-          var list = document.createElement('div'); list.className = 'ma-hd-list';
-          Array.prototype.forEach.call(el.querySelectorAll('.mn-dd-in a'), function (a) { list.appendChild(link(a)); });
-          row.appendChild(list);
+          var h2 = document.createElement('span'); h2.textContent = plainText(head); box.appendChild(h2);
+          Array.prototype.forEach.call(el.querySelectorAll('.mn-dd-in a'), function (x) { box.appendChild(link(x)); });
         } else return;
-        out.appendChild(row);
+        right.appendChild(box);
       });
+      out.appendChild(mega);
       huntList.innerHTML = ''; huntList.classList.add('ma-hunt-dd'); huntList.appendChild(out);
       // phone menu: the hunt phone menu's list, groups boxed and headed as on the hunt pages
       var panel = document.querySelector('.header-menu-nav [data-folder="' + HUNT + '"] .header-menu-nav-folder-content');
