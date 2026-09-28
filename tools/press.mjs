@@ -149,9 +149,21 @@ const HUNT_FACTS = [
   ['Play', 'Tasks, riddles, clues, the daily Skyword game, a crossword, 51 hidden loot boxes, and a fan fiction contest.'],
   ['Story', 'Choose-your-own-adventure votes. Hunters picked the crew’s route to Red City and are now creating new crew members and their ship.'],
   ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players.'],
-  ['Acts', 'Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1).'],
+  ['Acts', 'Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1). Winners are announced the day after each act ends.'],
   ['Treasure', 'The top three on the U.S. and UK leaderboards win The Treasure: signed editions, art prints, custom bookmarks, enamel pins, an advance audiobook, and more.'],
 ];
+// Launch events. url: the store's event or registration page (null until it's posted).
+const EVENTS = [
+  { date: 'Mon, Nov 2', time: '6 PM Eastern', title: 'Launch at Malaprop’s Bookstore/Cafe', place: 'In store at 55 Haywood St, Asheville, North Carolina', url: null },
+  { date: 'Thu, Nov 5', time: '6 PM Pacific', title: 'Virtual event with Mysterious Galaxy', place: 'Online, hosted by Mysterious Galaxy in San Diego. Open to anyone.', url: null },
+];
+const eventCard = (e) => {
+  const inner = `<span class="pp-ev-date">${esc(e.date)}<small>${esc(e.time)}</small></span><span class="pp-ev-title">${esc(e.title)}</span><span class="pp-ev-place">${esc(e.place)}</span>`;
+  return e.url
+    ? `<a class="pp-event" href="${esc(e.url)}" target="_blank" rel="noopener">${inner}<span class="pp-ev-go">Details and RSVP →</span></a>`
+    : `<div class="pp-event">${inner}</div>`;
+};
+
 const HUNT_IMAGES = [
   ['hunt-welcome', 'Welcome to the Hunt'],
   ['hunt-treasure', 'The Treasure'],
@@ -212,6 +224,14 @@ ${fonts}
 #press .pp-phone:hover span{color:#3adb97}
 #press .pp-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
 #press .pp-cta .pp-btn{display:inline-block;margin:0;padding:12px 22px}
+#press .pp-events{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+#press .pp-event{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 20px;align-content:start;padding:22px 24px;background:rgba(11,23,15,.62);border:1px solid rgba(255,255,254,.16);color:#fffffe;text-decoration:none}
+#press a.pp-event:hover{border-color:#3adb97}
+#press .pp-ev-date{grid-row:span 3;font-family:'Atomic Marker',cursive;font-size:26px;line-height:1.1;color:#fd7547;min-width:88px}
+#press .pp-ev-date small{display:block;font-family:'Almarai',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,254,.7);margin-top:6px}
+#press .pp-ev-title{font-weight:800;font-size:18px;line-height:1.3}
+#press .pp-ev-place{font-size:15px;line-height:1.5;color:rgba(255,255,254,.78)}
+#press .pp-ev-go{font-size:13px;font-weight:700;letter-spacing:.05em;color:#3adb97}
 ${cardCss('#press')}
 @media (max-width:860px){
   #press .pp-stats{grid-template-columns:1fr 1fr}
@@ -240,6 +260,11 @@ ${cardCss('#press')}
       <dl class="pp-facts">${HUNT_FACTS.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
       <div class="pp-phones">${HUNT_IMAGES.map(([f, alt]) => `<a class="pp-phone" href="${BASE}assets/press/${f}.webp" target="_blank" rel="noopener"><img src="${BASE}assets/press/${f}.webp" width="900" height="1543" alt="${esc(alt)}" loading="lazy"><span>${esc(alt)} ↓</span></a>`).join('')}</div>
       <div class="pp-cta"><a class="pp-btn" href="/the-hunt">See the hunt</a><a class="pp-btn" href="/leaderboard">Live leaderboard</a></div>
+    </section>
+
+    <section class="pp-section" id="pp-events">
+      <h2>Launch Events</h2>
+      <div class="pp-events">${EVENTS.map(eventCard).join('')}</div>
     </section>
 
     <section class="pp-section" id="pp-contacts">
