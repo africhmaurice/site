@@ -274,7 +274,106 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNavs);
   window.maFitNavs = fitNavs;
 
+  // Main site menu: The Treasure Hunt dropdown is the hunt pages' menu, exactly (Maurice, 2026-09-27). It is built
+  // from pages/hunt-menu.html each time, so a change to the hunt menu shows up here too. Desktop: the hunt menu's
+  // links in the same order and look, and each of its dropdowns (Submit, Current Progress, Adventure) as a flyout
+  // to the side. Phone menu: the hunt phone menu's list and boxed groups. Squarespace's own Adventure folder is
+  // hidden from the top level (it can't nest folders); its pages are managed there as before.
+  var HUNT = '/new-dropdown-1', ADV = '/adventure-menu', huntBuilt = false;
+  function huntCss() {
+    var st = document.createElement('style');
+    var box = 'background:rgba(9,23,7,.95);border:1px solid rgba(243,234,217,.25);min-width:170px;padding:0;';
+    var link = 'display:block;padding:13px 18px;color:#fff;font-family:\'Almarai\',sans-serif;font-weight:700;font-size:clamp(12px,.92vw,14.4px);letter-spacing:.07em;text-transform:uppercase;text-decoration:none;white-space:nowrap;line-height:1.2;width:100%;box-sizing:border-box;';
+    st.textContent =
+      '#header .ma-hunt-dd{' + box + '}' +
+      '#header .ma-hunt-dd .ma-hd,#header .ma-hunt-dd .ma-hd-list{position:relative;margin:0;padding:0}' +
+      '#header .ma-hunt-dd a.ma-hl{' + link + '}' +
+      '#header .ma-hunt-dd a.ma-hl:hover,#header .ma-hunt-dd .ma-sub:hover>a.ma-hl{color:#a2f590;background:rgba(255,255,255,.06)}' +
+      '#header .ma-hunt-dd a.ma-hl.mn-vote{color:#a2f590!important}#header .ma-hunt-dd a.ma-hl.mn-vote:hover,#header .ma-hunt-dd .ma-sub:hover>a.ma-hl.mn-vote{color:#ff4c0f!important}' +
+      '#header .ma-hunt-dd a.ma-hl.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}' +
+      '#header .ma-hunt-dd a.ma-hl.mn-profile:hover{background:#e04a12;color:#fff}#header .ma-hunt-dd a.ma-hl.mn-profile svg{width:16px;height:16px;flex:none}' +
+      '#header .ma-hunt-dd .ma-sub>a.ma-hl{display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer}' +
+      '#header .ma-hunt-dd .ma-sub>a.ma-hl:after{content:"\\203A";font-size:1.3em;line-height:1;margin-left:.6em}' +
+      '#header .ma-hunt-dd .ma-hd-list{display:none;position:absolute;left:100%;top:-1px;z-index:10;' + box + '}' +
+      '#header .ma-hunt-dd .ma-sub:hover>.ma-hd-list,#header .ma-hunt-dd .ma-sub:focus-within>.ma-hd-list{display:block}' +
+      '#header .header-display-desktop .ma-hunt-dd{overflow:visible}' +
+      // phone menu: the hunt phone menu's boxed groups
+      '#header .header-menu .ma-ovgroup{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(243,234,217,.3);padding:14px 16px 16px;margin:10px auto;width:86%;box-sizing:border-box}' +
+      '#header .header-menu .ma-ovgroup>span{font-family:\'Almarai\',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590}' +
+      '#header .header-menu .ma-ovgroup a{font-size:15px!important;line-height:1.3!important;text-align:center;padding:0!important;margin:0!important}#header .header-menu .ma-ovgroup a.mn-profile{background:#c1330a;border:1.5px solid #f3ead9;padding:9px 16px!important;white-space:nowrap;font-size:15px!important}' +
+      '#header .header-menu .ma-ovgroup a.mn-profile svg{display:none}#header .header-menu a.mn-vote{color:#a2f590!important}';
+    document.head.appendChild(st);
+  }
+  function plainText(a) { return (a.textContent || '').replace(/\s+/g, ' ').trim(); }
+  function huntDropdown() {
+    if (huntBuilt || !document.getElementById('header')) return;
+    var huntList = document.querySelector('#header .header-display-desktop .header-nav-folder-title[data-href="' + HUNT + '"] + .header-nav-folder-content');
+    if (!huntList) return;
+    huntBuilt = true;
+    // the top-level Adventure folder goes (desktop and phone); its pages now sit in The Treasure Hunt
+    var adv = document.querySelector('#header .header-display-desktop .header-nav-folder-title[data-href="' + ADV + '"]');
+    if (adv) adv.closest('.header-nav-item').style.display = 'none';
+    var advRow = document.querySelector('.header-menu-nav [data-folder="root"] a[data-folder-id="' + ADV + '"]');
+    if (advRow) advRow.closest('.header-menu-nav-item').style.display = 'none';
+    fetch(BASE + 'pages/hunt-menu.html?v=' + stamp).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      var src = doc.querySelector('#hunt-nav .mn-links'), ov = doc.getElementById('hunt-nav-ov');
+      if (!src) return;
+      huntCss();
+      // desktop
+      var out = document.createDocumentFragment();
+      function link(a, extra) {
+        var n = document.createElement('a'); n.href = a.getAttribute('href'); n.className = 'ma-hl' + (extra || '');
+        ['mn-vote', 'mn-profile'].forEach(function (c) { if (a.classList.contains(c)) n.classList.add(c); });
+        if (a.getAttribute('style')) n.setAttribute('style', a.getAttribute('style'));
+        if (a.getAttribute('target')) { n.target = a.getAttribute('target'); n.rel = 'noopener'; }
+        var svg = a.classList.contains('mn-profile') && a.querySelector('svg');
+        if (svg) n.appendChild(document.importNode(svg, true));
+        n.appendChild(document.createTextNode(plainText(a)));
+        return n;
+      }
+      Array.prototype.forEach.call(src.children, function (el) {
+        var row = document.createElement('div'); row.className = 'header-nav-folder-item ma-hd';
+        if (el.tagName === 'A') row.appendChild(link(el));
+        else if (el.classList.contains('mn-drop')) {
+          var head = el.querySelector('.mn-link'); if (!head) return;
+          row.classList.add('ma-sub');
+          var h = link(head); if (/^javascript:/i.test(head.getAttribute('href') || '')) { h.removeAttribute('href'); h.tabIndex = 0; }
+          h.setAttribute('aria-haspopup', 'true'); row.appendChild(h);
+          var list = document.createElement('div'); list.className = 'ma-hd-list';
+          Array.prototype.forEach.call(el.querySelectorAll('.mn-dd-in a'), function (a) { list.appendChild(link(a)); });
+          row.appendChild(list);
+        } else return;
+        out.appendChild(row);
+      });
+      huntList.innerHTML = ''; huntList.classList.add('ma-hunt-dd'); huntList.appendChild(out);
+      // phone menu: the hunt phone menu's list, groups boxed and headed as on the hunt pages
+      var panel = document.querySelector('.header-menu-nav [data-folder="' + HUNT + '"] .header-menu-nav-folder-content');
+      if (!panel || !ov) return;
+      Array.prototype.forEach.call(panel.querySelectorAll('.header-menu-nav-item:not(.header-menu-controls)'), function (r) { r.remove(); });
+      Array.prototype.forEach.call(ov.children, function (el) {
+        if (el.matches('.mn-ovlogo,.mn-x,.mn-cta') || (el.tagName !== 'A' && !el.classList.contains('mn-ovgroup'))) return;
+        var row = document.createElement('div'); row.className = 'container header-menu-nav-item';
+        if (el.tagName === 'A') {
+          var a = document.createElement('a'); a.href = el.getAttribute('href'); a.tabIndex = -1;
+          if (el.classList.contains('mn-vote')) a.className = 'mn-vote';
+          a.innerHTML = '<div class="header-menu-nav-item-content"></div>'; a.firstChild.textContent = plainText(el);
+          row.appendChild(a);
+        } else {
+          var g = document.createElement('div'); g.className = 'ma-ovgroup';
+          Array.prototype.forEach.call(el.children, function (c) {
+            if (c.tagName === 'A') { var l = link(c, ''); l.className = c.classList.contains('mn-profile') ? 'mn-profile' : ''; l.tabIndex = -1; g.appendChild(l); }
+            else { var s = document.createElement('span'); s.textContent = plainText(c); g.appendChild(s); }
+          });
+          row.appendChild(g);
+        }
+        panel.appendChild(row);
+      });
+    }).catch(function () {});
+  }
+
   function scan() {
+    huntDropdown();
     fixedBackgrounds();
     nativeReveal();
     Array.prototype.forEach.call(document.querySelectorAll('[data-ma-page]'), mount);
