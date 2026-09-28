@@ -72,7 +72,7 @@ const card = (f) => `
 // Shared card styles, scoped by the wrapper id.
 const cardCss = (id) => `
 ${id} .pr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
-${id} .pr-card{display:flex;flex-direction:column;gap:10px;padding:22px 22px 20px;background:rgba(11,23,15,.5);border:1px solid rgba(255,255,254,.16);color:#fffffe;text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+${id} .pr-card{display:flex;flex-direction:column;gap:10px;padding:22px 22px 20px;background:rgba(11,23,15,.8);border:1px solid rgba(255,255,254,.16);color:#fffffe;text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}
 ${id} .pr-card:hover{transform:translateY(-4px);border-color:#3adb97;background:rgba(26,94,65,.55)}
 ${id} .pr-meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,254,.6)}
 ${id} .pr-type{font-weight:800;padding:4px 9px;border:1px solid currentColor}
@@ -97,7 +97,7 @@ ${fonts}
 #home-press .hp-kicker{font-weight:800;font-size:13px;letter-spacing:.18em;color:#a2f590;margin:0}
 ${cardCss('#home-press')}
 #home-press .hp-more{text-align:center;margin:28px 0 0}
-#home-press .hp-btn{display:inline-block;color:#fffffe;text-decoration:none;font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid #fffffe;padding:13px 26px;background:rgba(11,23,15,.5);transition:background .15s ease,transform .15s ease}
+#home-press .hp-btn{display:inline-block;color:#fffffe;text-decoration:none;font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;border:1.5px solid #fffffe;padding:13px 26px;background:rgba(11,23,15,.8);transition:background .15s ease,transform .15s ease}
 #home-press .hp-btn:hover{background:#c53200;transform:scale(1.04)}
 @media (max-width:640px){#home-press .pr-grid{grid-template-columns:1fr}#home-press .pr-card{padding:18px}}
 </style>
@@ -188,9 +188,9 @@ ${fonts}
 #press h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,4.4vw,64px);line-height:1;margin:0 0 20px;color:#fffffe;text-transform:none}
 #press h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(28px,2.6vw,40px);line-height:1.1;color:#89fbcb;margin:0 0 26px;text-transform:none}
 #press .pp-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.6;color:#ede9dc;margin:0;max-width:640px}
-#press .pp-section{margin-top:56px;padding:44px 48px 40px;background:rgba(38,142,98,.5);border:1px solid rgba(243,234,217,.18);scroll-margin-top:120px}
+#press .pp-section{margin-top:56px;padding:44px 48px 40px;background:rgba(38,142,98,.8);border:1px solid rgba(243,234,217,.18);scroll-margin-top:120px}
 #press .pp-contacts{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
-#press .pp-contact{display:flex;flex-direction:column;padding:24px;background:rgba(11,23,15,.5);border:1px solid rgba(255,255,254,.16)}
+#press .pp-contact{display:flex;flex-direction:column;padding:24px;background:rgba(11,23,15,.8);border:1px solid rgba(255,255,254,.16)}
 #press .pp-contact p{margin:0}
 #press .pp-role{font-weight:800;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#fd7547;margin-bottom:12px!important}
 #press .pp-name{font-weight:800;font-size:20px;line-height:1.3}
@@ -203,7 +203,7 @@ ${fonts}
 #press .pp-kit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:48px;align-items:start}
 #press .pp-imgs{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 #press .pp-img{display:flex;flex-direction:column;gap:10px;color:#fffffe;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:.06em}
-#press .pp-img img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;border:1px solid rgba(255,255,254,.16);background:rgba(11,23,15,.5)}
+#press .pp-img img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;border:1px solid rgba(255,255,254,.16);background:rgba(11,23,15,.8)}
 #press .pp-img.book img{object-fit:contain;padding:14px}
 #press .pp-img span{color:#fd7547}
 #press .pp-img:hover span{color:#3adb97}
@@ -211,11 +211,11 @@ ${fonts}
 #press .pp-facts dt,#press .pp-facts dd{margin:0;padding:12px 0;border-top:1px solid rgba(243,234,217,.12);font-size:15px;line-height:1.5}
 #press .pp-facts dt{font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#a2f590;padding-top:14px}
 #press .pp-bio{font-size:16px;line-height:1.65;color:#ede9dc;margin:26px 0 0}
-#press .pp-hunt{background:rgba(145,37,1,.5);border-color:rgba(253,117,71,.35)}
+#press .pp-hunt{background:rgba(145,37,1,.8);border-color:rgba(253,117,71,.35)}
 #press .pp-hunt h2{color:#fd7547}
 #press .pp-hunt-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.65;color:#ede9dc;margin:0 0 28px;max-width:820px}
 #press .pp-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 10px}
-#press .pp-stat{padding:20px 18px;background:rgba(11,23,15,.5);border:1px solid rgba(255,255,254,.16);text-align:center}
+#press .pp-stat{padding:20px 18px;background:rgba(11,23,15,.8);border:1px solid rgba(255,255,254,.16);text-align:center}
 #press .pp-stat b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(30px,3vw,44px);line-height:1.1;color:#fffffe}
 #press .pp-stat span{display:block;margin-top:6px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fd7547}
 #press .pp-asof{font-size:13px;color:rgba(255,255,254,.6);margin:0 0 30px}
@@ -232,7 +232,7 @@ ${fonts}
 #press .pp-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
 #press .pp-cta .pp-btn{display:inline-block;margin:0;padding:12px 22px}
 #press .pp-events{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:18px}
-#press .pp-event{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 20px;align-content:start;padding:22px 24px;background:rgba(11,23,15,.5);border:1px solid rgba(255,255,254,.16);color:#fffffe;text-decoration:none}
+#press .pp-event{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 20px;align-content:start;padding:22px 24px;background:rgba(11,23,15,.8);border:1px solid rgba(255,255,254,.16);color:#fffffe;text-decoration:none}
 #press a.pp-event:hover{border-color:#3adb97}
 #press .pp-ev-date{grid-row:span 3;font-family:'Atomic Marker',cursive;font-size:26px;line-height:1.1;color:#fd7547;min-width:88px}
 #press .pp-ev-date small{display:block;font-family:'Almarai',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,254,.7);margin-top:6px}
@@ -256,7 +256,7 @@ ${cardCss('#press')}
   <div class="pp-wrap">
     <p class="pp-kicker">PRESS AND MEDIA</p>
     <h1>Press Room</h1>
-    <p class="pp-lede">Reviews, interviews, and who to talk to about Cello’s Gate. For review copies and interviews, reach out to the right person below.</p>
+    <p class="pp-lede">Reviews, interviews, and who to talk to about “Cello’s Gate.” For review copies, interviews, and quotes, reach out to the folks listed below.</p>
 
     <section class="pp-section pp-hunt" id="pp-hunt">
       <h2>The Cello’s Gate Treasure Hunt</h2>
