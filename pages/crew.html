@@ -84,7 +84,6 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     <div class="mn-right">
       <div class="mn-links">
       <a href="https://www.mauriceafrich.com/the-hunt" class="mn-link">THE HUNT</a>
-      <a href="https://shop.mauriceafrich.com/" class="mn-link mn-merch">MERCH</a>
       <a href="https://www.mauriceafrich.com/the-hunt#tasks" class="mn-link">TASKS</a>
       <a href="https://www.mauriceafrich.com/the-hunt#riddles" class="mn-link">RIDDLES</a>
       <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
@@ -136,9 +135,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   <div class="mn-x" role="button" aria-label="Close menu">
     <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M5 5l14 14"></path><path d="M19 5L5 19"></path></svg>
   </div>
-  <a href="https://www.mauriceafrich.com" class="mn-ovlogo" aria-label="Maurice Africh home"><img loading="lazy" decoding="async" src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
+  <a href="https://www.mauriceafrich.com" class="mn-ovlogo" aria-label="Maurice Africh home"><img src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
   <a href="https://www.mauriceafrich.com/the-hunt">THE HUNT</a>
-  <a href="https://shop.mauriceafrich.com/" class="mn-merch">MERCH</a>
   <a href="https://www.mauriceafrich.com/the-hunt#tasks">TASKS</a>
   <a href="https://www.mauriceafrich.com/the-hunt#riddles">RIDDLES</a>
   <a href="https://www.mauriceafrich.com/lootbox-clue">CLUES</a>
@@ -471,6 +469,45 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 /* the rolled pronoun, just under the die */
 #rc .cw-diecol{grid-row:1/4;display:flex;flex-direction:column;align-items:center;gap:4px}
 #rc .cw-pron{margin:0;text-align:center;font-family:"Atomic Marker",cursive;font-size:26px;line-height:1;color:#89fbcb}
+
+/* the results, once the vote has closed */
+#rc .cw-res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+#rc .cw-res{background:var(--well);border:1px solid var(--hair);padding:20px 22px;display:flex;flex-direction:column;gap:14px}
+#rc .cw-res-job{margin:0;font-weight:800;font-size:13px;letter-spacing:.16em;color:var(--mint)}
+#rc.cw .cw-res-job{color:#89fbcb}
+#rc .cw-res-top{display:flex;align-items:center;gap:16px}
+#rc .cw-res-pron{flex:none;width:70px;display:flex;flex-direction:column;align-items:center;gap:2px;background:rgba(6,32,21,.6);border:1px solid var(--hair);padding:8px 0}
+#rc .cw-res-pron b{font-family:"Segoe UI Symbol","Noto Sans Symbols 2","Apple Symbols",sans-serif;font-weight:400;font-size:30px;line-height:1;color:#89fbcb}
+#rc .cw-res-pron span{font-family:'Atomic Marker',cursive;font-size:18px}
+#rc .cw-res-name h3{margin:0;font-family:'Atomic Marker',cursive!important;font-weight:400!important;font-size:30px!important;line-height:1.05;text-transform:none!important;letter-spacing:.02em!important;color:#fffffe!important}
+#rc .cw-res-name p{margin:4px 0 0;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+#rc .cw-res dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;align-items:baseline}
+#rc .cw-res dt{font-weight:800;font-size:11px;letter-spacing:.16em;color:var(--muted)}
+#rc .cw-res dd{margin:0;font-weight:700;font-size:16px}
+#rc .cw-tie{border:1.5px dashed rgba(137,251,203,.6);padding:14px 16px;display:grid;justify-items:start;gap:8px;background:rgba(6,32,21,.35)}
+#rc .cw-tie-opts{margin:0;font-size:15px}
+#rc .cw-tie-rule{margin:0;font-size:13px;letter-spacing:.06em;color:var(--muted)}
+#rc .cw-tie-die .rc-die{width:96px;height:96px}
+#rc .cw-tie-go{margin-top:0}
+#rc .cw-tie-out{margin:0;font-size:16px}
+#rc .cw-tie-out b{color:#89fbcb}
+#rc .cw-res-color{display:flex;align-items:center;gap:10px;font-size:20px;margin:0 0 16px}
+#rc .cw-res-color b{font-family:'Atomic Marker',cursive!important;font-weight:400;font-size:26px}
+#rc .cw-sw{width:28px;height:28px;border:1.5px solid var(--cream);flex:none}
+#rc .cw-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px 28px;margin-top:22px}
+#rc .cw-stat{display:flex;align-items:center;gap:16px}
+#rc .cw-d20{position:relative;flex:none;width:84px;height:84px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}
+#rc .cw-d20 svg{width:100%;height:100%;display:block}
+#rc .cw-d20 span{position:absolute;left:0;right:0;top:43%;text-align:center;font-family:'Atomic Marker',cursive;font-size:20px;line-height:1;color:#fffffe}
+#rc .cw-stat p{margin:0}
+#rc .cw-stat .q{font-weight:800;font-size:12px;letter-spacing:.14em;color:var(--muted)}
+#rc .cw-stat .t{font-family:'Atomic Marker',cursive;font-size:24px;line-height:1.1}
+#rc .cw-stat .t0,#rc .cw-stat .t1{color:#fd7547}
+#rc .cw-stat .t3,#rc .cw-stat .t4{color:#89fbcb}
+#rc .cw-stat .a{font-weight:700;font-size:16px}
+#rc .cw-stat .crit{font-weight:800;font-size:12px;letter-spacing:.1em;margin-top:2px}
+#rc .cw-stat .c20{color:#a2f590}
+#rc .cw-stat .c1{color:#fd7547}
 </style>
 
 <div id="rc" class="cw">
@@ -486,6 +523,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <div class="rc-stat"><div class="k">VOTING CLOSES</div><div class="v rc-num cw-when" id="rc-close">…</div><small>You have 24 hours.</small></div>
     </div>
   </header>
+
+  <div id="cw-results" hidden></div>
 
   <section class="rc-step" id="cw-start">
     <header>
@@ -526,7 +565,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 <script>
 (function () {
-  var DATA = {"_help":"The crew vote (after Red City). Built from Maurice's draft page (artifact 3Ru3vgQmcBToJi7vcTZhkZ, db drafts/crew). Preview only until he approves.","key":"crew_vote","points":50,"opens":"2026-09-27T18:50:00Z","closes":"2026-09-28T18:50:00Z","die":{"labels":["","♂","♀","♂","♀","♂","♀","♂","♀","♂","♀","♂","♀","♂","♀","♂","♀","♂","♀","REROLL","⚲"],"names":{"♂":"He","♀":"She","⚲":"They"},"reroll":"REROLL","rule":"Every fren rolls. Land on REROLL and you roll again. When the rolls are in, one roll is drawn at random, and that face decides."},"jobs":[{"key":"crest_knight","name":"Crest Knight","names":{"♂":["Crush","Hinder","Moon","Hale","Tobias"],"♀":["Scythe","Prim","Kasta","Blite","Scoul"],"⚲":["Rowan","Nil","Talon","Sword","Mint"]},"specs":[["Moonstone (Wind)","Light on their feet. Blade danger."],["Emerald (Imperia)","Steadfast and sure-footed. A rock in the sea."],["Ruby (Fire)","Aggressive and reckless. A chaotic fighter."],["Sapphire (Water)","Thoughtful and calculated. A wise fighter."]],"weapons":[["Torch Longsword","A molten blade, lit with a flick of the wrist."],["Torch Axe","A burning axe for doors, armor, and bad ideas."],["Twin Torches","Two molten blades, one in each hand."],["Torch Spear","A burning spear with twice the reach."],["Alien Metal Staff","A staff forged from metal that is not from around here."],["Torch Maul","A molten hammer. Subtle, it is not."],["Torch Flail","A burning ball on a chain."]]},{"key":"gunslinger","name":"Gunslinger","names":{"♂":["Jericho Misfire","Silas Quickdraw","Rafferty Stockton","Dexter Barel","Hollis Sharpeye"],"♀":["Scarlett Holster","Juniper Bullitz","Del the Belle","Marly Sinbad","Terra Flightrisk"],"⚲":["Gun","River","Sawyer","Ransom","Dusk"]},"specs":[["Outlaw","Fast draw, duelist. \"Draw!\""],["Deadeye","Sniper, tactician. \"Impossible shot? Never heard of 'em.\""],["Trickster","Trick shots and deception."],["Tank","Heavy artillery. \"Rrra-da-da-dah!\""]],"weapons":[["Twin Brasspoint Revolvers","Two revolvers, drawn at once."],["Brasspoint Revolver + Prismblade","A revolver for range and a blade for close."],["Harbinger B80 + Prismblade","A semiauto rifle, and a blade for when it runs dry."],["Elia Noma T11 + Morton M8","A long rifle for the far shot and a revolver for the near one."]]},{"key":"oracle","name":"Oracle","names":{"♂":["Ansel Spoilerwarning","Lyle Del Sawit","Orion Squints","Leander Loopholes","Ezra Glitch"],"♀":["Oradine Blurbind","Liora Holdenback","Maeve Withers","Nerys Kantsy","Quinta Iswayu"],"⚲":["Fael","Aura","Everlight","Seen","Chakra"]},"specs":[["Seer","Precognition and threat sense."],["Empath","Reads emotions and knows a lie."],["Omen","Battle-focused. A fighter."],["Sage","Wise and learned. A scholar."]],"weapons":[["Bolt Staff","A staff that throws lightning."],["Morton M8 Revolver","An old, trusty revolver."],["Sizzle Steel","An electrified blade that can be thrown."],["Mech Fists","Armored gauntlets charged with lightning."]]},{"key":"techtailor","name":"Techtailor","names":{"♂":["Fitz Indabag","Barnaby Thisway","Ottonomy Static","Rune Overclock","Emrys Combustable"],"♀":["Hartley Stitch","Nell Sprocketlite","Clementine Shockwire","Elsa Bolt","Ridley Tinkermiss"],"⚲":["Pip","Coil","Gizmo","Widget","Artifice"]},"specs":[["Noble","Bomber, sapper, alchemist. \"Get down!\""],["Mod","Mech armor, android upgrades, big guns, and blades."],["Stitcher","Hacker, code breaker, inventor. \"Let me stitch on that.\""]],"weapons":[["Gunner Drone + Prismblade","A little flying robot that shoots stuff, plus a blade."],["Bombs","Flares, stunners, flashers, and worse."],["Morton M8 Revolver + Mechblade","A revolver and a lightning-edged blade."],["Mech Fists","Armored gauntlets charged with lightning."],["Spin-Saw","A spinning blade that comes back when thrown."]]},{"key":"intangible","name":"Intangible","names":{"♂":["Sable Halfway","Kit Angonagin","Ashwell Splice","Lark Inrun","Quinn Overlaps"],"♀":["Nyla Disapind","Sparrow Zipmeister","Marilyn Shadowdancer","Polly Poisondox","Britta Wildablend"],"⚲":["Blink","Vanish","Hyde","Echo","Nova"]},"specs":[["Ghost","Assassin. Unseen, quick kills."],["Grift","Thief. Entering without breaking."],["Blink","Scout and runner. Fast teleporting."],["Sever","Heavy-weapon teleporter."]],"weapons":[["Twin Vibroblades","Two humming blades that cut through almost anything."],["Twin Morton M8 Revolvers","Two revolvers, fired from wherever they blink to."],["Twin Sizzle Steels","Two electrified throwing blades."],["Mechaxe","A lightning-charged axe."],["Starburst Flail","A flail that bursts with lightning."]]}],"ship":{"colors":[["Scarlet","#c53200"],["Teal","#268e62"],["Violet","#482d85"],["Forest Green","#2c6021"],["Charcoal","#0b170f"],["Bone-White","#ede9dc"]],"names":["Hooter'n'Holler","Second Wind","The Gilded Fren","LB13","The Salty Crown"],"tiers":["WORST","BAD","FINE","GOOD","BEST"],"rolls":[{"id":"ship_type","name":"Ship type","tiers":["Shuttle: the smallest. A passenger airship with no defenses.","Cruiser: small and sleek. Bigger than a shuttle, smaller than a corvette.","Corvette: smaller than a freighter, and faster.","Freighter: a Trench workhorse with a real cargo hold.","Stealth Fighter: military grade. High value. Fast and sneaky."]},{"id":"weapon_systems","name":"Weapon systems","tiers":["Rail Guns That Only Work Half the Time.","Rail Guns on the Wing","Missiles and Rail Guns.","Honing Missiles, Rail Guns, and Lightning Batteries","Sky Breakers (EMPs, AI Missile Systems, Shiver Bombs)"]},{"id":"top_speed","name":"Top speed","tiers":["Slow AF","Commercial Jetliner Speeds","Bizjet Speeds","Mach 2 (Fighter Jet)","Mach 3 (Blackbird)"]},{"id":"stealth","name":"Stealth","tiers":["Loud AF","Noticeable","Hums","Hidden","Ghost-Like"]},{"id":"housing","name":"Housing","tiers":["Sleeping On Deck","Bunk Room","Rooms the Size of Closets","Dorm Rooms","Full Apartments"]},{"id":"shields","name":"Shields","tiers":["You can get shields?","Repurposed Kinetic Shielding","Missile Defense Systems","Missile Defense System + Backup","Missile Defense Systems, Rail Defense, EMP Shielding, Gravity Generators, and Backups"]}],"twist":"If the crew rolls three or more natural 20s on one stat, it jumps a tier. Three or more natural 1s, it drops a tier."}};
+  var DATA = {"_help":"The crew vote (after Red City). Built from Maurice's draft page (artifact 3Ru3vgQmcBToJi7vcTZhkZ, db drafts/crew). Preview only until he approves.","key":"crew_vote","points":50,"opens":"2026-09-27T18:50:00Z","closes":"2026-09-28T18:50:00Z","die":{"labels":["","♂","♀","♂","♀","♂","♀","♂","♀","♂","♀","♂","♀","♂","♀","♂","♀","♂","♀","REROLL","⚲"],"names":{"♂":"He","♀":"She","⚲":"They"},"reroll":"REROLL","rule":"Every fren rolls. Land on REROLL and you roll again. When the rolls are in, one roll is drawn at random, and that face decides."},"jobs":[{"key":"crest_knight","name":"Crest Knight","names":{"♂":["Crush","Hinder","Moon","Hale","Tobias"],"♀":["Scythe","Prim","Kasta","Blite","Scoul"],"⚲":["Rowan","Nil","Talon","Sword","Mint"]},"specs":[["Moonstone (Wind)","Light on their feet. Blade danger."],["Emerald (Imperia)","Steadfast and sure-footed. A rock in the sea."],["Ruby (Fire)","Aggressive and reckless. A chaotic fighter."],["Sapphire (Water)","Thoughtful and calculated. A wise fighter."]],"weapons":[["Torch Longsword","A molten blade, lit with a flick of the wrist."],["Torch Axe","A burning axe for doors, armor, and bad ideas."],["Twin Torches","Two molten blades, one in each hand."],["Torch Spear","A burning spear with twice the reach."],["Alien Metal Staff","A staff forged from metal that is not from around here."],["Torch Maul","A molten hammer. Subtle, it is not."],["Torch Flail","A burning ball on a chain."]]},{"key":"gunslinger","name":"Gunslinger","names":{"♂":["Jericho Misfire","Silas Quickdraw","Rafferty Stockton","Dexter Barel","Hollis Sharpeye"],"♀":["Scarlett Holster","Juniper Bullitz","Del the Belle","Marly Sinbad","Terra Flightrisk"],"⚲":["Gun","River","Sawyer","Ransom","Dusk"]},"specs":[["Outlaw","Fast draw, duelist. \"Draw!\""],["Deadeye","Sniper, tactician. \"Impossible shot? Never heard of 'em.\""],["Trickster","Trick shots and deception."],["Tank","Heavy artillery. \"Rrra-da-da-dah!\""]],"weapons":[["Twin Brasspoint Revolvers","Two revolvers, drawn at once."],["Brasspoint Revolver + Prismblade","A revolver for range and a blade for close."],["Harbinger B80 + Prismblade","A semiauto rifle, and a blade for when it runs dry."],["Elia Noma T11 + Morton M8","A long rifle for the far shot and a revolver for the near one."]]},{"key":"oracle","name":"Oracle","names":{"♂":["Ansel Spoilerwarning","Lyle Del Sawit","Orion Squints","Leander Loopholes","Ezra Glitch"],"♀":["Oradine Blurbind","Liora Holdenback","Maeve Withers","Nerys Kantsy","Quinta Iswayu"],"⚲":["Fael","Aura","Everlight","Seen","Chakra"]},"specs":[["Seer","Precognition and threat sense."],["Empath","Reads emotions and knows a lie."],["Omen","Battle-focused. A fighter."],["Sage","Wise and learned. A scholar."]],"weapons":[["Bolt Staff","A staff that throws lightning."],["Morton M8 Revolver","An old, trusty revolver."],["Sizzle Steel","An electrified blade that can be thrown."],["Mech Fists","Armored gauntlets charged with lightning."]]},{"key":"techtailor","name":"Techtailor","names":{"♂":["Fitz Indabag","Barnaby Thisway","Ottonomy Static","Rune Overclock","Emrys Combustable"],"♀":["Hartley Stitch","Nell Sprocketlite","Clementine Shockwire","Elsa Bolt","Ridley Tinkermiss"],"⚲":["Pip","Coil","Gizmo","Widget","Artifice"]},"specs":[["Noble","Bomber, sapper, alchemist. \"Get down!\""],["Mod","Mech armor, android upgrades, big guns, and blades."],["Stitcher","Hacker, code breaker, inventor. \"Let me stitch on that.\""]],"weapons":[["Gunner Drone + Prismblade","A little flying robot that shoots stuff, plus a blade."],["Bombs","Flares, stunners, flashers, and worse."],["Morton M8 Revolver + Mechblade","A revolver and a lightning-edged blade."],["Mech Fists","Armored gauntlets charged with lightning."],["Spin-Saw","A spinning blade that comes back when thrown."]]},{"key":"intangible","name":"Intangible","names":{"♂":["Sable Halfway","Kit Angonagin","Ashwell Splice","Lark Inrun","Quinn Overlaps"],"♀":["Nyla Disapind","Sparrow Zipmeister","Marilyn Shadowdancer","Polly Poisondox","Britta Wildablend"],"⚲":["Blink","Vanish","Hyde","Echo","Nova"]},"specs":[["Ghost","Assassin. Unseen, quick kills."],["Grift","Thief. Entering without breaking."],["Blink","Scout and runner. Fast teleporting."],["Sever","Heavy-weapon teleporter."]],"weapons":[["Twin Vibroblades","Two humming blades that cut through almost anything."],["Twin Morton M8 Revolvers","Two revolvers, fired from wherever they blink to."],["Twin Sizzle Steels","Two electrified throwing blades."],["Mechaxe","A lightning-charged axe."],["Starburst Flail","A flail that bursts with lightning."]]}],"ship":{"colors":[["Scarlet","#c53200"],["Teal","#268e62"],["Violet","#482d85"],["Forest Green","#2c6021"],["Charcoal","#0b170f"],["Bone-White","#ede9dc"]],"names":["Hooter'n'Holler","Second Wind","The Gilded Fren","LB13","The Salty Crown"],"tiers":["WORST","BAD","FINE","GOOD","BEST"],"rolls":[{"id":"ship_type","name":"Ship type","tiers":["Shuttle: the smallest. A passenger airship with no defenses.","Cruiser: small and sleek. Bigger than a shuttle, smaller than a corvette.","Corvette: smaller than a freighter, and faster.","Freighter: a Trench workhorse with a real cargo hold.","Stealth Fighter: military grade. High value. Fast and sneaky."]},{"id":"weapon_systems","name":"Weapon systems","tiers":["Rail Guns That Only Work Half the Time.","Rail Guns on the Wing","Missiles and Rail Guns.","Honing Missiles, Rail Guns, and Lightning Batteries","Sky Breakers (EMPs, AI Missile Systems, Shiver Bombs)"]},{"id":"top_speed","name":"Top speed","tiers":["Slow AF","Commercial Jetliner Speeds","Bizjet Speeds","Mach 2 (Fighter Jet)","Mach 3 (Blackbird)"]},{"id":"stealth","name":"Stealth","tiers":["Loud AF","Noticeable","Hums","Hidden","Ghost-Like"]},{"id":"housing","name":"Housing","tiers":["Sleeping On Deck","Bunk Room","Rooms the Size of Closets","Dorm Rooms","Full Apartments"]},{"id":"shields","name":"Shields","tiers":["You can get shields?","Repurposed Kinetic Shielding","Missile Defense Systems","Missile Defense System + Backup","Missile Defense Systems, Rail Defense, EMP Shielding, Gravity Generators, and Backups"]}],"twist":"If the crew rolls three or more natural 20s on one stat, it jumps a tier. Three or more natural 1s, it drops a tier."},"results":{"votes":33,"crew":[{"key":"crest_knight","job":"Crest Knight","pronoun":"He","sym":"♂","name":"Hale","nameVotes":10,"tie":null,"specialty":"Sapphire (Water)","weapon":"Twin Torches"},{"key":"gunslinger","job":"Gunslinger","pronoun":"She","sym":"♀","name":"Scarlett Holster","nameVotes":12,"tie":null,"specialty":"Deadeye","weapon":"Elia Noma T11 + Morton M8"},{"key":"oracle","job":"Oracle","pronoun":"He","sym":"♂","name":"Orion Squints","nameVotes":10,"tie":null,"specialty":"Seer","weapon":"Bolt Staff"},{"key":"techtailor","job":"Techtailor","pronoun":"He","sym":"♂","name":"Rune Overclock","nameVotes":16,"tie":null,"specialty":"Stitcher","weapon":"Gunner Drone + Prismblade"},{"key":"intangible","job":"Intangible","pronoun":"She","sym":"♀","name":"Sparrow Zipmeister","nameVotes":10,"tie":{"key":"intangible_name","label":"The Intangible's name","options":["Sparrow Zipmeister","Marilyn Shadowdancer"],"votes":10,"roll":7},"specialty":"Ghost","weapon":"Twin Vibroblades"}],"ship":{"name":"Second Wind","nameVotes":14,"color":"Violet","colorTie":{"key":"ship_color","label":"The ship's color","options":["Scarlet","Violet"],"votes":7,"roll":14},"rolls":[{"id":"ship_type","name":"Ship type","average":10.41,"nat20":1,"nat1":0,"tier":"FINE","result":"Corvette: smaller than a freighter, and faster."},{"id":"weapon_systems","name":"Weapon systems","average":9.14,"nat20":1,"nat1":2,"tier":"WORST","result":"Rail Guns That Only Work Half the Time."},{"id":"top_speed","name":"Top speed","average":9.86,"nat20":1,"nat1":2,"tier":"BAD","result":"Commercial Jetliner Speeds"},{"id":"stealth","name":"Stealth","average":10.24,"nat20":2,"nat1":2,"tier":"FINE","result":"Hums"},{"id":"housing","name":"Housing","average":9.77,"nat20":1,"nat1":1,"tier":"BAD","result":"Bunk Room"},{"id":"shields","name":"Shields","average":9.51,"nat20":0,"nat1":2,"tier":"BAD","result":"Repurposed Kinetic Shielding"}]}},"resultsLive":true};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
@@ -1394,6 +1433,92 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     $('rc-msg').textContent = 'Voting opens ' + when(OPENS) + '.';
   }
   render();
+
+  // ---- the results, once the vote has closed ----------------------------------------------
+  // DATA.results is written by scripts/tally-crew.mjs. A tie is settled by the Captain's roll: odd, the
+  // first option; even, the second. Frens click to watch that roll land; the Captain's own link
+  // (#captain=<key>) rolls it, once.
+  var RES = DATA.results, CAPTAIN = (location.hash.match(/captain=([^&]+)/) || [])[1] || '';
+  if (RES && (DATA.resultsLive || (PREVIEW && /[?&]results/.test(location.search)))) showResults();
+  function tieWinner(t, roll) { return t.options[roll % 2 === 1 ? 0 : 1]; }
+  function tieBlock(t) {
+    return '<div class="cw-tie" data-tie="' + t.key + '">' +
+      '<p class="cw-tie-opts"><b>' + esc(t.options[0]) + '</b> or <b>' + esc(t.options[1]) + '</b> · ' + t.votes + ' votes each</p>' +
+      '<p class="cw-tie-rule">Odd: ' + esc(t.options[0]) + '. Even: ' + esc(t.options[1]) + '.</p>' +
+      '<div class="cw-tie-die"></div>' +
+      '<button type="button" class="rc-cta cw-tie-go">' + (CAPTAIN ? 'CAPTAIN: ROLL THE D20' : "Tie! The Captain's Roll. Click to Watch") + '</button>' +
+      '<p class="cw-tie-out" aria-live="polite"></p></div>';
+  }
+  function d20svg(n, id) {
+    return '<div class="cw-d20"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="cwg' + id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs>' +
+      '<polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#cwg' + id + ')" stroke="#89fbcb" stroke-width="2.5" stroke-linejoin="round"/>' +
+      '<polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(137,251,203,.55)" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '<path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(137,251,203,.45)" stroke-width="1.5" fill="none"/></svg><span>' + n + '</span></div>';
+  }
+  function showResults() {
+    ['cw-start', 'cw-bar', 'cw-jobs', 'cw-ship', 'rc-orders'].forEach(function (id) { var el = $(id); if (el) el.hidden = true; });
+    var k = $('rc-close'); if (k && k.previousElementSibling) k.previousElementSibling.textContent = 'VOTING CLOSED';
+    var sm = k && k.nextElementSibling; if (sm) sm.textContent = 'The votes are in.';
+    var lede = document.querySelector('#rc .rc-lede');
+    if (lede) lede.textContent = 'The frens voted, and the crew has faces, names, and a ship. Here is who is flying to the island.';
+    var crew = RES.crew.map(function (c) {
+      return '<article class="cw-res">' +
+        '<p class="cw-res-job">' + esc(c.job.toUpperCase()) + '</p>' +
+        '<div class="cw-res-top"><div class="cw-res-pron"><b>' + c.sym + '</b><span>' + esc(c.pronoun) + '</span></div>' +
+        (c.tie ? '<div class="cw-res-name"><h3 data-tie-name="' + c.tie.key + '">Tie!</h3><p>The Captain rolls for it</p></div>' :
+          '<div class="cw-res-name"><h3>' + esc(c.name) + '</h3><p>' + c.nameVotes + ' of ' + RES.votes + ' votes</p></div>') + '</div>' +
+        (c.tie ? tieBlock(c.tie) : '') +
+        '<dl><dt>SPECIALTY</dt><dd>' + esc(c.specialty) + '</dd><dt>WEAPON</dt><dd>' + esc(c.weapon) + '</dd></dl></article>';
+    }).join('');
+    var sh = RES.ship, hex = {}; DATA.ship.colors.forEach(function (c) { hex[c[0]] = c[1]; });
+    var stats = sh.rolls.map(function (r, i) {
+      var t = DATA.ship.tiers.indexOf(r.tier);
+      return '<div class="cw-stat">' + d20svg(r.average.toFixed(2), i) + '<div><p class="q">' + esc(r.name.toUpperCase()) + '</p>' +
+        '<p class="t t' + t + '">' + esc(r.tier) + '</p><p class="a">' + esc(String(r.result).split(':')[0].replace(/\.$/, '')) + '</p>' +
+        '<p class="crit"><b class="c20">' + r.nat20 + ' NAT 20' + (r.nat20 === 1 ? '' : 's') + '</b> · <b class="c1">' + r.nat1 + ' NAT 1' + (r.nat1 === 1 ? '' : 's') + '</b></p></div></div>';
+    }).join('');
+    var colorRow = sh.colorTie
+      ? '<div class="cw-res-color"><span class="cw-sw" style="background:' + hex[sh.colorTie.options[0]] + '"></span><span class="cw-sw" style="background:' + hex[sh.colorTie.options[1]] + '"></span><b data-tie-name="ship_color">Color: Tie!</b></div>' + tieBlock(sh.colorTie)
+      : '<div class="cw-res-color"><span class="cw-sw" style="background:' + hex[sh.color] + '"></span><b>' + esc(sh.color) + '</b></div>';
+    var box = $('cw-results');
+    box.innerHTML =
+      '<section class="rc-step"><header><p class="rc-kick">THE VOTES ARE IN · ' + RES.votes + ' FRENS VOTED</p><h2>The Crew</h2>' +
+        '<p>Every fren rolled for each crew member. One roll was drawn at random, and that face decided who they are. The names, specialties, and weapons went by majority.</p></header>' +
+        '<div class="cw-res-grid">' + crew + '</div></section>' +
+      '<section class="rc-step"><header><p class="rc-kick">THE SHIP · ' + sh.nameVotes + ' VOTES FOR THE NAME</p><h2>The ' + esc(sh.name.replace(/^The /, '')) + '</h2>' +
+        '<p>The crew\'s average d20 on each stat. A natural 1 counts as two 0s, and a natural 20 as two 20s.</p></header>' +
+        colorRow + '<div class="cw-stats">' + stats + '</div></section>';
+    box.hidden = false;
+    Array.prototype.forEach.call(box.querySelectorAll('.cw-tie'), wireTie);
+  }
+  function wireTie(el) {
+    var key = el.getAttribute('data-tie'), id = 'tie_' + key, btn = el.querySelector('.cw-tie-go'), out = el.querySelector('.cw-tie-out');
+    var t = RES.crew.map(function (c) { return c.tie; }).concat([RES.ship.colorTie]).filter(function (x) { return x && x.key === key; })[0];
+    var die = dieNode(id);
+    die.className = 'rc-die'; el.querySelector('.cw-tie-die').appendChild(die);
+    function reveal(roll) {
+      var w = tieWinner(t, roll);
+      out.innerHTML = 'The Captain rolled <b>' + roll + '</b>. ' + (roll % 2 ? 'Odd' : 'Even') + ': <b>' + esc(w) + '</b> it is!';
+      var nm = document.querySelector('[data-tie-name="' + key + '"]');
+      if (nm) { nm.textContent = key === 'ship_color' ? w : w; var sub = nm.nextElementSibling; if (sub) sub.textContent = "Won the Captain's roll"; }
+      btn.textContent = 'WATCH IT AGAIN'; btn.disabled = false; el.classList.add('cw-tie-done');
+    }
+    function play(roll) { Dice.spin(id); setTimeout(function () { Dice.land(id, roll, function () { reveal(roll); }); }, 700); }
+    btn.onclick = function () {
+      btn.disabled = true; out.textContent = '';
+      jsonp({ action: 'crewties' }, function (res) {
+        var had = res && res.ok && res.ties && res.ties[key];
+        if (had) return play(had.roll);
+        if (!CAPTAIN) { btn.disabled = false; out.textContent = "The Captain hasn't rolled yet. Check back soon."; return; }
+        Dice.spin(id);
+        jsonp({ action: 'captainroll', tie: key, key: CAPTAIN }, function (r) {
+          if (r && r.ok) return setTimeout(function () { Dice.land(id, r.roll, function () { reveal(r.roll); }); }, 500);
+          Dice.stop(id); btn.disabled = false;
+          out.textContent = r && r.error === 'key' ? 'That Captain link does not work.' : 'The roll did not go through. Try again in a moment.';
+        });
+      });
+    };
+  }
 
 })();
 </script>
