@@ -1521,14 +1521,14 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   }
 
   // The Squarespace section around this page keeps its own (red) background and a fixed height; when the page is
-  // shorter than the section, stretch it so none of that color shows below.
-  function fillSection() {
+  // The Squarespace section around this page keeps its own (red) background, and it runs a little past the page;
+  // paint it the color of the page's foot so nothing shows below.
+  function paintSection() {
     var sec = root.closest('section'); if (!sec) return;
-    root.style.minHeight = '';
-    var gap = sec.getBoundingClientRect().bottom - root.getBoundingClientRect().bottom;
-    if (gap > 0) root.style.minHeight = Math.ceil(root.offsetHeight + gap) + 'px';
+    var bg = sec.querySelector('.section-background'), color = '#061a11';
+    sec.style.setProperty('background', color, 'important'); if (bg) bg.style.setProperty('background', color, 'important');
   }
-  fillSection(); addEventListener('resize', fillSection); addEventListener('load', fillSection); setTimeout(fillSection, 800); setTimeout(fillSection, 2500);
+  paintSection(); addEventListener('load', paintSection); setTimeout(paintSection, 800);
 
 })();
 </script>
