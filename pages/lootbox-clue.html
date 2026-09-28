@@ -21,7 +21,7 @@ html,body{margin:0 !important;padding:0 !important}
 #loot-clue .lc-text{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(18px,1.6vw,23px);line-height:1.55;letter-spacing:.02em;color:#fffffe;white-space:pre-line;text-transform:none;margin:0}
 #loot-clue .lc-link{text-decoration:underline;text-underline-offset:4px;cursor:default}#loot-clue .lc-link:hover{color:#fffffe}
 #loot-clue .lc-flash,#loot-clue .lc-flash *{cursor:default}
-#loot-clue .lc-img{display:block;width:100%;max-width:420px;height:auto;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}
+#loot-clue .lc-img{display:block;width:100%;max-width:420px;height:auto;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}#loot-clue .lc-img.lc-sticker{border:0;box-shadow:none;max-width:300px;margin-top:14px}
 .lc-flash-ov{position:fixed;inset:0;z-index:2147483646;background:#fffffe;display:flex;align-items:center;justify-content:center;pointer-events:none}.lc-flash-ov img{width:min(60vw,448px);height:auto}.lc-flash-ov.fill{background:#0b170f}.lc-flash-ov.fill img{width:100%;height:100%;object-fit:cover}
 .lc-flash-ov.lc-say{background:#0b170f;color:#fffffe;font-family:'Atomic Marker',cursive;font-size:clamp(44px,9vw,120px);letter-spacing:.02em}
 @media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}}
@@ -324,6 +324,10 @@ to find their prize.</div>
   <div class="lc-board" data-clue="30">
     <div class="lc-num">#30</div>
     <div class="lc-text">I'm stuck!</div>
+  </div>
+  <div class="lc-board" data-clue="31">
+    <div class="lc-num">#31</div>
+    <div class="lc-text">IT LITERALLY SAYS IT</div><img class="lc-img lc-sticker" src="https://africhmaurice.github.io/site/assets/clues/clue-31.webp" alt="The side-eye meme, cut out as a sticker" loading="lazy">
   </div>
   </div>
   <script>(function(){var s=document.getElementById('loot-clue');if(!s)return;

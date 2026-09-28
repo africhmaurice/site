@@ -75,6 +75,8 @@ to find their prize.`],
   [27, "Your Loot Box"],
   [29, 'Catch Me If You Can'],
   [30, "I'm stuck!"],
+  // The shop's "Find a loot box" button is box 31, and the button literally says it.
+  [31, 'IT LITERALLY SAYS IT', { img: ART + 'clue-31.webp', alt: 'The side-eye meme, cut out as a sticker', sticker: true }],
 ];
 
 // The few lines above the cards that say what they are.
@@ -90,7 +92,7 @@ const boards = CLUES.map(([n, text, o = {}]) => {
   const rich = (t) => esc(t).replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
   let body = text ? `<div class="lc-text">${rich(text)}</div>` : '';
   if (o.href) body = `<a class="lc-text lc-link" href="${esc(o.href)}">${esc(text)}</a>`;
-  if (o.img) body += `<img class="lc-img" src="${esc(o.img)}" alt="${esc(o.alt || '')}" loading="lazy">`;
+  if (o.img) body += `<img class="lc-img${o.sticker ? ' lc-sticker' : ''}" src="${esc(o.img)}" alt="${esc(o.alt || '')}" loading="lazy">`;
   if (o.night) return `  <div class="lc-board lc-night" data-clue="${n}" data-night="${esc(o.night)}">
     <div class="lc-num">#${n}</div>
     ${body}
@@ -138,7 +140,7 @@ const css = `#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,min
 #loot-clue .lc-text{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(18px,1.6vw,23px);line-height:1.55;letter-spacing:.02em;color:#fffffe;white-space:pre-line;text-transform:none;margin:0}
 #loot-clue .lc-link{text-decoration:underline;text-underline-offset:4px;cursor:default}#loot-clue .lc-link:hover{color:#fffffe}
 #loot-clue .lc-flash,#loot-clue .lc-flash *{cursor:default}
-#loot-clue .lc-img{display:block;width:100%;max-width:420px;height:auto;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}
+#loot-clue .lc-img{display:block;width:100%;max-width:420px;height:auto;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}#loot-clue .lc-img.lc-sticker{border:0;box-shadow:none;max-width:300px;margin-top:14px}
 .lc-flash-ov{position:fixed;inset:0;z-index:2147483646;background:#fffffe;display:flex;align-items:center;justify-content:center;pointer-events:none}.lc-flash-ov img{width:min(60vw,448px);height:auto}.lc-flash-ov.fill{background:#0b170f}.lc-flash-ov.fill img{width:100%;height:100%;object-fit:cover}
 .lc-flash-ov.lc-say{background:#0b170f;color:#fffffe;font-family:'Atomic Marker',cursive;font-size:clamp(44px,9vw,120px);letter-spacing:.02em}
 @media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}}`;
