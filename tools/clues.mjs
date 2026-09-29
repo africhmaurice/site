@@ -175,10 +175,10 @@ const hintJs = `  <script>(function(){var s=document.getElementById('loot-clue')
             window[name]=function(d){end();fin(d);};sc.onerror=function(){end();fin(null);};
             sc.src=EP+'?'+new URLSearchParams(q).toString()+'&callback='+name;document.body.appendChild(sc);});}
         function buy(email){var m=me(),tries=0;say('Unlocking\\u2026');
-          var slow=setTimeout(function(){say('Still working\\u2026 the hunt sheet is slow right now. Please keep this page open.');},6000);
+          var slow=setTimeout(function(){say('Still working\\u2026 the airship is slow right now. Please keep this page open.');},6000);
           var q={action:'hint',clue:clue,step:String(step),email:email,first_name:m.first_name||'',handle:m.handle||'',platform:m.platform||'',country:m.country||''};
           (function go(){tries++;send(q,function(d){
-            if(!d&&tries<3)return setTimeout(go,1500);
+            if((!d||d.error==='busy'||d.error==='server')&&tries<4)return setTimeout(go,1500*tries);
             clearTimeout(slow);
             if(!d||!d.ok){say(d&&d.error==='closed'?'The hunt is closed.':'That didn\\u2019t go through. Please try again in a minute.');btn.hidden=false;return;}
             try{localStorage.setItem(KEY,'1');}catch(e){}
