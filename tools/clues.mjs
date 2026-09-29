@@ -78,6 +78,7 @@ to find their prize.`],
   [30, "I'm stuck!"],
   // The shop's "Find a loot box" button is box 31, and the button literally says it.
   [31, 'IT LITERALLY SAYS IT', { img: ART + 'clue-31.webp', alt: 'The confused side-eye meme', sticker: true }],
+  [34, '', { fill: '#482d85' }],
 ];
 
 // The few lines above the cards that say what they are.
@@ -98,7 +99,8 @@ const boards = CLUES.map(([n, text, o = {}]) => {
     <div class="lc-num">#${n}</div>
     ${body}
   </div>`;
-  return `  <div class="lc-board${o.flash ? ' lc-flash' : ''}" data-clue="${n}"${o.flash ? ` data-flash="${esc(o.flash)}"${o.flashFill ? ' data-fill' : ''} role="button" tabindex="0"` : ''}>
+  // fill: the whole card is one color (the clue is the color itself).
+  return `  <div class="lc-board${o.flash ? ' lc-flash' : ''}" data-clue="${n}"${o.fill ? ` style="background:${esc(o.fill)};min-height:220px"` : ''}${o.flash ? ` data-flash="${esc(o.flash)}"${o.flashFill ? ' data-fill' : ''} role="button" tabindex="0"` : ''}>
     <div class="lc-num">#${n}</div>
     ${body}
   </div>`;
