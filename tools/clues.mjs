@@ -71,12 +71,12 @@ to find their prize.`],
   [18, 'click this', { href: VOID }],
   [19, 'A DUDE WHO LIKES BOOKS PREDOMINANTLY LIKED BY LADIES BUT ALSO LOTS OF DUDES, SO...'],
   [20, 'Princess (with an H) + Wei Shi Capaldi', { hints: [
-    { price: 50, button: 'Pay 50 points for a hint.', pics: [
+    { price: 25, button: 'Pay 25 points for a hint.', pics: [
       ['Princess (with an H)', ART + 'clue-20-hint-1.jpg'],
       ['Wei Shi', ART + 'clue-20-hint-2.jpg'],
       ['Capaldi', ART + 'clue-20-hint-3.jpg'],
     ] },
-    { price: 25, button: 'Sacrifice 25 additional points for another clue.', text: '5:00' },
+    { price: 15, button: 'Sacrifice 15 additional points for another clue.', text: '5:00' },
   ] }],
   [21, "It's in my linktree"],
   [22, '"The Angel Sun" by Pinkman, Daughter of Arathorn and Gilrean'],
