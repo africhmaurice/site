@@ -169,7 +169,7 @@ html,body{margin:0 !important;padding:0 !important}
     violet: { name: 'Violet', base: '#2d1c53', wash: 'rgba(45,28,83,.78)', hi: '#a2f590', line: 'rgba(158,116,253,.75)', pill: '#ff4c0f', pillText: '#fffffe' },
     green: { name: 'Green', base: '#1b3b15', wash: 'rgba(27,59,21,.8)', hi: '#a2f590', line: 'rgba(162,245,144,.6)', pill: '#ff4c0f', pillText: '#fffffe' },
     emerald: { name: 'Emerald', base: '#1a5e41', wash: 'rgba(26,94,65,.8)', hi: '#89fbcb', line: 'rgba(137,251,203,.6)', pill: '#ff4c0f', pillText: '#fffffe' },
-    ember: { name: 'Ember', base: '#912501', wash: 'rgba(145,37,1,.8)', hi: '#fd7547', line: 'rgba(253,117,71,.7)', pill: '#fffffe', pillText: '#912501' },
+    ember: { name: 'Scarlet', base: '#912501', wash: 'rgba(145,37,1,.8)', hi: '#fd7547', line: 'rgba(253,117,71,.7)', pill: '#fffffe', pillText: '#912501' },
     ink: { name: 'Ink', base: '#0b170f', wash: 'rgba(11,23,15,.82)', hi: '#3adb97', line: 'rgba(58,219,151,.6)', pill: '#ff4c0f', pillText: '#fffffe' }
   };
   var themeKey = (function () { try { return localStorage.getItem('thShareColor') || 'violet'; } catch (e) { return 'violet'; } })();
