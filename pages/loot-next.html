@@ -484,6 +484,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   var shownKey = null;
   function drawCard(found, fresh) {
     if (!found) { cardBox.style.display = 'none'; return; }
+    lastFound = found.slice();
     // Same boxes as the card already on screen: leave it (and any fill-in under way) alone.
     var key = found.slice().sort(function (a, b) { return a - b; }).join(',') + '|' + fresh;
     if (key === shownKey && grid.children.length) { cardBox.style.display = 'block'; return; }
@@ -511,7 +512,6 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         cell.innerHTML = have[n] ? (n === 0 ? '&#9733;' : n) : '&#183;';
       };
     }
-    lastFound = found.slice();
     tally.innerHTML = 'You have found <strong>' + found.length + '</strong> of ' + TOTAL +
       ' &nbsp;&middot;&nbsp; <strong>' + (found.length * 50) + '</strong> points';
     cardBox.style.display = 'block';
