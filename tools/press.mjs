@@ -129,7 +129,7 @@ const FACTS = [
   ['U.S.', 'Saga Press · Hardcover ISBN 9781668242834'],
   ['UK', 'Hodderscape · Hardback ISBN 9781399763073'],
   ['Audio', 'Simon Maverick'],
-  ['Goodreads', '25,658 want to read · 4.28 average from 1,084 ratings (September 28, 2026)'],
+  ['Goodreads', '25,658 want to read · 4.28 average from 1,085 ratings (September 28, 2026)'],
   ['Home', 'Asheville, North Carolina'],
 ];
 
@@ -144,17 +144,17 @@ const HUNT_QUOTE = [
 const HUNT_QUOTE_BY = 'Maurice Africh, Author of “Cello’s Gate”';
 const STATS_DATE = 'September 28, 2026';
 const STATS = [
-  ['179', 'sky pirates'],
-  ['119,960', 'crew points earned'],
-  ['2,176', 'sweepstakes entries'],
-  ['6,562', 'site visits in the first eight days'],
+  ['208', 'sky pirates'],
+  ['132,720', 'crew points earned'],
+  ['2,439', 'sweepstakes entries'],
+  ['7,101', 'site visits in the first nine days'],
 ];
 const HUNT_FACTS = [
   ['Dates', 'September 20 to November 1, 2026. It ends two days before Cello’s Gate comes out.'],
   ['Where', 'mauriceafrich.com/the-hunt'],
   ['Who', 'Free and open to everyone, everywhere. The Treasure and sweepstakes prizes are for U.S. and UK residents, 18 and older.'],
-  ['Players', '179 sky pirates so far: 144 in the U.S., 14 in the UK, and 19 in other countries, including Canada and Estonia.'],
-  ['Traffic', 'My website averaged about 10 visits a day before the hunt. In its first eight days it had 6,562 visits and 15,512 page views, with 1,349 visits on September 27 alone.'],
+  ['Players', '208 sky pirates so far: 171 in the U.S., 16 in the UK, and 19 in other countries, including Canada and Estonia.'],
+  ['Traffic', 'My website averaged about 10 visits a day before the hunt. In its first nine days it had 7,101 visits and 16,570 page views, with 1,268 visits on September 27 alone.'],
   ['Play', 'Tasks, riddles, clues, the daily Skyword game, a crossword, 51 hidden loot boxes, and a fan fiction contest.'],
   ['Story', 'Choose-your-own-adventure votes. Hunters picked the crew’s route to Red City and are now creating new crew members and their ship.'],
   ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew hit 100% of the Act One goal in eight days.'],
