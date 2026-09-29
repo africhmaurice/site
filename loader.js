@@ -3,7 +3,7 @@
      <div data-ma-page="the-hunt"></div>
      <script src="https://africhmaurice.github.io/site/loader.js"></script>
    This script fetches pages/<slug>.html from GitHub Pages, drops it in, and runs its scripts in order.
-   Published edits show up within about a minute (the fetch is cache-busted per minute).
+   Published edits show up as soon as GitHub Pages has them (each fetch checks for a newer copy).
    Loaded once site-wide from Code Injection (in <head>), it also shows the crest loading screen.
    Every copy after the first only mounts blocks it finds, so a page can include it any number of times. */
 (function () {
@@ -18,7 +18,9 @@
     (function wait() { var ov = document.getElementById('ma-loading'); if (ov && !ov.classList.contains('ma-done')) setTimeout(wait, 80); else fn(); })();
   };
   var BASE = me ? me.src.replace(/loader\.js.*$/, '') : 'https://africhmaurice.github.io/site/';
-  var stamp = Math.floor(Date.now() / 60000);
+  // Pages are fetched with cache: 'no-cache': the browser keeps its copy and only asks GitHub Pages whether it
+  // changed (a tiny 304 answer when it has not), so a visit re-downloads a page only after a publish.
+  var FRESH = { cache: 'no-cache' };
 
   function runScripts(root) {
     var scripts = Array.prototype.slice.call(root.querySelectorAll('script'));
@@ -62,7 +64,7 @@
     el.setAttribute('data-ma-state', 'loading');
     var slug = el.getAttribute('data-ma-page');
     pending++;
-    fetch(BASE + 'pages/' + slug + '.html?v=' + stamp)
+    fetch(BASE + 'pages/' + slug + '.html', FRESH)
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
       .then(function (html) {
         el.innerHTML = html;
@@ -340,7 +342,7 @@
     if (adv) adv.closest('.header-nav-item').style.display = 'none';
     var advRow = document.querySelector('.header-menu-nav [data-folder="root"] a[data-folder-id="' + ADV + '"]');
     if (advRow) advRow.closest('.header-menu-nav-item').style.display = 'none';
-    fetch(BASE + 'pages/hunt-menu.html?v=' + stamp).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (html) {
+    fetch(BASE + 'pages/hunt-menu.html', FRESH).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (html) {
       var doc = new DOMParser().parseFromString(html, 'text/html');
       var src = doc.querySelector('#hunt-nav .mn-links'), ov = doc.getElementById('hunt-nav-ov');
       if (!src) return;

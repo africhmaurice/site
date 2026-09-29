@@ -406,13 +406,25 @@ to find their prize.</div>
             msg.querySelector('.lc-hint-no').onclick=function(){say('');btn.hidden=false;};
             msg.querySelector('.lc-hint-yes').onclick=function(){buy(email);};
           }).catch(function(){say('Something went wrong. Please try again in a minute.');btn.hidden=false;});}
-        function buy(email){var m=me();say('Unlocking\u2026');
-          var body=new URLSearchParams({action:'hint',clue:clue,step:String(step),email:email,first_name:m.first_name||'',handle:m.handle||'',platform:m.platform||'',country:m.country||''});
-          fetch(EP,{method:'POST',body:body}).then(function(r){return r.json();}).then(function(d){
-            if(!d||!d.ok){say(d&&d.error==='closed'?'The hunt is closed.':'That didn\u2019t go through. Please try again.');btn.hidden=false;return;}
+        // The web app sometimes takes thirty seconds. Buying is safe to repeat (the sheet answers 'already'),
+        // so a slow or lost answer is simply asked again, by JSONP if the POST itself is blocked.
+        function send(q,done){var over=false,fin=function(d){if(!over){over=true;done(d);}};
+          fetch(EP,{method:'POST',body:new URLSearchParams(q)}).then(function(r){return r.json();}).then(fin).catch(function(){
+            var name='lchcb'+Math.random().toString(36).slice(2),sc=document.createElement('script');
+            var t=setTimeout(function(){end();fin(null);},45000);
+            function end(){clearTimeout(t);delete window[name];if(sc.parentNode)sc.parentNode.removeChild(sc);}
+            window[name]=function(d){end();fin(d);};sc.onerror=function(){end();fin(null);};
+            sc.src=EP+'?'+new URLSearchParams(q).toString()+'&callback='+name;document.body.appendChild(sc);});}
+        function buy(email){var m=me(),tries=0;say('Unlocking\u2026');
+          var slow=setTimeout(function(){say('Still working\u2026 the hunt sheet is slow right now. Please keep this page open.');},6000);
+          var q={action:'hint',clue:clue,step:String(step),email:email,first_name:m.first_name||'',handle:m.handle||'',platform:m.platform||'',country:m.country||''};
+          (function go(){tries++;send(q,function(d){
+            if(!d&&tries<3)return setTimeout(go,1500);
+            clearTimeout(slow);
+            if(!d||!d.ok){say(d&&d.error==='closed'?'The hunt is closed.':'That didn\u2019t go through. Please try again in a minute.');btn.hidden=false;return;}
             try{localStorage.setItem(KEY,'1');}catch(e){}
-            show(d.status==='already'?'You already unlocked this one.':price+' points will come off your total at the next scoring update.');
-          }).catch(function(){say('That didn\u2019t go through. Please try again.');btn.hidden=false;});}
+            show(d.status==='already'&&tries===1?'You already unlocked this one.':price+' points will come off your total at the next scoring update.');
+          });})();}
         btn.addEventListener('click',function(){btn.hidden=true;var e=saved();if(e)check(e);else ask();});
       });
     });})();</script>
