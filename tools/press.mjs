@@ -158,7 +158,7 @@ const FACTS = [
 
 // The Hunt section. DRAFT copy for Maurice to rewrite. Update STATS (and STATS_DATE) before each round of pitches.
 const HUNT_LEDE = [
-  'From September 20th to November 1st, hundreds of readers from 21 different countries are searching for treasure hidden all over the internet. I’ve partnered with 20+ Bookstagram, Booktok, and Booktube influencers to make this thing as far-reaching as possible.',
+  'From September 20th to November 1st, hundreds of readers from 9 different countries are searching for treasure hidden all over the internet. I’ve partnered with 20+ Bookstagram, Booktok, and Booktube influencers to make this thing as far-reaching as possible.',
   'The hunt is broken into three acts following a fully-interactive <b>Choose Your Own Adventure-Style Game</b> (hosted on the website). They solve riddles, follow clues, play daily bookish games, hunt down hidden loot boxes, and vote on where the story goes next.',
 ];
 const HUNT_WAYS = [
@@ -174,6 +174,20 @@ const HUNT_QUOTE = [
 ];
 const HUNT_QUOTE_BY = 'Maurice Africh, Author of “Cello’s Gate”';
 const STATS_DATE = 'September 29, 2026';
+// [big number, what it means]
+const HIGHLIGHTS = [
+  ['Reach', [
+    ['70×', 'Site traffic: 7,309 visits since the hunt started, about 730 a day, up from about 10 a day before it.'],
+    ['2,173', 'New Goodreads “want to read” adds during the hunt, with 1,071 in a single day (September 28).'],
+    ['220', 'Hunters from 9 countries: the U.S., the UK, Canada, Australia, India, Estonia, Japan, Poland, and one more.'],
+  ]],
+  ['Engagement', [
+    ['2,879', 'Tasks completed, about 290 a day, adding up to 2,850 sweepstakes entries.'],
+    ['1,099', 'Loot boxes found. Three hunters have found 31 each.'],
+    ['762', 'Daily game wins, plus 300 riddles solved.'],
+    ['173,820', 'Crew points, more than four times the 40,000 Act One goal, with four reward tiers unlocked.'],
+  ]],
+];
 const STATS = [
   ['220', 'sky pirates'],
   ['173,820', 'crew points earned'],
@@ -184,11 +198,11 @@ const HUNT_FACTS = [
   ['Dates', 'September 20 to November 1, 2026. It ends two days before “Cello’s Gate” comes out.'],
   ['Where', 'mauriceafrich.com/the-hunt'],
   ['Who', 'Free and open to everyone, everywhere. The Treasure and sweepstakes prizes are for U.S. and UK residents, 18 and older.'],
-  ['Players', '220 sky pirates so far: 182 in the U.S., 16 in the UK, and 20 in other countries, including Canada and Estonia.'],
-  ['Traffic', 'My website averaged about 10 visits a day before the hunt. In its first nine days it had 7,101 visits and 16,570 page views, with 1,268 visits on September 27 alone.'],
+  ['Players', '220 sky pirates from 9 countries, including the U.S., the UK, Canada, Australia, India, Estonia, Japan, and Poland.'],
+  ['Traffic', 'Site traffic is up about 70 times: 7,309 visits since the hunt started, about 730 a day, compared with about 10 a day in September before it.'],
   ['Play', 'Tasks, riddles, clues, the daily Skyword game, a crossword, 100 hidden loot boxes, and a fan fiction contest.'],
   ['Story', 'Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!'],
-  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew hit 100% of the Act One goal in eight days.'],
+  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 173,820 points, more than four times the 40,000 Act One goal, with four reward tiers unlocked.'],
   ['Acts', 'Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1). Winners are announced the day after each act ends.'],
   ['Treasure', 'The top three on the U.S. and UK leaderboards win The Treasure: signed editions, art prints, custom bookmarks, enamel pins, an advance audiobook, and more.'],
 ];
@@ -269,6 +283,13 @@ ${fonts}
 #press .pp-hunt-lede b{color:#fffffe}
 #press .pp-hunt-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.65;color:#ede9dc;margin:0 0 28px;max-width:820px}
 #press .pp-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 10px}
+#press .pp-hl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:0 0 10px}
+#press .pp-hl-col{background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);padding:24px 26px}
+#press .pp-hl-col h3{font-family:'Almarai',sans-serif!important;font-weight:800;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#fd7547;margin:0 0 6px;text-align:center}
+#press .pp-hl-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;align-items:center;padding:14px 0;border-top:1px solid rgba(255,255,254,.12)}
+#press .pp-hl-col h3 + .pp-hl-row{border-top:0}
+#press .pp-hl-row b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:40px;line-height:1;color:#fffffe;text-align:right}
+#press .pp-hl-row span{font-size:15px;line-height:1.5;color:#ede9dc}
 #press .pp-stat{padding:20px 18px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);text-align:center}
 #press .pp-stat b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(30px,3vw,44px);line-height:1.1;color:#fffffe}
 #press .pp-stat span{display:block;margin-top:6px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fd7547}
@@ -302,6 +323,9 @@ ${cardCss('#press')}
 @media (max-width:860px){
   #press .pp-imgs{grid-template-columns:1fr 1fr}
   #press .pp-stats{grid-template-columns:1fr 1fr}
+  #press .pp-hl{grid-template-columns:1fr}
+  #press .pp-hl-row{grid-template-columns:110px minmax(0,1fr)}
+  #press .pp-hl-row b{font-size:32px}
   #press .pp-hunt .pp-facts{grid-template-columns:1fr}
   #press .pp-hunt .pp-facts dd{border-top:0;padding-top:0}
   #press .pp-phone{flex-basis:150px}
@@ -325,7 +349,7 @@ ${cardCss('#press')}
       ${HUNT_LEDE.map((p) => `<p class="pp-hunt-lede">${p}</p>`).join('')}
       <p class="pp-hunt-lede">There are three ways to win:</p>
       <ol class="pp-ways">${HUNT_WAYS.map((w) => `<li>${esc(w)}</li>`).join('')}</ol>
-      <div class="pp-stats">${STATS.map(([n, l]) => `<div class="pp-stat"><b>${esc(n)}</b><span>${esc(l)}</span></div>`).join('')}</div>
+      <div class="pp-hl">${HIGHLIGHTS.map(([head, rows]) => `<div class="pp-hl-col"><h3>${esc(head)}</h3>${rows.map(([n, t]) => `<div class="pp-hl-row"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join('')}</div>`).join('')}</div>
       <p class="pp-asof">As of ${esc(STATS_DATE)}.</p>
       <blockquote class="pp-quote">${HUNT_QUOTE.map((p, i, a) => `<p>${i === 0 ? '“' : ''}${esc(p)}${i === a.length - 1 ? '”' : ''}</p>`).join('')}<cite>${esc(HUNT_QUOTE_BY)}</cite></blockquote>
       <dl class="pp-facts">${HUNT_FACTS.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
