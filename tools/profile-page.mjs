@@ -188,8 +188,11 @@ html,body{margin:0 !important;padding:0 !important}
       round(90, 1080, 900, 130, 65); x.fillStyle = '#ff4c0f'; x.fill();
       t('JOIN ME ON THE HUNT!', W / 2, 1168, fit('JOIN ME ON THE HUNT!', 820, 74, AM), '#fffffe');
       t('MAURICEAFRICH.COM/THE-HUNT', W / 2, 1262, '800 30px Almarai', '#fffffe', 4);
-      if (mark) x.drawImage(mark, 330, 1284, 26, 41);
-      t('@MAURICEAFRICH  ·  #SKYPIRATESHUNT', W / 2 + 22, 1316, '800 22px Almarai', '#a2f590', 4);
+      var foot = '@MAURICEAFRICH  ·  #SKYPIRATESHUNT';
+      x.font = '800 22px Almarai'; if ('letterSpacing' in x) x.letterSpacing = '4px';
+      var fw = x.measureText(foot).width; if ('letterSpacing' in x) x.letterSpacing = '0px';
+      t(foot, W / 2 + 20, 1316, '800 22px Almarai', '#a2f590', 4);
+      if (mark) x.drawImage(mark, W / 2 + 20 - fw / 2 - 40, 1284, 26, 41);
       c.toBlob(function (b) {
         btn.textContent = label; btn.disabled = false;
         if (!b) { alert('Your browser couldn’t make the picture. Try again in a moment.'); return; }
