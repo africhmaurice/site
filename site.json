@@ -93,6 +93,12 @@
       "source": "bot:squarespace-game-crossword.html"
     },
     {
+      "slug": "sixteen",
+      "url": "/sixteen-pieces",
+      "title": "Sixteen Pieces (loot box 36 slide puzzle)",
+      "source": "bot:squarespace-sixteen.html"
+    },
+    {
       "slug": "game-first-lines",
       "url": "(preview only, not on Squarespace yet)",
       "title": "Game: First Lines",

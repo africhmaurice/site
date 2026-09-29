@@ -37,6 +37,10 @@ html,body{margin:0 !important;padding:0 !important}
 #loot-clue .lc-hint-pics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%}
 #loot-clue .lc-hint-pics figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px}
 #loot-clue .lc-hint-pics figcaption{font-weight:800;color:#fffffe;font-size:15px;line-height:1.3;text-align:center;min-height:2.6em;display:flex;align-items:flex-end;justify-content:center}
+#loot-clue .lc-hint-pics{margin:0 auto}
+#loot-clue .lc-hint-pics.lc-wide img{aspect-ratio:16/10}
+#loot-clue .lc-hint-pics.lc-square img{aspect-ratio:1/1}
+#loot-clue .lc-hint-link{display:inline-block;font-size:clamp(26px,3.2vw,40px);text-decoration:underline;word-break:break-word}
 #loot-clue .lc-hint-pics img{width:100%;aspect-ratio:3/4;object-fit:cover;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}
 #loot-clue .lc-hint-text{font-family:'Atomic Marker',cursive;font-size:clamp(40px,5vw,64px);line-height:1;color:#89fbcb;text-align:center}
 @media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}#loot-clue .lc-hint-pics{gap:10px}}
@@ -277,14 +281,40 @@ to find their prize.</div>
   <div class="lc-board" data-clue="12">
     <div class="lc-num">#12</div>
     <div class="lc-text">Samuel Chastain Rogers aka &quot;Pops&quot;</div>
+    <div class="lc-hint" data-clue="12">
+      <div class="lc-step" data-step="1" data-price="25" data-total="25">
+        <button type="button" class="lc-hint-btn">Pay 25 points for a hint.</button>
+        <div class="lc-hint-msg" aria-live="polite"></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-pics lc-wide" style="grid-template-columns:repeat(2,minmax(0,1fr))"><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-12-hint-1.jpg" alt="Hint picture"></figure><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-12-hint-2.jpg" alt="Hint picture"></figure></div></div>
+      </div>
+    </div>
   </div>
   <div class="lc-board lc-flash" data-clue="13" data-flash="https://africhmaurice.github.io/site/assets/clues/clue-13-flash.webp" role="button" tabindex="0">
     <div class="lc-num">#13</div>
     <div class="lc-text">In the Dark (Visually)</div>
+    <div class="lc-hint" data-clue="13">
+      <div class="lc-step" data-step="1" data-price="10" data-total="10">
+        <button type="button" class="lc-hint-btn">Pay 10 points for a hint.</button>
+        <div class="lc-hint-msg" aria-live="polite"></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-text" data-t="Y2xpY2sgaXQ="></div></div>
+      </div>
+      <div class="lc-step" data-step="2" data-price="15" data-total="25" hidden>
+        <button type="button" class="lc-hint-btn">Sacrifice 15 additional points for another clue.</button>
+        <div class="lc-hint-msg" aria-live="polite"></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-text" data-t="ZW1hTiBDTQ=="></div></div>
+      </div>
+    </div>
   </div>
   <div class="lc-board" data-clue="14">
     <div class="lc-num">#14</div>
     <div class="lc-text">Them: &quot;As an author, you're not supposed to do this!&quot;</div>
+    <div class="lc-hint" data-clue="14">
+      <div class="lc-step" data-step="1" data-price="25" data-total="25">
+        <button type="button" class="lc-hint-btn">Pay 25 points for a hint.</button>
+        <div class="lc-hint-msg" aria-live="polite"></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-text" data-t="QXQgbGVhc3QgSSBkaWRu4oCZdCBtYWtlIGl0IGZpdmUgc3RhcnMu"></div></div>
+      </div>
+    </div>
   </div>
   <div class="lc-board" data-clue="15">
     <div class="lc-num">#15</div>
@@ -293,6 +323,13 @@ to find their prize.</div>
   <div class="lc-board lc-flash" data-clue="17" data-flash="https://africhmaurice.github.io/site/assets/clues/clue-17-flash.webp" data-fill role="button" tabindex="0">
     <div class="lc-num">#17</div>
     <img class="lc-img" src="https://africhmaurice.github.io/site/assets/clues/clue-17.webp" alt="A barrel smoker with a coffee can on its chimney" loading="lazy">
+    <div class="lc-hint" data-clue="17">
+      <div class="lc-step" data-step="1" data-price="10" data-total="10">
+        <button type="button" class="lc-hint-btn">Pay 10 points for a hint.</button>
+        <div class="lc-hint-msg" aria-live="polite"></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-text" data-t="Y2xpY2sgaXQ="></div></div>
+      </div>
+    </div>
   </div>
   <div class="lc-board" data-clue="18">
     <div class="lc-num">#18</div>
@@ -309,7 +346,7 @@ to find their prize.</div>
       <div class="lc-step" data-step="1" data-price="25" data-total="25">
         <button type="button" class="lc-hint-btn">Pay 25 points for a hint.</button>
         <div class="lc-hint-msg" aria-live="polite"></div>
-        <div class="lc-hint-out" hidden><div class="lc-hint-pics"><figure><figcaption>Princess (with an H)</figcaption><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-20-hint-1.jpg" alt="Hint picture for Princess (with an H)"></figure><figure><figcaption>Wei Shi</figcaption><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-20-hint-2.jpg" alt="Hint picture for Wei Shi"></figure><figure><figcaption>Capaldi</figcaption><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-20-hint-3.jpg" alt="Hint picture for Capaldi"></figure></div></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-pics lc-tall" style="grid-template-columns:repeat(3,minmax(0,1fr))"><figure><figcaption>Princess (with an H)</figcaption><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-20-hint-1.jpg" alt="Hint picture for Princess (with an H)"></figure><figure><figcaption>Wei Shi</figcaption><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-20-hint-2.jpg" alt="Hint picture for Wei Shi"></figure><figure><figcaption>Capaldi</figcaption><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-20-hint-3.jpg" alt="Hint picture for Capaldi"></figure></div></div>
       </div>
       <div class="lc-step" data-step="2" data-price="15" data-total="40" hidden>
         <button type="button" class="lc-hint-btn">Sacrifice 15 additional points for another clue.</button>
@@ -333,10 +370,24 @@ to find their prize.</div>
   <div class="lc-board" data-clue="24">
     <div class="lc-num">#24</div>
     <div class="lc-text">Getting the Band Back Together</div>
+    <div class="lc-hint" data-clue="24">
+      <div class="lc-step" data-step="1" data-price="25" data-total="25">
+        <button type="button" class="lc-hint-btn">Pay 25 points for a hint.</button>
+        <div class="lc-hint-msg" aria-live="polite"></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-pics lc-tall" style="grid-template-columns:repeat(1,minmax(0,1fr));max-width:300px"><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-24-hint-1.jpg" alt="Hint picture"></figure></div></div>
+      </div>
+    </div>
   </div>
   <div class="lc-board lc-night" data-clue="25" data-night="/in-the-dark">
     <div class="lc-num">#25</div>
     <div class="lc-text">“In the dark”</div>
+    <div class="lc-hint" data-clue="25">
+      <div class="lc-step" data-step="1" data-price="25" data-total="25">
+        <button type="button" class="lc-hint-btn">Pay 25 points for a hint.</button>
+        <div class="lc-hint-msg" aria-live="polite"></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-pics lc-square" style="grid-template-columns:repeat(1,minmax(0,1fr));max-width:300px"><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-25-hint-1.png" alt="Hint picture"></figure></div></div>
+      </div>
+    </div>
   </div>
   <div class="lc-board" data-clue="26">
     <div class="lc-num">#26</div>
@@ -349,6 +400,13 @@ to find their prize.</div>
   <div class="lc-board" data-clue="28">
     <div class="lc-num">#28</div>
     <img class="lc-img lc-sticker" src="https://africhmaurice.github.io/site/assets/clues/clue-28.webp" alt="A wedge of cheese" loading="lazy">
+    <div class="lc-hint" data-clue="28">
+      <div class="lc-step" data-step="1" data-price="25" data-total="25">
+        <button type="button" class="lc-hint-btn">Pay 25 points for a hint.</button>
+        <div class="lc-hint-msg" aria-live="polite"></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-pics lc-square" style="grid-template-columns:repeat(2,minmax(0,1fr))"><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-28-hint-1.png" alt="Hint picture"></figure><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-28-hint-2.png" alt="Hint picture"></figure></div></div>
+      </div>
+    </div>
   </div>
   <div class="lc-board" data-clue="29">
     <div class="lc-num">#29</div>
@@ -361,10 +419,32 @@ to find their prize.</div>
   <div class="lc-board" data-clue="31">
     <div class="lc-num">#31</div>
     <div class="lc-text">IT LITERALLY SAYS IT</div><img class="lc-img lc-sticker" src="https://africhmaurice.github.io/site/assets/clues/clue-31.webp" alt="The confused side-eye meme" loading="lazy">
+    <div class="lc-hint" data-clue="31">
+      <div class="lc-step" data-step="1" data-price="25" data-total="25">
+        <button type="button" class="lc-hint-btn">Pay 25 points for a hint.</button>
+        <div class="lc-hint-msg" aria-live="polite"></div>
+        <div class="lc-hint-out" hidden><a class="lc-hint-text lc-hint-link" target="_blank" rel="noopener" data-h="aHR0cHM6Ly9zaG9wLm1hdXJpY2VhZnJpY2guY29tLw==" data-t="c2hvcC5tYXVyaWNlYWZyaWNoLmNvbQ=="></a></div>
+      </div>
+    </div>
+  </div>
+  <div class="lc-board" data-clue="32">
+    <div class="lc-num">#32</div>
+    <div class="lc-text">Okay? Byyyyeee!</div>
   </div>
   <div class="lc-board" data-clue="34" style="background:#482d85;min-height:220px">
     <div class="lc-num">#34</div>
     
+    <div class="lc-hint" data-clue="34">
+      <div class="lc-step" data-step="1" data-price="25" data-total="25">
+        <button type="button" class="lc-hint-btn">Pay 25 points for a hint.</button>
+        <div class="lc-hint-msg" aria-live="polite"></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-text" data-t="dGhlIHZvdGVzIGFyZSBpbiE="></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="lc-board" data-clue="36">
+    <div class="lc-num">#36</div>
+    <div class="lc-text">Slide &amp; Find</div>
   </div>
   </div>
   <script>(function(){var s=document.getElementById('loot-clue');if(!s)return;
@@ -389,11 +469,12 @@ to find their prize.</div>
     function hash(email){var bytes=new TextEncoder().encode('thp1:'+email.trim().toLowerCase());return crypto.subtle.digest('SHA-256',bytes).then(function(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('').slice(0,32);});}
     var OK=/^[^@\s]+@[^@\s]+\.[^@\s]+$/;
     Array.prototype.forEach.call(s.querySelectorAll('.lc-hint'),function(h){var clue=h.getAttribute('data-clue'),steps=h.querySelectorAll('.lc-step');
+      ['click','keydown'].forEach(function(ev){h.addEventListener(ev,function(e){e.stopPropagation();});});
       Array.prototype.forEach.call(steps,function(st,k){var step=k+1,price=+st.getAttribute('data-price'),total=+st.getAttribute('data-total'),KEY='thClueHint:'+clue+':'+step;
         var btn=st.querySelector('.lc-hint-btn'),msg=st.querySelector('.lc-hint-msg'),out=st.querySelector('.lc-hint-out');
         function say(html){msg.innerHTML=html;}
         function show(note){Array.prototype.forEach.call(out.querySelectorAll('img[data-src]'),function(i){i.src=i.getAttribute('data-src');i.removeAttribute('data-src');});
-          var t=out.querySelector('.lc-hint-text[data-t]');if(t){t.textContent=decodeURIComponent(escape(atob(t.getAttribute('data-t'))));t.removeAttribute('data-t');}
+          var t=out.querySelector('.lc-hint-text[data-t]');if(t){t.textContent=decodeURIComponent(escape(atob(t.getAttribute('data-t'))));t.removeAttribute('data-t');if(t.hasAttribute('data-h')){t.href=atob(t.getAttribute('data-h'));t.removeAttribute('data-h');}}
           out.hidden=false;btn.hidden=true;say(note||'');if(steps[k+1])steps[k+1].hidden=false;}
         try{if(localStorage.getItem(KEY))show();}catch(e){}
         function ask(){say('<label>The email you hunt with<input type="email" autocomplete="email"></label><button type="button" class="lc-hint-go">Next</button>');
