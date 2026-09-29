@@ -73,6 +73,7 @@ to find their prize.`],
   [25, '“In the dark”', { night: '/in-the-dark' }],
   [26, "It'll come to you."],
   [27, "Your Loot Box"],
+  [28, '', { img: ART + 'clue-28.webp', alt: 'A wedge of cheese', sticker: true }],
   [29, 'Catch Me If You Can'],
   [30, "I'm stuck!"],
   // The shop's "Find a loot box" button is box 31, and the button literally says it.
