@@ -75,7 +75,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <a href="https://www.mauriceafrich.com/the-hunt" class="mn-link">THE HUNT</a>
       <a href="https://shop.mauriceafrich.com/" class="mn-link mn-merch">MERCH</a>
       <a href="https://www.mauriceafrich.com/the-hunt#tasks" class="mn-link">TASKS</a>
-      <a href="https://www.mauriceafrich.com/the-hunt#riddles" class="mn-link">RIDDLES</a>
+      <a href="https://www.mauriceafrich.com/the-hunt#riddles" class="mn-link">RIDDLES &amp; PUZZLES</a>
       <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
       <a href="https://www.mauriceafrich.com/games" class="mn-link">GAMES</a>
       <a href="https://www.mauriceafrich.com/contests" class="mn-link">CONTESTS</a>
@@ -83,7 +83,6 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">SUBMIT<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
         <div class="mn-dd"><div class="mn-dd-in">
           <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
-          <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
         </div></div>
       </div>
       <div class="mn-drop">
@@ -129,13 +128,12 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   <a href="https://www.mauriceafrich.com/the-hunt">THE HUNT</a>
   <a href="https://shop.mauriceafrich.com/" class="mn-merch">MERCH</a>
   <a href="https://www.mauriceafrich.com/the-hunt#tasks">TASKS</a>
-  <a href="https://www.mauriceafrich.com/the-hunt#riddles">RIDDLES</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#riddles">RIDDLES &amp; PUZZLES</a>
   <a href="https://www.mauriceafrich.com/lootbox-clue">CLUES</a>
   <a href="https://www.mauriceafrich.com/games">GAMES</a>
   <a href="https://www.mauriceafrich.com/contests">CONTESTS</a>
   <div class="mn-ovgroup"><span>SUBMIT</span>
     <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
-    <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
   </div>
   <div class="mn-ovgroup"><span>CURRENT PROGRESS</span>
     <a href="https://www.mauriceafrich.com/profile" class="mn-profile">TREASURE HUNTER PROFILE</a>
@@ -300,13 +298,13 @@ html,body{margin:0 !important;padding:0 !important}
         '<div class="hp-stat"><i>DAILY GAME WINS</i><b>' + p.games + '</b><small>Skyword, Sort the Shelf, Book Icons, Crossword</small></div>' +
         '<div class="hp-stat"><i>RIDDLES SOLVED</i><b>' + p.riddles + '</b><small>Every solve is an entry</small></div>' +
         '<div class="hp-stat"><i>ADVENTURE VOTES SEALED</i><b>' + p.votes + '</b><small>Choose Your Own Adventure</small></div>' +
-        '<div class="hp-stat"><i>PRE-ORDERS</i><b>' + p.pre + '</b><small>100 points each</small></div>' +
+        '<div class="hp-stat"><i>PRE-ORDERS</i><b>' + p.pre + '</b><small>250 points each</small></div>' +
         '<div class="hp-stat"><i>TASKS COMPLETED</i><b>' + p.tasks + '</b><small>Shares, apps, libraries, and more</small></div>' +
       '</div>' +
       '<h2>DAYS ON THE HUNT</h2><div class="hp-days">' + days + '</div><div class="hp-daykey"><span>One square for each day of the hunt, Sept 21 to Nov 1. <b>Red</b> means you earned points that day.</span></div>' +
       '<h2>LATEST LOOT</h2><ul class="hp-recent">' + p.recent.map(function (r) { return '<li><time>' + esc(day(r[0])) + '</time><span>' + esc(r[1]) + '</span><b>+' + fmt(r[2]) + '</b></li>'; }).join('') + '</ul>' +
       '<p class="hp-crew">You’ve earned <b>' + (crewTotal ? (p.pts / crewTotal * 100).toFixed(1) : '0') + '%</b> of the crew’s ' + fmt(crewTotal) + ' points. Every one of them helps unlock rewards for everyone!</p>' +
-      '<div class="hp-more"><a class="hp-btn" href="' + U + '/the-hunt#tasks">EARN MORE POINTS</a><a class="hp-btn alt" href="' + U + '/leaderboard">LEADERBOARD</a><a class="hp-btn alt" href="' + U + '/loot">LOOT BOX SCORECARD</a></div>' +
+      '<div class="hp-more"><button type="button" class="hp-btn" id="hp-share">SHARE MY CARD</button><a class="hp-btn" href="' + U + '/the-hunt#tasks">EARN MORE POINTS</a><a class="hp-btn alt" href="' + U + '/leaderboard">LEADERBOARD</a><a class="hp-btn alt" href="' + U + '/loot">LOOT BOX SCORECARD</a></div>' +
       (EXAMPLE ? '' : '<p class="hp-foot">Not you? <a id="hp-switch">Use a different email</a></p>');
     card.hidden = false; find.hidden = true;
     // Loot box 27 hides in the corner of every profile.
@@ -314,6 +312,59 @@ html,body{margin:0 !important;padding:0 !important}
     lb.onclick = function () { if (EXAMPLE) { alert('Preview: this is where loot box 27 opens.'); return; } location.href = atob('Q0U3U01VMkM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo').split('').reverse().join(''); };
     var sw = document.getElementById('hp-switch');
     if (sw) sw.onclick = function () { remember(''); card.hidden = true; find.hidden = false; document.getElementById('hp-email').value = ''; };
+    var sh = document.getElementById('hp-share');
+    if (sh) sh.onclick = function () { shareCard(p, sh); };
+  }
+  // Share card: a 1080x1350 picture of this player's stats, drawn here in the browser. On a phone it opens the
+  // share sheet (straight to a story or a post); anywhere else it downloads. Every picture it draws is served
+  // with open CORS (GitHub Pages), so the canvas can be saved.
+  function shareCard(p, btn) {
+    var W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
+    var x = c.getContext('2d'), ART = 'https://africhmaurice.github.io/site/assets/', label = btn.textContent;
+    function img(src) { return new Promise(function (ok) { var i = new Image(); i.crossOrigin = 'anonymous'; i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
+    function round(px, py, pw, ph, r) { x.beginPath(); x.moveTo(px + r, py); x.arcTo(px + pw, py, px + pw, py + ph, r); x.arcTo(px + pw, py + ph, px, py + ph, r); x.arcTo(px, py + ph, px, py, r); x.arcTo(px, py, px + pw, py, r); x.closePath(); }
+    function panel(px, py, pw, ph) { round(px, py, pw, ph, 26); x.fillStyle = 'rgba(11,23,15,.6)'; x.fill(); x.strokeStyle = 'rgba(158,116,253,.75)'; x.lineWidth = 3; x.stroke(); }
+    function t(str, cx, y, font, color, sp) { x.font = font; x.fillStyle = color; x.textAlign = 'center'; if ('letterSpacing' in x) x.letterSpacing = (sp || 0) + 'px'; x.fillText(str, cx, y); if ('letterSpacing' in x) x.letterSpacing = '0px'; }
+    function fit(str, max, size, fam) { var s = size; x.font = s + 'px ' + fam; while (x.measureText(str).width > max && s > 40) { s -= 4; x.font = s + 'px ' + fam; } return s + 'px ' + fam; }
+    btn.textContent = 'MAKING YOUR CARD...'; btn.disabled = true;
+    var fonts = document.fonts ? Promise.all([document.fonts.load("120px 'Atomic Marker'"), document.fonts.load('800 40px Almarai'), document.fonts.load('700 40px Almarai')]).catch(function () {}) : null;
+    Promise.all([img(ART + 'bg/floating-blocks-city-as311317794.webp'), img(ART + 'img/mark-white.png'), fonts]).then(function (r) {
+      var bg = r[0], mark = r[1], AM = "'Atomic Marker', Almarai, sans-serif";
+      x.fillStyle = '#2d1c53'; x.fillRect(0, 0, W, H);
+      if (bg) { var s = Math.max(W / bg.width, H / bg.height); x.drawImage(bg, (W - bg.width * s) / 2, (H - bg.height * s) / 2, bg.width * s, bg.height * s); }
+      x.fillStyle = 'rgba(45,28,83,.78)'; x.fillRect(0, 0, W, H);
+      t('THE TREASURE HUNT', W / 2, 112, '800 30px Almarai', '#a2f590', 7);
+      var name = String(p.n || p.h || 'Sky Pirate').toUpperCase();
+      t(name, W / 2, 236, fit(name, 900, 132, AM), '#fffffe');
+      if (p.h && p.h !== p.n) t(p.h, W / 2, 294, '700 34px Almarai', '#fffffe');
+      panel(90, 340, 900, 250);
+      t(p.rank ? 'RANK · ' + String(p.rl || '').toUpperCase() + ' BOARD' : 'SKY PIRATE', W / 2, 398, '800 26px Almarai', '#a2f590', 6);
+      t(p.rank ? '#' + p.rank : 'CREW', W / 2, 528, '140px ' + AM, '#fffffe');
+      if (p.rank) t('of ' + fmt(p.of) + ' sky pirates', W / 2, 568, '700 28px Almarai', '#fffffe');
+      [['POINTS', fmt(p.pts)], ['LOOT BOXES', p.loot + ' / ' + BOXES], ['GAME WINS', fmt(p.games)], ['RIDDLES SOLVED', fmt(p.riddles)]].forEach(function (st, i) {
+        var px = 90 + (i % 2) * 465, py = 625 + Math.floor(i / 2) * 215;
+        panel(px, py, 435, 190);
+        t(st[0], px + 217, py + 58, '800 24px Almarai', '#a2f590', 5);
+        t(st[1], px + 217, py + 150, fit(st[1], 380, 84, AM), '#fffffe');
+      });
+      round(90, 1080, 900, 130, 65); x.fillStyle = '#ff4c0f'; x.fill();
+      t('JOIN ME ON THE HUNT!', W / 2, 1168, fit('JOIN ME ON THE HUNT!', 820, 74, AM), '#fffffe');
+      t('MAURICEAFRICH.COM/THE-HUNT', W / 2, 1262, '800 30px Almarai', '#fffffe', 4);
+      if (mark) x.drawImage(mark, 330, 1284, 26, 41);
+      t('@MAURICEAFRICH  ·  #SKYPIRATESHUNT', W / 2 + 22, 1316, '800 22px Almarai', '#a2f590', 4);
+      c.toBlob(function (b) {
+        btn.textContent = label; btn.disabled = false;
+        if (!b) { alert('Your browser couldn’t make the picture. Try again in a moment.'); return; }
+        var file = new File([b], 'sky-pirate-card.png', { type: 'image/png' });
+        var tag = p.r === 'uk' ? '#competition' : '#sweepstakes';
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file], text: 'Join me on the hunt! #SkyPiratesHunt ' + tag + ' mauriceafrich.com/the-hunt' }).catch(function () {});
+        } else {
+          var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'sky-pirate-card.png';
+          document.body.appendChild(a); a.click(); a.remove();
+        }
+      }, 'image/png');
+    }).catch(function () { btn.textContent = label; btn.disabled = false; });
   }
   function lookup(email) {
     err.textContent = 'Looking you up...';
