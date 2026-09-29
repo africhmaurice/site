@@ -186,7 +186,7 @@ const HUNT_FACTS = [
   ['Who', 'Free and open to everyone, everywhere. The Treasure and sweepstakes prizes are for U.S. and UK residents, 18 and older.'],
   ['Players', '208 sky pirates so far: 171 in the U.S., 16 in the UK, and 19 in other countries, including Canada and Estonia.'],
   ['Traffic', 'My website averaged about 10 visits a day before the hunt. In its first nine days it had 7,101 visits and 16,570 page views, with 1,268 visits on September 27 alone.'],
-  ['Play', 'Tasks, riddles, clues, the daily Skyword game, a crossword, 51 hidden loot boxes, and a fan fiction contest.'],
+  ['Play', 'Tasks, riddles, clues, the daily Skyword game, a crossword, 100 hidden loot boxes, and a fan fiction contest.'],
   ['Story', 'Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!'],
   ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew hit 100% of the Act One goal in eight days.'],
   ['Acts', 'Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1). Winners are announced the day after each act ends.'],
@@ -271,6 +271,11 @@ ${fonts}
 #press .pp-quote cite{display:block;margin-top:8px;font-style:normal;font-size:14px;font-weight:700;letter-spacing:.08em;color:#fd7547}
 #press .pp-hunt .pp-facts{grid-template-columns:120px minmax(0,1fr)}
 #press .pp-hunt .pp-facts dt{color:#fd7547}
+#press .pp-gfx{margin:30px 0 0}
+#press .pp-gfx img{width:100%;height:auto;display:block;border:1px solid rgba(255,255,254,.16)}
+#press .pp-gfx figcaption{margin-top:10px;font-size:14px;font-weight:700;letter-spacing:.06em}
+#press .pp-gfx figcaption a{color:#fd7547;text-decoration:none}
+#press .pp-gfx figcaption a:hover{color:#3adb97}
 #press .pp-phones{display:flex;gap:16px;overflow-x:auto;padding:30px 0 10px;scroll-snap-type:x mandatory}
 #press .pp-phone{flex:0 0 180px;scroll-snap-align:start;display:flex;flex-direction:column;gap:8px;color:#fffffe;text-decoration:none;font-size:13px;font-weight:700;letter-spacing:.04em}
 #press .pp-phone img{width:100%;height:auto;display:block;border:1px solid rgba(255,255,254,.16)}
@@ -315,7 +320,7 @@ ${cardCss('#press')}
       <p class="pp-asof">As of ${esc(STATS_DATE)}.</p>
       <blockquote class="pp-quote">${HUNT_QUOTE.map((p, i, a) => `<p>${i === 0 ? '“' : ''}${esc(p)}${i === a.length - 1 ? '”' : ''}</p>`).join('')}<cite>${esc(HUNT_QUOTE_BY)}</cite></blockquote>
       <dl class="pp-facts">${HUNT_FACTS.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
-      <div class="pp-phones">${HUNT_IMAGES.map(([f, alt]) => `<a class="pp-phone" href="${BASE}assets/press/${f}.webp" target="_blank" rel="noopener"><img src="${BASE}assets/press/${f}.webp" width="900" height="1543" alt="${esc(alt)}" loading="lazy"><span>${esc(alt)} ↓</span></a>`).join('')}</div>
+      <figure class="pp-gfx"><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener"><img src="${BASE}assets/press/hunt-overview.webp" width="2400" height="1350" alt="The Cello’s Gate Treasure Hunt at a glance: 208 sky pirates, 132,720 crew points, 2,439 sweepstakes entries, and 100 hidden loot boxes; riddles, clues, daily games, loot boxes, and story votes; three ways to win: sweepstakes, the Treasure, and crew rewards." loading="lazy"></a><figcaption><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener">Download the full-size graphic ↓</a></figcaption></figure>
       <div class="pp-cta"><a class="pp-btn" href="/the-hunt">See the hunt</a><a class="pp-btn" href="/leaderboard">Live leaderboard</a></div>
     </section>
 
