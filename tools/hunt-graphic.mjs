@@ -19,8 +19,8 @@ const url = (p) => 'file:///' + p.split('\\').join('/');
 const req = createRequire(join(DOCS, 'maurice-africh-design-system', '.ds-sync', 'package.json'));
 const { chromium } = req('playwright');
 
-const AS_OF = 'AS OF SEPTEMBER 28, 2026';
-const NUMBERS = [['208', 'SKY PIRATES'], ['132,720', 'CREW POINTS'], ['2,439', 'SWEEPSTAKES ENTRIES']];
+const AS_OF = 'AS OF SEPTEMBER 29, 2026';
+const NUMBERS = [['220', 'SKY PIRATES'], ['173,820', 'CREW POINTS'], ['2,850', 'SWEEPSTAKES ENTRIES']];
 // Maurice's copy (2026-09-29). title: lines stacked when there is more than one.
 const PANELS = [
   { title: ['Sweepstakes'], sub: '3 sweepstakes, 10 winners each!', bg: 'ice-cavern-bridge-as180137594.webp', page: 'sweepstakes.png', tint: '72,45,133' },

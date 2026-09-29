@@ -173,18 +173,18 @@ const HUNT_QUOTE = [
   'That’s why I built this treasure hunt. Because I thought it would be fun (which is a cornerstone of my brand), I thought it would help us sell a lot of books, and I thought, by the end of it, a lot more people would know my name. We’ll see, huh? If nothing else, I know we’re all having a pretty damn good time.',
 ];
 const HUNT_QUOTE_BY = 'Maurice Africh, Author of “Cello’s Gate”';
-const STATS_DATE = 'September 28, 2026';
+const STATS_DATE = 'September 29, 2026';
 const STATS = [
-  ['208', 'sky pirates'],
-  ['132,720', 'crew points earned'],
-  ['2,439', 'sweepstakes entries'],
+  ['220', 'sky pirates'],
+  ['173,820', 'crew points earned'],
+  ['2,850', 'sweepstakes entries'],
   ['7,101', 'site visits in the first nine days'],
 ];
 const HUNT_FACTS = [
   ['Dates', 'September 20 to November 1, 2026. It ends two days before “Cello’s Gate” comes out.'],
   ['Where', 'mauriceafrich.com/the-hunt'],
   ['Who', 'Free and open to everyone, everywhere. The Treasure and sweepstakes prizes are for U.S. and UK residents, 18 and older.'],
-  ['Players', '208 sky pirates so far: 171 in the U.S., 16 in the UK, and 19 in other countries, including Canada and Estonia.'],
+  ['Players', '220 sky pirates so far: 182 in the U.S., 16 in the UK, and 20 in other countries, including Canada and Estonia.'],
   ['Traffic', 'My website averaged about 10 visits a day before the hunt. In its first nine days it had 7,101 visits and 16,570 page views, with 1,268 visits on September 27 alone.'],
   ['Play', 'Tasks, riddles, clues, the daily Skyword game, a crossword, 100 hidden loot boxes, and a fan fiction contest.'],
   ['Story', 'Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!'],
@@ -320,7 +320,7 @@ ${cardCss('#press')}
       <p class="pp-asof">As of ${esc(STATS_DATE)}.</p>
       <blockquote class="pp-quote">${HUNT_QUOTE.map((p, i, a) => `<p>${i === 0 ? '“' : ''}${esc(p)}${i === a.length - 1 ? '”' : ''}</p>`).join('')}<cite>${esc(HUNT_QUOTE_BY)}</cite></blockquote>
       <dl class="pp-facts">${HUNT_FACTS.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
-      <figure class="pp-gfx"><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener"><img src="${BASE}assets/press/hunt-overview.webp" width="2400" height="1350" alt="The Cello’s Gate Treasure Hunt: five panels split by brush slashes. Sweepstakes: 3 sweepstakes, 10 winners each. Rewards: 20+ rewards unlocked by collective points for all hunters. Tasks and Riddles: to earn points and unlock secret rewards. Loot Boxes: 101 loot boxes hidden all over the internet. Choose Your Own Adventure: vote on where the crew goes and roll the dice. 208 sky pirates, 132,720 crew points, 2,439 sweepstakes entries." loading="lazy"></a><figcaption><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener">Download the full-size graphic ↓</a></figcaption></figure>
+      <figure class="pp-gfx"><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener"><img src="${BASE}assets/press/hunt-overview.webp" width="2400" height="1350" alt="The Cello’s Gate Treasure Hunt: five panels split by brush slashes. Sweepstakes: 3 sweepstakes, 10 winners each. Rewards: 20+ rewards unlocked by collective points for all hunters. Tasks and Riddles: to earn points and unlock secret rewards. Loot Boxes: 101 loot boxes hidden all over the internet. Choose Your Own Adventure: vote on where the crew goes and roll the dice. 220 sky pirates, 173,820 crew points, 2,850 sweepstakes entries." loading="lazy"></a><figcaption><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener">Download the full-size graphic ↓</a></figcaption></figure>
       <div class="pp-cta"><a class="pp-btn" href="/the-hunt">See the hunt</a><a class="pp-btn" href="/leaderboard">Live leaderboard</a></div>
     </section>
 
