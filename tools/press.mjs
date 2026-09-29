@@ -177,15 +177,16 @@ const STATS_DATE = 'September 29, 2026';
 // [big number, what it means]
 const HIGHLIGHTS = [
   ['Reach', [
-    ['70×', 'Site traffic: 7,309 visits since the hunt started, about 730 a day, up from about 10 a day before it.'],
-    ['2,173', 'New Goodreads “want to read” adds during the hunt, with 1,071 in a single day (September 28).'],
+    ['70×', 'Site traffic: 7,309 visits since the hunt started, about 730 a day.'],
+    ['2,173', 'New Goodreads “want to read” adds during the hunt.'],
     ['220', 'Hunters from 9 countries: the U.S., the UK, Canada, Australia, India, Estonia, Japan, Poland, and one more.'],
   ]],
   ['Engagement', [
-    ['2,879', 'Tasks completed, about 290 a day, adding up to 2,850 sweepstakes entries.'],
-    ['1,099', 'Loot boxes found. Three hunters have found 31 each.'],
+    ['2,879', 'Tasks completed, about 290 a day.'],
+    ['2,850', 'Sweepstakes entries.'],
+    ['1,099', 'Loot boxes found.'],
     ['762', 'Daily game wins, plus 300 riddles solved.'],
-    ['173,820', 'Crew points, more than four times the 40,000 Act One goal, with four reward tiers unlocked.'],
+    ['173,820', 'Crew points, more than four times the 40,000 Act One goal.'],
   ]],
 ];
 const STATS = [
@@ -237,7 +238,7 @@ ${fonts}
 #press h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(28px,2.6vw,40px);line-height:1.1;color:#89fbcb;margin:0 0 26px;text-transform:none}
 #press .pp-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.6;color:#ede9dc;margin:0 auto;max-width:640px}
 #press .pp-wrap > .pp-kicker,#press .pp-wrap > h1,#press .pp-wrap > .pp-lede{text-align:center}
-#press .pp-hunt h2.pp-hunt-title{text-align:center;line-height:1.05}
+#press .pp-hunt h2.pp-hunt-title{text-align:center;line-height:1.02;font-size:clamp(40px,5.2vw,72px);margin-bottom:34px}
 #press .pp-hunt h2.pp-hunt-title span{display:block}
 #press .pp-hunt h2.pp-hunt-title .w{color:#fffffe}
 #press .pp-section{margin-top:56px;padding:44px 48px 40px;background:rgba(38,142,98,.9);border:1px solid rgba(243,234,217,.18);scroll-margin-top:120px}
@@ -272,7 +273,7 @@ ${fonts}
 #press .pp-img span b{color:#ff4c0f;font-weight:800}
 #press .pp-img:hover span{color:#a2f590}
 #press .pp-facts{margin:0;display:grid;grid-template-columns:130px minmax(0,1fr);gap:0}
-#press .pp-facts dt,#press .pp-facts dd{white-space:nowrap}
+#press .pp-facts dt{white-space:nowrap}
 #press .pp-facts dt,#press .pp-facts dd{margin:0;padding:12px 0;border-top:1px solid rgba(243,234,217,.12);font-size:15px;line-height:1.5}
 #press .pp-facts dt{font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#a2f590;padding-top:14px}
 #press .pp-bio{font-size:16px;line-height:1.65;color:#ede9dc;margin:26px 0 0}
@@ -283,13 +284,16 @@ ${fonts}
 #press .pp-hunt-lede b{color:#fffffe}
 #press .pp-hunt-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.65;color:#ede9dc;margin:0 0 28px;max-width:820px}
 #press .pp-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 10px}
-#press .pp-hl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:0 0 10px}
-#press .pp-hl-col{background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);padding:24px 26px}
-#press .pp-hl-col h3{font-family:'Almarai',sans-serif!important;font-weight:800;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#fd7547;margin:0 0 6px;text-align:center}
-#press .pp-hl-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;align-items:center;padding:14px 0;border-top:1px solid rgba(255,255,254,.12)}
-#press .pp-hl-col h3 + .pp-hl-row{border-top:0}
-#press .pp-hl-row b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:40px;line-height:1;color:#fffffe;text-align:right}
-#press .pp-hl-row span{font-size:15px;line-height:1.5;color:#ede9dc}
+#press .pp-hl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:0 0 10px;align-items:start}
+#press .pp-hl-col{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:0;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);padding:24px 28px 10px}
+#press .pp-hl-col h3{grid-column:1/-1}
+#press .pp-hl-col h3{font-family:'Atomic Marker',cursive!important;font-weight:400;font-size:34px;letter-spacing:0;text-transform:none;color:#fd7547;margin:0 0 8px;text-align:left}
+#press .pp-hl-row{display:contents}
+#press .pp-hl-row b{padding-right:26px!important}
+#press .pp-hl-row b,#press .pp-hl-row span{padding:16px 0;border-top:1px solid rgba(255,255,254,.12);display:flex;align-items:center}
+#press .pp-hl-col h3 + .pp-hl-row b,#press .pp-hl-col h3 + .pp-hl-row span{border-top:0}
+#press .pp-hl-row b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:44px;line-height:1;color:#fffffe;text-align:left;white-space:nowrap}
+#press .pp-hl-row span{font-size:16px;line-height:1.5;color:#ede9dc}
 #press .pp-stat{padding:20px 18px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);text-align:center}
 #press .pp-stat b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(30px,3vw,44px);line-height:1.1;color:#fffffe}
 #press .pp-stat span{display:block;margin-top:6px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fd7547}
@@ -297,7 +301,7 @@ ${fonts}
 #press .pp-quote{margin:0 0 30px;padding:4px 0 4px 22px;border-left:3px solid #ff4c0f;font-size:18px;line-height:1.6;font-style:italic;color:#fffffe}
 #press .pp-quote p{margin:0 0 14px;max-width:820px}
 #press .pp-quote cite{display:block;margin-top:8px;font-style:normal;font-size:14px;font-weight:700;letter-spacing:.08em;color:#fd7547}
-#press .pp-hunt .pp-facts{grid-template-columns:120px minmax(0,1fr)}
+#press .pp-hunt .pp-facts{grid-template-columns:140px minmax(0,1fr)}
 #press .pp-hunt .pp-facts dt{color:#fd7547}
 #press .pp-gfx{margin:30px 0 0}
 #press .pp-gfx img{width:100%;height:auto;display:block;border:1px solid rgba(255,255,254,.16)}
@@ -324,8 +328,7 @@ ${cardCss('#press')}
   #press .pp-imgs{grid-template-columns:1fr 1fr}
   #press .pp-stats{grid-template-columns:1fr 1fr}
   #press .pp-hl{grid-template-columns:1fr}
-  #press .pp-hl-row{grid-template-columns:110px minmax(0,1fr)}
-  #press .pp-hl-row b{font-size:32px}
+  #press .pp-hl-row b{font-size:34px}
   #press .pp-hunt .pp-facts{grid-template-columns:1fr}
   #press .pp-hunt .pp-facts dd{border-top:0;padding-top:0}
   #press .pp-phone{flex-basis:150px}

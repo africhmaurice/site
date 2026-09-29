@@ -11,7 +11,7 @@
 #press h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(28px,2.6vw,40px);line-height:1.1;color:#89fbcb;margin:0 0 26px;text-transform:none}
 #press .pp-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.6;color:#ede9dc;margin:0 auto;max-width:640px}
 #press .pp-wrap > .pp-kicker,#press .pp-wrap > h1,#press .pp-wrap > .pp-lede{text-align:center}
-#press .pp-hunt h2.pp-hunt-title{text-align:center;line-height:1.05}
+#press .pp-hunt h2.pp-hunt-title{text-align:center;line-height:1.02;font-size:clamp(40px,5.2vw,72px);margin-bottom:34px}
 #press .pp-hunt h2.pp-hunt-title span{display:block}
 #press .pp-hunt h2.pp-hunt-title .w{color:#fffffe}
 #press .pp-section{margin-top:56px;padding:44px 48px 40px;background:rgba(38,142,98,.9);border:1px solid rgba(243,234,217,.18);scroll-margin-top:120px}
@@ -46,7 +46,7 @@
 #press .pp-img span b{color:#ff4c0f;font-weight:800}
 #press .pp-img:hover span{color:#a2f590}
 #press .pp-facts{margin:0;display:grid;grid-template-columns:130px minmax(0,1fr);gap:0}
-#press .pp-facts dt,#press .pp-facts dd{white-space:nowrap}
+#press .pp-facts dt{white-space:nowrap}
 #press .pp-facts dt,#press .pp-facts dd{margin:0;padding:12px 0;border-top:1px solid rgba(243,234,217,.12);font-size:15px;line-height:1.5}
 #press .pp-facts dt{font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#a2f590;padding-top:14px}
 #press .pp-bio{font-size:16px;line-height:1.65;color:#ede9dc;margin:26px 0 0}
@@ -57,13 +57,16 @@
 #press .pp-hunt-lede b{color:#fffffe}
 #press .pp-hunt-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.65;color:#ede9dc;margin:0 0 28px;max-width:820px}
 #press .pp-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 10px}
-#press .pp-hl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:0 0 10px}
-#press .pp-hl-col{background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);padding:24px 26px}
-#press .pp-hl-col h3{font-family:'Almarai',sans-serif!important;font-weight:800;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#fd7547;margin:0 0 6px;text-align:center}
-#press .pp-hl-row{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;align-items:center;padding:14px 0;border-top:1px solid rgba(255,255,254,.12)}
-#press .pp-hl-col h3 + .pp-hl-row{border-top:0}
-#press .pp-hl-row b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:40px;line-height:1;color:#fffffe;text-align:right}
-#press .pp-hl-row span{font-size:15px;line-height:1.5;color:#ede9dc}
+#press .pp-hl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:0 0 10px;align-items:start}
+#press .pp-hl-col{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:0;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);padding:24px 28px 10px}
+#press .pp-hl-col h3{grid-column:1/-1}
+#press .pp-hl-col h3{font-family:'Atomic Marker',cursive!important;font-weight:400;font-size:34px;letter-spacing:0;text-transform:none;color:#fd7547;margin:0 0 8px;text-align:left}
+#press .pp-hl-row{display:contents}
+#press .pp-hl-row b{padding-right:26px!important}
+#press .pp-hl-row b,#press .pp-hl-row span{padding:16px 0;border-top:1px solid rgba(255,255,254,.12);display:flex;align-items:center}
+#press .pp-hl-col h3 + .pp-hl-row b,#press .pp-hl-col h3 + .pp-hl-row span{border-top:0}
+#press .pp-hl-row b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:44px;line-height:1;color:#fffffe;text-align:left;white-space:nowrap}
+#press .pp-hl-row span{font-size:16px;line-height:1.5;color:#ede9dc}
 #press .pp-stat{padding:20px 18px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);text-align:center}
 #press .pp-stat b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(30px,3vw,44px);line-height:1.1;color:#fffffe}
 #press .pp-stat span{display:block;margin-top:6px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fd7547}
@@ -71,7 +74,7 @@
 #press .pp-quote{margin:0 0 30px;padding:4px 0 4px 22px;border-left:3px solid #ff4c0f;font-size:18px;line-height:1.6;font-style:italic;color:#fffffe}
 #press .pp-quote p{margin:0 0 14px;max-width:820px}
 #press .pp-quote cite{display:block;margin-top:8px;font-style:normal;font-size:14px;font-weight:700;letter-spacing:.08em;color:#fd7547}
-#press .pp-hunt .pp-facts{grid-template-columns:120px minmax(0,1fr)}
+#press .pp-hunt .pp-facts{grid-template-columns:140px minmax(0,1fr)}
 #press .pp-hunt .pp-facts dt{color:#fd7547}
 #press .pp-gfx{margin:30px 0 0}
 #press .pp-gfx img{width:100%;height:auto;display:block;border:1px solid rgba(255,255,254,.16)}
@@ -108,8 +111,7 @@
   #press .pp-imgs{grid-template-columns:1fr 1fr}
   #press .pp-stats{grid-template-columns:1fr 1fr}
   #press .pp-hl{grid-template-columns:1fr}
-  #press .pp-hl-row{grid-template-columns:110px minmax(0,1fr)}
-  #press .pp-hl-row b{font-size:32px}
+  #press .pp-hl-row b{font-size:34px}
   #press .pp-hunt .pp-facts{grid-template-columns:1fr}
   #press .pp-hunt .pp-facts dd{border-top:0;padding-top:0}
   #press .pp-phone{flex-basis:150px}
@@ -133,7 +135,7 @@
       <p class="pp-hunt-lede">From September 20th to November 1st, hundreds of readers from 9 different countries are searching for treasure hidden all over the internet. I’ve partnered with 20+ Bookstagram, Booktok, and Booktube influencers to make this thing as far-reaching as possible.</p><p class="pp-hunt-lede">The hunt is broken into three acts following a fully-interactive <b>Choose Your Own Adventure-Style Game</b> (hosted on the website). They solve riddles, follow clues, play daily bookish games, hunt down hidden loot boxes, and vote on where the story goes next.</p>
       <p class="pp-hunt-lede">There are three ways to win:</p>
       <ol class="pp-ways"><li>Each act ends with a Sweepstakes, where all participants are eligible to win prizes.</li><li>The three hunters (3 in the U.S., 3 in the U.K.) with the most points at the end of the hunt will win a Treasure Box filled with bookish prizes.</li><li>During each act, the hunters work together to collectively earn points to unlock up to 20+ rewards.</li></ol>
-      <div class="pp-hl"><div class="pp-hl-col"><h3>Reach</h3><div class="pp-hl-row"><b>70×</b><span>Site traffic: 7,309 visits since the hunt started, about 730 a day, up from about 10 a day before it.</span></div><div class="pp-hl-row"><b>2,173</b><span>New Goodreads “want to read” adds during the hunt, with 1,071 in a single day (September 28).</span></div><div class="pp-hl-row"><b>220</b><span>Hunters from 9 countries: the U.S., the UK, Canada, Australia, India, Estonia, Japan, Poland, and one more.</span></div></div><div class="pp-hl-col"><h3>Engagement</h3><div class="pp-hl-row"><b>2,879</b><span>Tasks completed, about 290 a day, adding up to 2,850 sweepstakes entries.</span></div><div class="pp-hl-row"><b>1,099</b><span>Loot boxes found. Three hunters have found 31 each.</span></div><div class="pp-hl-row"><b>762</b><span>Daily game wins, plus 300 riddles solved.</span></div><div class="pp-hl-row"><b>173,820</b><span>Crew points, more than four times the 40,000 Act One goal, with four reward tiers unlocked.</span></div></div></div>
+      <div class="pp-hl"><div class="pp-hl-col"><h3>Reach</h3><div class="pp-hl-row"><b>70×</b><span>Site traffic: 7,309 visits since the hunt started, about 730 a day.</span></div><div class="pp-hl-row"><b>2,173</b><span>New Goodreads “want to read” adds during the hunt.</span></div><div class="pp-hl-row"><b>220</b><span>Hunters from 9 countries: the U.S., the UK, Canada, Australia, India, Estonia, Japan, Poland, and one more.</span></div></div><div class="pp-hl-col"><h3>Engagement</h3><div class="pp-hl-row"><b>2,879</b><span>Tasks completed, about 290 a day.</span></div><div class="pp-hl-row"><b>2,850</b><span>Sweepstakes entries.</span></div><div class="pp-hl-row"><b>1,099</b><span>Loot boxes found.</span></div><div class="pp-hl-row"><b>762</b><span>Daily game wins, plus 300 riddles solved.</span></div><div class="pp-hl-row"><b>173,820</b><span>Crew points, more than four times the 40,000 Act One goal.</span></div></div></div>
       <p class="pp-asof">As of September 29, 2026.</p>
       <blockquote class="pp-quote"><p>“I spent my entire life waiting for someone to open a door for me, thinking that was something I was entitled to, for some reason. And then I realized that everyone with a key to a door worth opening didn’t know my name. They had no stake in my story. So I endeavored to change that.</p><p>I worked myself to the bone, hired two world-class editors, went to market on a six-month marketing strategy, and sold a lot of books. And then people started knowing my name. That’s when Simon Maverick came to me with an offer which I took to Merrilee Heifetz of Writers House, who took it to Saga Press, who waved me in with such ease, it was like there was never a door at all.</p><p>That’s why I built this treasure hunt. Because I thought it would be fun (which is a cornerstone of my brand), I thought it would help us sell a lot of books, and I thought, by the end of it, a lot more people would know my name. We’ll see, huh? If nothing else, I know we’re all having a pretty damn good time.”</p><cite>Maurice Africh, Author of “Cello’s Gate”</cite></blockquote>
       <dl class="pp-facts"><dt>Dates</dt><dd>September 20 to November 1, 2026. It ends two days before “Cello’s Gate” comes out.</dd><dt>Where</dt><dd>mauriceafrich.com/the-hunt</dd><dt>Who</dt><dd>Free and open to everyone, everywhere. The Treasure and sweepstakes prizes are for U.S. and UK residents, 18 and older.</dd><dt>Players</dt><dd>220 sky pirates from 9 countries, including the U.S., the UK, Canada, Australia, India, Estonia, Japan, and Poland.</dd><dt>Traffic</dt><dd>Site traffic is up about 70 times: 7,309 visits since the hunt started, about 730 a day, compared with about 10 a day in September before it.</dd><dt>Play</dt><dd>Tasks, riddles, clues, the daily Skyword game, a crossword, 100 hidden loot boxes, and a fan fiction contest.</dd><dt>Story</dt><dd>Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!</dd><dt>Crew</dt><dd>Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 173,820 points, more than four times the 40,000 Act One goal, with four reward tiers unlocked.</dd><dt>Acts</dt><dd>Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1). Winners are announced the day after each act ends.</dd><dt>Treasure</dt><dd>The top three on the U.S. and UK leaderboards win The Treasure: signed editions, art prints, custom bookmarks, enamel pins, an advance audiobook, and more.</dd></dl>
