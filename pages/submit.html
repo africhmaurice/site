@@ -173,7 +173,7 @@ h1,h2,h3{text-wrap:balance}
       <a href="https://www.mauriceafrich.com/the-hunt" class="mn-link">THE HUNT</a>
       <a href="https://shop.mauriceafrich.com/" class="mn-link mn-merch">MERCH</a>
       <a href="https://www.mauriceafrich.com/the-hunt#tasks" class="mn-link">TASKS</a>
-      <a href="https://www.mauriceafrich.com/the-hunt#riddles" class="mn-link">RIDDLES</a>
+      <a href="https://www.mauriceafrich.com/the-hunt#riddles" class="mn-link">RIDDLES &amp; PUZZLES</a>
       <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
       <a href="https://www.mauriceafrich.com/games" class="mn-link">GAMES</a>
       <a href="https://www.mauriceafrich.com/contests" class="mn-link">CONTESTS</a>
@@ -181,7 +181,6 @@ h1,h2,h3{text-wrap:balance}
         <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">SUBMIT<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
         <div class="mn-dd"><div class="mn-dd-in">
           <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
-          <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
         </div></div>
       </div>
       <div class="mn-drop">
@@ -227,13 +226,12 @@ h1,h2,h3{text-wrap:balance}
   <a href="https://www.mauriceafrich.com/the-hunt">THE HUNT</a>
   <a href="https://shop.mauriceafrich.com/" class="mn-merch">MERCH</a>
   <a href="https://www.mauriceafrich.com/the-hunt#tasks">TASKS</a>
-  <a href="https://www.mauriceafrich.com/the-hunt#riddles">RIDDLES</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#riddles">RIDDLES &amp; PUZZLES</a>
   <a href="https://www.mauriceafrich.com/lootbox-clue">CLUES</a>
   <a href="https://www.mauriceafrich.com/games">GAMES</a>
   <a href="https://www.mauriceafrich.com/contests">CONTESTS</a>
   <div class="mn-ovgroup"><span>SUBMIT</span>
     <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
-    <a href="https://www.mauriceafrich.com/solve">SOLVE A RIDDLE</a>
   </div>
   <div class="mn-ovgroup"><span>CURRENT PROGRESS</span>
     <a href="https://www.mauriceafrich.com/profile" class="mn-profile">TREASURE HUNTER PROFILE</a>
@@ -358,7 +356,8 @@ h1,h2,h3{text-wrap:balance}
   var me = load(ME) || {};
   if (me.name && !me.last_name && me.name.indexOf(' ') > 0) { me.first_name = me.first_name || me.name.split(/\s+/)[0]; me.last_name = me.name.split(/\s+/).slice(1).join(' '); }
   var editingMe = !me.email || !(me.name || me.first_name);
-  var mode = /riddle|solve/i.test(location.hash + location.search + (location.protocol === 'data:' ? '' : location.pathname)) ? 'riddle' : 'points';
+  // Riddles are answered on their cards on the hunt page now (the /solve page is gone, 2026-09-29), so this is the points form only.
+  var mode = 'points';
   var files = [];   // { url (data URL, images shrunk), name }
 
   // ---- the intro panel, in the old forms' words -----------------------------
@@ -368,12 +367,12 @@ h1,h2,h3{text-wrap:balance}
       ? '<h1>Submit Points!</h1><p>Use the form below to submit points for the Treasure Hunt. You may only submit <b><i>one task at a time</i></b>, with up to ' + MAX_FILES +
         ' screenshots. Please keep in mind that you can\'t claim some tasks more than once. If you have any questions or concerns, visit ' +
         '<a href="https://www.mauriceafrich.com/the-hunt">THE HUNT</a> main page to re-read the rules or <a href="https://discord.gg/TV8SNnSGdb" target="_blank" rel="noopener">TAG A GOVERNOR</a> in the <b><i>Trench Community Discord</i></b>!</p>' +
-        '<button class="sb-switch" id="sb-switch">Solving a riddle instead? &rarr;</button>'
+        '<a class="sb-switch" id="sb-switch" href="https://www.mauriceafrich.com/the-hunt#riddles">Solving a riddle or puzzle? Answer it right on its card &rarr;</a>'
       : '<h1>Solve a Riddle!</h1><p>Use the form below to solve a riddle and earn points for the Treasure Hunt. You may only submit <b><i>one answer at a time</i></b>. ' +
         'You are allotted <b><i>one attempt per riddle</i></b>. If you have any questions or concerns, visit <a href="https://www.mauriceafrich.com/the-hunt#riddles">THE HUNT</a> main page to re-read the rules or ' +
         '<a href="https://discord.gg/TV8SNnSGdb" target="_blank" rel="noopener">TAG A GOVERNOR</a> in the <b><i>Trench Community Discord</i></b>!</p>' +
         '<button class="sb-switch" id="sb-switch">Submitting a task instead? &rarr;</button>';
-    $('sb-switch').onclick = function () { mode = mode === 'points' ? 'riddle' : 'points'; draw(); head.scrollIntoView({ behavior: 'smooth' }); };
+
   }
 
   // ---- who you are --------------------------------------------------------
