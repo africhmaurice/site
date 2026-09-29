@@ -27,7 +27,7 @@ const PANELS = [
   { title: ['Rewards'], sub: '20+ rewards unlocked by collective points for all hunters.', bg: 'neon-rain-street-as439051128.webp', page: 'rewards.png', tint: '26,94,65' },
   { title: ['Tasks & Riddles'], sub: 'To earn points and unlock secret rewards.', bg: 'energy-gate-as555671153.webp', page: 'tasks.png', tint: '44,96,33' },
   { title: ['Loot Boxes'], sub: '101 loot boxes hidden all over the internet.', bg: 'red-tree-palace-as461430569.webp', page: 'loot.png', tint: '145,37,1' },
-  { title: ['Choose', 'Your Own', 'Adventure'], sub: 'Vote on where the crew goes and roll the dice!', bg: 'world-map-imperia.webp', page: null, tint: '26,94,65', pos: '72% 38%' },
+  { title: ['Choose', 'Your Own', 'Adventure'], lockup: ['Choose', 'Your', 'Own', 'Adventure'], sub: 'Vote on where the crew goes and roll the dice!', bg: 'world-map-imperia.webp', page: null, tint: '26,94,65', pos: '72% 38%' },
 ];
 
 // cols = slanted columns (wide sizes); rows = slanted bands (square and tall sizes).
@@ -100,10 +100,13 @@ function html(f) {
   ${p.page ? `<div class="page${rows ? ' pr' : ''}" style="${pageBox}"><img src="${url(join(SRC, p.page))}"></div>` : ''}
   <div class="shade${rows ? ' sr' : ''}" style="--t:${p.tint}"></div>
 </div>`).join('');
-  const lines = (p) => (f.mode === 'rows' ? [p.title.join(' ')] : p.title);
+  // "Choose / Your / Own" stacked small, with "Adventure" as tall as the stack beside it.
+  const titleHtml = (p) => p.lockup
+    ? `<span class="lk" style="display:inline-flex"><span class="st"><i>${p.lockup.slice(0, 3).map(esc).join('</i><i>')}</i></span><span class="big">${esc(p.lockup[3])}</span></span>`
+    : p.title.map((l) => `<span>${esc(l)}</span>`).join('');
   const labelHtml = labels.map(({ p }, i) => `
-<div class="label" data-i="${i}" style="text-align:${f.mode === 'cols' ? 'center' : 'left'}">
-  <h2>${lines(p).map((l) => `<span>${esc(l)}</span>`).join('')}</h2>${f.sub ? `<p>${esc(p.sub)}</p>` : ''}
+<div class="label" data-i="${i}"${p.lockup ? ' data-lockup="1"' : ''} style="text-align:${f.mode === 'cols' ? 'center' : 'left'}">
+  <h2>${titleHtml(p)}</h2>${f.sub ? `<p>${esc(p.sub)}</p>` : ''}
 </div>`).join('');
 
   return `<!doctype html><html><head><meta charset="utf-8">
@@ -130,7 +133,11 @@ h1 span{color:#ff4c0f}
 .when b{color:#3adb97;font-weight:800;margin-left:.6em}
 .label{position:absolute;z-index:3}
 .label h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:${f.label}px;line-height:.98;text-shadow:0 4px 18px rgba(0,0,0,.9)}
-.label h2 span{display:block;white-space:nowrap}
+.label h2 > span{display:block;white-space:nowrap}
+.lk{align-items:stretch;gap:.2em;line-height:.8;vertical-align:top}
+.lk .st{display:flex;flex-direction:column;justify-content:space-between;font-size:.4em;text-align:right}
+.lk .st i{font-style:normal;display:block;line-height:1}
+.lk .big{font-size:1.5em;line-height:.8;display:block}
 .label p{text-wrap:balance}
 .label p{margin-top:${f.label * 0.22}px;font-weight:700;font-size:${f.sub}px;line-height:1.35;text-shadow:0 2px 10px rgba(0,0,0,1)}
 .foot{position:absolute;left:0;right:0;bottom:0;z-index:3;display:flex;align-items:center;justify-content:center;gap:${W * 0.035}px;background:rgba(0,0,0,.9);border-top:3px solid #ff4c0f;padding:0 ${W * 0.03}px}
@@ -208,8 +215,11 @@ function fitLabels(){
   };
   const measure = (el, t, s, w) => {
     const h2 = el.querySelector('h2'), p = el.querySelector('p');
-    h2.style.fontSize = t + 'px'; el.style.width = w + 'px';
-    const titleW = Math.max(...[...h2.children].map((c) => { c.style.display = 'inline-block'; const wd = c.getBoundingClientRect().width; c.style.display = ''; return wd; }));
+    el.style.width = w + 'px';
+    const widthAt = (size) => { h2.style.fontSize = size + 'px'; return Math.max(...[...h2.children].map((c) => { const d = c.style.display; if (!d) c.style.display = 'inline-block'; const wd = c.getBoundingClientRect().width; c.style.display = d; return wd; })); };
+    let titleW = widthAt(t);
+    // The Choose Your Own Adventure lockup is sized on its own so it never shrinks the other titles.
+    if (el.dataset.lockup) { let tt = t; while (titleW > w && tt > 8) { tt *= 0.96; titleW = widthAt(tt); } }
     let twoLines = true;
     if (p) {
       p.style.fontSize = s + 'px'; p.style.maxWidth = 'none'; p.style.whiteSpace = 'nowrap'; p.style.display = 'inline-block';
