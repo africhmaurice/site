@@ -66,26 +66,30 @@ function html(f) {
       void L; void R;
       const p = PANELS[i];
       const top = zy0 + titleH * 0.82;
-      const pageBox = `left:${i * cw - lean}px;width:${cw + 2 * lean}px;top:${top}px;height:${H - top}px`;
+      const pl = Math.max(0, i * cw - lean), pr = Math.min(W, (i + 1) * cw + lean); void top;
+      const pageBox = `left:${pl}px;width:${pr - pl}px;top:0;height:${H}px`;
       panels.push({ poly, p, pageBox, pageW: cw * 1.02, pageLeft: i * cw + cw * -0.01 + (lean * (1 - 2 * (top + (H - top) / 2) / H)) - (i * cw - lean) });
       if (i > 0) seams.push([x(i, -20), -20, x(i, H + 20), H + 20]);
     }
+    // Labels are sized and placed in the page (fitLabels) so each one stays inside its own lane.
     const ly = f.footer ? zy1 - f.footer - (f.sub ? f.label * 5.6 : f.label * 4.2) : zy1 - f.label * (f.zone ? 3.6 : 4.1);
-    PANELS.forEach((p, i) => { const w = cw * 0.84; let l = (i + 0.5) * cw + lean * (1 - 2 * (ly + f.label) / H); l = Math.max(w / 2 + W * 0.012, Math.min(W - w / 2 - W * 0.012, l)); labels.push({ p, left: l, top: ly, width: w, align: 'center' }); });
+    f.lanes = { mode: 'cols', W, H, cw, lean, top: ly, bottom: (f.footer ? zy1 - f.footer : zy1) - cw * 0.05 };
+    PANELS.forEach((p) => labels.push({ p }));
     head = `<div class="top" style="top:${zy0}px;height:${titleH * 1.35}px;padding-top:${f.title * 0.3}px">${headInner(f)}</div>`;
   } else {
     // rows: header on top, five bands, footer at the bottom
-    const hTop = titleH + f.title * 0.45, hBot = f.footer, bandH = (H - hTop - hBot) / 5, lean = 0.045 * W;
+    const hTop = titleH + f.title * 0.45, hBot = f.footer, bandH = (H - hTop - hBot) / 5, lean = 0.028 * W;
     const y = (i, xx) => hTop + i * bandH + lean * (1 - 2 * xx / W); // seam i across
     for (let i = 0; i < 5; i++) {
       const poly = `0 ${y(i, 0)}px,${W}px ${y(i, W)}px,${W}px ${y(i + 1, W)}px,0 ${y(i + 1, 0)}px`;
       const p = PANELS[i];
-      const pageBox = `left:${W * 0.42}px;width:${W * 0.58}px;top:${y(i, W) - lean}px;height:${bandH + 2 * lean}px`;
+      const pageBox = `left:0;width:${W}px;top:${y(i, W)}px;height:${y(i + 1, 0) - y(i, W)}px`;
       panels.push({ poly, p, pageBox, rows: true });
       seams.push([-20, y(i, -20), W + 20, y(i, W + 20)]);
     }
     seams.push([-20, y(5, -20), W + 20, y(5, W + 20)]);
-    PANELS.forEach((p, i) => labels.push({ p, left: W * 0.05, top: y(i, W * 0.2) + bandH / 2, width: W * 0.52, align: 'left', mid: true }));
+    f.lanes = { mode: 'rows', W, H, hTop, bandH, lean };
+    PANELS.forEach((p) => labels.push({ p }));
     head = `<div class="top rowsTop" style="top:0;height:${hTop}px;padding-top:${f.title * 0.32}px">${headInner(f)}</div>`;
   }
   if (f.footer) foot = `<div class="foot" style="height:${f.footer}px">${NUMBERS.map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join('')}<div class="free">FREE TO PLAY<br>PRIZES FOR U.S. AND U.K. RESIDENTS 18+<br><span class="asof">${AS_OF}</span></div></div>`;
@@ -96,9 +100,10 @@ function html(f) {
   ${p.page ? `<div class="page${rows ? ' pr' : ''}" style="${pageBox}"><img src="${url(join(SRC, p.page))}"></div>` : ''}
   <div class="shade${rows ? ' sr' : ''}" style="--t:${p.tint}"></div>
 </div>`).join('');
-  const labelHtml = labels.map(({ p, left, top, width, align, mid }, i) => `
-<div class="label" data-i="${i}" style="left:${left}px;top:${top}px;width:${width}px;text-align:${align};${align === 'center' ? 'transform:translateX(-50%)' : ''}${mid ? ';transform:translateY(-50%)' : ''}">
-  <h2>${p.title.map(esc).join(f.mode === 'rows' ? ' ' : '<br>')}</h2>${f.sub ? `<p>${esc(p.sub)}</p>` : ''}
+  const lines = (p) => (f.mode === 'rows' ? [p.title.join(' ')] : p.title);
+  const labelHtml = labels.map(({ p }, i) => `
+<div class="label" data-i="${i}" style="text-align:${f.mode === 'cols' ? 'center' : 'left'}">
+  <h2>${lines(p).map((l) => `<span>${esc(l)}</span>`).join('')}</h2>${f.sub ? `<p>${esc(p.sub)}</p>` : ''}
 </div>`).join('');
 
   return `<!doctype html><html><head><meta charset="utf-8">
@@ -109,22 +114,24 @@ function html(f) {
 body{width:${W}px;height:${H}px;overflow:hidden;position:relative;background:#0b170f;font-family:'Almarai',sans-serif;color:#fffffe}
 .panel{position:absolute;inset:0}
 .art{position:absolute;inset:0;background-size:cover}
-.page{position:absolute;overflow:hidden;opacity:.9;display:flex;justify-content:center}
-.page img{width:${f.mode === 'cols' ? W / 5 * 1.06 : W * 0.58}px;height:auto;align-self:flex-start}
-.page.pr img{width:100%;object-fit:cover;object-position:top}
-.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.05) 30%,rgba(0,0,0,.45) 46%,rgba(0,0,0,.92) 74%),linear-gradient(rgba(var(--t),.25),rgba(var(--t),.25))}
-.shade.sr{background:linear-gradient(90deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.7) 34%,rgba(0,0,0,.1) 55%,rgba(0,0,0,0) 100%),linear-gradient(rgba(var(--t),.25),rgba(var(--t),.25))}
+.page{position:absolute;overflow:hidden;opacity:.9}
+.page img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+.page.pr img{object-position:center 12%}
+.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.05) 30%,rgba(0,0,0,.6) 44%,rgba(0,0,0,.9) 60%),linear-gradient(rgba(var(--t),.25),rgba(var(--t),.25))}
+.shade.sr{background:linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.86) 54%,rgba(0,0,0,.35) 76%,rgba(0,0,0,.12) 100%),linear-gradient(rgba(var(--t),.25),rgba(var(--t),.25))}
 svg.seams{position:absolute;inset:0;z-index:2;overflow:visible}
 .seam{font-family:'Atomic Marker';fill:#ff4c0f}
-.top{position:absolute;left:0;right:0;z-index:3;text-align:center;background:linear-gradient(180deg,rgba(0,0,0,.9),rgba(0,0,0,.6) 70%,rgba(0,0,0,0))}
+.top{position:absolute;left:0;right:0;z-index:3;text-align:center;display:flex;flex-direction:column;align-items:center;gap:${f.title * 0.16}px;background:linear-gradient(180deg,rgba(0,0,0,.9),rgba(0,0,0,.6) 70%,rgba(0,0,0,0))}
 .rowsTop{background:#0b170f}
-.kicker{font-weight:800;font-size:${f.title * 0.2}px;letter-spacing:.24em;color:#a2f590}
-h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:${f.title}px;line-height:1;margin-top:${f.title * 0.04}px;text-shadow:0 6px 30px rgba(0,0,0,.7)}
+.kicker{line-height:1;font-weight:800;font-size:${f.title * 0.2}px;letter-spacing:.24em;color:#a2f590}
+h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:${f.title}px;line-height:.8;padding-top:${f.title * 0.15}px;text-shadow:0 6px 30px rgba(0,0,0,.7)}
 h1 span{color:#ff4c0f}
-.when{display:inline-block;margin-top:${f.title * 0.1}px;padding:${f.title * 0.07}px ${f.title * 0.22}px;background:rgba(0,0,0,.85);border:2px solid #ff4c0f;font-weight:800;font-size:${f.title * 0.21}px;letter-spacing:.12em;line-height:1.35}
+.when{display:inline-block;padding:${f.title * 0.07}px ${f.title * 0.22}px;background:rgba(0,0,0,.85);border:2px solid #ff4c0f;font-weight:800;font-size:${f.title * 0.21}px;letter-spacing:.12em;line-height:1.35}
 .when b{color:#3adb97;font-weight:800;margin-left:.6em}
 .label{position:absolute;z-index:3}
 .label h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:${f.label}px;line-height:.98;text-shadow:0 4px 18px rgba(0,0,0,.9)}
+.label h2 span{display:block;white-space:nowrap}
+.label p{text-wrap:balance}
 .label p{margin-top:${f.label * 0.22}px;font-weight:700;font-size:${f.sub}px;line-height:1.35;text-shadow:0 2px 10px rgba(0,0,0,1)}
 .foot{position:absolute;left:0;right:0;bottom:0;z-index:3;display:flex;align-items:center;justify-content:center;gap:${W * 0.035}px;background:rgba(0,0,0,.9);border-top:3px solid #ff4c0f;padding:0 ${W * 0.03}px}
 .stat{text-align:center}
@@ -181,7 +188,57 @@ window.setT = function (t) {
   const ft = document.querySelector('.foot'); if (ft) { const k = ease((t - 3.5) / 0.6); ft.style.opacity = k; ft.style.transform = 'translateY(' + ((1 - k) * 40) + 'px)'; }
   const ao = document.querySelector('.asof'); if (ao) ao.style.opacity = ease((t - 3.8) / 0.6);
 };
-document.fonts.ready.then(() => { placeSeams(); setT(99); window.__ready = true; });
+// Fit the labels: every title on one line (the stacked one line per line), every description on exactly two lines,
+// the same sizes and the same padding in every lane, and nothing crossing a slash.
+const LANES = ${JSON.stringify(f.lanes)}, SUB = ${f.sub}, TITLE = ${f.label};
+function fitLabels(){
+  const els = [...document.querySelectorAll('.label')], L = LANES;
+  const pad = L.mode === 'cols' ? L.cw * 0.07 : L.H * 0.022;
+  const boxFor = (i, h, cwid) => {
+    if (L.mode === 'cols') {
+      const xs = (k, y) => k * L.cw + L.lean * (1 - 2 * y / L.H);
+      const top = L.top, bot = top + h;
+      const left = i === 0 ? 0 : xs(i, top), right = i === 4 ? L.W : xs(i + 1, bot);
+      return { x: left + pad, y: top, w: right - left - 2 * pad };
+    }
+    const w = L.W * 0.62, x0 = pad, x1 = x0 + Math.min(w, cwid || w);
+    const ys = (k, x) => L.hTop + k * L.bandH + L.lean * (1 - 2 * x / L.W);
+    const top = ys(i, x0) + pad, bot = ys(i + 1, x1) - pad;
+    return { x: x0, y: top + Math.max(0, (bot - top - h) / 2), w, room: bot - top };
+  };
+  const measure = (el, t, s, w) => {
+    const h2 = el.querySelector('h2'), p = el.querySelector('p');
+    h2.style.fontSize = t + 'px'; el.style.width = w + 'px';
+    const titleW = Math.max(...[...h2.children].map((c) => { c.style.display = 'inline-block'; const wd = c.getBoundingClientRect().width; c.style.display = ''; return wd; }));
+    let twoLines = true;
+    if (p) {
+      p.style.fontSize = s + 'px'; p.style.maxWidth = 'none'; p.style.whiteSpace = 'nowrap'; p.style.display = 'inline-block';
+      const one = p.getBoundingClientRect().width; p.style.whiteSpace = ''; p.style.display = '';
+      p.style.maxWidth = Math.min(w, one * 0.62) + 'px';
+      twoLines = Math.round(p.offsetHeight / (s * 1.35)) === 2;
+    }
+    const subW = p ? p.getBoundingClientRect().width : 0; return { fits: titleW <= w && twoLines, h: el.offsetHeight, cw: Math.max(titleW, subW) };
+  };
+  let t = TITLE, s = SUB;
+  for (let guard = 0; guard < 200; guard++) {
+    let ok = true;
+    els.forEach((el, i) => {
+      let b = boxFor(i, 0), m = measure(el, t, s, b.w);
+      b = boxFor(i, m.h, m.cw); m = measure(el, t, s, b.w);
+      if (!m.fits) ok = false;
+      if (L.mode === 'cols' && L.top + m.h > L.bottom) ok = false;
+      if (L.mode === 'rows' && m.h > b.room) ok = false;
+    });
+    if (ok) break;
+    t *= 0.97; if (s) s = Math.max(s * 0.985, t * 0.36);
+  }
+  els.forEach((el, i) => {
+    const b0 = boxFor(i, 0); const m = measure(el, t, s, b0.w); const b = boxFor(i, m.h, m.cw); measure(el, t, s, b.w);
+    el.style.left = b.x + 'px'; el.style.top = b.y + 'px';
+    const p = el.querySelector('p'); if (p && L.mode === 'cols') { p.style.marginLeft = 'auto'; p.style.marginRight = 'auto'; }
+  });
+}
+document.fonts.ready.then(() => { placeSeams(); fitLabels(); setT(99); window.__ready = true; });
 </script>
 </body></html>`;
 }
