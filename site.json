@@ -63,6 +63,12 @@
       "source": "bot:squarespace-lootbox.html"
     },
     {
+      "slug": "loot-next",
+      "url": "(preview only: the next loot box scorecard, not live)",
+      "title": "Loot box scorecard (next version, preview)",
+      "source": "bot:squarespace-lootbox.next.html"
+    },
+    {
       "slug": "rules",
       "url": "/rules",
       "title": "Official Rules",
