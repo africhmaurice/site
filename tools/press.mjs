@@ -320,7 +320,7 @@ ${cardCss('#press')}
       <p class="pp-asof">As of ${esc(STATS_DATE)}.</p>
       <blockquote class="pp-quote">${HUNT_QUOTE.map((p, i, a) => `<p>${i === 0 ? '“' : ''}${esc(p)}${i === a.length - 1 ? '”' : ''}</p>`).join('')}<cite>${esc(HUNT_QUOTE_BY)}</cite></blockquote>
       <dl class="pp-facts">${HUNT_FACTS.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
-      <figure class="pp-gfx"><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener"><img src="${BASE}assets/press/hunt-overview.webp" width="2400" height="1350" alt="The Cello’s Gate Treasure Hunt at a glance: 208 sky pirates, 132,720 crew points, 2,439 sweepstakes entries, and 100 hidden loot boxes; riddles, clues, daily games, loot boxes, and story votes; three ways to win: sweepstakes, the Treasure, and crew rewards." loading="lazy"></a><figcaption><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener">Download the full-size graphic ↓</a></figcaption></figure>
+      <figure class="pp-gfx"><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener"><img src="${BASE}assets/press/hunt-overview.webp" width="2400" height="1350" alt="The Cello’s Gate Treasure Hunt: five art panels split by glowing slashes for riddles, clues, daily games, loot boxes, and story votes, over 208 sky pirates, 132,720 crew points, 2,439 sweepstakes entries, and three ways to win." loading="lazy"></a><figcaption><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener">Download the full-size graphic ↓</a></figcaption></figure>
       <div class="pp-cta"><a class="pp-btn" href="/the-hunt">See the hunt</a><a class="pp-btn" href="/leaderboard">Live leaderboard</a></div>
     </section>
 
