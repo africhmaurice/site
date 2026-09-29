@@ -64,6 +64,9 @@ html,body{margin:0 !important;padding:0 !important}
 #hp .hp-crew{margin:26px 0 0;text-align:center;font-size:18px;line-height:1.6}
 #hp .hp-crew b{color:var(--hitext)}
 #hp .hp-more{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin:30px 0 0}
+#hp .hp-colors{display:flex;align-items:center;justify-content:center;gap:10px;margin:28px 0 -12px;font-weight:800;font-size:13px;letter-spacing:.12em}
+#hp .hp-colors button{width:30px;height:30px;border-radius:50%;border:3px solid #fffffe;box-shadow:0 0 0 2px #0b170f;cursor:pointer;padding:0}
+#hp .hp-colors button[aria-checked="true"]{box-shadow:0 0 0 3px #ff4c0f}
 #hp .hp-btn.alt{background:var(--violet)}
 #hp .hp-btn.alt:hover{background:#5b3aa6}
 #hp .hp-card{position:relative}
@@ -142,6 +145,7 @@ html,body{margin:0 !important;padding:0 !important}
       '<h2>DAYS ON THE HUNT</h2><div class="hp-days">' + days + '</div><div class="hp-daykey"><span>One square for each day of the hunt, Sept 21 to Nov 1. <b>Red</b> means you earned points that day.</span></div>' +
       '<h2>LATEST LOOT</h2><ul class="hp-recent">' + p.recent.map(function (r) { return '<li><time>' + esc(day(r[0])) + '</time><span>' + esc(r[1]) + '</span><b>+' + fmt(r[2]) + '</b></li>'; }).join('') + '</ul>' +
       '<p class="hp-crew">You’ve earned <b>' + (crewTotal ? (p.pts / crewTotal * 100).toFixed(1) : '0') + '%</b> of the crew’s ' + fmt(crewTotal) + ' points. Every one of them helps unlock rewards for everyone!</p>' +
+      '<div class="hp-colors" id="hp-colors" role="radiogroup" aria-label="Card color"><span>CARD COLOR</span></div>' +
       '<div class="hp-more"><button type="button" class="hp-btn" id="hp-share">SHARE MY CARD</button><a class="hp-btn" href="' + U + '/the-hunt#tasks">EARN MORE POINTS</a><a class="hp-btn alt" href="' + U + '/leaderboard">LEADERBOARD</a><a class="hp-btn alt" href="' + U + '/loot">LOOT BOX SCORECARD</a></div>' +
       (EXAMPLE ? '' : '<p class="hp-foot">Not you? <a id="hp-switch">Use a different email</a></p>');
     card.hidden = false; find.hidden = true;
@@ -152,46 +156,64 @@ html,body{margin:0 !important;padding:0 !important}
     if (sw) sw.onclick = function () { remember(''); card.hidden = true; find.hidden = false; document.getElementById('hp-email').value = ''; };
     var sh = document.getElementById('hp-share');
     if (sh) sh.onclick = function () { shareCard(p, sh); };
+    var box = document.getElementById('hp-colors');
+    if (box) Object.keys(THEMES).forEach(function (k) {
+      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'radio'); b.title = THEMES[k].name; b.setAttribute('aria-label', THEMES[k].name);
+      b.style.background = THEMES[k].base; b.setAttribute('aria-checked', String(k === themeKey));
+      b.onclick = function () { themeKey = k; try { localStorage.setItem('thShareColor', k); } catch (e) {} Array.prototype.forEach.call(box.querySelectorAll('button'), function (o) { o.setAttribute('aria-checked', String(o === b)); }); };
+      box.appendChild(b);
+    });
   }
+  // Card colors, all from the brand palette. The pick is remembered on this device (shared with the scorecard card).
+  var THEMES = {
+    violet: { name: 'Violet', base: '#2d1c53', wash: 'rgba(45,28,83,.78)', hi: '#a2f590', line: 'rgba(158,116,253,.75)', pill: '#ff4c0f', pillText: '#fffffe' },
+    green: { name: 'Green', base: '#1b3b15', wash: 'rgba(27,59,21,.8)', hi: '#a2f590', line: 'rgba(162,245,144,.6)', pill: '#ff4c0f', pillText: '#fffffe' },
+    emerald: { name: 'Emerald', base: '#1a5e41', wash: 'rgba(26,94,65,.8)', hi: '#89fbcb', line: 'rgba(137,251,203,.6)', pill: '#ff4c0f', pillText: '#fffffe' },
+    ember: { name: 'Ember', base: '#912501', wash: 'rgba(145,37,1,.8)', hi: '#fd7547', line: 'rgba(253,117,71,.7)', pill: '#fffffe', pillText: '#912501' },
+    ink: { name: 'Ink', base: '#0b170f', wash: 'rgba(11,23,15,.82)', hi: '#3adb97', line: 'rgba(58,219,151,.6)', pill: '#ff4c0f', pillText: '#fffffe' }
+  };
+  var themeKey = (function () { try { return localStorage.getItem('thShareColor') || 'violet'; } catch (e) { return 'violet'; } })();
+  if (!THEMES[themeKey]) themeKey = 'violet';
   // Share card: a 1080x1350 picture of this player's stats, drawn here in the browser. On a phone it opens the
   // share sheet (straight to a story or a post); anywhere else it downloads. Every picture it draws is served
   // with open CORS (GitHub Pages), so the canvas can be saved.
   function shareCard(p, btn) {
+    var T = THEMES[themeKey];
     var W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
     var x = c.getContext('2d'), ART = 'https://africhmaurice.github.io/site/assets/', label = btn.textContent;
     function img(src) { return new Promise(function (ok) { var i = new Image(); i.crossOrigin = 'anonymous'; i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
     function round(px, py, pw, ph, r) { x.beginPath(); x.moveTo(px + r, py); x.arcTo(px + pw, py, px + pw, py + ph, r); x.arcTo(px + pw, py + ph, px, py + ph, r); x.arcTo(px, py + ph, px, py, r); x.arcTo(px, py, px + pw, py, r); x.closePath(); }
-    function panel(px, py, pw, ph) { round(px, py, pw, ph, 26); x.fillStyle = 'rgba(11,23,15,.6)'; x.fill(); x.strokeStyle = 'rgba(158,116,253,.75)'; x.lineWidth = 3; x.stroke(); }
+    function panel(px, py, pw, ph) { round(px, py, pw, ph, 26); x.fillStyle = 'rgba(11,23,15,.6)'; x.fill(); x.strokeStyle = T.line; x.lineWidth = 3; x.stroke(); }
     function t(str, cx, y, font, color, sp) { x.font = font; x.fillStyle = color; x.textAlign = 'center'; if ('letterSpacing' in x) x.letterSpacing = (sp || 0) + 'px'; x.fillText(str, cx, y); if ('letterSpacing' in x) x.letterSpacing = '0px'; }
     function fit(str, max, size, fam) { var s = size; x.font = s + 'px ' + fam; while (x.measureText(str).width > max && s > 40) { s -= 4; x.font = s + 'px ' + fam; } return s + 'px ' + fam; }
     btn.textContent = 'MAKING YOUR CARD...'; btn.disabled = true;
     var fonts = document.fonts ? Promise.all([document.fonts.load("120px 'Atomic Marker'"), document.fonts.load('800 40px Almarai'), document.fonts.load('700 40px Almarai')]).catch(function () {}) : null;
     Promise.all([img(ART + 'bg/floating-blocks-city-as311317794.webp'), img(ART + 'img/mark-white.png'), fonts]).then(function (r) {
       var bg = r[0], mark = r[1], AM = "'Atomic Marker', Almarai, sans-serif";
-      x.fillStyle = '#2d1c53'; x.fillRect(0, 0, W, H);
+      x.fillStyle = T.base; x.fillRect(0, 0, W, H);
       if (bg) { var s = Math.max(W / bg.width, H / bg.height); x.drawImage(bg, (W - bg.width * s) / 2, (H - bg.height * s) / 2, bg.width * s, bg.height * s); }
-      x.fillStyle = 'rgba(45,28,83,.78)'; x.fillRect(0, 0, W, H);
-      t('THE TREASURE HUNT', W / 2, 112, '800 30px Almarai', '#a2f590', 7);
+      x.fillStyle = T.wash; x.fillRect(0, 0, W, H);
+      t('THE TREASURE HUNT', W / 2, 112, '800 30px Almarai', T.hi, 7);
       var name = String(p.n || p.h || 'Sky Pirate').toUpperCase();
       t(name, W / 2, 236, fit(name, 900, 132, AM), '#fffffe');
       if (p.h && p.h !== p.n) t(p.h, W / 2, 294, '700 34px Almarai', '#fffffe');
       panel(90, 340, 900, 250);
-      t(p.rank ? 'RANK · ' + String(p.rl || '').toUpperCase() + ' BOARD' : 'SKY PIRATE', W / 2, 398, '800 26px Almarai', '#a2f590', 6);
+      t(p.rank ? 'RANK · ' + String(p.rl || '').toUpperCase() + ' BOARD' : 'SKY PIRATE', W / 2, 398, '800 26px Almarai', T.hi, 6);
       t(p.rank ? '#' + p.rank : 'CREW', W / 2, 528, '140px ' + AM, '#fffffe');
       if (p.rank) t('of ' + fmt(p.of) + ' sky pirates', W / 2, 568, '700 28px Almarai', '#fffffe');
       [['POINTS', fmt(p.pts)], ['LOOT BOXES', p.loot + ' / ' + BOXES], ['GAME WINS', fmt(p.games)], ['RIDDLES SOLVED', fmt(p.riddles)]].forEach(function (st, i) {
         var px = 90 + (i % 2) * 465, py = 625 + Math.floor(i / 2) * 215;
         panel(px, py, 435, 190);
-        t(st[0], px + 217, py + 58, '800 24px Almarai', '#a2f590', 5);
+        t(st[0], px + 217, py + 58, '800 24px Almarai', T.hi, 5);
         t(st[1], px + 217, py + 150, fit(st[1], 380, 84, AM), '#fffffe');
       });
-      round(90, 1080, 900, 130, 65); x.fillStyle = '#ff4c0f'; x.fill();
-      t('JOIN ME ON THE HUNT!', W / 2, 1168, fit('JOIN ME ON THE HUNT!', 820, 74, AM), '#fffffe');
+      round(90, 1080, 900, 130, 65); x.fillStyle = T.pill; x.fill();
+      t('JOIN ME ON THE HUNT!', W / 2, 1168, fit('JOIN ME ON THE HUNT!', 820, 74, AM), T.pillText);
       t('MAURICEAFRICH.COM/THE-HUNT', W / 2, 1262, '800 30px Almarai', '#fffffe', 4);
       var foot = '@MAURICEAFRICH  ·  #SKYPIRATESHUNT';
       x.font = '800 22px Almarai'; if ('letterSpacing' in x) x.letterSpacing = '4px';
       var fw = x.measureText(foot).width; if ('letterSpacing' in x) x.letterSpacing = '0px';
-      t(foot, W / 2 + 20, 1316, '800 22px Almarai', '#a2f590', 4);
+      t(foot, W / 2 + 20, 1316, '800 22px Almarai', T.hi, 4);
       if (mark) x.drawImage(mark, W / 2 + 20 - fw / 2 - 40, 1284, 26, 41);
       c.toBlob(function (b) {
         btn.textContent = label; btn.disabled = false;

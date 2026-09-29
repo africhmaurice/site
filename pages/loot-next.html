@@ -91,6 +91,9 @@ html,body{margin:0 !important;padding:0 !important}
 .lb-cta .lb-btn{width:auto;margin-top:14px;text-decoration:none}
 .lb-share{text-align:center;margin-top:22px}
 .lb-share p{font-size:14px;line-height:1.45;color:#213226;max-width:520px;margin:10px auto 0}
+.lb-colors{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#213226}
+.lb-colors button{width:30px;height:30px;border-radius:50%;border:3px solid #fffffe;box-shadow:0 0 0 2px #0b170f;cursor:pointer;padding:0}
+.lb-colors button[aria-checked="true"]{box-shadow:0 0 0 3px #ff4c0f}
 .lb-cta .lb-btn2{display:table;margin:12px auto 0;background:#fff;color:#111}
 .lb-cta .lb-btn2:hover{background:#111;color:#fff}
 
@@ -285,7 +288,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     <div id="lb-card" style="display:none">
       <p class="lb-tally" id="lb-tally"></p>
       <div class="lb-grid" id="lb-grid" aria-label="Your loot box scorecard"></div>
-      <div class="lb-share"><button type="button" class="lb-btn" id="lb-share">Share my scorecard</button>
+      <div class="lb-share"><div class="lb-colors" id="lb-colors" role="radiogroup" aria-label="Card color"><span>Card color</span></div>
+        <button type="button" class="lb-btn" id="lb-share">Share my scorecard</button>
         <p>Post it with #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK), then submit it for “Show Off Your Scorecard” points.</p></div>
     </div>
     <p class="lb-foot" id="lb-foot"></p>
@@ -423,7 +427,27 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   // share sheet (straight to a story or a post); anywhere else it downloads. The chest art and the background
   // come from GitHub Pages with open CORS, so the canvas can be saved.
   var lastFound = [];
+  // Card colors, all from the brand palette. The pick is remembered on this device (shared with the profile card).
+  var THEMES = {
+    green: { name: 'Green', base: '#1b3b15', wash: 'rgba(27,59,21,.8)', hi: '#a2f590', pill: '#ff4c0f', pillText: '#fffffe' },
+    emerald: { name: 'Emerald', base: '#1a5e41', wash: 'rgba(26,94,65,.8)', hi: '#89fbcb', pill: '#ff4c0f', pillText: '#fffffe' },
+    violet: { name: 'Violet', base: '#2d1c53', wash: 'rgba(45,28,83,.8)', hi: '#a2f590', pill: '#ff4c0f', pillText: '#fffffe' },
+    ember: { name: 'Ember', base: '#912501', wash: 'rgba(145,37,1,.8)', hi: '#fd7547', pill: '#fffffe', pillText: '#912501' },
+    ink: { name: 'Ink', base: '#0b170f', wash: 'rgba(11,23,15,.82)', hi: '#3adb97', pill: '#ff4c0f', pillText: '#fffffe' }
+  };
+  var themeKey = (function () { try { return localStorage.getItem('thShareColor') || 'green'; } catch (e) { return 'green'; } })();
+  if (!THEMES[themeKey]) themeKey = 'green';
+  (function () {
+    var box = document.getElementById('lb-colors'); if (!box) return;
+    Object.keys(THEMES).forEach(function (k) {
+      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'radio'); b.title = THEMES[k].name; b.setAttribute('aria-label', THEMES[k].name);
+      b.style.background = THEMES[k].base; b.setAttribute('aria-checked', String(k === themeKey));
+      b.onclick = function () { themeKey = k; try { localStorage.setItem('thShareColor', k); } catch (e) {} Array.prototype.forEach.call(box.querySelectorAll('button'), function (o) { o.setAttribute('aria-checked', String(o === b)); }); };
+      box.appendChild(b);
+    });
+  })();
   function shareCard(btn) {
+    var T = THEMES[themeKey];
     var W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
     var x = c.getContext('2d'), SITE = 'https://africhmaurice.github.io/site/assets/', label = btn.textContent;
     var have = {}; lastFound.forEach(function (n) { have[n] = true; });
@@ -436,33 +460,33 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     var fonts = document.fonts ? Promise.all([document.fonts.load("80px 'Atomic Marker'"), document.fonts.load('800 30px Almarai'), document.fonts.load('700 30px Almarai')]).catch(function () {}) : null;
     Promise.all([img(SITE + 'bg/overgrown-sphere-as470076105.webp'), img(SITE + 'img/mark-white.png'), fonts, Promise.all(chests)]).then(function (r) {
       var bg = r[0], pics = r[3], AM = "'Atomic Marker', Almarai, sans-serif";
-      x.fillStyle = '#1b3b15'; x.fillRect(0, 0, W, H);
+      x.fillStyle = T.base; x.fillRect(0, 0, W, H);
       if (bg) { var s = Math.max(W / bg.width, H / bg.height); x.drawImage(bg, (W - bg.width * s) / 2, (H - bg.height * s) / 2, bg.width * s, bg.height * s); }
-      x.fillStyle = 'rgba(27,59,21,.8)'; x.fillRect(0, 0, W, H);
-      t('THE TREASURE HUNT', W / 2, 84, '800 26px Almarai', '#a2f590', 7);
+      x.fillStyle = T.wash; x.fillRect(0, 0, W, H);
+      t('THE TREASURE HUNT', W / 2, 84, '800 26px Almarai', T.hi, 7);
       t('MY LOOT BOX SCORECARD', W / 2, 162, fit('MY LOOT BOX SCORECARD', 920, 84, AM), '#fffffe');
       var who = [me.first_name, me.handle].filter(Boolean).join('  ·  ');
       if (who) t(who, W / 2, 212, '700 30px Almarai', '#fffffe');
-      t(lastFound.length + ' OF ' + TOTAL + ' FOUND', W / 2, 268, '800 34px Almarai', '#a2f590', 6);
+      t(lastFound.length + ' OF ' + TOTAL + ' FOUND', W / 2, 268, '800 34px Almarai', T.hi, 6);
       // The grid: 11 across, found chests in full colour, the rest faint.
       var cols = 11, cell = 80, gx = (W - cols * cell) / 2, gy = 300;
       round(gx - 16, gy - 16, cols * cell + 32, Math.ceil(TOTAL / cols) * cell + 32, 24); x.fillStyle = 'rgba(11,23,15,.6)'; x.fill();
-      x.strokeStyle = 'rgba(162,245,144,.6)'; x.lineWidth = 3; x.stroke();
+      x.strokeStyle = T.hi; x.globalAlpha = .6; x.lineWidth = 3; x.stroke(); x.globalAlpha = 1;
       for (var k = 0; k < TOTAL; k++) {
         var row = Math.floor(k / cols), inRow = Math.min(cols, TOTAL - row * cols), cx = gx + (cols - inRow) * cell / 2 + (k % cols) * cell, cy = gy + row * cell;
         var p = pics[k];
         if (have[k]) { x.globalAlpha = 1; } else { x.globalAlpha = .16; }
         if (p) x.drawImage(p, cx + 5, cy + 5, cell - 10, cell - 10);
-        else { x.fillStyle = have[k] ? '#a2f590' : 'rgba(255,255,254,.3)'; x.font = '800 22px Almarai'; x.textAlign = 'center'; x.fillText(String(k), cx + cell / 2, cy + cell / 2 + 8); }
+        else { x.fillStyle = have[k] ? T.hi : 'rgba(255,255,254,.3)'; x.font = '800 22px Almarai'; x.textAlign = 'center'; x.fillText(String(k), cx + cell / 2, cy + cell / 2 + 8); }
         x.globalAlpha = 1;
       }
-      round(90, 1160, 900, 100, 50); x.fillStyle = '#ff4c0f'; x.fill();
-      t('JOIN ME ON THE HUNT!', W / 2, 1230, fit('JOIN ME ON THE HUNT!', 820, 62, AM), '#fffffe');
+      round(90, 1160, 900, 100, 50); x.fillStyle = T.pill; x.fill();
+      t('JOIN ME ON THE HUNT!', W / 2, 1230, fit('JOIN ME ON THE HUNT!', 820, 62, AM), T.pillText);
       t('MAURICEAFRICH.COM/THE-HUNT', W / 2, 1294, '800 26px Almarai', '#fffffe', 4);
       var foot = '@MAURICEAFRICH  ·  #SKYPIRATESHUNT';
       x.font = '800 20px Almarai'; if ('letterSpacing' in x) x.letterSpacing = '4px';
       var fw = x.measureText(foot).width; if ('letterSpacing' in x) x.letterSpacing = '0px';
-      t(foot, W / 2 + 18, 1332, '800 20px Almarai', '#a2f590', 4);
+      t(foot, W / 2 + 18, 1332, '800 20px Almarai', T.hi, 4);
       if (r[1]) x.drawImage(r[1], W / 2 + 18 - fw / 2 - 34, 1304, 20, 32);
       c.toBlob(function (b) {
         btn.textContent = label; btn.disabled = false;
