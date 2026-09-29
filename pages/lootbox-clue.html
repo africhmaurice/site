@@ -24,7 +24,22 @@ html,body{margin:0 !important;padding:0 !important}
 #loot-clue .lc-img{display:block;width:100%;max-width:420px;height:auto;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}#loot-clue .lc-img.lc-sticker{border:0;box-shadow:none;max-width:300px;margin-top:14px}
 .lc-flash-ov{position:fixed;inset:0;z-index:2147483646;background:#fffffe;display:flex;align-items:center;justify-content:center;pointer-events:none}.lc-flash-ov img{width:min(60vw,448px);height:auto}.lc-flash-ov.fill{background:#0b170f}.lc-flash-ov.fill img{width:100%;height:100%;object-fit:cover}
 .lc-flash-ov.lc-say{background:#0b170f;color:#fffffe;font-family:'Atomic Marker',cursive;font-size:clamp(44px,9vw,120px);letter-spacing:.02em}
-@media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}}
+#loot-clue .lc-hint{width:100%;margin-top:26px;display:flex;flex-direction:column;align-items:center;gap:18px;font-family:'Almarai',sans-serif;text-transform:none;letter-spacing:.02em}
+#loot-clue .lc-step{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
+#loot-clue .lc-hint [hidden]{display:none!important}
+#loot-clue .lc-hint button{font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.04em;cursor:pointer;border-radius:999px;padding:10px 20px;border:2px solid #fffffe;background:transparent;color:#fffffe;margin:4px}
+#loot-clue .lc-hint button:hover,#loot-clue .lc-hint .lc-hint-yes{background:#fffffe;color:#0b170f}
+#loot-clue .lc-hint-msg{color:#fffffe;font-size:16px;line-height:1.55;text-align:center;max-width:460px}
+#loot-clue .lc-hint-msg:empty{display:none}
+#loot-clue .lc-hint-msg label{display:block;font-weight:700;margin-bottom:8px}
+#loot-clue .lc-hint-msg input{display:block;width:100%;box-sizing:border-box;margin-top:6px;font:inherit;font-size:16px;padding:10px 12px;border-radius:8px;border:2px solid #fffffe;background:rgba(11,23,15,.35);color:#fffffe}
+#loot-clue .lc-hint-out{width:100%}
+#loot-clue .lc-hint-pics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%}
+#loot-clue .lc-hint-pics figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px}
+#loot-clue .lc-hint-pics figcaption{font-weight:800;color:#fffffe;font-size:15px;line-height:1.3;text-align:center;min-height:2.6em;display:flex;align-items:flex-end;justify-content:center}
+#loot-clue .lc-hint-pics img{width:100%;aspect-ratio:3/4;object-fit:cover;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}
+#loot-clue .lc-hint-text{font-family:'Atomic Marker',cursive;font-size:clamp(40px,5vw,64px);line-height:1;color:#89fbcb;text-align:center}
+@media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}#loot-clue .lc-hint-pics{gap:10px}}
 @media (max-width:760px){#loot-clue{padding:130px 20px 70px}#loot-clue .lc-board{padding:48px 26px 44px}}
 </style>
 <style>
@@ -290,6 +305,18 @@ to find their prize.</div>
   <div class="lc-board" data-clue="20">
     <div class="lc-num">#20</div>
     <div class="lc-text">Princess (with an H) + Wei Shi Capaldi</div>
+    <div class="lc-hint" data-clue="20">
+      <div class="lc-step" data-step="1" data-price="25" data-total="25">
+        <button type="button" class="lc-hint-btn">Pay 25 points for a hint.</button>
+        <div class="lc-hint-msg" aria-live="polite"></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-pics"><figure><figcaption>Princess (with an H)</figcaption><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-20-hint-1.jpg" alt="Hint picture for Princess (with an H)"></figure><figure><figcaption>Wei Shi</figcaption><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-20-hint-2.jpg" alt="Hint picture for Wei Shi"></figure><figure><figcaption>Capaldi</figcaption><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-20-hint-3.jpg" alt="Hint picture for Capaldi"></figure></div></div>
+      </div>
+      <div class="lc-step" data-step="2" data-price="15" data-total="40" hidden>
+        <button type="button" class="lc-hint-btn">Sacrifice 15 additional points for another clue.</button>
+        <div class="lc-hint-msg" aria-live="polite"></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-text" data-t="NTowMA=="></div></div>
+      </div>
+    </div>
   </div>
   <div class="lc-board" data-clue="21">
     <div class="lc-num">#21</div>
@@ -355,5 +382,39 @@ to find their prize.</div>
       function wake(){var on=maIsNight();b.classList.toggle('on',on);if(on){b.setAttribute('role','button');b.tabIndex=0;}else{b.removeAttribute('role');b.removeAttribute('tabindex');}}
       function go(){if(!b.classList.contains('on'))return;var o=document.createElement('div');o.className='lc-flash-ov lc-say';o.textContent=said;document.body.appendChild(o);setTimeout(function(){o.remove();},160);}
       wake();setInterval(wake,60000);b.addEventListener('click',go);b.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});});})();</script>
+  <script>(function(){var s=document.getElementById('loot-clue');if(!s)return;
+    var EP='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec',DATA='https://africhmaurice.github.io/leaderboard/profiles.json';
+    function me(){try{return JSON.parse(localStorage.getItem('thLoot:me')||'{}')||{};}catch(e){return {};}}
+    function saved(){var m=me();try{return m.email||localStorage.getItem('thProfile:email')||'';}catch(e){return m.email||'';}}
+    function hash(email){var bytes=new TextEncoder().encode('thp1:'+email.trim().toLowerCase());return crypto.subtle.digest('SHA-256',bytes).then(function(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('').slice(0,32);});}
+    var OK=/^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    Array.prototype.forEach.call(s.querySelectorAll('.lc-hint'),function(h){var clue=h.getAttribute('data-clue'),steps=h.querySelectorAll('.lc-step');
+      Array.prototype.forEach.call(steps,function(st,k){var step=k+1,price=+st.getAttribute('data-price'),total=+st.getAttribute('data-total'),KEY='thClueHint:'+clue+':'+step;
+        var btn=st.querySelector('.lc-hint-btn'),msg=st.querySelector('.lc-hint-msg'),out=st.querySelector('.lc-hint-out');
+        function say(html){msg.innerHTML=html;}
+        function show(note){Array.prototype.forEach.call(out.querySelectorAll('img[data-src]'),function(i){i.src=i.getAttribute('data-src');i.removeAttribute('data-src');});
+          var t=out.querySelector('.lc-hint-text[data-t]');if(t){t.textContent=decodeURIComponent(escape(atob(t.getAttribute('data-t'))));t.removeAttribute('data-t');}
+          out.hidden=false;btn.hidden=true;say(note||'');if(steps[k+1])steps[k+1].hidden=false;}
+        try{if(localStorage.getItem(KEY))show();}catch(e){}
+        function ask(){say('<label>The email you hunt with<input type="email" autocomplete="email"></label><button type="button" class="lc-hint-go">Next</button>');
+          var i=msg.querySelector('input');i.focus();msg.querySelector('.lc-hint-go').onclick=function(){var e=i.value.trim();if(!OK.test(e)){i.focus();return;}check(e);};}
+        function check(email){say('Checking your points\u2026');
+          Promise.all([hash(email),fetch(DATA+'?t='+Date.now()).then(function(r){return r.json();})]).then(function(v){var p=(v[1].players||{})[v[0]],pts=p?(p.pts||0):0;
+            if(!p){say('No hunter with that email yet. Use the email you use for loot boxes and the hunt forms. <button type="button" class="lc-hint-again">Try another email</button>');msg.querySelector('.lc-hint-again').onclick=ask;btn.hidden=true;return;}
+            if(pts<total){say('This costs '+price+' points'+(total>price?' (on top of the '+(total-price)+' you already spent)':'')+', and you have '+pts.toLocaleString('en-US')+'. Earn a few more and come back!');return;}
+            say('This takes <b>'+price+' points</b> off your total. Reveal it? <button type="button" class="lc-hint-yes">Yes, reveal it</button><button type="button" class="lc-hint-no">Cancel</button>');
+            msg.querySelector('.lc-hint-no').onclick=function(){say('');btn.hidden=false;};
+            msg.querySelector('.lc-hint-yes').onclick=function(){buy(email);};
+          }).catch(function(){say('Something went wrong. Please try again in a minute.');btn.hidden=false;});}
+        function buy(email){var m=me();say('Unlocking\u2026');
+          var body=new URLSearchParams({action:'hint',clue:clue,step:String(step),email:email,first_name:m.first_name||'',handle:m.handle||'',platform:m.platform||'',country:m.country||''});
+          fetch(EP,{method:'POST',body:body}).then(function(r){return r.json();}).then(function(d){
+            if(!d||!d.ok){say(d&&d.error==='closed'?'The hunt is closed.':'That didn\u2019t go through. Please try again.');btn.hidden=false;return;}
+            try{localStorage.setItem(KEY,'1');}catch(e){}
+            show(d.status==='already'?'You already unlocked this one.':price+' points will come off your total at the next scoring update.');
+          }).catch(function(){say('That didn\u2019t go through. Please try again.');btn.hidden=false;});}
+        btn.addEventListener('click',function(){btn.hidden=true;var e=saved();if(e)check(e);else ask();});
+      });
+    });})();</script>
 </section>
 <!-- END OF FILE — if you cannot find this comment after pasting, the paste was truncated -->
