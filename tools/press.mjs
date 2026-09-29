@@ -221,10 +221,14 @@ ${fonts}
 #press .pp-kicker{font-weight:700;font-size:14px;letter-spacing:.14em;color:#a2f590;margin:0 0 14px}
 #press h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,4.4vw,64px);line-height:1;margin:0 0 20px;color:#fffffe;text-transform:none}
 #press h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(28px,2.6vw,40px);line-height:1.1;color:#89fbcb;margin:0 0 26px;text-transform:none}
-#press .pp-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.6;color:#ede9dc;margin:0;max-width:640px}
+#press .pp-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.6;color:#ede9dc;margin:0 auto;max-width:640px}
+#press .pp-wrap > .pp-kicker,#press .pp-wrap > h1,#press .pp-wrap > .pp-lede{text-align:center}
+#press .pp-hunt h2.pp-hunt-title{text-align:center;line-height:1.05}
+#press .pp-hunt h2.pp-hunt-title span{display:block}
+#press .pp-hunt h2.pp-hunt-title .w{color:#fffffe}
 #press .pp-section{margin-top:56px;padding:44px 48px 40px;background:rgba(38,142,98,.9);border:1px solid rgba(243,234,217,.18);scroll-margin-top:120px}
-#press .pp-contacts{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
-#press .pp-contact{display:flex;flex-direction:column;padding:24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16)}
+#press .pp-contacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+#press .pp-contact{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16)}
 #press .pp-contact p{margin:0}
 #press .pp-role{font-weight:800;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#fd7547;margin-bottom:12px!important}
 #press .pp-name{font-weight:800;font-size:20px;line-height:1.3}
@@ -232,16 +236,17 @@ ${fonts}
 #press .pp-note{font-size:15px;line-height:1.55;color:rgba(255,255,254,.78);margin:14px 0 20px!important}
 #press .pp-btn{margin-top:auto;display:block;text-align:center;color:#fffffe;text-decoration:none;font-weight:700;font-size:15px;letter-spacing:.06em;border:1.5px solid #fffffe;padding:12px 16px;background:rgba(12,26,8,.35);transition:background .15s ease,transform .15s ease}
 #press .pp-btn:hover{background:#c53200;transform:scale(1.03)}
-#press .pp-addr{display:block;margin-top:10px;font-size:12px;color:rgba(255,255,254,.6);word-break:break-all;text-align:center}
+#press .pp-contact .pp-btn{min-width:260px}
+#press .pp-addr{display:block;margin-top:10px;font-size:14px;color:rgba(255,255,254,.7);white-space:nowrap;text-align:center}
 #press .pp-soon{margin-top:auto;display:block;text-align:center;font-size:14px;font-weight:700;letter-spacing:.06em;padding:12px 16px;border:1.5px dashed rgba(255,255,254,.35);color:rgba(255,255,254,.6)}
-#press .pp-kit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:48px;align-items:start}
+#press .pp-kit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:start}
 #press .pp-imgs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:36px}
 #press .pp-img{display:flex;flex-direction:column;gap:10px;color:#fffffe;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:.06em}
 #press .pp-img img{width:100%;aspect-ratio:4/5;object-fit:contain;display:block;border:1px solid rgba(255,255,254,.16);background:rgba(11,23,15,.9)}
 #press .pp-img:last-child img{object-fit:cover}
 #press .pp-desc p{font-size:16px;line-height:1.65;color:#ede9dc;margin:0 0 16px}
 #press .pp-desc .pp-lead{font-weight:800;color:#fffffe}
-#press .pp-desc .pp-tag{font-weight:800;letter-spacing:.1em;color:#fd7547;line-height:1.8}
+#press .pp-desc .pp-tag{font-weight:800;letter-spacing:.1em;color:#fffffe;line-height:1.8;background:rgba(11,23,15,.9);border-left:4px solid #ff4c0f;padding:12px 18px}
 #press .pp-sub{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(24px,2.2vw,32px);color:#89fbcb;margin:40px 0 20px;text-transform:none}
 #press .pp-praise{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:18px}
 #press .pp-praise figure{margin:0;padding:22px 24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);display:flex;flex-direction:column;justify-content:space-between;gap:14px}
@@ -249,9 +254,11 @@ ${fonts}
 #press .pp-praise figcaption{font-size:14px;letter-spacing:.04em;color:rgba(255,255,254,.78)}
 #press .pp-praise figcaption b{color:#fd7547;letter-spacing:.08em}
 #press .pp-rule{border:0;border-top:1px solid rgba(243,234,217,.25);margin:40px 0 0}
-#press .pp-img span{color:#fd7547}
-#press .pp-img:hover span{color:#3adb97}
-#press .pp-facts{margin:0;display:grid;grid-template-columns:110px minmax(0,1fr);gap:0}
+#press .pp-img span{color:#fffffe;white-space:nowrap}
+#press .pp-img span b{color:#ff4c0f;font-weight:800}
+#press .pp-img:hover span{color:#a2f590}
+#press .pp-facts{margin:0;display:grid;grid-template-columns:130px minmax(0,1fr);gap:0}
+#press .pp-facts dt,#press .pp-facts dd{white-space:nowrap}
 #press .pp-facts dt,#press .pp-facts dd{margin:0;padding:12px 0;border-top:1px solid rgba(243,234,217,.12);font-size:15px;line-height:1.5}
 #press .pp-facts dt{font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#a2f590;padding-top:14px}
 #press .pp-bio{font-size:16px;line-height:1.65;color:#ede9dc;margin:26px 0 0}
@@ -302,6 +309,8 @@ ${cardCss('#press')}
   #press .pp-wrap{padding:0 16px}
   #press .pp-section{margin-top:36px;padding:32px 20px 28px}
   #press .pp-kit{grid-template-columns:1fr;gap:32px}
+  #press .pp-contacts{grid-template-columns:1fr}
+  #press .pp-addr,#press .pp-facts dt,#press .pp-facts dd{white-space:normal;overflow-wrap:anywhere}
   #press .pr-grid{grid-template-columns:1fr}
 }
 </style>
@@ -312,7 +321,7 @@ ${cardCss('#press')}
     <p class="pp-lede">Reviews, interviews, and who to talk to about “Cello’s Gate.” For review copies, interviews, and quotes, reach out to the folks listed below.</p>
 
     <section class="pp-section pp-hunt" id="pp-hunt">
-      <h2>The Cello’s Gate Treasure Hunt</h2>
+      <h2 class="pp-hunt-title"><span class="w">Cello’s Gate</span><span>The Treasure Hunt</span></h2>
       ${HUNT_LEDE.map((p) => `<p class="pp-hunt-lede">${p}</p>`).join('')}
       <p class="pp-hunt-lede">There are three ways to win:</p>
       <ol class="pp-ways">${HUNT_WAYS.map((w) => `<li>${esc(w)}</li>`).join('')}</ol>
@@ -338,7 +347,7 @@ ${cardCss('#press')}
     <section class="pp-section" id="pp-kit">
       <h2>Press Kit</h2>
       <div class="pp-imgs">${KIT_IMAGES.map(([f, alt, label]) => `
-        <a class="pp-img" href="${BASE}assets/press/${f}" target="_blank" rel="noopener"><img src="${BASE}assets/press/${f}" alt="${esc(alt)}" loading="lazy"><span>${esc(label)} ↓</span></a>`).join('')}
+        <a class="pp-img" href="${BASE}assets/press/${f}" target="_blank" rel="noopener"><img src="${BASE}assets/press/${f}" alt="${esc(alt)}" loading="lazy"><span>${esc(label)} <b>↓</b></span></a>`).join('')}
       </div>
       <div class="pp-kit">
         <dl class="pp-facts">${FACTS.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
