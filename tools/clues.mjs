@@ -63,11 +63,14 @@ holds the key,
 to the room for fans of fiction
 (some might say addict),
 to find their prize.`],
-  [12, 'Samuel Chastain Rogers aka "Pops"'],
-  [13, 'In the Dark (Visually)', { flash: ART + 'clue-13-flash.webp' }],
-  [14, 'Them: "As an author, you\'re not supposed to do this!"'],
+  [12, 'Samuel Chastain Rogers aka "Pops"', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'wide', pics: [['', ART + 'clue-12-hint-1.jpg'], ['', ART + 'clue-12-hint-2.jpg']] }] }],
+  [13, 'In the Dark (Visually)', { flash: ART + 'clue-13-flash.webp', hints: [
+    { price: 10, button: 'Pay 10 points for a hint.', text: 'click it' },
+    { price: 15, button: 'Sacrifice 15 additional points for another clue.', text: 'emaN CM' },
+  ] }],
+  [14, 'Them: "As an author, you\'re not supposed to do this!"', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'At least I didn\u2019t make it five stars.' }] }],
   [15, `“You're doing great, kid. I love your passion, your work ethic, your commitment to always being you. And that's what's important to me because *you're* important to me. I couldn't be more proud to be your dad.”`],
-  [17, '', { img: ART + 'clue-17.webp', alt: 'A barrel smoker with a coffee can on its chimney', flash: ART + 'clue-17-flash.webp', flashFill: true }],
+  [17, '', { img: ART + 'clue-17.webp', alt: 'A barrel smoker with a coffee can on its chimney', flash: ART + 'clue-17-flash.webp', flashFill: true, hints: [{ price: 10, button: 'Pay 10 points for a hint.', text: 'click it' }] }],
   [18, 'click this', { href: VOID }],
   [19, 'A DUDE WHO LIKES BOOKS PREDOMINANTLY LIKED BY LADIES BUT ALSO LOTS OF DUDES, SO...'],
   [20, 'Princess (with an H) + Wei Shi Capaldi', { hints: [
@@ -81,17 +84,17 @@ to find their prize.`],
   [21, "It's in my linktree"],
   [22, '"The Angel Sun" by Pinkman, Daughter of Arathorn and Gilrean'],
   [23, 'Telekinetic Swords & 12ish Children'],
-  [24, 'Getting the Band Back Together'],
+  [24, 'Getting the Band Back Together', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', pics: [['', ART + 'clue-24-hint-1.jpg']] }] }],
   // After sunset (Eastern time) this clue wakes up: click it and "/in-the-dark" flashes for a split second.
-  [25, '“In the dark”', { night: '/in-the-dark' }],
+  [25, '“In the dark”', { night: '/in-the-dark', hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'square', pics: [['', ART + 'clue-25-hint-1.png']] }] }],
   [26, "It'll come to you."],
   [27, "Your Loot Box"],
-  [28, '', { img: ART + 'clue-28.webp', alt: 'A wedge of cheese', sticker: true }],
+  [28, '', { img: ART + 'clue-28.webp', alt: 'A wedge of cheese', sticker: true, hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'square', pics: [['', ART + 'clue-28-hint-1.png'], ['', ART + 'clue-28-hint-2.png']] }] }],
   [29, 'Catch Me If You Can'],
   [30, "I'm stuck!"],
   // The shop's "Find a loot box" button is box 31, and the button literally says it.
-  [31, 'IT LITERALLY SAYS IT', { img: ART + 'clue-31.webp', alt: 'The confused side-eye meme', sticker: true }],
-  [34, '', { fill: '#482d85' }],
+  [31, 'IT LITERALLY SAYS IT', { img: ART + 'clue-31.webp', alt: 'The confused side-eye meme', sticker: true, hints: [{ price: 25, button: 'Pay 25 points for a hint.', link: 'https://shop.mauriceafrich.com/', text: 'shop.mauriceafrich.com' }] }],
+  [34, '', { fill: '#482d85', hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'the votes are in!' }] }],
 ];
 
 // The few lines above the cards that say what they are.
@@ -116,7 +119,8 @@ const boards = CLUES.map(([n, text, o = {}]) => {
         <button type="button" class="lc-hint-btn">${esc(h.button)}</button>
         <div class="lc-hint-msg" aria-live="polite"></div>
         <div class="lc-hint-out" hidden>${h.pics
-          ? `<div class="lc-hint-pics">${h.pics.map(([w, src]) => `<figure><figcaption>${esc(w)}</figcaption><img data-src="${esc(src)}" alt="Hint picture for ${esc(w)}"></figure>`).join('')}</div>`
+          ? `<div class="lc-hint-pics lc-${h.shape || 'tall'}" style="grid-template-columns:repeat(${Math.min(h.pics.length, 3)},minmax(0,1fr))${h.pics.length === 1 ? ';max-width:' + (h.shape === 'wide' ? '100%' : '300px') : ''}">${h.pics.map(([w, src]) => `<figure>${w ? `<figcaption>${esc(w)}</figcaption>` : ''}<img data-src="${esc(src)}" alt="${w ? 'Hint picture for ' + esc(w) : 'Hint picture'}"></figure>`).join('')}</div>`
+          : h.link ? `<a class="lc-hint-text lc-hint-link" target="_blank" rel="noopener" data-h="${Buffer.from(h.link, 'utf8').toString('base64')}" data-t="${Buffer.from(h.text, 'utf8').toString('base64')}"></a>`
           : `<div class="lc-hint-text" data-t="${Buffer.from(h.text, 'utf8').toString('base64')}"></div>`}</div>
       </div>`).join('')}
     </div>`;
@@ -148,11 +152,12 @@ const hintJs = `  <script>(function(){var s=document.getElementById('loot-clue')
     function hash(email){var bytes=new TextEncoder().encode('thp1:'+email.trim().toLowerCase());return crypto.subtle.digest('SHA-256',bytes).then(function(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('').slice(0,32);});}
     var OK=/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/;
     Array.prototype.forEach.call(s.querySelectorAll('.lc-hint'),function(h){var clue=h.getAttribute('data-clue'),steps=h.querySelectorAll('.lc-step');
+      ['click','keydown'].forEach(function(ev){h.addEventListener(ev,function(e){e.stopPropagation();});});
       Array.prototype.forEach.call(steps,function(st,k){var step=k+1,price=+st.getAttribute('data-price'),total=+st.getAttribute('data-total'),KEY='thClueHint:'+clue+':'+step;
         var btn=st.querySelector('.lc-hint-btn'),msg=st.querySelector('.lc-hint-msg'),out=st.querySelector('.lc-hint-out');
         function say(html){msg.innerHTML=html;}
         function show(note){Array.prototype.forEach.call(out.querySelectorAll('img[data-src]'),function(i){i.src=i.getAttribute('data-src');i.removeAttribute('data-src');});
-          var t=out.querySelector('.lc-hint-text[data-t]');if(t){t.textContent=decodeURIComponent(escape(atob(t.getAttribute('data-t'))));t.removeAttribute('data-t');}
+          var t=out.querySelector('.lc-hint-text[data-t]');if(t){t.textContent=decodeURIComponent(escape(atob(t.getAttribute('data-t'))));t.removeAttribute('data-t');if(t.hasAttribute('data-h')){t.href=atob(t.getAttribute('data-h'));t.removeAttribute('data-h');}}
           out.hidden=false;btn.hidden=true;say(note||'');if(steps[k+1])steps[k+1].hidden=false;}
         try{if(localStorage.getItem(KEY))show();}catch(e){}
         function ask(){say('<label>The email you hunt with<input type="email" autocomplete="email"></label><button type="button" class="lc-hint-go">Next</button>');
@@ -234,6 +239,10 @@ const css = `#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,min
 #loot-clue .lc-hint-pics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%}
 #loot-clue .lc-hint-pics figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px}
 #loot-clue .lc-hint-pics figcaption{font-weight:800;color:#fffffe;font-size:15px;line-height:1.3;text-align:center;min-height:2.6em;display:flex;align-items:flex-end;justify-content:center}
+#loot-clue .lc-hint-pics{margin:0 auto}
+#loot-clue .lc-hint-pics.lc-wide img{aspect-ratio:16/10}
+#loot-clue .lc-hint-pics.lc-square img{aspect-ratio:1/1}
+#loot-clue .lc-hint-link{display:inline-block;font-size:clamp(26px,3.2vw,40px);text-decoration:underline;word-break:break-word}
 #loot-clue .lc-hint-pics img{width:100%;aspect-ratio:3/4;object-fit:cover;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}
 #loot-clue .lc-hint-text{font-family:'Atomic Marker',cursive;font-size:clamp(40px,5vw,64px);line-height:1;color:#89fbcb;text-align:center}
 @media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}#loot-clue .lc-hint-pics{gap:10px}}`;
