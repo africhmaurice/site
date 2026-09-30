@@ -33,17 +33,17 @@ const PANELS = [
 // cols = slanted columns (wide sizes); rows = slanted bands (square and tall sizes).
 // zone = where the words sit (YouTube channel art must keep them in the middle strip every device shows).
 const FORMATS = {
-  'press-16x9':          { W: 2400, H: 1350, mode: 'cols', title: 150, label: 64, sub: 27, footer: 0 },
+  'press-16x9':          { W: 2400, H: 1350, mode: 'cols', title: 150, label: 64, sub: 44, footer: 0 },
   'youtube-thumbnail':   { W: 1280, H: 720,  mode: 'cols', title: 92,  label: 36, sub: 0,  footer: 0 },
-  'banner-3x1':          { W: 3000, H: 1000, mode: 'cols', title: 130, label: 58, sub: 24, footer: 0 },
+  'banner-3x1':          { W: 3000, H: 1000, mode: 'cols', title: 130, label: 58, sub: 39, footer: 0 },
   'x-header':            { W: 1500, H: 500,  mode: 'cols', title: 70,  label: 30, sub: 0,  footer: 0 },
   'facebook-cover':      { W: 1640, H: 624,  mode: 'cols', title: 80,  label: 32, sub: 0,  footer: 0 },
   'youtube-channel-art': { W: 2560, H: 1440, mode: 'cols', title: 110, label: 40, sub: 0,  footer: 0, zone: [507, 930] },
-  'square':              { W: 1080, H: 1080, mode: 'rows', title: 92,  label: 40, sub: 21, footer: 0 },
-  'instagram-4x5':       { W: 1080, H: 1350, mode: 'rows', title: 100, label: 46, sub: 23, footer: 0 },
-  'story-9x16':          { W: 1080, H: 1920, mode: 'rows', title: 112, label: 54, sub: 27, footer: 0 },
-  'video-16x9':          { W: 1920, H: 1080, mode: 'cols', title: 120, label: 50, sub: 22, footer: 0, video: true },
-  'video-9x16':          { W: 1080, H: 1920, mode: 'rows', title: 112, label: 54, sub: 27, footer: 0, video: true },
+  'square':              { W: 1080, H: 1080, mode: 'rows', title: 92,  label: 56, sub: 33, footer: 0 },
+  'instagram-4x5':       { W: 1080, H: 1350, mode: 'rows', title: 100, label: 60, sub: 36, footer: 0 },
+  'story-9x16':          { W: 1080, H: 1920, mode: 'rows', title: 112, label: 70, sub: 42, footer: 0 },
+  'video-16x9':          { W: 1920, H: 1080, mode: 'cols', title: 120, label: 50, sub: 36, footer: 0, video: true },
+  'video-9x16':          { W: 1080, H: 1920, mode: 'rows', title: 112, label: 70, sub: 42, footer: 0, video: true },
 };
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -79,7 +79,7 @@ function html(f) {
     head = `<div class="top" style="top:${zy0}px;height:${titleH * 1.35}px;padding-top:${f.title * 0.3}px">${headInner(f)}</div>`;
   } else {
     // rows: header on top, five bands, footer at the bottom
-    const hTop = titleH + f.title * 0.45, hBot = f.footer, bandH = (H - hTop - hBot) / 5, lean = 0.028 * W;
+    const hTop = titleH + f.title * 0.45, hBot = f.footer, bandH = (H - hTop - hBot) / 5, lean = 0.02 * W;
     const y = (i, xx) => hTop + i * bandH + lean * (1 - 2 * xx / W); // seam i across
     for (let i = 0; i < 5; i++) {
       const poly = `0 ${y(i, 0)}px,${W}px ${y(i, W)}px,${W}px ${y(i + 1, W)}px,0 ${y(i + 1, 0)}px`;
@@ -134,13 +134,14 @@ h1 span{color:#ff4c0f}
 .when b{color:#3adb97;font-weight:800;margin-left:.6em}
 .label{position:absolute;z-index:3}
 .label h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:${f.label}px;line-height:.98;text-shadow:0 4px 18px rgba(0,0,0,.9)}
+${BEBAS ? `.label h2{font-family:'Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.02em;line-height:.9}` : ''}
 .label h2 > span{display:block;white-space:nowrap}
 .lk{align-items:stretch;gap:.6em;line-height:.8;vertical-align:top}
 .lk .st{display:flex;flex-direction:column;justify-content:space-between;font-size:.56em;text-align:right;white-space:nowrap}
 .lk .st i{font-style:normal;display:block;line-height:1}
 .lk .big{font-size:1.5em;line-height:.8;display:block}
 .label p{text-wrap:balance}
-.label p{margin-top:${f.label * 0.22}px;font-weight:700;font-size:${f.sub}px;line-height:1.35;text-shadow:0 2px 10px rgba(0,0,0,1)}
+.label p{margin-top:${f.label * 0.22}px;font-weight:800;font-size:${f.sub}px;line-height:1.3;text-shadow:0 2px 10px rgba(0,0,0,1),0 0 3px rgba(0,0,0,.9)}
 .foot{position:absolute;left:0;right:0;bottom:0;z-index:3;display:flex;align-items:center;justify-content:center;gap:${W * 0.035}px;background:rgba(0,0,0,.9);border-top:3px solid #ff4c0f;padding:0 ${W * 0.03}px}
 .stat{text-align:center}
 .stat b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:${f.footer * 0.4}px;line-height:1}
@@ -198,10 +199,10 @@ window.setT = function (t) {
 };
 // Fit the labels: every title on one line (the stacked one line per line), every description on exactly two lines,
 // the same sizes and the same padding in every lane, and nothing crossing a slash.
-const LANES = ${JSON.stringify(f.lanes)}, SUB = ${f.sub}, TITLE = ${f.label};
+const LANES = ${JSON.stringify(f.lanes)}, SUB = ${f.sub}, TITLE = ${BEBAS ? Math.round(f.label * 1.35) : f.label};
 function fitLabels(){
   const els = [...document.querySelectorAll('.label')], L = LANES;
-  const pad = L.mode === 'cols' ? L.cw * 0.07 : L.H * 0.022;
+  const pad = L.mode === 'cols' ? L.cw * 0.05 : L.H * 0.012;
   const boxFor = (i, h, cwid) => {
     if (L.mode === 'cols') {
       const xs = (k, y) => k * L.cw + L.lean * (1 - 2 * y / L.H);
@@ -225,23 +226,27 @@ function fitLabels(){
     if (p) {
       p.style.fontSize = s + 'px'; p.style.maxWidth = 'none'; p.style.whiteSpace = 'nowrap'; p.style.display = 'inline-block';
       const one = p.getBoundingClientRect().width; p.style.whiteSpace = ''; p.style.display = '';
-      p.style.maxWidth = Math.min(w, one * 0.62) + 'px';
-      twoLines = Math.round(p.offsetHeight / (s * 1.35)) === 2;
+      p.style.maxWidth = (LANES.mode === 'rows' ? Math.min(w, LANES.W * 0.5) : w) + 'px';
+      twoLines = Math.round(p.offsetHeight / (s * 1.3)) <= 3;
     }
-    const subW = p ? p.getBoundingClientRect().width : 0; return { fits: titleW <= w && twoLines, h: el.offsetHeight, cw: Math.max(titleW, subW) };
+    const subW = p ? p.getBoundingClientRect().width : 0; return { fits: titleW <= w && twoLines, titleOk: titleW <= w, subOk: twoLines, h: el.offsetHeight, cw: Math.max(titleW, subW) };
   };
   let t = TITLE, s = SUB;
-  for (let guard = 0; guard < 200; guard++) {
-    let ok = true;
+  // Titles and descriptions shrink separately, so a long description never makes the titles smaller.
+  for (let guard = 0; guard < 300; guard++) {
+    let ok = true, tBad = false, sBad = false;
     els.forEach((el, i) => {
       let b = boxFor(i, 0), m = measure(el, t, s, b.w);
       b = boxFor(i, m.h, m.cw); m = measure(el, t, s, b.w);
       if (!m.fits) ok = false;
-      if (L.mode === 'cols' && m.h > (L.zb - L.hdr) * 0.9) ok = false;
-      if (L.mode === 'rows' && m.h > b.room) ok = false;
+      if (!m.titleOk && !el.dataset.lockup) tBad = true;
+      if (!m.subOk) sBad = true;
+      if (L.mode === 'cols' && m.h > (L.zb - L.hdr) * 0.9) { ok = false; sBad = true; }
+      if (L.mode === 'rows' && m.h > b.room) { ok = false; if (s > t * 0.42) sBad = true; else tBad = true; }
     });
     if (ok) break;
-    t *= 0.97; if (s) s = Math.max(s * 0.985, t * 0.36);
+    if (tBad || !sBad) t *= 0.97;
+    if (sBad && s) s *= 0.97;
   }
   if (L.mode === 'cols') { const hs = els.map((el, i) => measure(el, t, s, boxFor(i, 0).w).h); L.top = Math.max(L.hdr, L.zt + (L.zb - L.zt - Math.max(...hs)) / 2); }
   els.forEach((el, i) => {
@@ -250,7 +255,7 @@ function fitLabels(){
     const p = el.querySelector('p'); if (p && L.mode === 'cols') { p.style.marginLeft = 'auto'; p.style.marginRight = 'auto'; }
   });
 }
-document.fonts.ready.then(() => { placeSeams(); fitLabels(); setT(99); window.__ready = true; });
+document.fonts.ready.then(() => { placeSeams(); fitLabels(); setT(99); window.__ready = true; const lp = document.querySelector('.label p'); window.__sub = lp ? getComputedStyle(lp).fontSize : ''; });
 </script>
 </body></html>`;
 }
@@ -259,9 +264,11 @@ function headInner(f) {
   return `<div class="kicker">CELLO’S GATE · THE SKY PIRATES OF IMPERIA</div><h1>The <span>Treasure</span> Hunt</h1><div class="when">SEPTEMBER 20 – NOVEMBER 1, 2026<b>MAURICEAFRICH.COM/THE-HUNT</b></div>`;
 }
 
+const BEBAS = process.env.GFX_TITLE !== 'marker';
 const only = (process.argv[2] && !process.argv[2].startsWith('--')) ? process.argv[2].split(',') : Object.keys(FORMATS);
 const wantVideo = process.argv.includes('--video');
-mkdirSync(OUT, { recursive: true });
+const DEST = BEBAS ? OUT : join(OUT, "Atomic Marker titles");
+mkdirSync(DEST, { recursive: true });
 const browser = await chromium.launch({ executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe', args: ['--allow-file-access-from-files'] });
 for (const name of only) {
   const f = FORMATS[name]; if (!f) { console.log('unknown format', name); continue; }
@@ -270,10 +277,10 @@ for (const name of only) {
   const tmp = join(OUT, '.render-' + name + '.html'); writeFileSync(tmp, html(f)); await page.goto(url(tmp), { waitUntil: 'networkidle' });
   await page.waitForFunction(() => window.__ready === true, null, { timeout: 30000 });
   if (!f.video) {
-    const file = join(OUT, `hunt-${name}-${f.W}x${f.H}.png`);
+    const file = join(DEST, `hunt-${name}-${f.W}x${f.H}.png`);
     await page.screenshot({ path: file });
     console.log('✓', file.split('\\').pop());
-    if (name === 'press-16x9') copyFileSync(file, join(ROOT, 'assets', 'press', 'hunt-overview.png'));
+    if (name === 'press-16x9' && BEBAS) copyFileSync(file, join(ROOT, 'assets', 'press', 'hunt-overview.png'));
   } else {
     const ffmpeg = process.env.FFMPEG; if (!ffmpeg) { console.log('set FFMPEG to an ffmpeg binary for videos'); await page.close(); continue; }
     const frames = join(OUT, `.frames-${name}`); rmSync(frames, { recursive: true, force: true }); mkdirSync(frames, { recursive: true });
@@ -282,7 +289,7 @@ for (const name of only) {
       await page.evaluate((t) => window.setT(t), n / fps);
       await page.screenshot({ path: join(frames, `f${String(n).padStart(4, '0')}.jpg`), type: 'jpeg', quality: 92 });
     }
-    const file = join(OUT, `hunt-${name}-${f.W}x${f.H}.mp4`);
+    const file = join(DEST, `hunt-${name}-${f.W}x${f.H}.mp4`);
     execFileSync(ffmpeg, ['-y', '-loglevel', 'error', '-framerate', String(fps), '-i', join(frames, 'f%04d.jpg'), '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '18', '-movflags', '+faststart', file]);
     rmSync(frames, { recursive: true, force: true });
     console.log('✓', file.split('\\').pop());

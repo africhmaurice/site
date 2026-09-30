@@ -184,7 +184,7 @@
     },
     {
       "slug": "press",
-      "url": "(preview only: will be /press once the Squarespace page exists)",
+      "url": "https://www.mauriceafrich.com/press-kit (link only, not in the menu)",
       "title": "Press Room (contacts, press kit, features)",
       "source": "pages/press.html (built by tools/press.mjs)"
     },

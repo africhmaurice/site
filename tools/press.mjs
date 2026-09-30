@@ -106,7 +106,7 @@ ${cardCss('#home-press')}
   <div class="hp-head"><p class="hp-kicker">AS FEATURED IN</p></div>
   <div class="pr-grid">${homeList.map(card).join('')}
   </div>
-  <p class="hp-more"><a class="hp-btn" href="/press">All press and media contacts →</a></p>
+  <p class="hp-more"><a class="hp-btn" href="/press-kit">All press and media contacts →</a></p>
 </div>
 `;
 
@@ -173,20 +173,20 @@ const HUNT_QUOTE = [
   'That’s why I built this treasure hunt. Because I thought it would be fun (which is a cornerstone of my brand), I thought it would help us sell a lot of books, and I thought, by the end of it, a lot more people would know my name. We’ll see, huh? If nothing else, I know we’re all having a pretty damn good time.',
 ];
 const HUNT_QUOTE_BY = 'Maurice Africh, Author of “Cello’s Gate”';
-const STATS_DATE = 'September 29, 2026';
+const STATS_DATE = 'September 30, 2026';
 // [big number, what it means]
 const HIGHLIGHTS = [
   ['Reach', [
-    ['70×', 'Site traffic: 7,309 visits since the hunt started, about 730 a day.'],
-    ['2,173', 'New Goodreads “want to read” adds during the hunt.'],
-    ['220', 'Hunters from 9 countries: the U.S., the UK, Canada, Australia, India, Estonia, Japan, Poland, and one more.'],
+    ['70×', 'Site traffic: 7,604 visits since the hunt started, about 690 a day.'],
+    ['2,223', 'New Goodreads “want to read” adds during the hunt.'],
+    ['252', 'Hunters from 10 countries: the U.S., the UK, Canada, Australia, India, Ireland, Austria, Estonia, Japan, and Poland.'],
   ]],
   ['Engagement', [
-    ['2,879', 'Tasks completed, about 290 a day.'],
-    ['2,850', 'Sweepstakes entries.'],
-    ['1,099', 'Loot boxes found.'],
-    ['762', 'Daily game wins, plus 300 riddles solved.'],
-    ['173,820', 'Crew points, more than four times the 40,000 Act One goal.'],
+    ['3,476', 'Tasks completed, about 315 a day.'],
+    ['3,396', 'Sweepstakes entries.'],
+    ['1,275', 'Loot boxes found.'],
+    ['919', 'Daily game wins, plus 369 riddles solved.'],
+    ['202,385', 'Crew points, more than five times the 40,000 Act One goal.'],
   ]],
 ];
 const STATS = [
@@ -199,11 +199,11 @@ const HUNT_FACTS = [
   ['Dates', 'September 20 to November 1, 2026. It ends two days before “Cello’s Gate” comes out.'],
   ['Where', 'mauriceafrich.com/the-hunt'],
   ['Who', 'Free and open to everyone, everywhere. The Treasure and sweepstakes prizes are for U.S. and UK residents, 18 and older.'],
-  ['Players', '220 sky pirates from 9 countries, including the U.S., the UK, Canada, Australia, India, Estonia, Japan, and Poland.'],
-  ['Traffic', 'Site traffic is up about 70 times: 7,309 visits since the hunt started, about 730 a day, compared with about 10 a day in September before it.'],
-  ['Play', 'Tasks, riddles, clues, the daily Skyword game, a crossword, 100 hidden loot boxes, and a fan fiction contest.'],
+  ['Players', '252 sky pirates from 10 countries: the U.S., the UK, Canada, Australia, India, Ireland, Austria, Estonia, Japan, and Poland.'],
+  ['Traffic', 'Site traffic is up about 70 times: 7,604 visits since the hunt started, about 690 a day, compared with about 10 a day in September before it.'],
+  ['Play', 'Tasks, riddles, clues, the daily Skyword game, a crossword, 101 hidden loot boxes, and a fan fiction contest.'],
   ['Story', 'Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!'],
-  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 173,820 points, more than four times the 40,000 Act One goal, with four reward tiers unlocked.'],
+  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 202,385 points, more than five times the 40,000 Act One goal, unlocking 50 new loot boxes and the Golden Loot Box along the way.'],
   ['Acts', 'Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1). Winners are announced the day after each act ends.'],
   ['Treasure', 'The top three on the U.S. and UK leaderboards win The Treasure: signed editions, art prints, custom bookmarks, enamel pins, an advance audiobook, and more.'],
 ];
@@ -362,7 +362,7 @@ ${cardCss('#press')}
       <p class="pp-asof">As of ${esc(STATS_DATE)}.</p>
       <blockquote class="pp-quote">${HUNT_QUOTE.map((p, i, a) => `<p>${i === 0 ? '“' : ''}${esc(p)}${i === a.length - 1 ? '”' : ''}</p>`).join('')}<cite>${esc(HUNT_QUOTE_BY)}</cite></blockquote>
       <dl class="pp-facts">${HUNT_FACTS.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
-      <figure class="pp-gfx"><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener"><img src="${BASE}assets/press/hunt-overview.webp" width="2400" height="1350" alt="The Cello’s Gate Treasure Hunt: five panels split by brush slashes. Sweepstakes: 3 sweepstakes, 10 winners each. Rewards: 20+ rewards unlocked by collective points for all hunters. Tasks and Riddles: to earn points and unlock secret rewards. Loot Boxes: 101 loot boxes hidden all over the internet. Choose Your Own Adventure: vote on where the crew goes and roll the dice. 220 sky pirates, 173,820 crew points, 2,850 sweepstakes entries." loading="lazy"></a><figcaption><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener">Download the full-size graphic ↓</a></figcaption></figure>
+      <figure class="pp-gfx"><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener"><img src="${BASE}assets/press/hunt-overview.webp" width="2400" height="1350" alt="The Cello’s Gate Treasure Hunt: five panels split by brush slashes. Sweepstakes: 3 sweepstakes, 10 winners each. Rewards: 20+ rewards unlocked by collective points for all hunters. Tasks and Riddles: to earn points and unlock secret rewards. Loot Boxes: 101 loot boxes hidden all over the internet. Choose Your Own Adventure: vote on where the crew goes and roll the dice. " loading="lazy"></a><figcaption><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener">Download the full-size graphic ↓</a></figcaption></figure>
       <div class="pp-cta"><a class="pp-btn" href="/the-hunt">See the hunt</a><a class="pp-btn" href="/leaderboard">Live leaderboard</a></div>
     </section>
 
