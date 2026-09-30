@@ -12,7 +12,7 @@
 #press .pp-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.6;color:#ede9dc;margin:0 auto;max-width:640px}
 #press .pp-wrap > .pp-kicker,#press .pp-wrap > h1,#press .pp-wrap > .pp-lede{text-align:center}
 #press .pp-hunt h2.pp-hunt-title{text-align:center;line-height:1.02;font-size:clamp(40px,5.2vw,72px);margin-bottom:34px}
-#press .pp-hunt h2.pp-hunt-title span{display:block}
+#press .pp-hunt h2.pp-hunt-title span{display:block;white-space:nowrap}
 #press .pp-hunt h2.pp-hunt-title .w{color:#fffffe}
 #press .pp-section{margin-top:56px;padding:44px 48px 40px;background:rgba(38,142,98,.9);border:1px solid rgba(243,234,217,.18);scroll-margin-top:120px}
 #press .pp-contacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
@@ -312,6 +312,18 @@
     e.style.width = document.documentElement.clientWidth + 'px';
   }
   fit(); addEventListener('resize', fit); addEventListener('load', fit); setTimeout(fit, 600);
+})();
+// Each line of the hunt title stays on one line: shrink a line until it fits the section.
+(function () {
+  function fitTitle() {
+    document.querySelectorAll('#press .pp-hunt-title span').forEach(function (s) {
+      s.style.fontSize = '';
+      var box = s.parentElement.clientWidth, size = parseFloat(getComputedStyle(s).fontSize);
+      while (s.scrollWidth > box && size > 14) { size -= 1; s.style.fontSize = size + 'px'; }
+    });
+  }
+  fitTitle(); addEventListener('resize', fitTitle); addEventListener('load', fitTitle); setTimeout(fitTitle, 700);
+  document.addEventListener('input', function (e) { if (e.target.closest && e.target.closest('.pp-hunt-title')) fitTitle(); });
 })();
 // The page loads after the browser has already looked for #pp-hunt etc., so jump there once it's in.
 (function () {
