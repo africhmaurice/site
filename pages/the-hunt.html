@@ -344,11 +344,17 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 </style>
 <script>(function(){
 var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-// Calls fn once, the first time el is at least a third on screen.
+// Calls fn once, the first time el stays at least a third on screen for a moment.
+// Gliding past it (a menu link down to Riddles & Puzzles) doesn't count: the rewards
+// growing as they fill would shove the page around under the reader (Maurice, 2026-09-29).
 window.maFillOnView = function(el, fn){
   if(!el) return;
   if(!('IntersectionObserver' in window)) return fn();
-  var io = new IntersectionObserver(function(es){ if(es[0].isIntersecting){ io.disconnect(); (window.maAfterLoading || function (f) { f(); })(fn); } }, {threshold:.35});
+  var wait = null;
+  var io = new IntersectionObserver(function(es){
+    if(es[es.length - 1].isIntersecting){ if(!wait) wait = setTimeout(function(){ io.disconnect(); (window.maAfterLoading || function (f) { f(); })(fn); }, 450); }
+    else if(wait){ clearTimeout(wait); wait = null; }
+  }, {threshold:.35});
   io.observe(el);
 };
 // Eases from a to b over ms, calling step(value) each frame and done() at the end.
@@ -582,7 +588,7 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
       <div class="m-deco" style="position:absolute;top:-26px;right:120px;display:flex;gap:18px;transform:skewX(-35deg)"><div style="width:52px;height:22px;background:#fff"></div><div style="width:52px;height:22px;background:#fff"></div><div style="width:52px;height:22px;background:#fff"></div><div style="width:150px;height:22px;background:#fff"></div></div>
       <div class="m-deco" style="position:absolute;bottom:-26px;left:120px;display:flex;gap:18px;transform:skewX(-35deg)"><div style="width:150px;height:22px;background:#fff"></div><div style="width:52px;height:22px;background:#fff"></div><div style="width:52px;height:22px;background:#fff"></div><div style="width:52px;height:22px;background:#fff"></div></div>
       <div class="mh-map" style="position:relative;border:6px solid #7a3d1c;box-shadow:0 18px 50px rgba(40,10,0,.45)">
-        <div class="mh-zoom"><img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/62e204cf291948bf.jpg" alt="Map of De'gaté" style="width:100%;height:auto;display:block">
+        <div class="mh-zoom"><img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/62e204cf291948bf.jpg" alt="Map of De'gaté" width="1600" height="1200" style="width:100%;height:auto;display:block">
         <svg class="mh-routes" viewBox="0 0 1600 1200" preserveAspectRatio="none" aria-hidden="true"><defs><mask id="mh-mask-pontune" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height="1200"><path class="wipe" d="M1152,869 Q1300,760 1280,604" pathLength="1"/></mask><mask id="mh-mask-gresnick" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height="1200"><path class="wipe" d="M1280,604 Q1400,712 1522,738" pathLength="1"/></mask></defs><g id="mh-route-pontune" class="mh-drawn mh-now"><path class="dots" d="M1152,869 Q1300,760 1280,604" mask="url(#mh-mask-pontune)"/></g><g id="mh-route-gresnick"><path class="dots" d="M1280,604 Q1400,712 1522,738" mask="url(#mh-mask-gresnick)"/></g></svg>
         <button type="button" class="mh-spot" id="mh-spot-fenna" data-pop="mh-fenna" style="left:72%;top:72.4%" aria-label="Fenna's Soul: Next stop: the Red City"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         <button type="button" class="mh-spot" id="mh-spot-pontune" data-pop="mh-pontune" style="left:80%;top:50.3%" aria-label="Pontune: Benji's Bargain Shop"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
@@ -806,7 +812,7 @@ if(window.fetch)fetch(BOARD+'?t='+Math.floor(Date.now()/300000)).then(function(r
       #merch .tm-row a{display:block;width:clamp(120px,15vw,170px);transition:transform .2s ease}
       #merch .tm-row a:nth-child(odd){transform:rotate(-4deg)}#merch .tm-row a:nth-child(even){transform:rotate(3deg)}
       #merch .tm-row a:hover{transform:rotate(0) scale(1.06)}
-      #merch .tm-row img{width:100%;height:auto;display:block}
+      #merch .tm-row img{width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;display:block}
       #merch .tm-go{display:inline-block;background:#c1330a;border:1px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.35);color:#fff;font-family:'Almarai',sans-serif;font-weight:800;font-size:20px;letter-spacing:.05em;padding:16px 44px;text-decoration:none;transition:background .15s ease}
       #merch .tm-go:hover{background:#e04a12;color:#fff}
       @media (max-width:760px){#merch{padding:64px 22px 72px !important}#merch .tm-row a{width:40%}}
