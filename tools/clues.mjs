@@ -210,14 +210,51 @@ const nightJs = `  <script>(function(){${NIGHT_JS}var s=document.getElementById(
       function go(){if(!b.classList.contains('on'))return;var o=document.createElement('div');o.className='lc-flash-ov lc-say';o.textContent=said;document.body.appendChild(o);setTimeout(function(){o.remove();},160);}
       wake();setInterval(wake,60000);b.addEventListener('click',go);b.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});});})();</script>`;
 
+// "Hide the ones I've found" (Maurice, 2026-09-30): a clue #n leads to loot box n, so a hunter's scorecard says
+// which cards they no longer need. Their email comes from the loot box page (thLoot:me) or the profile page, or
+// they type it once. The card last saved by the loot box page shows the hidden ones straight away; the web app's
+// scorecard ('card') then brings it up to date. The switch is remembered in this browser.
+const findsJs = `  <script>(function(){var s=document.getElementById('loot-clue');if(!s)return;
+    var EP='${ENDPOINT}',ON='thClues:hideFound',bar=s.querySelector('.lc-finds');if(!bar)return;
+    var btn=bar.querySelector('.lc-finds-btn'),msg=bar.querySelector('.lc-finds-msg'),found=[],on=false,OK=/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/;
+    function get(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+    function put(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v);}catch(e){}}
+    function email(){try{var m=JSON.parse(get('thLoot:me')||'{}')||{};return m.email||get('thProfile:email')||'';}catch(e){return get('thProfile:email')||'';}}
+    try{var c=JSON.parse(get('thLoot:card')||'null');if(c&&c.found)found=c.found.map(Number);}catch(e){}
+    function paint(){var n=0;Array.prototype.forEach.call(s.querySelectorAll('.lc-board'),function(b){var hide=on&&found.indexOf(+b.getAttribute('data-clue'))>=0;b.hidden=hide;if(hide)n++;});
+      btn.textContent=on?'Show all clues':'Hide the clues I\\u2019ve found';btn.setAttribute('aria-pressed',on?'true':'false');
+      msg.textContent=on?(n?n+(n===1?' clue is':' clues are')+' hidden. You found '+(n===1?'that box':'those boxes')+' already.':'None of these boxes are on your scorecard yet.'):'';}
+    function load(e,done){var name='lcf'+Math.random().toString(36).slice(2),sc=document.createElement('script'),t=setTimeout(function(){fin(null);},30000);
+      function fin(r){clearTimeout(t);delete window[name];if(sc.parentNode)sc.parentNode.removeChild(sc);done(r);}
+      window[name]=fin;sc.onerror=function(){fin(null);};sc.src=EP+'?action=card&email='+encodeURIComponent(e)+'&callback='+name;document.body.appendChild(sc);}
+    function turnOn(e){on=true;put(ON,'1');paint();msg.textContent=found.length?msg.textContent:'Checking your scorecard...';
+      load(e,function(r){if(r&&r.ok){found=(r.found||[]).map(Number);try{localStorage.setItem('thLoot:card',JSON.stringify({found:r.found,count:r.count,at:Date.now()}));}catch(x){}}
+        else if(!found.length){msg.textContent='Couldn\\u2019t reach your scorecard just now. Try again in a minute.';return;}paint();});}
+    function ask(){msg.innerHTML='<label>The email you claim loot boxes with<input type="email" autocomplete="email" placeholder="you@example.com"></label><button type="button" class="lc-finds-go">Hide them</button>';
+      var i=msg.querySelector('input');i.focus();function go(){var e=i.value.trim();if(!OK.test(e)){i.focus();return;}put('thProfile:email',e);turnOn(e);}
+      msg.querySelector('.lc-finds-go').onclick=go;i.onkeydown=function(ev){if(ev.key==='Enter')go();};}
+    btn.onclick=function(){if(on){on=false;put(ON,null);paint();return;}var e=email();if(e)turnOn(e);else ask();};
+    if(get(ON)==='1'&&email())turnOn(email());})();</script>`;
+
 let h = readFileSync(NEXT ? LIVE_F : F, 'utf8');
 const a = h.indexOf('<section id="loot-clue">'); const b = h.indexOf('</section>', a);
 if (a < 0 || b < 0) throw new Error('clue section not found');
-h = h.slice(0, a) + `<section id="loot-clue">\n${INTRO}\n  <div class="lc-grid">\n${boards}\n  </div>\n${flashJs}\n${nightJs}\n${hintJs}\n` + h.slice(b);
+const FINDS = `  <div class="lc-finds"><button type="button" class="lc-finds-btn" aria-pressed="false">Hide the clues I’ve found</button><div class="lc-finds-msg" aria-live="polite"></div></div>`;
+h = h.slice(0, a) + `<section id="loot-clue">\n${INTRO}\n${FINDS}\n  <div class="lc-grid">\n${boards}\n  </div>\n${flashJs}\n${nightJs}\n${hintJs}\n${findsJs}\n` + h.slice(b);
+// Background: the darkest Green at 90% over the art, held still while the page scrolls (Maurice, 2026-09-30).
+h = h.replace(/(#loot-clue\{min-height:80vh;[^}]*background:)linear-gradient\(rgba\([^)]*\),rgba\([^)]*\)\)/, '$1linear-gradient(rgba(27,59,21,.9),rgba(27,59,21,.9))');
 
 // Styles: number in Atomic Marker, clue in Almarai (no forced capitals), two boards per row.
 const css = `#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;max-width:1240px;width:100%;align-items:stretch}
 #loot-clue .lc-intro{max-width:760px;width:100%;text-align:center}
+#loot-clue .lc-finds{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:-12px;font-family:'Almarai',sans-serif;color:#fffffe;text-align:center}
+#loot-clue .lc-finds button{font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:0;padding:13px 26px;border:2px solid #fffffe;background:transparent;color:#fffffe}
+#loot-clue .lc-finds button:hover,#loot-clue .lc-finds-btn[aria-pressed="true"]{background:#fffffe;color:#1b3b15}
+#loot-clue .lc-finds-msg{font-size:16px;line-height:1.5;max-width:460px}
+#loot-clue .lc-finds-msg:empty{display:none}
+#loot-clue .lc-finds-msg label{display:block;font-weight:700;margin-bottom:10px}
+#loot-clue .lc-finds-msg input{display:block;width:100%;box-sizing:border-box;margin-top:6px;font:inherit;font-size:16px;padding:10px 12px;border-radius:0;border:2px solid #fffffe;background:rgba(11,23,15,.35);color:#fffffe}
+#loot-clue .lc-board[hidden]{display:none!important}
 #loot-clue .lc-title{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(44px,5.4vw,76px);line-height:1.1;color:#89fbcb;margin:0 0 22px;text-wrap:balance}
 #loot-clue .lc-intro p{text-transform:none;letter-spacing:.02em;font-size:clamp(17px,1.5vw,21px);line-height:1.6;text-wrap:pretty;margin:0 auto 14px}
 #loot-clue .lc-board{box-sizing:border-box;max-width:none;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 44px 52px}
