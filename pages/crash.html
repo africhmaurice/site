@@ -1,0 +1,1200 @@
+<!-- Generated copy of squarespace-crash.html from the treasure-hunt-leaderboard project. Preview only. -->
+<!-- ============================================================
+     SHOT DOWN - the vote after the crash on De'gaté: brace for impact, then the plan.
+     Built by scripts/build-crash.mjs from config/crash.json and games/crash.*; the dice come
+     from games/redcity.template.html. Edit those and rebuild, never this file.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* ---- site header menu ---- */
+#hunt-nav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(12,35,8,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:18px 16px}
+#hunt-nav .mn-row{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:clamp(12px,1.8vw,30px)}
+#hunt-nav .mn-link{white-space:nowrap;color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.07em;text-decoration:none;text-shadow:0 1px 6px rgba(0,0,0,.55);transition:color .15s ease}
+#hunt-nav .mn-link:hover{color:#a2f590}
+#hunt-nav .mn-cta{border:2px solid #f3ead9;padding:8px clamp(10px,1.4vw,20px);background:rgba(12,26,8,.35);transition:transform .15s ease,background .15s ease}
+#hunt-nav .mn-cta:hover{background:#c1330a;color:#fff;transform:scale(1.04)}
+#hunt-nav .mn-drop{position:relative;display:flex}
+#hunt-nav .mn-dd{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:14px}
+#hunt-nav .mn-dd-in{background:rgba(9,23,7,.95);border:1px solid rgba(243,234,217,.25);min-width:170px;display:flex;flex-direction:column}
+#hunt-nav .mn-dd-in a{display:block;padding:13px 18px;color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.07em;text-decoration:none;white-space:nowrap}
+#hunt-nav .mn-dd-in a:hover{color:#a2f590;background:rgba(255,255,255,.06)}
+#hunt-nav .mn-drop:hover .mn-dd,#hunt-nav .mn-drop:focus-within .mn-dd{display:block}
+#hunt-nav .mn-drop-cta .mn-dd{left:auto;right:0;transform:none}
+#hunt-nav .mn-dd-in a.mn-all{border-top:1px solid rgba(243,234,217,.25)}
+#hunt-nav .mn-burger{display:none;width:46px;height:46px;margin:0 auto;align-items:center;justify-content:center;cursor:pointer}
+#hunt-nav-ov{display:none;position:fixed;inset:0;background:rgba(9,23,7,.97);z-index:10000;flex-direction:column;align-items:center;justify-content:center;gap:30px;padding:32px}
+#hunt-nav-ov a{color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:20px;letter-spacing:.08em;text-decoration:none}
+#hunt-nav-ov .mn-cta{border:2px solid #f3ead9;padding:12px 26px;background:rgba(12,26,8,.35);text-align:center}
+#hunt-nav-ov .mn-x{position:absolute;top:16px;right:16px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* ---- the page ---- */
+.hg-page{font-family:'Almarai',sans-serif;letter-spacing:0;color:#111;position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow-x:hidden}
+.hg-page *{box-sizing:border-box}
+@media (max-width:900px){
+  #hunt-nav{padding:10px 0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  #hunt-nav .mn-row{display:none}
+  #hunt-nav .mn-burger{display:flex}
+}
+html body{text-wrap:pretty}
+h1,h2,h3{text-wrap:balance}
+/* Date endings (21st, 30th) small and tucked up, not as big as the numbers */
+sup{font-size:.6em !important;line-height:0 !important;display:inline-block !important;transform:scale(.72) !important;transform-origin:left 30% !important;vertical-align:.7em !important;letter-spacing:.02em;margin-right:-.12em}
+/* The hunt menu matches the main site header: same green, logo size, type, spacing and outlined pre-order button */
+#hunt-nav{background:#1a5e41;backdrop-filter:none;-webkit-backdrop-filter:none;padding:9px clamp(24px,4vw,58px)}
+#hunt-nav .mn-row{max-width:none;display:flex;align-items:center;justify-content:space-between;gap:24px}
+#hunt-nav .mn-logo{display:flex;align-items:center;flex:none}
+#hunt-nav .mn-logo img{width:clamp(88px,8.3vw,120px);height:auto;display:block}
+#hunt-nav .mn-right{display:flex;align-items:center;gap:clamp(14px,1.9vw,32px)}
+#hunt-nav .mn-links{display:flex;align-items:center;gap:clamp(9px,1.2vw,29px)}
+#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(10.5px,.88vw,14.4px);letter-spacing:.07em;line-height:48px;text-shadow:none;color:#fff;white-space:nowrap}
+#hunt-nav .mn-vote,#hunt-nav-ov .mn-vote{color:#a2f590 !important;transition:color .15s ease}
+#hunt-nav .mn-vote:hover,#hunt-nav-ov .mn-vote:hover{color:#ff4c0f !important}
+#hunt-nav .mn-link:hover,#hunt-nav .mn-drop:hover>.mn-link{color:#a2f590}
+#hunt-nav .mn-caret{display:inline-block;width:11px;height:11px;margin-left:8px;vertical-align:1px;transition:transform .15s ease}
+#hunt-nav .mn-drop:hover .mn-caret,#hunt-nav .mn-drop:focus-within .mn-caret{transform:rotate(180deg)}
+#hunt-nav .mn-cta{line-height:17px;padding:8px clamp(12px,1.3vw,20px);border:2px solid #f3ead9;background:rgba(12,26,8,.35)}
+#hunt-nav .mn-drop-cta>.mn-link.mn-cta:hover,#hunt-nav .mn-drop-cta:hover>.mn-link.mn-cta{color:#a2f590;background:rgba(12,26,8,.35);transform:none}
+#hunt-nav .mn-dd{padding-top:6px}
+#hunt-nav .mn-dd-in a{font-size:clamp(12px,.92vw,14.4px);letter-spacing:.07em;padding:13px 18px}
+#hunt-nav .mn-dd-in a.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}
+#hunt-nav .mn-dd-in a.mn-profile:hover{background:#e04a12;color:#fff}
+#hunt-nav .mn-dd-in a.mn-profile svg{width:16px;height:16px;flex:none}
+@media (max-width:1240px){
+  #hunt-nav{padding:10px 0;background:none}
+  #hunt-nav .mn-row{display:none}
+  #hunt-nav .mn-burger{display:flex}
+}
+#hunt-nav-ov{gap:14px;overflow-y:auto;justify-content:flex-start;padding-top:88px}
+#hunt-nav-ov a{font-size:17px}
+#hunt-nav-ov .mn-ovlogo{position:absolute;top:16px;left:20px}
+#hunt-nav-ov .mn-ovlogo img{width:96px;height:auto;display:block}
+#hunt-nav-ov .mn-ovgroup{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(243,234,217,.3);padding:14px 26px 16px}
+#hunt-nav-ov .mn-ovgroup span{font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590}
+#hunt-nav-ov .mn-ovgroup a{font-size:15px}
+#hunt-nav-ov .mn-ovgroup a.mn-profile{background:#c1330a;border:1.5px solid #f3ead9;padding:9px 16px}
+@media (min-height:860px){#hunt-nav-ov{justify-content:center;padding-top:32px}}
+
+/* this page carries the hunt menu, so the main Squarespace header stays out of the way */
+#header,.header-announcement-bar-wrapper{display:none !important}
+</style>
+<nav id="hunt-nav">
+  <div class="mn-row">
+    <a href="https://www.mauriceafrich.com" class="mn-logo" aria-label="Maurice Africh home"><img src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
+    <div class="mn-right">
+      <div class="mn-links">
+      <a href="https://www.mauriceafrich.com/the-hunt" class="mn-link">THE HUNT</a>
+      <a href="https://www.mauriceafrich.com/the-hunt#tasks" class="mn-link">TASKS</a>
+      <a href="https://www.mauriceafrich.com/the-hunt#riddles" class="mn-link">RIDDLES &amp; PUZZLES</a>
+      <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
+      <a href="https://www.mauriceafrich.com/games" class="mn-link">GAMES</a>
+      <a href="https://www.mauriceafrich.com/contests" class="mn-link">CONTESTS</a>
+      <div class="mn-drop">
+        <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">SUBMIT<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+        </div></div>
+      </div>
+      <div class="mn-drop">
+        <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">CURRENT PROGRESS<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.mauriceafrich.com/profile" class="mn-profile"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"></path></svg>TREASURE HUNTER PROFILE</a>
+          <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
+          <a href="https://www.mauriceafrich.com/loot">LOOT BOX SCORECARD</a>
+          <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+        </div></div>
+      </div>
+      <a href="https://www.mauriceafrich.com/questions" class="mn-link">QUESTIONS?</a>
+      <div class="mn-drop">
+        <a href="https://www.mauriceafrich.com/adventure" class="mn-link mn-vote" aria-haspopup="true">ADVENTURE<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.mauriceafrich.com/red-city">RED CITY</a>
+          <a href="https://www.mauriceafrich.com/the-crew">MEET THE CREW</a>
+        </div></div>
+      </div>
+      </div>
+      <div class="mn-drop mn-drop-cta">
+        <a href="https://www.mauriceafrich.com/preorder" class="mn-link mn-cta" aria-haspopup="true">PRE-ORDER CELLO'S GATE<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399763073" target="_blank" rel="noopener">WATERSTONES</a>
+          <a href="https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834" target="_blank" rel="noopener">BARNES &amp; NOBLE</a>
+          <a href="https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834/ref=sr_1_1?crid=279A8MV3ZYP0T&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;dib_tag=se&amp;keywords=cellos+gate&amp;qid=1770340593&amp;sprefix=cellos%27+gate%2Caps%2C179&amp;sr=8-1&amp;ascsubtag=srctok-f7d285c3c39c18b3&amp;btn_ref=srctok-f7d285c3c39c18b3" target="_blank" rel="noopener">AMAZON</a>
+          <a href="https://www.amazon.com/Audible-Cellos-Gate/dp/B0GKZWW416/ref=tmm_aud_swatch_0?_encoding=UTF8&amp;dib_tag=se&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;qid=1770340593&amp;sr=8-1&amp;ascsubtag=srctok-d4f496760f7c524a&amp;btn_ref=srctok-d4f496760f7c524a" target="_blank" rel="noopener">AUDIBLE</a>
+          <a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener">WALMART SPECIAL EDITION</a>
+          <a href="https://www.mauriceafrich.com/preorder" class="mn-all">ALL RETAILERS &rarr;</a>
+        </div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mn-burger" role="button" aria-label="Open menu" onclick="var o=document.getElementById('hunt-nav-ov');if(o.parentNode!==document.body){document.body.appendChild(o);}o.style.display='flex'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M3 6h18"></path><path d="M3 12h18"></path><path d="M3 18h18"></path></svg>
+  </div>
+</nav>
+<div id="hunt-nav-ov" onclick="if(event.target.tagName==='A'||event.target.closest('.mn-x'))this.style.display='none'">
+  <div class="mn-x" role="button" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M5 5l14 14"></path><path d="M19 5L5 19"></path></svg>
+  </div>
+  <a href="https://www.mauriceafrich.com" class="mn-ovlogo" aria-label="Maurice Africh home"><img src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
+  <a href="https://www.mauriceafrich.com/the-hunt">THE HUNT</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#tasks">TASKS</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#riddles">RIDDLES &amp; PUZZLES</a>
+  <a href="https://www.mauriceafrich.com/lootbox-clue">CLUES</a>
+  <a href="https://www.mauriceafrich.com/games">GAMES</a>
+  <a href="https://www.mauriceafrich.com/contests">CONTESTS</a>
+  <div class="mn-ovgroup"><span>SUBMIT</span>
+    <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+  </div>
+  <div class="mn-ovgroup"><span>CURRENT PROGRESS</span>
+    <a href="https://www.mauriceafrich.com/profile" class="mn-profile">TREASURE HUNTER PROFILE</a>
+    <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
+    <a href="https://www.mauriceafrich.com/loot">LOOT BOX SCORECARD</a>
+    <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+  </div>
+  <a href="https://www.mauriceafrich.com/questions">QUESTIONS?</a>
+  <div class="mn-ovgroup"><span>ADVENTURE</span>
+    <a href="https://www.mauriceafrich.com/adventure">THE ADVENTURE SO FAR</a>
+    <a href="https://www.mauriceafrich.com/red-city">RED CITY</a>
+    <a href="https://www.mauriceafrich.com/the-crew">MEET THE CREW</a>
+  </div>
+  <a href="https://www.mauriceafrich.com/preorder" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
+</div>
+<script>
+(function () {
+  var nav = document.getElementById('hunt-nav'), ov = document.getElementById('hunt-nav-ov');
+  if (nav && nav.parentNode !== document.body) document.body.appendChild(nav);
+  if (ov && ov.parentNode !== document.body) document.body.appendChild(ov);
+})();
+</script>
+<style>
+/* Styled after the pre-order page (pages/preorder.html in the site project): a fixed background under a
+   deep green veil, Atomic Marker headings, square panels with pale hairlines, outlined buttons that fill red. */
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+#rc{--cream:#f3ead9;--paper:#ede9dc;--hair:rgba(243,234,217,.18);--hair2:rgba(243,234,217,.4);--mint:#c53200;--lime:#a2f590;--ember:#fd7547;--red:#c1330a;--well:rgba(12,26,8,.35);--panel:rgba(38,142,98,.16);--muted:rgba(237,233,220,.72);
+  box-sizing:border-box;position:relative;width:100vw;overflow-x:clip;
+  background:linear-gradient(rgba(21,13,40,.7),rgba(21,13,40,.86)),url('https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp') center/cover no-repeat fixed;
+  padding-top:clamp(140px,12vw,180px);padding-bottom:64px;color:#fffffe;font-family:'Almarai',sans-serif;letter-spacing:.03em;font-size:16px;line-height:1.55;text-align:left}
+#rc *,#rc *::before,#rc *::after{box-sizing:border-box}
+#rc [hidden]{display:none!important}
+#rc h1,#rc h2{font-family:'Atomic Marker',cursive;font-weight:400;margin:0;text-transform:none;letter-spacing:.02em}
+#rc h3{font-family:'Almarai',sans-serif!important;font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--ember);margin:0}
+#rc p{margin:0}
+#rc button{font:inherit;color:inherit;letter-spacing:inherit;cursor:pointer}
+#rc button:focus-visible,#rc a:focus-visible,#rc input:focus-visible,#rc select:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+#rc .rc-num{font-variant-numeric:tabular-nums}
+#rc .rc-kick{font-weight:700;font-size:14px;letter-spacing:.14em;color:var(--lime);margin:0 0 14px}
+
+/* hero: the pitch on the left, the three numbers on the right */
+@media (max-width:560px){#rc .rc-player{gap:12px;padding:12px}#rc .rc-pbtn{width:42px;height:42px}#rc .rc-plabel{font-size:11px}}
+#rc .rc-hero{max-width:1180px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:56px;align-items:center}
+#rc .rc-hero h1{font-size:clamp(30px,4.2vw,62px);line-height:1.02;margin-bottom:20px;color:#fffffe}
+#rc .rc-hero h1 span{color:var(--ember)}
+#rc .rc-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.6;color:var(--paper);max-width:600px}
+/* recordings: the same transmission player as the Hunt page, on a dark ground */
+#rc .rc-rec{margin-top:26px;max-width:600px}
+#rc .rc-player{display:flex;align-items:center;gap:16px;background:rgba(45,28,83,.55);border:1px solid rgba(195,166,255,.35);padding:14px 18px}
+#rc .rc-pbtn{flex:none;width:52px;height:52px;border-radius:50%;background:#482d85;border:0;display:flex;align-items:center;justify-content:center;padding:0;transition:transform .15s ease}
+#rc .rc-pbtn:hover{transform:scale(1.06)}
+#rc .rc-pbtn svg{width:22px;height:22px;fill:#c3a6ff}
+#rc .rc-pbtn .play{margin-left:3px}
+#rc .rc-pmid{flex:1;min-width:0}
+#rc .rc-plabel{font-weight:700;font-size:13px;letter-spacing:.1em;color:#c3a6ff;margin-bottom:10px}
+#rc .rc-ptrack{position:relative;height:10px;background:rgba(195,166,255,.2);cursor:pointer}
+#rc .rc-pfill{position:absolute;top:0;bottom:0;left:0;width:0;background:#9e74fd}
+#rc .rc-ptime{flex:none;font-weight:700;font-size:15px;letter-spacing:.05em;color:#c3a6ff;font-variant-numeric:tabular-nums}
+#rc .rc-tx{margin-top:10px;font-size:14px}
+#rc .rc-tx summary{cursor:pointer;color:var(--muted);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;width:max-content}
+#rc .rc-tx summary:hover{color:#fff}
+#rc .rc-tx div{margin-top:10px;display:grid;gap:8px;color:var(--paper);line-height:1.6;border-left:2px solid rgba(195,166,255,.35);padding-left:14px}
+#rc .rc-tx b{font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#c3a6ff;margin-right:6px}
+#rc .rc-tx i{color:var(--muted)}
+#rc .rc-stats{display:grid;gap:12px}
+#rc .rc-stat{background:var(--panel);border:1px solid var(--hair);padding:16px 20px}
+#rc .rc-stat .k{font-weight:800;font-size:13px;letter-spacing:.12em;color:var(--mint)}
+#rc .rc-stat .v{font-family:'Atomic Marker',cursive;font-size:34px;line-height:1.2;margin-top:4px}
+#rc .rc-stat .v.e{color:var(--ember)}
+#rc .rc-stat small{display:block;color:var(--muted);font-size:13px;line-height:1.45;margin-top:2px}
+
+/* step pills + purse, pinned while voting */
+#rc .rc-bar{position:sticky;top:0;z-index:5;max-width:1180px;margin:64px auto 0;padding:12px 32px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;background:rgba(9,23,7,.9);border-bottom:1px solid var(--hair)}
+#rc .rc-chip{color:#fff;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:.08em;border:1px solid var(--hair2);border-radius:0;padding:10px 20px;transition:color .15s ease,border-color .15s ease}
+#rc .rc-chip:hover{color:var(--lime);border-color:var(--lime)}
+#rc .rc-chip.done{color:var(--lime);border-color:var(--lime)}
+#rc .rc-wallet{font-weight:800;font-size:14px;letter-spacing:.1em;padding:10px 4px}
+#rc .rc-wallet .l{color:var(--lime)} #rc .rc-wallet.over .l{color:var(--ember)}
+
+/* each step is a panel, like a region on the pre-order page */
+#rc .rc-step{max-width:1180px;margin:40px auto 0;padding:44px 48px 40px;background:var(--panel);border:1px solid var(--hair);scroll-margin-top:90px}
+#rc .rc-step>header{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;max-width:760px}
+#rc .rc-step h2{font-size:clamp(28px,2.6vw,40px);line-height:1.1;color:var(--mint)}
+#rc .rc-step header p{color:var(--paper);line-height:1.6}
+#rc .rc-step header .rc-kick{margin:0}
+#rc .rc-rule{font-size:14px;color:var(--muted)}
+#rc .rc-rule b{color:var(--lime)}
+
+#rc .rc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}
+#rc .rc-card{background:var(--well);border:1px solid var(--hair);padding:20px;display:flex;flex-direction:column;gap:12px}
+#rc .rc-card.taken{border-color:var(--lime)}
+#rc .rc-card>h3{font-size:15px}
+#rc .rc-jd{font-size:14px;color:var(--muted);line-height:1.5}
+#rc .rc-perk{font-size:14px;line-height:1.5;color:var(--paper);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:10px 0}
+#rc .rc-perk b{display:block;font-weight:800;font-size:12px;letter-spacing:.12em;color:var(--lime)}
+
+/* recruits: outlined buttons that fill red when chosen */
+#rc .rc-arches{display:flex;flex-direction:column;gap:8px}
+#rc .rc-arch{text-align:left;background:rgba(12,26,8,.45);border:1.5px solid rgba(243,234,217,.55);padding:10px 14px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;transition:background .15s ease,border-color .15s ease}
+#rc .rc-arch:hover{border-color:var(--cream)}
+#rc .rc-arch .n{font-weight:700;font-size:16px;letter-spacing:.05em}
+#rc .rc-arch .c{font-weight:700;font-size:13px;color:var(--mint);align-self:center}
+#rc .rc-arch .q{grid-column:1/-1;font-size:13px;color:var(--muted);line-height:1.45}
+#rc .rc-arch .kit{grid-column:1/-1;font-size:12px;display:none;color:#fff;line-height:1.45;margin-top:4px}
+#rc .rc-arch[aria-pressed="true"]{background:var(--red);border-color:var(--cream)}
+#rc .rc-arch[aria-pressed="true"] .q,#rc .rc-arch[aria-pressed="true"] .c{color:#fff}
+#rc .rc-arch[aria-pressed="true"] .kit{display:block}
+#rc .rc-arch:disabled{opacity:.35;cursor:not-allowed}
+
+/* market */
+#rc .rc-sd{font-size:13px;color:var(--muted);line-height:1.5}
+#rc .rc-item{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 0;border-top:1px solid rgba(243,234,217,.12);align-items:center}
+#rc .rc-item .n{font-weight:700;font-size:15px;letter-spacing:.04em}
+#rc .rc-item .lv{font-weight:800;font-size:11px;color:var(--ember);margin-left:8px;letter-spacing:.12em}
+#rc .rc-item .d{font-size:12px;color:var(--muted)}
+#rc .rc-item.on .n{color:var(--lime)}
+#rc .rc-qty{display:flex;align-items:center;gap:8px;grid-row:1/3;grid-column:2;justify-self:end}
+#rc .rc-qty button{width:32px;height:32px;border:1.5px solid var(--cream);background:var(--well);font-size:17px;line-height:1;padding:0;transition:background .15s ease}
+#rc .rc-qty button:hover:not(:disabled){background:var(--red)}
+#rc .rc-qty button:disabled{opacity:.3;cursor:not-allowed}
+#rc .rc-qty .q{min-width:20px;text-align:center;font-weight:800;font-size:16px}
+#rc .rc-price{display:flex;flex-direction:column;align-items:flex-end;font-weight:700;font-size:14px;color:var(--mint);margin-right:4px}
+#rc .rc-locked{opacity:.5}
+#rc .rc-need{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--ember)}
+
+/* the plan */
+#rc .rc-qs{display:grid;gap:18px}
+#rc .rc-qs .rc-card>h3{color:#fffffe;font-size:16px;letter-spacing:.06em;text-transform:none;font-weight:800}
+#rc .rc-set{color:var(--muted);font-size:14px}
+#rc .rc-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+#rc .rc-opts.multi{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+#rc .rc-opt{text-align:left;transition:background .15s ease,border-color .15s ease,transform .18s ease;background:rgba(12,26,8,.45);border:1.5px solid rgba(243,234,217,.55);padding:12px 16px;transition:background .15s ease,border-color .15s ease}
+#rc .rc-opt:hover{border-color:var(--cream)}
+#rc .rc-opt:not([disabled]):hover,#rc .rc-kit:hover{transform:scale(1.03);position:relative;z-index:1}
+#rc .rc-kit{transition:transform .18s ease}
+#rc .rc-jobs{grid-auto-rows:1fr}
+#rc .rc-jobs .rc-opt{display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;height:100%}
+#rc .rc-jobs .rc-opt b{text-transform:uppercase;color:var(--mint);font-size:16px;letter-spacing:.08em}
+#rc .rc-jobs .rc-opt[aria-pressed="true"] b{color:#fff}
+#rc .rc-opt b{display:block;font-weight:700;font-size:15px;letter-spacing:.05em}
+#rc .rc-opt span{font-size:13px;color:var(--muted);line-height:1.45}
+#rc .rc-opt[aria-pressed="true"]{background:var(--red);border-color:var(--cream)}
+#rc .rc-opt[aria-pressed="true"] span{color:#fff}
+#rc .rc-opt .rc-gear{display:block;align-self:stretch;font-style:normal;font-size:12.5px;line-height:1.45;color:var(--cream);margin-top:8px;padding-top:8px;border-top:1px solid rgba(243,234,217,.22)}#rc .rc-opt .rc-gear i{display:block;font-style:normal;font-weight:800;letter-spacing:.1em;font-size:11.5px;color:var(--muted);margin-bottom:4px}#rc .rc-opt .rc-gear u{display:block;text-decoration:none}#rc .rc-opt[aria-pressed="true"] .rc-gear,#rc .rc-opt[aria-pressed="true"] .rc-gear i{color:#fff}
+#rc .rc-std{font-size:14px;line-height:1.5;color:var(--cream);margin:0 0 14px}#rc .rc-std b{letter-spacing:.04em}
+
+/* the d20 */
+#rc .rc-whobox:not(:empty){margin:0 0 26px}
+#rc .rc-dice{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 20px;align-items:center;margin-top:8px;padding-top:18px;border-top:1px solid var(--hair)}
+#rc .rc-die{grid-row:1/4;position:relative;width:88px;height:88px}
+#rc .rc-die .rc-die-cv,#rc .rc-die .rc-die-shadow{display:none}
+#rc .rc-die.is3d{width:120px;height:120px}
+#rc .rc-die.is3d>svg,#rc .rc-die.is3d .rc-dn{display:none}
+#rc .rc-die.is3d .rc-die-cv{display:block;position:relative;z-index:1;width:100%;height:100%}
+#rc .rc-die.is3d .rc-die-shadow{display:block;position:absolute;left:50%;bottom:6px;width:62%;height:13%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),transparent)}
+#rc .rc-die.is3d.rolling,#rc .rc-die.is3d.landed{animation:none}
+#rc .rc-die.is3d.crit .rc-die-cv{filter:drop-shadow(0 0 12px rgba(162,245,144,.85))}
+#rc .rc-die.is3d.fumble .rc-die-cv{filter:drop-shadow(0 0 12px rgba(255,76,15,.8))}
+#rc .rc-sound{align-self:flex-start;background:none;border:1px solid var(--hair2);border-radius:0;color:var(--muted);padding:6px 14px;font-weight:700;font-size:12px;letter-spacing:.1em}
+#rc .rc-sound:hover{color:#fff;border-color:var(--cream)}
+#rc .rc-die svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 6px 8px rgba(0,0,0,.45))}
+#rc .rc-die .face{fill:rgba(12,26,8,.7);stroke:var(--cream);stroke-width:2.5;stroke-linejoin:round}
+#rc .rc-die .edge{fill:none;stroke:rgba(243,234,217,.45);stroke-width:1.5;stroke-linejoin:round}
+#rc .rc-dn{position:absolute;left:0;right:0;top:42%;text-align:center;font-family:'Atomic Marker',cursive;font-size:22px;line-height:1;color:#fff}
+#rc .rc-die.rolling svg{animation:rc-tumble .45s linear infinite}
+#rc .rc-die.rolling{animation:rc-hop .45s ease-in-out infinite}
+#rc .rc-die.landed{animation:rc-land .5s cubic-bezier(.2,1.8,.4,1)}
+#rc .rc-die.crit .face{fill:#1a5e41;stroke:var(--lime)}
+#rc .rc-die.fumble .face{fill:#912501;stroke:var(--ember)}
+@keyframes rc-tumble{to{transform:rotate(360deg)}}
+@keyframes rc-hop{50%{transform:translateY(-8px) scale(1.06)}}
+@keyframes rc-land{0%{transform:scale(1.35)}100%{transform:scale(1)}}
+#rc .rc-roll{justify-self:start;background:var(--red);color:#fff;border:1.5px solid var(--cream);padding:10px 20px;font-weight:800;font-size:14px;letter-spacing:.1em;transition:transform .15s ease}
+#rc .rc-roll:hover:not(:disabled){transform:scale(1.04)}
+#rc .rc-roll:disabled{opacity:.6;cursor:wait}
+#rc .rc-rollres{font-weight:800;font-size:15px;letter-spacing:.06em;color:#fff}
+#rc .rc-rollres.crit{color:var(--lime)}
+#rc .rc-rollres.fumble{color:var(--ember)}
+#rc .rc-rollnote{font-size:13px;color:var(--muted);line-height:1.5}
+#rc .rc-jobs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+#rc .rc-kitlist{margin:0;padding-left:18px;font-size:14px;line-height:1.7;color:var(--paper)}
+#rc .rc-kitfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:auto;padding-top:12px;border-top:1px solid var(--hair)}
+#rc .rc-kitfoot .rc-price{font-size:16px}
+#rc .rc-kitbtn{padding:10px 16px}
+#rc .rc-kitbtn b{font-size:14px}
+#rc .rc-kit .rc-need{font-size:12px}
+#rc .rc-rngnote{margin-top:24px;font-size:13px;line-height:1.6;color:var(--muted);max-width:760px}
+#rc .rc-rngnote b{color:var(--paper)}
+@media (prefers-reduced-motion:reduce){#rc .rc-die.rolling,#rc .rc-die.rolling svg,#rc .rc-die.landed{animation:none}}
+
+/* seal it */
+#rc .rc-orders{border-color:rgba(253,117,71,.5)}
+#rc .rc-olist{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;margin-bottom:24px}
+#rc .rc-olist h4{font-weight:800;font-size:13px;letter-spacing:.12em;color:var(--ember);margin:0 0 8px}
+#rc .rc-olist ul{margin:0;padding-left:18px;font-size:14px;line-height:1.7}
+#rc .rc-empty{color:var(--muted);font-size:14px}
+#rc .rc-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:6px}
+#rc .rc-form label{display:grid;gap:6px;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--mint)}
+#rc .rc-form input,#rc .rc-form select{font:15px 'Almarai',sans-serif;letter-spacing:.02em;color:#fff;background:var(--well);border:1.5px solid rgba(243,234,217,.55);border-radius:0;padding:10px 12px;width:100%}
+#rc .rc-form select option{color:#111}
+#rc .rc-cta{display:inline-block;margin-top:18px;background:var(--red);color:#fff;border:1.5px solid var(--cream);padding:14px 30px;font-weight:800;font-size:16px;letter-spacing:.1em;transition:transform .15s ease,background .15s ease}
+#rc .rc-cta:hover:not(:disabled){transform:scale(1.04)}
+#rc .rc-cta:disabled{background:var(--well);border-color:var(--hair2);color:var(--muted);cursor:not-allowed}
+#rc .rc-msg{font-size:14px;color:var(--ember);margin-top:14px}
+#rc .rc-ok{font-size:15px;color:var(--paper);margin-top:16px;line-height:1.6}
+#rc .rc-next{margin-top:22px;padding-top:18px;border-top:1px solid var(--hair)}#rc .rc-next p{font-weight:800;font-size:17px;color:var(--cream);margin:0 0 12px}
+#rc .rc-cta{display:inline-block;font-weight:800;font-size:15px;letter-spacing:.09em;text-decoration:none;color:#fff;background:#c53200;border:2px solid var(--cream);padding:13px 26px;transition:transform .15s ease,background .15s ease}#rc .rc-cta:hover{background:#ff4c0f;transform:scale(1.03)}
+#rc .rc-ok b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:34px;color:var(--lime);display:block}
+#rc .rc-quiet{font-size:14px;color:var(--muted)}
+#rc .rc-quiet a{color:#fff;text-decoration:underline;cursor:pointer}
+
+/* results: shown once the count is in (config results) */
+#rc.rc-done .rc-bar,#rc.rc-done .rc-step:not(.rc-res){display:none}
+#rc .rc-rcrew{display:grid;gap:10px}
+#rc .rc-rrow{display:grid;grid-template-columns:minmax(120px,200px) 1fr 44px;align-items:center;gap:16px;font-weight:800;font-size:17px;letter-spacing:.08em;text-transform:uppercase}
+#rc .rc-rrow .rc-num{text-align:right}
+#rc .rc-rbar{height:14px;background:var(--well);border:1px solid var(--hair)}
+#rc .rc-rbar i{display:block;height:100%;background:linear-gradient(90deg,#8e1a06,#c53200 60%,var(--ember))}
+#rc .rc-rrow.out{color:rgba(237,233,220,.5)}
+#rc .rc-rrow.out .rc-rbar i{background:rgba(237,233,220,.3)}
+#rc .rc-rrow.first{border-top:1px dashed var(--hair2);padding-top:12px;margin-top:4px}
+#rc .rc-kit.rc-skip{opacity:.55}
+#rc .rc-kit.rc-skip h3{text-decoration:line-through;text-decoration-color:var(--ember)}
+#rc .rc-tag{font-weight:800;font-size:12px;letter-spacing:.12em;color:var(--lime)}
+#rc .rc-kit.rc-skip .rc-tag{color:var(--muted)}
+#rc .rc-encrow{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+#rc .rc-rdie{position:relative;width:104px;height:104px;flex:none;filter:drop-shadow(0 8px 10px rgba(0,0,0,.5))}
+#rc .rc-rdie svg{width:100%;height:100%;display:block}
+#rc .rc-rdie .face{fill:#b3200a;stroke:#ffd9a0;stroke-width:2.5;stroke-linejoin:round}
+#rc .rc-rdie .edge{fill:none;stroke:rgba(255,226,168,.5);stroke-width:1.5}
+#rc .rc-rdie span{position:absolute;left:0;right:0;top:43%;text-align:center;font-family:'Atomic Marker',cursive;font-size:22px;color:#ffe2a8}
+#rc .rc-choice{font-family:'Atomic Marker',cursive!important;font-size:30px;letter-spacing:.02em;text-transform:none;color:#fffffe;margin:0 0 6px}
+#rc .rc-crits{font-weight:800;font-size:13px;letter-spacing:.1em;color:var(--muted);margin-top:6px}
+#rc .rc-crits .c20{color:var(--lime)}
+#rc .rc-crits .c1{color:var(--ember)}
+#rc .rc-band{display:inline-block;margin-top:12px;font-weight:800;font-size:14px;letter-spacing:.12em;padding:8px 14px;border:1.5px solid}
+#rc .rc-band.win{background:var(--lime);color:#0b170f;border-color:var(--lime)}
+#rc .rc-band.ok{color:var(--lime);border-color:var(--lime)}
+#rc .rc-band.meh{color:var(--ember);border-color:var(--ember)}
+#rc .rc-band.bad{background:#c53200;color:#fff;border-color:#c53200}
+#rc .rc-bands{margin-top:24px;padding-top:18px;border-top:1px solid var(--hair)}
+#rc .rc-bands ul{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 20px;margin-top:10px;font-size:14px;color:var(--muted)}
+#rc .rc-bands b{display:block;color:#fffffe;font-size:15px;letter-spacing:.04em}
+#rc .rc-lm{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px 24px}
+#rc .rc-lm li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--hair);font-weight:700;font-size:17px;color:rgba(237,233,220,.6)}
+#rc .rc-lm li.top{color:#fffffe}
+#rc .rc-lm li.top span:first-child::before{content:'';display:inline-block;width:10px;height:10px;background:#c53200;margin-right:10px;transform:rotate(45deg);vertical-align:1px}
+#rc .rc-next .rc-cta{margin-top:0}
+#rc.rc-closed .rc-arch,#rc.rc-closed .rc-opt,#rc.rc-closed .rc-qty button{pointer-events:none;opacity:.6}
+
+@media (max-width:860px){
+  #rc{padding-top:120px}
+  #rc .rc-hero{grid-template-columns:1fr;gap:28px;padding:0 20px}
+  #rc .rc-bar{margin-top:44px;padding:10px 16px;gap:8px}
+  #rc .rc-chip{padding:8px 14px;font-size:13px}
+  #rc .rc-step{margin:28px 16px 0;padding:32px 20px 24px}
+  #rc .rc-grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){#rc *{transition:none!important}#rc .rc-cta:hover:not(:disabled){transform:none}}
+
+/* the crash vote (games/crash.*), on top of the Red City styles: the purple color story (#2d1c53, #482d85, #7b4ee1, #9e74fd) */
+#rc.cr{--mint:#fffffe;--ember:#9e74fd;--red:#482d85;--lime:#9e74fd;--panel:rgba(72,45,133,.5);--well:rgba(21,13,40,.5)}
+#rc.cr .rc-hero h1{font-family:'Atomic Marker',cursive!important;line-height:1.2;letter-spacing:.03em}
+#rc.cr .rc-hero h1 span{color:#9e74fd}
+#rc.cr .rc-stat .v.e{color:#9e74fd}
+#rc.cr .rc-cta{background:#482d85;border-color:#f3ead9;color:#fff}
+#rc.cr .rc-cta:hover:not(:disabled){background:#7b4ee1}
+#rc.cr .rc-cta:disabled{background:rgba(21,13,40,.5);border-color:rgba(243,234,217,.4);color:rgba(237,233,220,.6)}
+#rc.cr .rc-roll{background:#482d85}
+#rc.cr .rc-roll:hover:not(:disabled){background:#7b4ee1}
+#rc.cr .rc-opt,#rc.cr .rc-arch{background-color:rgba(21,13,40,.5)}
+#rc.cr .rc-opt[aria-pressed="true"]{background:#482d85;border-color:#9e74fd}
+#rc.cr .rc-orders{border-color:rgba(158,116,253,.45)}
+#rc.cr .rc-msg{color:#fffffe}
+#rc.cr .rc-rollres.fumble{color:#fffffe}
+#rc.cr .rc-die .face{fill:#2d1c53;stroke:#9e74fd}
+#rc.cr .rc-die.fumble .face{fill:#2d1c53;stroke:#fffffe}
+#rc .cr-q .rc-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+#rc .cr-tiers{margin:6px 0 0;padding-left:18px;font-size:14px;color:var(--muted);line-height:1.6}
+#rc .cr-tiers b{color:var(--paper);font-weight:800;letter-spacing:.08em;font-size:11px;margin-right:6px}
+#rc .cr-roll{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px;align-items:start}
+@media (max-width:760px){#rc .cr-roll{grid-template-columns:1fr}}
+#rc.cr .cw-when{font-size:24px;line-height:1.25}
+#rc .cw-orders ul{margin:0 0 20px;padding-left:18px;display:grid;gap:6px;font-size:15px}
+#rc .cw-orders b{display:inline-block;min-width:200px;font-weight:800;font-size:12px;letter-spacing:.12em;color:#9e74fd;text-transform:uppercase}
+#rc .cw-orders .rc-empty{color:var(--muted)}
+</style>
+
+<div id="rc" class="cr">
+  <header class="rc-hero">
+    <div>
+      <p class="rc-kick" id="cr-kick"></p>
+      <h1 id="cr-title"></h1>
+      <p class="rc-lede" id="cr-lede"></p>
+    </div>
+    <div class="rc-stats">
+      <div class="rc-stat"><div class="k">FRENS WHO HAVE VOTED</div><div class="v rc-num" id="rc-count">…</div><small>One vote each. You can change yours until it closes.</small></div>
+      <div class="rc-stat"><div class="k">FOR VOTING</div><div class="v e rc-num" id="rc-pts"></div><small>Seal your plan and the points go straight to the leaderboard.</small></div>
+      <div class="rc-stat"><div class="k" id="rc-close-k">VOTING CLOSES</div><div class="v rc-num cw-when" id="rc-close">…</div><small id="rc-close-s">You have 24 hours.</small></div>
+    </div>
+  </header>
+
+  <section class="rc-step" id="cw-start">
+    <header>
+      <p class="rc-kick">STEP 1 · BEFORE YOU ROLL</p>
+      <h2>First, tell me who you are</h2>
+      <p>Fill this in once, so your roll, your vote, and your 50 points are saved under your name.</p>
+      <button type="button" class="rc-sound" id="rc-sound"></button>
+    </header>
+    <div id="rc-who" class="rc-whobox"></div>
+  </section>
+
+  <div id="cr-questions"></div>
+
+  <section class="rc-step rc-orders" id="rc-orders">
+    <header>
+      <p class="rc-kick">THE PLAN</p>
+      <h2>Seal your vote</h2>
+    </header>
+    <div class="cw-orders" id="rc-olist"></div>
+    <p class="rc-msg" id="rc-msg"></p>
+    <button class="rc-cta" id="rc-seal" type="button">SEAL MY PLAN</button>
+    <div id="rc-result"></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var DATA = {"_help":"The vote after the crash on De'gaté (chapter 4). Built by scripts/build-crash.mjs into squarespace-crash.html; the sheet checks votes against the ADV block it writes into apps-script/lootbox.gs. Questions: kind 'roll' is a group d20 (average, nat 1 = two 0s, nat 20 = two 20s, five tiers); kind 'pick' is one option.","key":"crash_vote","points":50,"opens":"2099-01-01T00:00:00Z","closes":"2099-01-02T00:00:00Z","title":["Shot","Down"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"Something on the ridge fires, and the Second Wind comes down hard half a kilometer south of the Goma Skull. The crew makes it. The ship doesn't. Now the crew needs a plan, and the frens decide it together. Majority rules.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"Three or more natural 20s lift it a tier. Three or more natural 1s drop it a tier.","questions":[{"id":"brace","kind":"roll","kicker":"AS THE SHIP GOES DOWN","title":"Brace for Impact","text":"Every fren rolls. The crew's average decides how bad the landing is.","tiers":["The Second Wind breaks apart, and one of the crew is hurt.","A brutal landing. Everyone's bruised, and the ship is in pieces.","A hard landing. Everyone walks away, and the ship won't fly.","A rough landing. Everyone's okay, and the ship might be fixable.","Hale sticks it. Everyone's fine, and the ship can be fixed."]},{"id":"first","kind":"pick","kicker":"THE FIRST MOVE","title":"What Do We Do First?","options":[["Patch up the crew","Break out the Field Medic Kit before anything else."],["Salvage the Second Wind","Strip what we can from the wreck while we can."],["Get out of sight","Hide before whoever shot us comes looking."],["Go after the gun on the ridge","Find out who's up there, and shut it down."]]},{"id":"way","kind":"pick","kicker":"WHICH WAY","title":"Which Direction Do We Go?","options":[["North-east","Toward the gomas."],["West","To the river."],["East","Over the mountains."]]},{"id":"point","kind":"pick","kicker":"WHO LEADS","title":"Who Takes Point?","text":"Whoever the frens pick gets the spotlight in the next chapter.","options":[["Hale","The Crest Knight."],["Scarlett Holster","The Gunslinger."],["Orion Squints","The Oracle."],["Rune Overclock","The Techtailor."],["Sparrow Zipmeister","The Intangible."]]},{"id":"split","kind":"pick","kicker":"STICK TOGETHER","title":"Stay Together, or Split Up?","text":"Sticking together is why everyone walked away. Do we keep it that way?","options":[["Stay together","Everyone moves as one crew."],["Split up","A scout team and a salvage team."]]},{"id":"shooter","kind":"pick","kicker":"THE GUN ON THE RIDGE","title":"Who's Shooting at Us?","text":"Placeholder options until Maurice sends his.","options":[["Option one",""],["Option two",""],["Option three",""]]}]};
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
+  var TZ = 'America/New_York';
+  var STORE = 'thCrash:v1', ME = 'thLoot:me';
+
+  var root = document.getElementById('rc');
+  var $ = function (id) { return document.getElementById(id); };
+  var fmt = function (n) { return Number(n).toLocaleString('en-US'); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  function load(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+  function store(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+  var S = load(STORE) || {};
+  
+  var me = load(ME) || {};
+  var basePurse = null;
+  // On the github.io preview the dice roll here and nothing is sent; on mauriceafrich.com the sheet rolls.
+  var PREVIEW = /github\.io$/.test(location.hostname);
+  S.rolls = S.rolls || {};
+  var rolling = {}, flick = {};
+  var D20 = '<svg viewBox="0 0 100 100"><polygon class="face" points="50,3 91,26 91,74 50,97 9,74 9,26"/><polygon class="edge" points="50,22 78,68 22,68"/><path class="edge" d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68"/></svg>';
+  // ---- the 3D d20 ------------------------------------------------------
+  // A real twenty-sided die in red metal (three.js, MIT licence, from cdnjs), numbered like a table die: opposite
+  // faces add up to 21. It tumbles while the roll is on its way, then bounces and settles with the
+  // rolled face up. The clatter is made on the spot with Web Audio, so there is no sound file.
+  // If three.js cannot load, the flat die (D20 above) stays and everything else works the same.
+  var Dice = (function () {
+    var URL3 = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    var T = null, loading = null, faces = null, numbers = null, faceOf = null, targets = {}, TILT = null, dice = {};
+    var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var muted = false;
+    try { muted = localStorage.getItem('thDice:muted') === '1'; } catch (e) {}
+
+    var LAB = {}, MATS = {};   // per-die face labels, and materials by label set
+
+    function load() {
+      if (T) return Promise.resolve(T);
+      if (loading) return loading;
+      loading = new Promise(function (ok, no) {
+        if (window.THREE) return ok(window.THREE);
+        var s = document.createElement('script');
+        s.src = URL3; s.async = true;
+        s.onload = function () { window.THREE ? ok(window.THREE) : no(); };
+        s.onerror = no;
+        document.head.appendChild(s);
+      }).then(function (three) { T = three; setup(); return T; });
+      return loading;
+    }
+
+    // The icosahedron's 20 faces, which number each one shows, and the turn that brings it face up.
+    function setup() {
+      var g = new T.IcosahedronGeometry(1, 0), p = g.getAttribute('position');
+      faces = [];
+      for (var f = 0; f < 20; f++) {
+        var a = new T.Vector3().fromBufferAttribute(p, f * 3), b = new T.Vector3().fromBufferAttribute(p, f * 3 + 1), c = new T.Vector3().fromBufferAttribute(p, f * 3 + 2);
+        var mid = a.clone().add(b).add(c).divideScalar(3);
+        faces.push({ a: a, b: b, c: c, mid: mid, n: mid.clone().normalize() });
+      }
+      numbers = new Array(20);
+      var next = 1;
+      for (var i = 0; i < 20; i++) {
+        if (numbers[i]) continue;
+        var opp = 0, best = 2;
+        for (var j = 0; j < 20; j++) { var dot = faces[i].n.dot(faces[j].n); if (dot < best) { best = dot; opp = j; } }
+        numbers[i] = next; numbers[opp] = 21 - next; next++;
+      }
+      for (var k = 0; k < 20; k++) {
+        var z = faces[k].n, y = faces[k].a.clone().sub(faces[k].mid).normalize(), x = new T.Vector3().crossVectors(y, z);
+        var m = new T.Matrix4().makeBasis(x, y, z).transpose();
+        targets[numbers[k]] = new T.Quaternion().setFromRotationMatrix(m);
+      }
+      faceOf = {}; for (var q = 0; q < 20; q++) faceOf[numbers[q]] = q;
+      TILT = new T.Quaternion().setFromEuler(new T.Euler(-0.42, 0.3, 0.06));
+    }
+
+    function faceTexture(n, lab) {
+      var c = document.createElement('canvas'); c.width = c.height = 256;
+      var g = c.getContext('2d');
+      var grad = g.createLinearGradient(0, 0, 0, 256);
+      grad.addColorStop(0, '#7b4ee1'); grad.addColorStop(1, '#2d1c53');
+      g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
+      g.fillStyle = '#fffffe'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      var word = lab ? String(lab[n]) : null;
+      if (word && word.indexOf('|') > 0) { var sw = word.split('|');
+        g.font = '400 92px "Segoe UI Symbol", "Noto Sans Symbols 2", "Apple Symbols", "DejaVu Sans", sans-serif'; g.fillText(sw[0], 128, 124);
+        g.font = '800 34px Almarai, Arial, sans-serif'; g.fillText(sw[1], 128, 188); }
+      else if (word && word.length > 2) { g.font = '800 40px Almarai, Arial, sans-serif'; g.fillText(word, 128, 150); }
+      else if (word) { g.font = '400 118px "Segoe UI Symbol", "Noto Sans Symbols 2", "Apple Symbols", "DejaVu Sans", sans-serif'; g.fillText(word, 128, 146); }
+      else { g.font = '700 ' + (n > 9 ? 78 : 92) + 'px Almarai, Arial, sans-serif'; g.fillText(n === 6 || n === 9 ? n + '.' : String(n), 128, 150); }
+      var t = new T.CanvasTexture(c);
+      t.encoding = T.sRGBEncoding;
+      return t;
+    }
+
+    function studio() {
+      var c = document.createElement('canvas'); c.width = 512; c.height = 256;
+      var g = c.getContext('2d'), sky = g.createLinearGradient(0, 0, 0, 256);
+      sky.addColorStop(0, '#fff6e8'); sky.addColorStop(0.45, '#8c6a58'); sky.addColorStop(0.55, '#3a2418'); sky.addColorStop(1, '#0c0706');
+      g.fillStyle = sky; g.fillRect(0, 0, 512, 256);
+      [[110, 70, 70], [360, 60, 55], [250, 30, 40]].forEach(function (s) {
+        var l = g.createRadialGradient(s[0], s[1], 0, s[0], s[1], s[2]);
+        l.addColorStop(0, 'rgba(255,255,255,1)'); l.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = l; g.fillRect(0, 0, 512, 256);
+      });
+      var tex = new T.CanvasTexture(c);
+      tex.mapping = T.EquirectangularReflectionMapping; tex.encoding = T.sRGBEncoding;
+      return tex;
+    }
+
+    // A rolled number sits flat, facing the viewer square-on. Only a die still waiting to be rolled is tilted.
+    function pose(n) { return targets[n].clone(); }
+    function idle() { return targets[20].clone().premultiply(TILT); }
+
+    function dieGeometry() {
+      var geo = new T.IcosahedronGeometry(1, 0), uv = [];
+      geo.clearGroups();
+      for (var f = 0; f < 20; f++) { uv.push(0.5, 0.95, 0.05, 0.2, 0.95, 0.2); geo.addGroup(f * 3, 3, f); }
+      geo.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+      return geo;
+    }
+    function dieMaterials(lab) {
+      var mats = [];
+      for (var k = 0; k < 20; k++) mats.push(new T.MeshStandardMaterial({ map: faceTexture(numbers[k], lab), roughness: 0.3, metalness: 0.85, envMapIntensity: 1.2, flatShading: true }));
+      return mats;
+    }
+
+    function build(id, node) {
+      var cv = node.querySelector('canvas');
+      var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+      r.outputEncoding = T.sRGBEncoding;
+      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      r.setSize(120, 120, false);
+      var scene = new T.Scene(), cam = new T.PerspectiveCamera(30, 1, 0.1, 50);
+      cam.position.set(0, 0, 6.4); cam.lookAt(0, 0, 0);
+      var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
+      scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
+      var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-3, 5, 5); scene.add(sun);
+      var mesh = new T.Mesh(dieGeometry(), dieMaterials(LAB[id]));
+      mesh.quaternion.copy(idle());
+      scene.add(mesh);
+      var d = { r: r, scene: scene, cam: cam, mesh: mesh, node: node, shadow: node.querySelector('.rc-die-shadow'), raf: 0, y: 0 };
+      dice[id] = d;
+      return d;
+    }
+
+    function draw(d) {
+      d.mesh.position.y = d.y;
+      if (d.shadow) { d.shadow.style.transform = 'translateX(-50%) scale(' + (1 - d.y * 0.45).toFixed(3) + ')'; d.shadow.style.opacity = (0.9 - d.y * 0.6).toFixed(2); }
+      d.r.render(d.scene, d.cam);
+    }
+
+    // ---- sound: a hard little knock plus a burst of clatter, a bit different every time
+    var ctx = null;
+    function audio() {
+      if (muted) return null;
+      var A = window.AudioContext || window.webkitAudioContext;
+      if (!A) return null;
+      if (!ctx) ctx = new A();
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }
+    function clack(vol) {
+      var a = audio(); if (!a) return;
+      var t = a.currentTime, len = Math.floor(a.sampleRate * 0.045), buf = a.createBuffer(1, len, a.sampleRate), ch = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 5);
+      var src = a.createBufferSource(); src.buffer = buf;
+      var bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2400 + Math.random() * 2200; bp.Q.value = 3;
+      var g = a.createGain(); g.gain.value = vol;
+      src.connect(bp); bp.connect(g); g.connect(a.destination); src.start(t);
+      var o = a.createOscillator(), og = a.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(380 + Math.random() * 300, t);
+      o.frequency.exponentialRampToValueAtTime(160, t + 0.07);
+      og.gain.setValueAtTime(vol * 0.7, t);
+      og.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+      o.connect(og); og.connect(a.destination); o.start(t); o.stop(t + 0.1);
+    }
+
+    function stopLoop(d) { if (d.raf) cancelAnimationFrame(d.raf); d.raf = 0; }
+
+    // ---- the throw: a real physics roll (cannon.js, MIT licence, from cdnjs) -----------------
+    // The die is thrown from its card with a random force, spin and angle, and the physics decides
+    // everything after that: the tumbling, the bounces off the table and the screen edges, and where
+    // it comes to rest. Nothing steers it. Every face of a d20 is the same shape, so the numbers can
+    // be painted on to match the roll before it is thrown (the sheet's random number generator has
+    // already chosen it); that changes which number is on the face it lands on, not how it moves.
+    // A few throws are worked out in a blink and the one whose number lands most upright is shown.
+    var URLP = 'https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js', P = null, loadingP = null;
+    function loadPhysics() {
+      if (P) return Promise.resolve(P);
+      if (loadingP) return loadingP;
+      loadingP = new Promise(function (ok, no) {
+        if (window.CANNON) return ok(window.CANNON);
+        var s = document.createElement('script');
+        s.src = URLP; s.async = true;
+        s.onload = function () { window.CANNON ? ok(window.CANNON) : no(); };
+        s.onerror = no;
+        document.head.appendChild(s);
+      }).then(function (c) { P = c; return P; });
+      return loadingP;
+    }
+
+    var ov = null;
+    function overlay() {
+      if (ov) return ov;
+      var cv = document.createElement('canvas');
+      cv.setAttribute('aria-hidden', 'true');
+      cv.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147482000;display:none';
+      document.body.appendChild(cv);
+      var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+      r.outputEncoding = T.sRGBEncoding;
+      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      var scene = new T.Scene(), cam = new T.OrthographicCamera(-1, 1, 1, -1, -1000, 1000);
+      cam.position.set(0, 0, 500); cam.lookAt(0, 0, 0);
+      var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
+      scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
+      var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-300, 500, 500); scene.add(sun);
+      var mesh = new T.Mesh(dieGeometry(), dieMaterials()); scene.add(mesh);
+      var sc = document.createElement('canvas'); sc.width = sc.height = 128;
+      var sg = sc.getContext('2d'), rg = sg.createRadialGradient(64, 64, 0, 64, 64, 64);
+      rg.addColorStop(0, 'rgba(0,0,0,.55)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
+      sg.fillStyle = rg; sg.fillRect(0, 0, 128, 128);
+      var shadow = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: new T.CanvasTexture(sc), transparent: true, depthWrite: false }));
+      shadow.position.z = -200; scene.add(shadow);
+      ov = { cv: cv, r: r, scene: scene, cam: cam, mesh: mesh, shadow: shadow, raf: 0, st: null };
+      function size() {
+        var w = window.innerWidth, h = window.innerHeight;
+        r.setSize(w, h, false);
+        cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2; cam.bottom = -h / 2; cam.updateProjectionMatrix();
+        ov.w = w; ov.h = h; ov.R = Math.max(34, Math.min(62, Math.min(w, h) * 0.075));
+      }
+      size(); window.addEventListener('resize', size);
+      return ov;
+    }
+    function slotCenter(id) {
+      var b = dice[id].node.getBoundingClientRect();
+      return { x: b.left + b.width / 2 - window.innerWidth / 2, y: window.innerHeight / 2 - (b.top + b.height / 2) };
+    }
+
+    var hull = null;
+    function hullShape() {
+      if (!hull) {
+        var pts = [], idx = [], seen = {};
+        faces.forEach(function (f) {
+          idx.push([f.a, f.b, f.c].map(function (v) {
+            var k = v.x.toFixed(4) + ',' + v.y.toFixed(4) + ',' + v.z.toFixed(4);
+            if (!(k in seen)) { seen[k] = pts.length; pts.push([v.x, v.y, v.z]); }
+            return seen[k];
+          }));
+        });
+        hull = { pts: pts, idx: idx };
+      }
+      return new P.ConvexPolyhedron(hull.pts.map(function (p) { return new P.Vec3(p[0], p[1], p[2]); }), hull.idx.map(function (f) { return f.slice(); }));
+    }
+
+    // One throw, worked out ahead at 60 steps a second: where the die is at every step, and when it hits something.
+    function simulate(start, Wu, Hu) {
+      var world = new P.World();
+      world.gravity.set(0, 0, -40);
+      world.broadphase = new P.NaiveBroadphase();
+      world.solver.iterations = 12;
+      world.allowSleep = true;
+      world.defaultContactMaterial.friction = 0.28;
+      world.defaultContactMaterial.restitution = 0.38;
+      function wall(x, y, axis, ang) {
+        var b = new P.Body({ mass: 0 }); b.addShape(new P.Plane()); b.position.set(x, y, 0);
+        if (axis) b.quaternion.setFromAxisAngle(axis, ang);
+        world.addBody(b);
+      }
+      wall(0, 0);                                                    // the table
+      wall(-Wu, 0, new P.Vec3(0, 1, 0), Math.PI / 2); wall(Wu, 0, new P.Vec3(0, 1, 0), -Math.PI / 2);
+      wall(0, -Hu, new P.Vec3(1, 0, 0), -Math.PI / 2); wall(0, Hu, new P.Vec3(1, 0, 0), Math.PI / 2);
+      var die = new P.Body({ mass: 1 });
+      die.addShape(hullShape());
+      die.linearDamping = 0.1; die.angularDamping = 0.1;
+      die.allowSleep = true; die.sleepSpeedLimit = 0.15; die.sleepTimeLimit = 0.25;
+      die.position.set(start.x, start.y, 2.2 + Math.random() * 1.5);
+      die.quaternion.setFromEuler(Math.random() * 6.283, Math.random() * 6.283, Math.random() * 6.283);
+      var ang = Math.atan2(-start.y, -start.x) + (Math.random() - 0.5) * 1.6, sp = 14 + Math.random() * 12;
+      die.velocity.set(Math.cos(ang) * sp, Math.sin(ang) * sp, 2 + Math.random() * 5);
+      die.angularVelocity.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 30);
+      world.addBody(die);
+      var frames = [], hits = [], stepNo = 0, lastHit = -9;
+      die.addEventListener('collide', function (e) {
+        var v = Math.abs(e.contact.getImpactVelocityAlongNormal());
+        if (v > 1.2 && stepNo - lastHit > 3) { hits.push([stepNo, Math.min(0.55, v * 0.035)]); lastHit = stepNo; }
+      });
+      for (stepNo = 0; stepNo < 540; stepNo++) {
+        world.step(1 / 60);
+        frames.push([die.position.x, die.position.y, die.position.z, die.quaternion.x, die.quaternion.y, die.quaternion.z, die.quaternion.w]);
+        if (stepNo > 40 && die.sleepState === P.Body.SLEEPING) break;
+      }
+      return { frames: frames, hits: hits };
+    }
+
+    // Which face ended up facing the viewer.
+    function topFace(f) {
+      var q = new T.Quaternion(f[3], f[4], f[5], f[6]), best = -2, k = 0;
+      for (var i = 0; i < 20; i++) { var z = faces[i].n.clone().applyQuaternion(q).z; if (z > best) { best = z; k = i; } }
+      return { k: k, q: q, flat: best };
+    }
+    function frameOf(face, v) {
+      var z = face.n, y = v.clone().sub(face.mid).normalize(), x = new T.Vector3().crossVectors(y, z);
+      return new T.Matrix4().makeBasis(x, y, z);
+    }
+    // The turn of the die onto itself that puts number n on the face that landed up. Of the three
+    // ways to do it, the one that reads most upright.
+    function relabel(n, top) {
+      var ft = faces[faceOf[n]], f = faces[top.k], toCanon = frameOf(ft, ft.a).transpose(), best = null;
+      [f.a, f.b, f.c].forEach(function (v) {
+        var g = new T.Quaternion().setFromRotationMatrix(new T.Matrix4().multiplyMatrices(frameOf(f, v), toCanon));
+        var up = v.clone().sub(f.mid).normalize().applyQuaternion(top.q), ang = Math.atan2(up.x, up.y), tilt = Math.abs(ang);
+        if (!best || tilt < best.tilt) best = { g: g, tilt: tilt, ang: ang };
+      });
+      return best;
+    }
+
+    function throwIt(id, n, done) {
+      var o0 = overlay(), key = LAB[id] ? 'lab' : 'num';
+      if (o0.labKey !== key) { o0.mesh.material = MATS[key] || (MATS[key] = dieMaterials(LAB[id])); o0.labKey = key; }
+      if (!P) return false;
+      // Never a table smaller than a few dice wide, even if the window reports no size (a hidden tab).
+      var d = dice[id], o = overlay(), s = slotCenter(id), Wu = Math.max(5, o.w / 2 / o.R), Hu = Math.max(4, o.h / 2 / o.R);
+      var start = { x: Math.max(-Wu + 1.3, Math.min(Wu - 1.3, s.x / o.R)), y: Math.max(-Hu + 1.3, Math.min(Hu - 1.3, s.y / o.R)) };
+      var best = null, t0 = performance.now();
+      for (var i = 0; i < 8; i++) {
+        var sim = simulate(start, Wu, Hu), top = topFace(sim.frames[sim.frames.length - 1]);
+        if (top.flat < 0.97) continue;                               // still moving when time ran out: throw again
+        sim.top = top;
+        if (n == null) { sim.g = new T.Quaternion(); sim.tilt = 0; best = sim; break; }   // number not in yet: set later
+        var rl = relabel(n, top);
+        sim.g = rl.g; sim.tilt = rl.tilt; sim.ang = rl.ang;
+        if (!best || rl.tilt < best.tilt) best = sim;
+        if (rl.tilt < 0.35 || performance.now() - t0 > 150) break;
+      }
+      if (!best) return false;
+      if (ov.raf) cancelAnimationFrame(ov.raf);
+      stopLoop(d); d.y = 0; d.node.style.visibility = 'hidden';
+      o.st = { id: id, n: n, sim: best, done: done, start: performance.now(), hit: 0, fixFrom: 0, fix: n == null ? 0 : -(best.ang || 0) };
+      o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
+      clack(0.3);
+      o.raf = requestAnimationFrame(play);
+      return true;
+    }
+    // The sheet's number arrives while the die is already in the air: paint it on the face that will land up,
+    // and turn the die a little over the rest of the flight so the number ends up upright.
+    function setNumber(id, n, done) {
+      var st = ov && ov.st; if (!st || st.id !== id || st.n != null) return false;
+      var rl = relabel(n, st.sim.top), fr = st.sim.frames;
+      st.sim.g = rl.g; st.n = n; st.done = done;
+      st.fixFrom = Math.max(0, Math.min(fr.length - 1, Math.floor((performance.now() - st.start) / (1000 / 60))));
+      st.fix = -rl.ang;
+      return true;
+    }
+    // Safety net: if a frame ever fails, the die drops back into its card with the number, never stuck.
+    function play(now) {
+      try { playFrame(now); }
+      catch (e) {
+        var st = ov && ov.st; if (!st) return;
+        dropThrow(st.id);
+        var d = dice[st.id]; if (d) { d.y = 0; d.mesh.quaternion.copy(pose(st.n)); draw(d); }
+        if (st.done) st.done();
+      }
+    }
+    function playFrame(now) {
+      var o = ov, st = o.st;
+      if (!st) return;
+      // A frame can be stamped a moment before the throw began, so never ask for a step before the first.
+      var fr = st.sim.frames, i = Math.max(0, Math.min(fr.length - 1, Math.floor((now - st.start) / (1000 / 60))));
+      while (st.hit < st.sim.hits.length && st.sim.hits[st.hit][0] <= i) { clack(st.sim.hits[st.hit][1]); st.hit++; }
+      var span = Math.max(1, fr.length - 1 - st.fixFrom), k = Math.max(0, Math.min(1, (i - st.fixFrom) / span));
+      paintFrame(fr[i], st.sim.g, st.n == null ? 0 : st.fix * k * k * (3 - 2 * k));
+      if (i < fr.length - 1 || st.n == null) { o.raf = requestAnimationFrame(play); return; }   // at rest but no number yet: wait
+      // At rest. Hold it so everyone can read it, then the table fades and the card has the number.
+      o.raf = 0;
+      if (PREVIEW || window.__diceDebug) {   // preview/testing only: which number really ended up facing the viewer
+        var lf = fr[fr.length - 1], qq = new T.Quaternion(lf[3], lf[4], lf[5], lf[6]).multiply(st.sim.g), bk = 0, bz = -2;
+        for (var i2 = 0; i2 < 20; i2++) { var zz = faces[i2].n.clone().applyQuaternion(qq).z; if (zz > bz) { bz = zz; bk = i2; } }
+        (window.__diceLog = window.__diceLog || []).push({ rolled: st.n, showing: numbers[bk], flat: +bz.toFixed(3), tiltDeg: Math.round(st.sim.tilt * 57.3), seconds: +(fr.length / 60).toFixed(2), bounces: st.sim.hits.length });
+      }
+      setTimeout(function () {
+        if (o.st !== st) return;
+        var d = dice[st.id];
+        if (d) { d.y = 0; d.mesh.quaternion.copy(pose(st.n)); draw(d); d.node.style.visibility = ''; }
+        o.cv.style.transition = 'opacity .45s ease'; o.cv.style.opacity = '0';
+        setTimeout(function () { if (o.st === st) { o.cv.style.display = 'none'; o.st = null; } }, 480);
+        if (st.done) st.done();
+      }, 1400);
+    }
+    function paintFrame(f, g, turn) {
+      var o = ov, z = Math.max(0, f[2] - 0.8), sc = 1 + z * 0.07;
+      o.mesh.position.set(f[0] * o.R, f[1] * o.R, 0);
+      o.mesh.quaternion.set(f[3], f[4], f[5], f[6]).multiply(g);
+      if (turn) o.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 0, 1), turn));
+      o.mesh.scale.setScalar(o.R * sc);
+      o.shadow.position.set(f[0] * o.R + 6 + z * 10, f[1] * o.R - 8 - z * 10, -200);
+      o.shadow.scale.setScalar(o.R * 2.4 * (1 - Math.min(0.5, z * 0.08)));
+      o.shadow.material.opacity = 0.9 - Math.min(0.6, z * 0.1);
+      o.r.render(o.scene, o.cam);
+    }
+    function dropThrow(id) {
+      if (!ov || !ov.st || ov.st.id !== id) return;
+      if (ov.raf) cancelAnimationFrame(ov.raf);
+      ov.raf = 0; ov.st = null; ov.cv.style.display = 'none';
+      if (dice[id]) dice[id].node.style.visibility = '';
+    }
+
+    return {
+      // Builds the die in this node once three.js is in; the node shows the flat die until then.
+      attach: function (id, node, n) {
+        load().then(function () {
+          if (dice[id]) return;
+          if (!calm) loadPhysics().catch(function () {});
+          var d = build(id, node);
+          node.classList.add('is3d');
+          if (n) d.mesh.quaternion.copy(pose(n));
+          draw(d);
+        }).catch(function () {});
+      },
+      labels: function (id, lab) { LAB[id] = lab; },
+      ready: function (id) { return !!dice[id]; },
+      // Throw straight away, before the number is known; set it with number() when it arrives.
+      throwNow: function (id) { if (calm || !dice[id]) return false; try { return throwIt(id, null, null); } catch (e) { dropThrow(id); return false; } },
+      number: function (id, n, done) { try { return setNumber(id, n, done); } catch (e) { dropThrow(id); return false; } },
+      drop: function (id) { dropThrow(id); },
+      show: function (id, n) { var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(pose(n)); draw(d); },
+      // Shaken in the card (like dice in a cupped hand) until the sheet's number is in, then thrown
+      // across the screen with physics. In the card instead when motion is reduced or physics won't load.
+      spin: function (id) { this.spinCard(id); },
+      land: function (id, n, done) {
+        if (!calm && dice[id]) { try { if (throwIt(id, n, done)) return; } catch (e) { dropThrow(id); } }
+        this.landCard(id, n, done);
+      },
+      // Tumbling in the card until the number is known.
+      spinCard: function (id) {
+        var d = dice[id]; if (!d) return;
+        stopLoop(d);
+        var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), last = performance.now(), start = last, tick = 0;
+        d.axis = axis;
+        (function frame(now) {
+          var dt = Math.min(0.05, (now - last) / 1000); last = now;
+          if (!calm) d.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(axis, 13 * dt));
+          d.y = calm ? 0 : Math.abs(Math.sin((now - start) / 110)) * 0.35;
+          if (now - tick > 95) { tick = now; clack(0.05 + Math.random() * 0.06); }
+          draw(d);
+          d.raf = requestAnimationFrame(frame);
+        })(last);
+      },
+      // In the card: three bounces, a clack on each, and it settles on n.
+      landCard: function (id, n, done) {
+        var d = dice[id]; if (!d) return done();
+        stopLoop(d);
+        var q0 = d.mesh.quaternion.clone(), q1 = pose(n), axis = d.axis || new T.Vector3(1, 0, 0), dur = calm ? 1 : 1150, t0 = performance.now(), hits = [0.286, 0.571, 0.857], hit = 0;
+        (function frame(now) {
+          var t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3);
+          var q = q0.clone().slerp(q1, e);
+          q.premultiply(new T.Quaternion().setFromAxisAngle(axis, (1 - e) * 7));
+          d.mesh.quaternion.copy(q);
+          d.y = Math.abs(Math.sin(Math.PI * 3.5 * t)) * 0.85 * Math.pow(1 - t, 2);
+          while (hit < hits.length && t >= hits[hit]) { clack([0.5, 0.28, 0.14][hit]); hit++; }
+          draw(d);
+          if (t < 1) d.raf = requestAnimationFrame(frame);
+          else { d.raf = 0; d.mesh.quaternion.copy(q1); d.y = 0; draw(d); done(); }
+        })(t0);
+      },
+      stop: function (id) { dropThrow(id); var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(idle()); draw(d); },
+      muted: function () { return muted; },
+      setMuted: function (m) { muted = !!m; try { localStorage.setItem('thDice:muted', muted ? '1' : '0'); } catch (e) {} }
+    };
+  })();
+  var dieEls = {};
+  function dieNode(id) {
+    var el = dieEls[id];
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'rc-die-' + id;
+      el.setAttribute('aria-hidden', 'true');
+      el.innerHTML = D20 + '<span class="rc-dn" id="rc-dn-' + id + '">?</span><i class="rc-die-shadow"></i><canvas class="rc-die-cv" width="240" height="240"></canvas>';
+      dieEls[id] = el;
+      Dice.attach(id, el, S.rolls[id]);
+    }
+    return el;
+  }
+  // The same questions the loot box page and the Daily Word ask, saved the same way.
+  function renderWho() {
+    var who = $('rc-who');
+    if (me.email) {
+      if (who.getAttribute('data-me') === me.email) return;
+      who.setAttribute('data-me', me.email);
+      who.innerHTML = '<p class="rc-quiet">Rolling and voting as ' + esc(me.first_name || me.email) + '. <a id="rc-notme">Not you?</a></p>';
+      $('rc-notme').onclick = function () { try { localStorage.removeItem(ME); } catch (e) {} me = {}; S.rolls = {}; store(STORE, S); for (var k in dieEls) Dice.stop(k); who.removeAttribute('data-me'); render(); };
+      return;
+    }
+    if (who.getAttribute('data-me') === '') return;
+    who.setAttribute('data-me', '');
+    who.innerHTML = '<p class="rc-quiet" style="margin-bottom:10px">Before you roll, tell the Captain who you are. You only do this once; the loot box page and the Daily Word remember you too.</p>' +
+      '<div class="rc-form">' +
+      '<label>First name<input id="rc-first" autocomplete="given-name"></label>' +
+      '<label>Email you use for the hunt<input id="rc-email" type="email" autocomplete="email" inputmode="email"></label>' +
+      '<label>Social handle<input id="rc-handle" placeholder="@yourname" autocomplete="off"></label>' +
+      '<label>Where that handle lives<select id="rc-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select></label>' +
+      '<label>Country<select id="rc-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select></label>' +
+      '<label id="rc-otherl" hidden>Which country?<input id="rc-other"></label>' +
+      '</div>';
+    $('rc-country').onchange = function () { $('rc-otherl').hidden = this.value !== '__other'; };
+  }
+
+  function readWho() {
+    if (me.email) return me;
+    var country = $('rc-country').value;
+    var p = { first_name: $('rc-first').value.trim(), email: $('rc-email').value.trim(), handle: $('rc-handle').value.trim(),
+              platform: $('rc-platform').value, country: country === '__other' ? $('rc-other').value.trim() : country };
+    if (!p.first_name) return 'A first name, please.';
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email)) return 'That email does not look right.';
+    if (!p.country) return 'Which country are you hunting from?';
+    return p;
+  }
+
+  // Same round trip as the loot box page: a simple POST, JSONP if that is
+  // blocked, and one quiet retry because Apps Script is sometimes slow.
+  function send(payload, done, attempt) {
+    attempt = attempt || 1;
+    var settled = false;
+    var finish = function (res) {
+      if (settled) return;
+      settled = true;
+      var flaky = !res || (!res.ok && (res.error === 'network' || res.error === 'server'));
+      if (flaky && attempt < 2) return setTimeout(function () { send(payload, done, attempt + 1); }, 1500);
+      done(res);
+    };
+    try {
+      fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(payload) })
+        .then(function (r) { return r.json(); }).then(finish)
+        .catch(function () { jsonp(payload, finish); });
+    } catch (e) { jsonp(payload, finish); }
+  }
+  function jsonp(payload, done) {
+    var name = 'rccb' + Math.random().toString(36).slice(2), q = ['callback=' + name];
+    for (var k in payload) if (payload[k] != null && payload[k] !== '') q.push(encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]));
+    var s = document.createElement('script');
+    var timer = setTimeout(function () { cleanup(); done({ ok: false, error: 'network' }); }, 30000);
+    function cleanup() { clearTimeout(timer); delete window[name]; if (s.parentNode) s.parentNode.removeChild(s); }
+    window[name] = function (res) { cleanup(); done(res); };
+    s.onerror = function () { cleanup(); done({ ok: false, error: 'network' }); };
+    s.src = ENDPOINT + '?' + q.join('&');
+    document.body.appendChild(s);
+  }
+  // Stretch edge to edge, wherever the Squarespace block sits (the same fit as the pre-order page).
+  function fit() {
+    var sec = root.closest('section');
+    if (sec) {
+      Array.prototype.forEach.call(sec.querySelectorAll('.content-wrapper, .fluid-engine'), function (x) {
+        x.style.setProperty('padding-top', '0', 'important'); x.style.setProperty('padding-bottom', '0', 'important');
+      });
+      sec.style.setProperty('padding-top', '0', 'important'); sec.style.setProperty('padding-bottom', '0', 'important');
+    }
+    root.style.marginLeft = '0px';
+    root.style.marginLeft = -root.getBoundingClientRect().left + 'px';
+    root.style.width = document.documentElement.clientWidth + 'px';
+  }
+  fit(); addEventListener('resize', fit); addEventListener('load', fit); setTimeout(fit, 600);
+  // ---- the crash vote ----------------------------------------------------------
+  // One group roll (brace) and a set of picks, all from DATA.questions. The sheet rolls the die and
+  // keeps the vote (actions advroll / advvote / advcount, checked against the ADV block).
+  S.rolls = S.rolls || {}; S.picks = S.picks || {};
+  var NOW = Date.now(), CLOSES = Date.parse(DATA.closes), OPENS = DATA.opens ? Date.parse(DATA.opens) : 0;
+  var notYet = !PREVIEW && NOW < OPENS, closed = !PREVIEW && NOW > CLOSES, locked = notYet || closed;
+  function when(ms) { return new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(ms)).replace(':00', '') + ' ET'; }
+  function changed() { S.sealed = false; store(STORE, S); render(); }
+  function rollText(r) {
+    if (r === 20) return 'NATURAL 20! It counts as two 20s.';
+    if (r === 1) return 'NATURAL 1. It counts as two 0s.';
+    return 'You rolled ' + r + '.' + (PREVIEW ? ' (Preview roll, not recorded.)' : '');
+  }
+  var ERR = { closed: 'Voting has closed.', email: 'That email does not look right.' };
+
+  function rollFor(id) {
+    if (rolling[id] || locked || S.rolls[id]) return;
+    var who = PREVIEW ? me : readWho();
+    if (typeof who === 'string') {
+      var o = document.getElementById('rc-rr-' + id);
+      if (o) o.textContent = who + ' Fill in Step 1 at the top, then roll.';
+      $('rc-who').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (!PREVIEW) { me = who; store(ME, me); renderWho(); }
+    rolling[id] = true; render();
+    // Shaken in its card while the sheet answers, then thrown with the answer already on the die.
+    Dice.spin(id);
+    var started = Date.now();
+    var land = function (res) {
+      setTimeout(function () {
+        var ok = res && res.ok && res.roll, n = ok ? Number(res.roll) : 0;
+        var finish = function () {
+          rolling[id] = false;
+          if (ok) { S.rolls[id] = n; S.sealed = false; store(STORE, S); } else Dice.stop(id);
+          render();
+          if (!ok) { var o = document.getElementById('rc-rr-' + id); if (o) o.textContent = ERR[res && res.error] || (res && res.error === 'notopen' ? 'Voting opens ' + when(OPENS) + '.' : 'The die rolled off the table. Give it another go.'); }
+        };
+        if (ok && Dice.ready(id)) Dice.land(id, n, finish); else finish();
+      }, Math.max(0, 700 - (Date.now() - started)));
+    };
+    if (PREVIEW) setTimeout(function () { land({ ok: true, roll: 1 + Math.floor(Math.random() * 20) }); }, 1400);
+    else send({ action: 'advroll', vote: DATA.key, q: id, email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country }, land);
+  }
+
+  function diceBlock(id, note) {
+    var r = S.rolls[id], tone = r === 20 ? ' crit' : r === 1 ? ' fumble' : '';
+    var d = document.createElement('div');
+    d.className = 'rc-dice';
+    d.innerHTML = (r
+        ? '<p class="rc-rollres' + tone + '" id="rc-rr-' + id + '" aria-live="polite">' + rollText(r) + '</p>'
+        : '<button type="button" class="rc-roll"' + (rolling[id] || locked ? ' disabled' : '') + '>' + (rolling[id] ? 'ROLLING…' : 'ROLL THE D20') + '</button>' +
+          '<p class="rc-rollres" id="rc-rr-' + id + '" aria-live="polite"></p>') +
+      '<p class="rc-rollnote">' + esc(note) + '</p>';
+    var die = dieNode(id);
+    die.className = 'rc-die' + (Dice.ready(id) ? ' is3d' : '') + (rolling[id] ? ' rolling' : tone);
+    if (!rolling[id]) { var dn = die.querySelector('.rc-dn'); dn.textContent = r || '?'; }
+    if (r && Dice.ready(id) && !rolling[id]) Dice.show(id, r);
+    d.insertBefore(die, d.firstChild);
+    var rb = d.querySelector('.rc-roll');
+    if (rb) rb.onclick = function () { rollFor(id); };
+    return d;
+  }
+  function optButtons(q) {
+    var g = document.createElement('div');
+    g.className = 'rc-opts'; g.setAttribute('role', 'group'); g.setAttribute('aria-label', q.title);
+    q.options.forEach(function (o) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'rc-opt';
+      b.setAttribute('aria-pressed', S.picks[q.id] === o[0]);
+      b.innerHTML = '<b>' + esc(o[0]) + '</b>' + (o[1] ? '<span>' + esc(o[1]) + '</span>' : '');
+      b.onclick = function () { if (locked) return; S.picks[q.id] = o[0]; changed(); };
+      g.appendChild(b);
+    });
+    return g;
+  }
+
+  function renderQuestions() {
+    var box = $('cr-questions'); box.innerHTML = '';
+    DATA.questions.forEach(function (q, i) {
+      var sec = document.createElement('section');
+      sec.className = 'rc-step cr-q'; sec.id = 'cr-' + q.id;
+      sec.innerHTML = '<header><p class="rc-kick">STEP ' + (i + 2) + ' · ' + esc(q.kicker) + '</p><h2>' + esc(q.title) + '</h2>' + (q.text ? '<p>' + esc(q.text) + '</p>' : '') + '</header>';
+      if (q.kind === 'roll') {
+        var wrap = document.createElement('div'); wrap.className = 'cr-roll';
+        wrap.appendChild(diceBlock(q.id, 'Averaged with every other fren. ' + DATA.twist));
+        var tiers = document.createElement('ol'); tiers.className = 'cr-tiers';
+        tiers.innerHTML = q.tiers.map(function (t, k) { return '<li><b>' + esc(DATA.tiers[k]) + '</b>' + esc(t) + '</li>'; }).join('');
+        wrap.appendChild(tiers);
+        sec.appendChild(wrap);
+      } else sec.appendChild(optButtons(q));
+      box.appendChild(sec);
+    });
+  }
+  function missing() {
+    return DATA.questions.filter(function (q) { return q.kind === 'roll' ? !S.rolls[q.id] : !S.picks[q.id]; }).map(function (q) { return q.title; });
+  }
+  function renderOrders() {
+    $('rc-olist').innerHTML = '<ul>' + DATA.questions.map(function (q) {
+      var v = q.kind === 'roll' ? (S.rolls[q.id] ? 'Rolled ' + S.rolls[q.id] : null) : S.picks[q.id];
+      return '<li><b>' + esc(q.title) + '</b> ' + (v ? esc(v) : '<span class="rc-empty">not yet</span>') + '</li>';
+    }).join('') + '</ul>';
+    var m = missing();
+    $('rc-seal').disabled = locked || !!m.length;
+    if (!$('rc-result').innerHTML) $('rc-msg').textContent = locked ? (notYet ? 'Voting opens ' + when(OPENS) + '.' : 'Voting has closed.') : m.length ? 'Still to do: ' + m.join(', ') + '.' : '';
+  }
+  function render() { renderQuestions(); renderOrders(); renderWho(); }
+
+  $('rc-seal').onclick = function () {
+    var msg = $('rc-msg');
+    if (PREVIEW) { $('rc-result').innerHTML = '<p class="rc-ok"><b>PREVIEW</b>Your plan looks good. On the live page, this sends it to the Captain and pays the voting points.</p>'; return; }
+    var who = readWho();
+    if (typeof who === 'string') { msg.textContent = who; $('rc-who').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    me = who; store(ME, me);
+    if (missing().length) { msg.textContent = 'Before you seal it: ' + missing().join(', ') + '.'; return; }
+    var btn = this, payload = { action: 'advvote', vote: DATA.key, email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country };
+    DATA.questions.forEach(function (q) { if (q.kind === 'pick') payload['p_' + q.id] = S.picks[q.id]; });
+    btn.disabled = true; btn.textContent = 'SEALING...'; msg.textContent = '';
+    send(payload, function (res) {
+      if (res && res.ok) {
+        S.sealed = true; store(STORE, S);
+        if (res.count) $('rc-count').textContent = fmt(res.count);
+        $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.status === 'new' ? '+' + res.points + ' POINTS' : 'PLAN UPDATED') + '</b>' +
+          (res.status === 'new' ? 'Your plan is with the Captain. The points land on the leaderboard at the next tally.' : 'Your new plan replaces your old one.') + ' You can change your vote until it closes.</p>';
+        btn.textContent = 'SEAL MY PLAN'; btn.disabled = false;
+        return;
+      }
+      btn.disabled = false; btn.textContent = 'TRY AGAIN';
+      msg.textContent = ({ closed: 'Voting has closed.', notopen: 'Voting opens ' + when(OPENS) + '.', email: 'That email does not look right.', rolls: 'Roll the die first.', picks: 'Answer every question first.' })[res && res.error]
+        || 'The ship is slow today. Give it another go in a moment.';
+    });
+  };
+
+  function paintSound() { $('rc-sound').textContent = 'DICE SOUND: ' + (Dice.muted() ? 'OFF' : 'ON'); $('rc-sound').setAttribute('aria-pressed', !Dice.muted()); }
+  $('rc-sound').onclick = function () { Dice.setMuted(!Dice.muted()); paintSound(); };
+  paintSound();
+  if (PREVIEW) {
+    var again = document.createElement('button');
+    again.type = 'button'; again.className = 'rc-sound'; again.textContent = 'PREVIEW: START OVER';
+    again.onclick = function () { S = { rolls: {}, picks: {} }; store(STORE, S); for (var k in dieEls) Dice.stop(k); $('rc-result').innerHTML = ''; render(); };
+    $('rc-sound').insertAdjacentElement('afterend', again);
+  }
+
+  $('cr-kick').textContent = DATA.kicker;
+  $('cr-title').innerHTML = esc(DATA.title[0]) + ' <span>' + esc(DATA.title[1]) + '</span>';
+  $('cr-lede').textContent = DATA.lede;
+  $('rc-pts').textContent = '+' + DATA.points;
+  $('rc-close').textContent = when(CLOSES);
+  if (closed) { $('rc-close-k').textContent = 'VOTING CLOSED'; $('rc-close-s').textContent = 'The votes are in.'; }
+  $('rc-count').textContent = '…';
+  jsonp({ action: 'advcount', vote: DATA.key }, function (res) { $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
+  if (notYet) { var wait = OPENS - Date.now(); if (wait < 2147483647) setTimeout(function () { location.reload(); }, wait + 1500); }
+  render();
+
+  // The Squarespace section around this page keeps its own background and runs a little past the page;
+  // paint it the color of the page's foot so nothing shows below.
+  function paintSection() {
+    var sec = root.closest('section'); if (!sec) return;
+    var bg = sec.querySelector('.section-background'), color = '#150d28';
+    sec.style.setProperty('background', color, 'important'); if (bg) bg.style.setProperty('background', color, 'important');
+  }
+  paintSection(); addEventListener('load', paintSection); setTimeout(paintSection, 800);
+
+})();
+</script>
