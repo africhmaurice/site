@@ -453,7 +453,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     var x = c.getContext('2d'), SITE = 'https://africhmaurice.github.io/site/assets/', label = btn.textContent;
     var have = {}; lastFound.forEach(function (n) { have[n] = true; });
     function img(src) { return new Promise(function (ok) { var i = new Image(); i.crossOrigin = 'anonymous'; i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
-    function round(px, py, pw, ph, r) { x.beginPath(); x.moveTo(px + r, py); x.arcTo(px + pw, py, px + pw, py + ph, r); x.arcTo(px + pw, py + ph, px, py + ph, r); x.arcTo(px, py + ph, px, py, r); x.arcTo(px, py, px + pw, py, r); x.closePath(); }
+    // Sharp corners only, everywhere on the card (Maurice, 2026-09-30).
+    function round(px, py, pw, ph) { x.beginPath(); x.rect(px, py, pw, ph); }
     function t(str, cx, y, font, color, sp) { x.font = font; x.fillStyle = color; x.textAlign = 'center'; if ('letterSpacing' in x) x.letterSpacing = (sp || 0) + 'px'; x.fillText(str, cx, y); if ('letterSpacing' in x) x.letterSpacing = '0px'; }
     function fit(str, max, size, fam) { var s = size; x.font = s + 'px ' + fam; while (x.measureText(str).width > max && s > 30) { s -= 4; x.font = s + 'px ' + fam; } return s + 'px ' + fam; }
     btn.textContent = 'Making your card...'; btn.disabled = true;
@@ -471,7 +472,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       t(lastFound.length + ' OF ' + TOTAL + ' FOUND', W / 2, 268, '800 34px Almarai', T.hi, 6);
       // The grid: 11 across, found chests in full colour, the rest faint.
       var cols = 11, cell = 80, gx = (W - cols * cell) / 2, gy = 300;
-      round(gx - 16, gy - 16, cols * cell + 32, Math.ceil(TOTAL / cols) * cell + 32, 24); x.fillStyle = T.panel; x.fill();
+      round(gx - 16, gy - 16, cols * cell + 32, Math.ceil(TOTAL / cols) * cell + 32); x.fillStyle = T.panel; x.fill();
       x.strokeStyle = T.line; x.lineWidth = 3; x.stroke();
       for (var k = 0; k < TOTAL; k++) {
         var row = Math.floor(k / cols), inRow = Math.min(cols, TOTAL - row * cols), cx = gx + (cols - inRow) * cell / 2 + (k % cols) * cell, cy = gy + row * cell;
@@ -481,8 +482,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         else { x.fillStyle = have[k] ? T.hi : 'rgba(255,255,254,.3)'; x.font = '800 22px Almarai'; x.textAlign = 'center'; x.fillText(String(k), cx + cell / 2, cy + cell / 2 + 8); }
         x.globalAlpha = 1;
       }
-      round(90, 1160, 900, 100, 50); x.fillStyle = T.pill; x.fill();
-      t('JOIN ME ON THE HUNT!', W / 2, 1230, fit('JOIN ME ON THE HUNT!', 820, 62, AM), T.pillText);
+      t('JOIN ME ON THE HUNT!', W / 2, 1230, fit('JOIN ME ON THE HUNT!', 820, 62, AM), T.hi);
       t('MAURICEAFRICH.COM/THE-HUNT', W / 2, 1294, '800 26px Almarai', T.text, 4);
       var foot = '@MAURICEAFRICH  ·  #SKYPIRATESHUNT';
       x.font = '800 20px Almarai'; if ('letterSpacing' in x) x.letterSpacing = '4px';

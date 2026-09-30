@@ -183,8 +183,9 @@ html,body{margin:0 !important;padding:0 !important}
     var W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
     var x = c.getContext('2d'), ART = 'https://africhmaurice.github.io/site/assets/', label = btn.textContent;
     function img(src) { return new Promise(function (ok) { var i = new Image(); i.crossOrigin = 'anonymous'; i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
-    function round(px, py, pw, ph, r) { x.beginPath(); x.moveTo(px + r, py); x.arcTo(px + pw, py, px + pw, py + ph, r); x.arcTo(px + pw, py + ph, px, py + ph, r); x.arcTo(px, py + ph, px, py, r); x.arcTo(px, py, px + pw, py, r); x.closePath(); }
-    function panel(px, py, pw, ph) { round(px, py, pw, ph, 26); x.fillStyle = T.panel; x.fill(); x.strokeStyle = T.line; x.lineWidth = 3; x.stroke(); }
+    // Sharp corners only, everywhere on the card (Maurice, 2026-09-30).
+    function round(px, py, pw, ph) { x.beginPath(); x.rect(px, py, pw, ph); }
+    function panel(px, py, pw, ph) { round(px, py, pw, ph); x.fillStyle = T.panel; x.fill(); x.strokeStyle = T.line; x.lineWidth = 3; x.stroke(); }
     function t(str, cx, y, font, color, sp) { x.font = font; x.fillStyle = color; x.textAlign = 'center'; if ('letterSpacing' in x) x.letterSpacing = (sp || 0) + 'px'; x.fillText(str, cx, y); if ('letterSpacing' in x) x.letterSpacing = '0px'; }
     function fit(str, max, size, fam) { var s = size; x.font = s + 'px ' + fam; while (x.measureText(str).width > max && s > 40) { s -= 4; x.font = s + 'px ' + fam; } return s + 'px ' + fam; }
     btn.textContent = 'MAKING YOUR CARD...'; btn.disabled = true;
@@ -208,8 +209,7 @@ html,body{margin:0 !important;padding:0 !important}
         t(st[0], px + 217, py + 58, '800 24px Almarai', T.hi, 5);
         t(st[1], px + 217, py + 150, fit(st[1], 380, 84, AM), T.text);
       });
-      round(90, 1080, 900, 130, 65); x.fillStyle = T.pill; x.fill();
-      t('JOIN ME ON THE HUNT!', W / 2, 1168, fit('JOIN ME ON THE HUNT!', 820, 74, AM), T.pillText);
+      t('JOIN ME ON THE HUNT!', W / 2, 1168, fit('JOIN ME ON THE HUNT!', 820, 74, AM), T.hi);
       t('MAURICEAFRICH.COM/THE-HUNT', W / 2, 1262, '800 30px Almarai', T.text, 4);
       var foot = '@MAURICEAFRICH  ·  #SKYPIRATESHUNT';
       x.font = '800 22px Almarai'; if ('letterSpacing' in x) x.letterSpacing = '4px';
