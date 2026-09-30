@@ -86,10 +86,10 @@ to find their prize.`],
   [23, 'Telekinetic Swords & 12ish Children'],
   [24, 'Getting the Band Back Together', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'book', pics: [['', ART + 'clue-24-hint-1b.jpg']] }] }],
   // After sunset (Eastern time) this clue wakes up: click it and "/in-the-dark" flashes for a split second.
-  [25, '“In the dark”', { night: '/in-the-dark', hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'square', pics: [['', ART + 'clue-25-hint-1b.png']] }] }],
+  [25, '“In the dark”', { night: '/in-the-dark', hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'icon', pics: [['', ART + 'clue-25-hint-1c.png']] }] }],
   [26, "It'll come to you."],
   [27, "Your Loot Box"],
-  [28, '', { img: ART + 'clue-28.webp', alt: 'A wedge of cheese', sticker: true, hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'square', pics: [['', ART + 'clue-28-hint-1.png'], ['', ART + 'clue-28-hint-2b.png']] }] }],
+  [28, '', { img: ART + 'clue-28.webp', alt: 'A wedge of cheese', sticker: true, hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'icon', pics: [['', ART + 'clue-28-hint-1c.png'], ['', ART + 'clue-28-hint-2c.png']] }] }],
   [29, 'Catch Me If You Can'],
   [30, "I'm stuck!"],
   // The shop's "Find a loot box" button is box 31, and the button literally says it.
@@ -245,6 +245,7 @@ const css = `#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,min
 #loot-clue .lc-hint-pics.lc-wide img{aspect-ratio:16/10}
 #loot-clue .lc-hint-pics.lc-square img{aspect-ratio:1/1}
 #loot-clue .lc-hint-pics.lc-book img{aspect-ratio:252/396}
+#loot-clue .lc-hint-pics.lc-icon img{aspect-ratio:1/1;object-fit:contain;border:0;box-shadow:none;background:transparent}
 #loot-clue .lc-hint-text.lc-hint-link{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;line-height:1.2;word-break:break-word;border-radius:999px;padding:14px 30px;border:2px solid #fffffe;background:#fffffe;color:#0b170f;transition:background .15s,color .15s}
 #loot-clue .lc-hint-text.lc-hint-link:hover{background:transparent;color:#fffffe}
 #loot-clue .lc-hint-pics img{width:100%;aspect-ratio:3/4;object-fit:cover;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}
