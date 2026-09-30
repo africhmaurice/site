@@ -429,6 +429,11 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cw-orders ul{margin:0 0 20px;padding-left:18px;display:grid;gap:6px;font-size:15px}
 #rc .cw-orders b{display:inline-block;min-width:200px;font-weight:800;font-size:12px;letter-spacing:.12em;color:#9e74fd;text-transform:uppercase}
 #rc .cw-orders .rc-empty{color:var(--muted)}
+#rc .cr-kits{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:18px}
+#rc .cr-kit{background:var(--well);border:1px solid var(--hair);padding:14px 14px 10px}
+#rc .cr-kit h3{margin:0 0 8px;font-family:'Almarai',sans-serif!important;font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#9e74fd}
+#rc .cr-kit .rc-dice{display:grid;justify-items:center;text-align:center;gap:6px}
+#rc .cr-kit .rc-rollnote:empty{display:none}
 </style>
 
 <div id="rc" class="cr">
@@ -471,7 +476,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 <script>
 (function () {
-  var DATA = {"_help":"The vote after the crash on De'gaté (chapter 4). Built by scripts/build-crash.mjs into squarespace-crash.html; the sheet checks votes against the ADV block it writes into apps-script/lootbox.gs. Questions: kind 'roll' is a group d20 (average, nat 1 = two 0s, nat 20 = two 20s, five tiers); kind 'pick' is one option.","key":"crash_vote","points":50,"opens":"2099-01-01T00:00:00Z","closes":"2099-01-02T00:00:00Z","title":["Shot","Down"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"Something on the ridge fires, and the Second Wind comes down hard half a kilometer south of the Goma Skull. The crew makes it. The ship doesn't. Now the crew needs a plan, and the frens decide it together. Majority rules.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"Three or more natural 20s lift it a tier. Three or more natural 1s drop it a tier.","questions":[{"id":"brace","kind":"roll","kicker":"AS THE SHIP GOES DOWN","title":"Brace for Impact","text":"Every fren rolls. The crew's average decides how bad the landing is.","tiers":["The Second Wind breaks apart, and one of the crew is hurt.","A brutal landing. Everyone's bruised, and the ship is in pieces.","A hard landing. Everyone walks away, and the ship won't fly.","A rough landing. Everyone's okay, and the ship might be fixable.","Hale sticks it. Everyone's fine, and the ship can be fixed."]},{"id":"first","kind":"pick","kicker":"THE FIRST MOVE","title":"What Do We Do First?","options":[["Patch up the crew","Break out the Field Medic Kit before anything else."],["Salvage the Second Wind","Strip what we can from the wreck while we can."],["Get out of sight","Hide before whoever shot us comes looking."],["Go after the gun on the ridge","Find out who's up there, and shut it down."]]},{"id":"way","kind":"pick","kicker":"WHICH WAY","title":"Which Direction Do We Go?","options":[["North-east","Toward the gomas."],["West","To the river."],["East","Over the mountains."]]},{"id":"point","kind":"pick","kicker":"WHO LEADS","title":"Who Takes Point?","text":"Whoever the frens pick gets the spotlight in the next chapter.","options":[["Hale","The Crest Knight."],["Scarlett Holster","The Gunslinger."],["Orion Squints","The Oracle."],["Rune Overclock","The Techtailor."],["Sparrow Zipmeister","The Intangible."]]},{"id":"split","kind":"pick","kicker":"STICK TOGETHER","title":"Stay Together, or Split Up?","text":"Sticking together is why everyone walked away. Do we keep it that way?","options":[["Stay together","Everyone moves as one crew."],["Split up","A scout team and a salvage team."]]},{"id":"shooter","kind":"pick","kicker":"THE GUN ON THE RIDGE","title":"Who's Shooting at Us?","text":"Placeholder options until Maurice sends his.","options":[["Option one",""],["Option two",""],["Option three",""]]}]};
+  var DATA = {"_help":"The vote after the crash on De'gaté (chapter 4). Built by scripts/build-crash.mjs into squarespace-crash.html; the sheet checks votes against the ADV block it writes into apps-script/lootbox.gs. Questions: kind 'roll' is a group d20 (average, nat 1 = two 0s, nat 20 = two 20s, five tiers); kind 'pick' is one option.","key":"crash_vote","points":50,"opens":"2099-01-01T00:00:00Z","closes":"2099-01-02T00:00:00Z","title":["Crash","Landing"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"Missile defense systems embedded in the mountains. The Second Wind comes down hard half a kilometer southeast of the Goma Skull. The crew makes it, but the ship doesn't. Now the crew needs a plan, and the frens get to decide what that plan is going to be. Majority rules.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"Three or more natural 20s lift it a tier. Three or more natural 1s drop it a tier.","questions":[{"id":"supplies","kind":"rolls","kicker":"","title":"Oh no, the supplies!","text":"How did the supplies fare during the crash? Every fren rolls for each kit. The crew's average on each die decides how that kit holds up.","items":[["kit_survival","Survival Kit"],["kit_medic","Field Medic Kit"],["kit_breach","Breach Kit"],["kit_defense","Defense Kit"],["kit_climbing","Climbing Kit"]],"tiers":["Lost in the crash.","Mostly wrecked. A few pieces are still usable.","Banged up, but it works.","Nearly untouched.","Came through without a scratch."]},{"id":"first","kind":"pick","kicker":"THE FIRST MOVE","title":"What Do We Do First?","options":[["Patch up the crew","Break out the Field Medic Kit before anything else."],["Salvage the Second Wind","Strip what we can from the wreck while we can."],["Get out of sight","Hide before whoever shot us comes looking."],["Go after the gun on the ridge","Find out who's up there, and shut it down."]]},{"id":"way","kind":"pick","kicker":"WHICH WAY","title":"Which Direction Do We Go?","options":[["North-east","Toward the gomas."],["West","To the river."],["East","Over the mountains."]]},{"id":"point","kind":"pick","kicker":"WHO LEADS","title":"Who Takes Point?","text":"Whoever the frens pick gets the spotlight in the next chapter.","options":[["Hale","The Crest Knight."],["Scarlett Holster","The Gunslinger."],["Orion Squints","The Oracle."],["Rune Overclock","The Techtailor."],["Sparrow Zipmeister","The Intangible."]]},{"id":"split","kind":"pick","kicker":"STICK TOGETHER","title":"Stay Together, or Split Up?","text":"Sticking together is why everyone walked away. Do we keep it that way?","options":[["Stay together","Everyone moves as one crew."],["Split up","A scout team and a salvage team."]]},{"id":"shooter","kind":"pick","kicker":"THE GUN ON THE RIDGE","title":"Who's Shooting at Us?","text":"Placeholder options until Maurice sends his.","options":[["Option one",""],["Option two",""],["Option three",""]]}]};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
@@ -1115,7 +1120,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     DATA.questions.forEach(function (q, i) {
       var sec = document.createElement('section');
       sec.className = 'rc-step cr-q'; sec.id = 'cr-' + q.id;
-      sec.innerHTML = '<header><p class="rc-kick">STEP ' + (i + 2) + ' · ' + esc(q.kicker) + '</p><h2>' + esc(q.title) + '</h2>' + (q.text ? '<p>' + esc(q.text) + '</p>' : '') + '</header>';
+      sec.innerHTML = '<header><p class="rc-kick">STEP ' + (i + 2) + (q.kicker ? ' · ' + esc(q.kicker) : '') + '</p><h2>' + esc(q.title) + '</h2>' + (q.text ? '<p>' + esc(q.text) + '</p>' : '') + '</header>';
       if (q.kind === 'roll') {
         var wrap = document.createElement('div'); wrap.className = 'cr-roll';
         wrap.appendChild(diceBlock(q.id, 'Averaged with every other fren. ' + DATA.twist));
@@ -1123,16 +1128,32 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         tiers.innerHTML = q.tiers.map(function (t, k) { return '<li><b>' + esc(DATA.tiers[k]) + '</b>' + esc(t) + '</li>'; }).join('');
         wrap.appendChild(tiers);
         sec.appendChild(wrap);
+      } else if (q.kind === 'rolls') {
+        // one die per item (the kits), each averaged with every other fren's roll for it
+        var grid = document.createElement('div'); grid.className = 'cr-kits';
+        q.items.forEach(function (it) {
+          var c = document.createElement('div'); c.className = 'cr-kit';
+          c.innerHTML = '<h3>' + esc(it[1]) + '</h3>';
+          c.appendChild(diceBlock(it[0], ''));
+          grid.appendChild(c);
+        });
+        sec.appendChild(grid);
+        var tl = document.createElement('ol'); tl.className = 'cr-tiers';
+        tl.innerHTML = q.tiers.map(function (t, k) { return '<li><b>' + esc(DATA.tiers[k]) + '</b>' + esc(t) + '</li>'; }).join('');
+        var note = document.createElement('p'); note.className = 'rc-rollnote'; note.textContent = "What each kit's average means. " + DATA.twist;
+        sec.appendChild(note); sec.appendChild(tl);
       } else sec.appendChild(optButtons(q));
       box.appendChild(sec);
     });
   }
   function missing() {
-    return DATA.questions.filter(function (q) { return q.kind === 'roll' ? !S.rolls[q.id] : !S.picks[q.id]; }).map(function (q) { return q.title; });
+    return DATA.questions.filter(function (q) { return q.kind === 'roll' ? !S.rolls[q.id] : q.kind === 'rolls' ? q.items.some(function (it) { return !S.rolls[it[0]]; }) : !S.picks[q.id]; }).map(function (q) { return q.title; });
   }
   function renderOrders() {
     $('rc-olist').innerHTML = '<ul>' + DATA.questions.map(function (q) {
-      var v = q.kind === 'roll' ? (S.rolls[q.id] ? 'Rolled ' + S.rolls[q.id] : null) : S.picks[q.id];
+      var v = q.kind === 'roll' ? (S.rolls[q.id] ? 'Rolled ' + S.rolls[q.id] : null)
+        : q.kind === 'rolls' ? (q.items.every(function (it) { return S.rolls[it[0]]; }) ? q.items.map(function (it) { return it[1].replace(/ Kit$/, '') + ' ' + S.rolls[it[0]]; }).join(' · ') : null)
+        : S.picks[q.id];
       return '<li><b>' + esc(q.title) + '</b> ' + (v ? esc(v) : '<span class="rc-empty">not yet</span>') + '</li>';
     }).join('') + '</ul>';
     var m = missing();
