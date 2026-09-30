@@ -2,6 +2,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.typekit.net/hfm0eub.css">
 <style>
 @font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
 html{scroll-behavior:smooth}
@@ -1064,12 +1065,12 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
 .rd-who label input{margin-top:3px;flex:none}
 .rd-who label a{color:#c3a6ff}
 .rd-said{display:flex;align-items:center;gap:14px;border-radius:10px;padding:14px 18px;background:rgba(11,23,15,.35);border:2px solid currentColor}
-.rd-said svg{flex:none;width:52px;height:52px}
+.rd-said svg,.rd-said img{flex:none;width:52px;height:52px}
 .rd-said b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(21px,1.9vw,27px);line-height:1.15;letter-spacing:.02em;margin:0}
 .rd-said b+span{margin-top:4px}
 .rd-said span{display:block;font-size:14px;line-height:1.5;color:#ede9dc}
 .rd-said span:empty{display:none}
-.rd-said.right{color:#a2f590}.rd-said.wrong{color:#fd7547}.rd-said.check{color:#c3a6ff}
+.rd-said.right{color:#fff}.rd-said.right b{font-family:'bebas-neue-pro','Almarai',sans-serif;font-weight:700;text-transform:uppercase;font-size:clamp(26px,2.3vw,33px);letter-spacing:.02em;line-height:1.05}.rd-said.wrong{color:#fd7547}.rd-said.check{color:#c3a6ff}
 @media (max-width:600px){.rd-who{grid-template-columns:1fr}}
 </style>
 <script>(function(){
@@ -1094,7 +1095,8 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
     wrong:'<path stroke="#2d1c53" stroke-width="3.4" stroke-linecap="round" d="M13.5 17.5l8 8M21.5 17.5l-8 8M30.5 17.5l8 8M38.5 17.5l-8 8"/>',
     right:'<path fill="#c11212" d="M17.5 27.5l-5.6-5.4a3.4 3.4 0 0 1 5.6-3.8 3.4 3.4 0 0 1 5.6 3.8zM34.5 27.5l-5.6-5.4a3.4 3.4 0 0 1 5.6-3.8 3.4 3.4 0 0 1 5.6 3.8z"/>'
   };
-  function skull(v){return EYES[v]?'<svg viewBox="0 0 52 50" aria-hidden="true">'+SKULL+EYES[v]+'</svg>':'';}
+  // A right answer gets the red heart-eyes skull from the sticker set (Maurice, 2026-09-29).
+  function skull(v){if(v==='right')return '<img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/skull-heart-red.webp" width="52" height="52" alt="" aria-hidden="true">';return EYES[v]?'<svg viewBox="0 0 52 50" aria-hidden="true">'+SKULL+EYES[v]+'</svg>':'';}
   var MSG={
     right:function(c){return['You got it! You’re a genius.'+(c.pts?' +'+c.pts+' points!':''),''];},
     wrong:function(){return['I’m so sorry, that’s not right.',''];},

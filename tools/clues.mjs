@@ -84,12 +84,12 @@ to find their prize.`],
   [21, "It's in my linktree"],
   [22, '"The Angel Sun" by Pinkman, Daughter of Arathorn and Gilrean'],
   [23, 'Telekinetic Swords & 12ish Children'],
-  [24, 'Getting the Band Back Together', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', pics: [['', ART + 'clue-24-hint-1.jpg']] }] }],
+  [24, 'Getting the Band Back Together', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'book', pics: [['', ART + 'clue-24-hint-1b.jpg']] }] }],
   // After sunset (Eastern time) this clue wakes up: click it and "/in-the-dark" flashes for a split second.
-  [25, '“In the dark”', { night: '/in-the-dark', hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'square', pics: [['', ART + 'clue-25-hint-1.png']] }] }],
+  [25, '“In the dark”', { night: '/in-the-dark', hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'square', pics: [['', ART + 'clue-25-hint-1b.png']] }] }],
   [26, "It'll come to you."],
   [27, "Your Loot Box"],
-  [28, '', { img: ART + 'clue-28.webp', alt: 'A wedge of cheese', sticker: true, hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'square', pics: [['', ART + 'clue-28-hint-1.png'], ['', ART + 'clue-28-hint-2.png']] }] }],
+  [28, '', { img: ART + 'clue-28.webp', alt: 'A wedge of cheese', sticker: true, hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'square', pics: [['', ART + 'clue-28-hint-1.png'], ['', ART + 'clue-28-hint-2b.png']] }] }],
   [29, 'Catch Me If You Can'],
   [30, "I'm stuck!"],
   // The shop's "Find a loot box" button is box 31, and the button literally says it.
@@ -240,15 +240,19 @@ const css = `#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,min
 #loot-clue .lc-hint-out{width:100%}
 #loot-clue .lc-hint-pics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%}
 #loot-clue .lc-hint-pics figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px}
-#loot-clue .lc-hint-pics figcaption{font-weight:800;color:#fffffe;font-size:15px;line-height:1.3;text-align:center;min-height:2.6em;display:flex;align-items:flex-end;justify-content:center}
+#loot-clue .lc-hint-pics figcaption{font-family:'bebas-neue-pro','Almarai',sans-serif;font-weight:700;text-transform:uppercase;color:#fffffe;font-size:21px;letter-spacing:.02em;line-height:1.3;text-align:center;min-height:2.6em;display:flex;align-items:flex-end;justify-content:center}
 #loot-clue .lc-hint-pics{margin:0 auto}
 #loot-clue .lc-hint-pics.lc-wide img{aspect-ratio:16/10}
 #loot-clue .lc-hint-pics.lc-square img{aspect-ratio:1/1}
-#loot-clue .lc-hint-link{display:inline-block;font-size:clamp(26px,3.2vw,40px);text-decoration:underline;word-break:break-word}
+#loot-clue .lc-hint-pics.lc-book img{aspect-ratio:252/396}
+#loot-clue .lc-hint-text.lc-hint-link{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;line-height:1.2;word-break:break-word;border-radius:999px;padding:14px 30px;border:2px solid #fffffe;background:#fffffe;color:#0b170f;transition:background .15s,color .15s}
+#loot-clue .lc-hint-text.lc-hint-link:hover{background:transparent;color:#fffffe}
 #loot-clue .lc-hint-pics img{width:100%;aspect-ratio:3/4;object-fit:cover;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}
-#loot-clue .lc-hint-text{font-family:'Atomic Marker',cursive;font-size:clamp(40px,5vw,64px);line-height:1;color:#89fbcb;text-align:center}
+#loot-clue .lc-hint-text{font-family:'bebas-neue-pro','Almarai',sans-serif;font-weight:700;text-transform:uppercase;font-size:clamp(44px,5.4vw,70px);line-height:1;letter-spacing:.01em;color:#89fbcb;text-align:center}
 @media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}#loot-clue .lc-hint-pics{gap:10px}}`;
 h = h.replace(/#loot-clue \.lc-grid\{[\s\S]*?@media \(max-width:860px\)\{[^\n]*\}\}\n?/, '');
 h = h.replace('@media (max-width:760px){#loot-clue{padding:130px 20px 70px}', css + '\n@media (max-width:760px){#loot-clue{padding:130px 20px 70px}');
+// Paid hint text is set in Bebas Neue Pro, from Maurice's Adobe Fonts kit (never the demo files).
+if (!h.includes('use.typekit.net/hfm0eub.css')) h = h.replace('<style', '<link rel="stylesheet" href="https://use.typekit.net/hfm0eub.css">\n<style');
 writeFileSync(F, h);
 console.log(`${CLUES.length} clues written to ${NEXT ? 'the preview copy' : 'the live page'}: #${CLUES.map((c) => c[0]).join(', #')}`);

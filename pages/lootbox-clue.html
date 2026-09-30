@@ -1,6 +1,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.typekit.net/hfm0eub.css">
 <style>
 @font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
 html,body{margin:0 !important;padding:0 !important}
@@ -36,13 +37,15 @@ html,body{margin:0 !important;padding:0 !important}
 #loot-clue .lc-hint-out{width:100%}
 #loot-clue .lc-hint-pics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%}
 #loot-clue .lc-hint-pics figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px}
-#loot-clue .lc-hint-pics figcaption{font-weight:800;color:#fffffe;font-size:15px;line-height:1.3;text-align:center;min-height:2.6em;display:flex;align-items:flex-end;justify-content:center}
+#loot-clue .lc-hint-pics figcaption{font-family:'bebas-neue-pro','Almarai',sans-serif;font-weight:700;text-transform:uppercase;color:#fffffe;font-size:21px;letter-spacing:.02em;line-height:1.3;text-align:center;min-height:2.6em;display:flex;align-items:flex-end;justify-content:center}
 #loot-clue .lc-hint-pics{margin:0 auto}
 #loot-clue .lc-hint-pics.lc-wide img{aspect-ratio:16/10}
 #loot-clue .lc-hint-pics.lc-square img{aspect-ratio:1/1}
-#loot-clue .lc-hint-link{display:inline-block;font-size:clamp(26px,3.2vw,40px);text-decoration:underline;word-break:break-word}
+#loot-clue .lc-hint-pics.lc-book img{aspect-ratio:252/396}
+#loot-clue .lc-hint-text.lc-hint-link{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;line-height:1.2;word-break:break-word;border-radius:999px;padding:14px 30px;border:2px solid #fffffe;background:#fffffe;color:#0b170f;transition:background .15s,color .15s}
+#loot-clue .lc-hint-text.lc-hint-link:hover{background:transparent;color:#fffffe}
 #loot-clue .lc-hint-pics img{width:100%;aspect-ratio:3/4;object-fit:cover;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}
-#loot-clue .lc-hint-text{font-family:'Atomic Marker',cursive;font-size:clamp(40px,5vw,64px);line-height:1;color:#89fbcb;text-align:center}
+#loot-clue .lc-hint-text{font-family:'bebas-neue-pro','Almarai',sans-serif;font-weight:700;text-transform:uppercase;font-size:clamp(44px,5.4vw,70px);line-height:1;letter-spacing:.01em;color:#89fbcb;text-align:center}
 @media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}#loot-clue .lc-hint-pics{gap:10px}}
 @media (max-width:760px){#loot-clue{padding:130px 20px 70px}#loot-clue .lc-board{padding:48px 26px 44px}}
 </style>
@@ -372,7 +375,7 @@ to find their prize.</div>
       <div class="lc-step" data-step="1" data-price="25" data-total="25">
         <button type="button" class="lc-hint-btn">Pay 25 points for a hint.</button>
         <div class="lc-hint-msg" aria-live="polite"></div>
-        <div class="lc-hint-out" hidden><div class="lc-hint-pics lc-tall" style="grid-template-columns:repeat(1,minmax(0,1fr));max-width:300px"><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-24-hint-1.jpg" alt="Hint picture"></figure></div></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-pics lc-book" style="grid-template-columns:repeat(1,minmax(0,1fr));max-width:300px"><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-24-hint-1b.jpg" alt="Hint picture"></figure></div></div>
       </div>
     </div>
   </div>
@@ -383,7 +386,7 @@ to find their prize.</div>
       <div class="lc-step" data-step="1" data-price="25" data-total="25">
         <button type="button" class="lc-hint-btn">Pay 25 points for a hint.</button>
         <div class="lc-hint-msg" aria-live="polite"></div>
-        <div class="lc-hint-out" hidden><div class="lc-hint-pics lc-square" style="grid-template-columns:repeat(1,minmax(0,1fr));max-width:300px"><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-25-hint-1.png" alt="Hint picture"></figure></div></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-pics lc-square" style="grid-template-columns:repeat(1,minmax(0,1fr));max-width:300px"><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-25-hint-1b.png" alt="Hint picture"></figure></div></div>
       </div>
     </div>
   </div>
@@ -402,7 +405,7 @@ to find their prize.</div>
       <div class="lc-step" data-step="1" data-price="25" data-total="25">
         <button type="button" class="lc-hint-btn">Pay 25 points for a hint.</button>
         <div class="lc-hint-msg" aria-live="polite"></div>
-        <div class="lc-hint-out" hidden><div class="lc-hint-pics lc-square" style="grid-template-columns:repeat(2,minmax(0,1fr))"><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-28-hint-1.png" alt="Hint picture"></figure><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-28-hint-2.png" alt="Hint picture"></figure></div></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-pics lc-square" style="grid-template-columns:repeat(2,minmax(0,1fr))"><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-28-hint-1.png" alt="Hint picture"></figure><figure><img loading="lazy" decoding="async" data-src="https://africhmaurice.github.io/site/assets/clues/clue-28-hint-2b.png" alt="Hint picture"></figure></div></div>
       </div>
     </div>
   </div>
