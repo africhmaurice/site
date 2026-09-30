@@ -15,9 +15,9 @@ mkdirSync(join(ROOT, 'preview'), { recursive: true });
 
 const pages = Object.keys(LAYOUT);
 const banner = (page) => `
-<div id="ma-preview-bar" style="position:fixed;left:12px;bottom:12px;z-index:2147483647;display:flex;gap:8px;align-items:center;background:rgba(11,23,15,.94);color:#fff;border:1px solid rgba(162,245,144,.35);border-radius:999px;padding:6px 8px 6px 14px;font:600 12px/1.2 system-ui,sans-serif;letter-spacing:.04em;box-shadow:0 6px 20px rgba(0,0,0,.4)">
+<div id="ma-preview-bar" style="position:fixed;left:12px;bottom:12px;z-index:2147483647;display:flex;gap:8px;align-items:center;background:rgba(11,23,15,.94);color:#fff;border:1px solid rgba(162,245,144,.35);border-radius:0;padding:6px 8px 6px 14px;font:600 12px/1.2 system-ui,sans-serif;letter-spacing:.04em;box-shadow:0 6px 20px rgba(0,0,0,.4)">
   PREVIEW
-  <a href="${LIVE}/${page}" target="_blank" rel="noopener" style="color:#0b170f;background:#3adb97;border-radius:999px;padding:5px 10px;text-decoration:none">Compare with live ↗</a>
+  <a href="${LIVE}/${page}" target="_blank" rel="noopener" style="color:#0b170f;background:#3adb97;border-radius:0;padding:5px 10px;text-decoration:none">Compare with live ↗</a>
   <button type="button" onclick="this.parentNode.remove()" aria-label="Hide" style="background:none;border:0;color:#8fa596;font-size:16px;cursor:pointer;padding:0 4px">×</button>
 </div>
 <script>

@@ -181,7 +181,9 @@
     css.textContent =
       '.ma-fixed-bg{background-size:cover!important;background-repeat:no-repeat!important;background-attachment:fixed!important}' +
       '.ma-fixed-bg img,.ma-fixed-bg canvas,.ma-fixed-bg .section-background-canvas{display:none!important}' +
-      '@media (max-width:900px),(hover:none){.ma-fixed-bg{background-attachment:scroll!important}}';
+      '@media (max-width:900px),(hover:none){.ma-fixed-bg{background-attachment:scroll!important}}' +
+      // Sharp corners only, site-wide (Maurice, 2026-09-30): the Kit newsletter form draws its own rounded ones.
+      '.formkit-form,.formkit-form *{border-radius:0!important}';
     document.head.appendChild(css);
     }
     Array.prototype.forEach.call(document.querySelectorAll('[data-controller="BackgroundImageFXParallax"]'), function (fx) {
