@@ -258,8 +258,6 @@ h1,h2,h3{text-wrap:balance}
 <script>
 // ---- full width, wherever Squarespace puts this block (as on the loot box page) ----
 (function () {
-  TASKS = TASKS.filter(function (t) { return !t.from || Date.now() >= Date.parse(t.from); });
-
   var page = document.getElementById('sub-page'),
       nav = document.getElementById('hunt-nav'),
       ov = document.getElementById('hunt-nav-ov');
@@ -349,6 +347,7 @@ h1,h2,h3{text-wrap:balance}
     { label: 'Post a Video Review', send: 'Post a Video Review', pick: ['Where did you post it?', ['Instagram', 'TikTok', 'YouTube', 'Reddit', 'X', 'Threads', 'Facebook']], from: '2026-10-05T00:00:00-04:00',
       hint: 'Your video review of Cello\'s Gate, with #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK). Any honest rating counts. 150 points per platform.' }
   ];
+  TASKS = TASKS.filter(function (t) { return !t.from || Date.now() >= Date.parse(t.from); });
 
   var page = document.getElementById('sub-page'),
       head = document.getElementById('sb-head'),
