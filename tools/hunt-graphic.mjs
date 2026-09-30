@@ -27,23 +27,23 @@ const PANELS = [
   { title: ['Rewards'], sub: '20+ rewards unlocked by collective points for all hunters.', bg: 'neon-rain-street-as439051128.webp', page: 'rewards.png', tint: '26,94,65' },
   { title: ['Tasks & Riddles'], sub: 'To earn points and unlock secret rewards.', bg: 'energy-gate-as555671153.webp', page: 'tasks.png', tint: '44,96,33' },
   { title: ['Loot Boxes'], sub: '101 loot boxes hidden all over the internet.', bg: 'red-tree-palace-as461430569.webp', page: 'loot.png', tint: '145,37,1' },
-  { title: ['Choose', 'Your Own', 'Adventure'], lockup: ['Choose', 'Your', 'Own', 'Adventure'], sub: 'Vote on where the crew goes and roll the dice!', bg: 'world-map-imperia.webp', page: null, tint: '26,94,65', pos: '72% 38%' },
+  { title: ['Choose', 'Your Own', 'Adventure'], lockup: ['Choose', 'Your Own', 'Adventure'], sub: 'Vote on where the crew goes and roll the dice!', bg: 'world-map-imperia.webp', page: null, tint: '26,94,65', pos: '72% 38%' },
 ];
 
 // cols = slanted columns (wide sizes); rows = slanted bands (square and tall sizes).
 // zone = where the words sit (YouTube channel art must keep them in the middle strip every device shows).
 const FORMATS = {
-  'press-16x9':          { W: 2400, H: 1350, mode: 'cols', title: 150, label: 64, sub: 27, footer: 150 },
+  'press-16x9':          { W: 2400, H: 1350, mode: 'cols', title: 150, label: 64, sub: 27, footer: 0 },
   'youtube-thumbnail':   { W: 1280, H: 720,  mode: 'cols', title: 92,  label: 36, sub: 0,  footer: 0 },
-  'banner-3x1':          { W: 3000, H: 1000, mode: 'cols', title: 130, label: 58, sub: 24, footer: 120 },
+  'banner-3x1':          { W: 3000, H: 1000, mode: 'cols', title: 130, label: 58, sub: 24, footer: 0 },
   'x-header':            { W: 1500, H: 500,  mode: 'cols', title: 70,  label: 30, sub: 0,  footer: 0 },
   'facebook-cover':      { W: 1640, H: 624,  mode: 'cols', title: 80,  label: 32, sub: 0,  footer: 0 },
   'youtube-channel-art': { W: 2560, H: 1440, mode: 'cols', title: 110, label: 40, sub: 0,  footer: 0, zone: [507, 930] },
-  'square':              { W: 1080, H: 1080, mode: 'rows', title: 92,  label: 40, sub: 21, footer: 96 },
-  'instagram-4x5':       { W: 1080, H: 1350, mode: 'rows', title: 100, label: 46, sub: 23, footer: 110 },
-  'story-9x16':          { W: 1080, H: 1920, mode: 'rows', title: 112, label: 54, sub: 27, footer: 130 },
-  'video-16x9':          { W: 1920, H: 1080, mode: 'cols', title: 120, label: 50, sub: 22, footer: 120, video: true },
-  'video-9x16':          { W: 1080, H: 1920, mode: 'rows', title: 112, label: 54, sub: 27, footer: 130, video: true },
+  'square':              { W: 1080, H: 1080, mode: 'rows', title: 92,  label: 40, sub: 21, footer: 0 },
+  'instagram-4x5':       { W: 1080, H: 1350, mode: 'rows', title: 100, label: 46, sub: 23, footer: 0 },
+  'story-9x16':          { W: 1080, H: 1920, mode: 'rows', title: 112, label: 54, sub: 27, footer: 0 },
+  'video-16x9':          { W: 1920, H: 1080, mode: 'cols', title: 120, label: 50, sub: 22, footer: 0, video: true },
+  'video-9x16':          { W: 1080, H: 1920, mode: 'rows', title: 112, label: 54, sub: 27, footer: 0, video: true },
 };
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -73,7 +73,8 @@ function html(f) {
     }
     // Labels are sized and placed in the page (fitLabels) so each one stays inside its own lane.
     const ly = f.footer ? zy1 - f.footer - (f.sub ? f.label * 5.6 : f.label * 4.2) : zy1 - f.label * (f.zone ? 3.6 : 4.1);
-    f.lanes = { mode: 'cols', W, H, cw, lean, top: ly, bottom: (f.footer ? zy1 - f.footer : zy1) - cw * 0.05 };
+    const zt = zy0, zb = zy1, hdr = zy0 + titleH * 1.35 + cw * 0.05; void ly;
+    f.lanes = { mode: 'cols', W, H, cw, lean, top: hdr, bottom: zb, zt, zb, hdr };
     PANELS.forEach((p) => labels.push({ p }));
     head = `<div class="top" style="top:${zy0}px;height:${titleH * 1.35}px;padding-top:${f.title * 0.3}px">${headInner(f)}</div>`;
   } else {
@@ -102,7 +103,7 @@ function html(f) {
 </div>`).join('');
   // "Choose / Your / Own" stacked small, with "Adventure" as tall as the stack beside it.
   const titleHtml = (p) => p.lockup
-    ? `<span class="lk" style="display:inline-flex"><span class="st"><i>${p.lockup.slice(0, 3).map(esc).join('</i><i>')}</i></span><span class="big">${esc(p.lockup[3])}</span></span>`
+    ? `<span class="lk" style="display:inline-flex"><span class="st"><i>${p.lockup.slice(0, -1).map(esc).join('</i><i>')}</i></span><span class="big">${esc(p.lockup[p.lockup.length - 1])}</span></span>`
     : p.title.map((l) => `<span>${esc(l)}</span>`).join('');
   const labelHtml = labels.map(({ p }, i) => `
 <div class="label" data-i="${i}"${p.lockup ? ' data-lockup="1"' : ''} style="text-align:${f.mode === 'cols' ? 'center' : 'left'}">
@@ -120,13 +121,13 @@ body{width:${W}px;height:${H}px;overflow:hidden;position:relative;background:#0b
 .page{position:absolute;overflow:hidden;opacity:.9}
 .page img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
 .page.pr img{object-position:center 12%}
-.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.05) 30%,rgba(0,0,0,.6) 44%,rgba(0,0,0,.9) 60%),linear-gradient(rgba(var(--t),.25),rgba(var(--t),.25))}
+.shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.1) 24%,rgba(0,0,0,.86) 38%,rgba(0,0,0,.9) 60%,rgba(0,0,0,.45) 80%,rgba(0,0,0,.6) 100%),linear-gradient(rgba(var(--t),.25),rgba(var(--t),.25))}
 .shade.sr{background:linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.86) 54%,rgba(0,0,0,.35) 76%,rgba(0,0,0,.12) 100%),linear-gradient(rgba(var(--t),.25),rgba(var(--t),.25))}
 svg.seams{position:absolute;inset:0;z-index:2;overflow:visible}
 .seam{font-family:'Atomic Marker';fill:#ff4c0f}
 .top{position:absolute;left:0;right:0;z-index:3;text-align:center;display:flex;flex-direction:column;align-items:center;gap:${f.title * 0.16}px;background:linear-gradient(180deg,rgba(0,0,0,.9),rgba(0,0,0,.6) 70%,rgba(0,0,0,0))}
 .rowsTop{background:#0b170f}
-.kicker{line-height:1;font-weight:800;font-size:${f.title * 0.2}px;letter-spacing:.24em;color:#a2f590}
+.kicker{line-height:1;font-weight:800;font-size:${f.title * 0.2}px;letter-spacing:.24em;color:#3adb97}
 h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:${f.title}px;line-height:.8;padding-top:${f.title * 0.15}px;text-shadow:0 6px 30px rgba(0,0,0,.7)}
 h1 span{color:#ff4c0f}
 .when{display:inline-block;padding:${f.title * 0.07}px ${f.title * 0.22}px;background:rgba(0,0,0,.85);border:2px solid #ff4c0f;font-weight:800;font-size:${f.title * 0.21}px;letter-spacing:.12em;line-height:1.35}
@@ -134,8 +135,8 @@ h1 span{color:#ff4c0f}
 .label{position:absolute;z-index:3}
 .label h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:${f.label}px;line-height:.98;text-shadow:0 4px 18px rgba(0,0,0,.9)}
 .label h2 > span{display:block;white-space:nowrap}
-.lk{align-items:stretch;gap:.2em;line-height:.8;vertical-align:top}
-.lk .st{display:flex;flex-direction:column;justify-content:space-between;font-size:.4em;text-align:right}
+.lk{align-items:stretch;gap:.6em;line-height:.8;vertical-align:top}
+.lk .st{display:flex;flex-direction:column;justify-content:space-between;font-size:.56em;text-align:right;white-space:nowrap}
 .lk .st i{font-style:normal;display:block;line-height:1}
 .lk .big{font-size:1.5em;line-height:.8;display:block}
 .label p{text-wrap:balance}
@@ -236,12 +237,13 @@ function fitLabels(){
       let b = boxFor(i, 0), m = measure(el, t, s, b.w);
       b = boxFor(i, m.h, m.cw); m = measure(el, t, s, b.w);
       if (!m.fits) ok = false;
-      if (L.mode === 'cols' && L.top + m.h > L.bottom) ok = false;
+      if (L.mode === 'cols' && m.h > (L.zb - L.hdr) * 0.9) ok = false;
       if (L.mode === 'rows' && m.h > b.room) ok = false;
     });
     if (ok) break;
     t *= 0.97; if (s) s = Math.max(s * 0.985, t * 0.36);
   }
+  if (L.mode === 'cols') { const hs = els.map((el, i) => measure(el, t, s, boxFor(i, 0).w).h); L.top = Math.max(L.hdr, L.zt + (L.zb - L.zt - Math.max(...hs)) / 2); }
   els.forEach((el, i) => {
     const b0 = boxFor(i, 0); const m = measure(el, t, s, b0.w); const b = boxFor(i, m.h, m.cw); measure(el, t, s, b.w);
     el.style.left = b.x + 'px'; el.style.top = b.y + 'px';

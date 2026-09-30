@@ -82,7 +82,8 @@ ${id} .pr-title{font-weight:700;font-size:18px;line-height:1.35}
 ${id} .pr-quote{font-size:15px;line-height:1.55;color:rgba(255,255,254,.82);font-style:italic}
 ${id} .pr-go{margin-top:auto;padding-top:6px;font-size:13px;font-weight:700;letter-spacing:.05em;color:#fd7547}`;
 
-const fonts = `<link rel="preconnect" href="https://fonts.googleapis.com">
+const fonts = `<link rel="stylesheet" href="https://use.typekit.net/hfm0eub.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">`;
 
@@ -157,14 +158,13 @@ const FACTS = [
 ];
 
 // The Hunt section. DRAFT copy for Maurice to rewrite. Update STATS (and STATS_DATE) before each round of pitches.
-const HUNT_LEDE = [
-  'From September 20th to November 1st, hundreds of readers from 9 different countries are searching for treasure hidden all over the internet. I’ve partnered with 20+ Bookstagram, Booktok, and Booktube influencers to make this thing as far-reaching as possible.',
-  'The hunt is broken into three acts following a fully-interactive <b>Choose Your Own Adventure-Style Game</b> (hosted on the website). They solve riddles, follow clues, play daily bookish games, hunt down hidden loot boxes, and vote on where the story goes next.',
-];
+const HUNT_LEDE = 'From September 20th to November 1st, hundreds of readers from around the world are searching for treasure hidden all over the internet. I’ve partnered with 20+ Bookstagram, Booktok, and Booktube influencers—as well as journalists, friends, and complete strangers—to make this campaign as far-reaching and complex as possible while maintaining the core tenet of my brand:';
+const HUNT_MOTTO = 'It’s gotta be fun.';
+const HUNT_HOW = 'The hunt is broken into three acts that follow a fully-interactive <b>Choose Your Own Adventure-Style Game &amp; Narrative</b> (hosted on my website). Treasure hunters solve riddles, follow clues, play daily bookish games, hunt down hidden loot boxes (like feral animals, mind you), and vote on where the story goes next. There are three ways to win:';
 const HUNT_WAYS = [
-  'Each act ends with a Sweepstakes, where all participants are eligible to win prizes.',
-  'The three hunters (3 in the U.S., 3 in the U.K.) with the most points at the end of the hunt will win a Treasure Box filled with bookish prizes.',
-  'During each act, the hunters work together to collectively earn points to unlock up to 20+ rewards.',
+  ['Opportunity & Chance', 'Each act ends with a Sweepstakes, where all (U.S. & U.K.) participants are eligible to win awards. The Act One Sweepstakes will award 10 individuals a Signed Deluxe Edition of “Cello’s Gate.” And the sweepstakes rewards just get better as we progress through the hunt.'],
+  ['Effort & Dedication', 'Six treasure hunters (3 in the U.S. & 3 in the U.K.) with the most points at the end of the hunt will win a Treasure Box filled with bookish prizes.'],
+  ['Participation', 'During each act, the hunters will work together to collectively earn points to unlock rewards. There are 20+ rewards available during the hunt, including exclusive short stories, never-before-seen character back stories, new games and opportunities to earn points, and more!'],
 ];
 // Maurice's words, verbatim. One string per paragraph.
 const HUNT_QUOTE = [
@@ -234,6 +234,7 @@ ${fonts}
 #press *,#press *::before,#press *::after{box-sizing:border-box}
 #press .pp-wrap{max-width:1180px;margin:0 auto;padding:0 32px}
 #press .pp-kicker{font-weight:700;font-size:14px;letter-spacing:.14em;color:#a2f590;margin:0 0 14px}
+#press .pp-wrap > .pp-kicker{color:#fd7547}
 #press h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,4.4vw,64px);line-height:1;margin:0 0 20px;color:#fffffe;text-transform:none}
 #press h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(28px,2.6vw,40px);line-height:1.1;color:#89fbcb;margin:0 0 26px;text-transform:none}
 #press .pp-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.6;color:#ede9dc;margin:0 auto;max-width:640px}
@@ -241,6 +242,7 @@ ${fonts}
 #press .pp-hunt h2.pp-hunt-title{text-align:center;line-height:1.02;font-size:clamp(40px,5.2vw,72px);margin-bottom:34px}
 #press .pp-hunt h2.pp-hunt-title span{display:block;white-space:nowrap}
 #press .pp-hunt h2.pp-hunt-title .w{color:#fffffe}
+#press .pp-hunt h2.pp-hunt-title .pp-hunt-sub{font-family:'bebas-neue-pro',sans-serif;font-weight:600;font-size:clamp(20px,2.1vw,30px);line-height:1.15;letter-spacing:.06em;text-transform:uppercase;color:#fffffe;white-space:normal;margin-top:16px}
 #press .pp-section{margin-top:56px;padding:44px 48px 40px;background:rgba(38,142,98,.9);border:1px solid rgba(243,234,217,.18);scroll-margin-top:120px}
 #press .pp-contacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 #press .pp-contact{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16)}
@@ -279,15 +281,18 @@ ${fonts}
 #press .pp-bio{font-size:16px;line-height:1.65;color:#ede9dc;margin:26px 0 0}
 #press .pp-hunt{background:rgba(145,37,1,.9);border-color:rgba(253,117,71,.35)}
 #press .pp-hunt h2{color:#fd7547}
-#press .pp-ways{margin:0 0 28px;padding-left:24px;max-width:820px;font-size:clamp(16px,1.3vw,18px);line-height:1.6;color:#ede9dc}
-#press .pp-ways li{margin-bottom:8px}
+#press .pp-motto{font-family:'Atomic Marker',cursive;font-size:36px;line-height:1.1;color:#fd7547;text-align:center;margin:0 0 28px}
+#press .pp-ways{margin:0 auto 36px;max-width:820px;text-align:center}
+#press .pp-way{margin:0 0 26px}
+#press .pp-way h3{font-family:'Atomic Marker',cursive!important;font-weight:400;font-size:36px;line-height:1.1;letter-spacing:0;text-transform:none;color:#fd7547;margin:0 0 8px}
+#press .pp-way p{font-size:clamp(16px,1.3vw,18px);line-height:1.6;color:#ede9dc;margin:0}
 #press .pp-hunt-lede b{color:#fffffe}
 #press .pp-hunt-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.65;color:#ede9dc;margin:0 0 28px;max-width:820px}
 #press .pp-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 10px}
 #press .pp-hl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:0 0 10px;align-items:start}
 #press .pp-hl-col{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:0;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);padding:24px 28px 10px}
 #press .pp-hl-col h3{grid-column:1/-1}
-#press .pp-hl-col h3{font-family:'Atomic Marker',cursive!important;font-weight:400;font-size:34px;letter-spacing:0;text-transform:none;color:#fd7547;margin:0 0 8px;text-align:left}
+#press .pp-hl-col h3{font-family:'Atomic Marker',cursive!important;font-weight:400;font-size:34px;letter-spacing:0;text-transform:none;color:#3adb97;margin:0 0 8px;text-align:left}
 #press .pp-hl-row{display:contents}
 #press .pp-hl-row b{padding-right:26px!important}
 #press .pp-hl-row b,#press .pp-hl-row span{padding:16px 0;border-top:1px solid rgba(255,255,254,.12);display:flex;align-items:center}
@@ -343,15 +348,16 @@ ${cardCss('#press')}
 </style>
 <div id="press">
   <div class="pp-wrap">
-    <p class="pp-kicker">PRESS AND MEDIA</p>
-    <h1>Press Room</h1>
-    <p class="pp-lede">Reviews, interviews, and who to talk to about “Cello’s Gate.” For review copies, interviews, and quotes, reach out to the folks listed below.</p>
+    <p class="pp-kicker">PRESS AND MEDIA KIT</p>
+    <h1>The Press Room</h1>
+    <p class="pp-lede">All the information you might need for reviews, interviews, and who to talk to about “Cello’s Gate” and the Treasure Hunt Marketing Campaign. For review copies, interviews, and quotes, reach out to the crew listed in the contact section below.</p>
 
     <section class="pp-section pp-hunt" id="pp-hunt">
-      <h2 class="pp-hunt-title"><span class="w">Cello’s Gate</span><span>The Treasure Hunt</span></h2>
-      ${HUNT_LEDE.map((p) => `<p class="pp-hunt-lede">${p}</p>`).join('')}
-      <p class="pp-hunt-lede">There are three ways to win:</p>
-      <ol class="pp-ways">${HUNT_WAYS.map((w) => `<li>${esc(w)}</li>`).join('')}</ol>
+      <h2 class="pp-hunt-title"><span class="w">Cello’s Gate</span><span>The Treasure Hunt</span><span class="pp-hunt-sub">An audacious, experiential book marketing campaign unlike anything that’s ever seen done before (probably)</span></h2>
+      <p class="pp-hunt-lede">${HUNT_LEDE}</p>
+      <p class="pp-motto">${esc(HUNT_MOTTO)}</p>
+      <p class="pp-hunt-lede">${HUNT_HOW}</p>
+      <div class="pp-ways">${HUNT_WAYS.map(([h, t]) => `<div class="pp-way"><h3>${esc(h)}</h3><p>${esc(t)}</p></div>`).join('')}</div>
       <div class="pp-hl">${HIGHLIGHTS.map(([head, rows]) => `<div class="pp-hl-col"><h3>${esc(head)}</h3>${rows.map(([n, t]) => `<div class="pp-hl-row"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join('')}</div>`).join('')}</div>
       <p class="pp-asof">As of ${esc(STATS_DATE)}.</p>
       <blockquote class="pp-quote">${HUNT_QUOTE.map((p, i, a) => `<p>${i === 0 ? '“' : ''}${esc(p)}${i === a.length - 1 ? '”' : ''}</p>`).join('')}<cite>${esc(HUNT_QUOTE_BY)}</cite></blockquote>
@@ -411,7 +417,7 @@ ${cardCss('#press')}
 // Each line of the hunt title stays on one line: shrink a line until it fits the section.
 (function () {
   function fitTitle() {
-    document.querySelectorAll('#press .pp-hunt-title span').forEach(function (s) {
+    document.querySelectorAll('#press .pp-hunt-title > span:not(.pp-hunt-sub)').forEach(function (s) {
       s.style.fontSize = '';
       var box = s.parentElement.clientWidth, size = parseFloat(getComputedStyle(s).fontSize);
       while (s.scrollWidth > box && size > 14) { size -= 1; s.style.fontSize = size + 'px'; }
