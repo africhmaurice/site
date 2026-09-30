@@ -171,6 +171,12 @@
       "source": "bot:squarespace-submit.html"
     },
     {
+      "slug": "submit-next",
+      "url": "(preview only: the next Submit Points form, not live)",
+      "title": "Submit points (next version, preview)",
+      "source": "bot:squarespace-submit.next.html"
+    },
+    {
       "slug": "profile",
       "url": "/profile",
       "title": "Treasure Hunter Profile",

@@ -105,6 +105,9 @@ section[data-screen-label="Social bar"] a[style*="width:36px"]{width:45px !impor
   <section data-screen-label="Hero" id="top" style="position:relative;background:linear-gradient(178deg,rgba(10,35,8,.9) 0%,rgba(30,100,23,.9) 55%,rgba(63,163,47,.9) 100%),url(https://africhmaurice.github.io/site/assets/img/2c424bd931305978.jpg) center/cover;background-attachment:fixed;padding:140px 72px 72px">
     <style>
 #tasks,#riddles{scroll-margin-top:110px}
+.a2-later{display:none!important}
+.a2-later.a2-on{display:flex!important}
+.m-table>div[data-task].a2-later.a2-on{display:block!important}
 #map,#rewards,#points{scroll-margin-top:90px}
 #hunt-nav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(12,35,8,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:18px 16px}
 #hunt-nav .mn-row{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:clamp(12px,1.8vw,30px)}
@@ -492,6 +495,12 @@ window.maConfetti = function(from){
         <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">50 POINTS</div>
         <div data-task="reddit-hype" style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">Hype the Hunt on Reddit</div><div style="font-size:16px;line-height:1.5;font-weight:400">Hype up “Cello’s Gate” and the treasure hunt on <a href="https://www.reddit.com/r/fantasybooks/comments/1wriku6/theres_a_crazy_awesome_contest_in_support_of_this/" target="_blank" rel="noopener" style="color:#c11212;font-weight:700;text-decoration:underline" class="hv7">this r/FantasyBooks post</a>: like it, comment, and share it. Screenshot all three and submit!</div></div>
         <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">50 POINTS</div>
+        <div data-task="book-recs" style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">Book Recs Carousel</div><div style="font-size:16px;line-height:1.5;font-weight:400">Make a book recommendation carousel with at least 6 book recs, feature Cello’s Gate, and use one of the Act Two themes: Found Families, Fun Books, The Best Characters in Fiction, Science Fantasy Books (That Aren’t Star Wars), or The Best Fighters in Fiction. Submit screenshots as proof!<br><br><span style="font-size:13px">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count.</span></div></div>
+        <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">100 POINTS<br>(LIMIT: ONCE PER THEME, PER PLATFORM)</div>
+        <div data-task="trench-market" style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">Buy Something From Trench Market</div><div style="font-size:16px;line-height:1.5;font-weight:400">Buy something from <a href="https://shop.mauriceafrich.com/" target="_blank" rel="noopener" style="color:#c11212;font-weight:700;text-decoration:underline" class="hv7">Trench Market</a> and submit your receipt as proof!<br><br><span style="font-size:13px">No purchase necessary. See the Official Rules for the free mail-in option.</span></div></div>
+        <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">50 POINTS PER ITEM</div>
+        <div data-task="video-review" data-from="2026-10-05T00:00:00-04:00" class="a2-later" style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">Post a Video Review</div><div style="font-size:16px;line-height:1.5;font-weight:400">Post a video review of Cello’s Gate and tell your followers what you honestly thought! Videos may be featured in book review compilations.<br><br><span style="font-size:13px">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count. Any honest rating counts.</span></div></div>
+        <div data-from="2026-10-05T00:00:00-04:00" class="a2-later" style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">150 POINTS<br>(LIMIT: ONCE PER PLATFORM)</div>
       </div>
     </div>
     <div class="m-ptsnote" style="max-width: 1200px; margin: 48px auto 24px; text-align: center; font-family: 'Almarai',sans-serif; font-weight: 700; font-size: 20px; letter-spacing: .05em; color: #fff; text-shadow: 0 1px 6px rgba(0,20,40,.6); font-style: italic">NO PURCHASE NECESSARY TO ENTER OR WIN. Every prize draw and every point opportunity tied to a purchase has a free alternative. See <a href="https://www.mauriceafrich.com/rules" style="color:#fff;text-decoration:underline" class="hv8">Official Rules</a> for how to earn pre-order points and draw entries without buying anything.</div>
@@ -864,11 +873,153 @@ var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw
   <div id="book-lb" onclick="this.style.display='none'" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:center;justify-content:center;cursor:pointer;padding:24px">
         <img loading="lazy" decoding="async" id="book-lb-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Cello's Gate" style="max-width:min(720px,90vw);max-height:88vh;width:auto;height:auto;filter:drop-shadow(0 30px 60px rgba(0,0,0,.7))">
       </div>
+  <!-- ============ ACT 2: THE ISLAND ============ -->
+  <section id="act-2" data-screen-label="Act 2 — The island" style="background:linear-gradient(rgba(14,32,18,.9),rgba(14,32,18,.9)),url(https://africhmaurice.github.io/site/assets/img/25606dfd2ae179bb.jpg) center/cover;background-attachment:fixed;padding:110px 72px 100px">
+    <style>
+#act-2 .tm-card{background:linear-gradient(rgba(26,94,65,.92),rgba(26,94,65,.92)),url(https://africhmaurice.github.io/site/assets/img/3bbc235265412e5d.jpg) center/cover}
+#act-2 .tm-card[data-from]{display:none}
+#act-2 .tm-card[data-from].a2-on{display:flex}
+#act-2 .a2-themes{flex:1;margin:0 0 30px;padding:0 0 0 22px;font-size:17px;line-height:1.5;color:#ede9dc;text-align:left}
+#act-2 .a2-scramble{display:block;margin-top:14px;font-style:normal;font-weight:800;font-size:clamp(17px,1.5vw,21px);letter-spacing:.14em;color:#fff}
+#act-2 .rd-note a,#act-2 .rd-who a{color:#89fbcb}
+    </style>
+    <div class="m-acteyebrow" style="text-align:center;margin-bottom:24px;font-family:'Atomic Marker',cursive;font-size:clamp(23px,2.92vw,42px);line-height:1.2;letter-spacing:.03em;color:#3adb97">ACT 2</div>
+    <h2 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(56px,7vw,110px);letter-spacing:.03em;color:#fff;text-align:center;margin:0 0 24px;line-height:1.2">THE ISLAND</h2>
+    <div class="m-date" style="text-align:center;font-family:'Almarai',sans-serif;font-weight:700;font-size:30px;letter-spacing:.06em;color:#ff5c22;margin-bottom:90px">OCTOBER 1<sup style="font-size:.55em">ST</sup> - OCTOBER 15<sup style="font-size:.55em">TH</sup></div>
+    <h3 class="m-taskhead" id="tasks" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(44px,5.56vw,80px);letter-spacing:.03em;color:#3adb97;text-align:center;margin:0 0 56px;line-height:1.2">TASKS</h3>
+    <div class="m-cards" style="max-width:1420px;margin:0 auto 100px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px">
+      <div class="tm-card" data-task="book-recs" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">BOOK RECS CAROUSEL</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:8px 0 22px">100 POINTS PER THEME, PER PLATFORM</div>
+        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 14px">Make a book recommendation carousel with at least 6 book recs using one of the following themes, and feature Cello’s Gate! Submit screenshots as proof!</p>
+        <ul class="a2-themes"><li>Found Families</li><li>Fun Books</li><li>The Best Characters in Fiction</li><li>Science Fantasy Books (That Aren’t Star Wars)</li><li>The Best Fighters in Fiction</li></ul>
+        <div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count.</div>
+        <div><a href="https://www.mauriceafrich.com/points" target="_blank" rel="noopener" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT POINTS!</a></div>
+      </div>
+      <div class="tm-card" data-task="trench-market" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">BUY SOMETHING FROM TRENCH MARKET</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:8px 0 22px">50 POINTS PER ITEM</div>
+        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 30px;flex:1">Buy something from <a href="https://shop.mauriceafrich.com/" target="_blank" rel="noopener" style="color:#89fbcb;font-weight:700;text-decoration:underline" class="hv9">TRENCH MARKET</a>, the official Sky Pirates merch shop, and submit your receipt as proof!</p>
+        <div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">No purchase necessary. See the <a href="https://www.mauriceafrich.com/rules" target="_blank" rel="noopener" style="color:#ede9dc;text-decoration:underline">Official Rules</a> for the free mail-in option.</div>
+        <div><a href="https://www.mauriceafrich.com/points" target="_blank" rel="noopener" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT POINTS!</a></div>
+      </div>
+      <div class="tm-card" data-task="video-review" data-from="2026-10-05T00:00:00-04:00" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">POST A VIDEO REVIEW</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:8px 0 22px">150 POINTS PER PLATFORM</div>
+        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 30px;flex:1">Post a video review of Cello’s Gate and tell your followers what you honestly thought! Videos may be featured in book review compilations.</p>
+        <div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count. Any honest rating counts. By submitting, you agree your video may be featured in Maurice’s channels, credited to your handle.</div>
+        <div><a href="https://www.mauriceafrich.com/points" target="_blank" rel="noopener" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT POINTS!</a></div>
+      </div>
+    </div>
+    <div style="text-align:center;font-weight:700;font-style:italic;font-size:18px;color:#ede9dc;margin:-56px 0 90px">*ALL TASKS MUST BE SUCCESSFULLY SUBMITTED USING THE SUBMIT POINTS FORM TO BE COUNTED.</div>
+    <h3 class="m-taskhead" id="riddles" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(44px,5.56vw,80px);letter-spacing:.03em;color:#3adb97;text-align:center;margin:0 0 56px;line-height:1.2">RIDDLES &amp; PUZZLES</h3>
+    <div class="m-cards rd-grid" style="max-width:1420px;margin:0 auto 100px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px">
+      <div class="tm-card" data-riddle="10" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#10</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">25 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @SPACEFOXY9</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">I take you places, yet you’ll never move.<br>I can tell you many things, but never speak.<br>Never spineless, but without bones.<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="11" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#11</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">25 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @POPPA_SQUATCH</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">I can be buried without dying,<br>stolen without moving,<br>and lost without ever being possessed.<br>I have no voice,<br>yet men have crossed oceans following my name.<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="12" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#12</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">25 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @TYLERS_BOOKSHELF</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">A treasure chest I may appear,<br>But treasures are not why I’m here.<br>I wait in darkness, patient and still,<br>For greedy hands to test my will.<br><br>I offer gold, but bring despair.<br>I open wide—yet beware.<br>You think you’ve found a prize to share,<br>Until the chest begins to tear.<br><br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="13" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#13</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">25 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @CHRIS.VAREN</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">I am a deep drop where no sunlight gleams,<br>yet I am flooded with pirates and digital schemes.<br>Enter my depths if you seek the crew,<br>to gossip of boxes and what we must do.<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="14" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#14</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">50 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @READERSQUADRANT_BOOKART</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">I have a trough from which horses cannot drink, and a crest which knights cannot wear.<br>At times I roll gently, but I can also be fierce.<br>I carry great energy and can sweep you off your feet.<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="15" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#15</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">50 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @POPPA_SQUATCH</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">Some call me a curse, some call me a blessing.<br>The young waste me, the old search for me,<br>and some say I flow from a fountain.<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="16" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#16</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">50 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @POPPA_SQUATCH</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">I have no material form, yet I can be taken.<br>Chains cannot hold me, yet some may try.<br>Warriors have died for me, prisoners have dreamed of me,<br>and those who possess me often fail to notice.<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="17" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#17</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">50 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @TYLERS_BOOKSHELF</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">I’m made of stone, but don’t call me Rocky—<br>I’m far too large to be held in your hand.<br>About the size of a gorilla, kinda stocky.<br>I lumber, I laugh, and I stubbornly stand.<br><br>Touch my stones and you may just find<br>That “sturdy” is not just a word.<br>Don’t break one apart or you may discover<br>A very angry creature has heard.<br><br>I’ve got no claws, no fur, no hair,<br>But Ghan’s balls? I’ve got those to spare.<br>So if you meet me, remember, my Fren:<br>“Stay sturdy”. That’s my advice to the end!<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="18" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#18</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">50 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @JAMESTHORNEAUTHOR</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">It was built in a home, not a boardroom.<br>No one signed him, and no one sold him.<br>Doors stayed shut, so he made his own.<br>It was read first by the few, soon by the many.<br>Even now, in spirit, he is still.<br><br>What was he?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="19" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#19</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">75 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @QUEEN_0F_INK</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">Possibility comes in endless supply<br>I contain all the sands of time in my hands<br>Every angle of my face set in stone<br>As if in spring, and spring, and spring<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="20" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#20</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">75 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">PUZZLE IDEA BY @SPACEFOXY9</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">Ten books, a few million words, and more gods than any pantheon can hold.<br>Unscramble the saga:<br><span class="a2-scramble">NAZALAM KOBO FO HET FLANEL</span></p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+    </div>
+    <div style="text-align:center;font-weight:700;font-style:italic;font-size:18px;color:#ede9dc;margin:-56px 0 90px">*SUBMIT YOUR ANSWER RIGHT ON THE RIDDLE CARD.</div>
+    <div style="text-align:center;font-family:'Atomic Marker',cursive;font-size:clamp(24px,2.4vw,34px);letter-spacing:.03em;color:#3adb97;margin:-70px 0 0;line-height:1.2">YOU ONLY GET ONE ATTEMPT PER RIDDLE. CHOOSE WISELY.</div>
+    <script>(function(){
+// Tasks with a start date (data-from) show from that moment, Eastern time. ?show-all shows them early, for checking.
+var now=Date.now(), all=/show-all/.test(location.search);
+Array.prototype.forEach.call(document.querySelectorAll('#act-2 [data-from],.a2-later'),function(el){if(all||now>=Date.parse(el.getAttribute('data-from')))el.classList.add('a2-on');});
+})();</script>
+  </section>
+
   <!-- ============ ACT 1: ASSEMBLE THE CREW ============ -->
   <section id="act-1" data-screen-label="Act 1 — Assemble the crew" style="background:linear-gradient(rgba(29,16,58,.9),rgba(29,16,58,.9)),url('https://africhmaurice.github.io/site/assets/bg/crystal-towers-lake-as395045722.webp') center/cover;background-attachment:fixed;padding:110px 72px 100px">
     <div class="m-acteyebrow" style="text-align:center;margin-bottom:24px;font-family:'Atomic Marker',cursive;font-size:clamp(23px,2.92vw,42px);color:#9e74fd">ACT 1</div>
     <h2 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(56px,7vw,110px);color:#fff;text-align:center;margin:0 0 24px;line-height:1.15">ASSEMBLE THE CREW</h2>
-    <div class="m-date" style="text-align:center;font-family:'Almarai',sans-serif;font-weight:700;font-size:30px;letter-spacing:.06em;color:#ff5c22;margin-bottom:72px">SEPTEMBER 21<sup style="font-size:.55em">ST</sup> - SEPTEMBER 30<sup style="font-size:.55em">TH</sup></div>
+    <div class="m-date" style="text-align:center;font-family:'Almarai',sans-serif;font-weight:700;font-size:30px;letter-spacing:.06em;color:#ff5c22;margin-bottom:56px">SEPTEMBER 21<sup style="font-size:.55em">ST</sup> - SEPTEMBER 30<sup style="font-size:.55em">TH</sup></div>
+    <style>
+#act-1 .a1-more>summary{list-style:none;cursor:pointer;max-width:1100px;margin:0 auto;border:2px solid #9e74fd;padding:24px 28px;display:flex;align-items:center;justify-content:center;gap:18px;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(17px,1.6vw,22px);line-height:1.5;letter-spacing:.04em;color:#fff;text-align:center;transition:background .15s ease}
+#act-1 .a1-more>summary::-webkit-details-marker{display:none}
+#act-1 .a1-more>summary:hover{background:rgba(158,116,253,.16)}
+#act-1 .a1-more>summary u{color:#c3a6ff;text-underline-offset:4px}
+#act-1 .a1-chev{flex:none;width:13px;height:13px;border-right:3px solid #c3a6ff;border-bottom:3px solid #c3a6ff;transform:rotate(45deg);margin-top:-7px;transition:transform .2s ease}
+#act-1 .a1-more[open]>summary .a1-chev{transform:rotate(225deg);margin-top:7px}
+#act-1 .a1-more[open]>summary{margin-bottom:90px}
+#act-1 .a1-more .a1-close,#act-1 .a1-more[open] .a1-open{display:none}
+#act-1 .a1-more[open] .a1-close{display:inline}
+#act1-tasks,#act1-riddles{scroll-margin-top:110px}
+    </style>
+    <details class="a1-more" id="act1-more" ontoggle="window.dispatchEvent(new Event('resize'))">
+      <summary><span><span class="a1-open">Act One is finished, but the tasks and riddles are still available. <u>Click here.</u></span><span class="a1-close">Act One’s tasks and riddles. <u>Click here to close.</u></span></span><span class="a1-chev" aria-hidden="true"></span></summary>
     <div class="m-note" style="max-width:1100px;margin:0 auto 90px;border-left:2px solid #482d85;padding-left:36px;font-family:'Almarai',sans-serif">
       <div style="font-weight:700;font-size:22px;letter-spacing:.08em;color:#9e74fd;margin-bottom:20px">A TRANSMISSION FROM CPT. GREY SHIMADA</div>
       <div style="position:relative;display:flex;align-items:center;gap:22px;background:linear-gradient(rgba(195,166,255,.9),rgba(195,166,255,.9)),url(https://africhmaurice.github.io/site/assets/img/fa4a9f28b7e43131.jpg) center/cover;border:2px solid #482d85;padding:18px 26px;margin:0 0 30px;overflow:hidden">
@@ -891,7 +1042,7 @@ var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw
       <p style="font-style:italic;font-size:27px;line-height:1.45;color:#ede9dc;margin:0 0 22px;letter-spacing:.02em;text-align:justify">So we’re doing it. But before we go out and chase a myth, we need hands on deck. I want schemers, sharpshooters, amateur cartographers, imperials, intangibles, assassins, knights, and maybe one arachnologist for when the spiders show...</p>
       <p style="font-style:italic;font-size:27px;line-height:1.45;color:#ede9dc;margin:0;letter-spacing:.02em;text-align:justify">You know the drill. Make some noise so the whole sky knows we’re coming!</p>
     </div>
-    <h3 class="m-taskhead" id="tasks" style="font-family: 'Atomic Marker',cursive; font-weight: 400; font-size:clamp(44px,5.56vw,80px); color: #c3a6ff; text-align: center; margin: 0 0 56px;line-height:1.15">TASKS</h3>
+    <h3 class="m-taskhead" id="act1-tasks" style="font-family: 'Atomic Marker',cursive; font-weight: 400; font-size:clamp(44px,5.56vw,80px); color: #c3a6ff; text-align: center; margin: 0 0 56px;line-height:1.15">TASKS</h3>
     <div class="m-cards" style="max-width:1420px;margin:0 auto 100px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px">
       <div class="tm-card" data-task="red-city-vote" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em;outline:3px solid #c53200;outline-offset:-3px">
         <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">CHOOSE YOUR OWN ADVENTURE</div>
@@ -943,13 +1094,6 @@ var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw
         <div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count.</div>
         <div><a href="https://www.mauriceafrich.com/points" target="_blank" rel="noopener" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT POINTS!</a></div>
       </div>
-      <div class="tm-card" data-task="riddle-writer" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
-        <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">WRITE A RIDDLE FOR ACT TWO</div>
-        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#c3a6ff;margin:8px 0 22px">25 POINTS PER ACCEPTED RIDDLE</div>
-        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 30px;flex:1">Submit an original riddle or puzzle, with its answer. If it’s picked to be featured in Act Two, you earn points! Up to 3 accepted riddles per sky pirate.</p>
-        <div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">Riddles must be your own work. By submitting, you agree it may be featured on this site and in Maurice’s channels, credited to your handle.</div>
-        <div><a href="https://www.mauriceafrich.com/points" target="_blank" rel="noopener" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT POINTS!</a></div>
-      </div>
       <div class="tm-card" data-task="carousel-crew" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
         <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">BOOST THE CAROUSEL</div>
         <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#c3a6ff;margin:8px 0 22px">200 POINTS PER APP</div>
@@ -989,8 +1133,8 @@ var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw
       </div>
     </div>
     <div style="text-align:center;font-weight:700;font-style:italic;font-size:18px;color:#ede9dc;margin:-56px 0 90px">*ALL TASKS MUST BE SUCCESSFULLY SUBMITTED USING THE SUBMIT POINTS FORM TO BE COUNTED.</div>
-    <h3 class="m-taskhead" id="riddles" style="font-family: 'Atomic Marker',cursive; font-weight: 400; font-size:clamp(44px,5.56vw,80px); color: #c3a6ff; text-align: center; margin: 0 0 56px;line-height:1.15">RIDDLES &amp; PUZZLES</h3>
-    <div class="m-cards" style="max-width:1420px;margin:0 auto 100px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px">
+    <h3 class="m-taskhead" id="act1-riddles" style="font-family: 'Atomic Marker',cursive; font-weight: 400; font-size:clamp(44px,5.56vw,80px); color: #c3a6ff; text-align: center; margin: 0 0 56px;line-height:1.15">RIDDLES &amp; PUZZLES</h3>
+    <div class="m-cards rd-grid" style="max-width:1420px;margin:0 auto 100px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px">
       <div class="tm-card" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
         <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);color:#c3a6ff;margin-bottom:8px">#1</div>
         <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#c3a6ff;margin:0 0 22px">25 POINTS</div>
@@ -1057,15 +1201,10 @@ var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw
     <div style="text-align:center;font-weight:700;font-style:italic;font-size:18px;color:#ede9dc;margin:-56px 0 90px">*SUBMIT YOUR ANSWER RIGHT ON THE RIDDLE CARD.</div>
     <div style="text-align:center;font-family:'Atomic Marker',cursive;font-size:clamp(24px,2.4vw,34px);letter-spacing:.03em;color:#c3a6ff;margin:-70px 0 90px;line-height:1.2">YOU ONLY GET ONE ATTEMPT PER RIDDLE. CHOOSE WISELY.</div>
     
+  
+    </details>
   </section>
 
-  <!-- ============ ACT 2 TEASER ============ -->
-  <section id="act-2" data-screen-label="Act 2 — The island" style="background:linear-gradient(rgba(14,32,18,.9),rgba(14,32,18,.9)),url(https://africhmaurice.github.io/site/assets/img/25606dfd2ae179bb.jpg) center/cover;background-attachment:fixed;padding:110px 72px 150px;text-align:center">
-    <div class="m-acteyebrow" style="font-family:'Atomic Marker',cursive;font-size:clamp(23px,2.92vw,42px);color:#268e62;margin-bottom:24px">ACT 2</div>
-    <h2 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(56px,7vw,110px);color:#fff;margin:0 0 24px;line-height:1.15">THE ISLAND</h2>
-    <div class="m-date" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:28px;letter-spacing:.06em;color:#ff5c22;margin-bottom:110px">OCTOBER 1<sup style="font-size:.55em">ST</sup> - OCTOBER 15<sup style="font-size:.55em">TH</sup></div>
-    <div class="m-coming" style="font-family:'Atomic Marker',cursive;font-size:clamp(44px,5.56vw,80px);color:#3adb97;line-height:1.15">UNLOCKED UPON COMPLETION OF ACT 1</div>
-  </section>
 
   <!-- ============ ACT 3 TEASER ============ -->
   <section id="act-3" data-screen-label="Act 3 — The stone" style="background:linear-gradient(rgba(74,16,2,.9),rgba(74,16,2,.9)),url(https://africhmaurice.github.io/site/assets/img/c965f72b5f7905fe.jpg) center/cover;background-attachment:fixed;padding:110px 72px 150px;text-align:center">
@@ -1125,8 +1264,8 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
   var ME='thLoot:me', DONE='thRiddles:results', AGREED='thRiddles:agreed';
   // The try-it copy of this page on github.io never sends anything (see send).
   var PREVIEW=/github\.io$/.test(location.hostname);
-  var head=document.getElementById('riddles'), grid=head&&head.nextElementSibling;
-  if(!grid)return;
+  // Riddle cards sit in each act's grid (Act Two, then Act One's in its dropdown).
+  if(!document.querySelector('.rd-grid'))return;
   function load(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}}
   function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -1150,7 +1289,7 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
     check:function(){return['Answer received!','This one gets checked by hand. Points land at the next tally if it’s right.'];}
   };
   var cards={};
-  Array.prototype.forEach.call(grid.querySelectorAll('.tm-card'),function(card){
+  Array.prototype.forEach.call(document.querySelectorAll('.rd-grid .tm-card'),function(card){
     var n=((card.firstElementChild&&card.firstElementChild.textContent)||'').match(/#(\d+)/);
     // The card's button (it pointed at /solve until that page went, 2026-09-29) becomes the answer box.
     var link=card.querySelector('a[href*="/solve"],a[href*="#riddles"]');
