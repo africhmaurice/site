@@ -528,7 +528,7 @@ window.maConfetti = function(from){
   </div>
   <script>(function(){
 // The Golden Loot Box popup: opened by the reward's name (href="#golden") or a link to the-hunt#golden.
-var pop=document.getElementById('golden-pop');
+var pop=document.getElementById('golden-pop');document.body.appendChild(pop);   // out of Squarespace's animated block, so nothing fades or covers it
 window.__goldenOpen=function(){pop.style.display='flex';document.body.style.overflow='hidden';};
 window.__goldenClose=function(){pop.style.display='none';document.body.style.overflow='';if(location.hash==='#golden')history.replaceState(null,'',location.pathname+location.search);};
 document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href="#golden"]');if(a){e.preventDefault();window.__goldenOpen();}});
