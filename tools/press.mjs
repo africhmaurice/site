@@ -241,8 +241,8 @@ ${fonts}
 #press .pp-wrap > .pp-kicker,#press .pp-wrap > h1,#press .pp-wrap > .pp-lede{text-align:center}
 #press .pp-hunt h2.pp-hunt-title{font-family:'Atomic Marker',cursive;font-weight:400;text-transform:none;letter-spacing:0;text-align:center;line-height:1.02;font-size:clamp(40px,5.2vw,72px);margin-bottom:34px}
 #press .pp-hunt h2.pp-hunt-title span{display:block;white-space:nowrap}
-#press .pp-hunt h2.pp-hunt-title .w{color:#fffffe}
-#press .pp-hunt h2.pp-hunt-title .pp-hunt-sub{font-family:'bebas-neue-pro',sans-serif;font-weight:600;font-size:clamp(20px,2.1vw,30px);line-height:1.15;letter-spacing:.06em;text-transform:uppercase;color:#fffffe;white-space:normal;margin-top:16px}
+#press .pp-hunt h2.pp-hunt-title .w{color:#fffffe;font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.02em;line-height:.95;font-size:1.3em}
+#press .pp-hunt h2.pp-hunt-title .pp-hunt-sub{font-family:'bebas-neue-pro',sans-serif;font-weight:600;font-size:clamp(20px,2.1vw,30px);line-height:1.15;letter-spacing:.06em;text-transform:uppercase;color:#fffffe;white-space:normal;margin-top:16px;text-wrap:balance}
 #press .pp-section{margin-top:56px;padding:44px 48px 40px;background:rgba(38,142,98,.9);border:1px solid rgba(243,234,217,.18);scroll-margin-top:120px}
 #press .pp-contacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 #press .pp-contact{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16)}
@@ -263,7 +263,7 @@ ${fonts}
 #press .pp-img:last-child img{object-fit:cover}
 #press .pp-desc p{font-size:16px;line-height:1.65;color:#ede9dc;margin:0 0 16px}
 #press .pp-desc .pp-lead{font-weight:800;color:#fffffe}
-#press .pp-desc .pp-tag{font-weight:800;letter-spacing:.1em;color:#fffffe;line-height:1.8;background:rgba(11,23,15,.9);border-left:4px solid #ff4c0f;padding:12px 18px}
+#press .pp-desc .pp-tag{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.2vw,30px);letter-spacing:.03em;color:#fffffe;line-height:1.35;text-align:center;background:rgba(11,23,15,.9);border-left:4px solid #ff4c0f;padding:12px 18px}
 #press .pp-sub{font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(30px,2.8vw,42px);line-height:1;color:#89fbcb;margin:40px 0 20px}
 #press .pp-praise{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:18px}
 #press .pp-praise figure{margin:0;padding:22px 24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);display:flex;flex-direction:column;justify-content:space-between;gap:14px}
@@ -281,13 +281,13 @@ ${fonts}
 #press .pp-bio{font-size:16px;line-height:1.65;color:#ede9dc;margin:26px 0 0}
 #press .pp-hunt{background:rgba(145,37,1,.9);border-color:rgba(253,117,71,.35)}
 #press .pp-hunt h2{color:#fd7547}
-#press .pp-motto{font-family:'Atomic Marker',cursive;font-size:36px;line-height:1.1;color:#fd7547;text-align:center;margin:0 0 28px}
-#press .pp-ways{margin:0 auto 36px;max-width:820px;text-align:center}
+#press .pp-motto{font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:48px;line-height:1;color:#fd7547;text-align:left;margin:0 0 28px}
+#press .pp-ways{margin:0 0 36px;text-align:left}
 #press .pp-way{margin:0 0 26px}
 #press .pp-way h3{font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif!important;font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:44px;line-height:1;color:#fd7547;margin:0 0 8px}
 #press .pp-way p{font-size:clamp(16px,1.3vw,18px);line-height:1.6;color:#ede9dc;margin:0}
 #press .pp-hunt-lede b{color:#fffffe}
-#press .pp-hunt-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.65;color:#ede9dc;margin:0 0 28px;max-width:820px}
+#press .pp-hunt-lede{font-size:clamp(16px,1.4vw,19px);line-height:1.65;color:#ede9dc;margin:0 0 28px}
 #press .pp-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 10px}
 #press .pp-hl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:0 0 10px;align-items:start}
 #press .pp-hl-col{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:0;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);padding:24px 28px 10px}
@@ -297,10 +297,10 @@ ${fonts}
 #press .pp-hl-row b{padding-right:26px!important}
 #press .pp-hl-row b,#press .pp-hl-row span{padding:16px 0;border-top:1px solid rgba(255,255,254,.12);display:flex;align-items:center}
 #press .pp-hl-col h3 + .pp-hl-row b,#press .pp-hl-col h3 + .pp-hl-row span{border-top:0}
-#press .pp-hl-row b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:44px;line-height:1;color:#fffffe;text-align:left;white-space:nowrap}
+#press .pp-hl-row b{font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:56px;line-height:1;color:#fffffe;text-align:left;white-space:nowrap}
 #press .pp-hl-row span{font-size:16px;line-height:1.5;color:#ede9dc}
 #press .pp-stat{padding:20px 18px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);text-align:center}
-#press .pp-stat b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(30px,3vw,44px);line-height:1.1;color:#fffffe}
+#press .pp-stat b{display:block;font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:clamp(38px,3.8vw,56px);line-height:1.1;color:#fffffe}
 #press .pp-stat span{display:block;margin-top:6px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fd7547}
 #press .pp-asof{font-size:13px;color:rgba(255,255,254,.6);margin:0 0 30px}
 #press .pp-quote{margin:0 0 30px;padding:4px 0 4px 22px;border-left:3px solid #ff4c0f;font-size:18px;line-height:1.6;font-style:italic;color:#fffffe}
