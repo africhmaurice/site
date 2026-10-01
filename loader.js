@@ -228,6 +228,56 @@
   // row really fits, so a browser's larger minimum font size counts too. If even that doesn't fit, the phone
   // menu button takes over. Phones and tablets already get the phone menu from each page's own styles.
   var EARN = /\/the-hunt#tasks$|\/the-hunt#riddles$|\/lootbox-clue$|\/games$|\/contests$/;
+  // Act menus (Maurice, 2026-10-01): Current Progress adds the Act One and Act Two standings and splits Rewards by
+  // act; Earn Points splits Tasks and Riddles & Puzzles by act. Done here so every page's copy of the menu changes at
+  // once. Until it's approved it shows only on the github.io previews, or with ?actmenu=1 on the live site.
+  var ACTMENU = /github.io$/.test(location.hostname) || /[?&]actmenu=1/.test(location.search);
+  var SITE = 'https://www.mauriceafrich.com';
+  function actSub(text, act) { var sp = document.createElement('span'); sp.className = 'ma-sub ma-sub-' + act; sp.textContent = text; return sp; }
+  function actLink(href, text) { var a = document.createElement('a'); a.href = href; a.textContent = text; return a; }
+  function earnActs(list) {
+    list.appendChild(actSub('ACT ONE', 'one'));
+    list.appendChild(actLink(SITE + '/the-hunt#act1-tasks', 'TASKS'));
+    list.appendChild(actLink(SITE + '/the-hunt#act1-riddles', 'RIDDLES & PUZZLES'));
+    list.appendChild(actSub('ACT TWO', 'two'));
+    list.appendChild(actLink(SITE + '/the-hunt#tasks', 'TASKS'));
+    list.appendChild(actLink(SITE + '/the-hunt#riddles', 'RIDDLES & PUZZLES'));
+  }
+  function actCss() {
+    if (!ACTMENU || document.getElementById('ma-act-menu')) return;
+    var st = document.createElement('style'); st.id = 'ma-act-menu';
+    var sel = function (x) { return ['#hunt-nav ', '#hunt-nav-ov ', '#header '].map(function (p) { return p + x; }).join(','); };
+    st.textContent = sel('span.ma-sub') + '{display:block!important;align-self:stretch;font-family:Almarai,sans-serif!important;font-weight:800!important;font-size:11px!important;letter-spacing:.16em!important;text-transform:uppercase!important;text-align:center!important;color:#fff!important;margin:10px 0 4px!important;padding:4px 10px!important;white-space:nowrap}' +
+      sel('span.ma-sub-one') + '{background:#482d85!important}' + sel('span.ma-sub-two') + '{background:#1a5e41!important;outline:1px solid #89fbcb}' + sel('span.ma-sub-all') + '{background:rgba(243,234,217,.14)!important}';
+    document.head.appendChild(st);
+  }
+  function actify(root) {
+    if (!ACTMENU || !root || root.getAttribute('data-acts')) return;
+    root.setAttribute('data-acts', '1'); actCss();
+    var q = function (sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); };
+    q('.mn-dd-in a[href$="/leaderboard"], .mn-ovgroup a[href$="/leaderboard"]').forEach(function (a) {
+      var p = a.parentNode, next = a.nextSibling;
+      p.insertBefore(actLink(SITE + '/leaderboard?act=one', 'ACT ONE STANDINGS'), next);
+      p.insertBefore(actLink(SITE + '/leaderboard?act=two', 'ACT TWO STANDINGS'), next);
+    });
+    q('.mn-dd-in a[href$="/the-hunt#rewards"], .mn-ovgroup a[href$="/the-hunt#rewards"]').forEach(function (a) {
+      var p = a.parentNode;
+      p.insertBefore(actSub('REWARDS', 'all'), a);
+      p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), a);
+      p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), a);
+      p.removeChild(a);
+    });
+    // the phone menu: Tasks, Riddles, Clues, Games and Contests become one Earn Points group, split by act
+    var ov = root.id === 'hunt-nav-ov' ? root : root.querySelector('#hunt-nav-ov');
+    var first = ov && Array.prototype.filter.call(ov.children, function (el) { return el.tagName === 'A' && EARN.test(el.href); });
+    if (first && first.length) {
+      var g = root.ownerDocument.createElement('div'); g.className = 'mn-ovgroup';
+      var h = root.ownerDocument.createElement('span'); h.textContent = 'EARN POINTS'; g.appendChild(h);
+      ov.insertBefore(g, first[0]);
+      first.forEach(function (el) { if (/#tasks$|#riddles$/.test(el.href)) el.parentNode.removeChild(el); else g.appendChild(el); });
+      earnActs(g);
+    }
+  }
   function navCss() {
     if (document.getElementById('ma-nav-fit')) return;
     var st = document.createElement('style'); st.id = 'ma-nav-fit';
@@ -253,7 +303,8 @@
     var d = document.createElement('div'); d.className = 'mn-drop mn-earn';
     d.innerHTML = '<a href="javascript:void(0)" class="mn-link" aria-haspopup="true">EARN POINTS' + (caret ? caret.outerHTML : '') + '</a><div class="mn-dd"><div class="mn-dd-in"></div></div>';
     var list = d.querySelector('.mn-dd-in');
-    eps.forEach(function (a) { var c = document.createElement('a'); c.href = a.href; c.textContent = a.textContent; list.appendChild(c); });
+    eps.forEach(function (a) { if (ACTMENU && /#tasks$|#riddles$/.test(a.href)) return; var c = document.createElement('a'); c.href = a.href; c.textContent = a.textContent; list.appendChild(c); });
+    if (ACTMENU) earnActs(list);
     links.insertBefore(d, eps[0]);
   }
   function navFits(nav) {
@@ -287,7 +338,9 @@
     });
   }
   function fitNavs() {
+    actify(document.getElementById('hunt-nav-ov'));
     Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
+      actify(nav);
       navSetup(nav);
       boxDrops(nav);
       if (!nav.getAttribute('data-fit')) return;
@@ -346,6 +399,7 @@
     if (advRow) advRow.closest('.header-menu-nav-item').style.display = 'none';
     fetch(BASE + 'pages/hunt-menu.html', FRESH).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (html) {
       var doc = new DOMParser().parseFromString(html, 'text/html');
+      actify(doc.body);
       var src = doc.querySelector('#hunt-nav .mn-links'), ov = doc.getElementById('hunt-nav-ov');
       if (!src) return;
       huntCss();
@@ -374,7 +428,7 @@
         if (el.classList.contains('mn-ovgroup')) {
           Array.prototype.forEach.call(el.children, function (c) {
             if (c.tagName === 'A') box.appendChild(link(c));
-            else { var h = document.createElement('span'); h.textContent = plainText(c); box.appendChild(h); }
+            else { var h = document.createElement('span'); h.textContent = plainText(c); if (c.className) h.className = c.className; box.appendChild(h); }
           });
         } else if (el.classList.contains('mn-drop')) {
           var head = el.querySelector('.mn-link'); if (!head) return;
@@ -401,7 +455,7 @@
           var g = document.createElement('div'); g.className = 'ma-ovgroup';
           Array.prototype.forEach.call(el.children, function (c) {
             if (c.tagName === 'A') { var l = link(c, ''); l.className = c.classList.contains('mn-profile') ? 'mn-profile' : ''; l.tabIndex = -1; g.appendChild(l); }
-            else { var s = document.createElement('span'); s.textContent = plainText(c); g.appendChild(s); }
+            else { var s = document.createElement('span'); s.textContent = plainText(c); if (c.className) s.className = c.className; g.appendChild(s); }
           });
           row.appendChild(g);
         }

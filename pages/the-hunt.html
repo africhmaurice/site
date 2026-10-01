@@ -902,7 +902,7 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
     <script>window.__rewardsTab=function(w){var sw=document.getElementById('rw-sweep'),uk=document.getElementById('rw-uk'),note=document.getElementById('rw-note');if(sw)sw.style.display=w==='us'?'':'none';if(uk)uk.style.display=w==='uk'?'':'none';if(note)note.style.display=w==='us'?'':'none';var rc=document.querySelectorAll('.rw-count');for(var j=0;j<rc.length;j++){rc[j].textContent=w==='other'?'five':'six';}var ru=document.querySelectorAll('.rw-end-ru'),ac=document.querySelectorAll('.rw-end-ac');for(var i=0;i<ru.length;i++){ru[i].style.display=w==='other'?'none':'';}for(var i2=0;i2<ac.length;i2++){ac[i2].style.display=w==='other'?'':'none';}var d=document.getElementById('rw-disc'),dt=document.getElementById('rw-disc-text');['us','uk','other'].forEach(function(k){var t=document.getElementById('rtab-'+k);if(!t)return;var on=k===w;t.style.background=on?'#111':'transparent';t.style.color=on?'#fff':'#111';});};</script>
     <div style="max-width:1220px;margin:0 auto;display:flex;flex-direction:column;gap:96px">
       <div>
-        <div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin:20px 0 10px">ACT ONE</div>
+        <div class="m-acttitle" id="rewards-act-one" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin:20px 0 10px">ACT ONE</div>
         <div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 110px">SEPTEMBER 21<sup style="font-size:.6em">ST</sup> – SEPTEMBER 30<sup style="font-size:.6em">TH</sup></div>
         <div class="m-prog" style="display:flex;align-items:center;gap:36px;margin:88px 0 44px">
           <div style="flex:1;height:44px;background:#e5e5e5;position:relative">
@@ -966,7 +966,7 @@ if(window.fetch)fetch(BOARD+'?t='+Math.floor(Date.now()/300000)).then(function(r
         <div id="act1-release" style="font-family:'Almarai',sans-serif;font-size:16px;color:#111;text-align:center;margin-top:12px">*All rewards will be released at the conclusion of the hunt!</div>
       </div>
       <div>
-        <div class="m-acttitle" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin:20px 0 10px">ACT TWO</div>
+        <div class="m-acttitle" id="rewards-act-two" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin:20px 0 10px">ACT TWO</div>
         <div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 110px">OCTOBER 1<sup style="font-size:.6em">ST</sup> – OCTOBER 15<sup style="font-size:.6em">TH</sup></div>
         <div class="m-prog" style="display:flex;align-items:center;gap:36px;margin:88px 0 44px">
           <div style="flex:1;height:44px;background:#e5e5e5;position:relative">
@@ -1072,8 +1072,13 @@ var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw
 #act-1 .a1-more[open]>summary{margin-bottom:90px}
 #act-1 .a1-more .a1-close,#act-1 .a1-more[open] .a1-open{display:none}
 #act-1 .a1-more[open] .a1-close{display:inline}
-#act1-tasks,#act1-riddles{scroll-margin-top:110px}
+#act1-tasks,#act1-riddles,#rewards-act-one,#rewards-act-two{scroll-margin-top:110px}
     </style>
+    <script>(function(){
+// Links to Act One's tasks or riddles (the-hunt#act1-tasks, #act1-riddles) open the Act One dropdown first.
+function go(){var h=location.hash;if(!/^#act1-(tasks|riddles)$/.test(h))return;var d=document.getElementById('act1-more'),t=document.getElementById(h.slice(1));if(!d||!t)return;d.open=true;setTimeout(function(){t.scrollIntoView({behavior:'smooth'});},60);}
+window.addEventListener('hashchange',go);document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href*="#act1-"]');if(a&&a.hash===location.hash){e.preventDefault();go();}});setTimeout(go,400);
+})();</script>
     <details class="a1-more" id="act1-more" ontoggle="window.dispatchEvent(new Event('resize'))">
       <summary><span><span class="a1-open">Act One is finished, but the tasks and riddles are still available. <u>Click here.</u></span><span class="a1-close">Act One’s tasks and riddles. <u>Click here to close.</u></span></span><span class="a1-chev" aria-hidden="true"></span></summary>
     <div class="m-note" style="max-width:1100px;margin:0 auto 90px;border-left:2px solid #482d85;padding-left:36px;font-family:'Almarai',sans-serif">
