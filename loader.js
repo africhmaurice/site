@@ -479,7 +479,7 @@
       if (old) old.closest('.header-nav-item').style.display = 'none';
       if (!hunt || !tpl) return;
       var item = tpl.cloneNode(true), a = item.querySelector('a');
-      a.href = MERCH_URL; a.removeAttribute('target'); a.textContent = 'Merch';
+      a.href = MERCH_URL; a.removeAttribute('target'); a.textContent = 'Market';
       hunt.closest('.header-nav-item').parentNode.insertBefore(item, hunt.closest('.header-nav-item'));
     });
     var root = document.querySelector('.header-menu-nav [data-folder="root"]');
@@ -490,7 +490,7 @@
     var tplRow = root.querySelector('.header-menu-nav-item--external');
     if (!huntRow || !tplRow) return;
     var row = tplRow.cloneNode(true), ra = row.querySelector('a');
-    ra.href = MERCH_URL; ra.removeAttribute('target'); ra.textContent = 'Merch';
+    ra.href = MERCH_URL; ra.removeAttribute('target'); ra.textContent = 'Market';
     huntRow.closest('.header-menu-nav-item').parentNode.insertBefore(row, huntRow.closest('.header-menu-nav-item'));
   }
 
