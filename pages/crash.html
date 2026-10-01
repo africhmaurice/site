@@ -1056,8 +1056,10 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   }
   var ERR = { closed: 'Voting has closed.', email: 'That email does not look right.' };
 
+  // One die in the air at a time: every throw shares one table, so a second throw would knock the first one off it.
+  function busy() { for (var k in rolling) if (rolling[k]) return true; return false; }
   function rollFor(id) {
-    if (rolling[id] || locked || S.rolls[id]) return;
+    if (rolling[id] || locked || S.rolls[id] || busy()) return;
     var who = PREVIEW ? me : readWho();
     if (typeof who === 'string') {
       var o = document.getElementById('rc-rr-' + id);
@@ -1069,8 +1071,11 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     rolling[id] = true; render();
     // Shaken in its card while the sheet answers, then thrown with the answer already on the die.
     Dice.spin(id);
-    var started = Date.now();
+    var started = Date.now(), answered = false;
+    // If the sheet never answers, the die stops and says so instead of shaking forever.
+    var watchdog = setTimeout(function () { land({ ok: false, error: 'network' }); }, 45000);
     var land = function (res) {
+      if (answered) return; answered = true; clearTimeout(watchdog);
       setTimeout(function () {
         var ok = res && res.ok && res.roll, n = ok ? Number(res.roll) : 0;
         var finish = function () {
@@ -1092,7 +1097,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     d.className = 'rc-dice';
     d.innerHTML = (r
         ? '<p class="rc-rollres' + tone + '" id="rc-rr-' + id + '" aria-live="polite">' + rollText(r) + '</p>'
-        : '<button type="button" class="rc-roll"' + (rolling[id] || locked ? ' disabled' : '') + '>' + (rolling[id] ? 'ROLLING…' : 'ROLL THE D20') + '</button>' +
+        : '<button type="button" class="rc-roll"' + (rolling[id] || locked || busy() ? ' disabled' : '') + '>' + (rolling[id] ? 'ROLLING…' : 'ROLL THE D20') + '</button>' +
           '<p class="rc-rollres" id="rc-rr-' + id + '" aria-live="polite"></p>') +
       '<p class="rc-rollnote">' + esc(note) + '</p>';
     var die = dieNode(id);
