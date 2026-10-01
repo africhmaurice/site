@@ -141,6 +141,12 @@
       "source": "bot:squarespace-crew.html"
     },
     {
+      "slug": "crash",
+      "url": "/the-crash",
+      "title": "Crash Landing Vote (Chapter 4, after De’gaté)",
+      "source": "bot:squarespace-crash.html"
+    },
+    {
       "slug": "adventure",
       "url": "/adventure",
       "title": "The Adventure So Far (every Choose Your Own Adventure beat)",

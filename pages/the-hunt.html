@@ -105,6 +105,9 @@ section[data-screen-label="Social bar"] a[style*="width:36px"]{width:45px !impor
   <section data-screen-label="Hero" id="top" style="position:relative;background:linear-gradient(178deg,rgba(10,35,8,.9) 0%,rgba(30,100,23,.9) 55%,rgba(63,163,47,.9) 100%),url(https://africhmaurice.github.io/site/assets/img/2c424bd931305978.jpg) center/cover;background-attachment:fixed;padding:140px 72px 72px">
     <style>
 #tasks,#riddles{scroll-margin-top:110px}
+.a2-later{display:none!important}
+.a2-later.a2-on{display:flex!important}
+.m-table>div[data-task].a2-later.a2-on{display:block!important}
 #map,#rewards,#points{scroll-margin-top:90px}
 #hunt-nav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(12,35,8,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:18px 16px}
 #hunt-nav .mn-row{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:clamp(12px,1.8vw,30px)}
@@ -492,6 +495,12 @@ window.maConfetti = function(from){
         <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">50 POINTS</div>
         <div data-task="reddit-hype" style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">Hype the Hunt on Reddit</div><div style="font-size:16px;line-height:1.5;font-weight:400">Hype up “Cello’s Gate” and the treasure hunt on <a href="https://www.reddit.com/r/fantasybooks/comments/1wriku6/theres_a_crazy_awesome_contest_in_support_of_this/" target="_blank" rel="noopener" style="color:#c11212;font-weight:700;text-decoration:underline" class="hv7">this r/FantasyBooks post</a>: like it and comment. Screenshot both and submit!</div></div>
         <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">50 POINTS</div>
+        <div data-task="book-recs" style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">Book Recs Carousel</div><div style="font-size:16px;line-height:1.5;font-weight:400">Make a book recommendation carousel with at least 6 book recs, feature Cello’s Gate, and use one of the Act Two themes: Found Families, Fun Books, The Best Characters in Fiction, Science Fantasy Books (That Aren’t Star Wars), or The Best Fighters in Fiction. Submit screenshots as proof!<br><br><span style="font-size:13px">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count.</span></div></div>
+        <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">100 POINTS<br>(LIMIT: ONCE PER THEME, PER PLATFORM)</div>
+        <div data-task="trench-market" style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">Buy Something From Trench Market</div><div style="font-size:16px;line-height:1.5;font-weight:400">Buy something from <a href="https://shop.mauriceafrich.com/" target="_blank" rel="noopener" style="color:#c11212;font-weight:700;text-decoration:underline" class="hv7">Trench Market</a> and submit your receipt as proof!<br><br><span style="font-size:13px">No purchase necessary. See the Official Rules for the free mail-in option.</span></div></div>
+        <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">50 POINTS PER ITEM</div>
+        <div data-task="video-review" data-from="2026-10-05T00:00:00-04:00" class="a2-later" style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">Post a Video Review</div><div style="font-size:16px;line-height:1.5;font-weight:400">Post a video review of Cello’s Gate and tell your followers what you honestly thought! Videos may be featured in book review compilations.<br><br><span style="font-size:13px">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count. Any honest rating counts.</span></div></div>
+        <div data-from="2026-10-05T00:00:00-04:00" class="a2-later" style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">150 POINTS<br>(LIMIT: ONCE PER PLATFORM)</div>
       </div>
     </div>
     <div class="m-ptsnote" style="max-width: 1200px; margin: 48px auto 24px; text-align: center; font-family: 'Almarai',sans-serif; font-weight: 700; font-size: 20px; letter-spacing: .05em; color: #fff; text-shadow: 0 1px 6px rgba(0,20,40,.6); font-style: italic">NO PURCHASE NECESSARY TO ENTER OR WIN. Every prize draw and every point opportunity tied to a purchase has a free alternative. See <a href="https://www.mauriceafrich.com/rules" style="color:#fff;text-decoration:underline" class="hv8">Official Rules</a> for how to earn pre-order points and draw entries without buying anything.</div>
@@ -554,6 +563,50 @@ if(location.hash==='#golden')window.__goldenOpen();
   <!-- ============ FOLLOW ALONG ON THE MAP ============ -->
   <style>
 /* Map markers and their popups (scripts/hunt-next.mjs) */
+/* The De'gaté chapter: the treasure map, the recon, and the crash (scripts/map-degate.mjs) */
+#map .mh-map{isolation:isolate}
+#map .mh-tmap{position:absolute;inset:0;z-index:3;opacity:0;visibility:hidden;transition:opacity 1s ease,visibility 0s linear 1s}
+#map .mh-tmap img{width:100%;height:100%;display:block;object-fit:cover}
+#map .mh-map.mh-treasure .mh-tmap{opacity:1;visibility:visible;transition:opacity 1s ease,visibility 0s}
+/* the unroll: the treasure map opens left to right; the part still rolled up is a parchment cylinder (the map's own paper,
+   shaded round) that travels across, casting a shadow on the world map ahead of it and a curl shadow on the sheet behind it */
+#map .mh-roll{display:none;position:absolute;top:-1.5%;bottom:-1.5%;left:0;width:clamp(22px,4.2%,46px);z-index:4;pointer-events:none;border-radius:40% / 6%;
+  background:linear-gradient(90deg,rgba(58,34,12,.85) 0%,rgba(120,82,40,.35) 18%,rgba(255,244,214,.35) 42%,rgba(255,244,214,.15) 58%,rgba(98,64,28,.55) 82%,rgba(46,26,8,.9) 100%),url('https://africhmaurice.github.io/site/assets/maps/treasure-map-degate.jpg') center/auto 100%;
+  box-shadow:16px 0 22px rgba(11,23,15,.5),-10px 0 16px rgba(58,34,12,.35)}
+#map .mh-roll::before,#map .mh-roll::after{content:'';position:absolute;left:0;right:0;height:2.2%;min-height:8px;border-radius:50%;background:radial-gradient(ellipse at center,#3b2610 0 22%,#c49a5e 30% 62%,#6b4a24 72%)}
+#map .mh-roll::before{top:0}#map .mh-roll::after{bottom:0}
+#map .mh-map.mh-unrolling .mh-tmap{opacity:1;visibility:visible;transition:none;animation:mh-unroll 2.8s cubic-bezier(.42,.05,.3,1) both}
+#map .mh-map.mh-unrolling .mh-roll{display:block;animation:mh-rollbar 2.8s cubic-bezier(.42,.05,.3,1) both}
+@keyframes mh-unroll{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes mh-rollbar{0%{left:0;opacity:0;transform:translateX(-50%) scaleX(1.4)}5%{opacity:1}92%{opacity:1;transform:translateX(-50%) scaleX(1)}100%{left:100%;opacity:0;transform:translateX(-50%) scaleX(.4)}}
+/* the first arrival at De'gaté: the world map leans in toward the island */
+#map .mh-zoom.mh-near-degate{transform-origin:18.44% 80.58%;transform:scale(1.55);transition:transform 2.8s cubic-bezier(.45,0,.25,1)}
+#map .mh-zoom.mh-near-degate.mh-now{transition:none}
+
+#map .mh-map.mh-treasure .mh-zoom .mh-spot{visibility:hidden}
+#map .mh-tmap .mh-routes{filter:drop-shadow(0 1px 2px rgba(11,23,15,.85)) drop-shadow(0 0 3px rgba(11,23,15,.5))}
+#map .mh-tmap .mh-spot svg{filter:drop-shadow(0 3px 4px rgba(11,23,15,.75)) drop-shadow(0 0 2px rgba(11,23,15,.6))}
+#map .mh-zoom.mh-to-degate{transform-origin:18.44% 80.58%;transform:scale(3.4);transition:transform 2.2s cubic-bezier(.5,0,.25,1)}
+#map .mh-switch{position:absolute;top:12px;right:12px;z-index:6;display:flex;gap:6px}
+#map .mh-switch[hidden]{display:none}
+#map .mh-switch button{font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.12em;padding:8px 14px;background:rgba(11,23,15,.72);color:#fffffe;border:1.5px solid rgba(243,234,217,.6);cursor:pointer}
+#map .mh-switch button[aria-pressed="true"]{background:#482d85;border-color:#fffffe}
+/* the alarm: the map pulses red and shakes; the shot down flash */
+#map .mh-map::after{content:'';position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(ellipse at center,rgba(197,50,0,0) 30%,rgba(197,50,0,.55) 100%);opacity:0}
+#map .mh-map.mh-alarm::after{animation:mh-redpulse .9s ease-in-out infinite}
+#map .mh-map.mh-alarm{animation:mh-shake .5s linear infinite}
+#map .mh-map.mh-hit{animation:mh-bigshake .8s cubic-bezier(.36,.07,.19,.97) both}
+#map .mh-map.mh-hit::after{animation:mh-flash .9s ease-out both}
+.mh-pop.mh-alarm .mh-card{animation:mh-shake .5s linear infinite;border-color:#c53200;box-shadow:0 0 0 2px #c53200,0 30px 80px rgba(197,50,0,.35)}
+@keyframes mh-redpulse{0%,100%{opacity:.15}50%{opacity:1}}
+@keyframes mh-shake{0%,100%{transform:translate(0,0)}25%{transform:translate(-2px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-1px,-2px)}}
+@keyframes mh-bigshake{10%,90%{transform:translate(-3px,0)}20%,80%{transform:translate(6px,2px)}30%,50%,70%{transform:translate(-10px,-3px)}40%,60%{transform:translate(10px,3px)}}
+@keyframes mh-flash{0%{opacity:1;background:rgba(255,76,15,.8)}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){#map .mh-map.mh-alarm,#map .mh-map.mh-hit,.mh-pop.mh-alarm .mh-card{animation:none}#map .mh-zoom.mh-to-degate{transition:none}}
+.mh-pop .mh-scene{margin:16px 0 0;padding:14px 16px;border-left:3px solid #9e74fd;background:rgba(45,28,83,.35);font-size:15px;line-height:1.65;color:#ede9dc}
+.mh-pop .mh-scene b{display:block;font-weight:800;font-size:12px;letter-spacing:.14em;color:#9e74fd;margin-bottom:6px}
+.mh-pop .mh-soon{margin:20px 0 0;font-weight:800;font-size:13px;letter-spacing:.12em;color:#a2f590}
+
 /* The routes between markers and the Gresnick chapter (scripts/map-crew.mjs) */
 #map .mh-routes{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible;filter:drop-shadow(0 2px 3px rgba(0,0,0,.65))}
 #map .mh-routes .dots{fill:none;stroke:#fffffe;stroke-width:5;stroke-linecap:round;stroke-dasharray:0 13;vector-effect:non-scaling-stroke}
@@ -624,11 +677,21 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
       <div class="m-deco" style="position:absolute;bottom:-26px;left:120px;display:flex;gap:18px;transform:skewX(-35deg)"><div style="width:150px;height:22px;background:#fff"></div><div style="width:52px;height:22px;background:#fff"></div><div style="width:52px;height:22px;background:#fff"></div><div style="width:52px;height:22px;background:#fff"></div></div>
       <div class="mh-map" style="position:relative;border:6px solid #7a3d1c;box-shadow:0 18px 50px rgba(40,10,0,.45)">
         <div class="mh-zoom"><img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/62e204cf291948bf.jpg" alt="Map of De'gaté" width="1600" height="1200" style="width:100%;height:auto;display:block">
-        <svg class="mh-routes" viewBox="0 0 1600 1200" preserveAspectRatio="none" aria-hidden="true"><defs><mask id="mh-mask-pontune" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height="1200"><path class="wipe" d="M1152,869 Q1300,760 1280,604" pathLength="1"/></mask><mask id="mh-mask-gresnick" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height="1200"><path class="wipe" d="M1280,604 Q1400,712 1522,738" pathLength="1"/></mask></defs><g id="mh-route-pontune" class="mh-drawn mh-now"><path class="dots" d="M1152,869 Q1300,760 1280,604" mask="url(#mh-mask-pontune)"/></g><g id="mh-route-gresnick"><path class="dots" d="M1280,604 Q1400,712 1522,738" mask="url(#mh-mask-gresnick)"/></g></svg>
+        <svg class="mh-routes" viewBox="0 0 1600 1200" preserveAspectRatio="none" aria-hidden="true"><defs><mask id="mh-mask-degate-out" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M1522,738 Q1580,760 1640,800" pathLength="1"/></mask><mask id="mh-mask-degate-in" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M-40,800 Q150,860 295,967" pathLength="1"/></mask><mask id="mh-mask-pontune" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height="1200"><path class="wipe" d="M1152,869 Q1300,760 1280,604" pathLength="1"/></mask><mask id="mh-mask-gresnick" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height="1200"><path class="wipe" d="M1280,604 Q1400,712 1522,738" pathLength="1"/></mask></defs><g id="mh-route-degate-out"><path class="dots" d="M1522,738 Q1580,760 1640,800" mask="url(#mh-mask-degate-out)"/></g><g id="mh-route-degate-in"><path class="dots" d="M-40,800 Q150,860 295,967" mask="url(#mh-mask-degate-in)"/></g><g id="mh-route-pontune" class="mh-drawn mh-now"><path class="dots" d="M1152,869 Q1300,760 1280,604" mask="url(#mh-mask-pontune)"/></g><g id="mh-route-gresnick"><path class="dots" d="M1280,604 Q1400,712 1522,738" mask="url(#mh-mask-gresnick)"/></g></svg>
         <button type="button" class="mh-spot" id="mh-spot-fenna" data-pop="mh-fenna" style="left:72%;top:72.4%" aria-label="Fenna's Soul: Next stop: the Red City"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         <button type="button" class="mh-spot" id="mh-spot-pontune" data-pop="mh-pontune" style="left:80%;top:50.3%" aria-label="Pontune: Benji's Bargain Shop"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         <button type="button" class="mh-spot" id="mh-spot-gresnick" data-pop="mh-gresnick" hidden style="left:95.13%;top:61.50%" aria-label="The Gresnick Ocean: Flying Over the Gresnick Ocean"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
+        <button type="button" class="mh-spot" id="mh-spot-degate" data-pop="mh-degate" hidden style="left:18.44%;top:80.58%" aria-label="De'gaté: This Is Your Captain Speaking"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         </div>
+        <div class="mh-tmap" aria-label="The treasure map of De'gaté"><img src="https://africhmaurice.github.io/site/assets/maps/treasure-map-degate.jpg" alt="The treasure map of De'gaté" width="2400" height="1800" loading="lazy">
+        <svg class="mh-routes mh-troutes" viewBox="0 0 1600 1200" preserveAspectRatio="none" aria-hidden="true"><defs><mask id="mh-mask-cathedral" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M640,-30 Q540,60 520,167 Q470,330 613,467" pathLength="1"/></mask><mask id="mh-mask-sword" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M613,467 Q640,650 733,793" pathLength="1"/></mask><mask id="mh-mask-skull" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M733,793 Q880,720 1025,777" pathLength="1"/></mask><mask id="mh-mask-crash" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M1025,777 C1090,720 1030,690 1000,745 S925,815 947,854" pathLength="1"/></mask></defs><g id="mh-route-cathedral"><path class="dots" d="M640,-30 Q540,60 520,167 Q470,330 613,467" mask="url(#mh-mask-cathedral)"/></g><g id="mh-route-sword"><path class="dots" d="M613,467 Q640,650 733,793" mask="url(#mh-mask-sword)"/></g><g id="mh-route-skull"><path class="dots" d="M733,793 Q880,720 1025,777" mask="url(#mh-mask-skull)"/></g><g id="mh-route-crash"><path class="dots" d="M1025,777 C1090,720 1030,690 1000,745 S925,815 947,854" mask="url(#mh-mask-crash)"/></g></svg>
+        <button type="button" class="mh-spot" id="mh-spot-cathedral" data-pop="mh-cathedral" hidden style="left:38.31%;top:38.92%" aria-label="The Cathedral"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
+        <button type="button" class="mh-spot" id="mh-spot-sword" data-pop="mh-sword" hidden style="left:45.81%;top:66.08%" aria-label="The Sword"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
+        <button type="button" class="mh-spot" id="mh-spot-skull" data-pop="mh-skull" hidden style="left:64.06%;top:64.75%" aria-label="The Goma Skull"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
+        <button type="button" class="mh-spot mh-crash" id="mh-spot-crash" data-pop="mh-crash" hidden style="left:59.19%;top:71.17%" aria-label="Shot Down"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
+        </div>
+        <div class="mh-roll" aria-hidden="true"></div>
+        <div class="mh-switch" hidden role="group" aria-label="Which map"><button type="button" data-map="world" aria-pressed="false">WORLD MAP</button><button type="button" data-map="treasure" aria-pressed="true">TREASURE MAP</button></div>
         
       </div>
     </div>
@@ -668,58 +731,160 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
     <a class="mh-cta" href="https://www.mauriceafrich.com/the-crew">MEET THE CREW</a>
   </div>
 </div>
+  <div class="mh-pop" id="mh-degate" role="dialog" aria-modal="true" aria-labelledby="mh-degate-t" hidden>
+  <div class="mh-card">
+    <button type="button" class="mh-x" aria-label="Close">&times;</button>
+    <p class="mh-kick">DE'GATÉ · THE ISLAND</p>
+    <h3 id="mh-degate-t">This Is Your Captain Speaking</h3>
+    <div class="mh-player"><button type="button" class="mh-pbtn" aria-label="Play THE CAPTAIN · DE'GATÉ"><svg class="p" viewBox="0 0 24 24" style="margin-left:3px"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" style="display:none"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+      <div class="mh-pmid"><div class="mh-plabel">THE CAPTAIN · DE'GATÉ</div><div class="mh-ptrack"><div class="mh-pfill"></div></div></div>
+      <div class="mh-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/degate-1-arrival.m4a"></audio></div>
+    <details class="mh-tx"><summary>Read the transcript</summary><div><p><i>Intercom chime</i></p><p><b>Captain</b>This is your captain speaking. Grey is busy with his real crew, so I'm taking over the captain's spot. You can call me Captain. Or hey fuckface! I don't fuckin' care...</p><p>Before we start, I should add--none of this is canon. Ah'right? This is made-up gobble-dy gook for the sake of tellin' a good story without spoiling anything. That's a little fourth wall break for ya'.</p><p>Right now, we're on <i>Second Wind</i>, bound for De'gaté. Just found this out: De'gaté means the Gate of Death, so that's fun. Hope you all found your bunks. Yes, I said bunks. I know you requested individual apartments with en-suite bathrooms, but listen, those things don't come cheap.</p><p>We cleared the Gresnick about an hour ago. If you felt a little shudder over open water, that was us flying off the edge of the map and coming back in on the other side. Don't think about it too hard. Rune says it's fine. He's our resident techtailor. Rune also says the rail guns work half the time, so, you know, take his word with a grain of salt.</p><p>Local time is none of your business, the weather on the island is hot, and the in-flight meal is whatever Scarlett didn't eat.</p><p>Here's the plan, which you numbskulls concocted in the Red City. Recon first. We fly low, we fly quiet. Ah'right? Well... I mean, we hum. This ship ain't quiet, but she ain't loud neither. And we stick together. Nobody wanders off. I'm looking at you, Sparrow. None of that shadow jumping out the airship. I swear to Ghan, I'll leave you behind this time.</p><p>Hale, you've got the window. Orion, tell me if the island starts looking back at us.</p><p>Buckle up, frens. De'gaté is dead ahead.</p></div></details>
+    <p class="mh-blurb">The Second Wind is crossing the Gresnick Ocean and fast approaching De'gaté. Recon first, like you voted. It's time to open the treasure map and get this hunt started.</p>
+    
+    <button type="button" class="mh-cta" data-next="unroll">UNROLL THE TREASURE MAP</button>
+  </div>
+</div>
+  <div class="mh-pop" id="mh-cathedral" role="dialog" aria-modal="true" aria-labelledby="mh-cathedral-t" hidden>
+  <div class="mh-card">
+    <button type="button" class="mh-x" aria-label="Close">&times;</button>
+    <p class="mh-kick">THE NORTH SHORE</p>
+    <h3 id="mh-cathedral-t">The Cathedral</h3>
+    <div class="mh-player"><button type="button" class="mh-pbtn" aria-label="Play THE CAPTAIN · FIRST PASS"><svg class="p" viewBox="0 0 24 24" style="margin-left:3px"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" style="display:none"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+      <div class="mh-pmid"><div class="mh-plabel">THE CAPTAIN · FIRST PASS</div><div class="mh-ptrack"><div class="mh-pfill"></div></div></div>
+      <div class="mh-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/degate-2-cathedral.m4a"></audio></div>
+    <details class="mh-tx"><summary>Read the transcript</summary><div><p><b>Captain</b>Ah'right, first pass...</p><p>It's the temple.</p><p>We fly in over the north shore, and the first thing we see is the well. But we don't stop there because... I mean, why would we stop at a well? There's probably snakes in it.</p><p>Anyway, we head to the temple. But truth told, it's a fuckin' cathedral. I don't know what the cartographer was thinking. I mean, who builds a cathedral out here, on an island nobody lives on? Stone walls are crumbling, a bell tower with no bell, the mark of the crest on the door, and ivy crawling up the whole west side, like the imperia is trying to take this thing and slowly break it down to its finite parts and consume them.</p><p>We don't see much in the way of action, not at first. It's graveyard silent down there. Of course, if Rune could get his ghandamn parabolics to work, but ugh, nevermind.</p><p>Orion, he... goes quiet as we pass over it. With a haunted voice more like a ghost than a person, he says it feels &quot;occupied.&quot; Whatever that means. I tell him nobody's been here in a thousand years. Then Hale points at the path up to the front door. It's trampled. Fresh.</p><p>So either this island has very tidy ghosts, or we're not the only ones here. That could be good news. It could also be bad news.</p><p>We're not landing. We're just looking. But at least we know we're on the right track. Marking it on the map and heading south, toward the sword.</p></div></details>
+    <p class="mh-blurb">A cathedral nobody should have built, on an island nobody lives on. Except, for some reason, the path to the front door is freshly trampled. Uh-oh.</p>
+    
+    <button type="button" class="mh-cta" data-next="sword">HEAD OVER TO THE SWORD</button>
+  </div>
+</div>
+  <div class="mh-pop" id="mh-sword" role="dialog" aria-modal="true" aria-labelledby="mh-sword-t" hidden>
+  <div class="mh-card">
+    <button type="button" class="mh-x" aria-label="Close">&times;</button>
+    <p class="mh-kick">THE VALLEY</p>
+    <h3 id="mh-sword-t">The Sword</h3>
+    <div class="mh-player"><button type="button" class="mh-pbtn" aria-label="Play THE CAPTAIN · THE SWORD"><svg class="p" viewBox="0 0 24 24" style="margin-left:3px"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" style="display:none"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+      <div class="mh-pmid"><div class="mh-plabel">THE CAPTAIN · THE SWORD</div><div class="mh-ptrack"><div class="mh-pfill"></div></div></div>
+      <div class="mh-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/degate-3-sword.m4a"></audio></div>
+    <details class="mh-tx"><summary>Read the transcript</summary><div><p><b>Captain</b>The Sword, first pass. Or what we think is the sword?</p><p>Listen. These landmarks ain't one-for-one. Not by a long shot. We expect a giant sword sticking out of the ground. What we find is a platform made of alien metal. A <i>lot</i> of it. A sword is etched into its surface.</p><p>Rune runs a scan but we already know we won't see through it. The jungle is thick around here. Sparrow is convinced she saw something crawlin' in the trees, but I didn't see it, so...</p><p>Who knows?</p></div></details>
+    <p class="mh-blurb">A platform made from alien metal with a sword engraved on it.  Thick jungle. Possible sighting of creatures in the trees. I wonder what those are...</p>
+    
+    <button type="button" class="mh-cta" data-next="skull">GOMA SKULL, HERE WE COME</button>
+  </div>
+</div>
+  <div class="mh-pop" id="mh-skull" role="dialog" aria-modal="true" aria-labelledby="mh-skull-t" hidden data-alarm="29">
+  <div class="mh-card">
+    <button type="button" class="mh-x" aria-label="Close">&times;</button>
+    <p class="mh-kick">THE EAST RIDGE</p>
+    <h3 id="mh-skull-t">The Goma Skull</h3>
+    <div class="mh-player"><button type="button" class="mh-pbtn" aria-label="Play THE CAPTAIN · THE GOMA SKULL"><svg class="p" viewBox="0 0 24 24" style="margin-left:3px"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" style="display:none"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+      <div class="mh-pmid"><div class="mh-plabel">THE CAPTAIN · THE GOMA SKULL</div><div class="mh-ptrack"><div class="mh-pfill"></div></div></div>
+      <div class="mh-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/degate-4-goma-skull.m4a"></audio></div>
+    <details class="mh-tx"><summary>Read the transcript</summary><div><p><b>Captain</b>First pass, the goma skull.</p><p>It's a mountain. Well, okay, it's not a mountain, it's a ghandamn skull. The goma that made it must've been huge. I've never seen one this big. And guess what, there are gomas all over it. Dozens of 'em sunning themselves on the teeth like it's a beach day.</p><p>Sparrow wants to name one. No, she can't. I'm not jokin'.</p><p>Rune, keep us high. Don't spook 'em.</p><p>Orion, what's that on the ridge down there? Is that--</p><p><i>ALARM: a low klaxon, then faster, red hues flashing on the screen while this is happening</i></p><p>What is that? Rune?</p><p><b>Robot</b>Warning. You have entered restricted airspace. This island is closed by order of... <i>[static]</i> ...Turn back. This is your only warning.</p><p><b>Captain</b>I thought she said this island was empty!?</p><p><b>Robot</b>Target acquired.</p><p><b>Captain</b>Shields! Rune, shields!</p><p><b>Rune</b>Our shields can't block a missile, cap. They're repurposed kinetics!</p><p><b>Captain</b>What do you mean, our shields can't block a missile? We got shields, don't we? What the fuck are shields good for if we can't--</p><p><i>Impact. The alarm cuts out. Rushing air.</i></p><p>Hold on, frens! We're goin' down!</p><p><i>CRASH!</i></p></div></details>
+    <p class="mh-blurb">A goma skull, now a mountain. It's covered in gomas. But then the alarms start blaring and a robotic voice takes over the comms.</p>
+    
+    
+  </div>
+</div>
+  <div class="mh-pop" id="mh-crash" role="dialog" aria-modal="true" aria-labelledby="mh-crash-t" hidden>
+  <div class="mh-card">
+    <button type="button" class="mh-x" aria-label="Close">&times;</button>
+    <p class="mh-kick">CRASH LANDING</p>
+    <h3 id="mh-crash-t">Shot Down</h3>
+    <div class="mh-player"><button type="button" class="mh-pbtn" aria-label="Play THE CAPTAIN · SHOT DOWN"><svg class="p" viewBox="0 0 24 24" style="margin-left:3px"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" style="display:none"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+      <div class="mh-pmid"><div class="mh-plabel">THE CAPTAIN · SHOT DOWN</div><div class="mh-ptrack"><div class="mh-pfill"></div></div></div>
+      <div class="mh-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/degate-5-shot-down.m4a"></audio></div>
+    <details class="mh-tx"><summary>Read the transcript</summary><div><p><i>Ringing ears. Metal groaning. A long exhale.</i></p><p><b>Captain</b>Everybody sound off.</p><p><b>Hale</b>here</p><p><b>Scarlett</b>shit</p><p><b>Orion</b>I am here</p><p><b>Rune</b>aye</p><p><b>Captain</b>Where's Sparrow?</p><p><b>Sparrow</b>I'm outside the ship!</p><p><b>Captain</b>SIGH Good. Good. Nobody's dead.</p><p>The Second Wind is less good. We're down, hard, in the gomas' valley, half a kilometer south of the skull. Stick together, you said. Well... (laughs) lucky for you, we don't got a choice. We're together. Right smack dab in the middle of the shit.</p><p>Nobody move until we talk this out and make a plan.</p></div></details>
+    <p class="mh-blurb">The Second Wind takes a hit to the port engine and loses altitude over the eastern ridge. The shields flicker and give out. The captain fights the stick all the way down.</p>
+    <div class="mh-scene"><b>WHAT THE CREW SEES</b>The crew is scattered, bodies piled on the deck. Sparrow got scared and teleported out of the ship right before the crash. She's the least dinged up. But at least everyone survived. Now what?</div><a class="mh-cta" href="https://www.mauriceafrich.com/the-crash">WHAT DOES THE CREW DO NOW?</a>
+    
+  </div>
+</div>
   <script>(function(){
   // Popups live on <body> so no section's stacking or overflow can clip them.
-  var pops = document.querySelectorAll('.mh-pop'), last = null, KEY = 'thHunt:map:the-crew';
+  var pops = document.querySelectorAll('.mh-pop'), last = null, KEY = 'thHunt:map:degate', ALARM = 29;
   function seen(){try{return JSON.parse(localStorage.getItem(KEY)||'[]');}catch(e){return [];}}
   if (location.search.indexOf('reset-map') >= 0) { try { localStorage.removeItem(KEY); } catch (e) {} }
+  function has(id){return seen().indexOf(id)>=0;}
   function remember(id){var list=seen();if(list.indexOf(id)<0){list.push(id);try{localStorage.setItem(KEY,JSON.stringify(list));}catch(e){}}}
   function reveal(id){var s=document.getElementById('mh-spot-'+id);if(!s)return;var was=s.hidden;s.hidden=false;
     if(was){s.classList.remove('mh-in');void s.offsetWidth;s.classList.add('mh-in');}remember(id);}
   Array.prototype.forEach.call(pops, function (p) { document.body.appendChild(p); });
   function clock(s){s=Math.floor(s||0);return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
   function stopAll(){Array.prototype.forEach.call(document.querySelectorAll('.mh-pop audio'),function(a){a.pause();});}
-  function close(p){stopAll();p.hidden=true;document.documentElement.style.overflow='';if(last)last.focus({preventScroll:true});}
+  var map = document.querySelector('#map .mh-map'), zoom = map && map.querySelector('.mh-zoom'), sw = map && map.querySelector('.mh-switch'),
+      calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var onClose = {};
+  function open(id){var p=document.getElementById('mh-'+id);if(!p)return;last=document.getElementById('mh-spot-'+id);p.hidden=false;document.documentElement.style.overflow='hidden';p.querySelector('.mh-x').focus();}
+  function close(p){stopAll();p.hidden=true;p.classList.remove('mh-alarm');if(map)map.classList.remove('mh-alarm');document.documentElement.style.overflow='';
+    if(last)last.focus({preventScroll:true});var f=onClose[p.id];if(f){onClose[p.id]=null;f();}}
 
-  // A route draws by moving its mask; the mask sits in <defs>, so it takes the route's state.
-  function route(id, now){var g=document.getElementById('mh-route-'+id),m=document.querySelector('#mh-mask-'+id+' .wipe');if(!g||!m)return;
-    if(now){g.classList.add('mh-now');m.style.transition='none';}g.classList.add('mh-drawn');m.style.strokeDashoffset='0';}
-  route('pontune', true);
-  // The new route draws itself the first time the map comes into view, then the new marker arrives.
-  var map = document.querySelector('#map .mh-map'), calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function fly(){remember('route');route('gresnick', calm);setTimeout(function(){reveal('gresnick');}, calm ? 0 : 2400);}
-  if (seen().indexOf('gresnick') >= 0 || seen().indexOf('route') >= 0) { route('gresnick', true); reveal('gresnick'); }
-  else if (map && !calm && 'IntersectionObserver' in window) {
-    // "In view" means 60% of the map, or 60% of the screen when the map is taller than the screen.
-    var steps = []; for (var i = 0; i <= 20; i++) steps.push(i / 20);
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
+  // A route draws by moving its mask; now = no animation.
+  function route(id, now){var m=document.querySelector('#mh-mask-'+id+' .wipe');if(!m)return;
+    if(now||calm)m.style.transition='none';m.style.strokeDashoffset='0';}
+  function later(ms, f){setTimeout(f, calm ? 0 : ms);}
+
+  // The chapters before this one: all drawn and out.
+  route('pontune', true); route('gresnick', true); reveal('pontune'); reveal('gresnick');
+
+  // Which map is showing.
+  function showMap(which){ if(!map)return; map.classList.toggle('mh-treasure', which==='treasure');
+    if(sw){sw.hidden=false;Array.prototype.forEach.call(sw.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-map')===which));});} }
+  if(sw)sw.addEventListener('click',function(e){var b=e.target.closest('button');if(b)showMap(b.getAttribute('data-map'));});
+
+  // The flight to De'gaté: off the east edge, back in on the west, then the marker.
+  function fly(){ remember('flight'); route('degate-out', calm); later(1500, function(){ route('degate-in', calm); if (zoom && !calm) zoom.classList.add('mh-near-degate'); later(1900, function(){ reveal('degate'); }); }); }
+  // Unroll: the treasure map opens left to right over the world map, in place, and the recon starts.
+  function unroll(){ remember('unrolled');
+    if (map && !calm) { map.classList.remove('mh-unrolling'); void map.offsetWidth; map.classList.add('mh-unrolling'); }
+    later(2900, function(){ showMap('treasure'); if (map) map.classList.remove('mh-unrolling');
+      if (zoom) { zoom.classList.add('mh-now'); zoom.classList.remove('mh-near-degate'); void zoom.offsetWidth; zoom.classList.remove('mh-now'); }
+      if(!has('cathedral')){ route('cathedral'); later(1500, function(){ reveal('cathedral'); }); } }); }
+  function step(to){ route(to); later(1700, function(){ reveal(to); }); }
+  // The shoot-down: a flash and a hard shake, the route spirals down, then the crash popup opens.
+  function shotDown(){ if(has('crash')) return;
+    if(map){ map.classList.remove('mh-hit'); void map.offsetWidth; map.classList.add('mh-hit'); }
+    later(500, function(){ route('crash'); later(2000, function(){ reveal('crash'); later(700, function(){ open('crash'); }); }); }); }
+
+  // Where this browser left off.
+  var done = seen();
+  if (has('flight')) { route('degate-out', true); route('degate-in', true); }
+  ['degate', 'cathedral', 'sword', 'skull', 'crash'].forEach(function(id){ if(has(id)) reveal(id); });
+  ['cathedral', 'sword', 'skull', 'crash'].forEach(function(id){ if(has(id)) route(id, true); });
+  if (has('unrolled')) showMap('treasure');
+  else if (has('flight') && zoom) zoom.classList.add('mh-near-degate', 'mh-now');
+  if (!has('flight') && map) {
+    if (!calm && 'IntersectionObserver' in window) {
+      var steps = []; for (var i = 0; i <= 20; i++) steps.push(i / 20);
+      var io = new IntersectionObserver(function (es) { es.forEach(function (e) {
         var need = Math.min(e.boundingClientRect.height, window.innerHeight) * 0.6;
-        if (e.isIntersecting && e.intersectionRect.height >= need) { io.disconnect(); (window.maAfterLoading || function (f) { f(); })(function () { setTimeout(fly, 400); }); }   // wait for the loading screen
-      });
-    }, { threshold: steps });
-    io.observe(map);
-  } else fly();
+        if (e.isIntersecting && e.intersectionRect.height >= need) { io.disconnect(); (window.maAfterLoading || function (f) { f(); })(function () { setTimeout(fly, 400); }); }
+      }); }, { threshold: steps });
+      io.observe(map);
+    } else fly();
+  }
 
   Array.prototype.forEach.call(document.querySelectorAll('#map .mh-spot'), function (b) {
-    b.addEventListener('click', function () {
-      var p = document.getElementById(b.getAttribute('data-pop')); if (!p) return;
-      last = b; p.hidden = false; document.documentElement.style.overflow = 'hidden';
-      p.querySelector('.mh-x').focus();
-    });
+    b.addEventListener('click', function () { var id = b.getAttribute('data-pop').replace(/^mh-/, ''); open(id);
+      if (id === 'skull' && !has('crash')) onClose['mh-skull'] = shotDown; });
   });
   Array.prototype.forEach.call(pops, function (p) {
     p.querySelector('.mh-x').addEventListener('click',function(){close(p);});
-    var go=p.querySelector('[data-reveal]');
-    if(go)go.addEventListener('click',function(){close(p);});
     p.addEventListener('click',function(e){if(e.target===p)close(p);});
-    var a = p.querySelector('audio'); if (!a) return;   // a popup without a recording
+    var nx = p.querySelector('[data-next]');
+    if (nx) nx.addEventListener('click', function(){ var to = nx.getAttribute('data-next');
+      onClose[p.id] = to === 'unroll' ? (has('unrolled') ? function(){ showMap('treasure'); } : unroll) : (has(to) ? null : function(){ step(to); });
+      close(p); });
+    var a = p.querySelector('audio'); if (!a) return;
     var btn = p.querySelector('.mh-pbtn'), fill = p.querySelector('.mh-pfill'), t = p.querySelector('.mh-ptime'),
-        ip = p.querySelector('svg.p'), is = p.querySelector('svg.s'), label = p.querySelector('.mh-plabel').textContent;
+        ip = p.querySelector('svg.p'), is = p.querySelector('svg.s'), label = p.querySelector('.mh-plabel').textContent, alarm = +p.getAttribute('data-alarm') || 0;
     function paint(){fill.style.width=(a.duration?a.currentTime/a.duration*100:0)+'%';t.textContent=clock(a.paused&&!a.currentTime?a.duration:a.currentTime);
-      ip.style.display=a.paused?'':'none';is.style.display=a.paused?'none':'';btn.setAttribute('aria-label',(a.paused?'Play ':'Pause ')+label);}
+      ip.style.display=a.paused?'':'none';is.style.display=a.paused?'none':'';btn.setAttribute('aria-label',(a.paused?'Play ':'Pause ')+label);
+      // the Goma Skull: from the klaxon on, the map pulses red and shakes while it plays
+      if(alarm){var on=!a.paused&&a.currentTime>=alarm;p.classList.toggle('mh-alarm',on);if(map)map.classList.toggle('mh-alarm',on);}}
     ['timeupdate','loadedmetadata','play','pause'].forEach(function(ev){a.addEventListener(ev,paint);});
-    a.addEventListener('ended',function(){a.currentTime=0;paint();});
+    a.addEventListener('ended',function(){a.currentTime=0;paint(); if(alarm) close(p);});   // the memo ends on the crash: straight into it
     btn.addEventListener('click',function(){if(a.paused){stopAll();var g=document.getElementById('grey-audio');if(g)g.pause();a.play();}else a.pause();});
     p.querySelector('.mh-ptrack').addEventListener('click',function(e){if(!a.duration)return;var r=this.getBoundingClientRect();a.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*a.duration;});
   });
@@ -892,11 +1057,153 @@ var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw
   <div id="book-lb" onclick="this.style.display='none'" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:center;justify-content:center;cursor:pointer;padding:24px">
         <img loading="lazy" decoding="async" id="book-lb-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Cello's Gate" style="max-width:min(720px,90vw);max-height:88vh;width:auto;height:auto;filter:drop-shadow(0 30px 60px rgba(0,0,0,.7))">
       </div>
+  <!-- ============ ACT 2: THE ISLAND ============ -->
+  <section id="act-2" data-screen-label="Act 2 — The island" style="background:linear-gradient(rgba(14,32,18,.9),rgba(14,32,18,.9)),url(https://africhmaurice.github.io/site/assets/img/25606dfd2ae179bb.jpg) center/cover;background-attachment:fixed;padding:110px 72px 100px">
+    <style>
+#act-2 .tm-card{background:linear-gradient(rgba(26,94,65,.92),rgba(26,94,65,.92)),url(https://africhmaurice.github.io/site/assets/img/3bbc235265412e5d.jpg) center/cover}
+#act-2 .tm-card[data-from]{display:none}
+#act-2 .tm-card[data-from].a2-on{display:flex}
+#act-2 .a2-themes{flex:1;margin:0 0 30px;padding:0 0 0 22px;font-size:17px;line-height:1.5;color:#ede9dc;text-align:left}
+#act-2 .a2-scramble{display:block;margin-top:14px;font-style:normal;font-weight:800;font-size:clamp(17px,1.5vw,21px);letter-spacing:.14em;color:#fff}
+#act-2 .rd-note a,#act-2 .rd-who a{color:#89fbcb}
+    </style>
+    <div class="m-acteyebrow" style="text-align:center;margin-bottom:24px;font-family:'Atomic Marker',cursive;font-size:clamp(23px,2.92vw,42px);line-height:1.2;letter-spacing:.03em;color:#3adb97">ACT 2</div>
+    <h2 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(56px,7vw,110px);letter-spacing:.03em;color:#fff;text-align:center;margin:0 0 24px;line-height:1.2">THE ISLAND</h2>
+    <div class="m-date" style="text-align:center;font-family:'Almarai',sans-serif;font-weight:700;font-size:30px;letter-spacing:.06em;color:#ff5c22;margin-bottom:90px">OCTOBER 1<sup style="font-size:.55em">ST</sup> - OCTOBER 15<sup style="font-size:.55em">TH</sup></div>
+    <h3 class="m-taskhead" id="tasks" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(44px,5.56vw,80px);letter-spacing:.03em;color:#3adb97;text-align:center;margin:0 0 56px;line-height:1.2">TASKS</h3>
+    <div class="m-cards" style="max-width:1420px;margin:0 auto 100px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px">
+      <div class="tm-card" data-task="book-recs" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">BOOK RECS CAROUSEL</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:8px 0 22px">100 POINTS PER THEME, PER PLATFORM</div>
+        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 14px">Make a book recommendation carousel with at least 6 book recs using one of the following themes, and feature Cello’s Gate! Submit screenshots as proof!</p>
+        <ul class="a2-themes"><li>Found Families</li><li>Fun Books</li><li>The Best Characters in Fiction</li><li>Science Fantasy Books (That Aren’t Star Wars)</li><li>The Best Fighters in Fiction</li></ul>
+        <div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count.</div>
+        <div><a href="https://www.mauriceafrich.com/points" target="_blank" rel="noopener" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT POINTS!</a></div>
+      </div>
+      <div class="tm-card" data-task="trench-market" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">BUY SOMETHING FROM TRENCH MARKET</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:8px 0 22px">50 POINTS PER ITEM</div>
+        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 30px;flex:1">Buy something from <a href="https://shop.mauriceafrich.com/" target="_blank" rel="noopener" style="color:#89fbcb;font-weight:700;text-decoration:underline" class="hv9">TRENCH MARKET</a>, the official Sky Pirates merch shop, and submit your receipt as proof!</p>
+        <div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">No purchase necessary. See the <a href="https://www.mauriceafrich.com/rules" target="_blank" rel="noopener" style="color:#ede9dc;text-decoration:underline">Official Rules</a> for the free mail-in option.</div>
+        <div><a href="https://www.mauriceafrich.com/points" target="_blank" rel="noopener" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT POINTS!</a></div>
+      </div>
+      <div class="tm-card" data-task="video-review" data-from="2026-10-05T00:00:00-04:00" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">POST A VIDEO REVIEW</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:8px 0 22px">150 POINTS PER PLATFORM</div>
+        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 30px;flex:1">Post a video review of Cello’s Gate and tell your followers what you honestly thought! Videos may be featured in book review compilations.</p>
+        <div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count. Any honest rating counts. By submitting, you agree your video may be featured in Maurice’s channels, credited to your handle.</div>
+        <div><a href="https://www.mauriceafrich.com/points" target="_blank" rel="noopener" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT POINTS!</a></div>
+      </div>
+    </div>
+    <div style="text-align:center;font-weight:700;font-style:italic;font-size:18px;color:#ede9dc;margin:-56px 0 90px">*ALL TASKS MUST BE SUCCESSFULLY SUBMITTED USING THE SUBMIT POINTS FORM TO BE COUNTED.</div>
+    <h3 class="m-taskhead" id="riddles" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(44px,5.56vw,80px);letter-spacing:.03em;color:#3adb97;text-align:center;margin:0 0 56px;line-height:1.2">RIDDLES &amp; PUZZLES</h3>
+    <div class="m-cards rd-grid" style="max-width:1420px;margin:0 auto 100px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px">
+      <div class="tm-card" data-riddle="10" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#10</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">25 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @SPACEFOXY9</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">I take you places, yet you’ll never move.<br>I can tell you many things, but never speak.<br>Never spineless, but without bones.<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="11" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#11</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">25 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @POPPA_SQUATCH</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">I can be buried without dying,<br>stolen without moving,<br>and lost without ever being possessed.<br>I have no voice,<br>yet men have crossed oceans following my name.<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="12" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#12</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">25 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @TYLERS_BOOKSHELF</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">A treasure chest I may appear,<br>But treasures are not why I’m here.<br>I wait in darkness, patient and still,<br>For greedy hands to test my will.<br><br>I offer gold, but bring despair.<br>I open wide—yet beware.<br>You think you’ve found a prize to share,<br>Until the chest begins to tear.<br><br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="13" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#13</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">25 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @CHRIS.VAREN</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">I am a deep drop where no sunlight gleams,<br>yet I am flooded with pirates and digital schemes.<br>Enter my depths if you seek the crew,<br>to gossip of boxes and what we must do.<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="14" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#14</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">50 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @READERSQUADRANT_BOOKART</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">I have a trough from which horses cannot drink, and a crest which knights cannot wear.<br>At times I roll gently, but I can also be fierce.<br>I carry great energy and can sweep you off your feet.<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="15" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#15</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">50 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @POPPA_SQUATCH</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">Some call me a curse, some call me a blessing.<br>The young waste me, the old search for me,<br>and some say I flow from a fountain.<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="16" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#16</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">50 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @POPPA_SQUATCH</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">I have no material form, yet I can be taken.<br>Chains cannot hold me, yet some may try.<br>Warriors have died for me, prisoners have dreamed of me,<br>and those who possess me often fail to notice.<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="17" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#17</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">50 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @TYLERS_BOOKSHELF</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">I’m made of stone, but don’t call me Rocky—<br>I’m far too large to be held in your hand.<br>About the size of a gorilla, kinda stocky.<br>I lumber, I laugh, and I stubbornly stand.<br><br>Touch my stones and you may just find<br>That “sturdy” is not just a word.<br>Don’t break one apart or you may discover<br>A very angry creature has heard.<br><br>I’ve got no claws, no fur, no hair,<br>But Ghan’s balls? I’ve got those to spare.<br>So if you meet me, remember, my Fren:<br>“Stay sturdy”. That’s my advice to the end!<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="18" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#18</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">50 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @JAMESTHORNEAUTHOR</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">It was built in a home, not a boardroom.<br>No one signed him, and no one sold him.<br>Doors stayed shut, so he made his own.<br>It was read first by the few, soon by the many.<br>Even now, in spirit, he is still.<br><br>What was he?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="19" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#19</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">75 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">RIDDLE BY @QUEEN_0F_INK</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">Possibility comes in endless supply<br>I contain all the sands of time in my hands<br>Every angle of my face set in stone<br>As if in spring, and spring, and spring<br>What am I?</p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+      <div class="tm-card" data-riddle="20" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#20</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 6px">75 POINTS</div>
+        <div style="font-weight:700;font-size:12.5px;letter-spacing:.1em;color:#ede9dc;margin:0 0 22px">PUZZLE IDEA BY @SPACEFOXY9</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">Ten books, a few million words, and more gods than any pantheon can hold.<br>Unscramble the saga:<br><span class="a2-scramble">NAZALAM KOBO FO HET FLANEL</span></p>
+        <div><a href="https://www.mauriceafrich.com/the-hunt#riddles" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT ANSWER!</a></div>
+      </div>
+    </div>
+    <div style="text-align:center;font-weight:700;font-style:italic;font-size:18px;color:#ede9dc;margin:-56px 0 90px">*SUBMIT YOUR ANSWER RIGHT ON THE RIDDLE CARD.</div>
+    <div style="text-align:center;font-family:'Atomic Marker',cursive;font-size:clamp(24px,2.4vw,34px);letter-spacing:.03em;color:#3adb97;margin:-70px 0 0;line-height:1.2">YOU ONLY GET ONE ATTEMPT PER RIDDLE. CHOOSE WISELY.</div>
+    <script>(function(){
+// Tasks with a start date (data-from) show from that moment, Eastern time. ?show-all shows them early, for checking.
+var now=Date.now(), all=/show-all/.test(location.search);
+Array.prototype.forEach.call(document.querySelectorAll('#act-2 [data-from],.a2-later'),function(el){if(all||now>=Date.parse(el.getAttribute('data-from')))el.classList.add('a2-on');});
+})();</script>
+  </section>
+
   <!-- ============ ACT 1: ASSEMBLE THE CREW ============ -->
   <section id="act-1" data-screen-label="Act 1 — Assemble the crew" style="background:linear-gradient(rgba(29,16,58,.9),rgba(29,16,58,.9)),url('https://africhmaurice.github.io/site/assets/bg/crystal-towers-lake-as395045722.webp') center/cover;background-attachment:fixed;padding:110px 72px 100px">
     <div class="m-acteyebrow" style="text-align:center;margin-bottom:24px;font-family:'Atomic Marker',cursive;font-size:clamp(23px,2.92vw,42px);color:#9e74fd">ACT 1</div>
     <h2 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(56px,7vw,110px);color:#fff;text-align:center;margin:0 0 24px;line-height:1.15">ASSEMBLE THE CREW</h2>
-    <div class="m-date" style="text-align:center;font-family:'Almarai',sans-serif;font-weight:700;font-size:30px;letter-spacing:.06em;color:#ff5c22;margin-bottom:72px">SEPTEMBER 21<sup style="font-size:.55em">ST</sup> - SEPTEMBER 30<sup style="font-size:.55em">TH</sup></div>
+    <div class="m-date" style="text-align:center;font-family:'Almarai',sans-serif;font-weight:700;font-size:30px;letter-spacing:.06em;color:#ff5c22;margin-bottom:56px">SEPTEMBER 21<sup style="font-size:.55em">ST</sup> - SEPTEMBER 30<sup style="font-size:.55em">TH</sup></div>
+    <style>
+#act-1 .a1-more>summary{list-style:none;cursor:pointer;max-width:1100px;margin:0 auto;border:2px solid #9e74fd;padding:24px 28px;display:flex;align-items:center;justify-content:center;gap:18px;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(17px,1.6vw,22px);line-height:1.5;letter-spacing:.04em;color:#fff;text-align:center;transition:background .15s ease}
+#act-1 .a1-more>summary::-webkit-details-marker{display:none}
+#act-1 .a1-more>summary:hover{background:rgba(158,116,253,.16)}
+#act-1 .a1-more>summary u{color:#c3a6ff;text-underline-offset:4px}
+#act-1 .a1-chev{flex:none;width:13px;height:13px;border-right:3px solid #c3a6ff;border-bottom:3px solid #c3a6ff;transform:rotate(45deg);margin-top:-7px;transition:transform .2s ease}
+#act-1 .a1-more[open]>summary .a1-chev{transform:rotate(225deg);margin-top:7px}
+#act-1 .a1-more[open]>summary{margin-bottom:90px}
+#act-1 .a1-more .a1-close,#act-1 .a1-more[open] .a1-open{display:none}
+#act-1 .a1-more[open] .a1-close{display:inline}
+#act1-tasks,#act1-riddles{scroll-margin-top:110px}
+    </style>
+    <details class="a1-more" id="act1-more" ontoggle="window.dispatchEvent(new Event('resize'))">
+      <summary><span><span class="a1-open">Act One is finished, but the tasks and riddles are still available. <u>Click here.</u></span><span class="a1-close">Act One’s tasks and riddles. <u>Click here to close.</u></span></span><span class="a1-chev" aria-hidden="true"></span></summary>
     <div class="m-note" style="max-width:1100px;margin:0 auto 90px;border-left:2px solid #482d85;padding-left:36px;font-family:'Almarai',sans-serif">
       <div style="font-weight:700;font-size:22px;letter-spacing:.08em;color:#9e74fd;margin-bottom:20px">A TRANSMISSION FROM CPT. GREY SHIMADA</div>
       <div style="position:relative;display:flex;align-items:center;gap:22px;background:linear-gradient(rgba(195,166,255,.9),rgba(195,166,255,.9)),url(https://africhmaurice.github.io/site/assets/img/fa4a9f28b7e43131.jpg) center/cover;border:2px solid #482d85;padding:18px 26px;margin:0 0 30px;overflow:hidden">
@@ -919,12 +1226,12 @@ var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw
       <p style="font-style:italic;font-size:27px;line-height:1.45;color:#ede9dc;margin:0 0 22px;letter-spacing:.02em;text-align:justify">So we’re doing it. But before we go out and chase a myth, we need hands on deck. I want schemers, sharpshooters, amateur cartographers, imperials, intangibles, assassins, knights, and maybe one arachnologist for when the spiders show...</p>
       <p style="font-style:italic;font-size:27px;line-height:1.45;color:#ede9dc;margin:0;letter-spacing:.02em;text-align:justify">You know the drill. Make some noise so the whole sky knows we’re coming!</p>
     </div>
-    <h3 class="m-taskhead" id="tasks" style="font-family: 'Atomic Marker',cursive; font-weight: 400; font-size:clamp(44px,5.56vw,80px); color: #c3a6ff; text-align: center; margin: 0 0 56px;line-height:1.15">TASKS</h3>
+    <h3 class="m-taskhead" id="act1-tasks" style="font-family: 'Atomic Marker',cursive; font-weight: 400; font-size:clamp(44px,5.56vw,80px); color: #c3a6ff; text-align: center; margin: 0 0 56px;line-height:1.15">TASKS</h3>
     <div class="m-cards" style="max-width:1420px;margin:0 auto 100px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px">
       <div class="tm-card" data-task="red-city-vote" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em;outline:3px solid #c53200;outline-offset:-3px">
         <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">CHOOSE YOUR OWN ADVENTURE</div>
         <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#c3a6ff;margin:8px 0 22px">100 POINTS PER SEALED VOTE</div>
-        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 30px;flex:1">Seal your vote during every voting day during the Choose-Your-Own-Adventure Treasure Hunt and gain 100 points per sealed vote! Now voting: Meet the Crew! Roll for each crew member, pick their names, specialties, and weapons, and roll for the ship. The frens vote together, majority rules, and the result decides how Act Two plays out. Voting is open now and closes Monday, September 28 at 2:50 PM ET.</p>
+        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 30px;flex:1">Seal your vote during every voting day during the Choose-Your-Own-Adventure Treasure Hunt and gain 100 points per sealed vote! Now voting: <a href="https://www.mauriceafrich.com/the-crash" style="color:#c3a6ff;font-weight:700;text-decoration:underline">Crash Landing</a>! The Second Wind is down in the gomas’ valley. Roll for the supplies, pick a direction, and decide if the crew sticks together. The frens vote together, majority rules, and the result decides what the crew does next. Voting is open now and closes Friday, October 2 at 12:00 AM ET.</p>
       </div>
       <div class="tm-card" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
         <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">BUY THE BOOK!</div>
@@ -971,13 +1278,6 @@ var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw
         <div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count.</div>
         <div><a href="https://www.mauriceafrich.com/points" target="_blank" rel="noopener" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT POINTS!</a></div>
       </div>
-      <div class="tm-card" data-task="riddle-writer" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
-        <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">WRITE A RIDDLE FOR ACT TWO</div>
-        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#c3a6ff;margin:8px 0 22px">25 POINTS PER ACCEPTED RIDDLE</div>
-        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 30px;flex:1">Submit an original riddle or puzzle, with its answer. If it’s picked to be featured in Act Two, you earn points! Up to 3 accepted riddles per sky pirate.</p>
-        <div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">Riddles must be your own work. By submitting, you agree it may be featured on this site and in Maurice’s channels, credited to your handle.</div>
-        <div><a href="https://www.mauriceafrich.com/points" target="_blank" rel="noopener" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT POINTS!</a></div>
-      </div>
       <div class="tm-card" data-task="carousel-crew" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
         <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">BOOST THE CAROUSEL</div>
         <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#c3a6ff;margin:8px 0 22px">200 POINTS PER APP</div>
@@ -1017,8 +1317,8 @@ var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw
       </div>
     </div>
     <div style="text-align:center;font-weight:700;font-style:italic;font-size:18px;color:#ede9dc;margin:-56px 0 90px">*ALL TASKS MUST BE SUCCESSFULLY SUBMITTED USING THE SUBMIT POINTS FORM TO BE COUNTED.</div>
-    <h3 class="m-taskhead" id="riddles" style="font-family: 'Atomic Marker',cursive; font-weight: 400; font-size:clamp(44px,5.56vw,80px); color: #c3a6ff; text-align: center; margin: 0 0 56px;line-height:1.15">RIDDLES &amp; PUZZLES</h3>
-    <div class="m-cards" style="max-width:1420px;margin:0 auto 100px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px">
+    <h3 class="m-taskhead" id="act1-riddles" style="font-family: 'Atomic Marker',cursive; font-weight: 400; font-size:clamp(44px,5.56vw,80px); color: #c3a6ff; text-align: center; margin: 0 0 56px;line-height:1.15">RIDDLES &amp; PUZZLES</h3>
+    <div class="m-cards rd-grid" style="max-width:1420px;margin:0 auto 100px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px">
       <div class="tm-card" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
         <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);color:#c3a6ff;margin-bottom:8px">#1</div>
         <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#c3a6ff;margin:0 0 22px">25 POINTS</div>
@@ -1085,15 +1385,10 @@ var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw
     <div style="text-align:center;font-weight:700;font-style:italic;font-size:18px;color:#ede9dc;margin:-56px 0 90px">*SUBMIT YOUR ANSWER RIGHT ON THE RIDDLE CARD.</div>
     <div style="text-align:center;font-family:'Atomic Marker',cursive;font-size:clamp(24px,2.4vw,34px);letter-spacing:.03em;color:#c3a6ff;margin:-70px 0 90px;line-height:1.2">YOU ONLY GET ONE ATTEMPT PER RIDDLE. CHOOSE WISELY.</div>
     
+  
+    </details>
   </section>
 
-  <!-- ============ ACT 2 TEASER ============ -->
-  <section id="act-2" data-screen-label="Act 2 — The island" style="background:linear-gradient(rgba(14,32,18,.9),rgba(14,32,18,.9)),url(https://africhmaurice.github.io/site/assets/img/25606dfd2ae179bb.jpg) center/cover;background-attachment:fixed;padding:110px 72px 150px;text-align:center">
-    <div class="m-acteyebrow" style="font-family:'Atomic Marker',cursive;font-size:clamp(23px,2.92vw,42px);color:#268e62;margin-bottom:24px">ACT 2</div>
-    <h2 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(56px,7vw,110px);color:#fff;margin:0 0 24px;line-height:1.15">THE ISLAND</h2>
-    <div class="m-date" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:28px;letter-spacing:.06em;color:#ff5c22;margin-bottom:110px">OCTOBER 1<sup style="font-size:.55em">ST</sup> - OCTOBER 15<sup style="font-size:.55em">TH</sup></div>
-    <div class="m-coming" style="font-family:'Atomic Marker',cursive;font-size:clamp(44px,5.56vw,80px);color:#3adb97;line-height:1.15">UNLOCKED UPON COMPLETION OF ACT 1</div>
-  </section>
 
   <!-- ============ ACT 3 TEASER ============ -->
   <section id="act-3" data-screen-label="Act 3 — The stone" style="background:linear-gradient(rgba(74,16,2,.9),rgba(74,16,2,.9)),url(https://africhmaurice.github.io/site/assets/img/c965f72b5f7905fe.jpg) center/cover;background-attachment:fixed;padding:110px 72px 150px;text-align:center">
@@ -1153,8 +1448,8 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
   var ME='thLoot:me', DONE='thRiddles:results', AGREED='thRiddles:agreed';
   // The try-it copy of this page on github.io never sends anything (see send).
   var PREVIEW=/github\.io$/.test(location.hostname);
-  var head=document.getElementById('riddles'), grid=head&&head.nextElementSibling;
-  if(!grid)return;
+  // Riddle cards sit in each act's grid (Act Two, then Act One's in its dropdown).
+  if(!document.querySelector('.rd-grid'))return;
   function load(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}}
   function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -1178,7 +1473,7 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
     check:function(){return['Answer received!','This one gets checked by hand. Points land at the next tally if it’s right.'];}
   };
   var cards={};
-  Array.prototype.forEach.call(grid.querySelectorAll('.tm-card'),function(card){
+  Array.prototype.forEach.call(document.querySelectorAll('.rd-grid .tm-card'),function(card){
     var n=((card.firstElementChild&&card.firstElementChild.textContent)||'').match(/#(\d+)/);
     // The card's button (it pointed at /solve until that page went, 2026-09-29) becomes the answer box.
     var link=card.querySelector('a[href*="/solve"],a[href*="#riddles"]');
