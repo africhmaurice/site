@@ -197,6 +197,8 @@ html,body{margin:0 !important;padding:0 !important}
 #hp .hp-tile b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(38px,4vw,58px);line-height:1;color:#fff}
 #hp .hp-tile span{display:block;margin-top:8px;font-size:14px;color:rgba(255,255,255,.8)}
 #hp .hp-tile.hp-hot{background:var(--red);border-color:var(--cream)}
+#hp .hp-acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0 0 18px}
+#hp .hp-acts .hp-tile em{display:inline-block;margin-left:8px;font-style:normal;font-weight:800;font-size:11px;letter-spacing:.12em;color:#fff;background:var(--hi);padding:2px 7px;vertical-align:1px}
 #hp .hp-tile.hp-hot i{color:#ffd9c4}
 #hp .hp-race{background:rgba(11,23,15,.55);border:1px solid rgba(195,166,255,.45);padding:20px 22px;margin:0 0 18px}
 #hp .hp-race p{margin:0 0 12px;font-size:17px;line-height:1.5}
@@ -291,10 +293,15 @@ html,body{margin:0 !important;padding:0 !important}
       '<p class="hp-when">Points are added at each tally, 10 AM and 7 PM ET. Anything you earned since the last one will show up at the next. Remember: there’s one man running all of this and he’s doing his best. ;)</p>' +
       '<div class="hp-tiles">' +
         (p.rank ? '<div class="hp-tile hp-hot"><i>RANK</i><b>#' + p.rank + '</b><span>of ' + fmt(p.of) + ' on the board</span></div>' : '<div class="hp-tile hp-hot"><i>RANK</i><b>CREW</b><span>not on the public board</span></div>') +
-        '<div class="hp-tile"><i>POINTS</i><b>' + fmt(p.pts) + '</b><span>and counting</span></div>' +
+        '<div class="hp-tile"><i>TOTAL POINTS</i><b>' + fmt(p.pts) + '</b><span>and counting</span></div>' +
         '<div class="hp-tile"><i>SWEEPSTAKES ENTRIES</i><b>' + fmt(p.ent) + '</b><span>' + fmt(p.act[actNow]) + ' in ' + acts[actNow] + '</span></div>' +
         '<div class="hp-tile"><i>DAYS ACTIVE</i><b>' + active + '</b><span>of ' + sofar + ' days so far</span></div>' +
       '</div>' +
+      // Points per act (Maurice, 2026-10-01): Act One is fixed now that it's over; Act Two counts up from zero.
+      (p.ap ? '<div class="hp-acts">' +
+        '<div class="hp-tile"><i>ACT ONE POINTS<em>FINAL</em></i><b>' + fmt(p.ap[0]) + '</b><span>Sept 21 to Sept 30</span></div>' +
+        '<div class="hp-tile"><i>ACT TWO POINTS</i><b id="hp-a2" data-to="' + (p.ap[1] || 0) + '">0</b><span>and counting, Oct 1 to Oct 15</span></div>' +
+      '</div>' : '') +
       '<div class="hp-race"><p>' + race + '</p>' + (p.tr && p.rank ? '<div class="hp-bar"><div style="width:' + pct.toFixed(1) + '%"></div></div>' : '') + '</div>' +
       '<div class="hp-grid">' +
         '<div class="hp-stat"><i>SECRET LOOT BOXES</i><b>' + p.loot + ' <small>/ ' + BOXES + '</small></b><div class="hp-bar"><div style="width:' + (p.loot / BOXES * 100).toFixed(1) + '%"></div></div></div>' +
@@ -311,6 +318,9 @@ html,body{margin:0 !important;padding:0 !important}
       '<div class="hp-more"><button type="button" class="hp-btn" id="hp-share">SHARE MY CARD</button><a class="hp-btn" href="' + U + '/the-hunt#tasks">EARN MORE POINTS</a><a class="hp-btn alt" href="' + U + '/leaderboard">LEADERBOARD</a><a class="hp-btn alt" href="' + U + '/loot">LOOT BOX SCORECARD</a></div>' +
       (EXAMPLE ? '' : '<p class="hp-foot">Not you? <a id="hp-switch">Use a different email</a></p>');
     card.hidden = false; find.hidden = true;
+    // Act Two points count up from zero.
+    var a2 = document.getElementById('hp-a2');
+    if (a2) { var to = +a2.getAttribute('data-to') || 0, t0 = performance.now(), dur = to ? 1600 : 0; (function tick(now) { var k = dur ? Math.min(1, (now - t0) / dur) : 1; a2.textContent = fmt(Math.round(to * (1 - Math.pow(1 - k, 3)))); if (k < 1) requestAnimationFrame(tick); })(t0); }
     // Loot box 27 hides in the corner of every profile.
     var lb = card.querySelector('.hp-lb'); if (!lb) { lb = document.createElement('button'); lb.className = 'hp-lb'; lb.type = 'button'; lb.setAttribute('aria-label', ' '); lb.tabIndex = -1; card.appendChild(lb); }
     lb.onclick = function () { if (EXAMPLE) { alert('Preview: this is where loot box 27 opens.'); return; } location.href = atob('Q0U3U01VMkM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo').split('').reverse().join(''); };
@@ -411,7 +421,7 @@ html,body{margin:0 !important;padding:0 !important}
   if (EXAMPLE) {
     root.classList.add('is-example');
     get(BOARD).then(function (b) {
-      render({ n: 'Rosa', h: '@example_pirate', r: 'us', rl: 'United States', tr: true, rank: 7, of: 63, pts: 1780, next: 95, ent: 41, act: [41, 0, 0],
+      render({ n: 'Rosa', h: '@example_pirate', r: 'us', rl: 'United States', tr: true, rank: 7, of: 63, pts: 1780, next: 95, ent: 41, act: [41, 0, 0], ap: [1505, 275, 0],
         loot: 23, games: 12, riddles: 5, votes: 1, pre: 2, tasks: 9, days: '111101000000000000000000000000000000000000',
         recent: [['2026-09-26', 'Red City Vote', 50], ['2026-09-26', 'Secret Loot Box', 50], ['2026-09-25', 'Sort the Shelf', 40], ['2026-09-25', 'Book Icons', 25], ['2026-09-24', 'Daily Word Game', 25], ['2026-09-24', 'Solve a Riddle', 25]] },
         (b && b.crewTotal) || 51170, b);
