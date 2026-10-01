@@ -230,8 +230,8 @@
   var EARN = /\/the-hunt#tasks$|\/the-hunt#riddles$|\/lootbox-clue$|\/games$|\/contests$/;
   // Act menus (Maurice, 2026-10-01): Current Progress adds the Act One and Act Two standings and splits Rewards by
   // act; Earn Points splits Tasks and Riddles & Puzzles by act. Done here so every page's copy of the menu changes at
-  // once. Until it's approved it shows only on the github.io previews, or with ?actmenu=1 on the live site.
-  var ACTMENU = /github.io$/.test(location.hostname) || /[?&]actmenu=1/.test(location.search);
+  // once.
+  var ACTMENU = true;   // approved and live (Maurice, 2026-10-01)
   var SITE = 'https://www.mauriceafrich.com';
   function actSub(text, act) { var sp = document.createElement('span'); sp.className = 'ma-sub ma-sub-' + act; sp.textContent = text; return sp; }
   function actLink(href, text) { var a = document.createElement('a'); a.href = href; a.textContent = text; return a; }
