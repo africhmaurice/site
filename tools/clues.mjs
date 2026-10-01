@@ -49,6 +49,7 @@ slow-cooked abyss!`],
   [5, 'WINE DADDY 45'],
   [6, 'NEEWWWW ACHIEVEMENT! This loot box is shaped like a cat girl, you dirty little lynx! I bet you like that, don\'t you?'],
   [7, 'Keep yapping and you never know.'],
+  [8, 'Howie Day is a ______-er. 3rd/6'],
   [9, 'Destination X'],
   [10, 'nuh ay thuh nuh sih buh oof kuh tuh ock'],
   [11, `the clock says tik.
