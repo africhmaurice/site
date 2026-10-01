@@ -329,8 +329,6 @@ h1,h2,h3{text-wrap:balance}
     { label: 'A Fren Joined the Hunt', send: 'A Fren Joined the Hunt', detail: 'Which fren joined? Their name and handle.', hint: 'A screenshot that shows your fren joined: their scorecard, their hunt post, or their message to you. 100 points for each fren who joins.' },
     { label: 'Show Off Your Scorecard', send: 'Show Off Your Scorecard',
       hint: 'Your post of your own Loot Box scorecard, with #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) visible. Once a day.' },
-    { label: 'Write a Riddle for Act Two', send: 'Write a Riddle for Act Two', area: 'Your riddle and its answer', noProof: true,
-      hint: 'Riddles must be your own work. By submitting, you agree it may be featured on this site and in Maurice’s channels, credited to your handle.' },
     { label: 'Boost the Carousel (Instagram)', send: 'Boost the Carousel (Instagram)',
       hint: 'One screenshot for each step: like, comment your favorite fictional character, share to your story, save, repost, and tag three frens. Add them all here, together.' },
     { label: 'Boost the Carousel (TikTok)', send: 'Boost the Carousel (TikTok)',
@@ -339,8 +337,17 @@ h1,h2,h3{text-wrap:balance}
     { label: 'Play in the Tournament of Blades', send: 'Play in the Tournament of Blades', hint: 'A screenshot of your nomination or vote in today\'s Tournament of Blades in the Discord. Every vote counts.' },
     { label: 'Boost the LinkedIn Post', send: 'Boost the LinkedIn Post', hint: 'Screenshots showing you liked, commented on, and reposted the LinkedIn post. Add them all here, together.' },
     { label: 'Join the Sky Pirates Subreddit', send: 'Join the Sky Pirates Subreddit', hint: 'A screenshot showing you’ve joined r/SkyPiratesofImperia.' },
-    { label: 'Hype the Hunt on Reddit', send: 'Hype the Hunt on Reddit', hint: 'Screenshots showing you liked and commented on the r/FantasyBooks post. Add them both here, together.' }
+    { label: 'Hype the Hunt on Reddit', send: 'Hype the Hunt on Reddit', hint: 'Screenshots showing you liked and commented on the r/FantasyBooks post. Add them both here, together.' },
+    // Act Two (Maurice, 2026-09-30). "from" keeps a task off the list until that moment, Eastern time.
+    { label: 'Book Recs Carousel', send: 'Book Recs Carousel', pick: ['Where did you post it?', ['Instagram', 'TikTok', 'YouTube', 'Reddit', 'X', 'Threads', 'Facebook']],
+      pick2: ['Which theme?', ['Found Families', 'Fun Books', 'The Best Characters in Fiction', 'Science Fantasy Books (That Aren\u2019t Star Wars)', 'The Best Fighters in Fiction']],
+      hint: 'Screenshots of your carousel: at least 6 book recs, Cello\'s Gate featured, and #SkyPiratesHunt with #sweepstakes (U.S.) or #competition (UK). 100 points per theme, per platform.' },
+    { label: 'Buy Something From Trench Market', send: 'Buy Something From Trench Market', items: true,
+      hint: 'Your Trench Market receipt or order confirmation. 50 points for each item.' },
+    { label: 'Post a Video Review', send: 'Post a Video Review', pick: ['Where did you post it?', ['Instagram', 'TikTok', 'YouTube', 'Reddit', 'X', 'Threads', 'Facebook']], from: '2026-10-05T00:00:00-04:00',
+      hint: 'Your video review of Cello\'s Gate, with #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK). Any honest rating counts. 150 points per platform.' }
   ];
+  TASKS = TASKS.filter(function (t) { return !t.from || Date.now() >= Date.parse(t.from); });
 
   var page = document.getElementById('sub-page'),
       head = document.getElementById('sb-head'),
@@ -471,12 +478,16 @@ h1,h2,h3{text-wrap:balance}
       sel.className = t ? '' : 'empty';
       $('sb-hint').textContent = t ? t.hint : '';
       if (t && t.copies) extra = item('How many copies?', 'Each copy of Cello\'s Gate counts.', '<input type="number" id="sb-copies" min="1" max="20" value="1" inputmode="numeric">', 'sb-copies');
+      if (t && t.items) extra = item('How many items?', 'Each item on the receipt counts.', '<input type="number" id="sb-copies" min="1" max="20" value="1" inputmode="numeric">', 'sb-copies');
       if (t && t.detail) extra = item(esc(t.detail), '', '<input type="text" id="sb-detail" autocomplete="off">', 'sb-detail');
       if (t && t.area) extra = item(esc(t.area), '', '<textarea id="sb-detail"></textarea>', 'sb-detail');
       if (t && t.pick) extra = item(esc(t.pick[0]), '', '<select id="sb-pick" class="empty"><option value="">Choose an option.</option>' +
         t.pick[1].map(function (p) { return '<option>' + p + '</option>'; }).join('') + '</select>', 'sb-pick');
+      if (t && t.pick2) extra += item(esc(t.pick2[0]), '', '<select id="sb-pick2" class="empty"><option value="">Choose an option.</option>' +
+        t.pick2[1].map(function (p) { return '<option>' + esc(p) + '</option>'; }).join('') + '</select>', 'sb-pick2');
       $('sb-extra').innerHTML = extra;
       var pk = $('sb-pick'); if (pk) pk.onchange = function () { pk.className = pk.value ? '' : 'empty'; };
+      var pk2 = $('sb-pick2'); if (pk2) pk2.onchange = function () { pk2.className = pk2.value ? '' : 'empty'; };
       $('sb-proofwrap').style.display = t && t.noProof ? 'none' : '';
       $('sb-files').accept = t && t.docs ? 'image/*,.pdf,.doc,.docx,.txt' : 'image/*';
     };
@@ -587,8 +598,9 @@ h1,h2,h3{text-wrap:balance}
       var t = TASKS[$('sb-task').value];
       if (!t) return (err.textContent = ERR.task);
       payload.task = t.send;
-      if (t.copies) { var n = Math.max(1, Math.min(20, parseInt($('sb-copies').value, 10) || 1)); if (n > 1) payload.task += ' (' + n + ' copies)'; }
+      if (t.copies || t.items) { var n = Math.max(1, Math.min(20, parseInt($('sb-copies').value, 10) || 1)); if (n > 1) payload.task += ' (' + n + (t.items ? ' items)' : ' copies)'); }
       if (t.pick) { var p = $('sb-pick').value; if (!p) return (err.textContent = t.pick[0]); payload.task += ' (' + p + ')'; }
+      if (t.pick2) { var p2 = $('sb-pick2').value; if (!p2) return (err.textContent = t.pick2[0]); payload.task += ' (' + p2 + ')'; }
       if (t.detail || t.area) { payload.details = $('sb-detail').value.trim(); if (!payload.details) return (err.textContent = t.detail || t.area); }
       if (!payload.agree) return (err.textContent = ERR.agree);
       if (!t.noProof) {
