@@ -105,6 +105,12 @@
       "source": "bot:squarespace-sixteen.html"
     },
     {
+      "slug": "stack",
+      "url": "/stack-the-colors",
+      "title": "Stack the Colors (loot boxes 50-52 ring sort)",
+      "source": "bot:squarespace-stack.html"
+    },
+    {
       "slug": "game-first-lines",
       "url": "(preview only, not on Squarespace yet)",
       "title": "Game: First Lines",
