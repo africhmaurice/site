@@ -71,6 +71,11 @@ to find their prize.`],
   ] }],
   [14, 'Them: "As an author, you\'re not supposed to do this!"', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'At least I didn\u2019t make it five stars.' }] }],
   [15, `“You're doing great, kid. I love your passion, your work ethic, your commitment to always being you. And that's what's important to me because *you're* important to me. I couldn't be more proud to be your dad.”`],
+  [16, `The flame is lit
+for weird girl lit.
+You think you know
+but you don't.
+Check again.`],
   [17, '', { img: ART + 'clue-17.webp', alt: 'A barrel smoker with a coffee can on its chimney', flash: ART + 'clue-17-flash.webp', flashFill: true, hints: [{ price: 10, button: 'Pay 10 points for a hint.', text: 'click it' }] }],
   [18, 'click this', { href: VOID }],
   [19, 'A DUDE WHO LIKES BOOKS PREDOMINANTLY LIKED BY LADIES BUT ALSO LOTS OF DUDES, SO...'],
