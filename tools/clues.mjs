@@ -100,7 +100,7 @@ Check again.`],
   [30, "I'm stuck!"],
   // The shop's "Find a loot box" button is box 31, and the button literally says it.
   [31, 'IT LITERALLY SAYS IT', { img: ART + 'clue-31.webp', alt: 'The confused side-eye meme', sticker: true, hints: [{ price: 25, button: 'Pay 25 points for a hint.', link: 'https://shop.mauriceafrich.com/', text: 'shop.mauriceafrich.com' }] }],
-  [32, 'Okay? Byyyyeee!'],
+  [32, 'Okay? Byyyyeee!', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'square', pics: [['', ART + 'clue-32-hint-1.jpg'], ['', ART + 'clue-32-hint-2.jpg'], ['', ART + 'clue-32-hint-3.jpg']] }] }],
   [34, '', { fill: '#482d85', hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'the votes are in!' }] }],
   [36, 'Slide & Find'],
 ];
