@@ -112,6 +112,8 @@ Yet again, you might try.`],
   [32, 'Okay? Byyyyeee!', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'square', pics: [['', ART + 'clue-32-hint-1.jpg'], ['', ART + 'clue-32-hint-2.jpg'], ['', ART + 'clue-32-hint-3.jpg']] }] }],
   [34, '', { fill: '#482d85', hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'the votes are in!' }] }],
   [36, 'Slide & Find'],
+  // Boxes 50, 51, and 52 all live in Stack the Colors (one per level), so one card covers all three.
+  ['50–52', 'In celebration of Act 2 beginning, here are three loot boxes!', { button: ['Claim them', 'https://www.mauriceafrich.com/stack-the-colors'] }],
 ];
 
 // The few lines above the cards that say what they are.
@@ -127,6 +129,7 @@ const boards = CLUES.map(([n, text, o = {}]) => {
   const rich = (t) => esc(t).replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
   let body = text ? `<div class="lc-text">${rich(text)}</div>` : '';
   if (o.href) body = `<a class="lc-text lc-link" href="${esc(o.href)}">${esc(text)}</a>`;
+  if (o.button) body += `<a class="lc-btn" href="${esc(o.button[1])}">${esc(o.button[0])}</a>`;
   if (o.img) body += `<img class="lc-img${o.sticker ? ' lc-sticker' : ''}" src="${esc(o.img)}" alt="${esc(o.alt || '')}" loading="lazy">`;
   // Paid hints: each step's button shows once the step before it is bought. Pictures load only once
   // paid for (data-src), and a text hint is kept out of the page source (base64) until then.
@@ -262,6 +265,8 @@ h = h.replace(/(#loot-clue\{min-height:80vh;[^}]*background:)linear-gradient\(rg
 // Styles: number in Atomic Marker, clue in Almarai (no forced capitals), two boards per row.
 const css = `#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;max-width:1240px;width:100%;align-items:stretch}
 #loot-clue .lc-intro{max-width:760px;width:100%;text-align:center}
+#loot-clue .lc-btn{display:inline-block;margin-top:24px;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;border-radius:0;padding:13px 28px;border:2px solid #fffffe;background:#fffffe;color:#1b3b15}
+#loot-clue .lc-btn:hover{background:transparent;color:#fffffe}
 #loot-clue .lc-finds{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:-12px;font-family:'Almarai',sans-serif;color:#fffffe;text-align:center}
 #loot-clue .lc-finds button{font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:0;padding:13px 26px;border:2px solid #fffffe;background:transparent;color:#fffffe}
 #loot-clue .lc-finds button:hover,#loot-clue .lc-finds-btn[aria-pressed="true"]{background:#fffffe;color:#1b3b15}
