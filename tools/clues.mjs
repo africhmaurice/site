@@ -75,7 +75,16 @@ to find their prize.`],
 for weird girl lit.
 You think you know
 but you don't.
-Check again.`],
+Check again.
+
+Two dozen or more,
+On wings did they fly.
+When up overflows,
+On the floor more will lie.
+But lie, surely not,
+Truth was told a week shy,
+Once rolled, maybe twice—
+Yet again, you might try.`],
   [17, '', { img: ART + 'clue-17.webp', alt: 'A barrel smoker with a coffee can on its chimney', flash: ART + 'clue-17-flash.webp', flashFill: true, hints: [{ price: 10, button: 'Pay 10 points for a hint.', text: 'click it' }] }],
   [18, 'click this', { href: VOID }],
   [19, 'A DUDE WHO LIKES BOOKS PREDOMINANTLY LIKED BY LADIES BUT ALSO LOTS OF DUDES, SO...'],
