@@ -414,6 +414,8 @@ ${cardCss('#press')}
   }
   fit(); addEventListener('resize', fit); addEventListener('load', fit); setTimeout(fit, 600);
 })();
+// Drop the Squarespace section's padding so no colored band shows above the footer.
+(function bleed(){var p=document.getElementById('press'),cw=p&&p.closest('.content-wrapper'),sec=p&&p.closest('.page-section');if(cw){cw.style.paddingTop='0';cw.style.paddingBottom='0';}if(sec)sec.style.minHeight='0';var fe=p&&p.closest('.fluid-engine');if(fe)fe.style.display='block';})();
 // Each line of the hunt title stays on one line: shrink a line until it fits the section.
 (function () {
   function fitTitle() {
