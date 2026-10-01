@@ -22,6 +22,18 @@
 <script>
   (function () {
     var f = document.getElementById('th-leaderboard');
+    // ?act=one|two|three shows that act's standings (Maurice, 2026-10-01): Act One violet, Act Two green, Act Three red.
+    var act = (location.search.match(/[?&]act=(one|two|three)/i) || [])[1];
+    if (act) {
+      act = act.toLowerCase();
+      var C = { one: ['#482d85', 'rgba(72,45,133,.9)', '#2d1c53'], two: ['#1a5e41', 'rgba(26,94,65,.9)', '#0f3a27'], three: ['#c1330a', 'rgba(193,51,10,.9)', '#912501'] }[act];
+      f.src = 'https://africhmaurice.github.io/leaderboard/act.html?act=' + act + '&embed=1&v=1';
+      f.title = 'Act ' + act.charAt(0).toUpperCase() + act.slice(1) + ' Standings';
+      var w = f.parentElement; w.style.backgroundColor = C[0];
+      var st = document.createElement('style');
+      st.textContent = '.th-lb-wrap::before{content:"";position:absolute;inset:0;background:' + C[1] + ';z-index:1;pointer-events:none}#lb-more{background:' + C[1] + '!important}#lb-more a{background:' + C[2] + '!important;border-color:' + C[2] + '!important}#lb-more a:hover{background:#fff!important;color:' + C[2] + '!important}';
+      document.head.appendChild(st);
+    }
     // A transformed Squarespace container would turn the fixed background back into a scrolling one.
     var sec = f.closest('section');
     for (var a = f.parentElement.parentElement; a && sec && sec.contains(a); a = a.parentElement) {
