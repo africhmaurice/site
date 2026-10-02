@@ -17,7 +17,7 @@
   window.maAfterLoading = function (fn) {
     (function wait() { var ov = document.getElementById('ma-loading'); if (ov && !ov.classList.contains('ma-done')) setTimeout(wait, 80); else fn(); })();
   };
-  var BASE = me ? me.src.replace(/loader\.js.*$/, '') : 'https://africhmaurice.github.io/site/';
+  var BASE = me ? me.src.replace(/loader[\w-]*\.js.*$/, '') : 'https://africhmaurice.github.io/site/';
   // Pages are fetched with cache: 'no-cache': the browser keeps its copy and only asks GitHub Pages whether it
   // changed (a tiny 304 answer when it has not), so a visit re-downloads a page only after a publish.
   var FRESH = { cache: 'no-cache' };
