@@ -249,6 +249,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #av .av-box ol li{display:flex;justify-content:space-between;gap:12px;font-weight:700;font-size:15px}
 #av .av-box ol li span{color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
 #av .av-note{margin:10px 0 0;font-size:13px;color:var(--muted)}
+#av .av-big{margin:6px 0 0;font-family:'Atomic Marker',cursive;font-size:clamp(28px,3vw,36px);line-height:1.2;letter-spacing:.03em;color:var(--accent)}
 #av .av-box h4 small{float:right;font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:800}
 #av .av-plan{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px}
 #av .av-enc{display:flex;align-items:center;gap:16px}
@@ -440,10 +441,10 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   <div class="av-band" data-theme="purple" style="--img:url('https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp')">
     <div class="av-wrap">
       <div class="av-line">
-        <section class="av-ch" id="av-the-crash" data-status="vote" data-closes="2026-10-02T04:00:00Z" data-count-action="advcount&vote=crash_vote" data-after="SEE THE VOTE PAGE">
+        <section class="av-ch" id="av-the-crash" data-status="done">
           <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
           <div class="av-card">
-            <p class="av-kick">CHAPTER 4 · DE'GATÉ · THE GATE OF DEATH<span class="av-pill">VOTING NOW</span></p>
+            <p class="av-kick">CHAPTER 4 · DE'GATÉ · THE GATE OF DEATH<span class="av-pill">DECIDED</span></p>
             <h2>Crash Landing</h2>
             <p class="av-lede">Missile defense systems embedded in the mountains--who'd have thought? The Second Wind comes down hard half a kilometer south of the Goma Skull. The crew makes it, but the ship doesn't. Now the crew needs a plan, and the frens get to decide what that plan is going to be. Majority rules.</p>
       <div class="av-player" data-audio>
@@ -476,12 +477,30 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/degate-5-shot-down.m4a"></audio>
       </div>
       <details class="av-tx"><summary>Read the transcript</summary><div><p>[Ringing ears. Metal groaning. A long exhale.]</p><p>Everybody sound off.</p><p><b>Hale</b>here</p><p><b>Scarlett</b>shit</p><p><b>Orion</b>I am here</p><p><b>Rune</b>aye</p><p><b>Captain</b>Where's Sparrow?</p><p>Sparrow (muffled): I'm outside the ship!</p><p><b>Captain</b>SIGH Good. Good. Nobody's dead.</p><p>The Second Wind is less good. We're down, hard, in the gomas' valley, half a kilometer south of the skull. Stick together, you said. Well... (laughs) lucky for you, we don't got a choice. We're together. Right smack dab in the middle of the shit.</p><p>Nobody move until we talk this out and make a plan.</p></div></details>
-      <div class="av-live">
-        <div><div class="k">FRENS WHO HAVE VOTED</div><div class="v" data-count>…</div></div>
-        <div><div class="k">FOR VOTING</div><div class="v">+50</div></div>
-        <div><div class="k" data-when-k>VOTING CLOSES</div><div class="v sm" data-when>Friday, October 2 at 12 AM ET</div></div>
-      </div>
-      <a class="av-cta" data-vote-cta href="https://www.mauriceafrich.com/the-crash">CRASH LANDING</a>
+      <p class="av-lede">30 frens rolled for the supplies and voted on the plan. The vote to stay together or split up tied, and went to the Captain's roll.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE SUPPLIES <small>THE CREW'S AVERAGE D20</small></h4><div class="av-plan">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-kit-kit_survival" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-kit-kit_survival)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9.12</span></div><div>
+              <p class="q">Survival Kit</p><p class="a">Took the worst of it</p>
+              <p class="crit"><b class="c20">0 NAT 20s</b> · <b class="c1">4 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-kit-kit_medic" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-kit-kit_medic)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10.91</span></div><div>
+              <p class="q">Field Medic Kit</p><p class="a">Held up</p>
+              <p class="crit"><b class="c20">1 NAT 20</b> · <b class="c1">2 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-kit-kit_breach" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-kit-kit_breach)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10.53</span></div><div>
+              <p class="q">Breach Kit</p><p class="a">Held up</p>
+              <p class="crit"><b class="c20">2 NAT 20s</b> · <b class="c1">2 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-kit-kit_defense" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-kit-kit_defense)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>14.24</span></div><div>
+              <p class="q">Defense Kit</p><p class="a">Best of the bunch</p>
+              <p class="crit"><b class="c20">4 NAT 20s</b> · <b class="c1">0 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-kit-kit_climbing" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-kit-kit_climbing)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>11.77</span></div><div>
+              <p class="q">Climbing Kit</p><p class="a">Held up</p>
+              <p class="crit"><b class="c20">1 NAT 20</b> · <b class="c1">0 NAT 1s</b></p></div></div>
+            </div></div>
+            <div class="av-box"><h4>WHICH DIRECTION?</h4><p class="av-big">West</p><p class="av-note">Head to the Sword to see what's up with that platform. 10 of 30 votes.</p></div>
+            <div class="av-box"><h4>STAY TOGETHER, OR SPLIT UP?</h4><p class="av-big">Stay together</p><p class="av-note">Everyone moves as one crew. 15 votes to 15. Won the Captain's roll (3).</p></div>
+          </div>
+      <a class="av-cta" href="https://www.mauriceafrich.com/the-crash">SEE THE FULL RESULTS</a>
           </div>
         </section>
       </div>
