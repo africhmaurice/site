@@ -229,6 +229,12 @@
       "url": "(preview only, not on Squarespace yet)",
       "title": "Profile preview",
       "source": "pages/profile-next.html"
+    },
+    {
+      "slug": "act-one-winners",
+      "url": "/act-one-winners",
+      "title": "Act One Winners (sweepstakes wheels)",
+      "source": "pages/act-one-winners.html"
     }
   ],
   "staysInSquarespace": [
