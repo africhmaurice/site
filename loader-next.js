@@ -513,8 +513,9 @@
       '#header .header-display-desktop .ma-hunt-dd{' + box + '}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-mega{display:grid;grid-template-columns:auto auto;gap:16px;padding:16px;align-items:start}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-mega-links{display:flex;flex-direction:column}' +
-      // the boxes sit in two columns so the dropdown fits on a laptop screen; a very short window scrolls inside it
-      '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups{display:grid;grid-template-columns:repeat(2,minmax(0,auto));gap:12px;align-items:start}' +
+      // the boxes flow into three columns so the dropdown fits on a laptop screen; a very short window scrolls inside it
+      '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups{display:block;columns:3 230px;column-gap:12px}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups>.ma-grp{break-inside:avoid;margin:0 0 12px}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-mega{width:max-content;max-height:calc(100vh - 120px);overflow-y:auto;overscroll-behavior:contain}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-grp{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid rgba(243,234,217,.3);padding:12px 14px 10px}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-grp>span{font-family:\'Almarai\',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590;text-transform:uppercase;margin-bottom:4px}' +
