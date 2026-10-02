@@ -1412,6 +1412,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   }
   loadPurse();
   if (!closed) setInterval(loadPurse, 300000);
-  jsonp({ action: 'votecount' }, function (res) { $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
+  if (closed && DATA.results) $('rc-count').textContent = fmt(DATA.results.votes);
+  else jsonp({ action: 'votecount' }, function (res) { $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
 })();
 </script>

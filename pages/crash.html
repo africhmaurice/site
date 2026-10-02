@@ -1348,6 +1348,18 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     function play(roll) { Dice.spin(id); setTimeout(function () { Dice.land(id, roll, function () { reveal(roll); }); }, 700); }
     btn.onclick = function () {
       btn.disabled = true; out.textContent = '';
+      // already rolled: the roll is in the page's results, so it plays straight away
+      var known = RES.picks.filter(function (p) { return p.id === qid; })[0].captain;
+      if (known) return play(known.roll);
+      // the Captain asks once; captainroll hands back the roll if it was already made
+      if (CAPTAIN) {
+        Dice.spin(id);
+        return jsonp({ action: 'captainroll', tie: key, key: CAPTAIN }, function (r) {
+          if (r && r.ok) return setTimeout(function () { Dice.land(id, r.roll, function () { reveal(r.roll); }); }, 500);
+          Dice.stop(id); btn.disabled = false;
+          out.textContent = r && r.error === 'key' ? 'That Captain link does not work.' : 'The roll did not go through. Try again in a moment.';
+        });
+      }
       jsonp({ action: 'crewties' }, function (res) {
         var had = res && res.ok && res.ties && res.ties[key];
         if (had) return play(had.roll);

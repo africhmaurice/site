@@ -1427,7 +1427,9 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   $('rc-pts').textContent = '+' + DATA.points;
   $('rc-close').textContent = when(CLOSES);
   $('rc-count').textContent = '…';
-  jsonp({ action: 'crewcount' }, function (res) { $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
+  // a closed vote's count never changes: it comes from the results, with no trip to the sheet
+  if (closed && DATA.results) $('rc-count').textContent = fmt(DATA.results.votes);
+  else jsonp({ action: 'crewcount' }, function (res) { $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
   // Before voting opens, the page can be explored but not rolled or sealed; it reloads itself when voting opens.
   if (notYet) {
     var wait = OPENS - Date.now();
@@ -1508,6 +1510,17 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     function play(roll) { Dice.spin(id); setTimeout(function () { Dice.land(id, roll, function () { reveal(roll); }); }, 700); }
     btn.onclick = function () {
       btn.disabled = true; out.textContent = '';
+      // already rolled: the roll is in the page's results, so it plays straight away
+      if (t.roll) return play(t.roll);
+      // the Captain asks once; captainroll hands back the roll if it was already made
+      if (CAPTAIN) {
+        Dice.spin(id);
+        return jsonp({ action: 'captainroll', tie: key, key: CAPTAIN }, function (r) {
+          if (r && r.ok) return setTimeout(function () { Dice.land(id, r.roll, function () { reveal(r.roll); }); }, 500);
+          Dice.stop(id); btn.disabled = false;
+          out.textContent = r && r.error === 'key' ? 'That Captain link does not work.' : 'The roll did not go through. Try again in a moment.';
+        });
+      }
       jsonp({ action: 'crewties' }, function (res) {
         var had = res && res.ok && res.ties && res.ties[key];
         if (had) return play(had.roll);
