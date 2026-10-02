@@ -99,6 +99,18 @@
       "source": "bot:squarespace-game-crossword.html"
     },
     {
+      "slug": "game-blades-brass",
+      "url": "(preview only, not on Squarespace yet)",
+      "title": "Game: Blades & Brass",
+      "source": "bot:squarespace-game-blades-and-brass.html"
+    },
+    {
+      "slug": "game-crest-quest",
+      "url": "(preview only, not on Squarespace yet)",
+      "title": "Game: Crest Quest",
+      "source": "bot:squarespace-game-crest-quest.html"
+    },
+    {
       "slug": "sixteen",
       "url": "/sixteen-pieces",
       "title": "Sixteen Pieces (loot box 36 slide puzzle)",

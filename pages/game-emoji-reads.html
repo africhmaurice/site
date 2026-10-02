@@ -226,10 +226,11 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <a href="https://www.mauriceafrich.com/games" data-k="skyword">SKYWORD</a>
       <a href="https://www.mauriceafrich.com/sort-the-shelf" data-k="shelf_sort">SORT THE SHELF</a>
       <a href="https://www.mauriceafrich.com/book-icons" data-k="emoji_reads">BOOK ICONS</a>
-      <a href="https://www.mauriceafrich.com/crossword" data-k="crossword" data-unlock="50000" hidden>CROSSWORD</a>
+      <a href="https://www.mauriceafrich.com/crossword" data-k="crossword">CROSSWORD</a>
+      <a href="https://www.mauriceafrich.com/blades-and-brass" data-k="blades_brass" data-unlock="50000" data-act="two" hidden>BLADES &amp; BRASS</a>
     </nav>
-    <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++)if((+d.crewTotal||0)>=+lk[j].getAttribute('data-unlock')){lk[j].hidden=false;if(lk[j].hasAttribute('data-soon'))lk[j].textContent='CROSSWORD (COMING SOON!)';}}).catch(function(){});})();</script>
-    <script>(function(){function fit(){var t=document.querySelectorAll('.hg-tag');for(var i=0;i<t.length;i++){var e=t[i],w=e.parentNode.clientWidth;e.style.fontSize='';var fs=parseFloat(getComputedStyle(e).fontSize);while(e.scrollWidth>w&&fs>10){fs-=.5;e.style.fontSize=fs+'px';}}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fit);else setTimeout(fit,0);window.addEventListener('load',fit);window.addEventListener('resize',fit);})();</script>
+    <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++){var act=lk[j].getAttribute('data-act'),n=act?+((d.acts||{})[act])||0:+d.crewTotal||0;if(n>=+lk[j].getAttribute('data-unlock'))lk[j].hidden=false;}}).catch(function(){});})();</script>
+    <script>(function(){function fit(){var t=document.querySelectorAll('.hg-tag');for(var i=0;i<t.length;i++){var e=t[i],w=e.parentNode.clientWidth,r=document.createRange();e.style.fontSize='';r.selectNodeContents(e);var fs=parseFloat(getComputedStyle(e).fontSize);while(r.getBoundingClientRect().width>w-4&&fs>10){fs-=.5;e.style.fontSize=fs+'px';}}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fit);else setTimeout(fit,0);window.addEventListener('load',fit);window.addEventListener('resize',fit);})();</script>
     <div class="hg-eyebrow">The Treasure Hunt</div>
     <h1 class="hg-h1">BOOK ICONS</h1>
     <p class="hg-tag">A famous book, told in icons. New every midnight EDT.</p>
@@ -279,6 +280,13 @@ var HG = (function () {
   var SUBMIT_URL = 'https://www.mauriceafrich.com/points';
   var ME = 'thLoot:me';
   // After a claimed win: the next game in the rotation.
+  // The share card after a win: each game's accent color and its address.
+  // (Skyword is violet; then the palette order: Violet, Scarlet, Green, Teal, Ink, Parchment)
+  var SHARE = { emoji_reads: ['scarlet', 'mauriceafrich.com/book-icons'], shelf_sort: ['green', 'mauriceafrich.com/sort-the-shelf'],
+    crossword: ['teal', 'mauriceafrich.com/crossword'], word_search: ['ink', 'mauriceafrich.com/games'],
+    first_lines: ['parchment', 'mauriceafrich.com/games'], title_scramble: ['violet', 'mauriceafrich.com/games'],
+    blades_brass: ['scarlet', 'mauriceafrich.com/blades-and-brass'], crest_quest: ['parchment', 'mauriceafrich.com/crest-quest'],
+    spyglass: ['ink', 'mauriceafrich.com/spyglass'] };
   var NEXT_GAME = { shelf_sort: ['CONGRATS! PLAY BOOK ICONS', 'https://www.mauriceafrich.com/book-icons'], emoji_reads: ['CONGRATS! PLAY BOOKISH CROSSWORD', 'https://www.mauriceafrich.com/crossword'], crossword: ['CONGRATS! PLAY SKYWORD', 'https://www.mauriceafrich.com/games'] };
 
   function esc(s) {
@@ -382,6 +390,9 @@ var HG = (function () {
         var points = pts || o.points;
         state.done = 'win'; state.sol = solution; state.detail = detail; save();
         resultEl.className = 'hg-result win'; resultEl.style.display = 'block';
+        // the game sets api.share = { label, stat, timed, icons } before it calls win
+        if (window.HGShare && api.share && SHARE[o.key]) HGShare.show({ game: o.label, board: (o.noun || 'Puzzle') + ' #' + (index + 1), day: day,
+          theme: SHARE[o.key][0], site: SHARE[o.key][1], label: api.share.label, stat: api.share.stat, timed: api.share.timed, icons: api.share.icons });
         var head = '<div class="hg-bang">' + (message || 'NICE WORK!') + '</div>' + (extra ? '<p style="margin-bottom:10px">' + extra + '</p>' : '');
         if (state.claimed) return claimed(state.claimed);
         if (me.email) return oneClick();
@@ -468,6 +479,135 @@ var HG = (function () {
   return { start: start, esc: esc, norm: norm, b64: b64, shuffle: shuffle, toast: toast };
 })();
 
+// ---- the share card for every daily game (inlined into each game page) ----
+// HGShare.show(o) adds a panel under the win box: a 1200x600 PNG card, Save and Copy buttons, and where to post it.
+//   o.game 'Blades & Brass'   o.board 'Board #1'   o.day '2026-10-02'   o.theme violet, scarlet, green, teal, ink or parchment
+//   o.label 'SOLVED IN'       o.stat '1:25'        o.site 'mauriceafrich.com/blades-and-brass'
+//   o.icons [image urls]      o.grid [['#3adb97', ...], ...] rows of colored squares (Skyword)
+//   o.timed true: the panel says "time" instead of "result"     o.after the element the panel goes under
+var HGShare = (function () {
+  var DISCORD = 'https://discord.gg/TV8SNnSGdb', url = null, opts = null;
+  // the six brand colors, each a whole card: ground, top and bottom bands, text, the big result, the frame
+  var THEMES = {
+    violet: { bg: '#482d85', band: '#2d1c53', text: '#fffffe', soft: 'rgba(255,255,254,.72)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
+    scarlet: { bg: '#c53200', band: '#912501', text: '#fffffe', soft: 'rgba(255,255,254,.75)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
+    green: { bg: '#2c6021', band: '#1b3b15', text: '#fffffe', soft: 'rgba(255,255,254,.72)', stat: '#a2f590', frame: 'rgba(162,245,144,.4)' },
+    teal: { bg: '#268e62', band: '#1a5e41', text: '#fffffe', soft: 'rgba(255,255,254,.75)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
+    ink: { bg: '#0b170f', band: '#213226', text: '#fffffe', soft: '#607667', stat: '#3adb97', frame: 'rgba(162,245,144,.35)' },
+    parchment: { bg: '#fffffe', band: '#c53200', text: '#0b170f', soft: '#607667', stat: '#c53200', frame: 'rgba(11,23,15,.25)' }
+  };
+  var css = document.createElement('style');
+  css.textContent = '.hg-share{margin:20px auto 0;max-width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;padding:clamp(22px,4vw,34px) clamp(18px,3vw,30px);background:#0b170f;border:3px solid #111;color:#fffffe;text-align:center;box-sizing:border-box}' +
+    '.hg-share-h{font-family:"Atomic Marker",cursive;font-weight:400;font-size:clamp(30px,5vw,44px);line-height:1.25;letter-spacing:.03em;color:#a2f590;margin:0}' +
+    '.hg-badge{display:block;width:100%;max-width:560px;aspect-ratio:2/1;background:#0b170f;border:2px solid rgba(162,245,144,.35)}' +
+    '.hg-share-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}' +
+    '.hg-share-btns button{margin:0;min-width:220px;font-family:"Almarai",sans-serif;font-weight:700;font-size:15px;letter-spacing:.08em;color:#fffffe;background:#c53200;border:2px solid #fffffe;border-radius:0;padding:12px 20px;cursor:pointer;transition:transform .15s ease,background .15s ease}' +
+    '.hg-share-btns button:hover{background:#ff4c0f;transform:scale(1.04)}' +
+    '.hg-swatches{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0;padding:0;border:0}' +
+    '.hg-swatches legend{width:100%;padding:0;margin:0 0 10px;font-family:"Almarai",sans-serif;font-weight:700;font-size:14px;letter-spacing:.08em;color:#fffffe;text-align:center}' +
+    '.hg-swatch{width:34px;height:34px;border:2px solid rgba(255,255,254,.55);border-radius:0;padding:0;cursor:pointer;transition:transform .12s ease}' +
+    '.hg-swatch:hover{transform:scale(1.1)}.hg-swatch[aria-pressed="true"]{outline:3px solid #a2f590;outline-offset:3px}' +
+    '.hg-share-how{font-family:"Almarai",sans-serif;font-size:clamp(15px,1.9vw,17px);line-height:1.6;margin:0;max-width:500px;color:#fffffe}.hg-share-how a{color:#a2f590}';
+  document.head.appendChild(css);
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  var NAMES = { violet: 'Violet', scarlet: 'Scarlet', green: 'Green', teal: 'Teal', ink: 'Ink', parchment: 'Parchment' };
+  function pickKey() { return 'thShareColor:' + opts.game; }
+  function word() { return opts.timed ? 'TIME' : 'RESULT'; }
+  function show(o) {
+    opts = o;
+    if (!o.date) o.date = new Date(o.day + 'T12:00:00Z').toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' });
+    try { var saved = localStorage.getItem(pickKey()); if (saved && THEMES[saved]) o.theme = saved; } catch (e) {}
+    var old = document.querySelector('.hg-share'); if (old) old.remove();
+    var after = o.after || document.getElementById('hg-result'), d = document.createElement('div');
+    d.innerHTML = '<div class="hg-share"><div class="hg-share-h">SHARE YOUR ' + word() + '!</div>' +
+      '<img loading="lazy" decoding="async" class="hg-badge" alt="My ' + esc(o.game) + ' card: ' + esc(o.label.toLowerCase()) + ' ' + esc(o.stat) + '">' +
+      '<fieldset class="hg-swatches"><legend>PICK YOUR COLOR</legend>' + Object.keys(THEMES).map(function (k) {
+        return '<button type="button" class="hg-swatch" data-theme="' + k + '" aria-pressed="' + (k === o.theme) + '" aria-label="' + NAMES[k] + '" title="' + NAMES[k] + '" style="background:' + THEMES[k].bg + '"></button>';
+      }).join('') + '</fieldset>' +
+      '<div class="hg-share-btns"><button type="button" class="hg-share-save">SAVE MY CARD</button>' +
+      '<button type="button" class="hg-share-copy">COPY MY ' + word() + '</button></div>' +
+      '<p class="hg-share-how">Post your card in <b>#🎯DAILY_GAMES</b> in the <a href="' + DISCORD + '" target="_blank" rel="noopener">Trench Community Discord</a> and see how the rest of the crew did.</p></div>';
+    after.parentNode.insertBefore(d.firstChild, after.nextSibling);
+    draw(o);
+  }
+  function load(src) {
+    return new Promise(function (ok) { var i = new Image(); i.crossOrigin = 'anonymous'; i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; });
+  }
+  function draw(o) {
+    var fonts = document.fonts ? Promise.all([document.fonts.load('80px "Atomic Marker"'), document.fonts.load('700 28px Almarai'), document.fonts.load('800 150px Almarai')]).catch(function () {}) : Promise.resolve();
+    return fonts.then(function () { return Promise.all((o.icons || []).map(load)); }).then(function (icons) {
+      var W = 1200, H = 600, c = document.createElement('canvas'); c.width = W; c.height = H;
+      var x = c.getContext('2d');
+      var T = THEMES[o.theme] || THEMES.ink;
+      x.fillStyle = T.bg; x.fillRect(0, 0, W, H);
+      x.fillStyle = T.band; x.fillRect(0, 0, W, 14); x.fillRect(0, H - 14, W, 14);
+      x.strokeStyle = T.frame; x.lineWidth = 2; x.strokeRect(40, 54, W - 80, H - 108);
+      x.textBaseline = 'alphabetic';
+      // left: the game, the puzzle, the day, then its icons or its guess grid
+      x.fillStyle = T.soft; x.font = '800 22px Almarai, sans-serif'; spaced(x, "CELLO'S GATE TREASURE HUNT", 80, 122, 3);
+      x.fillStyle = T.text; x.font = '84px "Atomic Marker", cursive'; fit(x, o.game.toUpperCase(), 80, 236, 600);
+      x.fillStyle = T.text; x.font = '700 26px Almarai, sans-serif'; spaced(x, o.board.toUpperCase(), 80, 300, 2);
+      x.fillStyle = T.soft; spaced(x, o.date.toUpperCase(), 80, 342, 2);
+      icons.forEach(function (im, k) { x.fillStyle = o.theme === 'teal' || o.theme === 'green' ? '#0b170f' : '#607667'; x.fillRect(80 + k * 124, 380, 108, 108); if (im) x.drawImage(im, 86 + k * 124, 386, 96, 96); });
+      if (o.grid) {
+        var sq = Math.min(22, Math.floor(130 / o.grid.length) - 4);
+        o.grid.forEach(function (row, r) { row.forEach(function (col, k) { x.fillStyle = T.band; x.fillRect(78 + k * (sq + 5), 370 + r * (sq + 5), sq + 4, sq + 4); x.fillStyle = col; x.fillRect(80 + k * (sq + 5), 372 + r * (sq + 5), sq, sq); }); });
+      }
+      // right: the result
+      x.textAlign = 'center';
+      x.fillStyle = T.text; x.font = '800 26px Almarai, sans-serif'; if ('letterSpacing' in x) x.letterSpacing = '4px'; fit(x, o.label.toUpperCase(), 930, 196, 400); if ('letterSpacing' in x) x.letterSpacing = '0px';
+      x.fillStyle = T.stat; x.font = '800 150px Almarai, sans-serif'; fit(x, o.stat.toUpperCase(), 930, 360, 380);
+      x.fillStyle = T.text; x.font = '700 21px Almarai, sans-serif'; fit(x, o.site.toUpperCase(), 920, 470, 360);
+      x.textAlign = 'left';
+      url = c.toDataURL('image/png');
+      var im = document.querySelector('img.hg-badge'); if (im) im.src = url;
+      return url;
+    });
+  }
+  // letter-spaced text (canvas letterSpacing is not everywhere yet)
+  function spaced(x, s, px, py, gap) {
+    if ('letterSpacing' in x) { x.letterSpacing = gap + 'px'; x.fillText(s, px, py); x.letterSpacing = '0px'; return; }
+    x.fillText(s, px, py);
+  }
+  function fit(x, s, px, py, max) {
+    var m = /^(.*?)(\d+)px\s*(.*)$/.exec(x.font), size = +m[2];
+    while (x.measureText(s).width > max && size > 12) { size -= 1; x.font = m[1] + size + 'px ' + m[3]; }
+    x.fillText(s, px, py);
+  }
+  function text() { return opts.game + ' ' + opts.board + ': ' + opts.label.toLowerCase() + ' ' + opts.stat + '. Play at ' + opts.site; }
+  function save(btn) {
+    if (!url) return;
+    fetch(url).then(function (r) { return r.blob(); }).then(function (b) {
+      var name = opts.game.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + opts.day + '.png';
+      var file = typeof File === 'function' ? new File([b], name, { type: 'image/png' }) : null;
+      // phones: the share sheet, so it can go straight into Discord. Everywhere else: a download.
+      if (file && navigator.canShare && navigator.canShare({ files: [file] }) && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        return navigator.share({ files: [file], text: text() }).catch(function () {});
+      }
+      var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = name;
+      document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+      btn.textContent = 'SAVED!'; setTimeout(function () { btn.textContent = 'SAVE MY CARD'; }, 2200);
+    });
+  }
+  function copy(btn) {
+    var done = function () { btn.textContent = 'COPIED!'; setTimeout(function () { btn.textContent = 'COPY MY ' + word(); }, 2200); };
+    try { navigator.clipboard.writeText(text()).then(done, function () { window.prompt('Copy your ' + word().toLowerCase() + ':', text()); }); }
+    catch (e) { window.prompt('Copy your ' + word().toLowerCase() + ':', text()); }
+  }
+  document.addEventListener('click', function (e) {
+    var sw = e.target.closest && e.target.closest('.hg-swatch');
+    if (sw && opts) {
+      opts.theme = sw.getAttribute('data-theme');
+      try { localStorage.setItem(pickKey(), opts.theme); } catch (er) {}
+      var all = document.querySelectorAll('.hg-swatch'); for (var i = 0; i < all.length; i++) all[i].setAttribute('aria-pressed', String(all[i] === sw));
+      draw(opts); return;
+    }
+    var t = e.target.closest && e.target.closest('.hg-share-save, .hg-share-copy'); if (!t) return;
+    if (t.classList.contains('hg-share-save')) save(t); else copy(t);
+  });
+  return { show: show };
+})();
+
 </script>
 <script>
 // The page runs edge to edge: drop the padding of the Squarespace section it sits in,
@@ -499,7 +639,7 @@ var HG_GAME = {"key":"emoji_reads","label":"Book Icons","points":25,"startDate":
     HG.toast('NOT THAT BOOK!'); paint();
   };
   function reveal() { return '<span class="hg-answer">' + HG.esc(P.title) + '</span> by ' + HG.esc(P.author); }
-  function finish() { var m = st.guesses.length; g.win(HG.norm(P.title), 'try ' + (m + 1), m ? 'GOT IT!' : 'FIRST TRY!', 'It was ' + reveal() + '.'); }
+  function finish() { var m = st.guesses.length; g.share = { label: 'GOT IT ON', stat: m ? 'TRY ' + (m + 1) : 'TRY 1' }; g.win(HG.norm(P.title), 'try ' + (m + 1), m ? 'GOT IT!' : 'FIRST TRY!', 'It was ' + reveal() + '.'); }
   function lose() { g.lose('It was ' + reveal() + '. Come back tomorrow for a new one.'); }
   paint();
   if (st.done === 'win') finish(); else if (st.done === 'lose') lose();
