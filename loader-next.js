@@ -514,7 +514,7 @@
       '#header .header-display-desktop .ma-hunt-dd .ma-mega{display:grid;grid-template-columns:auto auto;gap:16px;padding:16px;align-items:start}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-mega-links{display:flex;flex-direction:column}' +
       // the boxes flow into three columns so the dropdown fits on a laptop screen; a very short window scrolls inside it
-      '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups{display:block;columns:3 230px;column-gap:12px}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups{display:block;columns:3;column-gap:12px;width:732px}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups>.ma-grp{break-inside:avoid;margin:0 0 12px}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-mega{width:max-content;max-height:calc(100vh - 120px);overflow-y:auto;overscroll-behavior:contain}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-grp{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid rgba(243,234,217,.3);padding:12px 14px 10px}' +
@@ -585,6 +585,14 @@
       });
       out.appendChild(mega);
       huntList.innerHTML = ''; huntList.classList.add('ma-hunt-dd'); huntList.appendChild(out);
+      // The dropdown opens from the menu item's right edge and grows left; on a narrower screen it is nudged back
+      // so it never runs off the left side.
+      var item = huntList.closest('.header-nav-item');
+      var keepOn = function () {
+        huntList.style.transform = '';
+        requestAnimationFrame(function () { var r = huntList.getBoundingClientRect(); if (r.width && r.left < 16) huntList.style.transform = 'translateX(' + Math.ceil(16 - r.left) + 'px)'; });
+      };
+      if (item) { item.addEventListener('mouseenter', keepOn); item.addEventListener('focusin', keepOn); }
       // phone menu: the hunt phone menu's list, groups boxed and headed as on the hunt pages
       var panel = document.querySelector('.header-menu-nav [data-folder="' + HUNT + '"] .header-menu-nav-folder-content');
       if (!panel || !ov) return;
