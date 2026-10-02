@@ -17,7 +17,7 @@
   window.maAfterLoading = function (fn) {
     (function wait() { var ov = document.getElementById('ma-loading'); if (ov && !ov.classList.contains('ma-done')) setTimeout(wait, 80); else fn(); })();
   };
-  var BASE = me ? me.src.replace(/loader\.js.*$/, '') : 'https://africhmaurice.github.io/site/';
+  var BASE = me ? me.src.replace(/loader[\w-]*\.js.*$/, '') : 'https://africhmaurice.github.io/site/';
   // Pages are fetched with cache: 'no-cache': the browser keeps its copy and only asks GitHub Pages whether it
   // changed (a tiny 304 answer when it has not), so a visit re-downloads a page only after a publish.
   var FRESH = { cache: 'no-cache' };
@@ -59,6 +59,127 @@
     });
   }
 
+  // ---- Speed (Maurice, 2026-10-02). Every page goes through here, so the fixes live here once. ----------
+  // 1. Atomic Marker: the pages ask for an 847 KB OTF; Squarespace already serves the same font as a 424 KB WOFF2.
+  var MARKER = 'https://file.squarespace-cdn.com/content/v2/namespaces/fonts/libraries/68f0178dd88a7e52ec46ae7e/assets/fcf5195a-5d29-4ff1-9122-8c51374e01cb/font.woff2';
+  var MARKER_OTF = /url\((['"]?)[^)'"]*Atomic\+Marker\+Regular\.otf\1\)\s*format\((['"])opentype\2\)/g;
+  // 2. Almarai: Squarespace already loads 400 and 700 site-wide; only 800 comes from Google Fonts.
+  function sqspAlmarai() {
+    var has = false;
+    try { document.fonts.forEach(function (f) { if (/almarai/i.test(f.family) && String(f.weight) === '400') has = true; }); } catch (e) {}
+    return has;
+  }
+  // 3. Backgrounds: lighter copies made from the originals, one for big screens (d/) and one for phones (m/).
+  var BGV = ['cavern-ruins-as581365050', 'city-skyline-panorama-as348070597', 'crystal-towers-lake-as395045722', 'dome-city-mist-as159145789',
+    'floating-blocks-city-as311317794', 'garden-city-towers', 'gyroscope-foundry-as401944302', 'monolith-canyon-as444233611',
+    'nebula-glow-as332921866', 'neon-street-as1928158052', 'neon-tunnel-arch-as468986961', 'overgrown-sphere-as470076105', 'red-sun-ruins-as360866146'];
+  var phone = Math.min(window.innerWidth || 9999, (window.screen && screen.width) || 9999) <= 900;
+  // 4. Images come from a copy of this site pinned to one publish, cached for a year (GitHub Pages only allows
+  // 10 minutes, and every publish makes visitors download everything again). Anything newer than the pin
+  // falls back to GitHub Pages by itself. tools/pin-assets.mjs moves the pin after a publish.
+  var PIN = 'dd81e5d6a4eda2525f8d21a62cb3a7f3182d94d8';
+  var GH = 'https://africhmaurice.github.io/site/', CDN = PIN ? 'https://cdn.jsdelivr.net/gh/africhmaurice/site@' + PIN + '/' : '';
+  function cdn(u) { return CDN && u.indexOf(GH + 'assets/') === 0 ? CDN + u.slice(GH.length) : u; }
+  function prep(html) {
+    html = html.replace(MARKER_OTF, "url('" + MARKER + "') format('woff2')");
+    if (sqspAlmarai()) html = html.replace(/(fonts\.googleapis\.com\/css2\?family=Almarai:wght@)400;700;800/g, '$1' + '800');
+    html = html.replace(/https:\/\/africhmaurice\.github\.io\/site\/assets\/bg\/([\w-]+)\.webp/g, function (all, name) {
+      return BGV.indexOf(name) < 0 ? all : GH + 'assets/bg/' + (phone ? 'm/' : 'd/') + name + '.webp';
+    });
+    return html;
+  }
+  if (!document.getElementById('ma-marker-pre')) {
+    var pre = document.createElement('link'); pre.id = 'ma-marker-pre'; pre.rel = 'preload'; pre.as = 'font'; pre.type = 'font/woff2'; pre.crossOrigin = 'anonymous'; pre.href = MARKER;
+    (document.head || document.documentElement).appendChild(pre);
+  }
+  // 5. Lazy backgrounds: a background image waits until its section is on screen. The first screen loads right
+  // away; once it's ready, anything within about a screen and a half of where you are loads ahead of you, slides
+  // in the home slider included, so nothing pops in late.
+  var lazy = [], firstScreen = [];
+  var BGPROP = /(^|;)\s*((?:--[\w-]+)|background(?:-image)?)\s*:\s*([^;]*url\((?!['"]?data:)[^;]*)/g;
+  function holdBackgrounds(root) {
+    Array.prototype.forEach.call(root.querySelectorAll('[style*="url("]'), function (x) {
+      var st = x.getAttribute('style'), keep = [];
+      st.replace(BGPROP, function (all, lead, prop, val) { keep.push([prop, val.trim()]); return all; });
+      if (!keep.length) return;
+      // background-attachment:fixed (the parallax) and the other background settings written after the image:
+      // putting the image back resets them, so they go back on after it
+      var after = [];
+      st.replace(/(^|;)\s*(background-[\w-]+)\s*:\s*([^;]+)/g, function (all, lead, prop, val) { if (!/url\(/.test(val)) after.push([prop, val.trim()]); return all; });
+      x.setAttribute('style', st.replace(BGPROP, function (all, lead, prop, val) { return lead + prop + ':' + val.replace(/url\([^)]*\)/g, 'none'); }));
+      lazy.push({ el: x, keep: keep, after: after });
+    });
+    Array.prototype.forEach.call(root.querySelectorAll('img'), function (img) {
+      if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
+      if (!img.hasAttribute('decoding')) img.setAttribute('decoding', 'async');
+      var src = img.getAttribute('src');
+      if (src && CDN && src.indexOf(GH + 'assets/') === 0) {
+        img.setAttribute('src', cdn(src));
+        img.setAttribute('onerror', "this.onerror=null;this.src='" + src + "'");
+      }
+    });
+  }
+  function loadBg(item) {
+    return new Promise(function (done) {
+      var urls = [], RX = /url\((['"]?)([^)'"]+)\1\)/g;
+      item.keep.forEach(function (k) { k[1].replace(RX, function (a, q, u) { urls.push(u); return a; }); });
+      var left = urls.length, swap = {};
+      function apply() {
+        item.keep.forEach(function (k) {
+          var v = k[1].replace(RX, function (a, q, u) { return 'url("' + (swap[u] || u) + '")'; });
+          var imp = /!important\s*$/.test(v);
+          item.el.style.setProperty(k[0], v.replace(/\s*!important\s*$/, ''), imp ? 'important' : '');
+        });
+        (item.after || []).forEach(function (k) {
+          var imp = /!important\s*$/.test(k[1]);
+          item.el.style.setProperty(k[0], k[1].replace(/\s*!important\s*$/, ''), imp ? 'important' : '');
+        });
+        done();
+      }
+      if (!left) return apply();
+      urls.forEach(function (u) {
+        var c = cdn(u), im = new Image();
+        im.onload = function () { swap[u] = c; if (!--left) apply(); };
+        im.onerror = function () {
+          if (c === u) { if (!--left) apply(); return; }
+          var g = new Image(); g.onload = g.onerror = function () { if (!--left) apply(); }; g.src = u;
+        };
+        im.src = c;
+      });
+    });
+  }
+  function onScreen(x, ahead) {
+    var r = x.getBoundingClientRect(), h = window.innerHeight || 800, w = document.documentElement.clientWidth;
+    if (!r.width || !r.height) return false;
+    if (ahead) return r.bottom > -h * 3 && r.top < h * 4;
+    return r.bottom > 0 && r.top < h && r.right > 0 && r.left < w;
+  }
+  var aheadOn = false, sweepT = 0;
+  function sweep() {
+    for (var i = lazy.length - 1; i >= 0; i--) {
+      var it = lazy[i];
+      if (!it.el.isConnected) continue;
+      if (onScreen(it.el, false) || (aheadOn && onScreen(it.el, true))) { lazy.splice(i, 1); var p = loadBg(it); if (!aheadOn) firstScreen.push(p); }
+    }
+  }
+  function sweepSoon() { if (!sweepT) sweepT = requestAnimationFrame(function () { sweepT = 0; sweep(); }); }
+  window.addEventListener('scroll', sweepSoon, { passive: true });
+  window.addEventListener('resize', sweepSoon);
+  // panels that open later (popups, tabs, slides) are picked up by a light check twice a second
+  setInterval(function () { if (lazy.length) sweep(); }, 500);
+  // Once the first screen is up: the map's images (the world map and the treasure map) load right away, and
+  // after a short pause every background still waiting loads too, one at a time, so a fast scroll or a jump
+  // down the page never finds an empty section.
+  function startAhead() {
+    if (aheadOn) return; aheadOn = true; sweep();
+    Array.prototype.forEach.call(document.querySelectorAll('#map img[loading="lazy"]'), function (im) { im.loading = 'eager'; });
+    setTimeout(function next() {
+      var it = null;
+      for (var i = 0; i < lazy.length; i++) if (lazy[i].el.isConnected) { it = lazy.splice(i, 1)[0]; break; }
+      if (it) loadBg(it).then(next);
+    }, 2500);
+  }
+
   function mount(el) {
     if (el.getAttribute('data-ma-state')) return;
     el.setAttribute('data-ma-state', 'loading');
@@ -67,7 +188,12 @@
     fetch(BASE + 'pages/' + slug + '.html', FRESH)
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
       .then(function (html) {
-        el.innerHTML = html;
+        var t = document.createElement('template');
+        t.innerHTML = prep(html);
+        holdBackgrounds(t.content);
+        el.innerHTML = '';
+        el.appendChild(t.content);
+        sweep();
         return runScripts(el);
       })
       .then(function () {
@@ -164,13 +290,28 @@
       if (finished) return; finished = true; clearInterval(tick);
       red.style.height = '100%';
       setTimeout(function () { ov.classList.add('ma-done'); setTimeout(function () { ov.remove(); }, 600); }, still ? 0 : 420);
+      startAhead();
     }
-    // Done when the page and its custom sections have loaded, but shown for at least 0.8s so the fill reads;
-    // never longer than 8s, whatever is still loading.
-    function check() { if (document.readyState === 'complete' && pending <= 0) setTimeout(finish, Math.max(0, 800 - (Date.now() - t0))); else setTimeout(check, 100); }
-    check(); setTimeout(finish, 8000);
+    // Done once the first screen is ready: the custom sections are in, the fonts have arrived, and the images you
+    // can see right now have loaded. Everything further down loads as you get near it. Shown for at least 0.8s so
+    // the fill reads; never longer than 5s, whatever is still loading.
+    function firstReady() {
+      if (pending > 0 || document.readyState === 'loading') return false;
+      sweep();
+      return !Array.prototype.some.call(document.images, function (im) { return !im.complete && onScreen(im, false); });
+    }
+    var waiting = false;
+    function check() {
+      if (finished || waiting) return;
+      if (!firstReady()) { setTimeout(check, 100); return; }
+      waiting = true;
+      var fonts = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+      Promise.all([fonts, Promise.all(firstScreen)]).then(function () { setTimeout(finish, Math.max(0, 800 - (Date.now() - t0))); });
+    }
+    check(); setTimeout(finish, 5000);
   }
   if (inHead || /[?&]ma-loading/.test(location.search)) loadingScreen();
+  else setTimeout(function wait() { if (pending > 0 || document.readyState === 'loading') setTimeout(wait, 200); else setTimeout(startAhead, 600); }, 200);
 
   // Site-wide background style: Squarespace's own "Parallax" image effect (the image slides) becomes the
   // Hunt page's fixed background (the image holds still while the page scrolls over it). Like the Hunt page,
@@ -192,7 +333,9 @@
       if (!img) return;
       var src = img.getAttribute('data-src') || img.currentSrc || img.getAttribute('src');
       if (!src) return;
-      if (/squarespace-cdn\.com/.test(src) && src.indexOf('format=') < 0) src += (src.indexOf('?') < 0 ? '?' : '&') + 'format=2500w';
+      // these sit under a heavy color wash, so 1500 wide is plenty unless the screen has far more pixels than that
+      var px = (window.innerWidth || 0) * (window.devicePixelRatio || 1);
+      if (/squarespace-cdn\.com/.test(src) && src.indexOf('format=') < 0) src += (src.indexOf('?') < 0 ? '?' : '&') + 'format=' + (px > 2200 ? '2500w' : '1500w');
       fx.removeAttribute('data-controller'); // stop Squarespace animating it
       var fp = (img.getAttribute('data-image-focal-point') || '0.5,0.5').split(',');
       bg.style.backgroundImage = 'url("' + src + '")';
@@ -370,7 +513,11 @@
       '#header .header-display-desktop .ma-hunt-dd{' + box + '}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-mega{display:grid;grid-template-columns:auto auto;gap:16px;padding:16px;align-items:start}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-mega-links{display:flex;flex-direction:column}' +
-      '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups{display:flex;flex-direction:column;gap:12px}' +
+      // the boxes flow into three columns so the dropdown fits on a laptop screen; a very short window scrolls inside it
+      '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups{display:block;columns:3;column-gap:12px;width:900px}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-grp a.ma-hl{max-width:100%;white-space:normal!important}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups>.ma-grp{break-inside:avoid;margin:0 0 12px}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-mega{width:max-content;max-height:calc(100vh - 120px);overflow-y:auto;overscroll-behavior:contain}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-grp{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid rgba(243,234,217,.3);padding:12px 14px 10px}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-grp>span{font-family:\'Almarai\',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590;text-transform:uppercase;margin-bottom:4px}' +
       '#header .header-display-desktop .ma-hunt-dd a.ma-hl{display:block!important;margin:0!important;padding:11px 18px!important;color:#fff!important;background:none!important;font-family:\'Almarai\',sans-serif!important;font-weight:700!important;font-size:clamp(12px,.92vw,14.4px)!important;letter-spacing:.07em!important;text-transform:uppercase!important;text-decoration:none!important;white-space:nowrap;line-height:1.2!important;text-align:left!important;box-sizing:border-box}' +
@@ -439,6 +586,14 @@
       });
       out.appendChild(mega);
       huntList.innerHTML = ''; huntList.classList.add('ma-hunt-dd'); huntList.appendChild(out);
+      // The dropdown opens from the menu item's right edge and grows left; on a narrower screen it is nudged back
+      // so it never runs off the left side.
+      var item = huntList.closest('.header-nav-item');
+      var keepOn = function () {
+        huntList.style.transform = '';
+        requestAnimationFrame(function () { var r = huntList.getBoundingClientRect(); if (r.width && r.left < 16) huntList.style.transform = 'translateX(' + Math.ceil(16 - r.left) + 'px)'; });
+      };
+      if (item) { item.addEventListener('mouseenter', keepOn); item.addEventListener('focusin', keepOn); }
       // phone menu: the hunt phone menu's list, groups boxed and headed as on the hunt pages
       var panel = document.querySelector('.header-menu-nav [data-folder="' + HUNT + '"] .header-menu-nav-folder-content');
       if (!panel || !ov) return;

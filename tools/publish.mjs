@@ -42,3 +42,5 @@ if (dry) { console.log('(dry run: not committed)'); git('reset -q'); process.exi
 git(`commit -q -m ${JSON.stringify(msg)}`);
 git('push -q origin HEAD');
 console.log(`✓ published. Live at ${site.publicBase} in about a minute.`);
+// Move the image pin (loader.js PIN) to this publish, so new or changed images come from the year-cached copy.
+try { execSync('node tools/pin-assets.mjs', { cwd: ROOT, stdio: 'inherit' }); } catch (e) { console.log('(image pin not moved: run node tools/pin-assets.mjs)'); }
