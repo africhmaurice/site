@@ -314,8 +314,9 @@
       if (!img) return;
       var src = img.getAttribute('data-src') || img.currentSrc || img.getAttribute('src');
       if (!src) return;
-      // these sit under a heavy color wash, so 1500 wide is plenty unless the screen itself is wider
-      if (/squarespace-cdn\.com/.test(src) && src.indexOf('format=') < 0) src += (src.indexOf('?') < 0 ? '?' : '&') + 'format=' + ((window.innerWidth || 0) > 1600 ? '2500w' : '1500w');
+      // these sit under a heavy color wash, so 1500 wide is plenty unless the screen has far more pixels than that
+      var px = (window.innerWidth || 0) * (window.devicePixelRatio || 1);
+      if (/squarespace-cdn\.com/.test(src) && src.indexOf('format=') < 0) src += (src.indexOf('?') < 0 ? '?' : '&') + 'format=' + (px > 2200 ? '2500w' : '1500w');
       fx.removeAttribute('data-controller'); // stop Squarespace animating it
       var fp = (img.getAttribute('data-image-focal-point') || '0.5,0.5').split(',');
       bg.style.backgroundImage = 'url("' + src + '")';
