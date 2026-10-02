@@ -102,8 +102,12 @@
       var st = x.getAttribute('style'), keep = [];
       st.replace(BGPROP, function (all, lead, prop, val) { keep.push([prop, val.trim()]); return all; });
       if (!keep.length) return;
+      // background-attachment:fixed (the parallax) and the other background settings written after the image:
+      // putting the image back resets them, so they go back on after it
+      var after = [];
+      st.replace(/(^|;)\s*(background-[\w-]+)\s*:\s*([^;]+)/g, function (all, lead, prop, val) { if (!/url\(/.test(val)) after.push([prop, val.trim()]); return all; });
       x.setAttribute('style', st.replace(BGPROP, function (all, lead, prop, val) { return lead + prop + ':' + val.replace(/url\([^)]*\)/g, 'none'); }));
-      lazy.push({ el: x, keep: keep });
+      lazy.push({ el: x, keep: keep, after: after });
     });
     Array.prototype.forEach.call(root.querySelectorAll('img'), function (img) {
       if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
@@ -126,6 +130,10 @@
           var imp = /!important\s*$/.test(v);
           item.el.style.setProperty(k[0], v.replace(/\s*!important\s*$/, ''), imp ? 'important' : '');
         });
+        (item.after || []).forEach(function (k) {
+          var imp = /!important\s*$/.test(k[1]);
+          item.el.style.setProperty(k[0], k[1].replace(/\s*!important\s*$/, ''), imp ? 'important' : '');
+        });
         done();
       }
       if (!left) return apply();
@@ -143,7 +151,7 @@
   function onScreen(x, ahead) {
     var r = x.getBoundingClientRect(), h = window.innerHeight || 800, w = document.documentElement.clientWidth;
     if (!r.width || !r.height) return false;
-    if (ahead) return r.bottom > -h * 1.5 && r.top < h * 2.5;
+    if (ahead) return r.bottom > -h * 3 && r.top < h * 4;
     return r.bottom > 0 && r.top < h && r.right > 0 && r.left < w;
   }
   var aheadOn = false, sweepT = 0;
@@ -159,7 +167,18 @@
   window.addEventListener('resize', sweepSoon);
   // panels that open later (popups, tabs, slides) are picked up by a light check twice a second
   setInterval(function () { if (lazy.length) sweep(); }, 500);
-  function startAhead() { if (aheadOn) return; aheadOn = true; sweep(); }
+  // Once the first screen is up: the map's images (the world map and the treasure map) load right away, and
+  // after a short pause every background still waiting loads too, one at a time, so a fast scroll or a jump
+  // down the page never finds an empty section.
+  function startAhead() {
+    if (aheadOn) return; aheadOn = true; sweep();
+    Array.prototype.forEach.call(document.querySelectorAll('#map img[loading="lazy"]'), function (im) { im.loading = 'eager'; });
+    setTimeout(function next() {
+      var it = null;
+      for (var i = 0; i < lazy.length; i++) if (lazy[i].el.isConnected) { it = lazy.splice(i, 1)[0]; break; }
+      if (it) loadBg(it).then(next);
+    }, 2500);
+  }
 
   function mount(el) {
     if (el.getAttribute('data-ma-state')) return;
