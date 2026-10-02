@@ -1352,8 +1352,13 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         Dice.spin(id);
         jsonp({ action: 'captainroll', tie: key, key: CAPTAIN }, function (r) {
           if (r && r.ok) return setTimeout(function () { Dice.land(id, r.roll, function () { reveal(r.roll); }); }, 500);
-          Dice.stop(id); btn.disabled = false;
-          out.textContent = r && r.error === 'key' ? 'That Captain link does not work.' : 'The roll did not go through. Try again in a moment.';
+          if (r && r.error === 'key') { Dice.stop(id); btn.disabled = false; out.textContent = 'That Captain link does not work.'; return; }
+          // A slow sheet can save the roll and still miss the reply: look again before calling it a miss.
+          jsonp({ action: 'crewties' }, function (again) {
+            var saved = again && again.ok && again.ties && again.ties[key];
+            if (saved) return Dice.land(id, saved.roll, function () { reveal(saved.roll); });
+            Dice.stop(id); btn.disabled = false; out.textContent = 'The roll did not go through. Try again in a moment.';
+          });
         });
       });
     };
