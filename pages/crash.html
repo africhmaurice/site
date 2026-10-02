@@ -441,6 +441,45 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cr-kit .rc-die{grid-row:auto}
 #rc .cr-kit .rc-roll{justify-self:center;max-width:100%;white-space:nowrap}
 #rc .cr-kit .rc-rollnote:empty{display:none}
+#rc .cr-res-kits{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+#rc .cr-res-kit{display:flex;align-items:center;gap:16px;background:var(--well);border:1px solid var(--hair);padding:20px}
+#rc .cr-res-kit.best{border-color:#9e74fd}
+#rc .cr-res-kit.worst{border-color:rgba(253,117,71,.7)}
+#rc .cr-res-kit p{margin:0}
+#rc .cr-res-kit .q{font-weight:800;font-size:12px;line-height:1.4;letter-spacing:.14em;color:#c3a6ff}
+#rc .cr-res-kit .t{font-family:'Atomic Marker',cursive;font-size:22px;line-height:1.25;letter-spacing:.03em;margin-top:4px}
+#rc .cr-res-kit.best .t{color:#c3a6ff}
+#rc .cr-res-kit.worst .t{color:#fd7547}
+#rc .cr-res-kit .a{font-weight:700;font-size:15px;line-height:1.45;margin-top:6px}
+#rc .cr-res-kit .crit{font-weight:800;font-size:12px;letter-spacing:.1em;margin-top:8px}
+#rc .cr-res-kit .c20{color:#c3a6ff}
+#rc .cr-res-kit .c1{color:#fd7547}
+#rc .cr-d20{position:relative;flex:none;width:84px;height:84px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}
+#rc .cr-d20 svg{width:100%;height:100%;display:block}
+#rc .cr-d20 span{position:absolute;left:0;right:0;top:41%;text-align:center;font-family:'Atomic Marker',cursive;font-size:19px;line-height:1.2;color:#fffffe}
+#rc .cr-win{border-left:3px solid #9e74fd;padding:4px 0 4px 20px;margin:0 0 24px}
+#rc .cr-win .k{margin:0 0 6px;font-weight:800;font-size:12px;letter-spacing:.16em;color:#c3a6ff}
+#rc .cr-win h3{margin:0;font-family:'Atomic Marker',cursive!important;font-weight:400!important;font-size:clamp(34px,4vw,48px)!important;line-height:1.2!important;letter-spacing:.03em!important;text-transform:none!important;color:#fffffe!important}
+#rc .cr-win h3+p{margin:8px 0 0;font-size:16px;line-height:1.5}
+#rc .cr-bars{list-style:none;margin:0;padding:0;display:grid;gap:16px}
+#rc .cr-bars li{display:grid;gap:6px}
+#rc .cr-bar-top{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+#rc .cr-bar-top b{font-weight:800;font-size:15px;letter-spacing:.06em}
+#rc .cr-bar-top span{flex:none;font-weight:700;font-size:13px;letter-spacing:.08em;color:var(--muted)}
+#rc .cr-bars li p{margin:0;font-size:14px;line-height:1.45;color:var(--muted)}
+#rc .cr-bar{height:12px;background:rgba(195,166,255,.14)}
+#rc .cr-bar i{display:block;height:100%;background:#482d85}
+#rc .cr-bars li.win .cr-bar i{background:#9e74fd}
+#rc .cr-bars li.win .cr-bar-top b{color:#c3a6ff}
+#rc .cr-tie{border:1.5px dashed rgba(195,166,255,.6);padding:20px;display:grid;justify-items:start;gap:12px;background:rgba(21,13,40,.45);margin:0 0 28px}
+#rc .cr-tie p{margin:0}
+#rc .cr-tie-opts{font-size:15px}
+#rc .cr-tie-rule{font-size:13px;letter-spacing:.06em;color:var(--muted)}
+#rc .cr-tie-die .rc-die{width:96px;height:96px}
+#rc .cr-tie-go{margin-top:0}
+#rc .cr-tie-out{font-size:16px}
+#rc .cr-tie-out b{color:#c3a6ff}
+@media (max-width:600px){#rc .cr-res-kit{padding:16px}}
 </style>
 
 <div id="rc" class="cr">
@@ -483,7 +522,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 <script>
 (function () {
-  var DATA = {"_help":"The vote after the crash on De'gaté (chapter 4). Built by scripts/build-crash.mjs into squarespace-crash.html; the sheet checks votes against the ADV block it writes into apps-script/lootbox.gs. Questions: kind 'roll' is a group d20 (average, nat 1 = two 0s, nat 20 = two 20s, five tiers); kind 'pick' is one option.","key":"crash_vote","points":50,"opens":"2026-10-01T04:00:00Z","closes":"2026-10-02T04:00:00Z","title":["Crash","Landing"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"Missile defense systems embedded in the mountains--who'd have thought? The Second Wind comes down hard half a kilometer south of the Goma Skull. The crew makes it, but the ship doesn't. Now the crew needs a plan, and the frens get to decide what that plan is going to be. Majority rules.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"Three or more natural 20s lift it a tier. Three or more natural 1s drop it a tier.","questions":[{"id":"supplies","kind":"rolls","kicker":"What do you mean we didn't secure them?","title":"Oh no, the supplies!","text":"How did the supplies fare during the crash? Every fren rolls for each kit. The crew's average on each die decides how that kit holds up.","items":[["kit_survival","Survival Kit"],["kit_medic","Field Medic Kit"],["kit_breach","Breach Kit"],["kit_defense","Defense Kit"],["kit_climbing","Climbing Kit"]],"tiers":["","","","",""]},{"id":"way","kind":"pick","kicker":"THE SHIP IS IN BAD SHAPE","title":"Which direction?","options":[["Northeast","Toward the gomas to see what happens."],["West","Head to the Sword to see what's up with that platform."],["East","Into the mountains in search of missile systems."],["Southeast","Skirt the mountains and head to the shore"],["Northwest","Head to the giant cave at the center and take a peek."],["Southwest","Head to the giant cave to the southeast and take a peek."]],"text":"The captain is staying behind to repair the ship. You need to go find this stone and get it back asap. Where do you start? \n\nNOTE FOR ALL HUNTERS: No spoilers! Things are not the same as the book, there will be no spoilers during this hunt, if something is revealed during the book's story, it will not be revealed during this campaign, so keep in mind that anything is possible and please do not spoil CG for any other hunters."},{"id":"split","kind":"pick","kicker":"STICK TOGETHER","title":"Stay Together, or Split Up?","text":"Sticking together is why everyone walked away. Do we keep it that way?","options":[["Stay together","Everyone moves as one crew."],["Split up","Two scout teams. Reconvene once we know more."]]}]};
+  var DATA = {"_help":"The vote after the crash on De'gaté (chapter 4). Built by scripts/build-crash.mjs into squarespace-crash.html; the sheet checks votes against the ADV block it writes into apps-script/lootbox.gs. Questions: kind 'roll' is a group d20 (average, nat 1 = two 0s, nat 20 = two 20s, five tiers); kind 'pick' is one option.","key":"crash_vote","points":50,"opens":"2026-10-01T04:00:00Z","closes":"2026-10-02T04:00:00Z","title":["Crash","Landing"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"Missile defense systems embedded in the mountains--who'd have thought? The Second Wind comes down hard half a kilometer south of the Goma Skull. The crew makes it, but the ship doesn't. Now the crew needs a plan, and the frens get to decide what that plan is going to be. Majority rules.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"Three or more natural 20s lift it a tier. Three or more natural 1s drop it a tier.","questions":[{"id":"supplies","kind":"rolls","kicker":"What do you mean we didn't secure them?","title":"Oh no, the supplies!","text":"How did the supplies fare during the crash? Every fren rolls for each kit. The crew's average on each die decides how that kit holds up.","items":[["kit_survival","Survival Kit"],["kit_medic","Field Medic Kit"],["kit_breach","Breach Kit"],["kit_defense","Defense Kit"],["kit_climbing","Climbing Kit"]],"tiers":["","","","",""]},{"id":"way","kind":"pick","kicker":"THE SHIP IS IN BAD SHAPE","title":"Which direction?","options":[["Northeast","Toward the gomas to see what happens."],["West","Head to the Sword to see what's up with that platform."],["East","Into the mountains in search of missile systems."],["Southeast","Skirt the mountains and head to the shore"],["Northwest","Head to the giant cave at the center and take a peek."],["Southwest","Head to the giant cave to the southeast and take a peek."]],"text":"The captain is staying behind to repair the ship. You need to go find this stone and get it back asap. Where do you start? \n\nNOTE FOR ALL HUNTERS: No spoilers! Things are not the same as the book, there will be no spoilers during this hunt, if something is revealed during the book's story, it will not be revealed during this campaign, so keep in mind that anything is possible and please do not spoil CG for any other hunters."},{"id":"split","kind":"pick","kicker":"STICK TOGETHER","title":"Stay Together, or Split Up?","text":"Sticking together is why everyone walked away. Do we keep it that way?","options":[["Stay together","Everyone moves as one crew."],["Split up","Two scout teams. Reconvene once we know more."]]}],"results":{"key":"crash_vote","sealed":30,"rollers":30,"supplies":[{"id":"kit_survival","name":"Survival Kit","average":9.12,"nat20":0,"nat1":4},{"id":"kit_medic","name":"Field Medic Kit","average":10.91,"nat20":1,"nat1":2},{"id":"kit_breach","name":"Breach Kit","average":10.53,"nat20":2,"nat1":2},{"id":"kit_defense","name":"Defense Kit","average":14.24,"nat20":4,"nat1":0},{"id":"kit_climbing","name":"Climbing Kit","average":11.77,"nat20":1,"nat1":0}],"picks":[{"id":"way","title":"Which direction?","counts":{"Northeast":6,"West":10,"East":7,"Southeast":2,"Northwest":5,"Southwest":0},"winner":"West","tie":null},{"id":"split","title":"Stay Together, or Split Up?","counts":{"Stay together":15,"Split up":15},"winner":null,"tie":["Stay together","Split up"]}]},"resultsLive":false};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
@@ -1229,6 +1268,97 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     sec.style.setProperty('background', color, 'important'); if (bg) bg.style.setProperty('background', color, 'important');
   }
   paintSection(); addEventListener('load', paintSection); setTimeout(paintSection, 800);
+
+  // ---- the results ----------------------------------------------------------------
+  // After the vote: the supplies (each kit's average), the winning direction, and any tie the Captain rolls for.
+  var RES = DATA.results, CAPTAIN = (location.hash.match(/captain=([^&]+)/) || [])[1] || '';
+  function d20badge(n, i) {
+    return '<div class="cr-d20"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="crg' + i + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs>' +
+      '<polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#crg' + i + ')" stroke="#c3a6ff" stroke-width="2.5" stroke-linejoin="round"/>' +
+      '<polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(195,166,255,.55)" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '<path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(195,166,255,.45)" stroke-width="1.5" fill="none"/></svg><span>' + n + '</span></div>';
+  }
+  function tieWinner(t, roll) { return t.options[roll % 2 === 1 ? 0 : 1]; }
+  function showResults() {
+    ['cw-start', 'cr-questions', 'rc-orders'].forEach(function (id) { var el = $(id); if (el) el.hidden = true; });
+    $('rc-close-k').textContent = 'VOTING CLOSED'; $('rc-close-s').textContent = 'The votes are in.';
+    $('rc-count').textContent = fmt(RES.sealed);
+    var qs = {}; DATA.questions.forEach(function (q) { qs[q.id] = q; });
+    var avgs = RES.supplies.map(function (s) { return s.average; });
+    var best = Math.max.apply(null, avgs), worst = Math.min.apply(null, avgs);
+    var kits = RES.supplies.map(function (s, i) {
+      var out = (RES.outcomes || {})[s.id], cls = s.average === best ? ' best' : s.average === worst ? ' worst' : '';
+      return '<article class="cr-res-kit' + cls + '">' + d20badge(s.average.toFixed(2), i) +
+        '<div><p class="q">' + esc(s.name.toUpperCase()) + '</p>' +
+        (s.average === best ? '<p class="t">Best of the bunch</p>' : s.average === worst ? '<p class="t">Took the worst of it</p>' : '') +
+        (out ? '<p class="a">' + esc(out) + '</p>' : '') +
+        '<p class="crit"><b class="c20">' + s.nat20 + ' NAT 20' + (s.nat20 === 1 ? '' : 'S') + '</b> · <b class="c1">' + s.nat1 + ' NAT 1' + (s.nat1 === 1 ? '' : 'S') + '</b></p></div></article>';
+    }).join('');
+    var picks = RES.picks.map(function (p) {
+      var q = qs[p.id], total = 0, desc = {};
+      for (var k in p.counts) total += p.counts[k];
+      q.options.forEach(function (o) { desc[o[0]] = o[1]; });
+      var bars = q.options.slice().sort(function (a, b) { return p.counts[b[0]] - p.counts[a[0]]; }).map(function (o) {
+        var n = p.counts[o[0]], pct = total ? Math.round(n / total * 100) : 0, win = p.winner === o[0] || (p.tie && p.tie.indexOf(o[0]) >= 0);
+        return '<li class="' + (win ? 'win' : '') + '"><div class="cr-bar-top"><b>' + esc(o[0]) + '</b><span>' + n + ' vote' + (n === 1 ? '' : 's') + '</span></div>' +
+          (desc[o[0]] ? '<p>' + esc(desc[o[0]]) + '</p>' : '') + '<div class="cr-bar"><i style="width:' + pct + '%"></i></div></li>';
+      }).join('');
+      var head = p.winner
+        ? '<div class="cr-win"><p class="k">THE FRENS CHOSE</p><h3>' + esc(p.winner) + '</h3>' + (desc[p.winner] ? '<p>' + esc(desc[p.winner]) + '</p>' : '') + '</div>'
+        : '<div class="cr-win" data-tie-head="' + p.id + '"><p class="k">THE FRENS ARE SPLIT</p><h3>Tie!</h3><p>The Captain rolls for it.</p></div>' + tieBlock(p);
+      return '<section class="rc-step"><header><p class="rc-kick">' + esc(q.kicker || '') + '</p><h2>' + esc(q.title) + '</h2></header>' + head + '<ol class="cr-bars">' + bars + '</ol></section>';
+    }).join('');
+    var box = document.createElement('div'); box.id = 'cr-results';
+    box.innerHTML =
+      '<section class="rc-step"><header><p class="rc-kick">THE VOTES ARE IN · ' + RES.sealed + ' FRENS VOTED</p><h2>The Supplies</h2>' +
+        '<p>The crew’s average d20 on each kit. A natural 1 counts as two 0s, and a natural 20 as two 20s.</p></header>' +
+        '<div class="cr-res-kits">' + kits + '</div></section>' + picks;
+    $('rc-orders').insertAdjacentElement('afterend', box);
+    Array.prototype.forEach.call(box.querySelectorAll('.cr-tie'), wireTie);
+  }
+  function tieBlock(p) {
+    var t = { key: 'crash_' + p.id, options: p.tie.slice(0, 2), votes: p.counts[p.tie[0]] };
+    p.tieInfo = t;
+    return '<div class="cr-tie" data-tie="' + t.key + '" data-q="' + p.id + '">' +
+      '<p class="cr-tie-opts"><b>' + esc(t.options[0]) + '</b> or <b>' + esc(t.options[1]) + '</b> · ' + t.votes + ' votes each</p>' +
+      '<p class="cr-tie-rule">Odd: ' + esc(t.options[0]) + '. Even: ' + esc(t.options[1]) + '.</p>' +
+      '<div class="cr-tie-die"></div>' +
+      '<button type="button" class="rc-cta cr-tie-go">' + (CAPTAIN ? 'CAPTAIN: ROLL THE D20' : 'Tie! The Captain’s Roll. Click to Watch') + '</button>' +
+      '<p class="cr-tie-out" aria-live="polite"></p></div>';
+  }
+  function wireTie(el) {
+    var key = el.getAttribute('data-tie'), qid = el.getAttribute('data-q'), id = 'tie_' + key;
+    var btn = el.querySelector('.cr-tie-go'), out = el.querySelector('.cr-tie-out');
+    var t = RES.picks.filter(function (p) { return p.id === qid; })[0].tieInfo;
+    var die = dieNode(id); die.className = 'rc-die'; el.querySelector('.cr-tie-die').appendChild(die);
+    function reveal(roll) {
+      var w = tieWinner(t, roll);
+      out.innerHTML = 'The Captain rolled <b>' + roll + '</b>. ' + (roll % 2 ? 'Odd' : 'Even') + ': <b>' + esc(w) + '</b> it is!';
+      var h = document.querySelector('[data-tie-head="' + qid + '"]');
+      if (h) {
+        h.querySelector('.k').textContent = 'THE CAPTAIN’S ROLL';
+        h.querySelector('h3').textContent = w;
+        h.querySelector('h3').nextElementSibling.textContent = 'Won the Captain’s roll after a ' + t.votes + ' to ' + t.votes + ' tie.';
+      }
+      btn.textContent = 'WATCH IT AGAIN'; btn.disabled = false; el.classList.add('cr-tie-done');
+    }
+    function play(roll) { Dice.spin(id); setTimeout(function () { Dice.land(id, roll, function () { reveal(roll); }); }, 700); }
+    btn.onclick = function () {
+      btn.disabled = true; out.textContent = '';
+      jsonp({ action: 'crewties' }, function (res) {
+        var had = res && res.ok && res.ties && res.ties[key];
+        if (had) return play(had.roll);
+        if (!CAPTAIN) { btn.disabled = false; out.textContent = 'The Captain hasn’t rolled yet. Check back soon.'; return; }
+        Dice.spin(id);
+        jsonp({ action: 'captainroll', tie: key, key: CAPTAIN }, function (r) {
+          if (r && r.ok) return setTimeout(function () { Dice.land(id, r.roll, function () { reveal(r.roll); }); }, 500);
+          Dice.stop(id); btn.disabled = false;
+          out.textContent = r && r.error === 'key' ? 'That Captain link does not work.' : 'The roll did not go through. Try again in a moment.';
+        });
+      });
+    };
+  }
+  if (RES && (DATA.resultsLive || (PREVIEW && /[?&]results/.test(location.search)))) showResults();
 
 })();
 </script>

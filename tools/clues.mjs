@@ -239,7 +239,9 @@ const findsJs = `  <script>(function(){var s=document.getElementById('loot-clue'
     function put(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v);}catch(e){}}
     function email(){try{var m=JSON.parse(get('thLoot:me')||'{}')||{};return m.email||get('thProfile:email')||'';}catch(e){return get('thProfile:email')||'';}}
     try{var c=JSON.parse(get('thLoot:card')||'null');if(c&&c.found)found=c.found.map(Number);}catch(e){}
-    function paint(){var n=0;Array.prototype.forEach.call(s.querySelectorAll('.lc-board'),function(b){var hide=on&&found.indexOf(+b.getAttribute('data-clue'))>=0;b.hidden=hide;if(hide)n++;});
+    // A card can cover a range of boxes (“50–52”): it hides once every box in it is found.
+    function nums(c){var m=String(c).match(/^(\\d+)\\D+(\\d+)$/);if(!m)return [+c];var o=[];for(var x=+m[1];x<=+m[2];x++)o.push(x);return o;}
+    function paint(){var n=0;Array.prototype.forEach.call(s.querySelectorAll('.lc-board'),function(b){var hide=on&&nums(b.getAttribute('data-clue')).every(function(x){return found.indexOf(x)>=0;});b.hidden=hide;if(hide)n++;});
       btn.textContent=on?'Show all clues':'Hide the clues I\\u2019ve found';btn.setAttribute('aria-pressed',on?'true':'false');
       msg.textContent=on?(n?n+(n===1?' clue is':' clues are')+' hidden. You found '+(n===1?'that box':'those boxes')+' already.':'None of these boxes are on your scorecard yet.'):'';}
     function load(e,done){var name='lcf'+Math.random().toString(36).slice(2),sc=document.createElement('script'),t=setTimeout(function(){fin(null);},30000);
