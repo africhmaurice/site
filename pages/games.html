@@ -308,9 +308,11 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         <span><i class="present"></i>Right letter, wrong spot</span>
         <span><i class="absent"></i>Not in the word</span>
       </div>
+      <div id="thw-play">
       <div class="thw-grid" id="thw-grid" role="group" aria-label="Guess grid"></div>
       <p class="thw-toast" id="thw-toast" role="status" aria-live="polite"></p>
       <div class="thw-keys" id="thw-keys" aria-label="Keyboard"></div>
+      </div>
       <div class="thw-result" id="thw-result" aria-live="polite"></div>
       <p class="thw-next" id="thw-next"></p>
     </div>
@@ -399,6 +401,7 @@ var HGShare = (function () {
       x.textAlign = 'center';
       x.fillStyle = T.text; x.font = '800 26px Almarai, sans-serif'; if ('letterSpacing' in x) x.letterSpacing = '4px'; fit(x, o.label.toUpperCase(), 930, 196, 400); if ('letterSpacing' in x) x.letterSpacing = '0px';
       x.fillStyle = T.stat; x.font = '800 150px Almarai, sans-serif'; fit(x, o.stat.toUpperCase(), 930, 360, 380);
+      if (o.time) { x.fillStyle = T.text; x.font = '800 30px Almarai, sans-serif'; if ('letterSpacing' in x) x.letterSpacing = '3px'; fit(x, 'TIME ' + o.time, 930, 418, 380); if ('letterSpacing' in x) x.letterSpacing = '0px'; }
       x.fillStyle = T.text; x.font = '700 21px Almarai, sans-serif'; fit(x, o.site.toUpperCase(), 920, 470, 360);
       x.textAlign = 'left';
       url = c.toDataURL('image/png');
@@ -416,7 +419,7 @@ var HGShare = (function () {
     while (x.measureText(s).width > max && size > 12) { size -= 1; x.font = m[1] + size + 'px ' + m[3]; }
     x.fillText(s, px, py);
   }
-  function text() { return opts.game + ' ' + opts.board + ': ' + opts.label.toLowerCase() + ' ' + opts.stat + '. Play at ' + opts.site; }
+  function text() { return opts.game + ' ' + opts.board + ': ' + opts.label.toLowerCase() + ' ' + opts.stat + (opts.time ? ', in ' + opts.time : '') + '. Play at ' + opts.site; }
   function save(btn) {
     if (!url) return;
     fetch(url).then(function (r) { return r.blob(); }).then(function (b) {
@@ -602,7 +605,7 @@ var HGShare = (function () {
       N = answer.length,
       KEY = 'thWordle:' + dateStr;
 
-  var guesses = [], over = false, won = false, current = '', claimed = false;
+  var guesses = [], over = false, won = false, current = '', claimed = false, started = false, secs = 0;
 
   function notLive(msg) {
     gridEl.style.display = 'none';
@@ -628,7 +631,7 @@ var HGShare = (function () {
   // ---- saved progress -------------------------------------------------
   try {
     var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (saved && saved.a === answer && saved.g) { guesses = saved.g; claimed = !!saved.c; }
+    if (saved && saved.a === answer && saved.g) { guesses = saved.g; claimed = !!saved.c; started = !!saved.s || guesses.length > 0; secs = +saved.t || 0; }
     // Yesterday's boards are no use to anyone.
     for (var i = localStorage.length - 1; i >= 0; i--) {
       var k = localStorage.key(i);
@@ -637,7 +640,7 @@ var HGShare = (function () {
   } catch (e) { /* private browsing - the board just will not persist */ }
 
   function save() {
-    try { localStorage.setItem(KEY, JSON.stringify({ a: answer, g: guesses, c: claimed })); } catch (e) {}
+    try { localStorage.setItem(KEY, JSON.stringify({ a: answer, g: guesses, c: claimed, s: started, t: secs })); } catch (e) {}
   }
 
   // Who this browser belongs to. The loot box page saves the same record under
@@ -777,17 +780,17 @@ var HGShare = (function () {
   }
 
   function letter(ch) {
-    if (over || current.length >= N) return;
+    if (over || !started || current.length >= N) return;
     current += ch;
     drawCurrent();
   }
   function back() {
-    if (over || !current.length) return;
+    if (over || !started || !current.length) return;
     current = current.slice(0, -1);
     drawCurrent();
   }
   function submit() {
-    if (over) return;
+    if (over || !started) return;
     var row = rows[guesses.length];
     if (current.length < N) {
       row.className = 'thw-row shake';
@@ -811,7 +814,7 @@ var HGShare = (function () {
       resultEl.className = 'thw-result win';
       // the share card: the guesses as colored squares, never the letters
       if (window.HGShare) HGShare.show({ game: 'Skyword', board: 'Word #' + index, day: dateStr, theme: 'violet', site: 'mauriceafrich.com/games',
-        label: 'GOT IT IN', stat: guesses.length + '/' + TRIES, after: resultEl,
+        label: 'GOT IT IN', stat: guesses.length + '/' + TRIES, after: resultEl, time: clockText(),
         grid: guesses.map(function (g) { return score(g).map(function (v) { return { correct: '#268e62', present: '#c53200' }[v] || '#607667'; }); }) });
       if (!ENDPOINT) {
         resultEl.innerHTML =
@@ -975,6 +978,31 @@ var HGShare = (function () {
     hintEl.style.display = 'block';
     spacerEl.style.display = 'none';
   }
+
+  // ---- the clock: the board stays covered until PLAY, then it is timed (paused while the tab is hidden) ----
+  function clockText() { return Math.floor(secs / 60) + ':' + ('0' + secs % 60).slice(-2); }
+  (function () {
+    var play = document.getElementById('thw-play'), clockEl = document.createElement('p');
+    clockEl.style.cssText = 'text-align:center;font-weight:700;letter-spacing:.08em;font-size:14px;color:#607667;margin:14px 0 0';
+    function paint() { clockEl.textContent = (over ? 'TIME ' : '') + clockText(); }
+    if (!started && !over) {
+      var box = document.createElement('div'); box.style.cssText = 'position:relative;min-height:230px';
+      play.parentNode.insertBefore(box, play); box.appendChild(play); play.style.visibility = 'hidden';
+      var cover = document.createElement('div');
+      cover.style.cssText = 'position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;background:#0b170f;border:3px solid #111;text-align:center';
+      cover.innerHTML = '<button type="button" class="thw-submit wv2" style="margin:0;font-size:clamp(20px,3vw,26px);padding:16px 48px">PLAY</button>' +
+        '<p style="margin:0;font-weight:700;font-size:15px;letter-spacing:.06em;line-height:1.5;color:#fffffe;max-width:300px">The clock starts when the board appears.</p>';
+      box.appendChild(cover);
+      cover.querySelector('button').onclick = function () { cover.remove(); play.style.visibility = ''; started = true; save(); };
+      box.parentNode.insertBefore(clockEl, box.nextSibling);
+    } else play.parentNode.insertBefore(clockEl, play.nextSibling);
+    paint();
+    setInterval(function () {
+      if (over) return paint();
+      if (!started || document.hidden) return;
+      secs++; paint(); if (secs % 5 === 0) save();
+    }, 1000);
+  })();
 
   // ---- typing ---------------------------------------------------------
   document.addEventListener('keydown', function (e) {

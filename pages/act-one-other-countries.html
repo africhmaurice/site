@@ -37,7 +37,7 @@
   // The Squarespace section around the block takes the page's violet, so no red shows above or below.
   var sec = root.closest('section');
   if (sec) { sec.style.setProperty('background', '#2d1c53', 'important'); var bg = sec.querySelector('.section-background'); if (bg) bg.style.setProperty('background', '#2d1c53', 'important'); }
-  f.src = 'https://africhmaurice.github.io/leaderboard/wheels/act-one-world.html?v=1';
+  f.src = 'https://africhmaurice.github.io/leaderboard/wheels/act-one-world.html?v=2';
   // On phones the wheel stacks above the winners, so it reports its full height.
   window.addEventListener('message', function (e) {
     if (e.source === f.contentWindow && e.data && e.data.wheelHeight && innerWidth <= 820) f.style.height = e.data.wheelHeight + 'px';

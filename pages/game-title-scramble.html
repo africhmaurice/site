@@ -242,11 +242,13 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   <main class="hg-card">
     <div class="hg-stamp" id="hg-stamp">&nbsp;</div>
     <p class="hg-how">A famous book title with the letters of each word shuffled. Unscramble it and type the whole title. Five tries, with hints along the way.</p>
+    <div id="hg-play">
     <div class="ts-words" id="ts-words" aria-label="Scrambled title"></div>
     <p class="ts-hint" id="ts-hint"></p>
     <form class="ts-form" id="ts-form" autocomplete="off"><input id="ts-in" placeholder="Type the title" aria-label="Your answer" autocapitalize="none" spellcheck="false"><button type="submit" class="hg-btn">GUESS</button></form>
     <p class="ts-tries" id="ts-tries"></p>
     <ul class="ts-past" id="ts-past"></ul>
+    </div>
     <p class="hg-toast" id="hg-toast" role="status" aria-live="polite"></p>
 
     <div class="hg-result" id="hg-result" aria-live="polite"></div>
@@ -396,7 +398,8 @@ var HG = (function () {
         resultEl.className = 'hg-result win'; resultEl.style.display = 'block';
         // the game sets api.share = { label, stat, timed, icons } before it calls win
         if (window.HGShare && api.share && SHARE[o.key]) HGShare.show({ game: o.label, board: (o.noun || 'Puzzle') + ' #' + (index + 1), day: day,
-          theme: SHARE[o.key][0], site: SHARE[o.key][1], label: api.share.label, stat: api.share.stat, timed: api.share.timed, icons: api.share.icons });
+          theme: SHARE[o.key][0], site: SHARE[o.key][1], label: api.share.label, stat: api.share.stat, timed: api.share.timed, icons: api.share.icons,
+          time: api.share.timed ? '' : (playEl ? clock() : api.share.time) });
         var head = '<div class="hg-bang">' + (message || 'NICE WORK!') + '</div>' + (extra ? '<p style="margin-bottom:10px">' + extra + '</p>' : '');
         if (state.claimed) return claimed(state.claimed);
         if (me.email) return oneClick();
@@ -457,6 +460,25 @@ var HG = (function () {
       }
     };
 
+    // The clock: games with a #hg-play area are covered until PLAY, then timed (paused while the tab is hidden).
+    var playEl = document.getElementById('hg-play'), clockEl = null;
+    function clock() { var s = state.secs || 0; return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
+    api.clock = clock;
+    if (playEl && puzzle) {
+      state.secs = state.secs || 0;
+      gate(playEl, !!(state.started || state.done), function () { if (!state.started) { state.started = true; save(); } });
+      clockEl = document.createElement('p'); clockEl.className = 'hg-clock';
+      var box = playEl.parentNode.classList.contains('hg-gatebox') ? playEl.parentNode : playEl;
+      box.parentNode.insertBefore(clockEl, box.nextSibling);
+      var paintClock = function () { clockEl.textContent = (state.done ? 'TIME ' : '') + clock(); };
+      paintClock();
+      setInterval(function () {
+        if (state.done) return paintClock();
+        if (!state.started || document.hidden) return;
+        state.secs++; paintClock(); if (state.secs % 5 === 0) save();
+      }, 1000);
+    }
+
     if (!puzzle) {
       resultEl.className = 'hg-result lose'; resultEl.style.display = 'block';
       resultEl.innerHTML = index < 0
@@ -486,7 +508,7 @@ var HG = (function () {
     if (started) { go(); return; }
     if (!document.getElementById('hg-gate-css')) {
       var css = document.createElement('style'); css.id = 'hg-gate-css';
-      css.textContent = '.hg-gatebox{position:relative}.hg-gatebox>.hg-gated{visibility:hidden}' +
+      css.textContent = '.hg-gatebox{position:relative;min-height:230px}.hg-clock{text-align:center;font-weight:700;letter-spacing:.08em;font-size:14px;color:#607667;margin:14px 0 0}.hg-gatebox>.hg-gated{visibility:hidden}' +
         '.hg-gate{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;background:#0b170f;border:3px solid #111;text-align:center}' +
         '.hg-gate .hg-claim{margin:0;font-size:clamp(20px,3vw,26px);padding:16px 48px}' +
         '.hg-gate p{margin:0;font-weight:700;font-size:15px;letter-spacing:.06em;line-height:1.5;color:#fffffe;max-width:300px}';
@@ -580,6 +602,7 @@ var HGShare = (function () {
       x.textAlign = 'center';
       x.fillStyle = T.text; x.font = '800 26px Almarai, sans-serif'; if ('letterSpacing' in x) x.letterSpacing = '4px'; fit(x, o.label.toUpperCase(), 930, 196, 400); if ('letterSpacing' in x) x.letterSpacing = '0px';
       x.fillStyle = T.stat; x.font = '800 150px Almarai, sans-serif'; fit(x, o.stat.toUpperCase(), 930, 360, 380);
+      if (o.time) { x.fillStyle = T.text; x.font = '800 30px Almarai, sans-serif'; if ('letterSpacing' in x) x.letterSpacing = '3px'; fit(x, 'TIME ' + o.time, 930, 418, 380); if ('letterSpacing' in x) x.letterSpacing = '0px'; }
       x.fillStyle = T.text; x.font = '700 21px Almarai, sans-serif'; fit(x, o.site.toUpperCase(), 920, 470, 360);
       x.textAlign = 'left';
       url = c.toDataURL('image/png');
@@ -597,7 +620,7 @@ var HGShare = (function () {
     while (x.measureText(s).width > max && size > 12) { size -= 1; x.font = m[1] + size + 'px ' + m[3]; }
     x.fillText(s, px, py);
   }
-  function text() { return opts.game + ' ' + opts.board + ': ' + opts.label.toLowerCase() + ' ' + opts.stat + '. Play at ' + opts.site; }
+  function text() { return opts.game + ' ' + opts.board + ': ' + opts.label.toLowerCase() + ' ' + opts.stat + (opts.time ? ', in ' + opts.time : '') + '. Play at ' + opts.site; }
   function save(btn) {
     if (!url) return;
     fetch(url).then(function (r) { return r.blob(); }).then(function (b) {
