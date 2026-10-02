@@ -6,7 +6,7 @@
   @media (max-width:900px),(hover:none){.th-lb-wrap{background-attachment:scroll}}
 </style>
 <div class="th-lb-wrap">
-  <iframe id="th-leaderboard" src="https://africhmaurice.github.io/leaderboard/?v=9&amp;embed=1" title="Treasure Hunt Leaderboard" loading="lazy" allowtransparency="true" style="width:100%;height:1200px;border:0;display:block;background:transparent;color-scheme:normal;position:relative;z-index:2;pointer-events:auto"></iframe>
+  <iframe id="th-leaderboard" src="https://africhmaurice.github.io/leaderboard/?v=10&amp;embed=1" title="Treasure Hunt Leaderboard" allow="web-share" loading="lazy" allowtransparency="true" style="width:100%;height:1200px;border:0;display:block;background:transparent;color-scheme:normal;position:relative;z-index:2;pointer-events:auto"></iframe>
   <style>
   #lb-more{position:relative;z-index:3;display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:8px 16px 64px;background:rgba(193,51,10,.9)}
   #lb-more a{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.1em;color:#fff;background:#912501;text-decoration:none;border:2px solid #912501;box-shadow:4px 5px 0 rgba(0,0,0,.35);padding:16px 32px;transition:transform .15s ease,background .15s ease,color .15s ease}
@@ -27,7 +27,7 @@
     if (act) {
       act = act.toLowerCase();
       var C = { one: ['#482d85', 'rgba(72,45,133,.9)', '#2d1c53'], two: ['#1a5e41', 'rgba(26,94,65,.9)', '#0f3a27'], three: ['#c1330a', 'rgba(193,51,10,.9)', '#912501'] }[act];
-      f.src = 'https://africhmaurice.github.io/leaderboard/act.html?act=' + act + '&embed=1&v=1';
+      f.src = 'https://africhmaurice.github.io/leaderboard/act.html?act=' + act + '&embed=1&v=2';
       f.title = 'Act ' + act.charAt(0).toUpperCase() + act.slice(1) + ' Standings';
       var w = f.parentElement; w.style.backgroundColor = C[0];
       var st = document.createElement('style');
