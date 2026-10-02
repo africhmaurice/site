@@ -82,11 +82,24 @@
   function cdn(u) { return CDN && u.indexOf(GH + 'assets/') === 0 ? CDN + u.slice(GH.length) : u; }
   function prep(html) {
     html = html.replace(MARKER_OTF, "url('" + MARKER + "') format('woff2')");
+    html = html.replace(/(['"]Atomic Marker['"]\s*,\s*)cursive/g, "$1Impact,sans-serif");
     if (sqspAlmarai()) html = html.replace(/(fonts\.googleapis\.com\/css2\?family=Almarai:wght@)400;700;800/g, '$1' + '800');
     html = html.replace(/https:\/\/africhmaurice\.github\.io\/site\/assets\/bg\/([\w-]+)\.webp/g, function (all, name) {
       return BGV.indexOf(name) < 0 ? all : GH + 'assets/bg/' + (phone ? 'm/' : 'd/') + name + '.webp';
     });
     return html;
+  }
+  // 6. Fonts on every page, whatever the page itself declares (Maurice, 2026-10-02: a page with no @font-face showed a
+  // script fallback in Estonia). Atomic Marker from Squarespace's WOFF2, Almarai 400/700/800 from Google Fonts when
+  // Squarespace hasn't loaded it, and a plain bold fallback instead of the browser's "cursive" while the font arrives.
+  if (!document.getElementById('ma-fonts')) {
+    var ff = document.createElement('style'); ff.id = 'ma-fonts';
+    ff.textContent = "@font-face{font-family:'Atomic Marker';src:url('" + MARKER + "') format('woff2');font-weight:400;font-style:normal;font-display:swap}";
+    (document.head || document.documentElement).appendChild(ff);
+    if (!document.querySelector('link[href*="family=Almarai"]')) {
+      var gf = document.createElement('link'); gf.rel = 'stylesheet'; gf.href = 'https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap';
+      (document.head || document.documentElement).appendChild(gf);
+    }
   }
   if (!document.getElementById('ma-marker-pre')) {
     var pre = document.createElement('link'); pre.id = 'ma-marker-pre'; pre.rel = 'preload'; pre.as = 'font'; pre.type = 'font/woff2'; pre.crossOrigin = 'anonymous'; pre.href = MARKER;
