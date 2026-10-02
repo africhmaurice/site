@@ -235,6 +235,12 @@
       "url": "/act-one-winners",
       "title": "Act One Winners (sweepstakes wheels)",
       "source": "pages/act-one-winners.html"
+    },
+    {
+      "slug": "act-one-other-countries",
+      "url": "/act-one-other-countries",
+      "title": "Act One Other Countries (for fun)",
+      "source": "pages/act-one-other-countries.html"
     }
   ],
   "staysInSquarespace": [

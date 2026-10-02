@@ -1,5 +1,5 @@
 <!-- ============================================================
-     ACT ONE WINNERS - replays Maurice's recorded Act One draws. Each wheel lives on GitHub Pages
+     ACT ONE OTHER COUNTRIES - replays Maurice's recorded Act One draws. Each wheel lives on GitHub Pages
      (treasure-hunt-leaderboard/public/wheels/, built from the saved draw) and only ever replays it:
      every click of Spin shows the next of his five spins, the same layout and the same landing.
      Act One is violet (Maurice, 2026-10-01).
@@ -15,7 +15,7 @@
 #ma-w1 .w-tabs button{font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#fffffe;background:#482d85;border:2px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.35);padding:14px 28px;cursor:pointer;transition:transform .15s ease,background .15s ease}
 #ma-w1 .w-tabs button:hover{transform:scale(1.04)}
 #ma-w1 .w-tabs button[aria-selected="true"]{background:#fffffe;color:#2d1c53}
-#ma-w1 .w-frame{max-width:1400px;margin:0 auto;border:2px solid #f3ead9;box-shadow:6px 7px 0 rgba(0,0,0,.4);background:#0b170f}
+#ma-w1 .w-frame{max-width:1400px;margin:28px auto 0;border:2px solid #f3ead9;box-shadow:6px 7px 0 rgba(0,0,0,.4);background:#0b170f}
 #ma-w1 iframe{display:block;width:100%;height:860px;border:0;background:#0b170f}
 #ma-w1 .w-rewards{max-width:900px;margin:28px auto 0;text-align:center;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(24px,3.4vw,38px);line-height:1.2;letter-spacing:.03em;color:#a2f590}
 #ma-w1 .w-note{max-width:900px;margin:22px auto 0;text-align:center;font-size:14px;line-height:1.55;color:#c3a6ff}
@@ -25,16 +25,11 @@
 <div id="ma-w1">
   <div class="w-head">
     <p class="w-eyebrow">The Cello’s Gate Treasure Hunt</p>
-    <h1 class="w-title">Act One Winners</h1>
-    <p class="w-lede">Every Act One entry got its own slice of the wheel. Press Spin to watch each draw exactly as it happened, one winner at a time.</p>
+    <h1 class="w-title">Other Countries</h1>
+    <p class="w-lede">Every Act One entry from outside the U.S. and the UK got its own slice of the wheel. Press Spin to watch each draw exactly as it happened, one winner at a time.</p>
   </div>
-  <div class="w-tabs" role="tablist" aria-label="Choose a draw">
-    <button type="button" role="tab" aria-selected="true" data-wheel="act-one-us">United States</button>
-    <button type="button" role="tab" aria-selected="false" data-wheel="act-one-uk">United Kingdom</button>
-  </div>
-  <div class="w-frame"><iframe id="ma-w1-frame" title="Act One draw" src="https://africhmaurice.github.io/leaderboard/wheels/act-one-us.html"></iframe></div>
-  <p class="w-rewards">Rewards will be sent after the conclusion of the hunt!</p>
-  <p class="w-note">Winners were drawn under the <a href="https://www.mauriceafrich.com/rules">Official Rules</a>. Each winner will be contacted by email.</p>
+  <div class="w-frame"><iframe id="ma-w1-frame" title="Other Countries draw" src="https://africhmaurice.github.io/leaderboard/wheels/act-one-world.html"></iframe></div>
+  <p class="w-rewards">For “Fun.”</p>
 </div>
 <script>
 (function () {
@@ -42,16 +37,7 @@
   // The Squarespace section around the block takes the page's violet, so no red shows above or below.
   var sec = root.closest('section');
   if (sec) { sec.style.setProperty('background', '#2d1c53', 'important'); var bg = sec.querySelector('.section-background'); if (bg) bg.style.setProperty('background', '#2d1c53', 'important'); }
-  var BASE = 'https://africhmaurice.github.io/leaderboard/wheels/', V = '?v=4';
-  function pick(name) {
-    root.querySelectorAll('.w-tabs button').forEach(function (b) { b.setAttribute('aria-selected', b.dataset.wheel === name ? 'true' : 'false'); });
-    f.src = BASE + name + '.html' + V;
-    f.style.height = '';
-  }
-  root.querySelectorAll('.w-tabs button').forEach(function (b) { b.addEventListener('click', function () { pick(b.dataset.wheel); }); });
-  // ?wheel=uk or ?wheel=world opens that draw first
-  var start = (location.search.match(/[?&]wheel=(uk|world)\b/i) || [])[1];
-  pick(start ? 'act-one-' + start.toLowerCase() : 'act-one-us');
+  f.src = 'https://africhmaurice.github.io/leaderboard/wheels/act-one-world.html?v=1';
   // On phones the wheel stacks above the winners, so it reports its full height.
   window.addEventListener('message', function (e) {
     if (e.source === f.contentWindow && e.data && e.data.wheelHeight && innerWidth <= 820) f.style.height = e.data.wheelHeight + 'px';

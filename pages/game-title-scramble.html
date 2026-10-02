@@ -480,7 +480,26 @@ var HG = (function () {
     var el = document.getElementById('hg-toast'); if (!el) return;
     el.textContent = msg; clearTimeout(toast.t); toast.t = setTimeout(function () { el.textContent = ''; }, 2200);
   }
-  return { start: start, esc: esc, norm: norm, b64: b64, shuffle: shuffle, toast: toast };
+  // Timed games: the board stays covered until PLAY, so loading the page never starts the clock.
+  // gate(el, started, go): started is true when today's game is already under way; go() runs on PLAY (or at once).
+  function gate(el, started, go) {
+    if (started) { go(); return; }
+    if (!document.getElementById('hg-gate-css')) {
+      var css = document.createElement('style'); css.id = 'hg-gate-css';
+      css.textContent = '.hg-gatebox{position:relative}.hg-gatebox>.hg-gated{visibility:hidden}' +
+        '.hg-gate{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;background:#0b170f;border:3px solid #111;text-align:center}' +
+        '.hg-gate .hg-claim{margin:0;font-size:clamp(20px,3vw,26px);padding:16px 48px}' +
+        '.hg-gate p{margin:0;font-weight:700;font-size:15px;letter-spacing:.06em;line-height:1.5;color:#fffffe;max-width:300px}';
+      document.head.appendChild(css);
+    }
+    var box = document.createElement('div'); box.className = 'hg-gatebox';
+    el.parentNode.insertBefore(box, el); box.appendChild(el); el.classList.add('hg-gated');
+    var cover = document.createElement('div'); cover.className = 'hg-gate';
+    cover.innerHTML = '<button type="button" class="hg-claim">PLAY</button><p>The clock starts when the board appears.</p>';
+    box.appendChild(cover);
+    cover.querySelector('button').onclick = function () { cover.remove(); el.classList.remove('hg-gated'); go(); };
+  }
+  return { start: start, esc: esc, norm: norm, b64: b64, shuffle: shuffle, toast: toast, gate: gate };
 })();
 
 // ---- the share card for every daily game (inlined into each game page) ----
