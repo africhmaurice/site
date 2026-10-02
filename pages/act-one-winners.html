@@ -40,7 +40,7 @@
   // The Squarespace section around the block takes the page's violet, so no red shows above or below.
   var sec = root.closest('section');
   if (sec) { sec.style.setProperty('background', '#2d1c53', 'important'); var bg = sec.querySelector('.section-background'); if (bg) bg.style.setProperty('background', '#2d1c53', 'important'); }
-  var BASE = 'https://africhmaurice.github.io/leaderboard/wheels/', V = '?v=2';
+  var BASE = 'https://africhmaurice.github.io/leaderboard/wheels/', V = '?v=3';
   function pick(name) {
     root.querySelectorAll('.w-tabs button').forEach(function (b) { b.setAttribute('aria-selected', b.dataset.wheel === name ? 'true' : 'false'); });
     f.src = BASE + name + '.html' + V;

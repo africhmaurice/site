@@ -407,6 +407,7 @@
       var p = a.parentNode;
       p.insertBefore(actSub('REWARDS', 'all'), a);
       p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), a);
+      p.insertBefore(actLink(SITE + '/act-one-winners', 'ACT ONE WINNERS'), a);   // the replayed draws (Maurice, 2026-10-02)
       p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), a);
       p.removeChild(a);
     });
