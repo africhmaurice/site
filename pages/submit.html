@@ -306,6 +306,9 @@ h1,h2,h3{text-wrap:balance}
   var MAX_FILES = 6, MAX_EDGE = 2200;
   var DOCS = { pdf: 'application/pdf', doc: 'application/msword', txt: 'text/plain',
                docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' };
+  // Video and audio for the contests (music, readings, animations): sent as they are, up to 35MB each.
+  var MEDIA = {"mp4":"video/mp4","mov":"video/quicktime","m4v":"video/x-m4v","webm":"video/webm","mp3":"audio/mpeg","m4a":"audio/mp4","wav":"audio/wav","aac":"audio/aac","ogg":"audio/ogg","flac":"audio/flac","aif":"audio/aiff","aiff":"audio/aiff"}, MEDIA_MB = 35;
+  var MEDIA_ACCEPT = 'video/*,audio/*,.' + Object.keys(MEDIA).join(',.');
 
   // label: what the dropdown says (the old form's wording). send: the task text the sheet stores
   // and `npm run import` classifies. detail/area: a typed field that becomes the item.
@@ -314,8 +317,8 @@ h1,h2,h3{text-wrap:balance}
     { label: "Pre-Order Cello's Gate", send: "Pre-Order Cello's Gate", copies: true,
       hint: "Your receipt or order confirmation. It has to show Cello's Gate, how many copies, and the order date. Every copy counts." },
     { label: 'Become a Crest Knight', send: 'Become a Crest Knight', hint: 'Your level 50 or Crest Knight role in the Discord, or your Mark of the Crest.' },
-    { label: 'Submit Fan Art', send: 'Submit Fan Art', hint: 'A PNG or JPEG of your fan art. Each entry counts.' },
-    { label: 'Submit Fan Fiction', send: 'Submit Fan Fiction', docs: true, hint: 'Your fan fiction as a .docx, .doc, .pdf, or .txt. Each entry counts.' },
+    { label: 'Submit Fan Art', send: 'Submit Fan Art', media: true, hint: 'A PNG or JPEG of your fan art, or a video or audio file (MP4, MOV, MP3, M4A, WAV, up to 35MB). Each entry counts.' },
+    { label: 'Submit Fan Fiction', send: 'Submit Fan Fiction', docs: true, media: true, hint: 'Your fan fiction as a .docx, .doc, .pdf, or .txt. You can add music or audio too (MP4, MP3, M4A, WAV, up to 35MB). Each entry counts.' },
     { label: 'Join the Trench Community Discord', send: 'Join the Trench Community Discord', hint: 'Any screenshot from inside the Discord: a post, your role, the server list.' },
     { label: "Join Maurice's Newsletter (Limit: 1)", send: "Join Maurice's Newsletter", hint: 'The confirmation email or the welcome screen.' },
     { label: 'Reach level 10', send: 'Reach Level 10', hint: 'Your level in the Discord.' },
@@ -342,8 +345,7 @@ h1,h2,h3{text-wrap:balance}
     { label: 'Hype the Hunt on Reddit', send: 'Hype the Hunt on Reddit', hint: 'Screenshots showing you liked and commented on the r/FantasyBooks post. Add them both here, together.' },
     // Act Two (Maurice, 2026-09-30). "from" keeps a task off the list until that moment, Eastern time.
     { label: 'Book Recs Carousel', send: 'Book Recs Carousel', pick: ['Where did you post it?', ['Instagram', 'TikTok', 'YouTube', 'Reddit', 'X', 'Threads', 'Facebook']],
-      pick2: ['Which theme?', ['Found Families', 'Fun Books', 'The Best Characters in Fiction', 'Science Fantasy Books (That Aren\u2019t Star Wars)', 'The Best Fighters in Fiction']],
-      hint: 'Screenshots of your carousel: at least 6 book recs, Cello\'s Gate featured, and #SkyPiratesHunt with #sweepstakes (U.S.) or #competition (UK). 100 points per theme, per platform.' },
+      hint: 'Screenshots of your carousel: at least 6 book recs, Cello\'s Gate featured, and #SkyPiratesHunt with #sweepstakes (U.S.) or #competition (UK). Any theme works. 100 points per carousel, per platform.' },
     { label: 'Buy Something From Trench Market', send: 'Buy Something From Trench Market', items: true,
       hint: 'Your Trench Market receipt or order confirmation. 50 points for each item.' },
     { label: 'Post a Video Review', send: 'Post a Video Review', pick: ['Where did you post it?', ['Instagram', 'TikTok', 'YouTube', 'Reddit', 'X', 'Threads', 'Facebook']], from: '2026-10-05T00:00:00-04:00',
@@ -459,7 +461,7 @@ h1,h2,h3{text-wrap:balance}
     if (mode === 'points') {
       html += '<div id="sb-proofwrap">' + item('Upload Proof of Task Completion',
         'Please upload clear and easy-to-read images or screenshots that prove the completion of the task, up to ' + MAX_FILES + '.</p>' +
-        '<p class="sb-desc"><b>Fan Fiction:</b> Please upload your fan fiction as a .docx, .doc, .pdf, or .txt.<br><b>Fan Art:</b> Please upload a PNG or JPEG of your fan art.</p>' +
+        '<p class="sb-desc"><b>Fan Fiction:</b> Please upload your fan fiction as a .docx, .doc, .pdf, or .txt.<br><b>Fan Art:</b> Please upload a PNG or JPEG of your fan art.<br><b>Music, video, or audio:</b> MP4, MOV, MP3, M4A, WAV, and other audio files work too, up to 35MB each.</p>' +
         '<p class="sb-desc"><i>All entries will be manually reviewed by one overworked sky pirate captain (self-imposed), and he is grateful for your patience.</i>',
         '<label class="sb-add" id="sb-drop"><input type="file" id="sb-files" accept="image/*" multiple>Add a File</label>' +
         '<div class="sb-thumbs" id="sb-thumbs"></div>') + '</div>';
@@ -491,7 +493,7 @@ h1,h2,h3{text-wrap:balance}
       var pk = $('sb-pick'); if (pk) pk.onchange = function () { pk.className = pk.value ? '' : 'empty'; };
       var pk2 = $('sb-pick2'); if (pk2) pk2.onchange = function () { pk2.className = pk2.value ? '' : 'empty'; };
       $('sb-proofwrap').style.display = t && t.noProof ? 'none' : '';
-      $('sb-files').accept = t && t.docs ? 'image/*,.pdf,.doc,.docx,.txt' : 'image/*';
+      $('sb-files').accept = 'image/*' + (t && t.docs ? ',.pdf,.doc,.docx,.txt' : '') + (t && t.media ? ',' + MEDIA_ACCEPT : '');
     };
     var input = $('sb-files'), drop = $('sb-drop');
     input.onchange = function () { addFiles(input.files); input.value = ''; };
@@ -507,10 +509,13 @@ h1,h2,h3{text-wrap:balance}
     Array.prototype.slice.call(list || []).forEach(function (f) {
       var ext = (f.name.match(/\.([a-z0-9]+)$/i) || [])[1];
       ext = ext ? ext.toLowerCase() : '';
-      var isDoc = !!DOCS[ext] && !/^image\//.test(f.type);
+      var isMedia = !!MEDIA[ext] || /^(video|audio)\//.test(f.type);
+      var isDoc = isMedia || (!!DOCS[ext] && !/^image\//.test(f.type));
       if (!isDoc && !/^image\//.test(f.type) && !/^(heic|heif)$/.test(ext)) { err.textContent = f.name + ' is not an image or a document we can take.'; return; }
+      if (isMedia && !MEDIA[ext]) { err.textContent = f.name + ': please use MP4, MOV, MP3, M4A, WAV, AAC, OGG, FLAC, or AIFF.'; return; }
+      if (isMedia && f.size > MEDIA_MB * 1024 * 1024) { err.textContent = f.name + ' is over ' + MEDIA_MB + 'MB. Try a shorter clip, or email it to mauriceafrich@secondworldbooks.com.'; return; }
       if (files.length >= MAX_FILES) { err.textContent = 'Up to ' + MAX_FILES + ' files per submission.'; return; }
-      if (isDoc && f.size > 6 * 1024 * 1024) { err.textContent = f.name + ' is over 6MB.'; return; }
+      if (isDoc && !isMedia && f.size > 6 * 1024 * 1024) { err.textContent = f.name + ' is over 6MB.'; return; }
       var slot = { url: '', name: f.name, doc: isDoc };
       files.push(slot);
       var ready = function (url) {
@@ -518,7 +523,7 @@ h1,h2,h3{text-wrap:balance}
         else slot.url = url;
         thumbs();
       };
-      if (isDoc) readDoc(f, DOCS[ext], ready); else shrink(f, ready);
+      if (isDoc) readDoc(f, isMedia ? MEDIA[ext] : DOCS[ext], ready); else shrink(f, ready);
     });
     thumbs();
   }
