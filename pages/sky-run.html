@@ -1,0 +1,282 @@
+<!-- ============================================================
+     SKY RUN - a branching choose-your-path voyage aboard a Sky Pirates of Imperia airship.
+     The story lives in the SCENES object below (scene text + 2-3 choices each).
+     Endings: DEATH (locks the game for 4 hours, stored in localStorage), XP (Crew Commendation
+     card with a code word to post in the Trench Discord), PORT (neutral, restart freely),
+     and one LOOT ending that shows loot box 42.
+     ============================================================ -->
+<style>
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+#ma-skyrun{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;padding:140px 20px 80px;
+  background:radial-gradient(ellipse at 50% 0%,rgba(72,45,133,.55) 0%,rgba(11,23,15,0) 60%),linear-gradient(180deg,#0b170f 0%,#132219 60%,#0b170f 100%);background-color:#0b170f;
+  font-family:'Almarai',sans-serif;color:#f3ead9;overflow-x:hidden}
+#ma-skyrun *{box-sizing:border-box;border-radius:0}
+#ma-skyrun .sr-wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+#ma-skyrun .sr-head{text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
+#ma-skyrun .sr-eyebrow{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(20px,2.6vw,30px);line-height:1.25;letter-spacing:.04em;color:#ff4c0f;margin:0}
+#ma-skyrun .sr-h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(48px,8vw,96px);line-height:1.2;letter-spacing:.04em;color:#fffffe;margin:0}
+#ma-skyrun .sr-intro{font-size:clamp(15px,1.6vw,18px);line-height:1.6;max-width:600px;margin:0;color:#f3ead9}
+#ma-skyrun .sr-card{background:#132219;border:2px solid #268e62;padding:clamp(22px,4vw,40px);display:flex;flex-direction:column;gap:22px;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+#ma-skyrun .sr-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#89fbcb}
+#ma-skyrun .sr-restart{background:none;border:0;padding:4px 0;color:#c3a6ff;font:inherit;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+#ma-skyrun .sr-restart:hover{color:#fffffe}
+#ma-skyrun .sr-title{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(28px,4vw,42px);line-height:1.25;letter-spacing:.04em;color:#fffffe;margin:0}
+#ma-skyrun .sr-text{display:flex;flex-direction:column;gap:14px}
+#ma-skyrun .sr-text p{margin:0;font-size:clamp(16px,1.7vw,19px);line-height:1.6;color:#f3ead9}
+#ma-skyrun .sr-choices{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+#ma-skyrun .sr-choice{display:block;width:100%;text-align:left;background:#0b170f;border:2px solid #268e62;color:#fffffe;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(15px,1.6vw,17px);line-height:1.45;padding:16px 20px;cursor:pointer;transition:background .15s ease,border-color .15s ease,transform .15s ease}
+#ma-skyrun .sr-choice:hover,#ma-skyrun .sr-choice:focus-visible{background:#1a5e41;border-color:#89fbcb;transform:translateX(4px);outline:none}
+#ma-skyrun .sr-choice span{color:#89fbcb;margin-right:10px}
+#ma-skyrun .sr-btn{align-self:center;background:#c53200;border:2px solid #f3ead9;color:#fffffe;font-family:'Almarai',sans-serif;font-weight:800;font-size:16px;letter-spacing:.12em;text-transform:uppercase;padding:14px 32px;cursor:pointer;transition:background .15s ease,transform .15s ease}
+#ma-skyrun .sr-btn:hover{background:#ff4c0f;transform:scale(1.04)}
+#ma-skyrun .sr-btn[hidden]{display:none}
+#ma-skyrun .sr-tag{align-self:flex-start;font-weight:800;font-size:13px;letter-spacing:.16em;text-transform:uppercase;padding:8px 14px;background:#268e62;color:#fffffe}
+/* death */
+#ma-skyrun .sr-card.is-death{border-color:#ff4c0f;background:linear-gradient(180deg,#2a0d03 0%,#132219 100%)}
+#ma-skyrun .is-death .sr-tag{background:#c53200}
+#ma-skyrun .is-death .sr-title{color:#ff4c0f}
+#ma-skyrun .sr-lock{text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;padding:20px;border:2px dashed rgba(243,234,217,.35)}
+#ma-skyrun .sr-lock p{margin:0;font-size:16px;line-height:1.5}
+#ma-skyrun .sr-clock{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(26px,4vw,38px);line-height:1.25;letter-spacing:.06em;color:#fffffe}
+/* xp */
+#ma-skyrun .sr-card.is-xp{border-color:#7b4ee1;background:linear-gradient(180deg,#24164a 0%,#132219 100%)}
+#ma-skyrun .is-xp .sr-tag{background:#482d85}
+#ma-skyrun .sr-code{align-self:center;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(30px,6vw,54px);line-height:1.25;letter-spacing:.08em;color:#fffffe;background:#0b170f;border:2px solid #c3a6ff;padding:16px 28px;text-align:center;max-width:100%;overflow-wrap:anywhere}
+#ma-skyrun .sr-note{text-align:center;font-weight:700;font-size:16px;line-height:1.5;margin:0;color:#c3a6ff}
+/* port */
+#ma-skyrun .sr-card.is-port{border-color:#f3ead9}
+#ma-skyrun .is-port .sr-tag{background:#f3ead9;color:#0b170f}
+/* loot */
+#ma-skyrun .sr-card.is-loot{border-color:#a2f590;background:linear-gradient(180deg,#1b3b15 0%,#132219 100%)}
+#ma-skyrun .is-loot .sr-tag{background:#2c6021}
+#ma-skyrun .sr-box{align-self:center;width:min(70vw,300px);background:none;border:0;padding:0;cursor:pointer;filter:drop-shadow(0 0 36px rgba(162,245,144,.4));animation:sr-bob 4s ease-in-out infinite}
+#ma-skyrun .sr-box img{display:block;width:100%;height:auto}
+@keyframes sr-bob{50%{transform:translateY(-10px)}}
+@media (prefers-reduced-motion:reduce){#ma-skyrun .sr-box{animation:none}#ma-skyrun .sr-choice:hover{transform:none}}
+@media (max-width:600px){#ma-skyrun{padding:120px 16px 60px}#ma-skyrun .sr-choice{padding:14px 16px}}
+</style>
+<section id="ma-skyrun" aria-label="Sky Run">
+  <div class="sr-wrap">
+    <header class="sr-head">
+      <p class="sr-eyebrow">Choose your course</p>
+      <h1 class="sr-h1">Sky Run</h1>
+      <p class="sr-intro">I signed you onto a Sky Pirates of Imperia airship. Every choice is yours. Choose badly and the sky keeps you for four hours.</p>
+    </header>
+    <article class="sr-card" aria-live="polite"></article>
+  </div>
+</section>
+<script>
+(function(){
+  var root=document.getElementById('ma-skyrun');if(!root)return;
+  var card=root.querySelector('.sr-card');
+  var LOCK_MS=4*60*60*1000, LOCK_KEY='ma-skyrun-dead', RUN_KEY='ma-skyrun-run';
+  var memDead=0, timer=null;
+
+  // ---------- THE STORY ----------
+  // type: (none) = scene with choices; 'death'; 'xp' (code); 'port'; 'loot'
+  var S={
+    start:{t:'Welcome Aboard',p:['The gangplank sways three thousand feet above the clouds. You step onto the deck with a bag, a borrowed coat, and no idea what you are doing.','The quartermaster looks you over like a fish she did not order. "New blood. Pick a post. Try not to fall off."'],
+      c:[['Climb to the crow\'s nest','nest'],['Go below to the engine deck','engine'],['Report to the galley','galley']]},
+    nest:{t:'The Crow\'s Nest',p:['The wind tries to steal your hat. You let it win.','To the west, a storm wall the color of a bruise is rolling your way. To the east, a speck of a sail. Black sail. Red trim.'],
+      c:[['Ring the bell for the storm','storm_warn'],['Put the spyglass on that sail','rival_sight']]},
+    engine:{t:'The Engine Deck',p:['It is hot, loud, and smells like burnt toast and danger.','The chief engineer shoves a wrench into your hands and points at a hissing lift-gas valve. Then she disappears into the steam.','Somewhere behind the boilers, something is tapping. Tap. Tap-tap. Tap.'],
+      c:[['Tighten the hissing valve','valve'],['Follow the tapping','stowaway']]},
+    galley:{t:'The Galley',p:['The cook hands you a ladle the size of an oar and tells you to stir.','The stew stares back at you. It is gray. It is bubbling. One of the bubbles looked like it had an opinion.','When you heave a flour sack onto the counter, a folded map slides out of it and lands at your feet.'],
+      c:[['Taste the stew first','d_stew'],['Take the map straight to the captain','map_captain'],['Tuck the map into your boot','map_secret']]},
+    storm_warn:{t:'All Hands',p:['You ring that bell like it owes you money. The crew pours onto the deck.','The captain takes one look at the storm and grins. "Through it, then." Nobody else is grinning.'],
+      c:[['Volunteer to lash the sails','rigging'],['Run below to secure the cargo','cargo']]},
+    rival_sight:{t:'Black Sails',p:['Through the glass you see a rival crew. Grappling hooks. Cannons. One very large person with a very large axe.','They have seen you too. They are turning to chase.'],
+      c:[['Raise the alarm','boarding'],['Signal them with a lantern for parley','parley']]},
+    valve:{t:'Righty Tighty',p:['You crank the valve. The hiss gets smaller. Then quieter. Then it makes a new sound, a high little whistle, like a kettle with ambitions.','The gauge needle is creeping into the red.'],
+      c:[['Give it one more good turn','d_valve'],['Stop and yell for the chief','engine_fixed']]},
+    engine_fixed:{t:'The Chief Approves',p:['The chief sprints out of the steam, taps the gauge twice, and backs the valve off a quarter turn. The whistle dies.','"You stopped. Most new ones don\'t stop." She looks almost impressed. Almost.','Above you, the deck bell starts ringing.'],
+      c:[['Stay below and learn the engines','x_boiler'],['Head topside to see what is happening','storm_warn']]},
+    stowaway:{t:'The Tapping',p:['Behind the boilers, wedged between two pipes, you find a stowaway. A wiry kid in a soot-black coat, clutching a brass compass.','"Please," the kid whispers. "Don\'t tell. The needle. It doesn\'t point north."'],
+      c:[['Haul the kid up to the quartermaster','storm_warn'],['Hide the kid and ask about the compass','compass']]},
+    compass:{t:'The Wrong-Way Compass',p:['The kid opens the compass. The needle spins once, then locks hard on something. Not north. Not anywhere you know.','"It points at whatever the sky is hiding," the kid says. "Every time."'],
+      c:[['Show the compass to the captain','map_captain'],['Sneak out at night and follow the needle','compass_night']]},
+    compass_night:{t:'Midnight Needle',p:['The ship is asleep. The compass glows faintly in your palm.','The needle does not point ahead. It points straight down, over the rail, into the dark clouds below the hull.'],
+      c:[['Lean way out over the rail to look','d_lean'],['Follow it down into the cargo hold','hum_crate']]},
+    map_captain:{t:'The Captain\'s Table',p:['The captain spreads the map across a table covered in knife marks. A floating island is circled in faded ink.','"Well, well." She taps it. "Set course."','By sunset the island is a green smudge on the horizon.'],
+      c:[['Join the landing party','island_land'],['Stay aboard and keep watch','kraken_attack']]},
+    map_secret:{t:'Lamplight',p:['That night, in your hammock, you unfold the map by lamplight.','There are two routes drawn on it. A neat straight line that goes politely around a storm. And a crooked, scribbled line that goes straight through it, to a city drawn with a dozen tiny towers.','In the margin, someone wrote: Only fools sail straight.'],
+      c:[['Sell the map at the next port','e_sell'],['Hand the map to the captain after all','map_captain'],['Sneak up to the helm at midnight','night_helm']]},
+    night_helm:{t:'The Midnight Helm',p:['The night pilot is snoring. The wheel is yours.','Ahead, the storm wall flickers with lightning. The map shakes in your hand. The crooked line weaves between the flashes like a drunk snake.'],
+      c:[['Steer straight through the heart of the storm','d_lightning'],['Follow the crooked line exactly','stormwall'],['Lose your nerve and wake the captain','map_captain']]},
+    stormwall:{t:'Inside the Storm',p:['Left. Hard right. Drop. Climb. Lightning splits the sky ten feet from the bow, and you are somehow still alive.','The whole crew is awake now. The captain storms up the stairs in her nightshirt, cutlass in hand. "Who is flying my ship?"'],
+      c:[['Hand over the wheel and apologize','d_plank'],['Hold up the map and say "Trust me"','eye']]},
+    eye:{t:'The Eye',p:['The storm opens like a curtain. Inside, the air is still and gold.','Floating islands circle a city of brass towers that is on no chart you have ever seen. The captain lowers her cutlass very slowly.','There are three ways in: a grand gate with cannons, a busy market pier, and a broken old pier half hidden in shadow.'],
+      c:[['Sail up to the grand gate','city_gate'],['Tie up at the market pier','market'],['Drift in to the broken back pier','tunnel']]},
+    city_gate:{t:'The Grand Gate',p:['Twenty cannons swing toward you. A guard on the wall calls down through a brass horn.','"State your business."'],
+      c:[['Announce proudly that you are sky pirates','d_cannons'],['Claim you are honest merchants','e_fine']]},
+    market:{t:'The Market Pier',p:['Spices, steam, and shouting. Someone is selling roasted sky eel on a stick. Someone else is selling a very nervous chicken.','A city guard strolls past with a ring of heavy keys swinging from his belt.'],
+      c:[['Pickpocket the guard\'s keys','d_pickpocket'],['Buy a round for the dockhands and listen','e_grog']]},
+    tunnel:{t:'The Tunnel Under the City',p:['The back pier leads into a dripping tunnel. Your lantern finds three doors.','One is carved with a skull. One with an anchor. One with a feather.','The anchor door is the only one with scratches on the handle.'],
+      c:[['Open the skull door','d_skull'],['Open the anchor door','vault'],['Open the feather door','d_feather']]},
+    vault:{t:'The Vault',p:['The room glitters. Gold coins are piled waist-high on a stone pedestal.','In the corner, ignored by everyone for a hundred years, sits one small, battered box with a lock shaped like a compass rose.'],
+      c:[['Grab an armful of gold','d_gold'],['Open the battered little box','loot']]},
+    rigging:{t:'The Rigging',p:['Rain hits sideways. The ropes are slick as eels. The mast groans like an old man getting out of a chair.','The bosun throws you a safety line. You have about two seconds to decide.'],
+      c:[['Clip the line to the mast and climb','rigging2'],['Skip it and free climb for speed','d_wind']]},
+    rigging2:{t:'Torn Canvas',p:['Halfway up, the topsail rips with a sound like a giant tearing a bedsheet.','The loose canvas snaps and flaps. If it stays, it will drag the whole ship over.'],
+      c:[['Cut the torn sail loose','storm_through'],['Grab it and hold on tight','d_kite']]},
+    storm_through:{t:'Clear Skies',p:['The sail whips away into the storm. The ship rights herself. Ten minutes later you burst out into sunshine.','The crew cheers. Someone hands you a mug of something that smells like varnish.','Off the port rail, a green floating island drifts into view.'],
+      c:[['Raise your mug and celebrate','x_storm'],['Point out the floating island','island_land']]},
+    cargo:{t:'The Cargo Hold',p:['Crates are sliding back and forth like they are dancing. One is stamped FIREWORKS. It is sliding toward a lantern.','In the back, one crate is not sliding at all. It is humming.'],
+      c:[['Chase down the fireworks crate','d_fireworks'],['Check the humming crate','hum_crate']]},
+    hum_crate:{t:'The Humming Crate',p:['You pry the lid. Inside, nested in straw, is an egg the size of a barrel. It glows blue. It is warm.','Something inside it knocks. Politely.','Far below the ship, something much bigger answers.'],
+      c:[['Run and tell the captain','kraken_attack'],['Crack it open for a peek','d_hatchling']]},
+    boarding:{t:'Boarders',p:['Grappling hooks bite the rail. Rival pirates swarm over the side, yelling and swinging.','A loose rope dangles beside you, tied high on the mainmast.'],
+      c:[['Grab the rope and swing into the fight','swing'],['Run to guard the powder room','d_powder']]},
+    swing:{t:'Swashbuckling',p:['You swing out over the clouds, boots first, yelling something brave. It comes out as a squeak. Nobody heard.','At the top of the arc, you are right above the rival ship\'s deck.'],
+      c:[['Let go and drop onto their ship','rival_ship'],['Hold on and swing back','d_swing']]},
+    rival_ship:{t:'Enemy Deck',p:['You land on their deck in a crouch, like you meant to. Everyone on board is busy fighting on your ship.','Their flag snaps above you. Their lift-gas lines run right past your boots.'],
+      c:[['Cut their lift-gas lines','d_rivalsink'],['Steal their flag and swing home','x_flag']]},
+    parley:{t:'Parley',p:['The rival ship pulls alongside. Their captain leans on the rail, wearing a hat with a feather the length of a broom.','"You flashed for parley, little one. Talk."'],
+      c:[['Tell them their hat is ridiculous','d_hat'],['Trade them news of the storm ahead','x_silver']]},
+    island_land:{t:'The Floating Island',p:['The landing boat bumps onto mossy rock. Roots hang off the island\'s edge into open sky.','Fruit glows on the trees like lanterns. Deeper in, you can see the tops of old stone ruins.'],
+      c:[['Eat one of the glowing fruits','d_fruit'],['Explore the ruins','ruins']]},
+    ruins:{t:'The Ruins',p:['Vines, stone, and silence. In the center of the ruins stands a tall tower and a huge rusty lever.','The lever has a carving of the island on it. The carving of the island has an arrow pointing down.'],
+      c:[['Pull the lever','d_lever'],['Climb the tower and signal the ship','kraken_attack']]},
+    kraken_attack:{t:'Kraken',p:['The ship lurches. Something wet and enormous wraps around the hull. Tentacles. Each one as thick as a mast.','A sky kraken. And it looks hungry.'],
+      c:[['Grab a harpoon','harpoon'],['Bang pots and pans to scare it off','pots'],['Hide in a barrel','d_barrel']]},
+    harpoon:{t:'One Shot',p:['The harpoon is heavier than you are. You brace it on the rail.','A giant yellow eye rises over the side. A tentacle coils right next to you.'],
+      c:[['Aim for the eye','x_kraken'],['Aim for the tentacle','d_dragged']]},
+    pots:{t:'The Racket',p:['You bang two pots together as hard as you can. The kraken flinches. It did not expect percussion.','It loosens its grip. It is still very close. It is still watching you.'],
+      c:[['Start singing a sea shanty at it','d_song'],['Throw the pots right at its face','e_limp']]},
+
+    // ---------- DEATHS ----------
+    d_stew:{type:'death',t:'Death by Stew',p:['You taste the stew. The stew tastes you back.','The cook sighs, adds you to the ingredient list, and keeps stirring.']},
+    d_valve:{type:'death',t:'Lefty Loosey Was Right',p:['One more turn. The valve pops off like a champagne cork.','You are launched through the deck, the galley, the captain\'s cabin, and a very surprised seagull. Nobody ever finds the wrench.']},
+    d_wind:{type:'death',t:'Gone With the Wind',p:['You make it four rungs. Then a gust picks you up like a leaf.','The crew says you were the fastest climber they ever saw. Also the shortest-lived.']},
+    d_kite:{type:'death',t:'Human Kite',p:['You hold on. The sail does not.','You fly beautifully for eleven miles. Some farmers wave. Then the wind gets bored.']},
+    d_fireworks:{type:'death',t:'Grand Finale',p:['You reach the crate just as it reaches the lantern.','The crew agrees it was the best show they have ever seen. You were in it.']},
+    d_hatchling:{type:'death',t:'Baby\'s First Hug',p:['The egg cracks. A baby kraken flops out and gives you a hug.','It is a very loving hug. It is also a very long hug. It never ends.']},
+    d_powder:{type:'death',t:'Lights Out',p:['The powder room is dark. You light a match to see.','You see.']},
+    d_swing:{type:'death',t:'The Pendulum',p:['You swing back. Then out. Then back. Then out.','On the ninth swing you meet the mainmast face first. The rival crew gives it a seven.']},
+    d_rivalsink:{type:'death',t:'Wrong Side of the Rope',p:['You saw through the lines. Their ship drops like a stone.','You realize, a bit too late, that you are standing on it.']},
+    d_hat:{type:'death',t:'Fashion Critic',p:['The deck goes silent. The rival captain strokes the feather.','"It is a magnificent hat," they say, and fire both pistols.']},
+    d_fruit:{type:'death',t:'Glow Up',p:['The fruit tastes like sunshine and peppermint. You feel amazing.','You also start glowing. Then floating. You drift up past the clouds and become a very small, very confused star.']},
+    d_lever:{type:'death',t:'Going Down',p:['You pull the lever. Somewhere deep inside the island, a very old engine stops.','The island starts falling. So do you. It is a long way down, and you have time to think about arrows.']},
+    d_barrel:{type:'death',t:'Snack Size',p:['You curl up inside the barrel and hold very still.','The kraken picks up the barrel, sniffs it, and swallows it whole like a pickle.']},
+    d_dragged:{type:'death',t:'Tangled Up',p:['The harpoon hits the tentacle. The rope wraps your ankle.','The kraken leaves, and so do you, attached.']},
+    d_song:{type:'death',t:'Encore',p:['You sing. The kraken loves it.','It carries you gently down into the deep clouds, where you will sing for it every night, forever.']},
+    d_lean:{type:'death',t:'Just a Little Further',p:['You lean out. A little further. Just a little further.','The compass was right about one thing. Whatever it was pointing at, you are going to meet it very soon.']},
+    d_lightning:{type:'death',t:'Straight Shot',p:['You aim dead center and hold the wheel steady.','The lightning admires your confidence and hits you directly. Only fools sail straight.']},
+    d_plank:{type:'death',t:'The Long Plank',p:['"Sorry, Captain." She nods kindly and points to the plank.','On a regular ship, walking the plank is a short walk. On an airship, it is a very long fall.']},
+    d_cannons:{type:'death',t:'Honesty Policy',p:['"Sky pirates!" you shout proudly.','The guard thanks you for being so clear. Twenty cannons agree.']},
+    d_pickpocket:{type:'death',t:'Butterfingers',p:['Your fingers close on the keys. The keys jingle. Loudly.','The guard escorts you to the edge of the city and lets you go. Just not anywhere near the ground.']},
+    d_skull:{type:'death',t:'They Did Warn You',p:['The skull door opens on a room full of skulls.','Shortly, there is one more.']},
+    d_feather:{type:'death',t:'Light as a Feather',p:['The feather door opens onto pure blue sky.','You step through. You are not, it turns out, light as a feather.']},
+    d_gold:{type:'death',t:'Greedy Hands',p:['You scoop up the gold. The pedestal clicks.','The ceiling comes down to meet you. Rich, briefly.']},
+
+    // ---------- XP ----------
+    x_boiler:{type:'xp',code:'BOILERHEART',t:'Crew Commendation',p:['You spend the voyage below, learning every valve, pipe, and grumble of the engines.','The chief gives you a scorched leather glove. In engine-deck terms, that is a hug.']},
+    x_storm:{type:'xp',code:'STORMBREAKER',t:'Crew Commendation',p:['The crew lifts you onto their shoulders. You cut the sail that saved the ship.','The captain writes your name in the logbook in ink. Not pencil. Ink.']},
+    x_flag:{type:'xp',code:'FLAGSNATCHER',t:'Crew Commendation',p:['You swing home with the rival flag clenched in your teeth. They see it and flee.','The flag now hangs in the galley. The cook uses it as a dish towel, which is the highest honor on board.']},
+    x_silver:{type:'xp',code:'SILVERTONGUE',t:'Crew Commendation',p:['You warn them about the storm. They warn you about the kraken grounds. Both crews live to steal another day.','The rival captain tips that ridiculous hat at you as they sail off.']},
+    x_kraken:{type:'xp',code:'KRAKENBANE',t:'Crew Commendation',p:['The harpoon flies true. The kraken shrieks, lets go, and sinks back into the clouds.','The crew paints a tiny tentacle on your hammock. It means you are one of them now.']},
+
+    // ---------- PORT ----------
+    e_sell:{type:'port',t:'Back to Port',p:['You sell the map at the next port for three silver and a pickled egg.','You never find out what the crooked line led to. Some nights you wonder.']},
+    e_fine:{type:'port',t:'Back to Port',p:['The guards do not believe you. They do not shoot you either.','They escort you out of the storm, fine you everything in your pockets, and point you home.']},
+    e_grog:{type:'port',t:'Back to Port',p:['The dockhands have great stories. You buy another round. And another.','You wake up in your hammock, back in your home port, with a headache and no memory of the city.']},
+    e_limp:{type:'port',t:'Back to Port',p:['A frying pan bounces off the kraken\'s nose. It decides you are not worth the trouble.','The ship limps home with three broken spars and one very good story.']},
+
+    // ---------- LOOT ----------
+    loot:{type:'loot',t:'The Battered Box',p:['The compass-rose lock clicks open on its own, like it has been waiting for someone curious enough to skip the gold.','Inside is a loot box.']}
+  };
+
+  // ---------- STATE ----------
+  function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  function lsDel(k){try{localStorage.removeItem(k);}catch(e){}}
+  function ssGet(k){try{return sessionStorage.getItem(k);}catch(e){return null;}}
+  function ssSet(k,v){try{sessionStorage.setItem(k,v);}catch(e){}}
+  function ssDel(k){try{sessionStorage.removeItem(k);}catch(e){}}
+  function deadAt(){var v=parseInt(lsGet(LOCK_KEY),10);if(!(v>0))v=memDead;return v>0?v:0;}
+  function lockLeft(){var d=deadAt();if(!d)return 0;var left=d+LOCK_MS-Date.now();return left>0?left:0;}
+  var run={id:'start',step:1,death:null};
+
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function paras(a){var h='';for(var i=0;i<a.length;i++)h+='<p>'+esc(a[i])+'</p>';return h;}
+  function bar(label){return '<div class="sr-bar"><span>'+label+'</span><button type="button" class="sr-restart" data-act="restart">Restart</button></div>';}
+  function fmt(ms){var s=Math.ceil(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return h+':'+(m<10?'0':'')+m+':'+(x<10?'0':'')+x;}
+
+  function save(){ssSet(RUN_KEY,JSON.stringify(run));}
+  function clearTimer(){if(timer){clearInterval(timer);timer=null;}}
+
+  function render(){
+    clearTimer();
+    var sc=S[run.id]||S.start, html='';
+    var type=sc.type||'scene';
+    card.className='sr-card'+(type==='scene'?'':' is-'+type);
+    if(type==='scene'){
+      html=bar('Scene '+run.step)+'<h2 class="sr-title">'+esc(sc.t)+'</h2><div class="sr-text">'+paras(sc.p)+'</div><div class="sr-choices">';
+      for(var i=0;i<sc.c.length;i++)html+='<button type="button" class="sr-choice" data-go="'+sc.c[i][1]+'"><span>'+String.fromCharCode(65+i)+'.</span>'+esc(sc.c[i][0])+'</button>';
+      html+='</div>';
+    }else if(type==='death'){
+      html='<span class="sr-tag">You died</span><h2 class="sr-title">'+esc(sc.t)+'</h2><div class="sr-text">'+paras(sc.p)+'</div>'+
+        '<div class="sr-lock"><p>The sky keeps the dead a while.</p><p>You can sail again in</p><div class="sr-clock">4:00:00</div><button type="button" class="sr-btn" data-act="again" hidden>Sail again</button></div>';
+    }else if(type==='xp'){
+      html='<span class="sr-tag">Crew Commendation</span><h2 class="sr-title">You made it, sky pirate</h2><div class="sr-text">'+paras(sc.p)+'</div>'+
+        '<div class="sr-code">'+esc(sc.code)+'</div><p class="sr-note">Post this code in the Trench Discord for XP.</p><button type="button" class="sr-btn" data-act="restart">Sail again</button>';
+    }else if(type==='port'){
+      html='<span class="sr-tag">Back to port</span><h2 class="sr-title">'+esc(sc.t)+'</h2><div class="sr-text">'+paras(sc.p)+'</div><button type="button" class="sr-btn" data-act="restart">Sail again</button>';
+    }else if(type==='loot'){
+      html='<span class="sr-tag">Treasure</span><h2 class="sr-title">'+esc(sc.t)+'</h2><div class="sr-text">'+paras(sc.p)+'</div>'+
+        '<button type="button" class="sr-box" data-act="loot" aria-label="Open loot box 42"><img src="https://africhmaurice.github.io/leaderboard/loot/42.png" alt="Loot box 42"></button>'+
+        '<p class="sr-note">Click the box to claim it.</p><button type="button" class="sr-restart" data-act="restart" style="align-self:center">Sail again</button>';
+    }
+    card.innerHTML=html;
+    if(type==='death')tick();
+  }
+
+  function tick(){
+    var clock=card.querySelector('.sr-clock'),btn=card.querySelector('[data-act="again"]');if(!clock)return;
+    function upd(){var l=lockLeft();if(l>0){clock.textContent=fmt(l);btn.hidden=true;}else{clock.textContent='0:00:00';btn.hidden=false;clearTimer();}}
+    upd();timer=setInterval(upd,1000);
+  }
+
+  function restart(){run={id:'start',step:1,death:null};ssDel(RUN_KEY);render();root.scrollIntoView({behavior:'smooth',block:'start'});}
+
+  function go(id){
+    if(!S[id])return;
+    run.id=id;run.step++;
+    var sc=S[id];
+    if(sc.type==='death'){var now=Date.now();memDead=now;lsSet(LOCK_KEY,String(now));lsSet('ma-skyrun-lastdeath',id);}
+    if(sc.type&&sc.type!=='death')ssDel(RUN_KEY);else save();
+    render();
+    var top=card.getBoundingClientRect().top;if(top<0||top>window.innerHeight*.6)card.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  card.addEventListener('click',function(e){
+    var t=e.target.closest('button');if(!t)return;
+    if(t.getAttribute('data-go')){if(lockLeft()>0){showLocked();return;}go(t.getAttribute('data-go'));return;}
+    var a=t.getAttribute('data-act');
+    if(a==='restart'){if(lockLeft()>0){showLocked();return;}restart();}
+    else if(a==='again'){if(lockLeft()>0)return;lsDel(LOCK_KEY);memDead=0;restart();}
+    else if(a==='loot'){
+      var k='U1hNVEJZMkM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+      if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 42 opens.');return;}
+      location.href=atob(k).split('').reverse().join('');
+    }
+  });
+
+  // A death screen shown on load uses the last death type if known; otherwise a generic one.
+  function showLocked(){
+    var last=lsGet('ma-skyrun-lastdeath');
+    run={id:(last&&S[last]&&S[last].type==='death')?last:'d_locked',step:run.step,death:null};
+    render();
+  }
+  S.d_locked={type:'death',t:'Still Drifting',p:['Your last voyage ended badly. The sky has not let go of you yet.','Rest up, sky pirate. The ship will wait.']};
+
+  // ---------- BOOT ----------
+  if(lockLeft()>0){showLocked();}
+  else{
+    if(deadAt())lsDel(LOCK_KEY);
+    var saved=null;try{saved=JSON.parse(ssGet(RUN_KEY)||'null');}catch(e){}
+    if(saved&&S[saved.id]&&!S[saved.id].type)run=saved;
+    render();
+  }
+})();
+</script>

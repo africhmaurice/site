@@ -1,0 +1,60 @@
+<!-- ============================================================
+     ONE OF US - a link-tree style page with 500 identical "ONE OF US" buttons.
+     One of them opens a loot box claim; the rest open a little surprise in a new tab.
+     Buttons are built by the script and carry no numbers or data attributes.
+     ============================================================ -->
+<style>
+html,body{margin:0 !important;padding:0 !important;background:#0b170f !important}
+#ma-oneofus{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;padding:64px 20px 48px;
+  background:#0b170f;background-image:radial-gradient(ellipse at 50% 0%,rgba(72,45,133,.55) 0%,rgba(11,23,15,0) 60%);
+  font-family:'Almarai',sans-serif;color:#f3ead9;text-align:center}
+#ma-oneofus *{box-sizing:border-box;border-radius:0}
+#ma-oneofus .ou-wrap{max-width:580px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:16px}
+#ma-oneofus .ou-av{width:104px;height:104px;border-radius:50%;background:#482d85;border:3px solid #c53200;display:flex;align-items:center;justify-content:center;
+  font-family:'Atomic Marker',cursive;font-weight:400;font-size:38px;line-height:1.2;letter-spacing:.04em;color:#f3ead9;padding-top:4px}
+#ma-oneofus .ou-name{margin:0;font-family:'Atomic Marker',cursive;font-weight:400;font-size:30px;line-height:1.2;letter-spacing:.04em;color:#fffffe}
+#ma-oneofus .ou-bio{margin:0;font-size:15px;line-height:1.5;color:#c3a6ff;max-width:420px}
+#ma-oneofus .ou-list{width:100%;display:flex;flex-direction:column;gap:14px;margin-top:16px}
+#ma-oneofus .ou-btn{display:block;width:100%;min-height:58px;padding:18px 20px;margin:0;border:2px solid #f3ead9;border-radius:0;background:#f3ead9;color:#0b170f;
+  font-family:'Almarai',sans-serif;font-weight:800;font-size:16px;line-height:1.2;letter-spacing:.14em;cursor:pointer;box-shadow:4px 4px 0 #482d85;
+  transition:transform .12s ease,box-shadow .12s ease,background-color .12s ease;content-visibility:auto;contain-intrinsic-size:auto 58px;-webkit-tap-highlight-color:transparent}
+#ma-oneofus .ou-btn:hover{background:#fffffe;transform:translate(-2px,-2px);box-shadow:6px 6px 0 #c53200}
+#ma-oneofus .ou-btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #c53200}
+#ma-oneofus .ou-btn:focus-visible{outline:3px solid #7b4ee1;outline-offset:3px}
+#ma-oneofus .ou-foot{margin-top:40px;font-size:13px;font-weight:700;letter-spacing:.14em;color:rgba(243,234,217,.5)}
+#ma-oneofus .ou-foot a{color:inherit;text-decoration:none}
+@media (max-width:480px){#ma-oneofus{padding:48px 20px 40px}#ma-oneofus .ou-name{font-size:26px}}
+@media (prefers-reduced-motion:reduce){#ma-oneofus .ou-btn{transition:none}}
+</style>
+<section id="ma-oneofus" aria-label="One of us">
+  <div class="ou-wrap">
+    <div class="ou-av" aria-hidden="true">MA</div>
+    <h1 class="ou-name">Maurice Africh</h1>
+    <p class="ou-bio">Sky pirates only. Pick a link, any link. I promise every one of them is one of us.</p>
+    <div class="ou-list" role="list"></div>
+    <div class="ou-foot"><a href="https://www.mauriceafrich.com/">mauriceafrich.com</a></div>
+  </div>
+</section>
+<script>
+(function(){
+  var d=document.getElementById('ma-oneofus');if(!d)return;
+  // Fill the whole window: no Squarespace padding, colors, or header space around it.
+  var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+  var list=d.querySelector('.ou-list'),frag=document.createDocumentFragment(),i;
+  for(i=0;i<500;i++){var b=document.createElement('button');b.type='button';b.className='ou-btn';b.setAttribute('role','listitem');b.textContent='ONE OF US';frag.appendChild(b);}
+  list.appendChild(frag);
+  var k='U0FLQlRKNkI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  var r='https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+  list.addEventListener('click',function(e){
+    var b=e.target.closest('.ou-btn');if(!b)return;
+    var c=list.children,n=c.length,j=n;while(j--){if(c[j]===b)break;}
+    if(n-j===(0x20<<2)){
+      if(/africhmaurice\.github\.io/.test(location.host)){alert('Preview: this is where the loot box opens.');return;}
+      location.href=atob(k).split('').reverse().join('');return;
+    }
+    window.open(r,'_blank','noopener');
+  });
+})();
+</script>

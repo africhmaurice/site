@@ -118,6 +118,10 @@ html,body{margin:0 !important;padding:0 !important}
 .lb-cell.lb-wait img{filter:grayscale(1) brightness(.5) contrast(.75);opacity:.2}
 .lb-cell.plain.lb-wait{background:#f4f7f4;border-color:#d3dcd4;color:#aab5ab}
 .lb-cell.lb-in img,.lb-cell.plain.lb-in{animation:lbpop .55s ease}
+/* Box 73 sits right on top of box 13 on everyone's scorecard until they click it (Maurice, 2026-10-03):
+   it's already here, but it isn't theirs until they claim it. */
+.lb-sneak{position:absolute;inset:-14% -8% 6% 8%;z-index:3;border:0;padding:0;cursor:pointer;background:center/contain no-repeat;transform:rotate(-9deg);filter:drop-shadow(0 3px 3px rgba(0,0,0,.45));transition:transform .15s ease}
+.lb-sneak:hover{transform:rotate(-4deg) scale(1.08)}
 @keyframes lbpop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.25)}100%{transform:scale(1)}}
 
 /* ---- the first-time form ---- */
@@ -529,6 +533,14 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
             (have[n] ? (n === 0 ? '&#9733;' : n) : '&#183;') + '</div>';
     }
     grid.innerHTML = html;
+    if (ART && !have[73] && grid.children[13]) {
+      var sneak = document.createElement('button');
+      sneak.type = 'button'; sneak.className = 'lb-sneak'; sneak.title = 'Loot box 73';
+      sneak.setAttribute('aria-label', 'Loot box 73');
+      sneak.style.backgroundImage = 'url(' + thumbUrl(73) + ')';
+      sneak.onclick = function () { location.href = atob('VUMzVFg5R009Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo').split('').reverse().join(''); };
+      grid.children[13].appendChild(sneak);
+    }
     // A chest whose art is missing falls back to a numbered square rather than
     // leaving a broken image in the middle of the card.
     var imgs = grid.getElementsByTagName('img');

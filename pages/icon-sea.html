@@ -1,0 +1,109 @@
+<!-- ============================================================
+     ICON SEA - a seek-and-find. A full-width field packed with hundreds of icons
+     (Font Awesome Free 6, injected by the script), laid out with a seeded generator so
+     every visitor sees the same field. Loot box 80 is tucked in among the treasure decoys.
+     Clicking a decoy wiggles it; clicking the real box opens loot box 80.
+     ============================================================ -->
+<style>
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+#ma-sea{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;background:#0b170f;color:#fffffe;font-family:'Almarai',sans-serif;overflow:hidden}
+#ma-sea *{box-sizing:border-box;border-radius:0}
+#ma-sea .s-head{display:flex;flex-direction:column;align-items:center;gap:14px;padding:48px 20px 32px;text-align:center;background:#132219;border-bottom:3px solid #c53200;position:relative;z-index:2}
+#ma-sea .s-title{margin:0;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,5vw,60px);line-height:1.25;letter-spacing:.04em;color:#f3ead9}
+#ma-sea .s-line{margin:0;max-width:640px;font-size:clamp(15px,1.4vw,18px);line-height:1.55;font-weight:700;color:#c3a6ff}
+#ma-sea .s-field{position:relative;width:100%;height:160vh;min-height:900px;overflow:hidden;
+  background:radial-gradient(ellipse at 30% 20%,#18301f 0%,#0b170f 55%),#0b170f;touch-action:manipulation}
+#ma-sea .s-ic{position:absolute;left:0;top:0;line-height:1;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;
+  text-shadow:0 1px 0 rgba(0,0,0,.35)}
+#ma-sea .s-ic.cv{pointer-events:none}
+#ma-sea .s-ic.wig{animation:s-wig .45s ease}
+@keyframes s-wig{0%,100%{rotate:0deg}20%{rotate:-14deg}40%{rotate:12deg}60%{rotate:-8deg}80%{rotate:5deg}}
+#ma-sea .s-box{position:absolute;padding:6px;margin:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;line-height:0}
+#ma-sea .s-box img{display:block;width:100%;height:auto;pointer-events:none}
+#ma-sea .s-box:focus-visible{outline:2px dashed #89fbcb;outline-offset:2px}
+#ma-sea .s-foot{padding:24px 20px 40px;text-align:center;font-size:14px;font-weight:700;letter-spacing:.08em;color:rgba(243,234,217,.55);background:#132219;border-top:3px solid #268e62}
+@media (prefers-reduced-motion:reduce){#ma-sea .s-ic.wig{animation:none}}
+</style>
+<section id="ma-sea" aria-label="Find the Loot Box">
+  <div class="s-head">
+    <h2 class="s-title">Find the Loot Box</h2>
+    <p class="s-line">I buried loot box 80 somewhere in this heap of junk, chests, and skulls. Spot it, click it, and it's yours.</p>
+  </div>
+  <div class="s-field" role="group" aria-label="A sea of icons"></div>
+  <div class="s-foot">KEEP LOOKING, SKY PIRATE. IT'S SMALLER THAN YOU THINK.</div>
+</section>
+<script>
+(function(){
+  var root=document.getElementById('ma-sea');if(!root)return;
+  if(!document.querySelector('link[data-ma-fa]')){var l=document.createElement('link');l.rel='stylesheet';l.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css';l.setAttribute('data-ma-fa','1');document.head.appendChild(l);}
+  var field=root.querySelector('.s-field');
+
+  // Seeded generator: the same field for everyone.
+  function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+  var R=rng(80080);
+
+  var TREASURE=['box-archive','box','box-open','sack-dollar','coins','key','ship','anchor','skull','skull-crossbones','map','compass','gem','crown','gift','toolbox','suitcase','briefcase','scroll','life-ring','sailboat','dungeon','ring','trophy','money-bill','lock'];
+  var JUNK=['star','moon','sun','cloud','bolt','fire','heart','bell','music','guitar','book','book-open','feather','feather-pointed','fish','dove','crow','cat','dog','horse','dragon','ghost','hourglass','lightbulb','rocket','plane','umbrella','wine-bottle','mug-hot','bomb','shield-halved','chess-rook','chess-knight','chess-pawn','dice','puzzle-piece','binoculars','hat-cowboy','hat-wizard','glasses','mask','pen-nib','unlock','flask','wand-magic-sparkles','cookie','apple-whole','lemon','carrot','leaf','tree','seedling','mountain','water','wind','snowflake','campground','hammer','wrench','gear','medal','scale-balanced','clover','bone','spider','frog','hippo','kiwi-bird','otter','paw','feather','hand','eye','bug','candy-cane','pepper-hot','ice-cream','umbrella-beach','tent','fan','gamepad','headphones','guitar','drum','chess-queen','chess-king','dragon','crow','spa','wheat-awn','pizza-slice','burger','lemon','anchor-lock','route','flag','signs-post','tower-observation','bridge'];
+  var COLORS=['#7b4ee1','#c3a6ff','#482d85','#c53200','#ff4c0f','#912501','#2c6021','#a2f590','#57bb41','#268e62','#89fbcb','#1a5e41','#f3ead9','#fffffe','#fd7547','#d9b65a'];
+
+  // Fixed spot for the box (fraction of the field), plus everything else.
+  var BOX={x:.693,y:.587,rot:-11};
+  var N=1250,items=[];
+  for(var i=0;i<N;i++){
+    var r=R(),s;
+    if(r<.62)s=14+R()*20;else if(r<.9)s=34+R()*28;else if(r<.98)s=62+R()*40;else s=105+R()*55;
+    var tre=R()<.3;var list=tre?TREASURE:JUNK;
+    items.push({x:R(),y:R(),s:s,rot:(R()*2-1)*(R()<.25?75:35),g:list[Math.floor(R()*list.length)],c:COLORS[Math.floor(R()*COLORS.length)],o:.55+R()*.45,keep:R()});
+  }
+  // A small cluster of chests and coins around the box so it blends in.
+  var NEAR=[['box-archive',-1.6,-.6,'#d9b65a',30],['coins',1.5,.8,'#ff4c0f',22],['key',-1.1,1.4,'#f3ead9',20],['box',1.9,-1.3,'#c53200',28],['sack-dollar',.2,-2.2,'#a2f590',26],['skull',-2.3,1.5,'#fffffe',24],['gem',2.4,.4,'#89fbcb',18]];
+  items.sort(function(a,b){return b.s-a.s;});
+
+  var built=0,lastW=0;
+  function build(){
+    var W=field.clientWidth,H=Math.max(900,Math.round(window.innerHeight*1.6));
+    if(W===lastW&&built)return;lastW=W;built=1;
+    field.style.height=H+'px';field.innerHTML='';
+    var f=Math.max(.62,Math.min(1.05,W/1440));
+    var count=Math.round(N*Math.max(.5,Math.min(1,(W*H)/(1440*1440))));
+    var bs=Math.round(W<700?44:Math.max(46,52*f));               // box image size in px
+    var bx=BOX.x*W,by=BOX.y*H,clear=bs*.8;
+    var frag=document.createDocumentFragment();
+    function add(g,x,y,size,rot,c,o,cover){
+      var e=document.createElement('i');e.className='s-ic fa-solid fa-'+g+(cover?' cv':'');
+      e.style.cssText='left:'+x+'px;top:'+y+'px;font-size:'+size.toFixed(1)+'px;color:'+c+';opacity:'+o.toFixed(2)+';transform:translate(-50%,-50%) rotate('+rot.toFixed(1)+'deg)'+(cover?';z-index:4':'');
+      e.setAttribute('aria-hidden','true');frag.appendChild(e);
+    }
+    for(var j=0;j<items.length;j++){
+      var it=items[j];if(it.keep*N>=count)continue;
+      var x=it.x*W,y=it.y*H,sz=Math.max(12,it.s*f);
+      if(Math.abs(x-bx)<clear+sz*.5&&Math.abs(y-by)<clear+sz*.5)continue;   // keep the box itself clear
+      add(it.g,x,y,sz,it.rot,it.c,it.o,false);
+    }
+    for(var n=0;n<NEAR.length;n++){var q=NEAR[n];add(q[0],bx+q[1]*bs*.62,by+q[2]*bs*.62,Math.max(14,q[4]*f*1.15),(n%2?1:-1)*(10+n*7),q[3],.95,false);}
+    field.appendChild(frag);
+    var b=document.createElement('button');b.type='button';b.className='s-box';b.setAttribute('aria-label','Loot box 80');
+    b.style.cssText='left:'+(bx-bs/2-6)+'px;top:'+(by-bs/2-6)+'px;width:'+(bs+12)+'px;z-index:3;transform:rotate('+BOX.rot+'deg)';
+    b.innerHTML='<img src="https://africhmaurice.github.io/leaderboard/loot/38.png" alt="Loot box 80" draggable="false">';
+    field.appendChild(b);
+    // Two leaves tucked over its corners: seen above the box, never in the way of a tap.
+    frag=document.createDocumentFragment();
+    add('leaf',bx-bs*.38,by-bs*.36,bs*.6,-30,'#57bb41',.97,true);
+    add('feather',bx+bs*.42,by+bs*.3,bs*.55,40,'#c3a6ff',.95,true);
+    field.appendChild(frag);
+  }
+  build();
+  var tm;window.addEventListener('resize',function(){clearTimeout(tm);tm=setTimeout(build,200);});
+
+  field.addEventListener('click',function(ev){
+    var t=ev.target;
+    if(t.closest&&t.closest('.s-box')){
+      var k='Qjk4N1BEWFU9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+      if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 80 opens.');return;}
+      location.href=atob(k).split('').reverse().join('');return;
+    }
+    if(t.classList&&t.classList.contains('s-ic')){t.classList.remove('wig');void t.offsetWidth;t.classList.add('wig');}
+  });
+  field.addEventListener('animationend',function(ev){if(ev.target.classList)ev.target.classList.remove('wig');});
+})();
+</script>

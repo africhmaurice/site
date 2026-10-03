@@ -1,0 +1,138 @@
+<!-- ============================================================
+     SKY PIRATE QUIZ - "What Sky Pirate Job Are You Most Like?"
+     Nine questions, one at a time, with a progress bar. Each answer scores one or two
+     airship jobs; the top score is the result card (ties go to the earlier job in JOBS).
+     Loot box 82 hides as a tiny box in the corner of one answer on question 6
+     ("Patch it with whatever's lying around"). Clicking the tiny box, not the answer,
+     opens the claim link.
+     ============================================================ -->
+<style>
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+#ma-quiz{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;padding:140px 20px 80px;
+  background:linear-gradient(178deg,rgba(11,23,15,.86) 0%,rgba(26,94,65,.8) 60%,rgba(38,142,98,.74) 100%),url(https://africhmaurice.github.io/site/assets/bg/garden-city-towers.webp) center/cover;background-color:#0b170f;
+  font-family:'Almarai',sans-serif;color:#fffffe;overflow-x:hidden}
+#ma-quiz *{box-sizing:border-box;border-radius:0}
+#ma-quiz .q-head{max-width:860px;margin:0 auto 36px;text-align:center;display:flex;flex-direction:column;gap:14px}
+#ma-quiz .q-eyebrow{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,3vw,34px);line-height:1.25;letter-spacing:.04em;color:#ff4c0f;margin:0}
+#ma-quiz .q-h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(38px,6.6vw,84px);line-height:1.2;letter-spacing:.03em;color:#fffffe;margin:0}
+#ma-quiz .q-sub{font-size:clamp(15px,1.7vw,18px);line-height:1.6;color:#f3ead9;margin:0 auto;max-width:560px}
+#ma-quiz .q-card{max-width:860px;margin:0 auto;background:rgba(11,23,15,.9);border:3px solid #f3ead9;padding:clamp(22px,4vw,44px);display:flex;flex-direction:column;gap:22px}
+#ma-quiz .q-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:700;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:#89fbcb}
+#ma-quiz .q-bar{height:12px;background:#132219;border:2px solid #268e62}
+#ma-quiz .q-fill{height:100%;width:0;background:#89fbcb;transition:width .35s ease}
+#ma-quiz .q-text{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(26px,3.4vw,40px);line-height:1.25;letter-spacing:.03em;color:#fffffe;margin:4px 0 0}
+#ma-quiz .q-opts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#ma-quiz .q-opt{position:relative}
+#ma-quiz .q-ans{width:100%;height:100%;min-height:76px;text-align:left;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(15px,1.6vw,17px);line-height:1.45;color:#0b170f;background:#f3ead9;border:3px solid #f3ead9;padding:18px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:background .15s ease,border-color .15s ease,transform .15s ease}
+#ma-quiz .q-ans:hover,#ma-quiz .q-ans:focus-visible{background:#fffffe;border-color:#ff4c0f;transform:translateY(-2px);outline:none}
+#ma-quiz .q-ans .q-l{flex:0 0 auto;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:#482d85;color:#fffffe;font-weight:800;font-size:15px}
+#ma-quiz .q-opt.has-box .q-ans{padding-right:58px}
+#ma-quiz .q-box{position:absolute;right:8px;bottom:8px;width:34px;height:34px;padding:0;border:0;background:none;cursor:pointer;z-index:2;opacity:.9;transition:transform .15s ease,opacity .15s ease}
+#ma-quiz .q-box:hover,#ma-quiz .q-box:focus-visible{transform:scale(1.25) rotate(-6deg);opacity:1;outline:none}
+#ma-quiz .q-box img{width:100%;height:100%;object-fit:contain;display:block}
+#ma-quiz .q-result{display:none;text-align:center;align-items:center;gap:20px}
+#ma-quiz.done .q-result{display:flex;flex-direction:column}
+#ma-quiz .q-play{display:flex;flex-direction:column;gap:22px}
+#ma-quiz.done .q-play{display:none}
+#ma-quiz .r-eye{font-weight:800;font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:#89fbcb;margin:0}
+#ma-quiz .r-job{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(48px,9vw,110px);line-height:1.2;letter-spacing:.04em;margin:0;color:#ff4c0f;overflow-wrap:anywhere}
+#ma-quiz .r-tag{font-weight:800;font-size:clamp(15px,1.8vw,19px);letter-spacing:.06em;color:#f3ead9;margin:0}
+#ma-quiz .r-desc{font-size:clamp(16px,1.9vw,19px);line-height:1.65;color:#fffffe;max-width:600px;margin:0}
+#ma-quiz .r-share{border:2px dashed #89fbcb;padding:14px 20px;font-weight:700;font-size:clamp(14px,1.6vw,16px);letter-spacing:.04em;line-height:1.5;color:#89fbcb;margin:0}
+#ma-quiz .r-again{font-family:'Almarai',sans-serif;font-weight:800;font-size:16px;letter-spacing:.1em;text-transform:uppercase;color:#fffffe;background:#c53200;border:3px solid #c53200;padding:16px 30px;cursor:pointer;transition:background .15s ease,transform .15s ease}
+#ma-quiz .r-again:hover,#ma-quiz .r-again:focus-visible{background:#ff4c0f;border-color:#ff4c0f;transform:scale(1.04);outline:none}
+@media (max-width:700px){
+  #ma-quiz{padding:120px 16px 60px}
+  #ma-quiz .q-opts{grid-template-columns:1fr}
+  #ma-quiz .q-ans{min-height:64px;padding:16px 18px}
+  #ma-quiz .q-opt.has-box .q-ans{padding-right:56px}
+}
+@media (prefers-reduced-motion:reduce){#ma-quiz .q-fill,#ma-quiz .q-ans,#ma-quiz .q-box,#ma-quiz .r-again{transition:none}}
+</style>
+<section id="ma-quiz" aria-label="Sky pirate job quiz">
+  <header class="q-head">
+    <p class="q-eyebrow">All hands on deck</p>
+    <h1 class="q-h1">What Sky Pirate Job Are You Most Like?</h1>
+    <p class="q-sub">Every airship needs a crew. Answer nine questions and I'll tell you where you'd sign on.</p>
+  </header>
+  <div class="q-card">
+    <div class="q-play">
+      <div class="q-meta"><span class="q-count">Question 1 of 9</span><span class="q-pct">0%</span></div>
+      <div class="q-bar" role="progressbar" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0"><div class="q-fill"></div></div>
+      <h2 class="q-text" aria-live="polite"></h2>
+      <div class="q-opts"></div>
+    </div>
+    <div class="q-result" aria-live="polite">
+      <p class="r-eye">You are most like the</p>
+      <h2 class="r-job"></h2>
+      <p class="r-tag"></p>
+      <p class="r-desc"></p>
+      <p class="r-share">Screenshot this and tag @mauriceafrich with your result.</p>
+      <button class="r-again" type="button">Take it again</button>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var root=document.getElementById('ma-quiz');if(!root)return;
+  // Fill the whole window: no Squarespace padding around it.
+  var cw=root.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}
+  var fe=root.closest('.fluid-engine');if(fe)fe.style.display='block';
+
+  var JOBS={
+    captain:{t:'Captain',c:'#ff4c0f',tag:'The deck answers to you.',d:'You make the call when the sky turns ugly, and somehow the crew follows you into it. You are calm, a little reckless, and you never leave anyone behind on the dock.'},
+    pilot:{t:'Pilot',c:'#89fbcb',tag:'Hands on the wheel, eyes on the clouds.',d:'You feel the wind before it hits. Tight gaps, sudden drops, and storms are just a good day at work. The crew holds on and trusts you to bring the ship home in one piece.'},
+    gunner:{t:'Gunner',c:'#ff4c0f',tag:'Loud, loyal, and very hard to argue with.',d:'When trouble shows up off the bow, you are already loading. You protect your people first and ask questions later, and nobody sleeps better than the crew with you on watch.'},
+    runner:{t:'Runner',c:'#a2f590',tag:'Fast feet, faster mouth.',d:'You carry the messages, the deals, and the gossip from one end of the ship to the other, and from port to port. If something needs doing yesterday, you are the one already halfway there.'},
+    techtailor:{t:'Techtailor',c:'#c3a6ff',tag:'Needle in one hand, wrench in the other.',d:'You stitch sails, patch engines, and make gear nobody else could dream up from scraps. When something breaks, the crew yells your name, and you are already rolling up your sleeves.'},
+    quartermaster:{t:'Quartermaster',c:'#f3ead9',tag:'Every coin counted, every barrel stacked.',d:'You keep the crew fed, paid, and honest. You know exactly what is in the hold, who owes what, and how to split the loot so nobody starts a mutiny over it.'},
+    navigator:{t:'Navigator',c:'#89fbcb',tag:'Maps, stars, and a hunch.',d:'You read the sky like a book and always know which way home is. Where everyone else sees endless clouds, you see a route, a shortcut, and a secret island nobody has charted yet.'},
+    lookout:{t:'Lookout',c:'#a2f590',tag:'Nothing gets past you.',d:'Up in the crow\'s nest, you spot the storm, the rival ship, and the shiny thing on the horizon long before anyone else. You notice the small stuff, and that is exactly why the crew is still alive.'}
+  };
+  var ORDER=['captain','pilot','gunner','runner','techtailor','quartermaster','navigator','lookout'];
+  var BOX_Q=5,BOX_A=2; // question 6, answer C
+  var QS=[
+    {q:'A rival airship pulls up alongside. What do you do?',a:[['Hail them and do the talking','captain'],['Swing us hard into the clouds','pilot'],['Roll out the cannons','gunner'],['Count their crew and their cargo','lookout quartermaster']]},
+    {q:'Pick your spot on the ship.',a:[['The wheel, obviously','pilot'],['The crow\'s nest, way up top','lookout'],['The workshop below deck','techtailor'],['The chart table by the lanterns','navigator']]},
+    {q:'Shore leave in a new port. Where are you headed?',a:[['The market, to haggle for supplies','quartermaster'],['Everywhere at once, I have errands','runner'],['The map shop with the dusty back room','navigator'],['The tavern, to hear who is hiring','captain']]},
+    {q:'What is in your pockets right now?',a:[['A compass and a half-drawn map','navigator'],['Spare bolts, thread, and a tiny screwdriver','techtailor'],['A spyglass and a snack','lookout'],['A sealed letter I am not supposed to read','runner']]},
+    {q:'The crew is arguing over the loot. You...',a:[['Split it fair and write it down','quartermaster'],['Settle it with one look','captain'],['Hide the best piece until they calm down','runner'],['Fire one warning shot into the sky','gunner']]},
+    {q:'Something just broke and the ship is shaking. Your move?',a:[['Hold her steady with both hands','pilot'],['Find the safest route down','navigator'],['Patch it with whatever is lying around','techtailor'],['Shout orders until everyone moves','captain']]},
+    {q:'Pick a sky pirate snack.',a:[['Hardtack, rationed carefully','quartermaster'],['Whatever I can eat while running','runner'],['Spicy jerky, extra spicy','gunner'],['Cloudberry pie, saved for later','lookout']]},
+    {q:'A storm is coming. What is your first thought?',a:[['I saw it an hour ago','lookout'],['I know a way around it','navigator'],['Let\'s fly right through it','pilot gunner'],['Are the sails stitched tight?','techtailor']]},
+    {q:'Your crew would describe you as...',a:[['The one in charge','captain'],['The one who fixes everything','techtailor'],['The one who never runs out of anything','quartermaster'],['The one you can never catch','runner gunner']]}
+  ];
+  var N=QS.length,i=0,score={};
+  var $=function(s){return root.querySelector(s);};
+  var txt=$('.q-text'),opts=$('.q-opts'),fill=$('.q-fill'),bar=$('.q-bar'),cnt=$('.q-count'),pct=$('.q-pct');
+  var k='UUFYRVlGNUM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function openBox(e){e.preventDefault();e.stopPropagation();
+    if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 82 opens.');return;}
+    location.href=atob(k).split('').reverse().join('');}
+  function setBar(n){var p=Math.round(n/N*100);fill.style.width=p+'%';pct.textContent=p+'%';bar.setAttribute('aria-valuenow',n);}
+  function show(){
+    var Q=QS[i];cnt.textContent='Question '+(i+1)+' of '+N;setBar(i);txt.textContent=Q.q;opts.innerHTML='';
+    Q.a.forEach(function(a,j){
+      var w=document.createElement('div');w.className='q-opt';
+      var b=document.createElement('button');b.type='button';b.className='q-ans';
+      var l=document.createElement('span');l.className='q-l';l.textContent='ABCD'.charAt(j);
+      var s=document.createElement('span');s.textContent=a[0];b.appendChild(l);b.appendChild(s);
+      b.addEventListener('click',function(){a[1].split(' ').forEach(function(x){score[x]=(score[x]||0)+1;});i++;if(i<N)show();else finish();});
+      w.appendChild(b);
+      if(i===BOX_Q&&j===BOX_A){w.className+=' has-box';
+        var x=document.createElement('button');x.type='button';x.className='q-box';x.setAttribute('aria-label','Loot box 82');
+        x.innerHTML='<img src="https://africhmaurice.github.io/leaderboard/loot/40.png" alt="Loot box 82">';
+        x.addEventListener('click',openBox);w.appendChild(x);}
+      opts.appendChild(w);
+    });
+  }
+  function finish(){
+    setBar(N);var best=ORDER[0];ORDER.forEach(function(j){if((score[j]||0)>(score[best]||0))best=j;});
+    var J=JOBS[best];var rj=$('.r-job');rj.textContent=J.t;rj.style.color=J.c;
+    $('.r-tag').textContent=J.tag;$('.r-desc').textContent=J.d;
+    root.classList.add('done');root.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  $('.r-again').addEventListener('click',function(){i=0;score={};root.classList.remove('done');show();root.scrollIntoView({behavior:'smooth',block:'start'});});
+  show();
+})();
+</script>
