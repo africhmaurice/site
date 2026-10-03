@@ -114,6 +114,8 @@ Yet again, you might try.`],
   [36, 'Slide & Find'],
   // Boxes 50, 51, and 52 all live in Stack the Colors (one per level), so one card covers all three.
   ['50–52', 'In celebration of Act 2 beginning, here are three loot boxes!', { button: ['Claim them', 'https://www.mauriceafrich.com/stack-the-colors'] }],
+  // Aaron Hall's clue (Maurice, 2026-10-03).
+  [55, 'Who gave that caveman a microphone!?'],
 ];
 
 // The few lines above the cards that say what they are.
