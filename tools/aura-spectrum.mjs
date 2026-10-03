@@ -97,6 +97,9 @@ const page = `<!-- ============================================================
 (function () {
   var root = document.getElementById('ma-aura'); if (!root) return;
   var GOAL = ${GOAL};
+  // The Squarespace section around the block takes the page's dark violet, so no red shows above or below.
+  var sec = root.parentElement && root.parentElement.closest('section');
+  if (sec) { sec.style.setProperty('background', '#1a0f33', 'important'); var sbg = sec.querySelector('.section-background'); if (sbg) sbg.style.setProperty('background', '#1a0f33', 'important'); }
   // Maurice's aura colors, exactly as he made them.
   var COLORS = ${JSON.stringify(COLORS)};
   var $ = function (id) { return document.getElementById(id); };
