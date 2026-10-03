@@ -1,10 +1,13 @@
 <!-- ============================================================
      SKY PIRATE QUIZ - "What Sky Pirate Job Are You Most Like?"
-     Nine questions, one at a time, with a progress bar. Each answer scores one or two
-     airship jobs; the top score is the result card (ties go to the earlier job in JOBS).
-     Loot box 40 hides as a tiny box in the corner of one answer on question 6
-     ("Patch it with whatever's lying around"). Clicking the tiny box, not the answer,
-     opens the claim link.
+     All words and scoring live in assets/quiz/sky-pirate-quiz.json (edit with tools/quiz-editor.html);
+     the script fetches it at load and keeps a backup copy inline in case the fetch fails.
+     Scoring: every answer adds points to traits (Bold, Steady, Clever, Crafty, Watchful, Charming,
+     Loyal, Restless). Each job has a weight per trait; job score = sum of trait points x weight.
+     Top score is the result card (ties go to the job listed first in the JSON).
+     Loot box 40 hides as a tiny box in the corner of the answer marked "lootBox": true in the JSON
+     (question 6, "Patch it with whatever is lying around"). Clicking the tiny box, not the answer,
+     opens the claim link. The claim key stays here in the script, never in the JSON.
      ============================================================ -->
 <!-- HOLD-START: until the October hiding spots all launch together (Maurice, 2026-10-03), visitors see "coming soon";
      add ?preview=1 to the address to see the page. Delete this block at launch. -->
@@ -12,7 +15,7 @@
 #ma-hold{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:70vh;padding:140px 20px 80px;background:#0b170f;display:grid;place-items:center;text-align:center}
 #ma-hold p{margin:0;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,6vw,64px);line-height:1.2;letter-spacing:.03em;color:#fffffe}</style>
 <div id="ma-hold"><p>Something is hiding here. Soon.</p></div>
-<script>(function(){if(/[?&]preview=1/.test(location.search)){var h=document.getElementById('ma-hold');if(h)h.parentNode.removeChild(h);}else{document.documentElement.classList.add('ma-held');}})();</script>
+<script>(function(){if(/[?&]preview=1\b/.test(location.search)){var h=document.getElementById('ma-hold');if(h)h.parentNode.removeChild(h);}else{document.documentElement.classList.add('ma-held');}})();</script>
 <!-- HOLD-END -->
 
 <style>
@@ -43,10 +46,18 @@
 #ma-quiz.done .q-result{display:flex;flex-direction:column}
 #ma-quiz .q-play{display:flex;flex-direction:column;gap:22px}
 #ma-quiz.done .q-play{display:none}
+#ma-quiz .q-wait{margin:0;font-weight:700;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#89fbcb;text-align:center;padding:40px 0}
+#ma-quiz.ready .q-wait{display:none}
+#ma-quiz:not(.ready) .q-play{display:none}
 #ma-quiz .r-eye{font-weight:800;font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:#89fbcb;margin:0}
 #ma-quiz .r-job{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(48px,9vw,110px);line-height:1.2;letter-spacing:.04em;margin:0;color:#ff4c0f;overflow-wrap:anywhere}
 #ma-quiz .r-tag{font-weight:800;font-size:clamp(15px,1.8vw,19px);letter-spacing:.06em;color:#f3ead9;margin:0}
 #ma-quiz .r-desc{font-size:clamp(16px,1.9vw,19px);line-height:1.65;color:#fffffe;max-width:600px;margin:0}
+#ma-quiz .r-tbox{display:flex;flex-direction:column;gap:12px;align-items:center}
+#ma-quiz .r-tlabel{margin:0;font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#89fbcb}
+#ma-quiz .r-traits{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+#ma-quiz .r-traits li{border:2px solid #f3ead9;padding:8px 14px;font-weight:800;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:#f3ead9}
+#ma-quiz .r-traits li:first-child{background:#f3ead9;color:#0b170f}
 #ma-quiz .r-share{border:2px dashed #89fbcb;padding:14px 20px;font-weight:700;font-size:clamp(14px,1.6vw,16px);letter-spacing:.04em;line-height:1.5;color:#89fbcb;margin:0}
 #ma-quiz .r-again{font-family:'Almarai',sans-serif;font-weight:800;font-size:16px;letter-spacing:.1em;text-transform:uppercase;color:#fffffe;background:#c53200;border:3px solid #c53200;padding:16px 30px;cursor:pointer;transition:background .15s ease,transform .15s ease}
 #ma-quiz .r-again:hover,#ma-quiz .r-again:focus-visible{background:#ff4c0f;border-color:#ff4c0f;transform:scale(1.04);outline:none}
@@ -65,8 +76,9 @@
     <p class="q-sub">Every airship needs a crew. Answer nine questions and I'll tell you where you'd sign on.</p>
   </header>
   <div class="q-card">
+    <p class="q-wait">Loading the crew list...</p>
     <div class="q-play">
-      <div class="q-meta"><span class="q-count">Question 1 of 9</span><span class="q-pct">0%</span></div>
+      <div class="q-meta"><span class="q-count">Question 1</span><span class="q-pct">0%</span></div>
       <div class="q-bar" role="progressbar" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0"><div class="q-fill"></div></div>
       <h2 class="q-text" aria-live="polite"></h2>
       <div class="q-opts"></div>
@@ -76,6 +88,7 @@
       <h2 class="r-job"></h2>
       <p class="r-tag"></p>
       <p class="r-desc"></p>
+      <div class="r-tbox"><p class="r-tlabel">Your strongest traits</p><ul class="r-traits"></ul></div>
       <p class="r-share">Screenshot this and tag @mauriceafrich with your result.</p>
       <button class="r-again" type="button">Take it again</button>
     </div>
@@ -88,30 +101,14 @@
   var cw=root.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}
   var fe=root.closest('.fluid-engine');if(fe)fe.style.display='block';
 
-  var JOBS={
-    captain:{t:'Captain',c:'#ff4c0f',tag:'The deck answers to you.',d:'You make the call when the sky turns ugly, and somehow the crew follows you into it. You are calm, a little reckless, and you never leave anyone behind on the dock.'},
-    pilot:{t:'Pilot',c:'#89fbcb',tag:'Hands on the wheel, eyes on the clouds.',d:'You feel the wind before it hits. Tight gaps, sudden drops, and storms are just a good day at work. The crew holds on and trusts you to bring the ship home in one piece.'},
-    gunner:{t:'Gunner',c:'#ff4c0f',tag:'Loud, loyal, and very hard to argue with.',d:'When trouble shows up off the bow, you are already loading. You protect your people first and ask questions later, and nobody sleeps better than the crew with you on watch.'},
-    runner:{t:'Runner',c:'#a2f590',tag:'Fast feet, faster mouth.',d:'You carry the messages, the deals, and the gossip from one end of the ship to the other, and from port to port. If something needs doing yesterday, you are the one already halfway there.'},
-    techtailor:{t:'Techtailor',c:'#c3a6ff',tag:'Needle in one hand, wrench in the other.',d:'You stitch sails, patch engines, and make gear nobody else could dream up from scraps. When something breaks, the crew yells your name, and you are already rolling up your sleeves.'},
-    quartermaster:{t:'Quartermaster',c:'#f3ead9',tag:'Every coin counted, every barrel stacked.',d:'You keep the crew fed, paid, and honest. You know exactly what is in the hold, who owes what, and how to split the loot so nobody starts a mutiny over it.'},
-    navigator:{t:'Navigator',c:'#89fbcb',tag:'Maps, stars, and a hunch.',d:'You read the sky like a book and always know which way home is. Where everyone else sees endless clouds, you see a route, a shortcut, and a secret island nobody has charted yet.'},
-    lookout:{t:'Lookout',c:'#a2f590',tag:'Nothing gets past you.',d:'Up in the crow\'s nest, you spot the storm, the rival ship, and the shiny thing on the horizon long before anyone else. You notice the small stuff, and that is exactly why the crew is still alive.'}
-  };
-  var ORDER=['captain','pilot','gunner','runner','techtailor','quartermaster','navigator','lookout'];
-  var BOX_Q=5,BOX_A=2; // question 6, answer C
-  var QS=[
-    {q:'A rival airship pulls up alongside. What do you do?',a:[['Hail them and do the talking','captain'],['Swing us hard into the clouds','pilot'],['Roll out the cannons','gunner'],['Count their crew and their cargo','lookout quartermaster']]},
-    {q:'Pick your spot on the ship.',a:[['The wheel, obviously','pilot'],['The crow\'s nest, way up top','lookout'],['The workshop below deck','techtailor'],['The chart table by the lanterns','navigator']]},
-    {q:'Shore leave in a new port. Where are you headed?',a:[['The market, to haggle for supplies','quartermaster'],['Everywhere at once, I have errands','runner'],['The map shop with the dusty back room','navigator'],['The tavern, to hear who is hiring','captain']]},
-    {q:'What is in your pockets right now?',a:[['A compass and a half-drawn map','navigator'],['Spare bolts, thread, and a tiny screwdriver','techtailor'],['A spyglass and a snack','lookout'],['A sealed letter I am not supposed to read','runner']]},
-    {q:'The crew is arguing over the loot. You...',a:[['Split it fair and write it down','quartermaster'],['Settle it with one look','captain'],['Hide the best piece until they calm down','runner'],['Fire one warning shot into the sky','gunner']]},
-    {q:'Something just broke and the ship is shaking. Your move?',a:[['Hold her steady with both hands','pilot'],['Find the safest route down','navigator'],['Patch it with whatever is lying around','techtailor'],['Shout orders until everyone moves','captain']]},
-    {q:'Pick a sky pirate snack.',a:[['Hardtack, rationed carefully','quartermaster'],['Whatever I can eat while running','runner'],['Spicy jerky, extra spicy','gunner'],['Cloudberry pie, saved for later','lookout']]},
-    {q:'A storm is coming. What is your first thought?',a:[['I saw it an hour ago','lookout'],['I know a way around it','navigator'],['Let\'s fly right through it','pilot gunner'],['Are the sails stitched tight?','techtailor']]},
-    {q:'Your crew would describe you as...',a:[['The one in charge','captain'],['The one who fixes everything','techtailor'],['The one who never runs out of anything','quartermaster'],['The one you can never catch','runner gunner']]}
-  ];
-  var N=QS.length,i=0,score={};
+  // Quiz content lives in assets/quiz/sky-pirate-quiz.json (edit it with tools/quiz-editor.html).
+  // Bump QUIZ_V after publishing a new copy of the JSON so browsers skip their cached one.
+  var QUIZ_V=1;
+  var QUIZ_URL='https://africhmaurice.github.io/site/assets/quiz/sky-pirate-quiz.json?v='+QUIZ_V;
+  // Backup copy of the same JSON, used only if the fetch fails.
+  var FALLBACK={"version":1,"eyebrow":"All hands on deck","title":"What Sky Pirate Job Are You Most Like?","intro":"Every airship needs a crew. Answer nine questions and I'll tell you where you'd sign on.","resultLead":"You are most like the","share":"Screenshot this and tag @mauriceafrich with your result.","descriptors":[{"id":"bold","name":"Bold","def":"Runs toward trouble. Big swings, loud calls, no flinching."},{"id":"steady","name":"Steady","def":"Calm hands and a level head. Keeps things running when it gets bumpy."},{"id":"clever","name":"Clever","def":"Thinks it through. Puzzles, plans, maps, and math."},{"id":"crafty","name":"Crafty","def":"Makes something out of nothing. Fixes, builds, and improvises."},{"id":"watchful","name":"Watchful","def":"Notices everything. Sees the storm, the liar, and the shiny thing first."},{"id":"charming","name":"Charming","def":"Talks people into things. Leads, haggles, and wins the room."},{"id":"loyal","name":"Loyal","def":"Crew first, always. Stands in front of their people."},{"id":"restless","name":"Restless","def":"Can't sit still. Always moving, always curious, always halfway out the door."}],"jobs":[{"id":"captain","title":"Captain","color":"#ff4c0f","tagline":"The deck answers to you.","description":"You make the call when the sky turns ugly, and somehow the crew follows you into it. You are calm, a little reckless, and you never leave anyone behind on the dock.","weights":{"charming":3,"bold":2,"steady":1}},{"id":"pilot","title":"Pilot","color":"#89fbcb","tagline":"Hands on the wheel, eyes on the clouds.","description":"You feel the wind before it hits. Tight gaps, sudden drops, and storms are just a good day at work. The crew holds on and trusts you to bring the ship home in one piece.","weights":{"bold":3,"steady":2,"watchful":1}},{"id":"gunner","title":"Gunner","color":"#ff4c0f","tagline":"Loud, loyal, and very hard to argue with.","description":"When trouble shows up off the bow, you are already loading. You protect your people first and ask questions later, and nobody sleeps better than the crew with you on watch.","weights":{"loyal":3,"bold":2,"watchful":1}},{"id":"runner","title":"Runner","color":"#a2f590","tagline":"Fast feet, faster mouth.","description":"You carry the messages, the deals, and the gossip from one end of the ship to the other, and from port to port. If something needs doing yesterday, you are the one already halfway there.","weights":{"restless":3,"charming":2,"crafty":1}},{"id":"techtailor","title":"Techtailor","color":"#c3a6ff","tagline":"Needle in one hand, wrench in the other.","description":"You stitch sails, patch engines, and make gear nobody else could dream up from scraps. When something breaks, the crew yells your name, and you are already rolling up your sleeves.","weights":{"crafty":3,"clever":2,"steady":1}},{"id":"quartermaster","title":"Quartermaster","color":"#f3ead9","tagline":"Every coin counted, every barrel stacked.","description":"You keep the crew fed, paid, and honest. You know exactly what is in the hold, who owes what, and how to split the loot so nobody starts a mutiny over it.","weights":{"steady":3,"loyal":2,"clever":1}},{"id":"navigator","title":"Navigator","color":"#89fbcb","tagline":"Maps, stars, and a hunch.","description":"You read the sky like a book and always know which way home is. Where everyone else sees endless clouds, you see a route, a shortcut, and a secret island nobody has charted yet.","weights":{"clever":3,"restless":2,"watchful":1}},{"id":"lookout","title":"Lookout","color":"#a2f590","tagline":"Nothing gets past you.","description":"Up in the crow's nest, you spot the storm, the rival ship, and the shiny thing on the horizon long before anyone else. You notice the small stuff, and that is exactly why the crew is still alive.","weights":{"watchful":3,"restless":2,"loyal":1}}],"questions":[{"text":"A rival airship pulls up alongside. What do you do?","answers":[{"text":"Hail them and do the talking","points":{"charming":2,"bold":1}},{"text":"Swing us hard into the clouds","points":{"bold":2,"steady":1}},{"text":"Step in front of my crew and roll out the cannons","points":{"loyal":2,"bold":1}},{"text":"Count their crew and their cargo","points":{"watchful":2,"steady":1}}]},{"text":"Pick your spot on the ship.","answers":[{"text":"The wheel, obviously","points":{"steady":2,"bold":1}},{"text":"The crow's nest, way up top","points":{"watchful":2,"restless":1}},{"text":"The workshop below deck","points":{"crafty":2,"clever":1}},{"text":"The chart table by the lanterns","points":{"clever":2,"watchful":1}}]},{"text":"Shore leave in a new port. Where are you headed?","answers":[{"text":"The market, to stock the hold before prices go up","points":{"steady":2,"charming":1}},{"text":"Everywhere at once, I have errands","points":{"restless":2,"charming":1}},{"text":"The map shop with the dusty back room","points":{"clever":2,"restless":1}},{"text":"The docks, to make sure nobody messes with our ship","points":{"loyal":2,"watchful":1}}]},{"text":"What is in your pockets right now?","answers":[{"text":"A compass and a half-drawn map","points":{"clever":2,"restless":1}},{"text":"Spare bolts, thread, and a tiny screwdriver","points":{"crafty":2,"clever":1}},{"text":"A spyglass and a snack for whoever is on watch with me","points":{"watchful":2,"loyal":1}},{"text":"A sealed letter I am not supposed to read","points":{"restless":2,"crafty":1}}]},{"text":"The crew is arguing over the loot. You...","answers":[{"text":"Split it fair and write it down","points":{"steady":2,"charming":1}},{"text":"Settle it with one look","points":{"charming":2,"bold":1}},{"text":"Hide the best piece until they calm down","points":{"crafty":2,"restless":1}},{"text":"Fire one warning shot into the sky","points":{"bold":2,"charming":1}}]},{"text":"Something just broke and the ship is shaking. Your move?","answers":[{"text":"Hold her steady with both hands","points":{"steady":2,"bold":1}},{"text":"Find the safest route down","points":{"clever":2,"steady":1}},{"text":"Patch it with whatever is lying around","points":{"crafty":2,"clever":1},"lootBox":true},{"text":"Get every hand to a rope and keep them calm","points":{"charming":2,"loyal":1}}]},{"text":"Pick a sky pirate snack.","answers":[{"text":"Hardtack, rationed carefully","points":{"steady":2,"loyal":1}},{"text":"Whatever I can eat while running","points":{"restless":2,"charming":1}},{"text":"Spicy jerky, shared with my gun crew","points":{"loyal":2,"bold":1}},{"text":"Cloudberry pie, and I know exactly who took the last slice","points":{"watchful":3}}]},{"text":"A storm is coming. What is your first thought?","answers":[{"text":"I saw it an hour ago","points":{"watchful":2,"loyal":1}},{"text":"I know a way around it","points":{"clever":2,"restless":1}},{"text":"Let's fly right through it","points":{"bold":2,"restless":1}},{"text":"Are the sails stitched tight?","points":{"crafty":2,"watchful":1}}]},{"text":"Your crew would describe you as...","answers":[{"text":"The one in charge","points":{"charming":2,"bold":1}},{"text":"The one who would take a cannonball for them","points":{"loyal":2,"bold":1}},{"text":"The one who never runs out of anything","points":{"steady":2,"clever":1}},{"text":"The one you can never catch","points":{"restless":2,"crafty":1}}]}]};
+
+  var D,N,i=0,tot={};
   var $=function(s){return root.querySelector(s);};
   var txt=$('.q-text'),opts=$('.q-opts'),fill=$('.q-fill'),bar=$('.q-bar'),cnt=$('.q-count'),pct=$('.q-pct');
   var k='UUFYRVlGNUM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
@@ -120,28 +117,51 @@
     location.href=atob(k).split('').reverse().join('');}
   function setBar(n){var p=Math.round(n/N*100);fill.style.width=p+'%';pct.textContent=p+'%';bar.setAttribute('aria-valuenow',n);}
   function show(){
-    var Q=QS[i];cnt.textContent='Question '+(i+1)+' of '+N;setBar(i);txt.textContent=Q.q;opts.innerHTML='';
-    Q.a.forEach(function(a,j){
+    var Q=D.questions[i];cnt.textContent='Question '+(i+1)+' of '+N;setBar(i);txt.textContent=Q.text;opts.innerHTML='';
+    Q.answers.forEach(function(a,j){
       var w=document.createElement('div');w.className='q-opt';
       var b=document.createElement('button');b.type='button';b.className='q-ans';
-      var l=document.createElement('span');l.className='q-l';l.textContent='ABCD'.charAt(j);
-      var s=document.createElement('span');s.textContent=a[0];b.appendChild(l);b.appendChild(s);
-      b.addEventListener('click',function(){a[1].split(' ').forEach(function(x){score[x]=(score[x]||0)+1;});i++;if(i<N)show();else finish();});
+      var l=document.createElement('span');l.className='q-l';l.textContent='ABCDEFGH'.charAt(j);
+      var s=document.createElement('span');s.textContent=a.text;b.appendChild(l);b.appendChild(s);
+      b.addEventListener('click',function(){var p=a.points||{};for(var d in p)tot[d]=(tot[d]||0)+(+p[d]||0);i++;if(i<N)show();else finish();});
       w.appendChild(b);
-      if(i===BOX_Q&&j===BOX_A){w.className+=' has-box';
+      if(a.lootBox){w.className+=' has-box';
         var x=document.createElement('button');x.type='button';x.className='q-box';x.setAttribute('aria-label','Loot box 40');
         x.innerHTML='<img src="https://africhmaurice.github.io/leaderboard/loot/40.png" alt="Loot box 40">';
         x.addEventListener('click',openBox);w.appendChild(x);}
       opts.appendChild(w);
     });
   }
+  // Each job's score = sum of (your points in a trait x the job's weight for that trait).
+  // Highest score wins; a tie goes to the job listed first in the JSON.
+  function pick(){
+    var best=null,bs=-Infinity;
+    D.jobs.forEach(function(J){var s=0,w=J.weights||{};for(var d in w)s+=(tot[d]||0)*(+w[d]||0);if(s>bs){bs=s;best=J;}});
+    return best;
+  }
   function finish(){
-    setBar(N);var best=ORDER[0];ORDER.forEach(function(j){if((score[j]||0)>(score[best]||0))best=j;});
-    var J=JOBS[best];var rj=$('.r-job');rj.textContent=J.t;rj.style.color=J.c;
-    $('.r-tag').textContent=J.tag;$('.r-desc').textContent=J.d;
+    setBar(N);var J=pick();var rj=$('.r-job');rj.textContent=J.title;rj.style.color=J.color||'#ff4c0f';
+    $('.r-tag').textContent=J.tagline||'';$('.r-desc').textContent=J.description||'';
+    var ul=$('.r-traits');ul.innerHTML='';
+    D.descriptors.filter(function(d){return tot[d.id]>0;}).sort(function(a,b){return tot[b.id]-tot[a.id];}).slice(0,3)
+      .forEach(function(d){var li=document.createElement('li');li.textContent=d.name;ul.appendChild(li);});
     root.classList.add('done');root.scrollIntoView({behavior:'smooth',block:'start'});
   }
-  $('.r-again').addEventListener('click',function(){i=0;score={};root.classList.remove('done');show();root.scrollIntoView({behavior:'smooth',block:'start'});});
-  show();
+  function start(data){
+    if(D)return;D=data;N=D.questions.length;
+    if(D.eyebrow)$('.q-eyebrow').textContent=D.eyebrow;
+    if(D.title)$('.q-h1').textContent=D.title;
+    if(D.intro)$('.q-sub').textContent=D.intro;
+    if(D.resultLead)$('.r-eye').textContent=D.resultLead;
+    if(D.share)$('.r-share').textContent=D.share;
+    bar.setAttribute('aria-valuemax',N);
+    root.classList.add('ready');show();
+  }
+  function ok(d){return d&&d.jobs&&d.jobs.length&&d.questions&&d.questions.length&&d.descriptors;}
+  $('.r-again').addEventListener('click',function(){i=0;tot={};root.classList.remove('done');show();root.scrollIntoView({behavior:'smooth',block:'start'});});
+  var timer=setTimeout(function(){start(FALLBACK);},4000);
+  fetch(QUIZ_URL,{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.json();})
+    .then(function(d){clearTimeout(timer);start(ok(d)?d:FALLBACK);})
+    .catch(function(){clearTimeout(timer);start(FALLBACK);});
 })();
 </script>

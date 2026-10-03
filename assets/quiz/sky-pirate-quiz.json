@@ -1,0 +1,447 @@
+{
+  "version": 1,
+  "eyebrow": "All hands on deck",
+  "title": "What Sky Pirate Job Are You Most Like?",
+  "intro": "Every airship needs a crew. Answer nine questions and I'll tell you where you'd sign on.",
+  "resultLead": "You are most like the",
+  "share": "Screenshot this and tag @mauriceafrich with your result.",
+  "descriptors": [
+    {
+      "id": "bold",
+      "name": "Bold",
+      "def": "Runs toward trouble. Big swings, loud calls, no flinching."
+    },
+    {
+      "id": "steady",
+      "name": "Steady",
+      "def": "Calm hands and a level head. Keeps things running when it gets bumpy."
+    },
+    {
+      "id": "clever",
+      "name": "Clever",
+      "def": "Thinks it through. Puzzles, plans, maps, and math."
+    },
+    {
+      "id": "crafty",
+      "name": "Crafty",
+      "def": "Makes something out of nothing. Fixes, builds, and improvises."
+    },
+    {
+      "id": "watchful",
+      "name": "Watchful",
+      "def": "Notices everything. Sees the storm, the liar, and the shiny thing first."
+    },
+    {
+      "id": "charming",
+      "name": "Charming",
+      "def": "Talks people into things. Leads, haggles, and wins the room."
+    },
+    {
+      "id": "loyal",
+      "name": "Loyal",
+      "def": "Crew first, always. Stands in front of their people."
+    },
+    {
+      "id": "restless",
+      "name": "Restless",
+      "def": "Can't sit still. Always moving, always curious, always halfway out the door."
+    }
+  ],
+  "jobs": [
+    {
+      "id": "captain",
+      "title": "Captain",
+      "color": "#ff4c0f",
+      "tagline": "The deck answers to you.",
+      "description": "You make the call when the sky turns ugly, and somehow the crew follows you into it. You are calm, a little reckless, and you never leave anyone behind on the dock.",
+      "weights": {
+        "charming": 3,
+        "bold": 2,
+        "steady": 1
+      }
+    },
+    {
+      "id": "pilot",
+      "title": "Pilot",
+      "color": "#89fbcb",
+      "tagline": "Hands on the wheel, eyes on the clouds.",
+      "description": "You feel the wind before it hits. Tight gaps, sudden drops, and storms are just a good day at work. The crew holds on and trusts you to bring the ship home in one piece.",
+      "weights": {
+        "bold": 3,
+        "steady": 2,
+        "watchful": 1
+      }
+    },
+    {
+      "id": "gunner",
+      "title": "Gunner",
+      "color": "#ff4c0f",
+      "tagline": "Loud, loyal, and very hard to argue with.",
+      "description": "When trouble shows up off the bow, you are already loading. You protect your people first and ask questions later, and nobody sleeps better than the crew with you on watch.",
+      "weights": {
+        "loyal": 3,
+        "bold": 2,
+        "watchful": 1
+      }
+    },
+    {
+      "id": "runner",
+      "title": "Runner",
+      "color": "#a2f590",
+      "tagline": "Fast feet, faster mouth.",
+      "description": "You carry the messages, the deals, and the gossip from one end of the ship to the other, and from port to port. If something needs doing yesterday, you are the one already halfway there.",
+      "weights": {
+        "restless": 3,
+        "charming": 2,
+        "crafty": 1
+      }
+    },
+    {
+      "id": "techtailor",
+      "title": "Techtailor",
+      "color": "#c3a6ff",
+      "tagline": "Needle in one hand, wrench in the other.",
+      "description": "You stitch sails, patch engines, and make gear nobody else could dream up from scraps. When something breaks, the crew yells your name, and you are already rolling up your sleeves.",
+      "weights": {
+        "crafty": 3,
+        "clever": 2,
+        "steady": 1
+      }
+    },
+    {
+      "id": "quartermaster",
+      "title": "Quartermaster",
+      "color": "#f3ead9",
+      "tagline": "Every coin counted, every barrel stacked.",
+      "description": "You keep the crew fed, paid, and honest. You know exactly what is in the hold, who owes what, and how to split the loot so nobody starts a mutiny over it.",
+      "weights": {
+        "steady": 3,
+        "loyal": 2,
+        "clever": 1
+      }
+    },
+    {
+      "id": "navigator",
+      "title": "Navigator",
+      "color": "#89fbcb",
+      "tagline": "Maps, stars, and a hunch.",
+      "description": "You read the sky like a book and always know which way home is. Where everyone else sees endless clouds, you see a route, a shortcut, and a secret island nobody has charted yet.",
+      "weights": {
+        "clever": 3,
+        "restless": 2,
+        "watchful": 1
+      }
+    },
+    {
+      "id": "lookout",
+      "title": "Lookout",
+      "color": "#a2f590",
+      "tagline": "Nothing gets past you.",
+      "description": "Up in the crow's nest, you spot the storm, the rival ship, and the shiny thing on the horizon long before anyone else. You notice the small stuff, and that is exactly why the crew is still alive.",
+      "weights": {
+        "watchful": 3,
+        "restless": 2,
+        "loyal": 1
+      }
+    }
+  ],
+  "questions": [
+    {
+      "text": "A rival airship pulls up alongside. What do you do?",
+      "answers": [
+        {
+          "text": "Hail them and do the talking",
+          "points": {
+            "charming": 2,
+            "bold": 1
+          }
+        },
+        {
+          "text": "Swing us hard into the clouds",
+          "points": {
+            "bold": 2,
+            "steady": 1
+          }
+        },
+        {
+          "text": "Step in front of my crew and roll out the cannons",
+          "points": {
+            "loyal": 2,
+            "bold": 1
+          }
+        },
+        {
+          "text": "Count their crew and their cargo",
+          "points": {
+            "watchful": 2,
+            "steady": 1
+          }
+        }
+      ]
+    },
+    {
+      "text": "Pick your spot on the ship.",
+      "answers": [
+        {
+          "text": "The wheel, obviously",
+          "points": {
+            "steady": 2,
+            "bold": 1
+          }
+        },
+        {
+          "text": "The crow's nest, way up top",
+          "points": {
+            "watchful": 2,
+            "restless": 1
+          }
+        },
+        {
+          "text": "The workshop below deck",
+          "points": {
+            "crafty": 2,
+            "clever": 1
+          }
+        },
+        {
+          "text": "The chart table by the lanterns",
+          "points": {
+            "clever": 2,
+            "watchful": 1
+          }
+        }
+      ]
+    },
+    {
+      "text": "Shore leave in a new port. Where are you headed?",
+      "answers": [
+        {
+          "text": "The market, to stock the hold before prices go up",
+          "points": {
+            "steady": 2,
+            "charming": 1
+          }
+        },
+        {
+          "text": "Everywhere at once, I have errands",
+          "points": {
+            "restless": 2,
+            "charming": 1
+          }
+        },
+        {
+          "text": "The map shop with the dusty back room",
+          "points": {
+            "clever": 2,
+            "restless": 1
+          }
+        },
+        {
+          "text": "The docks, to make sure nobody messes with our ship",
+          "points": {
+            "loyal": 2,
+            "watchful": 1
+          }
+        }
+      ]
+    },
+    {
+      "text": "What is in your pockets right now?",
+      "answers": [
+        {
+          "text": "A compass and a half-drawn map",
+          "points": {
+            "clever": 2,
+            "restless": 1
+          }
+        },
+        {
+          "text": "Spare bolts, thread, and a tiny screwdriver",
+          "points": {
+            "crafty": 2,
+            "clever": 1
+          }
+        },
+        {
+          "text": "A spyglass and a snack for whoever is on watch with me",
+          "points": {
+            "watchful": 2,
+            "loyal": 1
+          }
+        },
+        {
+          "text": "A sealed letter I am not supposed to read",
+          "points": {
+            "restless": 2,
+            "crafty": 1
+          }
+        }
+      ]
+    },
+    {
+      "text": "The crew is arguing over the loot. You...",
+      "answers": [
+        {
+          "text": "Split it fair and write it down",
+          "points": {
+            "steady": 2,
+            "charming": 1
+          }
+        },
+        {
+          "text": "Settle it with one look",
+          "points": {
+            "charming": 2,
+            "bold": 1
+          }
+        },
+        {
+          "text": "Hide the best piece until they calm down",
+          "points": {
+            "crafty": 2,
+            "restless": 1
+          }
+        },
+        {
+          "text": "Fire one warning shot into the sky",
+          "points": {
+            "bold": 2,
+            "charming": 1
+          }
+        }
+      ]
+    },
+    {
+      "text": "Something just broke and the ship is shaking. Your move?",
+      "answers": [
+        {
+          "text": "Hold her steady with both hands",
+          "points": {
+            "steady": 2,
+            "bold": 1
+          }
+        },
+        {
+          "text": "Find the safest route down",
+          "points": {
+            "clever": 2,
+            "steady": 1
+          }
+        },
+        {
+          "text": "Patch it with whatever is lying around",
+          "points": {
+            "crafty": 2,
+            "clever": 1
+          },
+          "lootBox": true
+        },
+        {
+          "text": "Get every hand to a rope and keep them calm",
+          "points": {
+            "charming": 2,
+            "loyal": 1
+          }
+        }
+      ]
+    },
+    {
+      "text": "Pick a sky pirate snack.",
+      "answers": [
+        {
+          "text": "Hardtack, rationed carefully",
+          "points": {
+            "steady": 2,
+            "loyal": 1
+          }
+        },
+        {
+          "text": "Whatever I can eat while running",
+          "points": {
+            "restless": 2,
+            "charming": 1
+          }
+        },
+        {
+          "text": "Spicy jerky, shared with my gun crew",
+          "points": {
+            "loyal": 2,
+            "bold": 1
+          }
+        },
+        {
+          "text": "Cloudberry pie, and I know exactly who took the last slice",
+          "points": {
+            "watchful": 3
+          }
+        }
+      ]
+    },
+    {
+      "text": "A storm is coming. What is your first thought?",
+      "answers": [
+        {
+          "text": "I saw it an hour ago",
+          "points": {
+            "watchful": 2,
+            "loyal": 1
+          }
+        },
+        {
+          "text": "I know a way around it",
+          "points": {
+            "clever": 2,
+            "restless": 1
+          }
+        },
+        {
+          "text": "Let's fly right through it",
+          "points": {
+            "bold": 2,
+            "restless": 1
+          }
+        },
+        {
+          "text": "Are the sails stitched tight?",
+          "points": {
+            "crafty": 2,
+            "watchful": 1
+          }
+        }
+      ]
+    },
+    {
+      "text": "Your crew would describe you as...",
+      "answers": [
+        {
+          "text": "The one in charge",
+          "points": {
+            "charming": 2,
+            "bold": 1
+          }
+        },
+        {
+          "text": "The one who would take a cannonball for them",
+          "points": {
+            "loyal": 2,
+            "bold": 1
+          }
+        },
+        {
+          "text": "The one who never runs out of anything",
+          "points": {
+            "steady": 2,
+            "clever": 1
+          }
+        },
+        {
+          "text": "The one you can never catch",
+          "points": {
+            "restless": 2,
+            "crafty": 1
+          }
+        }
+      ]
+    }
+  ]
+}

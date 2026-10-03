@@ -9,7 +9,7 @@
 #ma-hold{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:70vh;padding:140px 20px 80px;background:#0b170f;display:grid;place-items:center;text-align:center}
 #ma-hold p{margin:0;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,6vw,64px);line-height:1.2;letter-spacing:.03em;color:#fffffe}</style>
 <div id="ma-hold"><p>Something is hiding here. Soon.</p></div>
-<script>(function(){if(/[?&]preview=1/.test(location.search)){var h=document.getElementById('ma-hold');if(h)h.parentNode.removeChild(h);}else{document.documentElement.classList.add('ma-held');}})();</script>
+<script>(function(){if(/[?&]preview=1\b/.test(location.search)){var h=document.getElementById('ma-hold');if(h)h.parentNode.removeChild(h);}else{document.documentElement.classList.add('ma-held');}})();</script>
 <!-- HOLD-END -->
 
 <style>
@@ -56,6 +56,23 @@ html,body{margin:0 !important;padding:0 !important;background:#0b170f !important
   list.appendChild(frag);
   var k='U0FLQlRKNkI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
   var r='https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+  // Half the doors are Rick Rolls; the other half go somewhere worth seeing (Maurice, 2026-10-03).
+  // Which door goes where is shuffled the same way for everyone, so it looks random but never changes.
+  var M='https://www.mauriceafrich.com/';
+  var GOOD=[
+    M+'preorder','https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834','https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834',
+    'https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704','https://bookshop.org/p/books/cello-s-gate-maurice-africh/867e45638f69e94f?ean=9781668242834',
+    'https://www.amazon.com/Audible-Cellos-Gate/dp/B0GKZWW416','https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399763073',
+    'https://www.goodreads.com/book/show/247464010-cello-s-gate','https://fable.co/book/cellos-gate-by-maurice-africh-9798992274912',
+    'https://linktr.ee/mauriceafrich','https://www.instagram.com/mauriceafrich','https://www.tiktok.com/@mauriceafrich','https://www.youtube.com/@africhmaurice',
+    'https://www.facebook.com/profile.php?id=61573491875476','https://discord.gg/TV8SNnSGdb',
+    'https://www.youtube.com/watch?v=q2JejVp7lXI','https://www.youtube.com/watch?v=jth1AgyV9ps','https://www.youtube.com/watch?v=YSuh8yYblAU','https://www.instagram.com/reel/DdkPldsShZ1/',
+    M+'icon-sea',M+'sky-pirate-quiz',M+'fog-maze',M+'sky-run',M+'newsletter',M+'the-hunt'
+  ];
+  var seed=0x5ca1ab1e;function rnd(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;}
+  var dest=[],gi=0;for(i=0;i<500;i++)dest.push(i%2?r:null);
+  for(i=499;i>0;i--){var x=Math.floor(rnd()*(i+1)),t=dest[i];dest[i]=dest[x];dest[x]=t;}
+  for(i=0;i<500;i++)if(dest[i]===null)dest[i]=GOOD[gi++%GOOD.length];
   list.addEventListener('click',function(e){
     var b=e.target.closest('.ou-btn');if(!b)return;
     var c=list.children,n=c.length,j=n;while(j--){if(c[j]===b)break;}
@@ -63,7 +80,7 @@ html,body{margin:0 !important;padding:0 !important;background:#0b170f !important
       if(/africhmaurice\.github\.io/.test(location.host)){alert('Preview: this is where the loot box opens.');return;}
       location.href=atob(k).split('').reverse().join('');return;
     }
-    window.open(r,'_blank','noopener');
+    window.open(dest[j],'_blank','noopener');
   });
 })();
 </script>
