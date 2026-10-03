@@ -116,6 +116,7 @@ Yet again, you might try.`],
   ['50–52', 'In celebration of Act 2 beginning, here are three loot boxes!', { button: ['Claim them', 'https://www.mauriceafrich.com/stack-the-colors'] }],
   // Aaron Hall's clue (Maurice, 2026-10-03).
   [55, 'Who gave that caveman a microphone!?'],
+  [73, 'you already have it'],
 ];
 
 // The few lines above the cards that say what they are.
