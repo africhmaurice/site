@@ -5,6 +5,15 @@
      kept in localStorage. Reaching the exit of level 5 reveals loot box 41.
      Controls: arrow keys or WASD, on-screen arrows, or swipes on the maze (page does not scroll).
      ============================================================ -->
+<!-- HOLD-START: until the October hiding spots all launch together (Maurice, 2026-10-03), visitors see "coming soon";
+     add ?preview=1 to the address to see the page. Delete this block at launch. -->
+<style>html.ma-held #ma-fog{display:none!important}
+#ma-hold{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:70vh;padding:140px 20px 80px;background:#0b170f;display:grid;place-items:center;text-align:center}
+#ma-hold p{margin:0;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,6vw,64px);line-height:1.2;letter-spacing:.03em;color:#fffffe}</style>
+<div id="ma-hold"><p>Something is hiding here. Soon.</p></div>
+<script>(function(){if(/[?&]preview=1/.test(location.search)){var h=document.getElementById('ma-hold');if(h)h.parentNode.removeChild(h);}else{document.documentElement.classList.add('ma-held');}})();</script>
+<!-- HOLD-END -->
+
 <style>
 @font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
 html,body{margin:0 !important;padding:0 !important;background:#0b170f !important}

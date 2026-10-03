@@ -533,7 +533,9 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
             (have[n] ? (n === 0 ? '&#9733;' : n) : '&#183;') + '</div>';
     }
     grid.innerHTML = html;
-    if (ART && !have[73] && grid.children[13]) {
+    // Box 73 waits until the whole October batch of new hiding spots goes live together (Maurice, 2026-10-03).
+    var SNEAK73_LIVE = false;
+    if (SNEAK73_LIVE && ART && !have[73] && grid.children[13]) {
       var sneak = document.createElement('button');
       sneak.type = 'button'; sneak.className = 'lb-sneak'; sneak.title = 'Loot box 73';
       sneak.setAttribute('aria-label', 'Loot box 73');
