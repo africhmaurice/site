@@ -247,6 +247,12 @@
       "url": "/oracles-gift/aura-spectrum",
       "title": "The Oracle's Gift: Aura Color Spectrum (Act Two reward at 80k)",
       "source": "pages/aura-spectrum.html"
+    },
+    {
+      "slug": "links",
+      "url": "/links",
+      "title": "Links (link-in-bio page with visit and tap stats)",
+      "source": "pages/links.html (built by tools/links.mjs from tools/links.json)"
     }
   ],
   "staysInSquarespace": [
