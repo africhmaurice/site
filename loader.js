@@ -636,6 +636,8 @@
   // Main menu: MERCH (the Trench Market shop) sits right before The Treasure Hunt (Maurice, 2026-09-28). It replaces
   // the old Merch folder, whose partner shops are now listed inside the shop itself.
   var MERCH_URL = 'https://shop.mauriceafrich.com/', OLD_MERCH = '/new-dropdown', merchBuilt = false;
+  // Right after Market: the Oracle's Gift, the Aura Color Search Database (Maurice, 2026-10-03; the Act Two reward at 80k).
+  var AURA_URL = SITE + '/oracles-gift/aura-spectrum', AURA_TEXT = 'Aura Colors';
   function mainMerch() {
     if (merchBuilt || !document.getElementById('header')) return;
     var lists = document.querySelectorAll('#header .header-nav-list');
@@ -650,6 +652,9 @@
       var item = tpl.cloneNode(true), a = item.querySelector('a');
       a.href = MERCH_URL; a.removeAttribute('target'); a.textContent = 'Market';
       hunt.closest('.header-nav-item').parentNode.insertBefore(item, hunt.closest('.header-nav-item'));
+      var aura = tpl.cloneNode(true), aa = aura.querySelector('a');
+      aa.href = AURA_URL; aa.removeAttribute('target'); aa.textContent = AURA_TEXT;
+      hunt.closest('.header-nav-item').parentNode.insertBefore(aura, hunt.closest('.header-nav-item'));
     });
     var root = document.querySelector('.header-menu-nav [data-folder="root"]');
     if (!root) return;
@@ -661,6 +666,9 @@
     var row = tplRow.cloneNode(true), ra = row.querySelector('a');
     ra.href = MERCH_URL; ra.removeAttribute('target'); ra.textContent = 'Market';
     huntRow.closest('.header-menu-nav-item').parentNode.insertBefore(row, huntRow.closest('.header-menu-nav-item'));
+    var auraRow = tplRow.cloneNode(true), ara = auraRow.querySelector('a');
+    ara.href = AURA_URL; ara.removeAttribute('target'); ara.textContent = AURA_TEXT;
+    huntRow.closest('.header-menu-nav-item').parentNode.insertBefore(auraRow, huntRow.closest('.header-menu-nav-item'));
   }
 
   function scan() {

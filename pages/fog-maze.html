@@ -1,0 +1,245 @@
+<!-- ============================================================
+     FOG MAZE - loot box 84. Five seeded mazes (9, 13, 17, 23, and 29 cells square) drawn on a canvas.
+     The player sees only a small circle around their airship; cells already passed stay dimly
+     remembered. Later levels get extra openings so the maze has loops. Highest level reached is
+     kept in localStorage. Reaching the exit of level 5 reveals loot box 84.
+     Controls: arrow keys or WASD, on-screen arrows, or swipes on the maze (page does not scroll).
+     ============================================================ -->
+<style>
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+html,body{margin:0 !important;padding:0 !important;background:#0b170f !important}
+#ma-fog{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;overflow:hidden;
+  padding:clamp(110px,11vw,150px) 20px 64px;font-family:'Almarai',sans-serif;color:#fffffe;text-align:center;
+  background:radial-gradient(ellipse at 50% 30%,#1a3a2b 0%,#132219 38%,#0b170f 75%)}
+#ma-fog *{box-sizing:border-box;border-radius:0}
+#ma-fog .f-mist{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+#ma-fog .f-mist i{position:absolute;width:70vw;height:40vw;border-radius:50%;background:radial-gradient(ellipse at center,rgba(137,251,203,.07) 0%,rgba(137,251,203,0) 70%);animation:f-drift 38s linear infinite}
+@keyframes f-drift{from{transform:translateX(-60vw)}to{transform:translateX(120vw)}}
+#ma-fog .f-wrap{position:relative;max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
+#ma-fog .f-side,#ma-fog .f-play{display:flex;flex-direction:column;align-items:center;gap:20px;width:100%}
+@media (min-width:1000px){#ma-fog .f-wrap{max-width:1240px;display:grid;grid-template-columns:minmax(320px,440px) auto;justify-content:center;align-items:start;column-gap:56px;row-gap:32px}
+  #ma-fog .f-side{align-items:flex-start;text-align:left}#ma-fog .f-side .f-hud,#ma-fog .f-side .f-levels{justify-content:flex-start}#ma-fog .f-win{grid-column:1/-1}}
+#ma-fog .f-eyebrow{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,3vw,34px);line-height:1.25;letter-spacing:.04em;color:#89fbcb;margin:0}
+#ma-fog .f-h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(44px,8vw,96px);line-height:1.2;letter-spacing:.04em;color:#fffffe;margin:0}
+#ma-fog .f-lede{font-size:clamp(16px,1.9vw,19px);line-height:1.6;color:#f3ead9;max-width:560px;margin:0}
+#ma-fog .f-hud{width:100%;display:flex;flex-wrap:wrap;align-items:stretch;justify-content:center;gap:12px}
+#ma-fog .f-stat{background:#132219;border:2px solid #268e62;padding:10px 18px;min-width:104px;display:flex;flex-direction:column;gap:4px}
+#ma-fog .f-stat b{font-size:12px;letter-spacing:.14em;color:#89fbcb;font-weight:700}
+#ma-fog .f-stat span{font-size:22px;font-weight:800;color:#fffffe;line-height:1.2}
+#ma-fog .f-btn{font-family:'Almarai',sans-serif;font-weight:700;font-size:15px;letter-spacing:.08em;color:#fffffe;background:#1a5e41;border:2px solid #89fbcb;padding:12px 20px;cursor:pointer;transition:background .15s ease,transform .15s ease}
+#ma-fog .f-btn:hover{background:#268e62;transform:scale(1.03)}
+#ma-fog .f-btn:focus-visible{outline:3px solid #f3ead9;outline-offset:3px}
+#ma-fog .f-levels{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+#ma-fog .f-lv{width:44px;height:44px;font-family:'Almarai',sans-serif;font-weight:800;font-size:16px;color:#89fbcb;background:#0b170f;border:2px solid #1a5e41;cursor:pointer;padding:0}
+#ma-fog .f-lv[disabled]{color:rgba(137,251,203,.25);border-color:rgba(26,94,65,.45);cursor:default}
+#ma-fog .f-lv.on{background:#268e62;color:#fffffe;border-color:#89fbcb}
+#ma-fog .f-board{position:relative;border:3px solid #268e62;background:#0b170f;box-shadow:0 0 50px rgba(38,142,98,.25);line-height:0}
+#ma-fog canvas{display:block;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#ma-fog .f-msg{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:20px;background:rgba(11,23,15,.72);pointer-events:none;line-height:1.2}
+#ma-fog .f-msg.show{display:flex}
+#ma-fog .f-msg strong{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(30px,6vw,52px);line-height:1.2;letter-spacing:.04em;color:#89fbcb}
+#ma-fog .f-msg em{font-style:normal;font-weight:700;font-size:clamp(14px,2vw,17px);letter-spacing:.08em;color:#f3ead9;line-height:1.5}
+#ma-fog .f-help{font-size:14px;line-height:1.6;letter-spacing:.04em;color:rgba(243,234,217,.75);margin:0;max-width:520px}
+#ma-fog .f-pad{display:none;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(2,64px);gap:10px;justify-content:center;touch-action:none}
+#ma-fog .f-pad button{width:64px;height:64px;background:#132219;border:2px solid #268e62;color:#89fbcb;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;touch-action:none;-webkit-user-select:none;user-select:none}
+#ma-fog .f-pad button:active{background:#268e62;color:#fffffe}
+#ma-fog .f-pad svg{width:28px;height:28px}
+#ma-fog .f-pad .u{grid-column:2;grid-row:1}
+#ma-fog .f-pad .l{grid-column:1;grid-row:2}
+#ma-fog .f-pad .d{grid-column:2;grid-row:2}
+#ma-fog .f-pad .r{grid-column:3;grid-row:2}
+@media (max-width:820px),(pointer:coarse){#ma-fog .f-pad{display:grid}}
+#ma-fog .f-win{display:none;width:100%;background:#132219;border:3px solid #89fbcb;padding:clamp(24px,4vw,38px) 20px;flex-direction:column;align-items:center;gap:16px}
+#ma-fog .f-win.show{display:flex}
+#ma-fog .f-win h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,6vw,58px);line-height:1.2;letter-spacing:.04em;color:#89fbcb;margin:0}
+#ma-fog .f-win p{font-size:clamp(16px,2vw,19px);line-height:1.6;color:#f3ead9;margin:0;max-width:480px}
+#ma-fog .f-box{border:0;background:none;padding:0;cursor:pointer;width:min(60vw,280px);filter:drop-shadow(0 0 34px rgba(137,251,203,.45));animation:f-bob 4s ease-in-out infinite}
+#ma-fog .f-box img{width:100%;height:auto;display:block}
+@keyframes f-bob{50%{transform:translateY(-10px)}}
+@media (prefers-reduced-motion:reduce){#ma-fog .f-mist i,#ma-fog .f-box{animation:none}}
+</style>
+<section id="ma-fog" aria-label="Fog maze">
+  <div class="f-mist"><i style="top:8%;animation-delay:-4s"></i><i style="top:46%;animation-delay:-19s;animation-duration:52s"></i><i style="top:72%;animation-delay:-30s"></i></div>
+  <div class="f-wrap">
+    <div class="f-side">
+    <p class="f-eyebrow">Lost in the Fog</p>
+    <h1 class="f-h1">Fog Maze</h1>
+    <p class="f-lede">The fog rolled over Imperia and my airship lost its bearings. Five mazes, each bigger and murkier than the last. Find the mooring light at the end of every one, and the last one holds a prize.</p>
+    <div class="f-hud">
+      <div class="f-stat"><b>LEVEL</b><span class="f-lvl">1 / 5</span></div>
+      <div class="f-stat"><b>MOVES</b><span class="f-moves">0</span></div>
+      <button class="f-btn f-restart" type="button">RESTART LEVEL</button>
+    </div>
+    <div class="f-levels" aria-label="Choose a level"></div>
+    <p class="f-help">Steer with the arrow keys or WASD. On a phone, swipe across the maze or tap the arrows.</p>
+    </div>
+    <div class="f-play">
+    <div class="f-board">
+      <canvas aria-label="Maze. Use arrow keys or WASD to move." tabindex="0"></canvas>
+      <div class="f-msg"><strong class="f-mt">Level 1</strong><em class="f-ms">Find the mooring light</em></div>
+    </div>
+    <div class="f-pad" aria-label="Steering arrows">
+      <button class="u" type="button" aria-label="Up" data-d="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square"><path d="M4 16l8-8 8 8"/></svg></button>
+      <button class="l" type="button" aria-label="Left" data-d="3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square"><path d="M16 4l-8 8 8 8"/></svg></button>
+      <button class="d" type="button" aria-label="Down" data-d="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square"><path d="M4 8l8 8 8-8"/></svg></button>
+      <button class="r" type="button" aria-label="Right" data-d="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square"><path d="M8 4l8 8-8 8"/></svg></button>
+    </div>
+    </div>
+    <div class="f-win" aria-live="polite">
+      <h2>Land Ho</h2>
+      <p>You cut through all five fogs. Something was waiting at the last mooring.</p>
+      <button class="f-box" type="button" aria-label="Open loot box 84"><img src="https://africhmaurice.github.io/leaderboard/loot/84.png" alt="Loot box 84"></button>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var root=document.getElementById('ma-fog');if(!root)return;
+  // Fill the whole window: no Squarespace padding or colors around it.
+  var sec=root.closest('section.page-section')||(root.parentElement&&root.parentElement.closest('section'));
+  if(sec){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=root.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=root.closest('.fluid-engine');if(fe)fe.style.display='block';
+
+  var LEVELS=[{n:9,seed:84101,loops:0,vis:3},{n:13,seed:84202,loops:0,vis:2.8},{n:17,seed:84303,loops:6,vis:2.6},{n:23,seed:84404,loops:14,vis:2.4},{n:29,seed:84505,loops:24,vis:2.2}];
+  var DX=[0,1,0,-1],DY=[-1,0,1,0],BIT=[1,2,4,8],OPP=[4,8,1,2];
+  var KEY='ma_fogmaze_v1';
+  function load(){try{var v=JSON.parse(localStorage.getItem(KEY)||'{}');return {best:Math.min(5,Math.max(1,v.best|0||1)),done:!!v.done};}catch(e){return {best:1,done:false};}}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
+  var store=load();
+
+  function rng(seed){var a=seed>>>0;return function(){a=(a+0x6D2B79F5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
+  function build(L){
+    var n=L.n,r=rng(L.seed),w=[],seen=[],i,x,y;
+    for(i=0;i<n*n;i++){w.push(15);seen.push(0);}
+    var stack=[[0,0]];seen[0]=1;
+    while(stack.length){
+      var c=stack[stack.length-1],opts=[];
+      for(var d=0;d<4;d++){x=c[0]+DX[d];y=c[1]+DY[d];if(x>=0&&y>=0&&x<n&&y<n&&!seen[y*n+x])opts.push(d);}
+      if(!opts.length){stack.pop();continue;}
+      d=opts[Math.floor(r()*opts.length)];x=c[0]+DX[d];y=c[1]+DY[d];
+      w[c[1]*n+c[0]]&=~BIT[d];w[y*n+x]&=~OPP[d];seen[y*n+x]=1;stack.push([x,y]);
+    }
+    var made=0,tries=0;
+    while(made<L.loops&&tries<5000){tries++;
+      x=Math.floor(r()*n);y=Math.floor(r()*n);d=Math.floor(r()*4);var x2=x+DX[d],y2=y+DY[d];
+      if(x2<0||y2<0||x2>=n||y2>=n||!(w[y*n+x]&BIT[d]))continue;
+      w[y*n+x]&=~BIT[d];w[y2*n+x2]&=~OPP[d];made++;}
+    // Exit = the cell farthest from the start.
+    var dist=[],q=[0],far=0;for(i=0;i<n*n;i++)dist.push(-1);dist[0]=0;
+    while(q.length){var k=q.shift();if(dist[k]>dist[far])far=k;
+      for(d=0;d<4;d++){if(w[k]&BIT[d])continue;var nk=(Math.floor(k/n)+DY[d])*n+(k%n)+DX[d];if(dist[nk]<0){dist[nk]=dist[k]+1;q.push(nk);}}}
+    return {n:n,w:w,ex:far%n,ey:Math.floor(far/n),vis:L.vis};
+  }
+
+  var cv=root.querySelector('canvas'),ctx=cv.getContext('2d'),board=root.querySelector('.f-board');
+  var elL=root.querySelector('.f-lvl'),elM=root.querySelector('.f-moves'),msg=root.querySelector('.f-msg'),mt=root.querySelector('.f-mt'),ms=root.querySelector('.f-ms');
+  var win=root.querySelector('.f-win'),lvWrap=root.querySelector('.f-levels');
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var lv=0,M,px,py,ax,ay,moves,mem,busy=false,size=400,dpr=1,msgT=0;
+
+  for(var b=0;b<5;b++){(function(j){var bt=document.createElement('button');bt.type='button';bt.className='f-lv';bt.textContent=j+1;bt.setAttribute('aria-label','Level '+(j+1));
+    bt.addEventListener('click',function(){if(j<store.best)start(j);});lvWrap.appendChild(bt);})(b);}
+  function paintLevels(){Array.prototype.forEach.call(lvWrap.children,function(bt,j){bt.disabled=j>=store.best;bt.classList.toggle('on',j===lv);});}
+
+  function flash(t,s,ms2){mt.textContent=t;ms.textContent=s;msg.classList.add('show');clearTimeout(msgT);msgT=setTimeout(function(){msg.classList.remove('show');},ms2||1300);}
+  function start(i){
+    lv=i;M=build(LEVELS[i]);px=py=0;ax=ay=0;moves=0;busy=false;mem=new Uint8Array(M.n*M.n);
+    reveal();elL.textContent=(i+1)+' / 5';elM.textContent='0';paintLevels();
+    flash('Level '+(i+1),['Find the mooring light','The fog thickens','Watch for loops','Darker still','The last fog'][i]);
+  }
+  function reveal(){var R=M.vis,n=M.n;for(var y=Math.max(0,Math.floor(py-R));y<=Math.min(n-1,Math.ceil(py+R));y++)for(var x=Math.max(0,Math.floor(px-R));x<=Math.min(n-1,Math.ceil(px+R));x++){if((x-px)*(x-px)+(y-py)*(y-py)<=R*R)mem[y*n+x]=1;}}
+  function move(d){
+    if(busy||!M)return;
+    if(M.w[py*M.n+px]&BIT[d])return;
+    px+=DX[d];py+=DY[d];moves++;elM.textContent=moves;reveal();
+    if(px===M.ex&&py===M.ey){busy=true;
+      if(lv<4){var nx=lv+1;if(store.best<nx+1){store.best=nx+1;save();}
+        flash('Moored','Level '+(lv+1)+' cleared in '+moves+' moves',1400);setTimeout(function(){start(nx);},1500);}
+      else{store.done=true;save();flash('Land Ho','All five fogs cleared',1800);setTimeout(showWin,900);}
+    }
+  }
+  function showWin(){win.classList.add('show');try{win.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});}catch(e){}}
+
+  function fit(){
+    var wide=window.innerWidth>=1000,maxW=wide?Math.min(640,root.clientWidth-40-440-56-12):Math.min(root.clientWidth-46,640),maxH=wide?Math.max(320,window.innerHeight-200):Math.max(260,window.innerHeight-300);
+    size=Math.floor(Math.max(240,Math.min(maxW,maxH)));dpr=Math.min(window.devicePixelRatio||1,2.5);
+    cv.style.width=cv.style.height=size+'px';cv.width=cv.height=Math.round(size*dpr);
+  }
+  var t0=performance.now();
+  function draw(now){
+    requestAnimationFrame(draw);if(!M)return;
+    var k=reduce?1:0.28;ax+=(px-ax)*k;ay+=(py-ay)*k;if(Math.abs(px-ax)<.01)ax=px;if(Math.abs(py-ay)<.01)ay=py;
+    var n=M.n,view=Math.min(n,13),cs=size/view,R=M.vis,t=(now-t0)/1000;
+    var camX=Math.max(view/2,Math.min(n-view/2,ax+.5)),camY=Math.max(view/2,Math.min(n-view/2,ay+.5));
+    var ox=size/2-camX*cs,oy=size/2-camY*cs;
+    ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#0b170f';ctx.fillRect(0,0,size,size);
+    var x0=Math.max(0,Math.floor(camX-view/2)-1),x1=Math.min(n-1,Math.ceil(camX+view/2)),y0=Math.max(0,Math.floor(camY-view/2)-1),y1=Math.min(n-1,Math.ceil(camY+view/2));
+    var lw=Math.max(2,cs*.13),x,y,c,a,dd;
+    for(y=y0;y<=y1;y++)for(x=x0;x<=x1;x++){
+      dd=Math.sqrt((x-ax)*(x-ax)+(y-ay)*(y-ay));
+      a=dd<=R?1-Math.max(0,dd-(R-1.2))/1.2*.55:(mem[y*n+x]?.22:0);
+      if(dd>R&&dd<R+.6&&!mem[y*n+x])a=0;
+      if(a<=0)continue;
+      var sx=ox+x*cs,sy=oy+y*cs;
+      ctx.globalAlpha=a;ctx.fillStyle='#132219';ctx.fillRect(sx,sy,cs+.5,cs+.5);
+      if(x===M.ex&&y===M.ey){var p=.6+.4*Math.sin(t*3);ctx.save();ctx.shadowColor='#ff4c0f';ctx.shadowBlur=cs*.7*p;ctx.fillStyle='#ff4c0f';ctx.beginPath();ctx.arc(sx+cs/2,sy+cs/2,cs*.2,0,Math.PI*2);ctx.fill();
+        ctx.strokeStyle='#f3ead9';ctx.lineWidth=Math.max(1.5,cs*.06);ctx.beginPath();ctx.arc(sx+cs/2,sy+cs/2,cs*.32,0,Math.PI*2);ctx.stroke();ctx.restore();}
+      c=M.w[y*n+x];ctx.strokeStyle=dd<=R?'#89fbcb':'#268e62';ctx.lineWidth=lw;ctx.lineCap='square';ctx.beginPath();
+      if(c&1){ctx.moveTo(sx,sy);ctx.lineTo(sx+cs,sy);}
+      if(c&2){ctx.moveTo(sx+cs,sy);ctx.lineTo(sx+cs,sy+cs);}
+      if(c&4){ctx.moveTo(sx,sy+cs);ctx.lineTo(sx+cs,sy+cs);}
+      if(c&8){ctx.moveTo(sx,sy);ctx.lineTo(sx,sy+cs);}
+      ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+    // Soft fog ring around the lantern light.
+    var cx=ox+(ax+.5)*cs,cy=oy+(ay+.5)*cs;
+    var g=ctx.createRadialGradient(cx,cy,cs*(R-.6),cx,cy,cs*(R+2.2));g.addColorStop(0,'rgba(11,23,15,0)');g.addColorStop(1,'rgba(11,23,15,.55)');ctx.fillStyle=g;ctx.fillRect(0,0,size,size);
+    // Drifting fog banks.
+    if(!reduce){for(var f=0;f<3;f++){var fx=((t*14*(f+1)+f*170)%(size+300))-150,fy=size*(.2+.3*f)+Math.sin(t*.5+f)*20,fg=ctx.createRadialGradient(fx,fy,0,fx,fy,size*.35);
+      fg.addColorStop(0,'rgba(195,230,214,.07)');fg.addColorStop(1,'rgba(195,230,214,0)');ctx.fillStyle=fg;ctx.fillRect(0,0,size,size);}}
+    // The airship lantern.
+    var pr=cs*.24,pulse=.75+.25*Math.sin(t*4);
+    var halo=ctx.createRadialGradient(cx,cy,0,cx,cy,cs*1.1);halo.addColorStop(0,'rgba(137,251,203,'+(.45*pulse)+')');halo.addColorStop(1,'rgba(137,251,203,0)');ctx.fillStyle=halo;ctx.fillRect(cx-cs*1.2,cy-cs*1.2,cs*2.4,cs*2.4);
+    ctx.save();ctx.shadowColor='#89fbcb';ctx.shadowBlur=cs*.6;ctx.fillStyle='#fffffe';ctx.beginPath();ctx.arc(cx,cy,pr,0,Math.PI*2);ctx.fill();ctx.restore();
+    ctx.fillStyle='#89fbcb';ctx.beginPath();ctx.arc(cx,cy,pr*.5,0,Math.PI*2);ctx.fill();
+  }
+
+  // Keyboard
+  var KM={ArrowUp:0,KeyW:0,ArrowRight:1,KeyD:1,ArrowDown:2,KeyS:2,ArrowLeft:3,KeyA:3};
+  document.addEventListener('keydown',function(e){
+    if(e.altKey||e.ctrlKey||e.metaKey)return;var tg=e.target&&e.target.tagName;if(tg==='INPUT'||tg==='TEXTAREA'||tg==='SELECT'||(e.target&&e.target.isContentEditable))return;
+    var d=KM[e.code];if(d===undefined){var kk=(e.key||'').toLowerCase();d={w:0,d:1,s:2,a:3}[kk];}if(d===undefined)return;
+    var r=board.getBoundingClientRect();if(r.bottom<0||r.top>window.innerHeight)return;
+    e.preventDefault();move(d);
+  });
+  // Swipe on the maze: page never scrolls while a finger is on it.
+  var sx0=null,sy0=null,STEP=26;
+  cv.addEventListener('touchstart',function(e){var t=e.touches[0];sx0=t.clientX;sy0=t.clientY;e.preventDefault();},{passive:false});
+  cv.addEventListener('touchmove',function(e){e.preventDefault();if(sx0===null)return;var t=e.touches[0],dx=t.clientX-sx0,dy=t.clientY-sy0;
+    if(Math.max(Math.abs(dx),Math.abs(dy))<STEP)return;
+    if(Math.abs(dx)>Math.abs(dy))move(dx>0?1:3);else move(dy>0?2:0);sx0=t.clientX;sy0=t.clientY;},{passive:false});
+  cv.addEventListener('touchend',function(e){e.preventDefault();sx0=sy0=null;},{passive:false});
+  // On-screen arrows, hold to keep moving.
+  Array.prototype.forEach.call(root.querySelectorAll('.f-pad button'),function(bt){
+    var d=+bt.getAttribute('data-d'),rep=0,hold=0;
+    function stop(){clearTimeout(hold);clearInterval(rep);}
+    bt.addEventListener('pointerdown',function(e){e.preventDefault();stop();move(d);hold=setTimeout(function(){rep=setInterval(function(){move(d);},140);},320);});
+    ['pointerup','pointerleave','pointercancel'].forEach(function(ev){bt.addEventListener(ev,stop);});
+    bt.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();move(d);}});
+    bt.addEventListener('contextmenu',function(e){e.preventDefault();});
+  });
+  root.querySelector('.f-restart').addEventListener('click',function(){start(lv);});
+
+  var k='NzgzOUpITUM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  root.querySelector('.f-box').addEventListener('click',function(){
+    if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 84 opens.');return;}
+    location.href=atob(k).split('').reverse().join('');
+  });
+
+  fit();window.addEventListener('resize',fit);
+  start(store.done?4:store.best-1);
+  if(store.done)win.classList.add('show');
+  requestAnimationFrame(draw);
+})();
+</script>
