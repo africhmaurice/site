@@ -1602,7 +1602,8 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
         return;
       }
       var ERR={closed:'The hunt is over. Thank you for hunting!',email:'That email address does not look right.',task:'This riddle isn’t open yet.',
-        network:'The ship is slow today and your answer did not go through. Please try again in a minute.'};
+        network:'The ship is slow today and your answer did not go through. Please try again in a minute.',
+        empty:'The ship hit some turbulence and your answer did not arrive. Please send it again.'};
       btn.disabled=false;btn.textContent='SUBMIT ANSWER!';
       err.textContent=ERR[res&&res.error]||'Something went wrong. Please try again in a minute.';
     });
@@ -1614,7 +1615,7 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
       done(payload.action==='riddles'?{ok:true,results:{}}:{ok:true,verdict:n%2?'right':'wrong'});},400);
     attempt=attempt||1;
     fetch(ENDPOINT,{method:'POST',body:JSON.stringify(payload)}).then(function(r){return r.json();}).then(function(res){
-      if(!res.ok&&res.error==='server'&&attempt<2)return setTimeout(function(){send(payload,done,2);},1500);
+      if(!res.ok&&(res.error==='server'||res.error==='empty')&&attempt<3)return setTimeout(function(){send(payload,done,2);},1500);
       done(res);
     }).catch(function(){if(attempt<2)return setTimeout(function(){send(payload,done,2);},1500);done({ok:false,error:'network'});});
   }

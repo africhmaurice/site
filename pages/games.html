@@ -936,8 +936,8 @@ var HGShare = (function () {
     var finish = function (res) {
       if (settled) return;
       settled = true;
-      var flaky = !res || (!res.ok && (res.error === 'network' || res.error === 'server'));
-      if (flaky && attempt < 2) return setTimeout(function () { send(payload, done, attempt + 1); }, 1500);
+      var flaky = !res || (!res.ok && (res.error === 'network' || res.error === 'server' || res.error === 'empty'));
+      if (flaky && attempt < (res && res.error === 'empty' ? 3 : 2)) return setTimeout(function () { send(payload, done, attempt + 1); }, 1500);
       done(res);
     };
     try {

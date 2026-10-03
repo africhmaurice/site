@@ -569,7 +569,7 @@ h1,h2,h3{text-wrap:balance}
     fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(payload) })
       .then(function (r) { return r.json(); })
       .then(function (res) {
-        if (!res.ok && res.error === 'server' && attempt < 2) return setTimeout(function () { send(payload, done, 2); }, 1500);
+        if (!res.ok && (res.error === 'server' || res.error === 'empty') && attempt < 3) return setTimeout(function () { send(payload, done, 2); }, 1500);
         done(res);
       })
       .catch(function () {
@@ -583,7 +583,8 @@ h1,h2,h3{text-wrap:balance}
     agree: 'Please agree to the Official Rules and Privacy Policy.', proof: 'Please add at least one file as proof.', answer: 'Please type your answer.',
     toobig: 'One of the files is too big. Try a smaller one.', answered: 'You have already answered that riddle. Each riddle gets one attempt.',
     closed: 'The hunt is over. Thank you for hunting!', network: 'The ship is slow today and your submission did not go through. Please try again in a minute.',
-    server: 'Something went wrong. Please try again in a minute.'
+    server: 'Something went wrong. Please try again in a minute.',
+    empty: 'The ship hit some turbulence and your submission did not arrive. Please press Submit again.'
   };
 
   function go() {
