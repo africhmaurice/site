@@ -120,8 +120,8 @@ html,body{margin:0 !important;padding:0 !important}
 .lb-cell.lb-in img,.lb-cell.plain.lb-in{animation:lbpop .55s ease}
 /* Box 73 sits right on top of box 13 on everyone's scorecard until they click it (Maurice, 2026-10-03):
    it's already here, but it isn't theirs until they claim it. */
-.lb-sneak{position:absolute;inset:-14% -8% 6% 8%;z-index:3;border:0;padding:0;cursor:pointer;background:center/contain no-repeat;transform:rotate(-9deg);filter:drop-shadow(0 3px 3px rgba(0,0,0,.45));transition:transform .15s ease}
-.lb-sneak:hover{transform:rotate(-4deg) scale(1.08)}
+.lb-sneak{position:absolute;inset:0;z-index:3;border:0;padding:0;margin:0;min-height:0;border-radius:0;box-shadow:none;cursor:pointer;background:center/contain no-repeat}
+.lb-sneak:hover{filter:brightness(1.12)}
 @keyframes lbpop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.25)}100%{transform:scale(1)}}
 
 /* ---- the first-time form ---- */
