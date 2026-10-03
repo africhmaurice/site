@@ -211,7 +211,7 @@
       })
       .then(function () {
         el.setAttribute('data-ma-state', 'ready');
-        pending--; reveal(el); fitNavs();
+        pending--; reveal(el); huntGift(); fitNavs();
         // Pages that size themselves on window load get a second chance now that they exist.
         try { window.dispatchEvent(new Event('resize')); } catch (e) {}
         // A link like /the-hunt#rewards arrives before its section exists; scroll once it does.
@@ -636,9 +636,14 @@
   // Main menu: MERCH (the Trench Market shop) sits right before The Treasure Hunt (Maurice, 2026-09-28). It replaces
   // the old Merch folder, whose partner shops are now listed inside the shop itself.
   var MERCH_URL = 'https://shop.mauriceafrich.com/', OLD_MERCH = '/new-dropdown', merchBuilt = false;
-  // Right after Market: an Oracle's Gift dropdown with the Aura Spectrum (the Aura Color Search Database) under it
-  // (Maurice, 2026-10-03; the Act Two reward at 80k). It is a copy of the Submit dropdown, renamed.
+  // Last in the menu, just before Pre-Order: an Oracle's Gift dropdown with the Aura Spectrum (the Aura Color Search
+  // Database) under it (Maurice, 2026-10-03; the Act Two reward at 80k). It is a copy of the Submit dropdown, renamed.
   var AURA_URL = SITE + '/oracles-gift/aura-spectrum', GIFT = '/oracles-gift', GIFT_TEXT = "Oracle's Gift", AURA_TEXT = 'Aura Spectrum';
+  // the Pre-Order menu item in a list of menu items (null puts a new item at the end)
+  function preOrder(items) {
+    for (var i = 0; i < items.length; i++) if (/^\s*(Folder:\s*)?Pre-Order/i.test(items[i].textContent)) return items[i];
+    return null;
+  }
   function giftFolder(list) {
     var src = list.querySelector('.header-nav-folder-title[data-href="/submit"]');
     if (!src) return null;
@@ -667,7 +672,7 @@
       a.href = MERCH_URL; a.removeAttribute('target'); a.textContent = 'Market';
       hunt.closest('.header-nav-item').parentNode.insertBefore(item, hunt.closest('.header-nav-item'));
       var gift = giftFolder(list);
-      if (gift) hunt.closest('.header-nav-item').parentNode.insertBefore(gift, hunt.closest('.header-nav-item'));
+      if (gift) { var pre = preOrder(list.children); list.insertBefore(gift, pre); }
     });
     var root = document.querySelector('.header-menu-nav [data-folder="root"]');
     if (!root) return;
@@ -685,7 +690,8 @@
       var giftRow = subRow.closest('.header-menu-nav-item').cloneNode(true), ga = giftRow.querySelector('a');
       ga.setAttribute('data-folder-id', GIFT); ga.setAttribute('href', GIFT);
       giftRow.querySelector('.header-nav-folder-title-text').textContent = GIFT_TEXT;
-      huntRow.closest('.header-menu-nav-item').parentNode.insertBefore(giftRow, huntRow.closest('.header-menu-nav-item'));
+      var rowList = huntRow.closest('.header-menu-nav-item').parentNode;
+      rowList.insertBefore(giftRow, preOrder(rowList.children));
       var panel = subPanel.cloneNode(true); panel.setAttribute('data-folder', GIFT);
       var prow = panel.querySelectorAll('.header-menu-nav-item:not(.header-menu-controls)');
       for (var j = 1; j < prow.length; j++) prow[j].parentNode.removeChild(prow[j]);
@@ -694,7 +700,30 @@
     }
   }
 
+  // The green hunt menu (copied into each hunt page) gets the same Oracle's Gift dropdown, last before Pre-Order.
+  function huntGift() {
+    var caret = '<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg>';
+    Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
+      if (nav.querySelector('.mn-gift')) return;
+      var cta = nav.querySelector('.mn-drop-cta'), links = nav.querySelector('.mn-links');
+      if (!links) return;
+      var d = document.createElement('div'); d.className = 'mn-drop mn-gift';
+      d.innerHTML = '<a href="javascript:void(0)" class="mn-link" aria-haspopup="true">ORACLE&#39;S GIFT' + caret + '</a><div class="mn-dd"><div class="mn-dd-in"><a href="' + AURA_URL + '">AURA SPECTRUM</a></div></div>';
+      // the plain menu items sit in their own box inside .mn-links, with the Pre-Order dropdown after it
+      var box = cta && cta.parentNode === links ? cta.previousElementSibling : null;
+      if (box && box.tagName === 'DIV' && !box.classList.contains('mn-drop')) box.appendChild(d);
+      else links.insertBefore(d, cta && cta.parentNode === links ? cta : null);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav-ov'), function (ov) {
+      if (ov.querySelector('.mn-gift')) return;
+      var g = document.createElement('div'); g.className = 'mn-ovgroup mn-gift';
+      g.innerHTML = '<span>ORACLE&#39;S GIFT</span><a href="' + AURA_URL + '">AURA SPECTRUM</a>';
+      ov.insertBefore(g, ov.querySelector(':scope > .mn-cta'));
+    });
+  }
+
   function scan() {
+    huntGift();
     mainMerch();
     huntDropdown();
     fixedBackgrounds();

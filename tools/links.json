@@ -1,0 +1,343 @@
+{
+ "_note": "The link page at mauriceafrich.com/links (built by tools/links.mjs). Edit here, then run node tools/links.mjs and publish. Link titles are Maurice's own from his Linktree. 'id' is what the click stats count, so keep it when a title changes. Tiles: 'logo' (white PNG in assets/links/, 'note' is a line under it), 'promo' (a full picture), or just the label in Almarai, over 'bg' (a site background name or an art file in assets/links/) under the section's brand color. A section's 'layout': 'two' (2x2), 'four' (2 across on phones, 4 on computers), 'five' (3 then 2, centered; 5 across on computers), or the default (2 across, 3 on computers).",
+ "title": "Cello's Gate",
+ "lines": [
+  "The Sky Pirates of Imperia (Book 1)",
+  "November 3, 2026 | Pre-Order Now!"
+ ],
+ "socials": [
+  {
+   "id": "amazon",
+   "label": "Amazon",
+   "icon": "icon-amazon.png",
+   "url": "https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834"
+  },
+  {
+   "id": "website",
+   "label": "Author Website",
+   "icon": "icon-mark.png",
+   "url": "https://www.mauriceafrich.com/"
+  },
+  {
+   "id": "instagram",
+   "label": "Instagram",
+   "icon": "icon-instagram.png",
+   "url": "https://www.instagram.com/mauriceafrich"
+  },
+  {
+   "id": "tiktok",
+   "label": "TikTok",
+   "icon": "icon-tiktok.png",
+   "url": "https://www.tiktok.com/@mauriceafrich"
+  },
+  {
+   "id": "youtube",
+   "label": "YouTube",
+   "icon": "icon-youtube.png",
+   "url": "https://www.youtube.com/@africhmaurice"
+  },
+  {
+   "id": "facebook",
+   "label": "Facebook",
+   "icon": "icon-facebook.png",
+   "url": "https://www.facebook.com/profile.php?id=61573491875476"
+  },
+  {
+   "id": "email",
+   "label": "Email",
+   "icon": "icon-mail.png",
+   "url": "mailto:mauriceafrich@secondworldbooks.com"
+  }
+ ],
+ "copper": {
+  "id": "copper-loot-box",
+  "label": "Copper Loot Box (for Beginners)",
+  "sub": "Your first loot box (and the easiest one to find)! Open it, claim your loot, and enter to win the sweepstakes!",
+  "img": "box-copper.png",
+  "url": "https://www.mauriceafrich.com/loot?c=RDWC79VF"
+ },
+ "feature": [
+  {
+   "id": "preorder",
+   "label": "Pre-Order Cello's Gate",
+   "open": "preorder",
+   "tone": "scarlet",
+   "img": "../img/cellos-gate-book.webp",
+   "bg": "red-sun-ruins-as360866146"
+  },
+  {
+   "id": "hunt",
+   "label": "The Treasure Hunt is Live!",
+   "url": "https://www.mauriceafrich.com/the-hunt",
+   "tone": "green",
+   "bg": "art-world-map.jpg"
+  },
+  {
+   "id": "discord",
+   "label": "Welcome to Trench",
+   "url": "https://discord.gg/TV8SNnSGdb",
+   "tone": "violet",
+   "img": "logo-trench.png",
+   "bg": "neon-street-as1928158052"
+  }
+ ],
+ "sections": [
+  {
+   "id": "preorder",
+   "title": "Pre-Order Cello's Gate",
+   "tone": "scarlet",
+   "layout": "four",
+   "links": [
+    {
+     "id": "simon-schuster",
+     "label": "Simon & Schuster",
+     "logo": "logo-simon-schuster.png",
+     "bg": "city-skyline-panorama-as348070597",
+     "url": "https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834"
+    },
+    {
+     "id": "amazon-book",
+     "label": "Amazon",
+     "bg": "crystal-towers-lake-as395045722",
+     "url": "https://r.amzlink.to/?btn_url=https%3A%2F%2Fwww.amazon.com%2FCellos-Gate-Sky-Pirates-Imperia%2Fdp%2F1668242834%2Fref%3Dsr_1_1%3Fcrid%3D279A8MV3ZYP0T%26dib%3DeyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps%26dib_tag%3Dse%26keywords%3Dcellos%2Bgate%26qid%3D1770340593%26sprefix%3Dcellos%2527%2Bgate%252Caps%252C179%26sr%3D8-1&btn_ref=org-433bb393e1b8b503",
+     "logo": "icon-amazon.png"
+    },
+    {
+     "id": "barnes-noble",
+     "label": "Barnes & Noble",
+     "bg": "dome-city-mist-as159145789",
+     "url": "https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834"
+    },
+    {
+     "id": "walmart-exclusive",
+     "label": "Walmart Special Edition",
+     "logo": "logo-walmart.png",
+     "bg": "floating-blocks-city-as311317794",
+     "url": "https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704?classType=REGULAR&from=/search",
+     "note": "Special Edition"
+    },
+    {
+     "id": "bookshop",
+     "label": "Bookshop.org",
+     "logo": "logo-bookshop.png",
+     "bg": "overgrown-sphere-as470076105",
+     "url": "https://bookshop.org/p/books/cello-s-gate-maurice-africh/867e45638f69e94f?ean=9781668242834"
+    },
+    {
+     "id": "waterstones",
+     "label": "Waterstones",
+     "logo": "logo-waterstones.png",
+     "bg": "nebula-glow-as332921866",
+     "url": "https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399763073"
+    },
+    {
+     "id": "audible",
+     "label": "Audible",
+     "logo": "logo-audible.png",
+     "bg": "pin-01.jpg",
+     "url": "https://r.amzlink.to/?btn_url=https%3A%2F%2Fwww.amazon.com%2FAudible-Cellos-Gate%2Fdp%2FB0GKZWW416%2Fref%3Dtmm_aud_swatch_0%3F_encoding%3DUTF8%26dib_tag%3Dse%26dib%3DeyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps%26qid%3D1770340593%26sr%3D8-1&btn_ref=org-433bb393e1b8b503"
+    },
+    {
+     "id": "all-retailers",
+     "label": "All Retailers",
+     "bg": "monolith-canyon-as444233611",
+     "url": "https://www.mauriceafrich.com/preorder"
+    }
+   ]
+  },
+  {
+   "id": "hunt",
+   "title": "The Treasure Hunt",
+   "tone": "green",
+   "links": [
+    {
+     "id": "the-hunt",
+     "label": "The Treasure Hunt is Live!",
+     "bg": "art-world-map.jpg",
+     "url": "https://www.mauriceafrich.com/the-hunt"
+    },
+    {
+     "id": "adventure",
+     "label": "The Adventure",
+     "bg": "art-degate-map.jpg",
+     "url": "https://www.mauriceafrich.com/adventure"
+    },
+    {
+     "id": "games",
+     "label": "Daily Games",
+     "bg": "pin-02.jpg",
+     "url": "https://www.mauriceafrich.com/games"
+    },
+    {
+     "id": "leaderboard",
+     "label": "Leaderboard",
+     "bg": "gyroscope-foundry-as401944302",
+     "url": "https://www.mauriceafrich.com/leaderboard"
+    },
+    {
+     "id": "aura",
+     "label": "The Oracle's Gift",
+     "bg": "pin-03.jpg",
+     "url": "https://www.mauriceafrich.com/oracles-gift/aura-spectrum"
+    },
+    {
+     "id": "clues",
+     "label": "Clues",
+     "bg": "pin-04.jpg",
+     "url": "https://www.mauriceafrich.com/lootbox-clue"
+    }
+   ]
+  },
+  {
+   "id": "shop",
+   "title": "Shop",
+   "tone": "teal",
+   "layout": "two",
+   "links": [
+    {
+     "id": "trench-market",
+     "label": "Trench Market",
+     "logo": "logo-crest.png",
+     "bg": "pin-05.jpg",
+     "url": "https://shop.mauriceafrich.com/",
+     "note": "Trench Market"
+    },
+    {
+     "id": "beeristhemindkiller",
+     "label": "Shirts! (BeeristheMindKiller)",
+     "logo": "logo-beeristhemindkiller.png",
+     "bg": "pin-06.jpg",
+     "url": "https://www.etsy.com/shop/beeristhemindkiller/?section_id=57855442",
+     "note": "BeeristheMindKiller"
+    },
+    {
+     "id": "flowers-fantasy",
+     "label": "Apparel! (Flowers & Fantasy Co)",
+     "logo": "logo-flowers-fantasy.png",
+     "bg": "garden-city-towers",
+     "url": "https://flowersandfantasyco.com/collections/sky-pirates-of-imperia",
+     "note": "Flowers & Fantasy Co"
+    },
+    {
+     "id": "readers-quadrant",
+     "label": "Stickers and Enamel Pins! (Readers Quadrant Book Art)",
+     "logo": "logo-readers-quadrant.png",
+     "bg": "pin-07.jpg",
+     "url": "https://www.etsy.com/shop/ReadersQuadrantArt?ref=shop-header-name&listing_id=4339673175&from_page=listing",
+     "note": "Readers Quadrant Book Art"
+    }
+   ]
+  },
+  {
+   "id": "pod",
+   "title": "The Crippled Pod",
+   "tone": "ink",
+   "layout": "five",
+   "badge": "logo-pod.png",
+   "links": [
+    {
+     "id": "pod-spotify",
+     "label": "The Crippled Pod: A Beginners Guide to Malazan",
+     "bg": "pin-08.jpg",
+     "url": "https://open.spotify.com/show/1UDpA2dZNhRY0ay3Md4XVY?si=6421b622a4294aba",
+     "logo": "icon-spotify.png"
+    },
+    {
+     "id": "pod-ep0",
+     "label": "The Crippled Pod: Episode 0 (Let's Talk About Malazan!)",
+     "bg": "pin-09.jpg",
+     "url": "https://youtu.be/SXdivHbUpHo?si=l28Zohnffql4uo6Z",
+     "logo": "icon-youtube.png"
+    },
+    {
+     "id": "pod-fable",
+     "label": "The Malazan Fable Book Club! Current Read: Deadhouse Gates",
+     "bg": "cavern-ruins-as581365050",
+     "url": "https://fable.co/club/2026-malazan-read-through-with-wordswithwill-171033660107",
+     "logo": "logo-fable.png"
+    },
+    {
+     "id": "pod-instagram",
+     "label": "The Crippled Pod (Instagram)",
+     "bg": "pin-10.jpg",
+     "url": "https://www.instagram.com/thecrippledpod",
+     "logo": "icon-instagram.png"
+    },
+    {
+     "id": "pod-tiktok",
+     "label": "The Crippled Pod (TikTok)",
+     "bg": "pin-11.jpg",
+     "url": "https://www.tiktok.com/@the.crippled.pod",
+     "logo": "icon-tiktok.png"
+    }
+   ]
+  },
+  {
+   "id": "find",
+   "title": "Find Me",
+   "tone": "violet",
+   "layout": "five",
+   "links": [
+    {
+     "id": "author-website",
+     "label": "Author Website",
+     "logo": "icon-mark.png",
+     "bg": "pin-12.jpg",
+     "url": "https://www.mauriceafrich.com/",
+     "note": "Author Website"
+    },
+    {
+     "id": "goodreads",
+     "label": "Goodreads",
+     "bg": "pin-13.jpg",
+     "url": "https://www.goodreads.com/user/show/57225930-maurice-africh",
+     "logo": "logo-goodreads.png",
+     "note": "Goodreads"
+    },
+    {
+     "id": "fable",
+     "label": "Fable",
+     "bg": "pin-14.jpg",
+     "url": "https://fable.co/book/cellos-gate-the-sky-pirates-of-imperia-1-by-maurice-africh-dSUxO1vs7a",
+     "logo": "logo-fable.png",
+     "note": "Fable"
+    },
+    {
+     "id": "storygraph",
+     "label": "Story Graph",
+     "bg": "pin-15.jpg",
+     "url": "https://app.thestorygraph.com/books/deda125b-9938-4904-a640-5d018664ccfc",
+     "logo": "logo-storygraph.png",
+     "note": "Story Graph"
+    },
+    {
+     "id": "wishlist",
+     "label": "Wishlist",
+     "bg": "pin-16.jpg",
+     "url": "https://www.amazon.com/hz/wishlist/ls/1BP7HJUAPUXJO?ref_=wl_share",
+     "logo": "logo-wishlist.png"
+    }
+   ],
+   "promo": {
+    "id": "brick",
+    "label": "Brick: Take Back Control of Your Screen Time",
+    "bg": "neon-tunnel-arch-as468986961",
+    "url": "http://getbrick.com/mauriceafrich",
+    "promo": "promo-brick.webp"
+   }
+  }
+ ],
+ "quiet": {
+  "id": "the-quiet-one",
+  "label": "The Quiet One",
+  "url": "https://www.mauriceafrich.com/loot?c=KKWKUD27",
+  "icon": "box-plain.png"
+ },
+ "newsletter": {
+  "id": "newsletter",
+  "title": "Join My Newsletter",
+  "button": "Sign Up",
+  "form": "8271339",
+  "done": "Success! Now check your email to confirm your subscription."
+ }
+}
