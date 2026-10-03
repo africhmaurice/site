@@ -247,36 +247,6 @@
       "url": "/oracles-gift/aura-spectrum",
       "title": "The Oracle's Gift: Aura Color Spectrum (Act Two reward at 80k)",
       "source": "pages/aura-spectrum.html"
-    },
-    {
-      "slug": "icon-sea",
-      "url": "/icon-sea",
-      "title": "Icon Sea (loot box 38)",
-      "source": "pages/icon-sea.html"
-    },
-    {
-      "slug": "one-of-us",
-      "url": "/one-of-us",
-      "title": "One of Us (loot box 39)",
-      "source": "pages/one-of-us.html"
-    },
-    {
-      "slug": "sky-pirate-quiz",
-      "url": "/sky-pirate-quiz",
-      "title": "Sky Pirate Job Quiz (loot box 40)",
-      "source": "pages/sky-pirate-quiz.html"
-    },
-    {
-      "slug": "fog-maze",
-      "url": "/fog-maze",
-      "title": "Fog Maze (loot box 41)",
-      "source": "pages/fog-maze.html"
-    },
-    {
-      "slug": "sky-run",
-      "url": "/sky-run",
-      "title": "Sky Run adventure (loot box 42)",
-      "source": "pages/sky-run.html"
     }
   ],
   "staysInSquarespace": [
