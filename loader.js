@@ -636,8 +636,22 @@
   // Main menu: MERCH (the Trench Market shop) sits right before The Treasure Hunt (Maurice, 2026-09-28). It replaces
   // the old Merch folder, whose partner shops are now listed inside the shop itself.
   var MERCH_URL = 'https://shop.mauriceafrich.com/', OLD_MERCH = '/new-dropdown', merchBuilt = false;
-  // Right after Market: the Oracle's Gift, the Aura Color Search Database (Maurice, 2026-10-03; the Act Two reward at 80k).
-  var AURA_URL = SITE + '/oracles-gift/aura-spectrum', AURA_TEXT = 'Aura Colors';
+  // Right after Market: an Oracle's Gift dropdown with the Aura Spectrum (the Aura Color Search Database) under it
+  // (Maurice, 2026-10-03; the Act Two reward at 80k). It is a copy of the Submit dropdown, renamed.
+  var AURA_URL = SITE + '/oracles-gift/aura-spectrum', GIFT = '/oracles-gift', GIFT_TEXT = "Oracle's Gift", AURA_TEXT = 'Aura Spectrum';
+  function giftFolder(list) {
+    var src = list.querySelector('.header-nav-folder-title[data-href="/submit"]');
+    if (!src) return null;
+    var item = src.closest('.header-nav-item').cloneNode(true), btn = item.querySelector('.header-nav-folder-title');
+    btn.setAttribute('data-href', GIFT); btn.setAttribute('aria-controls', 'oracles-gift'); btn.setAttribute('aria-expanded', 'false');
+    item.querySelector('.header-nav-folder-title-text').textContent = GIFT_TEXT;
+    var box = item.querySelector('.header-nav-folder-content'); box.id = 'oracles-gift';
+    var rows = box.querySelectorAll('.header-nav-folder-item');
+    for (var i = 1; i < rows.length; i++) rows[i].parentNode.removeChild(rows[i]);
+    var a = rows[0].querySelector('a'); a.href = AURA_URL; a.removeAttribute('target');
+    a.querySelector('.header-nav-folder-item-content').textContent = AURA_TEXT;
+    return item;
+  }
   function mainMerch() {
     if (merchBuilt || !document.getElementById('header')) return;
     var lists = document.querySelectorAll('#header .header-nav-list');
@@ -652,9 +666,8 @@
       var item = tpl.cloneNode(true), a = item.querySelector('a');
       a.href = MERCH_URL; a.removeAttribute('target'); a.textContent = 'Market';
       hunt.closest('.header-nav-item').parentNode.insertBefore(item, hunt.closest('.header-nav-item'));
-      var aura = tpl.cloneNode(true), aa = aura.querySelector('a');
-      aa.href = AURA_URL; aa.removeAttribute('target'); aa.textContent = AURA_TEXT;
-      hunt.closest('.header-nav-item').parentNode.insertBefore(aura, hunt.closest('.header-nav-item'));
+      var gift = giftFolder(list);
+      if (gift) hunt.closest('.header-nav-item').parentNode.insertBefore(gift, hunt.closest('.header-nav-item'));
     });
     var root = document.querySelector('.header-menu-nav [data-folder="root"]');
     if (!root) return;
@@ -666,9 +679,19 @@
     var row = tplRow.cloneNode(true), ra = row.querySelector('a');
     ra.href = MERCH_URL; ra.removeAttribute('target'); ra.textContent = 'Market';
     huntRow.closest('.header-menu-nav-item').parentNode.insertBefore(row, huntRow.closest('.header-menu-nav-item'));
-    var auraRow = tplRow.cloneNode(true), ara = auraRow.querySelector('a');
-    ara.href = AURA_URL; ara.removeAttribute('target'); ara.textContent = AURA_TEXT;
-    huntRow.closest('.header-menu-nav-item').parentNode.insertBefore(auraRow, huntRow.closest('.header-menu-nav-item'));
+    // the phone menu: an Oracle's Gift row that opens its own panel, like the Submit row does
+    var subRow = root.querySelector('a[data-folder-id="/submit"]'), subPanel = document.querySelector('.header-menu-nav [data-folder="/submit"]');
+    if (subRow && subPanel) {
+      var giftRow = subRow.closest('.header-menu-nav-item').cloneNode(true), ga = giftRow.querySelector('a');
+      ga.setAttribute('data-folder-id', GIFT); ga.setAttribute('href', GIFT);
+      giftRow.querySelector('.header-nav-folder-title-text').textContent = GIFT_TEXT;
+      huntRow.closest('.header-menu-nav-item').parentNode.insertBefore(giftRow, huntRow.closest('.header-menu-nav-item'));
+      var panel = subPanel.cloneNode(true); panel.setAttribute('data-folder', GIFT);
+      var prow = panel.querySelectorAll('.header-menu-nav-item:not(.header-menu-controls)');
+      for (var j = 1; j < prow.length; j++) prow[j].parentNode.removeChild(prow[j]);
+      var pa = prow[0].querySelector('a'); pa.href = AURA_URL; pa.querySelector('.header-menu-nav-item-content').textContent = AURA_TEXT;
+      subPanel.parentNode.insertBefore(panel, subPanel.nextSibling);
+    }
   }
 
   function scan() {
