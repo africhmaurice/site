@@ -1,8 +1,8 @@
 <!-- ============================================================
-     FOG MAZE - loot box 84. Five seeded mazes (9, 13, 17, 23, and 29 cells square) drawn on a canvas.
+     FOG MAZE - loot box 41. Five seeded mazes (9, 13, 17, 23, and 29 cells square) drawn on a canvas.
      The player sees only a small circle around their airship; cells already passed stay dimly
      remembered. Later levels get extra openings so the maze has loops. Highest level reached is
-     kept in localStorage. Reaching the exit of level 5 reveals loot box 84.
+     kept in localStorage. Reaching the exit of level 5 reveals loot box 41.
      Controls: arrow keys or WASD, on-screen arrows, or swipes on the maze (page does not scroll).
      ============================================================ -->
 <style>
@@ -88,7 +88,7 @@ html,body{margin:0 !important;padding:0 !important;background:#0b170f !important
     <div class="f-win" aria-live="polite">
       <h2>Land Ho</h2>
       <p>You cut through all five fogs. Something was waiting at the last mooring.</p>
-      <button class="f-box" type="button" aria-label="Open loot box 84"><img src="https://africhmaurice.github.io/leaderboard/loot/41.png" alt="Loot box 84"></button>
+      <button class="f-box" type="button" aria-label="Open loot box 41"><img src="https://africhmaurice.github.io/leaderboard/loot/41.png" alt="Loot box 41"></button>
     </div>
   </div>
 </section>
@@ -233,7 +233,7 @@ html,body{margin:0 !important;padding:0 !important;background:#0b170f !important
 
   var k='RkdQVFZSRU09Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
   root.querySelector('.f-box').addEventListener('click',function(){
-    if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 84 opens.');return;}
+    if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 41 opens.');return;}
     location.href=atob(k).split('').reverse().join('');
   });
 

@@ -2,7 +2,7 @@
      SKY PIRATE QUIZ - "What Sky Pirate Job Are You Most Like?"
      Nine questions, one at a time, with a progress bar. Each answer scores one or two
      airship jobs; the top score is the result card (ties go to the earlier job in JOBS).
-     Loot box 82 hides as a tiny box in the corner of one answer on question 6
+     Loot box 40 hides as a tiny box in the corner of one answer on question 6
      ("Patch it with whatever's lying around"). Clicking the tiny box, not the answer,
      opens the claim link.
      ============================================================ -->
@@ -107,7 +107,7 @@
   var txt=$('.q-text'),opts=$('.q-opts'),fill=$('.q-fill'),bar=$('.q-bar'),cnt=$('.q-count'),pct=$('.q-pct');
   var k='UUFYRVlGNUM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
   function openBox(e){e.preventDefault();e.stopPropagation();
-    if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 82 opens.');return;}
+    if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 40 opens.');return;}
     location.href=atob(k).split('').reverse().join('');}
   function setBar(n){var p=Math.round(n/N*100);fill.style.width=p+'%';pct.textContent=p+'%';bar.setAttribute('aria-valuenow',n);}
   function show(){
@@ -120,8 +120,8 @@
       b.addEventListener('click',function(){a[1].split(' ').forEach(function(x){score[x]=(score[x]||0)+1;});i++;if(i<N)show();else finish();});
       w.appendChild(b);
       if(i===BOX_Q&&j===BOX_A){w.className+=' has-box';
-        var x=document.createElement('button');x.type='button';x.className='q-box';x.setAttribute('aria-label','Loot box 82');
-        x.innerHTML='<img src="https://africhmaurice.github.io/leaderboard/loot/40.png" alt="Loot box 82">';
+        var x=document.createElement('button');x.type='button';x.className='q-box';x.setAttribute('aria-label','Loot box 40');
+        x.innerHTML='<img src="https://africhmaurice.github.io/leaderboard/loot/40.png" alt="Loot box 40">';
         x.addEventListener('click',openBox);w.appendChild(x);}
       opts.appendChild(w);
     });

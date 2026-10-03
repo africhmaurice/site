@@ -1,8 +1,8 @@
 <!-- ============================================================
      ICON SEA - a seek-and-find. A full-width field packed with hundreds of icons
      (Font Awesome Free 6, injected by the script), laid out with a seeded generator so
-     every visitor sees the same field. Loot box 80 is tucked in among the treasure decoys.
-     Clicking a decoy wiggles it; clicking the real box opens loot box 80.
+     every visitor sees the same field. Loot box 38 is tucked in among the treasure decoys.
+     Clicking a decoy wiggles it; clicking the real box opens loot box 38.
      ============================================================ -->
 <style>
 @font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
@@ -27,7 +27,7 @@
 <section id="ma-sea" aria-label="Find the Loot Box">
   <div class="s-head">
     <h2 class="s-title">Find the Loot Box</h2>
-    <p class="s-line">I buried loot box 80 somewhere in this heap of junk, chests, and skulls. Spot it, click it, and it's yours.</p>
+    <p class="s-line">I buried loot box 38 somewhere in this heap of junk, chests, and skulls. Spot it, click it, and it's yours.</p>
   </div>
   <div class="s-field" role="group" aria-label="A sea of icons"></div>
   <div class="s-foot">KEEP LOOKING, SKY PIRATE. IT'S SMALLER THAN YOU THINK.</div>
@@ -82,9 +82,9 @@
     }
     for(var n=0;n<NEAR.length;n++){var q=NEAR[n];add(q[0],bx+q[1]*bs*.62,by+q[2]*bs*.62,Math.max(14,q[4]*f*1.15),(n%2?1:-1)*(10+n*7),q[3],.95,false);}
     field.appendChild(frag);
-    var b=document.createElement('button');b.type='button';b.className='s-box';b.setAttribute('aria-label','Loot box 80');
+    var b=document.createElement('button');b.type='button';b.className='s-box';b.setAttribute('aria-label','Loot box 38');
     b.style.cssText='left:'+(bx-bs/2-6)+'px;top:'+(by-bs/2-6)+'px;width:'+(bs+12)+'px;z-index:3;transform:rotate('+BOX.rot+'deg)';
-    b.innerHTML='<img src="https://africhmaurice.github.io/leaderboard/loot/38.png" alt="Loot box 80" draggable="false">';
+    b.innerHTML='<img src="https://africhmaurice.github.io/leaderboard/loot/38.png" alt="Loot box 38" draggable="false">';
     field.appendChild(b);
     // Two leaves tucked over its corners: seen above the box, never in the way of a tap.
     frag=document.createDocumentFragment();
@@ -99,7 +99,7 @@
     var t=ev.target;
     if(t.closest&&t.closest('.s-box')){
       var k='Qjk4N1BEWFU9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-      if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 80 opens.');return;}
+      if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 38 opens.');return;}
       location.href=atob(k).split('').reverse().join('');return;
     }
     if(t.classList&&t.classList.contains('s-ic')){t.classList.remove('wig');void t.offsetWidth;t.classList.add('wig');}
