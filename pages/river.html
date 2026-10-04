@@ -504,6 +504,13 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc.cr.rv .rc-die.fumble .face{fill:#1a5e41;stroke:#fffffe}
 #rc.cr.rv .cr-kit h3{color:#89fbcb}
 #rc.cr.rv .cw-orders b{color:#89fbcb}
+/* the priorities: one row per crew member, five choices each */
+#rc .cr-grid{display:grid;gap:20px}
+#rc .cr-grid-row{display:grid;gap:12px;padding-top:18px;border-top:1px solid var(--hair)}
+#rc .cr-grid-row:first-child{border-top:0;padding-top:0}
+#rc .cr-grid-row .rc-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+#rc .cr-grid-row .rc-opt{padding:12px 14px;text-align:center}
+#rc .cr-one{grid-template-columns:minmax(0,320px);margin-top:20px}
 </style>
 
 <div id="rc" class="cr rv">
@@ -546,7 +553,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 <script>
 (function () {
-  var DATA = {"_help":"Chapter 5 vote: Fight the Levian. Every fren rolls for the Levian and for each crew member. PREVIEW: opens/closes are placeholders until Maurice sets the window. Built by node scripts/build-crash.mjs river. Dice: from Chapter 5 on, one roll per die is drawn at random from every fren's rolls, and the results name whose roll it was (Maurice, 2026-10-04).","key":"river_vote","points":100,"opens":"2099-01-01T00:00:00Z","closes":"2099-01-02T00:00:00Z","title":["Fight the","Levian"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"The Levian rises out of the river and lunges, and Hale's torch is already lit. Roll for the Levian, then roll for every member of the crew. When voting closes, one roll for each die is drawn at random from everyone's rolls, and I'll name whose roll it was.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","questions":[{"id":"levian","kind":"rolls","kicker":"THE LEVIAN","title":"How dangerous is the Levian?","text":"Every fren rolls for the Levian. One roll is drawn at random from all of them: the higher it is, the harder the Levian fights.","items":[["levian","The Levian"]],"tiers":["","","","",""]},{"id":"crew","kind":"rolls","kicker":"THE CREW","title":"How does the crew fight?","text":"Roll one die for each crew member. For each one, a single roll is drawn at random from everyone's rolls, and it decides how well they fight.","items":[["hale","Hale"],["scarlett","Scarlett Holster"],["orion","Orion Squints"],["rune","Rune Overclock"],["sparrow","Sparrow Zipmeister"]],"tiers":["","","","",""]}],"draw":true};
+  var DATA = {"_help":"Chapter 5 vote: Fight the Levian. Every fren rolls for the Levian and for each crew member. PREVIEW: opens/closes are placeholders until Maurice sets the window. Built by node scripts/build-crash.mjs river. Dice: from Chapter 5 on, one roll per die is drawn at random from every fren's rolls, and the results name whose roll it was (Maurice, 2026-10-04).","key":"river_vote","points":100,"opens":"2099-01-01T00:00:00Z","closes":"2099-01-02T00:00:00Z","title":["Fight the","Levian"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"The Levian rises out of the river and lunges, and Hale's torch is already lit. Roll for the Levian, then roll for every member of the crew. When voting closes, one roll for each die is drawn at random from everyone's rolls, and I'll name whose roll it was.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","questions":[{"id":"levian","kind":"rolls","kicker":"THE LEVIAN","title":"How dangerous is the Levian?","text":"Every fren rolls for the Levian. One roll is drawn at random from all of them: the higher it is, the harder the Levian fights.","items":[["levian","The Levian"]],"tiers":["","","","",""]},{"id":"approach","kind":"pickroll","kicker":"THE PLAN","title":"How do you approach the fight?","text":"Pick the plan, then roll for it. One roll is drawn at random from everyone's, and it decides how the plan goes.","options":[["Blitz","Let's make a bridge of this Levian's corpse! Most Dangerous, Most Daring"],["Run and Gun","Cautious but Involves Voluntarily Getting Chased"],["After the First Round of Combat, Try to Befriend the Levian 😒",""]],"dieLabel":"Roll for the plan"},{"id":"crew","kind":"rolls","kicker":"THE CREW","title":"How does the crew fight?","text":"Roll one die for each crew member. For each one, a single roll is drawn at random from everyone's rolls, and it decides how well they fight.","items":[["hale","Hale"],["scarlett","Scarlett Holster"],["orion","Orion Squints"],["rune","Rune Overclock"],["sparrow","Sparrow Zipmeister"]],"tiers":["","","","",""]},{"id":"priorities","kind":"grid","kicker":"THE CREW","title":"List the Priorities for Each Character","text":"Pick each crew member's top priority in the fight. Majority rules for each one.","items":[["prio_hale","Hale"],["prio_scarlett","Scarlett Holster"],["prio_orion","Orion Squints"],["prio_rune","Rune Overclock"],["prio_sparrow","Sparrow Zipmeister"]],"options":[["Attacking",""],["Healing",""],["Evading",""],["Defending",""],["Distracting",""]]}],"draw":true};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
@@ -1179,15 +1186,16 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     if (rb) rb.onclick = function () { rollFor(id); };
     return d;
   }
-  function optButtons(q) {
+  function optButtons(q, key) {
+    key = key || q.id;
     var g = document.createElement('div');
     g.className = 'rc-opts'; g.setAttribute('role', 'group'); g.setAttribute('aria-label', q.title);
     q.options.forEach(function (o) {
       var b = document.createElement('button');
       b.type = 'button'; b.className = 'rc-opt';
-      b.setAttribute('aria-pressed', S.picks[q.id] === o[0]);
+      b.setAttribute('aria-pressed', S.picks[key] === o[0]);
       b.innerHTML = '<b>' + esc(o[0]) + '</b>' + (o[1] ? '<span>' + esc(o[1]) + '</span>' : '');
-      b.onclick = function () { if (locked) return; S.picks[q.id] = o[0]; changed(); };
+      b.onclick = function () { if (locked) return; S.picks[key] = o[0]; changed(); };
       g.appendChild(b);
     });
     return g;
@@ -1221,17 +1229,38 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         var note = document.createElement('p'); note.className = 'rc-rollnote'; note.textContent = "What each kit's average means. " + DATA.twist;
         // the outcomes list only shows once they're written
         if (q.tiers.some(function (t) { return t; })) { sec.appendChild(note); sec.appendChild(tl); }
+      } else if (q.kind === 'pickroll') {
+        // pick an option, then roll one die for it
+        sec.appendChild(optButtons(q));
+        var one = document.createElement('div'); one.className = 'cr-kits cr-one';
+        var cd = document.createElement('div'); cd.className = 'cr-kit';
+        cd.innerHTML = '<h3>' + esc(q.dieLabel || 'Roll for it') + '</h3>';
+        cd.appendChild(diceBlock(q.id, ''));
+        one.appendChild(cd); sec.appendChild(one);
+      } else if (q.kind === 'grid') {
+        // one pick per row (each crew member's priority)
+        var rows = document.createElement('div'); rows.className = 'cr-grid';
+        q.items.forEach(function (it) {
+          var row = document.createElement('div'); row.className = 'cr-grid-row';
+          row.innerHTML = '<h3>' + esc(it[1]) + '</h3>';
+          row.appendChild(optButtons({ title: it[1], options: q.options }, it[0]));
+          rows.appendChild(row);
+        });
+        sec.appendChild(rows);
       } else sec.appendChild(optButtons(q));
       box.appendChild(sec);
     });
   }
   function missing() {
-    return DATA.questions.filter(function (q) { return q.kind === 'roll' ? !S.rolls[q.id] : q.kind === 'rolls' ? q.items.some(function (it) { return !S.rolls[it[0]]; }) : !S.picks[q.id]; }).map(function (q) { return q.title; });
+    return DATA.questions.filter(function (q) { return q.kind === 'roll' ? !S.rolls[q.id] : q.kind === 'rolls' ? q.items.some(function (it) { return !S.rolls[it[0]]; })
+      : q.kind === 'pickroll' ? !S.picks[q.id] || !S.rolls[q.id] : q.kind === 'grid' ? q.items.some(function (it) { return !S.picks[it[0]]; }) : !S.picks[q.id]; }).map(function (q) { return q.title; });
   }
   function renderOrders() {
     $('rc-olist').innerHTML = '<ul>' + DATA.questions.map(function (q) {
       var v = q.kind === 'roll' ? (S.rolls[q.id] ? 'Rolled ' + S.rolls[q.id] : null)
         : q.kind === 'rolls' ? (q.items.every(function (it) { return S.rolls[it[0]]; }) ? q.items.map(function (it) { return it[1].replace(/ Kit$/, '') + ' ' + S.rolls[it[0]]; }).join(' · ') : null)
+        : q.kind === 'pickroll' ? (S.picks[q.id] && S.rolls[q.id] ? S.picks[q.id] + ' · rolled ' + S.rolls[q.id] : null)
+        : q.kind === 'grid' ? (q.items.every(function (it) { return S.picks[it[0]]; }) ? q.items.map(function (it) { return it[1].split(' ')[0] + ': ' + S.picks[it[0]]; }).join(' · ') : null)
         : S.picks[q.id];
       return '<li><b>' + esc(q.title) + '</b> ' + (v ? esc(v) : '<span class="rc-empty">not yet</span>') + '</li>';
     }).join('') + '</ul>';
@@ -1249,7 +1278,10 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     me = who; store(ME, me);
     if (missing().length) { msg.textContent = 'Before you seal it: ' + missing().join(', ') + '.'; return; }
     var btn = this, payload = { action: 'advvote', vote: DATA.key, email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country };
-    DATA.questions.forEach(function (q) { if (q.kind === 'pick') payload['p_' + q.id] = S.picks[q.id]; });
+    DATA.questions.forEach(function (q) {
+      if (q.kind === 'pick' || q.kind === 'pickroll') payload['p_' + q.id] = S.picks[q.id];
+      if (q.kind === 'grid') q.items.forEach(function (it) { payload['p_' + it[0]] = S.picks[it[0]]; });
+    });
     btn.disabled = true; btn.textContent = 'SEALING...'; msg.textContent = '';
     send(payload, function (res) {
       if (res && res.ok) {
