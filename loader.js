@@ -722,9 +722,19 @@
     });
   }
 
+  // The old Linktree menu link goes (Maurice, 2026-10-04): his bios now point at /links, which stays off the menus
+  // on purpose (The Quiet One riddle: "no branches linking it to the imperia"). Runs after mainMerch, which clones
+  // an external menu item as its template.
+  function dropLinktree() {
+    Array.prototype.forEach.call(document.querySelectorAll('#header a[href*="linktr.ee"], .header-menu-nav a[href*="linktr.ee"]'), function (a) {
+      var item = a.closest('.header-nav-item, .header-menu-nav-item'); if (item) item.style.display = 'none';
+    });
+  }
+
   function scan() {
     huntGift();
     mainMerch();
+    dropLinktree();
     huntDropdown();
     fixedBackgrounds();
     nativeReveal();
