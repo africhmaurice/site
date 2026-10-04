@@ -511,6 +511,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cr-grid-row .rc-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
 #rc .cr-grid-row .rc-opt{padding:12px 14px;text-align:center}
 #rc .cr-one{grid-template-columns:minmax(0,320px);margin-top:20px}
+#rc .cr-kit h3 small{display:block;margin-top:6px;font-size:11px;letter-spacing:.14em;color:rgba(237,233,220,.72)}
 </style>
 
 <div id="rc" class="cr rv">
@@ -1219,7 +1220,9 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         var grid = document.createElement('div'); grid.className = 'cr-kits';
         q.items.forEach(function (it) {
           var c = document.createElement('div'); c.className = 'cr-kit';
-          c.innerHTML = '<h3>' + esc(it[1]) + '</h3>';
+          // 'Name · Job' shows the job on its own line under the name
+          var nj = String(it[1]).split(' · ');
+          c.innerHTML = '<h3>' + esc(nj[0]) + (nj[1] ? '<small>' + esc(nj[1]) + '</small>' : '') + '</h3>';
           c.appendChild(diceBlock(it[0], ''));
           grid.appendChild(c);
         });
