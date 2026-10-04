@@ -171,6 +171,12 @@
       "source": "bot:squarespace-crash.html"
     },
     {
+      "slug": "river",
+      "url": "/the-river",
+      "title": "Fight the Levian Vote (Chapter 5, the river)",
+      "source": "bot:squarespace-river.html"
+    },
+    {
       "slug": "adventure",
       "url": "/adventure",
       "title": "The Adventure So Far (every Choose Your Own Adventure beat)",
