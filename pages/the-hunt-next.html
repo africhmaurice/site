@@ -607,10 +607,10 @@ if(location.hash==='#golden')window.__goldenOpen();
 #map .mh-map.mh-snap .mh-foot-in,#map .mh-map.mh-snap .mh-foot{transition:none}
 #map .mh-foot-in img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
 #map .mh-prints{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(11,23,15,.9)) drop-shadow(0 0 2px rgba(11,23,15,.5))}
-#map .mh-prints .ft{fill:#fffffe;opacity:0;transition:opacity .25s ease}
+#map .mh-prints .ft{fill:#fffffe;stroke:rgba(11,23,15,.55);stroke-width:.28;opacity:0;transition:opacity .25s ease}
 #map .mh-prints .ft.on{opacity:.95}
 #map .mh-prints .mh-x line{stroke-linecap:round}
-#map .mh-foot .mh-spot{transform:translate(-50%,-50%) scale(0.3333)}
+#map .mh-foot .mh-spot{width:clamp(12.67px,1.667vw,23.33px);height:clamp(12.67px,1.667vw,23.33px)}
 #map .mh-foot .mh-spot svg{filter:drop-shadow(0 9px 9px rgba(0,0,0,.6)) drop-shadow(0 2px 4px rgba(0,0,0,.45))}
 @media (prefers-reduced-motion:reduce){#map .mh-foot-in{transition:none}}
 /* the Levian's roar shakes the map and washes it in river green */
@@ -901,10 +901,10 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
   var FOOT = ['orders', 'river'], SVGNS = 'http://www.w3.org/2000/svg';
   function prints(id, now){ var path = document.getElementById('mh-fpath-'+id), g = document.getElementById('mh-fprints-'+id); if(!path||!g) return;
     if(!g.childNodes.length){ var L = path.getTotalLength(), n = 0;
-      for(var d = 3; d < L - 2; d += 4.4, n++){ var a = path.getPointAtLength(d), b = path.getPointAtLength(Math.min(L, d + .6)), ang = Math.atan2(b.y - a.y, b.x - a.x), side = n % 2 ? 1.25 : -1.25;
+      for(var d = 3; d < L - 2; d += 7.2, n++){ var a = path.getPointAtLength(d), b = path.getPointAtLength(Math.min(L, d + .6)), ang = Math.atan2(b.y - a.y, b.x - a.x), side = n % 2 ? 1.9 : -1.9;
         var f = document.createElementNS(SVGNS, 'g'); f.setAttribute('class', 'ft');
         f.setAttribute('transform', 'translate(' + (a.x - Math.sin(ang) * side).toFixed(2) + ',' + (a.y + Math.cos(ang) * side).toFixed(2) + ') rotate(' + (ang * 180 / Math.PI).toFixed(1) + ')');
-        f.innerHTML = '<ellipse cx="0.5" cy="0" rx="1.25" ry="0.62"/><ellipse cx="-1.25" cy="0" rx="0.55" ry="0.5"/>'; g.appendChild(f); } }
+        f.innerHTML = '<ellipse cx="0.9" cy="0" rx="2.1" ry="1.0"/><ellipse cx="-2.1" cy="0" rx="0.95" ry="0.82"/>'; g.appendChild(f); } }
     Array.prototype.forEach.call(g.childNodes, function(f, i){ if(now||calm) f.classList.add('on'); else setTimeout(function(){ f.classList.add('on'); }, i * 110); }); }
   function route(id, now){if(FOOT.indexOf(id)>=0)return prints(id, now);var m=document.querySelector('#mh-mask-'+id+' .wipe');if(!m)return;
     if(now||calm)m.style.transition='none';m.style.strokeDashoffset='0';}
