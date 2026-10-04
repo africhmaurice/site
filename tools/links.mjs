@@ -82,7 +82,6 @@ const page = `<!-- ============================================================
 #ma-links .lk-secs{display:flex;flex-direction:column;gap:30px;margin-top:8px}
 #ma-links .lk-sec{display:flex;flex-direction:column;gap:12px}
 #ma-links .lk-h{margin:0;font-family:'Atomic Marker',Impact,sans-serif;font-weight:400;font-size:28px;line-height:1.2;letter-spacing:.03em;color:var(--parch)!important;text-align:center;text-wrap:balance}
-#ma-links .lk-badge{display:block;width:110px;height:110px;margin:0 auto;object-fit:contain;filter:drop-shadow(0 6px 14px rgba(0,0,0,.5))}
 #ma-links .lk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 @media (min-width:520px){#ma-links .lk-three{grid-template-columns:repeat(3,minmax(0,1fr))}#ma-links .lk-four{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media (min-width:520px){#ma-links .lk-two>.lk-tile{aspect-ratio:3/2}}
@@ -213,6 +212,25 @@ ${sections}
         px('track', 'InitiateCheckout', { content_name: "Cello's Gate", content_category: a.getAttribute('data-link'), campaign: CMP });
     }, true);
   }
+  // Tile words shrink to fit their tile (a long name like BeeristheMindKiller), never running past its padding.
+  function fit() {
+    Array.prototype.forEach.call(root.querySelectorAll('.lk-note,.lk-name,.lk-flabel'), function (el) {
+      el.style.fontSize = '';
+      var box = el.parentElement, cs = getComputedStyle(box), size = parseFloat(getComputedStyle(el).fontSize);
+      function over() {
+        var b = box.getBoundingClientRect(), r = el.getBoundingClientRect();
+        return el.scrollWidth > el.clientWidth + 1 || r.left < b.left + parseFloat(cs.paddingLeft) - 1 || r.right > b.right - parseFloat(cs.paddingRight) + 1;
+      }
+      while (size > 8 && over()) { size -= 0.5; el.style.fontSize = size + 'px'; }
+    });
+    // the three big buttons share one size, the smallest that fits all of them
+    var big = root.querySelectorAll('.lk-flabel'), min = Infinity;
+    Array.prototype.forEach.call(big, function (el) { min = Math.min(min, parseFloat(getComputedStyle(el).fontSize)); });
+    Array.prototype.forEach.call(big, function (el) { el.style.fontSize = min + 'px'; });
+  }
+  fit();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  var fitT; window.addEventListener('resize', function () { clearTimeout(fitT); fitT = setTimeout(fit, 150); });
   // The newsletter signup sends the name and email to Kit, then says what Kit's own form says.
   var news = root.querySelector('.lk-news');
   if (news) news.addEventListener('submit', function (e) {

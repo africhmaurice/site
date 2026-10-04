@@ -70,7 +70,8 @@
    "label": "The Treasure Hunt is Live!",
    "url": "https://www.mauriceafrich.com/the-hunt",
    "tone": "green",
-   "bg": "art-world-map.jpg"
+   "bg": "art-world-map.jpg",
+   "img": "../img/golden-loot-box.webp"
   },
   {
    "id": "discord",
@@ -234,7 +235,6 @@
    "title": "The Crippled Pod",
    "tone": "ink",
    "layout": "five",
-   "badge": "logo-pod.png",
    "links": [
     {
      "id": "pod-spotify",
@@ -284,32 +284,28 @@
      "label": "Author Website",
      "logo": "icon-mark.png",
      "bg": "pin-12.jpg",
-     "url": "https://www.mauriceafrich.com/",
-     "note": "Author Website"
+     "url": "https://www.mauriceafrich.com/"
     },
     {
      "id": "goodreads",
      "label": "Goodreads",
      "bg": "pin-13.jpg",
      "url": "https://www.goodreads.com/user/show/57225930-maurice-africh",
-     "logo": "logo-goodreads.png",
-     "note": "Goodreads"
+     "logo": "logo-goodreads.png"
     },
     {
      "id": "fable",
      "label": "Fable",
      "bg": "pin-14.jpg",
      "url": "https://fable.co/book/cellos-gate-the-sky-pirates-of-imperia-1-by-maurice-africh-dSUxO1vs7a",
-     "logo": "logo-fable.png",
-     "note": "Fable"
+     "logo": "logo-fable.png"
     },
     {
      "id": "storygraph",
      "label": "Story Graph",
      "bg": "pin-15.jpg",
      "url": "https://app.thestorygraph.com/books/deda125b-9938-4904-a640-5d018664ccfc",
-     "logo": "logo-storygraph.png",
-     "note": "Story Graph"
+     "logo": "logo-storygraph.png"
     },
     {
      "id": "wishlist",
