@@ -111,9 +111,9 @@ const page = `<!-- ============================================================
 @media (max-width:519px){
   #ma-links .lk-feats{grid-template-columns:1fr;gap:10px}
   #ma-links .lk-feat{aspect-ratio:auto;height:128px}
-  #ma-links .lk-feat .lk-tin,#ma-links .lk-feat-text .lk-tin{flex-direction:row;justify-content:center;gap:20px;padding:24px 40px}
-  #ma-links .lk-fimg{flex:none;height:100%;max-width:36%}
-  #ma-links .lk-flabel,#ma-links .lk-feat-text .lk-flabel{font-size:clamp(12px,3.7vw,17px);text-align:left;white-space:nowrap;letter-spacing:.04em}
+  #ma-links .lk-feat .lk-tin,#ma-links .lk-feat-text .lk-tin{flex-direction:row;justify-content:center;gap:14px;padding:24px}
+  #ma-links .lk-fimg{flex:none;height:64px;max-width:22%}
+  #ma-links .lk-flabel,#ma-links .lk-feat-text .lk-flabel{font-size:clamp(12px,3.7vw,17px);text-align:left;white-space:nowrap;letter-spacing:.02em}
   #ma-links .lk-feat-text .lk-flabel{text-align:center}
 }
 #ma-links .lk-promo{display:block;max-width:100%;margin-top:16px;border:1px solid rgba(255,255,254,.16);transition:transform .18s ease,box-shadow .18s ease}

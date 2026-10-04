@@ -75,7 +75,7 @@
   },
   {
    "id": "discord",
-   "label": "Welcome to Trench",
+   "label": "Join the Trench Community",
    "url": "https://discord.gg/TV8SNnSGdb",
    "tone": "violet",
    "img": "logo-trench.png",
@@ -115,8 +115,7 @@
      "label": "Walmart Special Edition",
      "logo": "logo-walmart.png",
      "bg": "floating-blocks-city-as311317794",
-     "url": "https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704?classType=REGULAR&from=/search",
-     "note": "Special Edition"
+     "url": "https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704?classType=REGULAR&from=/search"
     },
     {
      "id": "bookshop",
@@ -130,7 +129,7 @@
      "label": "Waterstones",
      "logo": "logo-waterstones.png",
      "bg": "nebula-glow-as332921866",
-     "url": "https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399763073"
+     "url": "https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227"
     },
     {
      "id": "audible",

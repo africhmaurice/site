@@ -347,7 +347,11 @@ h1,h2,h3{text-wrap:balance}
     { label: 'Buy Something From Trench Market', send: 'Buy Something From Trench Market', items: true,
       hint: 'Your Trench Market receipt or order confirmation. 50 points for each item.' },
     { label: 'Post a Video Review', send: 'Post a Video Review', pick: ['Where did you post it?', ['Instagram', 'TikTok', 'YouTube', 'Reddit', 'X', 'Threads', 'Facebook']], from: '2026-10-05T00:00:00-04:00',
-      hint: 'Your video review of Cello\'s Gate, with #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK). Any honest rating counts. 150 points per platform.' }
+      hint: 'Your video review of Cello\'s Gate, with #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK). Any honest rating counts. 150 points per platform.' },
+    { label: '(Semi-)Aggressive Recruiting', send: '(Semi-)Aggressive Recruiting', detail: 'Who did you recruit? Their name and handle.',
+      hint: 'A screenshot that shows they joined the hunt: their scorecard, a daily game share, a loot box claim, or their message to you. 50 points for each new hunter who joins on or after October 4 (no retroactive claims). Each hunter can only be claimed once.' },
+    { label: 'The Balance Challenge', send: 'The Balance Challenge', pick: ['Where did you post it?', ['Instagram', 'TikTok', 'YouTube', 'Reddit', 'X', 'Threads', 'Facebook']], pick2: ['Is Cello\'s Gate one of the books?', ['Yes, Cello\'s Gate is in the stack', 'No']],
+      hint: 'A screenshot of your post balancing at least 10 books on your head, with #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK). 50 points per platform, one time only. +25 if Cello\'s Gate is one of the books.' }
   ];
   TASKS = TASKS.filter(function (t) { return !t.from || Date.now() >= Date.parse(t.from); });
 
