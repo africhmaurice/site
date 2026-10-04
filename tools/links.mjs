@@ -108,7 +108,16 @@ const page = `<!-- ============================================================
 #ma-links .lk-fimg{display:block;flex:1;min-height:0;max-width:92%;width:auto;object-fit:contain;filter:drop-shadow(0 6px 12px rgba(0,0,0,.5))}
 #ma-links .lk-flabel{font-weight:800;font-size:clamp(11px,3.3vw,15px);line-height:1.3;letter-spacing:.06em;text-transform:uppercase;text-wrap:balance;text-shadow:0 2px 8px rgba(0,0,0,.55)}
 #ma-links .lk-feat-text .lk-flabel{font-size:clamp(13px,4vw,18px)}
-#ma-links .lk-promo{display:block;max-width:100%;border:1px solid rgba(255,255,254,.16);transition:transform .18s ease,box-shadow .18s ease}
+/* phones: the three big tiles stack as wide rows, picture beside the words */
+@media (max-width:519px){
+  #ma-links .lk-feats{grid-template-columns:1fr;gap:10px}
+  #ma-links .lk-feat{aspect-ratio:auto;height:128px}
+  #ma-links .lk-feat .lk-tin,#ma-links .lk-feat-text .lk-tin{flex-direction:row;justify-content:center;gap:20px;padding:24px 40px}
+  #ma-links .lk-fimg{flex:none;height:100%;max-width:36%}
+  #ma-links .lk-flabel,#ma-links .lk-feat-text .lk-flabel{font-size:clamp(12px,3.7vw,17px);text-align:left;white-space:nowrap;letter-spacing:.04em}
+  #ma-links .lk-feat-text .lk-flabel{text-align:center}
+}
+#ma-links .lk-promo{display:block;max-width:100%;margin-top:16px;border:1px solid rgba(255,255,254,.16);transition:transform .18s ease,box-shadow .18s ease}
 #ma-links .lk-promo img{display:block;width:100%;height:auto;aspect-ratio:3/2}
 #ma-links .lk-promo:hover{transform:scale(1.02);box-shadow:0 10px 24px rgba(0,0,0,.5)}
 #ma-links .lk-news{display:flex;flex-direction:column;gap:14px;margin:0;padding:22px 20px;border:2px solid var(--green);background:rgba(27,59,21,.82)}
@@ -176,15 +185,33 @@ ${sections}
     return r ? r.replace(/^https?:\\/\\/(www\\.)?/, '').split('/')[0].slice(0, 30) : 'direct';
   }
   var SRC = source(), DEV = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'phone' : 'computer';
+  // Which ad or post sent them (utm_campaign on the link), kept for the rest of the visit.
+  var CMP = '';
+  try {
+    var cq = (location.search.match(/[?&]utm_campaign=([^&]+)/) || [])[1];
+    CMP = cq ? decodeURIComponent(cq).toLowerCase().slice(0, 60) : (sessionStorage.getItem('lk-cmp') || '');
+    if (cq) sessionStorage.setItem('lk-cmp', CMP);
+  } catch (e) {}
   function hit(ev, link, section) {
-    var body = JSON.stringify({ action: 'link', event: ev, link: link || '', section: section || '', source: SRC, device: DEV });
+    var body = JSON.stringify({ action: 'link', event: ev, link: link || '', section: section || '', source: SRC, device: DEV, campaign: CMP });
     try { if (navigator.sendBeacon && navigator.sendBeacon(ENDPOINT, body)) return; } catch (e) {}
     try { fetch(ENDPOINT, { method: 'POST', body: body, keepalive: true, mode: 'no-cors' }); } catch (e) {}
   }
   var counting = !/[?&]nostats(&|$)/.test(location.search);
+  // The site's Meta Pixel (added by Squarespace, and only after a visitor accepts cookies) also hears about taps
+  // and signups, so ads can be measured on them. Nothing is sent to Meta when the visitor has not accepted.
+  function px(kind, name, data) { try { if (counting && typeof window.fbq === 'function') window.fbq(kind, name, data || {}); } catch (e) {} }
   if (counting) {
     hit('view');
-    root.addEventListener('click', function (e) { var a = e.target.closest('a[data-link]'); if (a) hit('click', a.getAttribute('data-link'), a.getAttribute('data-section')); }, true);
+    root.addEventListener('click', function (e) {
+      var a = e.target.closest('a[data-link]'); if (!a) return;
+      hit('click', a.getAttribute('data-link'), a.getAttribute('data-section'));
+      px('trackCustom', 'LinkTap', { link: a.getAttribute('data-link'), section: a.getAttribute('data-section'), campaign: CMP });
+      // A tap on a store (the Pre-Order grid or the Amazon icon) is the pre-order signal ads optimize for: the sale
+      // itself happens on the store's site, where the Pixel can't see it.
+      if (a.getAttribute('data-section') === 'preorder' || a.getAttribute('data-link') === 'amazon')
+        px('track', 'InitiateCheckout', { content_name: "Cello's Gate", content_category: a.getAttribute('data-link'), campaign: CMP });
+    }, true);
   }
   // The newsletter signup sends the name and email to Kit, then says what Kit's own form says.
   var news = root.querySelector('.lk-news');
@@ -197,6 +224,7 @@ ${sections}
       .then(function () {
         news.querySelector('.lk-nrow').hidden = true; msg.hidden = false; msg.textContent = ${JSON.stringify(N.done)};
         if (counting) hit('signup', 'newsletter', 'newsletter');
+        px('track', 'Lead', { content_name: 'Newsletter', campaign: CMP });
       })
       .catch(function () { btn.disabled = false; msg.hidden = false; msg.textContent = 'That did not go through. Please try again.'; });
   });

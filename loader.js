@@ -250,9 +250,9 @@
         });
       });
     }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
-    // Only things on the page right now: hidden panels, slider slides and embeds are left alone, so nothing
+    // Only things on the page right now: hidden panels, slider slides, embeds, and the link page are left alone, so nothing
     // can be stuck invisible (they may never "scroll into view" the way the observer sees it).
-    var SKIP = '#hunt-nav,#hunt-nav-ov,#ma-loading,nav,header,footer,.ma-rv,[data-ma-page="home-slider"],.instagram-media,[aria-hidden="true"],[class*="slide"],[class*="carousel"],[class*="swiper"],[class*="gallery"]';
+    var SKIP = '#hunt-nav,#hunt-nav-ov,#ma-loading,#ma-links,nav,header,footer,.ma-rv,[data-ma-page="home-slider"],.instagram-media,[aria-hidden="true"],[class*="slide"],[class*="carousel"],[class*="swiper"],[class*="gallery"]';
     // Like x.closest(SKIP), but stops below <body>: Squarespace's body classes contain words like "gallery".
     function skipped(x) {
       for (var a = x; a && a !== document.body && a !== document.documentElement; a = a.parentElement) if (a.matches(SKIP)) return true;
