@@ -599,7 +599,21 @@ if(location.hash==='#golden')window.__goldenOpen();
 #map .mh-switch[hidden]{display:none}
 #map .mh-switch button{font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.12em;padding:8px 14px;background:rgba(11,23,15,.72);color:#fffffe;border:1.5px solid rgba(243,234,217,.6);cursor:pointer}
 #map .mh-switch button[aria-pressed="true"]{background:#482d85;border-color:#fffffe}
-/* chapter 5: the Levian's roar (scripts/map-river.mjs) */
+/* chapter 5, on foot (scripts/map-river.mjs): after the crash the map zooms in close and the trail is footprints */
+#map .mh-foot{position:absolute;inset:0;z-index:4;overflow:hidden;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s linear .6s}
+#map .mh-map.mh-onfoot .mh-foot{opacity:1;visibility:visible;transition:opacity .6s ease}
+#map .mh-foot-in{position:absolute;inset:0;transform-origin:0 0;transition:transform 2.6s cubic-bezier(.45,0,.25,1)}
+#map .mh-map.mh-close .mh-foot-in{transform:scale(3) translate(-38.750%,-54.167%)}
+#map .mh-map.mh-snap .mh-foot-in,#map .mh-map.mh-snap .mh-foot{transition:none}
+#map .mh-foot-in img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
+#map .mh-prints{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;filter:drop-shadow(0 1px 1px rgba(11,23,15,.9)) drop-shadow(0 0 2px rgba(11,23,15,.5))}
+#map .mh-prints .ft{fill:#fffffe;opacity:0;transition:opacity .25s ease}
+#map .mh-prints .ft.on{opacity:.95}
+#map .mh-prints .mh-x line{stroke-linecap:round}
+#map .mh-foot .mh-spot{transform:translate(-50%,-50%) scale(0.3333)}
+#map .mh-foot .mh-spot svg{filter:drop-shadow(0 9px 9px rgba(0,0,0,.6)) drop-shadow(0 2px 4px rgba(0,0,0,.45))}
+@media (prefers-reduced-motion:reduce){#map .mh-foot-in{transition:none}}
+/* the Levian's roar shakes the map and washes it in river green */
 #map .mh-map.mh-roar{animation:mh-bigshake .9s cubic-bezier(.36,.07,.19,.97) both}
 #map .mh-map.mh-roar::after{animation:mh-wave 1.4s ease-out both}
 @keyframes mh-wave{0%{opacity:1;background:radial-gradient(ellipse at 52% 70%,rgba(38,142,98,.75),rgba(11,23,15,.55))}100%{opacity:0}}
@@ -697,16 +711,25 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
         <button type="button" class="mh-spot" id="mh-spot-degate" data-pop="mh-degate" hidden style="left:18.44%;top:80.58%" aria-label="De'gaté: This Is Your Captain Speaking"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         </div>
         <div class="mh-tmap" aria-label="The treasure map of De'gaté"><img src="https://africhmaurice.github.io/site/assets/maps/treasure-map-degate.jpg" alt="The treasure map of De'gaté" width="2400" height="1800" loading="lazy">
-        <svg class="mh-routes mh-troutes" viewBox="0 0 1600 1200" preserveAspectRatio="none" aria-hidden="true"><defs><mask id="mh-mask-orders" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M947,854 Q905,892 862,886" pathLength="1"/></mask><mask id="mh-mask-river" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M862,886 Q832,872 822,836" pathLength="1"/></mask><mask id="mh-mask-cathedral" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M640,-30 Q540,60 520,167 Q470,330 613,467" pathLength="1"/></mask><mask id="mh-mask-sword" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M613,467 Q640,650 733,793" pathLength="1"/></mask><mask id="mh-mask-skull" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M733,793 Q880,720 1025,777" pathLength="1"/></mask><mask id="mh-mask-crash" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M1025,777 C1090,720 1030,690 1000,745 S925,815 947,854" pathLength="1"/></mask></defs><g id="mh-route-orders"><path class="dots" d="M947,854 Q905,892 862,886" mask="url(#mh-mask-orders)"/></g><g id="mh-route-river"><path class="dots" d="M862,886 Q832,872 822,836" mask="url(#mh-mask-river)"/></g><g id="mh-route-cathedral"><path class="dots" d="M640,-30 Q540,60 520,167 Q470,330 613,467" mask="url(#mh-mask-cathedral)"/></g><g id="mh-route-sword"><path class="dots" d="M613,467 Q640,650 733,793" mask="url(#mh-mask-sword)"/></g><g id="mh-route-skull"><path class="dots" d="M733,793 Q880,720 1025,777" mask="url(#mh-mask-skull)"/></g><g id="mh-route-crash"><path class="dots" d="M1025,777 C1090,720 1030,690 1000,745 S925,815 947,854" mask="url(#mh-mask-crash)"/></g></svg>
+        <svg class="mh-routes mh-troutes" viewBox="0 0 1600 1200" preserveAspectRatio="none" aria-hidden="true"><defs><mask id="mh-mask-cathedral" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M640,-30 Q540,60 520,167 Q470,330 613,467" pathLength="1"/></mask><mask id="mh-mask-sword" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M613,467 Q640,650 733,793" pathLength="1"/></mask><mask id="mh-mask-skull" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M733,793 Q880,720 1025,777" pathLength="1"/></mask><mask id="mh-mask-crash" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M1025,777 C1090,720 1030,690 1000,745 S925,815 947,854" pathLength="1"/></mask></defs><g id="mh-route-cathedral"><path class="dots" d="M640,-30 Q540,60 520,167 Q470,330 613,467" mask="url(#mh-mask-cathedral)"/></g><g id="mh-route-sword"><path class="dots" d="M613,467 Q640,650 733,793" mask="url(#mh-mask-sword)"/></g><g id="mh-route-skull"><path class="dots" d="M733,793 Q880,720 1025,777" mask="url(#mh-mask-skull)"/></g><g id="mh-route-crash"><path class="dots" d="M1025,777 C1090,720 1030,690 1000,745 S925,815 947,854" mask="url(#mh-mask-crash)"/></g></svg>
         <button type="button" class="mh-spot" id="mh-spot-cathedral" data-pop="mh-cathedral" hidden style="left:38.31%;top:38.92%" aria-label="The Cathedral"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         <button type="button" class="mh-spot" id="mh-spot-sword" data-pop="mh-sword" hidden style="left:45.81%;top:66.08%" aria-label="The Sword"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         <button type="button" class="mh-spot" id="mh-spot-skull" data-pop="mh-skull" hidden style="left:64.06%;top:64.75%" aria-label="The Goma Skull"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         <button type="button" class="mh-spot mh-crash" id="mh-spot-crash" data-pop="mh-crash" hidden style="left:59.19%;top:71.17%" aria-label="Shot Down"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
-        <button type="button" class="mh-spot" id="mh-spot-orders" data-pop="mh-orders" hidden style="left:53.88%;top:73.83%" aria-label="Setting Out: Orders From the Captain"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
-        <button type="button" class="mh-spot mh-river" id="mh-spot-river" data-pop="mh-river" hidden style="left:51.38%;top:69.67%" aria-label="The River"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         </div>
+        <div class="mh-foot" aria-label="On foot: the crew's trail from the crash"><div class="mh-foot-in">
+          <img src="https://africhmaurice.github.io/site/assets/maps/treasure-map-degate.jpg" alt="The treasure map of De'gaté, close up on the valley" width="2400" height="1800" loading="lazy">
+          <svg class="mh-prints" viewBox="0 0 1600 1200" preserveAspectRatio="none" aria-hidden="true">
+            <path id="mh-fpath-orders" d="M947,854 Q905,892 862,886" fill="none" stroke="none"/><path id="mh-fpath-river" d="M862,886 Q832,872 822,836" fill="none" stroke="none"/>
+            <g class="mh-x"><line x1="942" y1="849" x2="952" y2="859" stroke="#fffffe" stroke-width="4.2"/><line x1="952" y1="849" x2="942" y2="859" stroke="#fffffe" stroke-width="4.2"/>
+              <line x1="942" y1="849" x2="952" y2="859" stroke="#c53200" stroke-width="2.4"/><line x1="952" y1="849" x2="942" y2="859" stroke="#c53200" stroke-width="2.4"/></g>
+            <g id="mh-fprints-orders"></g><g id="mh-fprints-river"></g>
+          </svg>
+          <button type="button" class="mh-spot" id="mh-spot-orders" data-pop="mh-orders" hidden style="left:53.88%;top:73.83%" aria-label="Setting Out: Orders From the Captain"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
+          <button type="button" class="mh-spot mh-river" id="mh-spot-river" data-pop="mh-river" hidden style="left:51.38%;top:69.67%" aria-label="The River"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
+        </div></div>
         <div class="mh-roll" aria-hidden="true"></div>
-        <div class="mh-switch" hidden role="group" aria-label="Which map"><button type="button" data-map="world" aria-pressed="false">WORLD MAP</button><button type="button" data-map="treasure" aria-pressed="true">TREASURE MAP</button></div>
+        <div class="mh-switch" hidden role="group" aria-label="Which map"><button type="button" data-map="world" aria-pressed="false">WORLD MAP</button><button type="button" data-map="treasure" aria-pressed="true">TREASURE MAP</button><button type="button" data-map="foot" aria-pressed="false" hidden>ON FOOT</button></div>
         
       </div>
     </div>
@@ -875,7 +898,15 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
     if(last)last.focus({preventScroll:true});var f=onClose[p.id];if(f){onClose[p.id]=null;f();}}
 
   // A route draws by moving its mask; now = no animation.
-  function route(id, now){var m=document.querySelector('#mh-mask-'+id+' .wipe');if(!m)return;
+  var FOOT = ['orders', 'river'], SVGNS = 'http://www.w3.org/2000/svg';
+  function prints(id, now){ var path = document.getElementById('mh-fpath-'+id), g = document.getElementById('mh-fprints-'+id); if(!path||!g) return;
+    if(!g.childNodes.length){ var L = path.getTotalLength(), n = 0;
+      for(var d = 3; d < L - 2; d += 4.4, n++){ var a = path.getPointAtLength(d), b = path.getPointAtLength(Math.min(L, d + .6)), ang = Math.atan2(b.y - a.y, b.x - a.x), side = n % 2 ? 1.25 : -1.25;
+        var f = document.createElementNS(SVGNS, 'g'); f.setAttribute('class', 'ft');
+        f.setAttribute('transform', 'translate(' + (a.x - Math.sin(ang) * side).toFixed(2) + ',' + (a.y + Math.cos(ang) * side).toFixed(2) + ') rotate(' + (ang * 180 / Math.PI).toFixed(1) + ')');
+        f.innerHTML = '<ellipse cx="0.5" cy="0" rx="1.25" ry="0.62"/><ellipse cx="-1.25" cy="0" rx="0.55" ry="0.5"/>'; g.appendChild(f); } }
+    Array.prototype.forEach.call(g.childNodes, function(f, i){ if(now||calm) f.classList.add('on'); else setTimeout(function(){ f.classList.add('on'); }, i * 110); }); }
+  function route(id, now){if(FOOT.indexOf(id)>=0)return prints(id, now);var m=document.querySelector('#mh-mask-'+id+' .wipe');if(!m)return;
     if(now||calm)m.style.transition='none';m.style.strokeDashoffset='0';}
   function later(ms, f){setTimeout(f, calm ? 0 : ms);}
 
@@ -883,7 +914,7 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
   route('pontune', true); route('gresnick', true); reveal('pontune'); reveal('gresnick');
 
   // Which map is showing.
-  function showMap(which){ if(!map)return; map.classList.toggle('mh-treasure', which==='treasure');
+  function showMap(which){ if(!map)return; map.classList.toggle('mh-treasure', which!=='world'); map.classList.toggle('mh-onfoot', which==='foot'); if(which==='foot') map.classList.add('mh-close');
     if(sw){sw.hidden=false;Array.prototype.forEach.call(sw.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-map')===which));});} }
   if(sw)sw.addEventListener('click',function(e){var b=e.target.closest('button');if(b)showMap(b.getAttribute('data-map'));});
 
@@ -906,15 +937,21 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
   if (has('flight')) { route('degate-out', true); route('degate-in', true); }
   ['degate', 'cathedral', 'sword', 'skull', 'crash', 'orders', 'river'].forEach(function(id){ if(has(id)) reveal(id); });
   ['cathedral', 'sword', 'skull', 'crash', 'orders', 'river'].forEach(function(id){ if(has(id)) route(id, true); });
-  // Chapter 5: after the crash, the crew sets out west; the Captain's orders open as the marker lands.
-  function setOut(){ if(has('orders')) return; showMap('treasure'); route('orders'); later(1600, function(){ reveal('orders'); later(600, function(){ open('orders'); }); }); }
+  // Chapter 5, on foot: the switch gains ON FOOT and the treasure map becomes the view before the crash.
+  function footSwitch(){ if(!sw) return; var f = sw.querySelector('[data-map="foot"]'), t = sw.querySelector('[data-map="treasure"]'); if(f) f.hidden = false; if(t) t.textContent = 'BEFORE THE CRASH'; }
+  if (has('orders') && map) { footSwitch(); map.classList.add('mh-snap'); showMap('foot'); void map.offsetWidth; setTimeout(function(){ map.classList.remove('mh-snap'); }, 50); }
+  // After the crash: the map zooms in close on the valley, an X marks the landing, and footprints lead to the Captain's orders.
+  function setOut(){ if(has('orders') || !map) return; footSwitch(); showMap('treasure');
+    map.classList.add('mh-onfoot'); map.classList.remove('mh-close');
+    later(700, function(){ showMap('foot');
+      later(2700, function(){ route('orders'); later(1500, function(){ reveal('orders'); later(500, function(){ open('orders'); }); }); }); }); }
   if (has('crash') && !has('orders') && map) {
     if ('IntersectionObserver' in window) {
       var io5 = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting && e.intersectionRatio >= 0.5) { io5.disconnect(); (window.maAfterLoading || function (f) { f(); })(function () { setTimeout(setOut, 600); }); } }); }, { threshold: [0, 0.5, 1] });
       io5.observe(map);
     } else setOut();
   }
-  if (has('unrolled')) showMap('treasure');
+  if (has('unrolled')) showMap(has('orders') ? 'foot' : 'treasure');
   else if (has('flight') && zoom) zoom.classList.add('mh-near-degate', 'mh-now');
   if (!has('flight') && map) {
     if (!calm && 'IntersectionObserver' in window) {
