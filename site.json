@@ -111,6 +111,12 @@
       "source": "bot:squarespace-game-crest-quest.html"
     },
     {
+      "slug": "game-matching-auras",
+      "url": "/matching-auras",
+      "title": "Game: Matching Auras (surprise, unlocks at 100,000 Act Two points)",
+      "source": "bot:squarespace-game-matching-auras.html"
+    },
+    {
       "slug": "sixteen",
       "url": "/sixteen-pieces",
       "title": "Sixteen Pieces (loot box 36 slide puzzle)",
