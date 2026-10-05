@@ -356,7 +356,13 @@ h1,h2,h3{text-wrap:balance}
     { label: '(Semi-)Aggressive Recruiting', send: '(Semi-)Aggressive Recruiting', detail: 'Who did you recruit? Their name and handle.',
       hint: 'A screenshot that shows they joined the hunt: their scorecard, a daily game share, a loot box claim, or their message to you. 50 points for each new hunter who joins on or after October 4 (no retroactive claims). Each hunter can only be claimed once.' },
     { label: 'The Balance Challenge', send: 'The Balance Challenge', pick: ['Where did you post it?', ['Instagram', 'TikTok', 'YouTube', 'Reddit', 'X', 'Threads', 'Facebook']], pick2: ['Is Cello\'s Gate one of the books?', ['Yes, Cello\'s Gate is in the stack', 'No']],
-      hint: 'A screenshot of your post balancing at least 10 books on your head, with #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK). 50 points per platform, one time only. +25 if Cello\'s Gate is one of the books.' }
+      hint: 'A screenshot of your post balancing at least 10 books on your head, with #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK). 50 points per platform, one time only. +25 if Cello\'s Gate is one of the books.' },
+    { label: 'A Library Said Yes', send: 'A Library Said Yes', detail: 'Which library? Its name and city.',
+      hint: 'The library\'s confirmation email saying they will shelve Cello\'s Gate. 100 points for every library.' },
+    { label: 'An Indie Bookstore Said Yes', send: 'An Indie Bookstore Said Yes', detail: 'Which bookstore? Its name and city.',
+      hint: 'The shop\'s confirmation email saying they will stock or buy Cello\'s Gate. 100 points for every indie bookstore.' },
+    { label: 'Featured Spot Bonus', send: 'Featured Spot Bonus', detail: 'Which library or bookstore? Its name and city.',
+      hint: 'A photo of Cello\'s Gate in its featured spot, or their email saying it will be featured. 100 bonus points per library or bookstore.' }
   ];
   TASKS = TASKS.filter(function (t) { return !t.from || Date.now() >= Date.parse(t.from); });
 
