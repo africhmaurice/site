@@ -173,20 +173,20 @@ const HUNT_QUOTE = [
   'That’s why I built this treasure hunt. Because I thought it would be fun (which is a cornerstone of my brand), I thought it would help us sell a lot of books, and I thought, by the end of it, a lot more people would know my name. We’ll see, huh? If nothing else, I know we’re all having a pretty damn good time.',
 ];
 const HUNT_QUOTE_BY = 'Maurice Africh, Author of “Cello’s Gate”';
-const STATS_DATE = 'September 30, 2026';
+const STATS_DATE = 'October 5, 2026';
 // [big number, what it means]
 const HIGHLIGHTS = [
   ['Reach', [
-    ['70×', 'Site traffic: 7,604 visits since the hunt started, about 690 a day.'],
-    ['2,223', 'New Goodreads “want to read” adds during the hunt.'],
-    ['252', 'Hunters from 10 countries: the U.S., the UK, Canada, Australia, India, Ireland, Austria, Estonia, Japan, and Poland.'],
+    ['90×', 'Site traffic: 15,377 visits since the hunt started, about 960 a day.'],
+    ['2,505', 'New Goodreads “want to read” adds during the hunt.'],
+    ['394', 'Hunters from 12 countries: the U.S., the UK, Canada, Australia, India, Estonia, Ireland, Austria, Japan, Poland, Norway, and Portugal.'],
   ]],
   ['Engagement', [
-    ['3,476', 'Tasks completed, about 315 a day.'],
-    ['3,396', 'Sweepstakes entries.'],
-    ['1,275', 'Loot boxes found.'],
-    ['919', 'Daily game wins, plus 369 riddles solved.'],
-    ['202,385', 'Crew points, more than five times the 40,000 Act One goal.'],
+    ['6,676', 'Tasks completed, about 415 a day.'],
+    ['6,515', 'Sweepstakes entries.'],
+    ['2,013', 'Loot boxes found.'],
+    ['1,771', 'Daily game wins, plus 1,183 riddles solved.'],
+    ['378,520', 'Crew points. Act One beat its 40,000 goal five times over, and Act Two is at 178,520 of its 200,000 goal.'],
   ]],
 ];
 const STATS = [
@@ -199,11 +199,11 @@ const HUNT_FACTS = [
   ['Dates', 'September 20 to November 1, 2026. It ends two days before “Cello’s Gate” comes out.'],
   ['Where', 'mauriceafrich.com/the-hunt'],
   ['Who', 'Free and open to everyone, everywhere. The Treasure and sweepstakes prizes are for U.S. and UK residents, 18 and older.'],
-  ['Players', '252 sky pirates from 10 countries: the U.S., the UK, Canada, Australia, India, Ireland, Austria, Estonia, Japan, and Poland.'],
-  ['Traffic', 'Site traffic is up about 70 times: 7,604 visits since the hunt started, about 690 a day, compared with about 10 a day in September before it.'],
-  ['Play', 'Tasks, riddles, clues, the daily Skyword game, a crossword, 101 hidden loot boxes, and a fan fiction contest.'],
+  ['Players', '394 sky pirates from 12 countries: the U.S., the UK, Canada, Australia, India, Estonia, Ireland, Austria, Japan, Poland, Norway, and Portugal.'],
+  ['Traffic', 'Site traffic is up about 90 times: 15,377 visits since the hunt started, about 960 a day, compared with about 10 a day in September before it.'],
+  ['Play', 'Tasks, riddles, clues, six daily bookish games (including Skyword, Blades & Brass, and Crest Quest), 101 hidden loot boxes, and a fan fiction contest.'],
   ['Story', 'Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!'],
-  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 202,385 points, more than five times the 40,000 Act One goal, unlocking 50 new loot boxes and the Golden Loot Box along the way.'],
+  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 378,520 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two is at 178,520 of its 200,000 goal.'],
   ['Acts', 'Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1). Winners are announced the day after each act ends.'],
   ['Treasure', 'The top three on the U.S. and UK leaderboards win The Treasure: signed editions, art prints, custom bookmarks, enamel pins, an advance audiobook, and more.'],
 ];
