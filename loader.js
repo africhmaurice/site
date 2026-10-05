@@ -528,7 +528,7 @@
       '#header .header-display-desktop .ma-hunt-dd .ma-mega{display:grid;grid-template-columns:auto auto;gap:16px;padding:16px;align-items:start}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-mega-links{display:flex;flex-direction:column}' +
       // the boxes flow into three columns so the dropdown fits on a laptop screen; a very short window scrolls inside it
-      '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups{display:block;columns:3;column-gap:12px;width:900px}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups{display:block;columns:3;column-gap:12px;width:840px}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-grp a.ma-hl{max-width:100%;white-space:normal!important}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups>.ma-grp{break-inside:avoid;margin:0 0 12px}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-mega{width:max-content;max-height:calc(100vh - 120px);overflow-y:auto;overscroll-behavior:contain}' +
@@ -540,6 +540,7 @@
       '#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-vote{color:#a2f590!important}#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-vote:hover{color:#ff4c0f!important}' +
       '#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-profile{background:#c1330a!important;border:1.5px solid #f3ead9;margin:4px 0!important;padding:9px 16px!important}#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-profile:hover{background:#e04a12!important;color:#fff!important}#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-profile svg{display:none}' +
       '#header .header-display-desktop .ma-hunt-dd{overflow:visible}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-grp a.ma-hl.mn-profile{white-space:nowrap!important;padding:9px 10px!important}' +
       // phone menu: the hunt phone menu's boxed groups
       '#header .header-menu .ma-ovgroup{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(243,234,217,.3);padding:14px 16px 16px;margin:10px auto;width:86%;box-sizing:border-box}' +
       '#header .header-menu .ma-ovgroup>span{font-family:\'Almarai\',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590}' +
@@ -600,14 +601,7 @@
       });
       out.appendChild(mega);
       huntList.innerHTML = ''; huntList.classList.add('ma-hunt-dd'); huntList.appendChild(out);
-      // The dropdown opens from the menu item's right edge and grows left; on a narrower screen it is nudged back
-      // so it never runs off the left side.
-      var item = huntList.closest('.header-nav-item');
-      var keepOn = function () {
-        huntList.style.transform = '';
-        requestAnimationFrame(function () { var r = huntList.getBoundingClientRect(); if (r.width && r.left < 16) huntList.style.transform = 'translateX(' + Math.ceil(16 - r.left) + 'px)'; });
-      };
-      if (item) { item.addEventListener('mouseenter', keepOn); item.addEventListener('focusin', keepOn); }
+      // (centered under its link like every other dropdown: centerDropdowns)
       // phone menu: the hunt phone menu's list, groups boxed and headed as on the hunt pages
       var panel = document.querySelector('.header-menu-nav [data-folder="' + HUNT + '"] .header-menu-nav-folder-content');
       if (!panel || !ov) return;
@@ -799,7 +793,7 @@
         css();
         var a = document.createElement('a');
         a.id = 'ma53-key'; a.href = '#'; a.className = 'sqs-svg-icon--wrapper'; a.setAttribute('aria-label', 'Key');
-        a.innerHTML = '<div><svg class="sqs-svg-icon--social" viewBox="0 0 64 64"><g transform="translate(32 32) rotate(-45) scale(1.22) translate(-32 -32)">' +
+        a.innerHTML = '<div><svg class="sqs-svg-icon--social" viewBox="0 0 64 64"><g transform="translate(31.15 31.45) rotate(-45) scale(1) translate(-32 -32)">' +
           '<path class="sqs-use--icon" fill-rule="evenodd" d="M15.5 32a8.5 8.5 0 1 0 17 0a8.5 8.5 0 1 0 -17 0zM20.5 32a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0z"/>' +
           '<path class="sqs-use--icon" d="M31.5 30H48.5V34H31.5zM41 34H44V39.5H41zM45.5 34H48.5V38H45.5z"/></g></svg></div>';
         a.addEventListener('click', function (e) {
@@ -861,6 +855,30 @@
     } catch (e) {}
   }
 
+  // Every main-menu dropdown opens centered under the link that opens it (Maurice, 2026-10-05), then is nudged
+  // back inside the screen (16px clear of each edge) when it is wider than the room around its link, like the big
+  // Treasure Hunt panel on a narrower screen.
+  function centerDropdowns() {
+    Array.prototype.forEach.call(document.querySelectorAll('#header .header-display-desktop .header-nav-item--folder'), function (item) {
+      if (item.__maCentered) return;
+      var title = item.querySelector('.header-nav-folder-title'), box = item.querySelector('.header-nav-folder-content');
+      if (!title || !box) return;
+      item.__maCentered = true;
+      var place = function () {
+        box.style.transform = '';
+        requestAnimationFrame(function () {
+          var t = title.getBoundingClientRect(), r = box.getBoundingClientRect(), vw = document.documentElement.clientWidth;
+          if (!r.width) return;
+          var shift = (t.left + t.width / 2) - (r.left + r.width / 2);
+          if (r.left + shift + r.width > vw - 16) shift -= r.left + shift + r.width - (vw - 16);
+          if (r.left + shift < 16) shift += 16 - (r.left + shift);
+          if (Math.abs(shift) >= 1) box.style.transform = 'translateX(' + Math.round(shift) + 'px)';
+        });
+      };
+      item.addEventListener('mouseenter', place); item.addEventListener('focusin', place);
+    });
+  }
+
   function scan() {
     lockedChest53();
     if (document.body) quietWord();
@@ -870,6 +888,7 @@
     huntDropdown();
     fixedBackgrounds();
     nativeReveal();
+    centerDropdowns();
     Array.prototype.forEach.call(document.querySelectorAll('[data-ma-page]'), mount);
   }
   window.__maLoader = scan;
