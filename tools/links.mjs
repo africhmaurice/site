@@ -21,7 +21,11 @@ const asset = (f) => BASE + (f.startsWith('../') ? 'assets/' + f.slice(3) : 'ass
 const bgUrl = (b) => /\.(jpe?g|png|webp)$/.test(b) ? asset(b) : BASE + 'assets/bg/' + b + '.webp';
 const lazy = ' loading="lazy" decoding="async"';
 
-const socials = D.socials.map((s) => `<a class="lk-soc" href="${esc(s.url)}"${ext(s.url)} data-link="${s.id}" data-section="socials" aria-label="${esc(s.label)}" title="${esc(s.label)}"><img src="${asset(s.icon)}" alt=""></a>`).join('');
+// a mailto link carries its address reversed and base64-encoded, put together only on tap, so scrapers reading the page miss it
+const scramble = (u) => Buffer.from(u.replace(/^mailto:/, '').split('').reverse().join(''), 'utf8').toString('base64');
+const socials = D.socials.map((s) => /^mailto:/.test(s.url)
+  ? `<a class="lk-soc" href="#email" data-m="${scramble(s.url)}" data-link="${s.id}" data-section="socials" aria-label="${esc(s.label)}" title="${esc(s.label)}"><img src="${asset(s.icon)}" alt=""></a>`
+  : `<a class="lk-soc" href="${esc(s.url)}"${ext(s.url)} data-link="${s.id}" data-section="socials" aria-label="${esc(s.label)}" title="${esc(s.label)}"><img src="${asset(s.icon)}" alt=""></a>`).join('');
 const C = D.copper;
 const copperCard = `<a class="lk-copper" href="${esc(C.url)}" data-link="${C.id}" data-section="top"><img src="${asset(C.img)}" alt="" width="360" height="360"><span><b>${esc(C.label)}</b><small>${esc(C.sub)}</small></span>${arrow}</a>`;
 
@@ -48,6 +52,7 @@ const sections = D.sections.map((s) => `<section class="lk-sec" id="lk-${s.id}">
 const N = D.newsletter;
 const signup = `<form class="lk-news" data-kit="${N.form}" novalidate><h2 class="lk-h">${esc(N.title)}</h2>
       <div class="lk-nrow"><input type="text" name="fields[first_name]" placeholder="First Name" aria-label="First Name" autocomplete="given-name"><input type="email" name="email_address" placeholder="Email Address" aria-label="Email Address" autocomplete="email" required><button type="submit">${esc(N.button)}</button></div>
+      <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden"><label for="lk-hp">Leave this empty</label><input type="text" id="lk-hp" tabindex="-1" autocomplete="off"></div>
       <p class="lk-nmsg" role="status" hidden></p></form>`;
 
 const page = `<!-- ============================================================
@@ -236,11 +241,15 @@ ${sections}
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   var fitT; window.addEventListener('resize', function () { clearTimeout(fitT); fitT = setTimeout(fit, 150); });
   // The newsletter signup sends the name and email to Kit, then says what Kit's own form says.
-  var news = root.querySelector('.lk-news');
+  var news = root.querySelector('.lk-news'), OPENED = Date.now();
   if (news) news.addEventListener('submit', function (e) {
     e.preventDefault();
     var email = news.querySelector('[name="email_address"]'), btn = news.querySelector('button'), msg = news.querySelector('.lk-nmsg');
     if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email.value.trim())) { msg.hidden = false; msg.textContent = 'Please enter your email address.'; email.focus(); return; }
+    // Spam guards: a person never fills the hidden field, and never signs up within 3 seconds of the page opening.
+    // A bot sees the usual thank-you, but nothing is sent to Kit.
+    var hp = news.querySelector('#lk-hp');
+    if ((hp && hp.value) || Date.now() - OPENED < 3000) { news.querySelector('.lk-nrow').hidden = true; msg.hidden = false; msg.textContent = ${JSON.stringify(N.done)}; return; }
     btn.disabled = true;
     fetch('https://app.kit.com/forms/' + news.getAttribute('data-kit') + '/subscriptions', { method: 'POST', body: new FormData(news), mode: 'no-cors' })
       .then(function () {
@@ -249,6 +258,13 @@ ${sections}
         px('track', 'Lead', { content_name: 'Newsletter', campaign: CMP });
       })
       .catch(function () { btn.disabled = false; msg.hidden = false; msg.textContent = 'That did not go through. Please try again.'; });
+  });
+  // The email icon: its address is unscrambled only when tapped.
+  Array.prototype.forEach.call(root.querySelectorAll('a[data-m]'), function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      try { location.href = 'mailto:' + atob(a.getAttribute('data-m')).split('').reverse().join(''); } catch (err) {}
+    });
   });
   // The Pre-Order tile scrolls to the store grid (every section is open).
   Array.prototype.forEach.call(root.querySelectorAll('[data-open]'), function (b) {
