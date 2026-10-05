@@ -265,6 +265,42 @@
       "url": "/links",
       "title": "Links (link-in-bio page with visit and tap stats)",
       "source": "pages/links.html (built by tools/links.mjs from tools/links.json)"
+    },
+    {
+      "slug": "icon-sea",
+      "url": "/icon-sea",
+      "title": "Icon Sea (loot box 38)",
+      "source": "pages/icon-sea.html"
+    },
+    {
+      "slug": "one-of-us",
+      "url": "/one-of-us",
+      "title": "One of Us (loot box 39)",
+      "source": "pages/one-of-us.html"
+    },
+    {
+      "slug": "fog-maze",
+      "url": "/fog-maze",
+      "title": "Lost in the Tunnels (loot box 41)",
+      "source": "pages/fog-maze.html"
+    },
+    {
+      "slug": "longest-word",
+      "url": "/longest-word",
+      "title": "The Longest Word (loot box 57)",
+      "source": "pages/longest-word.html"
+    },
+    {
+      "slug": "some-assembly-required",
+      "url": "/some-assembly-required",
+      "title": "Some Assembly Required (loot box 61 jigsaw)",
+      "source": "pages/some-assembly-required.html"
+    },
+    {
+      "slug": "the-highlight-box",
+      "url": "/the-highlight-box",
+      "title": "The Highlight Box (loot box 63)",
+      "source": "pages/the-highlight-box.html"
     }
   ],
   "staysInSquarespace": [

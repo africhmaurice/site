@@ -1,0 +1,34 @@
+<!-- ============================================================
+     THE HIGHLIGHT BOX - hidden page for loot box 63. Lives at /the-highlight-box.
+     Clue (Clues page, card #63): "#nomadlife". Maurice renamed one of his old Instagram story highlights
+     to "/the-highlight-box"; players who find it come here. Maurice (2026-10-04): just the loot box on the page,
+     centered and clickable. No words.
+     ============================================================ -->
+
+<style>
+#ma-highlight{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;overflow:hidden;
+  padding:clamp(120px,14vh,160px) 20px 80px;background:#0b170f;display:flex;align-items:center;justify-content:center}
+#ma-highlight *{box-sizing:border-box;border-radius:0}
+#ma-highlight .hl-box{display:block;padding:0;border:0;margin:0;background:transparent;cursor:pointer;line-height:0;transition:transform .2s ease}
+#ma-highlight .hl-box img{display:block;width:min(64vw,300px);height:auto}
+#ma-highlight .hl-box:hover,#ma-highlight .hl-box:focus-visible{transform:scale(1.04)}
+#ma-highlight .hl-box:focus-visible{outline:3px solid #ff4c0f;outline-offset:8px}
+@media (prefers-reduced-motion:reduce){#ma-highlight .hl-box{transition:none}}
+</style>
+<section id="ma-highlight" aria-label="The highlight box">
+  <button class="hl-box" type="button" aria-label="Open loot box 63"><img src="https://africhmaurice.github.io/leaderboard/loot/63.png" alt="Loot box 63"></button>
+</section>
+<script>
+(function(){
+  var d=document.getElementById('ma-highlight');if(!d)return;
+  // Fill the whole window: no Squarespace padding or colors around it.
+  var sec=d.closest('section.page-section');if(sec){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+  var k='RVFBSkJGN0I9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  d.querySelector('.hl-box').addEventListener('click',function(){
+    if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 63 opens.');return;}
+    location.href=atob(k).split('').reverse().join('');
+  });
+})();
+</script>

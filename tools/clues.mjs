@@ -3,6 +3,8 @@
 // To add a clue: add an entry, run this, then npm run publish.
 // A clue can carry options: { flash: an image shown for a split second on click, img: a picture clue, href: the clue is a link,
 //   hints: paid hints, bought one step at a time: [{ price, button, pics: [[words, picture], ...] } or { price, button, text }] }.
+// answer: an answer box on the card, { salt, hash, go }: hash is the SHA-256 (hex) of salt + the answer, lowercased with
+//   spaces and hyphens taken out. Right goes to go + '#' + the answer (base64url), and that page checks it again.
 // A paid hint is recorded by the Loot Boxes web app (action=hint; HINTS in lootbox.gs must list the same prices)
 // as a Games-tab row worth minus the price, which the twice-daily run takes off the player's points.
 // node tools/clues.mjs --next writes a preview copy (pages/lootbox-clue-next.html) and leaves the live page alone.
@@ -111,11 +113,41 @@ Yet again, you might try.`],
   [31, 'IT LITERALLY SAYS IT', { img: ART + 'clue-31.webp', alt: 'The confused side-eye meme', sticker: true, hints: [{ price: 25, button: 'Pay 25 points for a hint.', link: 'https://shop.mauriceafrich.com/', text: 'shop.mauriceafrich.com' }] }],
   [32, 'Okay? Byyyyeee!', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'square', pics: [['', ART + 'clue-32-hint-1.jpg'], ['', ART + 'clue-32-hint-2.jpg'], ['', ART + 'clue-32-hint-3.jpg']] }] }],
   [34, '', { fill: '#482d85', hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'the votes are in!' }] }],
+  // Box 35, The "Like and Subscribe!" Box on Zach's Bookshelf (Maurice, 2026-10-05).
+  [35, 'el greco, flipped en espanol, 9th fave of the 9th fave'],
   [36, 'Slide & Find'],
+  [38, 'Lost in a sea of icons, trapped inside of a well.'],
+  [39, 'From ink to parchment, one of us waits. Words are cheap, even free, when the mind never abates.'],
+  [41, 'Trapped in the tunnels beneath the ochre landscape.'],
+  // Box 44 is the link on Maurice's Reddit profile (Maurice, 2026-10-05).
+  [44, 'Mods Must Hate to See You Coming'],
+  // Box 45 is in a YouTube video description (Maurice, 2026-10-05; his wording, exactly).
+  [45, '032726 22K 5BIWICEMMTRA VD'],
+  // Box 46, The Ludicrous Loot Box: say "ludicrous" in the Trench Discord and Carl-bot DMs the box (Maurice, 2026-10-05).
+  [46, '“Get back, motherf*cker, you don’t know me like that!”'],
+  // Box 48, The Hodderscape Loot Box (Maurice, 2026-10-05).
+  [48, 'Hotter Escapes? Never heard of it, bruv.'],
   // Boxes 50, 51, and 52 all live in Stack the Colors (one per level), so one card covers all three.
   ['50–52', 'In celebration of Act 2 beginning, here are three loot boxes!', { button: ['Claim them', 'https://www.mauriceafrich.com/stack-the-colors'] }],
+  // Box 53, The Locked Loot Box (Maurice, 2026-10-04): a locked chest in the teal under the newsletter signup; its key hides on the home page.
+  [53, "Don't miss a single chapter."],
   // Aaron Hall's clue (Maurice, 2026-10-03).
   [55, 'Who gave that caveman a microphone!?'],
+  // PixelCait's box (Maurice, 2026-10-04; his wording, emoji included).
+  [56, 'Stark ⚔️ Library'],
+  // Box 57, The Longest Word (Maurice, 2026-10-04): answered right on the card, then on to /longest-word.
+  // Only the answer's fingerprint is here, never the word.
+  [57, "What's the longest word Maurice knows how to spell without looking up?", { answer: { salt: 'lw57:', hash: 'd3251280966d0626c672fd2a1bd87912fdbef23a6fb61987344ff26a99be97a1', go: '/longest-word' }, hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'lung disease' }] }],
+  // Box 60 is a Pin on Maurice's Sky Pirates of Imperia Pinterest board (Maurice, 2026-10-04).
+  [60, "the picture app & a task of the captain's making"],
+  // Box 62 sits in the red desert of the world map, under the treasure map (Maurice, 2026-10-04).
+  [62, "you've been here before, but the progression has spoiled your view"],
+  // Box 63: one of Maurice's old Instagram story highlights, renamed to "/the-highlight-box".
+  [63, '#nomadlife'],
+  // Behind the Saga deluxe on the link page (Maurice, 2026-10-04).
+  [64, '4 words: edeuaegiltxsehdlas'],
+  // Box 65 is the "loot boxes" link in the Discord section of the 10/5 newsletter. Same clue as 53 on purpose (Maurice, 2026-10-04).
+  [65, "Don't miss a single chapter."],
   [73, 'you already have it'],
 ];
 
@@ -134,6 +166,12 @@ const boards = CLUES.map(([n, text, o = {}]) => {
   if (o.href) body = `<a class="lc-text lc-link" href="${esc(o.href)}">${esc(text)}</a>`;
   if (o.button) body += `<a class="lc-btn" href="${esc(o.button[1])}">${esc(o.button[0])}</a>`;
   if (o.img) body += `<img class="lc-img${o.sticker ? ' lc-sticker' : ''}" src="${esc(o.img)}" alt="${esc(o.alt || '')}" loading="lazy">`;
+  // Answer box: the answer is checked in the browser against its fingerprint (see answerJs), never sent or stored.
+  if (o.answer) body += `
+    <form class="lc-answer" data-salt="${esc(o.answer.salt)}" data-hash="${esc(o.answer.hash)}" data-go="${esc(o.answer.go)}" autocomplete="off">
+      <div class="lc-answer-row"><input type="text" class="lc-answer-in" aria-label="Your answer to clue #${n}" placeholder="Your answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><button type="submit" class="lc-answer-go">Check</button></div>
+      <div class="lc-said" role="status" hidden></div>
+    </form>`;
   // Paid hints: each step's button shows once the step before it is bought. Pictures load only once
   // paid for (data-src), and a text hint is kept out of the page source (base64) until then.
   if (o.hints) body += `
@@ -259,11 +297,34 @@ const findsJs = `  <script>(function(){var s=document.getElementById('loot-clue'
     btn.onclick=function(){if(on){on=false;put(ON,null);paint();return;}var e=email();if(e)turnOn(e);else ask();};
     if(get(ON)==='1'&&email())turnOn(email());})();</script>`;
 
+// Answer boxes: the typed answer, lowercased with spaces and hyphens taken out, is fingerprinted (SHA-256 after the
+// card's salt) and compared with the card's hash. Right and wrong get the riddle cards' skulls (heart eyes, X eyes);
+// right then goes on to the card's page with the answer in the address, where the page checks it again.
+const answerJs = `  <script>(function(){var s=document.getElementById('loot-clue');if(!s||!window.crypto||!crypto.subtle)return;
+    var SKULL='<path fill="currentColor" d="M26 4C14.4 4 6 12 6 22.5c0 6.6 3.3 11.4 7.5 14V42a4 4 0 0 0 4 4h17a4 4 0 0 0 4-4v-5.5c4.2-2.6 7.5-7.4 7.5-14C46 12 37.6 4 26 4z"/><path fill="#2d1c53" d="M26 29.5l-3 5h6z"/><path stroke="#2d1c53" stroke-width="2.4" stroke-linecap="round" d="M21.5 39v5M26 39v5M30.5 39v5"/>';
+    var EYES={wrong:'<path stroke="#2d1c53" stroke-width="3.4" stroke-linecap="round" d="M13.5 17.5l8 8M21.5 17.5l-8 8M30.5 17.5l8 8M38.5 17.5l-8 8"/>',
+      right:'<path fill="#c11212" d="M17.5 27.5l-5.6-5.4a3.4 3.4 0 0 1 5.6-3.8 3.4 3.4 0 0 1 5.6 3.8zM34.5 27.5l-5.6-5.4a3.4 3.4 0 0 1 5.6-3.8 3.4 3.4 0 0 1 5.6 3.8z"/>'};
+    var SAY={right:'You got it!',wrong:'I\\u2019m so sorry, that\\u2019s not right.',nopaste:'No pasting allowed!'};
+    function norm(t){return String(t||'').toLowerCase().replace(/[\\s\\-\\u2010-\\u2015]+/g,'');}
+    function hex(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('');}
+    function b64url(t){return btoa(unescape(encodeURIComponent(t))).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/,'');}
+    Array.prototype.forEach.call(s.querySelectorAll('.lc-answer'),function(f){var i=f.querySelector('.lc-answer-in'),btn=f.querySelector('.lc-answer-go'),said=f.querySelector('.lc-said');
+      ['click','keydown'].forEach(function(ev){f.addEventListener(ev,function(e){e.stopPropagation();});});
+      function say(v){said.className='lc-said '+(v==='right'?'right':'wrong');said.innerHTML='<svg viewBox="0 0 52 50" aria-hidden="true">'+SKULL+(EYES[v]||EYES.wrong)+'</svg><b>'+SAY[v]+'</b>';said.hidden=false;}
+      ['paste','drop'].forEach(function(ev){i.addEventListener(ev,function(e){e.preventDefault();say('nopaste');});});
+      i.addEventListener('beforeinput',function(e){if(/^insertFrom(Paste|Drop)/.test(e.inputType||'')){e.preventDefault();say('nopaste');}});
+      f.addEventListener('submit',function(e){e.preventDefault();var a=norm(i.value);if(!a){i.focus();return;}btn.disabled=true;
+        crypto.subtle.digest('SHA-256',new TextEncoder().encode(f.getAttribute('data-salt')+a)).then(function(h){btn.disabled=false;
+          if(hex(h)!==f.getAttribute('data-hash')){say('wrong');i.focus();i.select();return;}
+          say('right');i.blur();btn.disabled=true;var go=f.getAttribute('data-go')+'#'+b64url(a);setTimeout(function(){location.href=go;},1100);
+        },function(){btn.disabled=false;});});
+    });})();</script>`;
+
 let h = readFileSync(NEXT ? LIVE_F : F, 'utf8');
 const a = h.indexOf('<section id="loot-clue">'); const b = h.indexOf('</section>', a);
 if (a < 0 || b < 0) throw new Error('clue section not found');
 const FINDS = `  <div class="lc-finds"><button type="button" class="lc-finds-btn" aria-pressed="false">Hide the clues I’ve found</button><div class="lc-finds-msg" aria-live="polite"></div></div>`;
-h = h.slice(0, a) + `<section id="loot-clue">\n${INTRO}\n${FINDS}\n  <div class="lc-grid">\n${boards}\n  </div>\n${flashJs}\n${nightJs}\n${hintJs}\n${findsJs}\n` + h.slice(b);
+h = h.slice(0, a) + `<section id="loot-clue">\n${INTRO}\n${FINDS}\n  <div class="lc-grid">\n${boards}\n  </div>\n${flashJs}\n${nightJs}\n${hintJs}\n${findsJs}\n${answerJs}\n` + h.slice(b);
 // Background: the darkest Green at 90% over the art, held still while the page scrolls (Maurice, 2026-09-30).
 h = h.replace(/(#loot-clue\{min-height:80vh;[^}]*background:)linear-gradient\(rgba\([^)]*\),rgba\([^)]*\)\)/, '$1linear-gradient(rgba(27,59,21,.9),rgba(27,59,21,.9))');
 
@@ -312,6 +373,19 @@ const css = `#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,min
 #loot-clue .lc-hint-text.lc-hint-link:hover{background:transparent;color:#fffffe}
 #loot-clue .lc-hint-pics img{width:100%;aspect-ratio:3/4;object-fit:cover;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}
 #loot-clue .lc-hint-text{font-family:'bebas-neue-pro','Almarai',sans-serif;font-weight:700;text-transform:uppercase;font-size:clamp(44px,5.4vw,70px);line-height:1;letter-spacing:.01em;color:#89fbcb;text-align:center}
+#loot-clue .lc-answer{width:100%;max-width:520px;margin:26px 0 0;display:flex;flex-direction:column;align-items:center;gap:14px;font-family:'Almarai',sans-serif;text-transform:none;letter-spacing:.02em}
+#loot-clue .lc-answer-row{width:100%;display:flex;gap:10px}
+#loot-clue .lc-answer-in{flex:1 1 auto;min-width:0;box-sizing:border-box;font-family:'Almarai',sans-serif;font-size:16px;font-weight:700;color:#0b170f;background:#fffffe;border:2px solid #fffffe;border-radius:0;padding:11px 16px;outline:none;margin:0}
+#loot-clue .lc-answer-in:focus{border-color:#482d85}
+#loot-clue .lc-answer-go{flex:none;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:0;padding:11px 22px;border:2px solid #fffffe;background:transparent;color:#fffffe;margin:0}
+#loot-clue .lc-answer-go:hover{background:#fffffe;color:#0b170f}
+#loot-clue .lc-answer-go[disabled]{opacity:.6;cursor:default}
+#loot-clue .lc-said{display:flex;align-items:center;gap:14px;box-sizing:border-box;max-width:100%;padding:14px 20px;background:rgba(11,23,15,.8);border:2px solid currentColor;border-radius:0;text-align:left}
+#loot-clue .lc-said[hidden]{display:none}
+#loot-clue .lc-said svg{flex:none;width:48px;height:46px}
+#loot-clue .lc-said b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(20px,1.8vw,25px);line-height:1.25;letter-spacing:.03em}
+#loot-clue .lc-said.wrong{color:#fd7547}#loot-clue .lc-said.right{color:#a2f590}
+@media (max-width:480px){#loot-clue .lc-answer-row{flex-direction:column}#loot-clue .lc-answer-go{width:100%}}
 @media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}#loot-clue .lc-hint-pics{gap:10px}}`;
 h = h.replace(/#loot-clue \.lc-grid\{[\s\S]*?@media \(max-width:860px\)\{[^\n]*\}\}\n?/, '');
 h = h.replace('@media (max-width:760px){#loot-clue{padding:130px 20px 70px}', css + '\n@media (max-width:760px){#loot-clue{padding:130px 20px 70px}');

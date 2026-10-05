@@ -509,6 +509,8 @@ window.maConfetti = function(from){
         <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">50 POINTS PER NEW HUNTER</div>
         <div data-task="balance" style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">The Balance Challenge</div><div style="font-size:16px;line-height:1.5;font-weight:400">In honor of Cello’s Gate, post a video or picture of you balancing at least 10 books on your head! This is a one-time only challenge, not daily! +25 bonus points if one of the books is Cello’s Gate (if you don’t have a copy of the book, photoshops are welcome—but you must not photoshop all ten books! Just one!)<br><br><span style="font-size:13px">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count.</span></div></div>
         <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">50 POINTS PER PLATFORM<br>+25 WITH CELLO’S GATE<br>(ONE TIME ONLY)</div>
+        <div data-task="pinterest-board" style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">Create a Sky Pirates of Imperia Pinterest Board</div><div style="font-size:16px;line-height:1.5;font-weight:400">Make a Pinterest board of Sky Pirates of Imperia art and pin at least 25 images to it. Submit the link to your board in the <a href="https://www.mauriceafrich.com/points" style="color:#c11212;font-weight:700;text-decoration:underline" class="hv7">Submit Points form</a>!<br><br><span style="font-size:13px">Your board needs at least 25 pins when you submit it. One board per person, one time only.</span></div></div>
+        <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">100 POINTS<br>(ONE TIME ONLY)</div>
         <div data-task="shelf-lib" style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">A Library Said Yes!</div><div style="font-size:16px;line-height:1.5;font-weight:400">Get a library to shelve “Cello’s Gate.” Every library that accepts your request to shelve it earns 100 points. Submit their confirmation email as proof!</div></div>
         <div style="border:1px solid #111;padding:26px 20px;display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:.03em;text-align:center">100 POINTS PER LIBRARY</div>
         <div data-task="shelf-shop" style="border:1px solid #111;padding:26px 28px;text-align:left"><div style="font-weight:700;font-size:21px;margin-bottom:8px">An Indie Bookstore Said Yes!</div><div style="font-size:16px;line-height:1.5;font-weight:400">Get an indie bookstore to stock “Cello’s Gate.” Every indie bookstore that accepts or promises to buy it earns 100 points. Submit their confirmation email as proof!</div></div>
@@ -650,6 +652,10 @@ if(location.hash==='#golden')window.__goldenOpen();
 @media (prefers-reduced-motion:reduce){#map .mh-routes .wipe{transition:none}}
 @media (max-width:560px){#map .mh-routes .dots{stroke-width:3.5;stroke-dasharray:0 9}}
 
+#map .mh-tun{position:absolute;width:max(3.4%,24px);aspect-ratio:1/1;height:auto;min-height:0;transform:translate(-50%,-50%);border:0;border-radius:0;padding:0;margin:0;background:transparent;box-shadow:none;opacity:0;cursor:default;z-index:2}
+#map .mh-dbox{position:absolute;width:max(3%,16px);aspect-ratio:1/1;height:auto;min-height:0;transform:translate(-50%,-50%) rotate(-9deg);border:0;border-radius:0;padding:0;margin:0;background:transparent;box-shadow:none;cursor:pointer;z-index:2;opacity:.6;filter:saturate(.8) sepia(.2)}
+#map .mh-dbox img{width:100%;height:100%;max-width:none;display:block;pointer-events:none}
+#map .mh-map.mh-treasure .mh-dbox{visibility:hidden;pointer-events:none}
 #map .mh-spot{position:absolute;width:clamp(38px,5vw,70px);height:clamp(38px,5vw,70px);transform:translate(-50%,-50%);border:0;padding:0;background:none;cursor:pointer;z-index:2}
 #map .mh-spot[hidden]{display:none}
 #map .mh-map{overflow:hidden}
@@ -715,6 +721,7 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
         <button type="button" class="mh-spot" id="mh-spot-pontune" data-pop="mh-pontune" style="left:80%;top:50.3%" aria-label="Pontune: Benji's Bargain Shop"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         <button type="button" class="mh-spot" id="mh-spot-gresnick" data-pop="mh-gresnick" hidden style="left:95.13%;top:61.50%" aria-label="The Gresnick Ocean: Flying Over the Gresnick Ocean"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         <button type="button" class="mh-spot" id="mh-spot-degate" data-pop="mh-degate" hidden style="left:18.44%;top:80.58%" aria-label="De'gaté: This Is Your Captain Speaking"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
+        <button type="button" class="mh-dbox" id="mh-dbox" style="left:65.00%;top:43.33%" data-k="WktGUUdKUEM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo"><img src="https://africhmaurice.github.io/leaderboard/loot/62.png" alt="Loot box 62" width="480" height="480" loading="lazy"></button>
         </div>
         <div class="mh-tmap" aria-label="The treasure map of De'gaté"><img src="https://africhmaurice.github.io/site/assets/maps/treasure-map-degate.jpg" alt="The treasure map of De'gaté" width="2400" height="1800" loading="lazy">
         <svg class="mh-routes mh-troutes" viewBox="0 0 1600 1200" preserveAspectRatio="none" aria-hidden="true"><defs><mask id="mh-mask-cathedral" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M640,-30 Q540,60 520,167 Q470,330 613,467" pathLength="1"/></mask><mask id="mh-mask-sword" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M613,467 Q640,650 733,793" pathLength="1"/></mask><mask id="mh-mask-skull" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M733,793 Q880,720 1025,777" pathLength="1"/></mask><mask id="mh-mask-crash" maskUnits="userSpaceOnUse" x="-100" y="-100" width="1800" height="1400"><path class="wipe" d="M1025,777 C1090,720 1030,690 1000,745 S925,815 947,854" pathLength="1"/></mask></defs><g id="mh-route-cathedral"><path class="dots" d="M640,-30 Q540,60 520,167 Q470,330 613,467" mask="url(#mh-mask-cathedral)"/></g><g id="mh-route-sword"><path class="dots" d="M613,467 Q640,650 733,793" mask="url(#mh-mask-sword)"/></g><g id="mh-route-skull"><path class="dots" d="M733,793 Q880,720 1025,777" mask="url(#mh-mask-skull)"/></g><g id="mh-route-crash"><path class="dots" d="M1025,777 C1090,720 1030,690 1000,745 S925,815 947,854" mask="url(#mh-mask-crash)"/></g></svg>
@@ -722,6 +729,7 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
         <button type="button" class="mh-spot" id="mh-spot-sword" data-pop="mh-sword" hidden style="left:45.81%;top:66.08%" aria-label="The Sword"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         <button type="button" class="mh-spot" id="mh-spot-skull" data-pop="mh-skull" hidden style="left:64.06%;top:64.75%" aria-label="The Goma Skull"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         <button type="button" class="mh-spot mh-crash" id="mh-spot-crash" data-pop="mh-crash" hidden style="left:59.19%;top:71.17%" aria-label="Shot Down"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
+        <button type="button" class="mh-tun" tabindex="-1" aria-hidden="true" style="left:56.58%;top:50.11%" data-k="ZXphbS1nb2YvbW9jLmhjaXJmYWVjaXJ1YW0ud3d3Ly86c3B0dGg="></button>
         </div>
         <div class="mh-foot" aria-label="On foot: the crew's trail from the crash"><div class="mh-foot-in">
           <img src="https://africhmaurice.github.io/site/assets/maps/treasure-map-degate.jpg" alt="The treasure map of De'gaté, close up on the valley" width="2400" height="1800" loading="lazy">
@@ -957,17 +965,15 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
       io5.observe(map);
     } else setOut();
   }
+  // The treasure map is the view everyone opens to. A browser that has not seen it yet gets the flight drawn in place
+  // on the world map and the unroll played once, when the map comes into view; after that it opens straight on the treasure map.
+  if (!has('flight')) { remember('flight'); route('degate-out', true); route('degate-in', true); reveal('degate'); }
   if (has('unrolled')) showMap(has('orders') ? 'foot' : 'treasure');
-  else if (has('flight') && zoom) zoom.classList.add('mh-near-degate', 'mh-now');
-  if (!has('flight') && map) {
+  else if (map) {
     if (!calm && 'IntersectionObserver' in window) {
-      var steps = []; for (var i = 0; i <= 20; i++) steps.push(i / 20);
-      var io = new IntersectionObserver(function (es) { es.forEach(function (e) {
-        var need = Math.min(e.boundingClientRect.height, window.innerHeight) * 0.6;
-        if (e.isIntersecting && e.intersectionRect.height >= need) { io.disconnect(); (window.maAfterLoading || function (f) { f(); })(function () { setTimeout(fly, 400); }); }
-      }); }, { threshold: steps });
+      var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting && e.intersectionRatio >= 0.35) { io.disconnect(); (window.maAfterLoading || function (f) { f(); })(function () { setTimeout(unroll, 300); }); } }); }, { threshold: [0, 0.35, 0.7] });
       io.observe(map);
-    } else fly();
+    } else unroll();
   }
 
   Array.prototype.forEach.call(document.querySelectorAll('#map .mh-spot'), function (b) {
@@ -1475,6 +1481,13 @@ document.addEventListener('play',function(e){if(e.target!==a&&e.target.tagName==
         <div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">Required: include #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK) in your post. Posts without the disclosure won't count. One time only per platform, not daily.</div>
         <div><a href="https://www.mauriceafrich.com/points" target="_blank" rel="noopener" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT POINTS!</a></div>
       </div>
+      <div class="tm-card" data-task="pinterest-board" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">CREATE A SKY PIRATES OF IMPERIA PINTEREST BOARD</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:8px 0 22px">100 POINTS (ONE TIME ONLY)</div>
+        <p style="font-size:17px;line-height:1.35;color:#ede9dc;margin:0 0 30px;flex:1">Make a Pinterest board of Sky Pirates of Imperia art and pin at least 25 images to it. Submit the link to your board!</p>
+        <div style="font-size:12.5px;line-height:1.5;color:#ede9dc;margin:-16px 0 22px;text-align:left">Your board needs at least 25 pins when you submit it. One board per person, one time only.</div>
+        <div><a href="https://www.mauriceafrich.com/points" target="_blank" rel="noopener" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">SUBMIT POINTS!</a></div>
+      </div>
       <div class="tm-card" data-task="shelf-lib" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
         <div style="font-weight:700;font-size:20px;letter-spacing:.08em;color:#fff">A LIBRARY SAID YES!</div>
         <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:8px 0 22px">100 POINTS PER LIBRARY</div>
@@ -1579,6 +1592,12 @@ document.addEventListener('play',function(e){if(e.target!==a&&e.target.tagName==
         <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 22px">3 LOOT BOXES + 25, 50, AND 75 POINTS</div>
         <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">In celebration of Act 2 beginning, here are three loot boxes!</p>
         <div><a href="https://www.mauriceafrich.com/stack-the-colors" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">CLAIM THEM</a></div>
+      </div>
+      <div class="tm-card" data-puzzle="assembly" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
+        <div style="font-family:'Atomic Marker',cursive;font-size:clamp(18px,1.53vw,22px);line-height:1.2;letter-spacing:.03em;color:#89fbcb;margin-bottom:8px">#22</div>
+        <div style="font-weight:700;font-size:16px;letter-spacing:.08em;color:#89fbcb;margin:0 0 22px">1 LOOT BOX</div>
+        <p style="font-style:italic;font-size:18px;line-height:1.45;color:#ede9dc;margin:0 0 30px;flex:1">Some Assembly Required</p>
+        <div><a href="https://www.mauriceafrich.com/some-assembly-required" style="display:inline-block;border:1.5px solid #f3ead9;border-radius:0;padding:12px 28px;font-weight:700;font-size:14px;letter-spacing:.08em;white-space:nowrap;color:#fff;text-decoration:none;transition:transform .15s ease" class="hv10">CLAIM IT</a></div>
       </div>
     </div>
     <div style="text-align:center;font-weight:700;font-style:italic;font-size:18px;color:#ede9dc;margin:-56px 0 90px">*SUBMIT YOUR ANSWER RIGHT ON THE RIDDLE CARD.</div>
@@ -1887,4 +1906,8 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
     new Image().src=art(8);
   }
 })();</script>
+<script>document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.mh-tun');if(b)location.href=atob(b.dataset.k).split('').reverse().join('');});</script>
+<script>document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.mh-dbox');if(b&&!b.closest('.mh-treasure'))location.href=atob(b.dataset.k).split('').reverse().join('');});</script>
+
+
 <!-- END OF FILE — if you cannot find this comment after pasting, the paste was truncated -->

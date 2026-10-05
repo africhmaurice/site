@@ -64,6 +64,10 @@ const page = `<!-- ============================================================
 #ma-links .lk-in{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
 #ma-links .lk-top{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
 #ma-links .lk-cover{display:block;width:min(64vw,250px);height:auto;margin:0 auto -4px;filter:drop-shadow(0 14px 22px rgba(0,0,0,.55))}
+#ma-links .lk-top{position:relative}
+#ma-links .lk-cover{position:relative;z-index:2;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#ma-links .lk-bk{position:absolute;top:0;left:50%;z-index:1;width:min(64vw,250px);aspect-ratio:1;transform:translateX(-50%);display:flex;align-items:center;justify-content:center}
+#ma-links .lk-bk img{display:block;width:60%;height:auto;cursor:pointer;filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))}
 #ma-links h1{margin:0;font-family:'Atomic Marker',Impact,sans-serif;font-weight:400;font-size:clamp(44px,12vw,64px);line-height:1.2;letter-spacing:.03em;color:var(--parch)!important}
 #ma-links .lk-line{margin:0;font-weight:800;font-size:clamp(15px,4.2vw,18px);line-height:1.45;letter-spacing:.02em;color:var(--parch)!important}
 #ma-links .lk-line + .lk-line{color:var(--green)!important;margin-top:-6px}
@@ -254,6 +258,54 @@ ${sections}
       s.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
+  // The book up top slides aside, but only to the left, and only for someone who tries.
+  (function () {
+    var bk = root.querySelector('.lk-cover'); if (!bk) return;
+    var top = bk.parentElement, k = 'WUpXN01XNEc9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+    var id = null, mode = 0, x0 = 0, y0 = 0, dx = 0, W = 0, done = false, tm;
+    bk.setAttribute('draggable', 'false');
+    bk.addEventListener('dragstart', function (e) { e.preventDefault(); });
+    function set(v) { bk.style.transform = v ? 'translateX(' + v + ')' : ''; }
+    function ease(v) { clearTimeout(tm); bk.style.transition = 'transform .35s ease'; set(v); tm = setTimeout(function () { bk.style.transition = ''; }, 400); }
+    function show() {
+      var spot = document.createElement('div'), img = document.createElement('img');
+      spot.className = 'lk-bk';
+      function go() { location.href = atob(k).split('').reverse().join(''); }
+      img.alt = 'Loot box 64'; img.tabIndex = 0; img.setAttribute('role', 'link');
+      img.addEventListener('click', go);
+      img.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+      img.src = 'https://africhmaurice.github.io/leaderboard/loot/64.png';
+      spot.appendChild(img); top.insertBefore(spot, top.firstChild);
+    }
+    function end(e) {
+      if (e.pointerId !== id) return;
+      id = null;
+      if (mode !== 1) { mode = 0; return; }
+      mode = 0;
+      if (e.type === 'pointerup' && -dx > W * 0.45) { done = true; ease('-90%'); show(); }
+      else ease('');
+    }
+    bk.addEventListener('pointerdown', function (e) {
+      if (done || id !== null || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      id = e.pointerId; x0 = e.clientX; y0 = e.clientY; dx = 0; mode = 0; W = bk.offsetWidth;
+      if (e.pointerType === 'mouse') e.preventDefault();
+    });
+    bk.addEventListener('pointermove', function (e) {
+      if (e.pointerId !== id) return;
+      var mx = e.clientX - x0, my = e.clientY - y0;
+      if (mode === 0) {
+        if (Math.abs(mx) < 8 && Math.abs(my) < 8) return;
+        if (Math.abs(mx) <= Math.abs(my)) { id = null; return; }
+        mode = 1; clearTimeout(tm); bk.style.transition = '';
+        try { bk.setPointerCapture(id); } catch (er) {}
+      }
+      e.preventDefault();
+      dx = Math.max(-W, Math.min(0, mx));
+      set(dx + 'px');
+    });
+    bk.addEventListener('pointerup', end);
+    bk.addEventListener('pointercancel', end);
+  })();
 })();
 </script>
 `;

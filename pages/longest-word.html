@@ -1,0 +1,174 @@
+<!-- ============================================================
+     THE LONGEST WORD - hidden page for loot box 57 (The Longest Word Loot Box). Lives at /longest-word.
+     Clue (Clues page, card #57): "What's the longest word Maurice knows how to spell without looking up?"
+     The card has its own answer box; a right answer comes here with the typed word in the address (#...).
+     Arriving without it (or with a wrong one), this page asks the same question with its own answer box.
+     The word itself is never in this page: answers are checked by a salted SHA-256 fingerprint, and the
+     claim link (plus how the word is split for wrapping) is AES-GCM locked with a key made from the word,
+     so nobody can open box 57 from the page source without knowing the word.
+     Once the word checks out: Maurice's sentence, then the word stamps in letter by letter (about 45ms each;
+     all at once with reduced motion), split into chunks joined by <wbr> so it wraps only between chunks.
+     After the last letter lands, loot box 57 drops in; clicking it opens the claim link.
+     Copy (question, verdicts) is Maurice's wording from 2026-10-04; verdicts match the riddle cards.
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+#ma-longword{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;overflow:hidden;
+  padding:clamp(120px,14vh,160px) clamp(20px,5vw,80px) 80px;background:#0b170f;color:#f3ead9;font-family:'Almarai',sans-serif;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+#ma-longword *{box-sizing:border-box;border-radius:0}
+#ma-longword [hidden]{display:none!important}
+#ma-longword .lw-ask,#ma-longword .lw-show{width:100%;display:flex;flex-direction:column;align-items:center;gap:clamp(24px,3.5vw,40px)}
+#ma-longword .lw-ask{max-width:980px;transition:opacity .4s ease-out}
+#ma-longword .lw-ask.out{opacity:0}
+#ma-longword .lw-q{margin:0;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(30px,4.6vw,60px);line-height:1.25;letter-spacing:.03em;color:#fffffe;text-wrap:balance}
+#ma-longword .lw-form{width:100%;max-width:640px;display:flex;gap:12px;margin:0}
+#ma-longword .lw-in{flex:1 1 auto;min-width:0;font-family:'Almarai',sans-serif;font-size:18px;font-weight:700;color:#0b170f;background:#fffffe;border:2px solid #fffffe;padding:14px 18px;outline:none;margin:0}
+#ma-longword .lw-in:focus{border-color:#7b4ee1}
+#ma-longword .lw-go{flex:none;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;background:transparent;border:2px solid #f3ead9;color:#fffffe;padding:14px 28px;margin:0;transition:background .15s ease,color .15s ease}
+#ma-longword .lw-go:hover,#ma-longword .lw-go:focus-visible{background:#f3ead9;color:#0b170f}
+#ma-longword .lw-go[disabled]{opacity:.6;cursor:default}
+#ma-longword .lw-said{display:flex;align-items:center;gap:16px;padding:16px 22px;background:#132219;border:2px solid currentColor;text-align:left;max-width:640px}
+#ma-longword .lw-said svg{flex:none;width:52px;height:50px}
+#ma-longword .lw-said b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(21px,2vw,28px);line-height:1.25;letter-spacing:.03em}
+#ma-longword .lw-said.wrong{color:#fd7547}
+#ma-longword .lw-said.right{color:#a2f590}
+#ma-longword .lw-say{margin:0;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(19px,2.2vw,30px);line-height:1.45;letter-spacing:.01em;color:#f3ead9;max-width:900px;text-wrap:balance}
+#ma-longword .lw-rule{width:72px;height:4px;background:#c53200;flex:none}
+#ma-longword .lw-word{margin:0;width:100%;max-width:1280px;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(30px,11.6vw,124px);line-height:1.32;letter-spacing:.04em;color:#fffffe;overflow-wrap:normal;word-break:normal;hyphens:none}
+#ma-longword .lw-c{white-space:nowrap;display:inline-block;padding:0 .02em}
+#ma-longword .lw-l{display:inline-block;opacity:0;transform:translateY(-.18em) scale(1.35)}
+#ma-longword .lw-l.on{opacity:1;transform:none;transition:opacity .12s ease-out,transform .16s cubic-bezier(.2,1.6,.4,1)}
+#ma-longword .lw-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(58vw,300px);visibility:hidden;opacity:0;transform:translateY(-40px)}
+#ma-longword .lw-box.on{visibility:visible;opacity:1;transform:none;transition:opacity .35s ease-out,transform .55s cubic-bezier(.25,1.5,.45,1)}
+#ma-longword .lw-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 34px rgba(197,50,0,.35))}
+#ma-longword .lw-box:hover img,#ma-longword .lw-box:focus-visible img{filter:drop-shadow(0 0 44px rgba(255,76,15,.55))}
+#ma-longword .lw-box:focus-visible{outline:3px solid #ff4c0f;outline-offset:8px}
+@media (max-width:560px){
+  #ma-longword .lw-form{flex-direction:column}
+  #ma-longword .lw-go{width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  #ma-longword .lw-l,#ma-longword .lw-l.on{opacity:1;transform:none;transition:none}
+  #ma-longword .lw-box.on,#ma-longword .lw-ask{transition:none}
+}
+</style>
+<section id="ma-longword" aria-label="The longest word">
+  <div class="lw-ask">
+    <h1 class="lw-q">What’s the longest word Maurice knows how to spell without looking up?</h1>
+    <form class="lw-form" autocomplete="off">
+      <input class="lw-in" type="text" aria-label="Your answer" placeholder="Your answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <button class="lw-go" type="submit">Check</button>
+    </form>
+    <div class="lw-said" role="status" hidden></div>
+  </div>
+  <div class="lw-show" hidden>
+    <p class="lw-say">The longest word I know how to spell is:</p>
+    <div class="lw-rule" aria-hidden="true"></div>
+    <p class="lw-word"></p>
+    <button class="lw-box" type="button" aria-label="Open loot box 57"><img src="https://africhmaurice.github.io/leaderboard/loot/57.png" alt="Loot box 57"></button>
+  </div>
+</section>
+<script>
+(function(){
+  var d=document.getElementById('ma-longword');if(!d)return;
+  // Fill the whole window: no Squarespace padding or colors around it.
+  var sec=d.closest('section.page-section');if(sec){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+
+  // The answer's fingerprint, and the locked claim link (only the right word opens it).
+  var SALT='lw57:',HASH='d3251280966d0626c672fd2a1bd87912fdbef23a6fb61987344ff26a99be97a1';
+  var IV='vCqI6+VuvhmHfEHM',CT='91HlVj086BmTOnd56LYxq5Q/tUrUsAT1j49nWZuwWtEaffrl7l3A7NnMGSsTlaBngp7D2rVNBLXElft9NyrnksfSFkOKdp4wxZ/09LABfSZYy7dsHtwUoA==';
+
+  var ask=d.querySelector('.lw-ask'),show=d.querySelector('.lw-show'),form=d.querySelector('.lw-form'),input=d.querySelector('.lw-in'),
+      go=d.querySelector('.lw-go'),said=d.querySelector('.lw-said'),wordEl=d.querySelector('.lw-word'),box=d.querySelector('.lw-box');
+  var still=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var claim='';
+
+  // Case doesn't matter, and neither do spaces or hyphens.
+  function norm(s){return String(s||'').toLowerCase().replace(/[\s\-‐-―]+/g,'');}
+  function bytes(s){return new TextEncoder().encode(s);}
+  function unb64(s){var b=atob(s),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a;}
+  function hex(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('');}
+  // Resolves to the unlocked {u: claim link, c: chunk lengths} for the right word, or null.
+  function unlock(w){
+    if(!w||!window.crypto||!crypto.subtle)return Promise.resolve(null);
+    return crypto.subtle.digest('SHA-256',bytes(SALT+w)).then(function(h){
+      if(hex(h)!==HASH)return null;
+      return crypto.subtle.digest('SHA-256',bytes(w))
+        .then(function(k){return crypto.subtle.importKey('raw',k,'AES-GCM',false,['decrypt']);})
+        .then(function(key){return crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(IV)},key,unb64(CT));})
+        .then(function(p){return JSON.parse(new TextDecoder().decode(p));});
+    }).catch(function(){return null;});
+  }
+
+  // Right and wrong get a skull, like the riddle cards: heart eyes for right, X eyes for wrong.
+  var SKULL='<path fill="currentColor" d="M26 4C14.4 4 6 12 6 22.5c0 6.6 3.3 11.4 7.5 14V42a4 4 0 0 0 4 4h17a4 4 0 0 0 4-4v-5.5c4.2-2.6 7.5-7.4 7.5-14C46 12 37.6 4 26 4z"/>'+
+    '<path fill="#2d1c53" d="M26 29.5l-3 5h6z"/><path stroke="#2d1c53" stroke-width="2.4" stroke-linecap="round" d="M21.5 39v5M26 39v5M30.5 39v5"/>';
+  var EYES={
+    wrong:'<path stroke="#2d1c53" stroke-width="3.4" stroke-linecap="round" d="M13.5 17.5l8 8M21.5 17.5l-8 8M30.5 17.5l8 8M38.5 17.5l-8 8"/>',
+    right:'<path fill="#c11212" d="M17.5 27.5l-5.6-5.4a3.4 3.4 0 0 1 5.6-3.8 3.4 3.4 0 0 1 5.6 3.8zM34.5 27.5l-5.6-5.4a3.4 3.4 0 0 1 5.6-3.8 3.4 3.4 0 0 1 5.6 3.8z"/>'
+  };
+  var SAY={right:'You got it!',wrong:'I’m so sorry, that’s not right.',nopaste:'No pasting allowed!'};
+  function verdict(v){said.className='lw-said '+(v==='right'?'right':'wrong');said.innerHTML='<svg viewBox="0 0 52 50" aria-hidden="true">'+SKULL+(EYES[v]||EYES.wrong)+'</svg><b>'+SAY[v]+'</b>';said.hidden=false;}
+  // Typed from memory only: pasting or dropping text into the box is refused.
+  ['paste','drop'].forEach(function(ev){input.addEventListener(ev,function(e){e.preventDefault();verdict('nopaste');});});
+  input.addEventListener('beforeinput',function(e){if(/^insertFrom(Paste|Drop)/.test(e.inputType||'')){e.preventDefault();verdict('nopaste');}});
+
+  // The word, built from the answer itself, in its wrap-friendly chunks.
+  function build(w,sizes){
+    wordEl.innerHTML='';wordEl.setAttribute('aria-label',w);
+    var at=0,letters=[];
+    sizes.forEach(function(n,j){
+      if(j)wordEl.appendChild(document.createElement('wbr'));
+      var c=document.createElement('span');c.className='lw-c';c.setAttribute('aria-hidden','true');
+      var t=w.slice(at,at+n);at+=n;
+      for(var i=0;i<t.length;i++){var s=document.createElement('span');s.className='lw-l';s.textContent=t.charAt(i);c.appendChild(s);letters.push(s);}
+      wordEl.appendChild(c);
+    });
+    return letters;
+  }
+  function play(letters){
+    function showBox(){box.classList.add('on');}
+    if(still){letters.forEach(function(s){s.classList.add('on');});showBox();return;}
+    var i=0;
+    (function next(){
+      if(i>=letters.length){setTimeout(showBox,350);return;}
+      letters[i++].classList.add('on');setTimeout(next,45);
+    })();
+  }
+  function reveal(w,o){
+    claim=o.u;var letters=build(w,o.c);
+    ask.hidden=true;show.hidden=false;
+    // Start once the display font is ready (or after a short wait), so letters don't land in a fallback face.
+    var started=false;function start(){if(started)return;started=true;setTimeout(function(){play(letters);},400);}
+    if(document.fonts&&document.fonts.load){document.fonts.load("400 40px 'Atomic Marker'").then(start,start);setTimeout(start,2500);}else{start();}
+  }
+
+  form.addEventListener('submit',function(e){
+    e.preventDefault();var w=norm(input.value);if(!w){input.focus();return;}
+    go.disabled=true;
+    unlock(w).then(function(o){
+      go.disabled=false;
+      if(!o){verdict('wrong');input.focus();input.select();return;}
+      verdict('right');input.blur();
+      setTimeout(function(){ask.classList.add('out');setTimeout(function(){reveal(w,o);},still?0:400);},1100);
+    });
+  });
+
+  // From the Clues page: the answer rides in the address (#...). Check it, then tidy the address.
+  var h=location.hash.slice(1),w='';
+  if(h){try{w=norm(decodeURIComponent(escape(atob(h.replace(/-/g,'+').replace(/_/g,'/')))));}catch(e){w='';}
+    try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}
+  if(w)ask.hidden=true;
+  unlock(w).then(function(o){if(o)reveal(w,o);else ask.hidden=false;});
+
+  box.addEventListener('click',function(){
+    if(!claim)return;
+    if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 57 opens.');return;}
+    location.href=claim;
+  });
+})();
+</script>

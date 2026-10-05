@@ -1,0 +1,316 @@
+<!-- ============================================================
+     SOME ASSEMBLY REQUIRED - loot box 61 (Riddles & Puzzles card on the Hunt page).
+     LOOT BOX in Almarai, uppercase, drawn in thin lines. Every letter is cut into 5 jigsaw pieces (35 in all),
+     scattered in the tray under the board. Drag a piece near its spot and it snaps in and locks.
+     The three O's are the same, so an O piece fits the matching spot in any O that is still open.
+     All 35 in place: the board flashes emerald and loot box 61 appears; clicking it opens the claim link.
+     The cuts, tab directions, and starting spots are new on every load.
+     Heading is Maurice's clue. DRAFT (Maurice to approve): the small "Shuffle" button.
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+html,body{margin:0 !important;padding:0 !important;background:#0b170f !important}
+#ma-assembly{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;padding:72px 20px 72px;
+  background:#0b170f;font-family:'Almarai',sans-serif;color:#f3ead9;text-align:center;overflow-x:hidden}
+#ma-assembly *{box-sizing:border-box;border-radius:0}
+#ma-assembly .sa-wrap{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:24px}
+#ma-assembly h1{margin:0;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,5.4vw,60px);line-height:1.2;letter-spacing:.04em;color:#fffffe;padding:0 4px}
+#ma-assembly .sa-shuffle{margin:0;padding:10px 18px;border:1px solid rgba(243,234,217,.4);background:none;color:#f3ead9;font-family:'Almarai',sans-serif;font-weight:700;
+  font-size:13px;line-height:1.2;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+#ma-assembly .sa-shuffle:hover{border-color:#89fbcb;color:#89fbcb}
+#ma-assembly .sa-shuffle:focus-visible{outline:2px solid #89fbcb;outline-offset:3px}
+#ma-assembly .sa-shuffle[disabled]{opacity:.35;cursor:default;border-color:rgba(243,234,217,.4);color:#f3ead9}
+#ma-assembly .sa-play{position:relative;width:100%;margin-top:8px}
+/* Board cells: faint outlines where the letters go */
+#ma-assembly .sa-cell{position:absolute;border:1px solid rgba(243,234,217,.24);z-index:1}
+/* Pieces: only the piece shape itself takes clicks, so the empty corners around tabs never block a neighbor */
+#ma-assembly .sa-pc{position:absolute;left:0;top:0;z-index:2;pointer-events:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#ma-assembly .sa-pc svg{display:block;width:100%;height:100%;overflow:visible;pointer-events:none}
+#ma-assembly .sa-pc .hit{pointer-events:all;cursor:grab;touch-action:none}
+#ma-assembly .sa-pc.drag .hit{cursor:grabbing}
+#ma-assembly .sa-pc.glide{transition:left .16s ease-out,top .16s ease-out}
+#ma-assembly .sa-pc .bg{fill:#0b170f}
+#ma-assembly .sa-pc .gl{fill:rgba(243,234,217,.1);stroke:#f3ead9;stroke-width:1.6px;stroke-linejoin:round}
+#ma-assembly .sa-pc .ln{fill:none;stroke:rgba(243,234,217,.62);stroke-width:1.2px;stroke-linejoin:round}
+#ma-assembly .sa-pc.drag .ln{stroke:#89fbcb}
+#ma-assembly .sa-pc.set .ln{stroke:rgba(243,234,217,.16)}
+#ma-assembly .sa-pc.set .hit{pointer-events:none}
+/* Solved: the board flashes emerald */
+#ma-assembly .sa-play.ok .sa-cell{border-color:#89fbcb}
+#ma-assembly .sa-play.ok .sa-pc .bg{animation:sa-flash 1.1s ease-out both}
+#ma-assembly .sa-play.ok .sa-pc .gl{stroke:#89fbcb}
+#ma-assembly .sa-play.ok .sa-pc .ln{stroke:rgba(137,251,203,0)}
+@keyframes sa-flash{0%{fill:#268e62}100%{fill:#132219}}
+/* The prize */
+#ma-assembly .sa-box{position:absolute;margin:0;padding:0;border:0;background:none;cursor:pointer;z-index:3;filter:drop-shadow(0 0 30px rgba(137,251,203,.4));animation:sa-rise .9s cubic-bezier(.2,.9,.3,1.2) both}
+#ma-assembly .sa-box img{display:block;width:100%;height:100%;object-fit:contain}
+#ma-assembly .sa-box:focus-visible{outline:2px solid #89fbcb;outline-offset:8px}
+#ma-assembly .sa-box[hidden]{display:none}
+@keyframes sa-rise{0%{transform:translateY(40px) scale(.7);opacity:0}100%{transform:none;opacity:1}}
+@media (max-width:640px){
+  #ma-assembly{padding:44px 16px 56px}
+  #ma-assembly .sa-wrap{gap:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  #ma-assembly .sa-pc.glide{transition:none}
+  #ma-assembly .sa-play.ok .sa-pc .bg{animation:none;fill:#1a5e41}
+  #ma-assembly .sa-box{animation:none}
+}
+</style>
+<section id="ma-assembly" aria-label="Some Assembly Required">
+  <div class="sa-wrap">
+    <h1>Some Assembly Required</h1>
+    <button class="sa-shuffle" type="button">Shuffle</button>
+    <div class="sa-play">
+      <button class="sa-box" type="button" hidden><img src="https://africhmaurice.github.io/leaderboard/loot/61.png" alt="Loot box 61"></button>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var d=document.getElementById('ma-assembly');if(!d)return;
+  // Fill the whole window: no Squarespace padding, colors, or header space around it.
+  var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+
+  var k='UE1BSERGM1g9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  var NS='http://www.w3.org/2000/svg',WORD=['L','O','O','T','B','O','X'],FONT="'Almarai',sans-serif",
+      play=d.querySelector('.sa-play'),box=d.querySelector('.sa-box'),shuf=d.querySelector('.sa-shuffle'),
+      calm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      U=100,           // a cell is U units tall; everything is drawn in units and scaled to fit the screen
+      SNAP=18,         // px: how close a piece has to land to click into place
+      shapes={},cells=[],pieces=[],s=1,solved=false,boardH=0,z=10,uid=0;
+
+  function rnd(a,b){return a+Math.random()*(b-a);}
+  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+  // ---------- the letters and their cuts ----------
+  var mc=document.createElement('canvas').getContext('2d');
+  function measure(L,size){mc.font='800 '+size+'px '+FONT;return mc.measureText(L);}
+  var fontSize,capH;
+  function setFont(){var m=measure('L',100);capH=m.actualBoundingBoxAscent||70;fontSize=100*(U*.66)/capH;}
+
+  // One classic jigsaw tab between a and b (a list of points). sign picks which side it bulges to; S sets its size.
+  var TAB=[[[.34,0],[.41,0],[.44,.06],[.4,.13]],[[.4,.13],[.34,.22],[.37,.34],[.5,.34]],[[.5,.34],[.63,.34],[.66,.22],[.6,.13]],[[.6,.13],[.56,.06],[.59,0],[.66,0]]];
+  function edge(ax,ay,bx,by,sign,S,jit){
+    var dx=bx-ax,dy=by-ay,len=Math.sqrt(dx*dx+dy*dy),ux=dx/len,uy=dy/len,nx=-uy,ny=ux,c=len/2+jit,out=[[ax,ay]];
+    function at(u,v){var t=c+(u-.5)*S,h=v*S*sign;return [ax+ux*t+nx*h,ay+uy*t+ny*h];}
+    TAB.forEach(function(q){
+      var p=q.map(function(r){return at(r[0],r[1]);});
+      for(var i=(out.length===1?0:1);i<=10;i++){var t=i/10,m=1-t;
+        out.push([m*m*m*p[0][0]+3*m*m*t*p[1][0]+3*m*t*t*p[2][0]+t*t*t*p[3][0],m*m*m*p[0][1]+3*m*m*t*p[1][1]+3*m*t*t*p[2][1]+t*t*t*p[3][1]]);}
+    });
+    out.push([bx,by]);return out;
+  }
+  // Cut a W x H cell into 5 pieces: rows of pieces (counts like [1,1,3]) or, when flip is set, columns.
+  function cut(W,counts,flip,k){
+    var A=flip?U:W,B=flip?W:U,n=counts.length,rects=[],segs={},i,j;
+    function key(t,p,a,b){return t+'|'+p.toFixed(2)+'|'+a.toFixed(2)+'|'+b.toFixed(2);}
+    function addSeg(t,p,a,b,depth){
+      var len=b-a,S=Math.min(len,depth*.95,46),jm=Math.max(0,len/2-.22*S-4),jit=rnd(-1,1)*Math.min(jm,len*.07);
+      S*=rnd(.9,1.05)*k;
+      segs[key(t,p,a,b)]=t==='H'?edge(a,p,b,p,Math.random()<.5?1:-1,S,jit):edge(p,a,p,b,Math.random()<.5?1:-1,S,jit);
+    }
+    var rowH=B/n,xs=[];
+    for(i=0;i<n;i++){xs[i]=[];for(j=0;j<=counts[i];j++)xs[i].push(A*j/counts[i]);
+      for(j=0;j<counts[i];j++)rects.push({x0:xs[i][j],x1:xs[i][j+1],y0:i*rowH,y1:(i+1)*rowH});
+      for(j=1;j<counts[i];j++)addSeg('V',xs[i][j],i*rowH,(i+1)*rowH,A/counts[i]);
+    }
+    for(i=0;i<n-1;i++){
+      var bp=xs[i].concat(xs[i+1]).map(function(v){return Math.round(v*100)/100;}).sort(function(a,b){return a-b;}).filter(function(v,q,arr){return q===0||v-arr[q-1]>.5;});
+      for(j=0;j<bp.length-1;j++)addSeg('H',(i+1)*rowH,bp[j],bp[j+1],rowH);
+    }
+    // Walk a side of a piece: borders are straight, inside cuts use the shared tab segment (reversed when walked backwards).
+    function side(t,p,a,b){
+      var lo=Math.min(a,b),hi=Math.max(a,b),list=[],q;
+      if((t==='H'&&(p<.01||p>B-.01))||(t==='V'&&(p<.01||p>A-.01)))return t==='H'?[[a,p],[b,p]]:[[p,a],[p,b]];
+      for(q in segs){var f=q.split('|');if(f[0]!==t||Math.abs(+f[1]-p)>.01)continue;var sa=+f[2],sb=+f[3];if(sa>=lo-.01&&sb<=hi+.01)list.push({a:sa,pts:segs[q]});}
+      list.sort(function(x,y){return x.a-y.a;});
+      var pts=[];list.forEach(function(x){pts=pts.concat(pts.length?x.pts.slice(1):x.pts);});
+      return a<b?pts:pts.reverse();
+    }
+    return rects.map(function(r){
+      var pts=side('H',r.y0,r.x0,r.x1);
+      pts=pts.concat(side('V',r.x1,r.y0,r.y1).slice(1),side('H',r.y1,r.x1,r.x0).slice(1),side('V',r.x0,r.y1,r.y0).slice(1,-1));
+      if(flip)pts=pts.map(function(p){return [p[1],p[0]];});
+      var bx0=1e9,by0=1e9,bx1=-1e9,by1=-1e9;
+      pts.forEach(function(p){bx0=Math.min(bx0,p[0]);by0=Math.min(by0,p[1]);bx1=Math.max(bx1,p[0]);by1=Math.max(by1,p[1]);});
+      var rr=flip?{x0:r.y0,x1:r.y1,y0:r.x0,y1:r.x1}:r;
+      return {d:'M'+pts.map(function(p){return p[0].toFixed(2)+' '+p[1].toFixed(2);}).join('L')+'Z',bx:bx0-1,by:by0-1,bw:bx1-bx0+2,bh:by1-by0+2,r:rr};
+    });
+  }
+  // Pick the cut layout where every piece holds a good share of the letter (so no piece is blank).
+  var LAYOUTS=[[2,3],[3,2],[1,1,3],[3,1,1],[1,3,1],[2,1,2],[1,2,2],[2,2,1],[2,1,1,1],[1,1,1,2],[1,2,1,1],[1,1,2,1]];
+  function makeShape(L){
+    var m=measure(L,fontSize),gl=m.actualBoundingBoxLeft||0,gr=m.actualBoundingBoxRight||m.width,pad=U*.12,
+        W=Math.round(gl+gr+2*pad),x=pad+gl,y=(U+capH*fontSize/100)/2,
+        cv=document.createElement('canvas'),c=cv.getContext('2d'),best=null,cands=[];
+    cv.width=W;cv.height=U;c.font='800 '+fontSize+'px '+FONT;c.fillStyle='#000';c.fillText(L,x,y);
+    var px=c.getImageData(0,0,W,U).data;
+    function ink(r){var n=0,t=0,i,j,x0=Math.ceil(r.x0+4),x1=Math.floor(r.x1-4),y0=Math.ceil(r.y0+4),y1=Math.floor(r.y1-4);
+      for(j=y0;j<y1;j+=2)for(i=x0;i<x1;i+=2){t++;if(px[(j*W+i)*4+3]>100)n++;}return t?n/t:0;}
+    LAYOUTS.forEach(function(cnt){[false,true].forEach(function(flip){
+      var A=flip?U:W,B=flip?W:U,n=cnt.length,ok=true,lo=1,i,j;
+      for(i=0;i<n;i++){if(B/n<28||A/cnt[i]<28)ok=false;
+        for(j=0;j<cnt[i];j++){var r={x0:A*j/cnt[i],x1:A*(j+1)/cnt[i],y0:B*i/n,y1:B*(i+1)/n};if(flip)r={x0:r.y0,x1:r.y1,y0:r.x0,y1:r.x1};lo=Math.min(lo,ink(r));}}
+      if(ok)cands.push({cnt:cnt,flip:flip,score:lo});
+    });});
+    cands.sort(function(a,b){return b.score-a.score;});
+    var good=cands.filter(function(c){return c.score>=cands[0].score*.8;});
+    best=good[Math.floor(Math.random()*good.length)]||{cnt:[2,3],flip:false};
+    // Tabs that would bump into each other get smaller until every piece is clear of its neighbors.
+    var parts,sc=1,tries,hits;
+    for(tries=0;tries<10;tries++){
+      parts=cut(W,best.cnt,best.flip,sc);hits=0;
+      if(!window.Path2D||!c.isPointInPath)break;
+      var paths=parts.map(function(p){return new Path2D(p.d);});
+      for(var yy=.73;yy<U&&!hits;yy+=1.37)for(var xx=.73;xx<W;xx+=1.37){var n=0;for(var q=0;q<paths.length;q++)if(c.isPointInPath(paths[q],xx,yy))n++;if(n>1){hits++;break;}}
+      if(!hits)break;sc*=.88;
+    }
+    return {L:L,W:W,tx:x,ty:y,parts:parts};
+  }
+
+  // ---------- drawing ----------
+  function el(n,a){var e=document.createElementNS(NS,n);for(var q in a)e.setAttribute(q,a[q]);return e;}
+  function makePiece(sh,i){
+    var p=sh.parts[i],id='sa-c'+(++uid),div=document.createElement('div'),svg=el('svg',{viewBox:p.bx+' '+p.by+' '+p.bw+' '+p.bh,'aria-hidden':'true'}),
+        defs=el('defs'),cp=el('clipPath',{id:id}),g=el('g',{'clip-path':'url(#'+id+')'});
+    div.className='sa-pc';div.setAttribute('data-l',sh.L);div.setAttribute('data-i',i);
+    cp.appendChild(el('path',{d:p.d}));defs.appendChild(cp);svg.appendChild(defs);
+    g.appendChild(el('path',{'class':'bg',d:p.d}));
+    var t=el('text',{'class':'gl',x:sh.tx,y:sh.ty,'font-size':fontSize,'font-weight':'800','font-family':FONT,'vector-effect':'non-scaling-stroke'});t.textContent=sh.L;
+    g.appendChild(t);svg.appendChild(g);
+    svg.appendChild(el('path',{'class':'ln',d:p.d,'vector-effect':'non-scaling-stroke'}));
+    // An invisible wide edge makes small pieces easier to grab with a thumb.
+    svg.appendChild(el('path',{'class':'hit',d:p.d,fill:'transparent',stroke:'transparent','stroke-width':'14','vector-effect':'non-scaling-stroke'}));
+    div.appendChild(svg);
+    return {el:div,L:sh.L,i:i,p:p,x:0,y:0,cell:null};
+  }
+
+  // ---------- layout ----------
+  function place(pc,x,y){pc.x=x;pc.y=y;pc.el.style.left=x+'px';pc.el.style.top=y+'px';}
+  function size(pc){pc.el.style.width=pc.p.bw*s+'px';pc.el.style.height=pc.p.bh*s+'px';}
+  function layout(){
+    if(play.clientWidth<100)return;
+    var W=play.clientWidth,gap=W<640?8:12,wordGap=W<640?gap:40,i,
+        ws=WORD.map(function(L){return shapes[L].W;}),one=ws.reduce(function(a,b){return a+b;},0),
+        r1=ws.slice(0,4).reduce(function(a,b){return a+b;},0),r2=ws.slice(4).reduce(function(a,b){return a+b;},0);
+    var h1=Math.min(150,(W-5*gap-wordGap)/one*U),rows=1;
+    if(h1<112){rows=2;h1=Math.min(150,(W-3*gap)/Math.max(r1,r2)*U);}
+    s=h1/U;
+    var lines=rows===1?[[0,1,2,3,4,5,6]]:[[0,1,2,3],[4,5,6]],y=0;
+    lines.forEach(function(line){
+      var tot=line.reduce(function(a,q){return a+ws[q]*s;},0)+(line.length-1)*gap+(rows===1?wordGap-gap:0),x=(W-tot)/2;
+      line.forEach(function(q,n){var c=cells[q];c.x=x;c.y=y;c.w=ws[q]*s;c.h=U*s;
+        c.el.style.left=x+'px';c.el.style.top=y+'px';c.el.style.width=c.w+'px';c.el.style.height=c.h+'px';
+        x+=c.w+gap+(rows===1&&n===3?wordGap-gap:0);});
+      y+=U*s+gap;
+    });
+    boardH=y-gap;
+    pieces.forEach(function(pc){size(pc);if(pc.cell)place(pc,pc.cell.x+pc.p.bx*s,pc.cell.y+pc.p.by*s);});
+    if(solved)showBox(true);else scatter();
+  }
+  // Scatter the loose pieces in the tray under the board, each in its own clear space.
+  function scatter(){
+    var W=play.clientWidth,top=boardH+36,g=10,loose=shuffle(pieces.filter(function(pc){return !pc.cell;})),area=0,H,round,ok,placed;
+    if(!loose.length){play.style.height=(boardH+12)+'px';return;}
+    loose.forEach(function(pc){area+=(pc.p.bw*s+g)*(pc.p.bh*s+g);});
+    var order=loose.slice().sort(function(a,b){return b.p.bw*b.p.bh-a.p.bw*a.p.bh;});
+    H=Math.max(140,area*1.6/W);
+    for(round=0;round<40;round++){
+      placed=[];ok=true;
+      for(var i=0;i<order.length&&ok;i++){
+        var pc=order[i],w=pc.p.bw*s,h=pc.p.bh*s,t,x,y,hit,j;
+        for(t=0;t<300;t++){
+          x=rnd(0,Math.max(0,W-w));y=rnd(top,top+Math.max(0,H-h));hit=false;
+          for(j=0;j<placed.length;j++){var q=placed[j];if(x<q.x+q.w+g&&x+w+g>q.x&&y<q.y+q.h+g&&y+h+g>q.y){hit=true;break;}}
+          if(!hit)break;
+        }
+        if(hit)ok=false;else placed.push({pc:pc,x:x,y:y,w:w,h:h});
+      }
+      if(ok)break;H*=1.1;
+    }
+    placed.forEach(function(q){place(q.pc,q.x,q.y);});
+    play.style.height=(top+H+8)+'px';
+  }
+  function showBox(now){
+    var W=play.clientWidth,bs=Math.min(260,W*.7),top=boardH+40;
+    box.style.width=box.style.height=bs+'px';box.style.left=(W-bs)/2+'px';box.style.top=top+'px';
+    play.style.height=(top+bs+12)+'px';box.hidden=false;
+    if(!now&&!calm){box.style.animation='none';void box.offsetWidth;box.style.animation='';}
+  }
+
+  // ---------- dragging ----------
+  function targets(pc){
+    var out=[];cells.forEach(function(c){if(c.L===pc.L&&!c.got[pc.i])out.push(c);});return out;
+  }
+  function tryLock(pc){
+    var best=null,bd=SNAP+1;
+    targets(pc).forEach(function(c){var tx=c.x+pc.p.bx*s,ty=c.y+pc.p.by*s,dd=Math.hypot(pc.x-tx,pc.y-ty);if(dd<bd){bd=dd;best=c;}});
+    if(!best)return false;
+    best.got[pc.i]=pc;pc.cell=best;
+    if(!calm){pc.el.classList.add('glide');setTimeout(function(){pc.el.classList.remove('glide');},200);}
+    place(pc,best.x+pc.p.bx*s,best.y+pc.p.by*s);
+    pc.el.classList.add('set');pc.el.style.zIndex=2;
+    if(pieces.every(function(q){return q.cell;}))win();
+    return true;
+  }
+  function win(){
+    solved=true;shuf.disabled=true;
+    setTimeout(function(){play.classList.add('ok');setTimeout(function(){showBox(false);},calm?100:900);},calm?0:180);
+  }
+  function bind(pc){
+    var drag=null,hit=pc.el.querySelector('.hit');
+    hit.addEventListener('pointerdown',function(e){
+      if(solved||pc.cell||(e.button&&e.button!==0))return;
+      e.preventDefault();
+      var pr=play.getBoundingClientRect();
+      drag={id:e.pointerId,ox:e.clientX-pr.left-pc.x,oy:e.clientY-pr.top-pc.y,cx:e.clientX,cy:e.clientY,raf:0};
+      try{hit.setPointerCapture(e.pointerId);}catch(err){}
+      pc.el.classList.add('drag');pc.el.style.zIndex=++z;
+    });
+    function moveTo(cx,cy){
+      var pr=play.getBoundingClientRect(),w=pc.p.bw*s,h=pc.p.bh*s;
+      place(pc,Math.max(0,Math.min(pr.width-w,cx-pr.left-drag.ox)),Math.max(0,Math.min(pr.height-h,cy-pr.top-drag.oy)));
+    }
+    // Near the top or bottom of the screen the page scrolls along, so a piece can travel the whole tray on a phone.
+    function edgeScroll(){
+      if(!drag)return;var v=0,m=56;
+      if(drag.cy<m)v=-Math.ceil((m-drag.cy)/5);else if(drag.cy>window.innerHeight-m)v=Math.ceil((drag.cy-(window.innerHeight-m))/5);
+      if(v){window.scrollBy(0,v);moveTo(drag.cx,drag.cy);drag.raf=requestAnimationFrame(edgeScroll);}else drag.raf=0;
+    }
+    hit.addEventListener('pointermove',function(e){
+      if(!drag||e.pointerId!==drag.id)return;
+      drag.cx=e.clientX;drag.cy=e.clientY;moveTo(e.clientX,e.clientY);
+      if(!drag.raf)drag.raf=requestAnimationFrame(edgeScroll);
+    });
+    function end(e){
+      if(!drag||e.pointerId!==drag.id)return;
+      if(drag.raf)cancelAnimationFrame(drag.raf);drag=null;
+      pc.el.classList.remove('drag');
+      tryLock(pc);
+    }
+    hit.addEventListener('pointerup',end);hit.addEventListener('pointercancel',end);
+  }
+
+  // ---------- start ----------
+  function build(){
+    setFont();
+    shapes={};WORD.forEach(function(L){if(!shapes[L])shapes[L]=makeShape(L);});
+    cells=WORD.map(function(L){var c=document.createElement('div');c.className='sa-cell';play.appendChild(c);return {L:L,el:c,got:[]};});
+    WORD.forEach(function(L,q){if(WORD.indexOf(L)!==q)return;var sh=shapes[L];
+      for(var i=0;i<sh.parts.length;i++){var n=WORD.filter(function(x){return x===L;}).length;
+        for(var r=0;r<n;r++){var pc=makePiece(sh,i);pieces.push(pc);play.appendChild(pc.el);bind(pc);}}});
+    layout();
+  }
+  box.addEventListener('click',function(){location.href=atob(k).split('').reverse().join('');});
+  shuf.addEventListener('click',function(){if(!solved)scatter();});
+  var lastW=0,rt=0;
+  window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){var w=play.clientWidth;if(Math.abs(w-lastW)<4)return;lastW=w;layout();},120);});
+  function go(){if(pieces.length)return;build();lastW=play.clientWidth;}
+  var fl=document.fonts&&document.fonts.load?document.fonts.load('800 100px Almarai'):null;
+  if(fl){var done=false,once=function(){if(!done){done=true;go();}};fl.then(once,once);setTimeout(once,3000);}else go();
+})();
+</script>

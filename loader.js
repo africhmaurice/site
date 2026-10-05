@@ -731,7 +731,126 @@
     });
   }
 
+  function quietWord() {
+    var dec = function (k) { return atob(k).split('').reverse().join(''); };
+    var phrase = dec('LGxsZVcgP2hjdGFjIGVoVA=='), tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), n;
+    while ((n = tw.nextNode())) {
+      var at = n.nodeValue.indexOf(phrase);
+      if (at < 0) continue;
+      var w = n.splitText(at + phrase.length - 5); w.splitText(4);
+      var s = document.createElement('span');
+      w.parentNode.replaceChild(s, w); s.appendChild(w);
+      s.addEventListener('click', function () { location.href = dec('YWVzLW5vY2kvbW9jLmhjaXJmYWVjaXJ1YW0ud3d3Ly86c3B0dGg='); });
+      return;
+    }
+  }
+
+  // Box 53, The Locked Loot Box (Maurice, 2026-10-04): "You find the chest first, when you find the chest, you get the
+  // key clue." The chest hides in the teal under the newsletter signup; the key hides in the home page's Meet Maurice
+  // social row ("one of these things doesn't belong here"). The key is kept in this browser only.
+  function lockedChest53() {
+    try {
+      var KEY = 'ma-key53', path = location.pathname.replace(/\/+$/, '') || '/';
+      if (path !== '/' && path !== '/newsletter') return;
+      var has = function () { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } };
+      var css = function () {
+        if (document.getElementById('ma53-css')) return;
+        var st = document.createElement('style'); st.id = 'ma53-css';
+        st.textContent = '#ma53-chest{position:absolute;top:calc(100% + 16px);right:6%;width:34px;height:34px;z-index:2;transition:width .45s cubic-bezier(.2,.8,.3,1.2),height .45s cubic-bezier(.2,.8,.3,1.2)}#ma53-chest.ma53-shut{width:96px;height:96px}' +
+          '#ma53-chest .ma53-box{display:block;position:relative;width:100%;height:100%;padding:0;margin:0;border:0;border-radius:0;background:none;box-shadow:none;cursor:pointer;-webkit-tap-highlight-color:transparent}' +
+          '#ma53-chest .ma53-box:focus-visible{outline:2px solid #89fbcb;outline-offset:4px}' +
+          '#ma53-chest img{display:block;width:100%;height:100%;opacity:.5;filter:hue-rotate(105deg) saturate(.85) brightness(.85);transition:opacity .45s ease,filter .45s ease}#ma53-chest.ma53-shut img{opacity:1;filter:none}' +
+          '#ma53-chest .ma53-lock{position:absolute;left:-8%;top:-8%;width:116%;height:116%;overflow:visible;pointer-events:none;opacity:0;transition:opacity .25s ease}' +
+          '#ma53-chest.ma53-shut .ma53-lock{opacity:1}' +
+          '#ma53-chest .ma53-pad{transition:transform .7s cubic-bezier(.5,0,.8,.4),opacity .7s ease}' +
+          '#ma53-chest .ma53-chains{transition:opacity .5s ease .25s}' +
+          '#ma53-chest.ma53-open .ma53-pad{transform:translateY(60px) rotate(18deg);opacity:0}' +
+          '#ma53-chest.ma53-open .ma53-chains{opacity:0}' +
+          '#ma53-chest.ma53-open img{opacity:1;mix-blend-mode:normal;filter:drop-shadow(0 0 14px #89fbcb) drop-shadow(0 0 4px #fffffe)}' +
+          '#ma53-chest.ma53-rattle .ma53-box{animation:ma53r .5s linear}' +
+          '@keyframes ma53r{0%,100%{transform:none}15%{transform:translateX(-4px) rotate(-5deg)}30%{transform:translateX(4px) rotate(4deg)}45%{transform:translateX(-3px) rotate(-3deg)}60%{transform:translateX(3px) rotate(2deg)}80%{transform:translateX(-1px)}}' +
+          '#ma53-chest .ma53-note{position:absolute;right:calc(100% + 14px);top:0;box-sizing:border-box;width:max-content;max-width:400px;margin:0;padding:20px 22px;background:#0b170f;color:#f3ead9;border:2px solid #f3ead9;border-radius:0;font-family:Almarai,sans-serif;font-weight:700;font-size:16px;line-height:1.4;letter-spacing:.01em;text-align:left;text-transform:none}' +
+          '#ma53-chest .ma53-note[hidden]{display:none}' +
+          '#ma53-toast{position:fixed;left:50%;bottom:28px;z-index:2147483000;box-sizing:border-box;max-width:calc(100vw - 32px);padding:20px 26px;background:#0b170f;color:#f3ead9;border:2px solid #89fbcb;border-radius:0;font-family:Almarai,sans-serif;font-weight:700;font-size:17px;line-height:1.4;transform:translate(-50%,16px);opacity:0;transition:opacity .35s ease,transform .35s ease;pointer-events:none}' +
+          '#ma53-toast.ma53-on{opacity:1;transform:translate(-50%,0)}' +
+          '#ma53-key{transition:background-color .17s ease-in-out,opacity .45s ease}#ma53-key.ma53-got{opacity:0;pointer-events:none}' +
+          '@media (max-width:640px){#ma53-chest{width:28px;height:28px;right:4%}#ma53-chest.ma53-shut{width:72px;height:72px}#ma53-chest .ma53-note{font-size:15px;padding:20px}}' +
+          '@media (prefers-reduced-motion:reduce){#ma53-chest.ma53-rattle .ma53-box{animation:none}#ma53-chest *,#ma53-toast,#ma53-key{transition-duration:.01s!important;transition-delay:0s!important}}';
+        document.head.appendChild(st);
+      };
+      if (path === '/') {
+        // The key: a fourth icon in the Meet Maurice social row (not the footer's), drawn and colored like the others.
+        if (has() || document.getElementById('ma53-key')) return;
+        var nav = Array.prototype.filter.call(document.querySelectorAll('.sqs-block-socialaccountlinks-content .sqs-svg-icon--list'), function (x) { return !x.closest('footer'); })[0];
+        if (!nav) return;
+        css();
+        var a = document.createElement('a');
+        a.id = 'ma53-key'; a.href = '#'; a.className = 'sqs-svg-icon--wrapper'; a.setAttribute('aria-label', 'Key');
+        a.innerHTML = '<div><svg class="sqs-svg-icon--social" viewBox="0 0 64 64"><g transform="translate(32 32) rotate(-45) scale(1.22) translate(-32 -32)">' +
+          '<path class="sqs-use--icon" fill-rule="evenodd" d="M15.5 32a8.5 8.5 0 1 0 17 0a8.5 8.5 0 1 0 -17 0zM20.5 32a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0z"/>' +
+          '<path class="sqs-use--icon" d="M31.5 30H48.5V34H31.5zM41 34H44V39.5H41zM45.5 34H48.5V38H45.5z"/></g></svg></div>';
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (a.classList.contains('ma53-got')) return;
+          try { localStorage.setItem(KEY, '1'); } catch (er) {}
+          a.classList.add('ma53-got');
+          setTimeout(function () { if (a.parentNode) a.parentNode.removeChild(a); }, 480);
+          var t = document.createElement('div'); t.id = 'ma53-toast'; t.setAttribute('role', 'status'); t.textContent = 'You found a key.';
+          var old = document.getElementById('ma53-toast'); if (old) old.parentNode.removeChild(old);
+          document.body.appendChild(t);
+          requestAnimationFrame(function () { requestAnimationFrame(function () { t.classList.add('ma53-on'); }); });
+          setTimeout(function () { t.classList.remove('ma53-on'); setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 500); }, 3600);
+        });
+        nav.appendChild(a);
+        return;
+      }
+      // The chest: under the signup form, inside the form's own grid cell so it follows the form at every width.
+      if (document.getElementById('ma53-chest')) return;
+      var form = document.querySelector('form.formkit-form'), cell = form && form.closest('.fe-block'), sec = cell && cell.closest('section');
+      if (!sec) { lockedChest53.n = (lockedChest53.n || 0) + 1; if (lockedChest53.n < 20) setTimeout(lockedChest53, 500); return; }
+      css();
+      if (getComputedStyle(cell).position === 'static') cell.style.position = 'relative';
+      var k = 'VDUzNkVHU009Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+      var c = document.createElement('div'); c.id = 'ma53-chest';
+      c.innerHTML = '<button type="button" class="ma53-box" aria-label="A locked chest"><img src="https://africhmaurice.github.io/leaderboard/loot/53.png" alt="Loot box 53" draggable="false">' +
+        '<svg class="ma53-lock" viewBox="0 0 100 100" aria-hidden="true"><g class="ma53-chains" fill="none" stroke-linecap="butt">' +
+        '<path d="M4 22L96 86M4 86L96 22" stroke="#0b170f" stroke-width="10" stroke-dasharray="11 4"/><path d="M4 22L96 86M4 86L96 22" stroke="#f3ead9" stroke-width="5" stroke-dasharray="11 4"/></g>' +
+        '<g class="ma53-pad"><path d="M40 58V46a10 10 0 0 1 20 0V58" fill="none" stroke="#0b170f" stroke-width="8"/><path d="M40 58V46a10 10 0 0 1 20 0V58" fill="none" stroke="#f3ead9" stroke-width="4"/>' +
+        '<rect x="32" y="54" width="36" height="28" fill="#c53200" stroke="#0b170f" stroke-width="3"/><circle cx="50" cy="65" r="3.6" fill="#0b170f"/><rect x="48.4" y="66" width="3.2" height="9" fill="#0b170f"/></g></svg></button>' +
+        '<p class="ma53-note" role="status" hidden>one of these things doesn’t belong here</p>';
+      cell.appendChild(c);
+      var box = c.firstChild, note = c.lastChild, extra = 0, busy = false;
+      // Breathing room: the note sits left of the chest; if the teal under the form is too short for the chest (and the
+      // note, once it shows), the section grows by just enough to keep 16px clear above the footer.
+      var fit = function () {
+        sec.style.paddingBottom = ''; extra = 0;
+        var cr = c.getBoundingClientRect(), sr = sec.getBoundingClientRect(), left = cr.left - 14 - Math.max(16, sr.left + 16);
+        note.style.maxWidth = Math.max(160, Math.min(400, left)) + 'px';
+        var bottom = Math.max(cr.bottom, note.hidden ? 0 : note.getBoundingClientRect().bottom);
+        var need = Math.ceil(bottom + 16 - sr.bottom);
+        if (need > 0) { extra = need; sec.style.paddingBottom = 'calc(' + (getComputedStyle(sec).paddingBottom || '0px') + ' + ' + need + 'px)'; }
+      };
+      fit();
+      window.addEventListener('resize', fit);
+      window.addEventListener('load', fit);
+      box.addEventListener('click', function () {
+        if (busy) return;
+        if (has()) {
+          busy = true;
+          c.classList.add('ma53-shut'); note.hidden = true;
+          setTimeout(function () { c.classList.add('ma53-open'); box.setAttribute('aria-label', 'An open chest'); }, still ? 0 : 280);
+          setTimeout(function () { location.href = atob(k).split('').reverse().join(''); }, still ? 700 : 1500);
+          return;
+        }
+        c.classList.remove('ma53-rattle'); void c.offsetWidth; c.classList.add('ma53-rattle', 'ma53-shut');
+        note.hidden = false; fit(); setTimeout(fit, 500);
+      });
+    } catch (e) {}
+  }
+
   function scan() {
+    lockedChest53();
+    if (document.body) quietWord();
     huntGift();
     mainMerch();
     dropLinktree();
