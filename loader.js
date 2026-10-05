@@ -701,7 +701,20 @@
   }
 
   // The green hunt menu (copied into each hunt page) gets the same Oracle's Gift dropdown, last before Pre-Order.
+  // The Adventure dropdown of the green hunt menu (copied into each hunt page) gets FIGHT THE LEVIAN (chapter 5,
+  // /the-river) right after CRASH LANDING, on desktop and in the phone menu (Maurice, 2026-10-05).
+  function huntRiver() {
+    Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav, #hunt-nav-ov'), function (nav) {
+      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/the-crash"]'), function (crash) {
+        var box = crash.parentNode;
+        if (box.querySelector('a[href$="/the-river"]')) return;
+        var a = crash.cloneNode(false); a.href = SITE + '/the-river'; a.textContent = 'FIGHT THE LEVIAN';
+        box.insertBefore(a, crash.nextSibling);
+      });
+    });
+  }
   function huntGift() {
+    huntRiver();
     var caret = '<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg>';
     Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
       if (nav.querySelector('.mn-gift')) return;
