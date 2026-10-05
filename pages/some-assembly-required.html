@@ -25,7 +25,7 @@ html,body{margin:0 !important;padding:0 !important;background:#0b170f !important
 /* Board cells: faint outlines where the letters go */
 #ma-assembly .sa-cell{position:absolute;border:1px solid rgba(243,234,217,.24);z-index:1}
 /* Pieces: only the piece shape itself takes clicks, so the empty corners around tabs never block a neighbor */
-#ma-assembly .sa-pc{position:absolute;left:0;top:0;z-index:2;pointer-events:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#ma-assembly .sa-pc{position:absolute;left:0;top:0;z-index:2;pointer-events:none;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 #ma-assembly .sa-pc svg{display:block;width:100%;height:100%;overflow:visible;pointer-events:none}
 #ma-assembly .sa-pc .hit{pointer-events:all;cursor:grab;touch-action:none}
 #ma-assembly .sa-pc.drag .hit{cursor:grabbing}
@@ -193,7 +193,7 @@ html,body{margin:0 !important;padding:0 !important;background:#0b170f !important
   function place(pc,x,y){pc.x=x;pc.y=y;pc.el.style.left=x+'px';pc.el.style.top=y+'px';}
   function size(pc){pc.el.style.width=pc.p.bw*s+'px';pc.el.style.height=pc.p.bh*s+'px';}
   function layout(){
-    if(play.clientWidth<100)return;
+    if(play.clientWidth<100)return;if(!shapes[WORD[0]])return;
     var W=play.clientWidth,gap=W<640?8:12,wordGap=W<640?gap:40,i,
         ws=WORD.map(function(L){return shapes[L].W;}),one=ws.reduce(function(a,b){return a+b;},0),
         r1=ws.slice(0,4).reduce(function(a,b){return a+b;},0),r2=ws.slice(4).reduce(function(a,b){return a+b;},0);
@@ -293,6 +293,9 @@ html,body{margin:0 !important;padding:0 !important;background:#0b170f !important
       tryLock(pc);
     }
     hit.addEventListener('pointerup',end);hit.addEventListener('pointercancel',end);
+    // ma-touchfix: phones ignore touch-action on SVG shapes, so stop the page from taking the gesture as a scroll.
+    hit.addEventListener('touchstart',function(e){if(!solved&&!pc.cell)e.preventDefault();},{passive:false});
+    hit.addEventListener('touchmove',function(e){if(drag)e.preventDefault();},{passive:false});
   }
 
   // ---------- start ----------
