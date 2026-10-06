@@ -57,6 +57,19 @@ html,body{margin:0 !important;padding:0 !important}
 #loot-clue .lc-hint-text.lc-hint-link:hover{background:transparent;color:#fffffe}
 #loot-clue .lc-hint-pics img{width:100%;aspect-ratio:3/4;object-fit:cover;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}
 #loot-clue .lc-hint-text{font-family:'bebas-neue-pro','Almarai',sans-serif;font-weight:700;text-transform:uppercase;font-size:clamp(44px,5.4vw,70px);line-height:1;letter-spacing:.01em;color:#89fbcb;text-align:center}
+#loot-clue .lc-answer{width:100%;max-width:520px;margin:26px 0 0;display:flex;flex-direction:column;align-items:center;gap:14px;font-family:'Almarai',sans-serif;text-transform:none;letter-spacing:.02em}
+#loot-clue .lc-answer-row{width:100%;display:flex;gap:10px}
+#loot-clue .lc-answer-in{flex:1 1 auto;min-width:0;box-sizing:border-box;font-family:'Almarai',sans-serif;font-size:16px;font-weight:700;color:#0b170f;background:#fffffe;border:2px solid #fffffe;border-radius:0;padding:11px 16px;outline:none;margin:0}
+#loot-clue .lc-answer-in:focus{border-color:#482d85}
+#loot-clue .lc-answer-go{flex:none;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:0;padding:11px 22px;border:2px solid #fffffe;background:transparent;color:#fffffe;margin:0}
+#loot-clue .lc-answer-go:hover{background:#fffffe;color:#0b170f}
+#loot-clue .lc-answer-go[disabled]{opacity:.6;cursor:default}
+#loot-clue .lc-said{display:flex;align-items:center;gap:14px;box-sizing:border-box;max-width:100%;padding:14px 20px;background:rgba(11,23,15,.8);border:2px solid currentColor;border-radius:0;text-align:left}
+#loot-clue .lc-said[hidden]{display:none}
+#loot-clue .lc-said svg{flex:none;width:48px;height:46px}
+#loot-clue .lc-said b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(20px,1.8vw,25px);line-height:1.25;letter-spacing:.03em}
+#loot-clue .lc-said.wrong{color:#fd7547}#loot-clue .lc-said.right{color:#a2f590}
+@media (max-width:480px){#loot-clue .lc-answer-row{flex-direction:column}#loot-clue .lc-answer-go{width:100%}}
 @media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}#loot-clue .lc-hint-pics{gap:10px}}
 @media (max-width:760px){#loot-clue{padding:130px 20px 70px}#loot-clue .lc-board{padding:48px 26px 44px}}
 </style>
@@ -474,6 +487,10 @@ Yet again, you might try.</div>
       </div>
     </div>
   </div>
+  <div class="lc-board" data-clue="33">
+    <div class="lc-num">#33</div>
+    <img class="lc-img" src="https://africhmaurice.github.io/site/assets/clues/clue-33.png" alt="Wield &amp; Woah" loading="lazy">
+  </div>
   <div class="lc-board" data-clue="34" style="background:#482d85;min-height:220px">
     <div class="lc-num">#34</div>
     
@@ -485,13 +502,100 @@ Yet again, you might try.</div>
       </div>
     </div>
   </div>
+  <div class="lc-board" data-clue="35">
+    <div class="lc-num">#35</div>
+    <div class="lc-text">el greco, flipped en espanol, 9th fave of the 9th fave</div>
+  </div>
   <div class="lc-board" data-clue="36">
     <div class="lc-num">#36</div>
     <div class="lc-text">Slide &amp; Find</div>
   </div>
+  <div class="lc-board" data-clue="38">
+    <div class="lc-num">#38</div>
+    <div class="lc-text">Lost in a sea of icons, trapped inside of a well.</div>
+  </div>
+  <div class="lc-board" data-clue="39">
+    <div class="lc-num">#39</div>
+    <div class="lc-text">From ink to parchment, one of us waits. Words are cheap, even free, when the mind never abates.</div>
+  </div>
+  <div class="lc-board" data-clue="41">
+    <div class="lc-num">#41</div>
+    <div class="lc-text">Trapped in the tunnels beneath the ochre landscape.</div>
+  </div>
+  <div class="lc-board" data-clue="44">
+    <div class="lc-num">#44</div>
+    <div class="lc-text">Mods Must Hate to See You Coming</div>
+  </div>
+  <div class="lc-board" data-clue="45">
+    <div class="lc-num">#45</div>
+    <div class="lc-text">032726 22K 5BIWICEMMTRA VD</div>
+  </div>
+  <div class="lc-board" data-clue="46">
+    <div class="lc-num">#46</div>
+    <div class="lc-text">“Get back, motherf*cker, you don’t know me like that!”</div>
+  </div>
+  <div class="lc-board" data-clue="48">
+    <div class="lc-num">#48</div>
+    <div class="lc-text">Hotter Escapes? Never heard of it, bruv.</div>
+  </div>
+  <div class="lc-board" data-clue="49">
+    <div class="lc-num">#49</div>
+    <div class="lc-text">Amateur Historian, Full-Time Scientist, Reader?</div>
+  </div>
   <div class="lc-board" data-clue="50–52">
     <div class="lc-num">#50–52</div>
     <div class="lc-text">In celebration of Act 2 beginning, here are three loot boxes!</div><a class="lc-btn" href="https://www.mauriceafrich.com/stack-the-colors">Claim them</a>
+  </div>
+  <div class="lc-board" data-clue="53">
+    <div class="lc-num">#53</div>
+    <div class="lc-text">Don't miss a single chapter.</div>
+  </div>
+  <div class="lc-board" data-clue="55">
+    <div class="lc-num">#55</div>
+    <div class="lc-text">Who gave that caveman a microphone!?</div>
+  </div>
+  <div class="lc-board" data-clue="56">
+    <div class="lc-num">#56</div>
+    <div class="lc-text">Stark ⚔️ Library</div>
+  </div>
+  <div class="lc-board" data-clue="57">
+    <div class="lc-num">#57</div>
+    <div class="lc-text">What's the longest word Maurice knows how to spell without looking up?</div>
+    <form class="lc-answer" data-salt="lw57:" data-hash="d3251280966d0626c672fd2a1bd87912fdbef23a6fb61987344ff26a99be97a1" data-go="/longest-word" autocomplete="off">
+      <div class="lc-answer-row"><input type="text" class="lc-answer-in" aria-label="Your answer to clue #57" placeholder="Your answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><button type="submit" class="lc-answer-go">Check</button></div>
+      <div class="lc-said" role="status" hidden></div>
+    </form>
+    <div class="lc-hint" data-clue="57">
+      <div class="lc-step" data-step="1" data-price="25" data-total="25">
+        <button type="button" class="lc-hint-btn">Pay 25 points for a hint.</button>
+        <div class="lc-hint-msg" aria-live="polite"></div>
+        <div class="lc-hint-out" hidden><div class="lc-hint-text" data-t="bHVuZyBkaXNlYXNl"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="lc-board" data-clue="60">
+    <div class="lc-num">#60</div>
+    <div class="lc-text">the picture app &amp; a task of the captain's making</div>
+  </div>
+  <div class="lc-board" data-clue="62">
+    <div class="lc-num">#62</div>
+    <div class="lc-text">you've been here before, but the progression has spoiled your view</div>
+  </div>
+  <div class="lc-board" data-clue="63">
+    <div class="lc-num">#63</div>
+    <div class="lc-text">#nomadlife</div>
+  </div>
+  <div class="lc-board" data-clue="64">
+    <div class="lc-num">#64</div>
+    <div class="lc-text">4 words: edeuaegiltxsehdlas</div>
+  </div>
+  <div class="lc-board" data-clue="65">
+    <div class="lc-num">#65</div>
+    <div class="lc-text">Don't miss a single chapter.</div>
+  </div>
+  <div class="lc-board" data-clue="73">
+    <div class="lc-num">#73</div>
+    <div class="lc-text">you already have it</div>
   </div>
   </div>
   <script>(function(){var s=document.getElementById('loot-clue');if(!s)return;
@@ -579,5 +683,24 @@ Yet again, you might try.</div>
       msg.querySelector('.lc-finds-go').onclick=go;i.onkeydown=function(ev){if(ev.key==='Enter')go();};}
     btn.onclick=function(){if(on){on=false;put(ON,null);paint();return;}var e=email();if(e)turnOn(e);else ask();};
     if(get(ON)==='1'&&email())turnOn(email());})();</script>
+  <script>(function(){var s=document.getElementById('loot-clue');if(!s||!window.crypto||!crypto.subtle)return;
+    var SKULL='<path fill="currentColor" d="M26 4C14.4 4 6 12 6 22.5c0 6.6 3.3 11.4 7.5 14V42a4 4 0 0 0 4 4h17a4 4 0 0 0 4-4v-5.5c4.2-2.6 7.5-7.4 7.5-14C46 12 37.6 4 26 4z"/><path fill="#2d1c53" d="M26 29.5l-3 5h6z"/><path stroke="#2d1c53" stroke-width="2.4" stroke-linecap="round" d="M21.5 39v5M26 39v5M30.5 39v5"/>';
+    var EYES={wrong:'<path stroke="#2d1c53" stroke-width="3.4" stroke-linecap="round" d="M13.5 17.5l8 8M21.5 17.5l-8 8M30.5 17.5l8 8M38.5 17.5l-8 8"/>',
+      right:'<path fill="#c11212" d="M17.5 27.5l-5.6-5.4a3.4 3.4 0 0 1 5.6-3.8 3.4 3.4 0 0 1 5.6 3.8zM34.5 27.5l-5.6-5.4a3.4 3.4 0 0 1 5.6-3.8 3.4 3.4 0 0 1 5.6 3.8z"/>'};
+    var SAY={right:'You got it!',wrong:'I\u2019m so sorry, that\u2019s not right.',nopaste:'No pasting allowed!'};
+    function norm(t){return String(t||'').toLowerCase().replace(/[\s\-\u2010-\u2015]+/g,'');}
+    function hex(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('');}
+    function b64url(t){return btoa(unescape(encodeURIComponent(t))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+    Array.prototype.forEach.call(s.querySelectorAll('.lc-answer'),function(f){var i=f.querySelector('.lc-answer-in'),btn=f.querySelector('.lc-answer-go'),said=f.querySelector('.lc-said');
+      ['click','keydown'].forEach(function(ev){f.addEventListener(ev,function(e){e.stopPropagation();});});
+      function say(v){said.className='lc-said '+(v==='right'?'right':'wrong');said.innerHTML='<svg viewBox="0 0 52 50" aria-hidden="true">'+SKULL+(EYES[v]||EYES.wrong)+'</svg><b>'+SAY[v]+'</b>';said.hidden=false;}
+      ['paste','drop'].forEach(function(ev){i.addEventListener(ev,function(e){e.preventDefault();say('nopaste');});});
+      i.addEventListener('beforeinput',function(e){if(/^insertFrom(Paste|Drop)/.test(e.inputType||'')){e.preventDefault();say('nopaste');}});
+      f.addEventListener('submit',function(e){e.preventDefault();var a=norm(i.value);if(!a){i.focus();return;}btn.disabled=true;
+        crypto.subtle.digest('SHA-256',new TextEncoder().encode(f.getAttribute('data-salt')+a)).then(function(h){btn.disabled=false;
+          if(hex(h)!==f.getAttribute('data-hash')){say('wrong');i.focus();i.select();return;}
+          say('right');i.blur();btn.disabled=true;var go=f.getAttribute('data-go')+'#'+b64url(a);setTimeout(function(){location.href=go;},1100);
+        },function(){btn.disabled=false;});});
+    });})();</script>
 </section>
 <!-- END OF FILE — if you cannot find this comment after pasting, the paste was truncated -->

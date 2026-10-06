@@ -112,6 +112,8 @@ Yet again, you might try.`],
   // The shop's "Find a loot box" button is box 31, and the button literally says it.
   [31, 'IT LITERALLY SAYS IT', { img: ART + 'clue-31.webp', alt: 'The confused side-eye meme', sticker: true, hints: [{ price: 25, button: 'Pay 25 points for a hint.', link: 'https://shop.mauriceafrich.com/', text: 'shop.mauriceafrich.com' }] }],
   [32, 'Okay? Byyyyeee!', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'square', pics: [['', ART + 'clue-32-hint-1.jpg'], ['', ART + 'clue-32-hint-2.jpg'], ['', ART + 'clue-32-hint-3.jpg']] }] }],
+  // Box 33, Lootfirejeff (Bloodfirejeff's Linktree); the clue is drawn in a metal font (Maurice, 2026-10-06).
+  [33, '', { img: ART + 'clue-33.png', alt: 'Wield & Woah' }],
   [34, '', { fill: '#482d85', hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'the votes are in!' }] }],
   // Box 35, The "Like and Subscribe!" Box on Zach's Bookshelf (Maurice, 2026-10-05).
   [35, 'el greco, flipped en espanol, 9th fave of the 9th fave'],
@@ -127,6 +129,8 @@ Yet again, you might try.`],
   [46, '“Get back, motherf*cker, you don’t know me like that!”'],
   // Box 48, The Hodderscape Loot Box (Maurice, 2026-10-05).
   [48, 'Hotter Escapes? Never heard of it, bruv.'],
+  // Box 49, Grey's Hidden Daddy Issues (Maurice, 2026-10-06).
+  [49, 'Amateur Historian, Full-Time Scientist, Reader?'],
   // Boxes 50, 51, and 52 all live in Stack the Colors (one per level), so one card covers all three.
   ['50–52', 'In celebration of Act 2 beginning, here are three loot boxes!', { button: ['Claim them', 'https://www.mauriceafrich.com/stack-the-colors'] }],
   // Box 53, The Locked Loot Box (Maurice, 2026-10-04): a locked chest in the teal under the newsletter signup; its key hides on the home page.
