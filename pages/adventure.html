@@ -268,6 +268,12 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #av .av-enc .q{font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 #av .av-enc .a{font-family:'Atomic Marker',cursive;font-size:clamp(24px,2.6vw,30px);line-height:1.15;margin:2px 0 4px}
 #av .av-enc .v{font-size:14px;color:var(--body)}
+#av .av-enc .v+.v{margin-top:8px}
+#av .av-enc .by{font-size:13px;color:var(--muted);margin:4px 0 6px}
+#av .av-enc .by b{color:var(--ink);overflow-wrap:anywhere}
+#av .av-draws .av-enc{align-items:flex-start}
+#av .av-story{margin:8px 0 0;font-size:17px;line-height:1.6;color:var(--body);max-width:65ch}
+#av .av-big.av-plain{font-family:'Almarai',sans-serif;font-weight:800;line-height:1.25;letter-spacing:.01em}
 #av .av-enc .crit{font-size:12px;letter-spacing:.1em;margin-top:2px}
 #av .av-enc .c20{color:#a2f590}
 #av .av-enc .c1{color:#fd7547}
@@ -306,6 +312,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #av .av-next p{color:var(--body);margin:0 auto;max-width:620px}
 
 @media (max-width:700px){
+  #av .av-draws .av-enc{flex-direction:column;gap:12px}
   #av .av-grid,#av .av-plan,#av .av-crew{grid-template-columns:1fr}
   #av .av-die{width:80px;height:80px}
   #av .av-die span{font-size:19px}
@@ -517,12 +524,12 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   <div class="av-band" data-theme="bone" style="--img:url('https://africhmaurice.github.io/site/assets/bg/dome-city-mist-as159145789.webp')">
     <div class="av-wrap">
       <div class="av-line">
-        <section class="av-ch" id="av-the-river" data-status="vote" data-closes="2026-10-05T20:00:00Z" data-count-action="advcount&vote=river_vote" data-after="SEE THE VOTE PAGE">
+        <section class="av-ch" id="av-the-river" data-status="done">
           <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
           <div class="av-card">
-            <p class="av-kick">CHAPTER 5 · DE'GATÉ · THE RIVER<span class="av-pill">VOTING NOW</span></p>
+            <p class="av-kick">CHAPTER 5 · DE'GATÉ · THE RIVER<span class="av-pill">DECIDED</span></p>
             <h2>Fight the Levian</h2>
-            <p class="av-lede">The crew sets out west on foot, across the valley toward the Sword, and reaches a river with no bridge. The Levian rises out of the river and lunges, and Hale's torch is already lit. Roll for the Levian, then roll for every member of the crew. When voting closes, one roll for each die is drawn at random from everyone's rolls, and I'll name whose roll it was.</p>
+            <p class="av-lede">The crew sets out west on foot, across the valley toward the Sword, and reaches a river with no bridge. The Levian rises out of the river and lunges, and Hale’s torches are already lit.</p>
       <div class="av-player" data-audio>
         <button type="button" class="av-pbtn" aria-label="Play THE CAPTAIN · SETTING OUT"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
         <div class="av-pmid"><div class="av-plabel">THE CAPTAIN · SETTING OUT</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
@@ -541,12 +548,29 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/river-3-the-river.m4a"></audio>
       </div>
       <details class="av-tx"><summary>Read the transcript</summary><div><p>[Rushing water, loud and close.]</p><p><b>Rune</b>Well, there's the water, innit.</p><p><b>Scarlett</b>That ain't a river, sugar. That's a stampede.</p><p><b>Hale</b>Too deep to wade. Current'll take you.</p><p><b>Sparrow</b>I could blink across. Probably. Maybe. If I can see the other side.</p><p><b>Orion</b>The Sword is just beyond it... [creepy music score] but that is nothing compared to the endless tribulations of the water we must first--</p><p><b>Captain</b>You're at a river? Perfect. Fill your canteens. Then get across it. And whatever you do, don't fall in.</p><p><b>Rune</b>Why? What's in it, bruv?</p><p><b>Captain</b>How should I know? I'm not there, you fuckin' clink-stain. That's why you don't fall in!</p><p><b>Orion</b>Something is moving beneath the surface.</p><p><b>Rune</b>Where?</p><p><b>Hale</b>There! [draws torch, hums as it glows]</p><p>[Monster roar! A Levian, a giant sea serpent trapped in the river, rises from the water and lunges.]</p></div></details>
-      <div class="av-live">
-        <div><div class="k">FRENS WHO HAVE VOTED</div><div class="v" data-count>…</div></div>
-        <div><div class="k">FOR VOTING</div><div class="v">+100</div></div>
-        <div><div class="k" data-when-k>VOTING CLOSES</div><div class="v sm" data-when>Monday, October 5 at 4 PM ET</div></div>
-      </div>
-      <a class="av-cta" data-vote-cta href="https://www.mauriceafrich.com/the-river">FIGHT THE LEVIAN</a>
+      <p class="av-lede">30 frens rolled for the Levian, the plan, and every member of the crew, and picked each one’s priority.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE LEVIAN FIASCO</h4><p class="av-story">A series of mishaps on this merry misadventure leads to an unlikely outcome...</p></div>
+            <div class="av-box wide"><h4>THE PLAN</h4><p class="av-big av-plain">After the First Round of Combat, Try to Befriend the Levian 👀</p><p class="av-note">11 of 30 votes.</p></div>
+            <div class="av-box wide"><h4>THE ROLLS <small>ONE ROLL DRAWN FROM THE FRENS' ROLLS FOR EACH DIE</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-levian" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-levian)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>2</span></div><div>
+              <p class="q">The Levian</p><p class="by">Rolled by <b>@aliciathebookdragon</b></p><p class="v">Oh, thank Ghan for Alicia, the Book Dragon! This Levian is the opposite of formidable. It's an old Levian with no teeth, so the worst it can do is fall on you.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-approach" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-approach)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>8</span></div><div>
+              <p class="q">The plan</p><p class="by">Rolled by <b>Nadia</b></p><p class="v">After getting the Levian's measure, Sparrow pops up in front of the giant creature, holding out her hand. I think she's forgotten what just happened because...</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-hale" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-hale)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>5</span></div><div>
+              <p class="q">Hale · Crest Knight</p><p class="by">Rolled by <b>@redheadsreadingsmut</b> · Priority: Attacking</p><p class="v">Hale draws his twin blades and tries to attack the beast, but trips over Rune's drones, which Rune sent over to protect the knight. He hits the water, his torches boiling the immediate area. Steam rises.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-scarlett" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-scarlett)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>18</span></div><div>
+              <p class="q">Scarlett Holster · Gunslinger</p><p class="by">Rolled by <b>@hellojolleyo</b> · Priority: Attacking</p><p class="v">Scarlett, the southern belle, drops to the ground, rifle scope to her eye, and fills this thing with button holes up its exposed belly. It roars in pain!</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-orion" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-orion)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>4</span></div><div>
+              <p class="q">Orion Squints · Oracle</p><p class="by">Rolled by <b>@dearthedays</b> · Priority: Healing</p><p class="v">In a sudden panic, Orion stabs Rune with a stim pack, sending him into a manic spree.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-rune" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-rune)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10</span></div><div>
+              <p class="q">Rune Overclock · Techtailor</p><p class="by">Rolled by <b>@dearthedays</b> · Priority: Defending</p><p class="v">Two shield plates and a shield dome deployment later, his gunner drone twitching as it flies away from the fallen Crest Knight, worried it might be in trouble, and he passes out from the adrenaline.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-sparrow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-sparrow)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>4</span></div><div>
+              <p class="q">Sparrow Zipmeister · Intangible</p><p class="by">Rolled by <b>@chris.varen</b> · Priority: Evading</p><p class="v">So when Sparrow pops up in front of the Levian, holding out a hand, the big serpent goes down to get a sniff, Sparrow giggles, but then, fast as lightning, the serpent snaps down on Sparrow, closing the Intangible inside its old, wrinkly, scaled mouth.</p><p class="v">Sparrow appears about ten meters back, cursing as she exits her portal. The Levian opens its now empty mouth to reveal wisps of black smoke but no dinner. And, confused, it dives back into the water and swims away.</p></div></div>
+            </div></div>
+          </div>
+      <a class="av-cta" href="https://www.mauriceafrich.com/the-river">SEE THE FULL RESULTS</a>
           </div>
         </section>
       </div>
