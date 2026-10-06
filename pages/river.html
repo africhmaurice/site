@@ -513,6 +513,27 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cr-one{grid-template-columns:minmax(0,320px);margin-top:20px}
 #rc .cr-kit h3 small{display:block;margin-top:6px;font-size:11px;letter-spacing:.14em;color:rgba(237,233,220,.72)}
 #rc .cr-kit h3{flex-direction:column;align-items:flex-start;justify-content:flex-end;min-height:4.6em}
+/* the results: drawn rolls with whose roll it was, the plan's votes, and each crew member's priority */
+#rc.cr.rv .cr-res-kit{border-color:rgba(243,234,217,.24)}
+#rc.cr.rv .cr-res-kit .q{color:#89fbcb}
+#rc .cr-res-kit .by{margin-top:6px;font-size:14px;line-height:1.45;color:rgba(237,233,220,.82)}
+#rc .cr-res-kit .by b{color:#fffffe;font-weight:800;overflow-wrap:anywhere}
+#rc .cr-res-kit .prio{margin-top:8px;font-weight:800;font-size:12px;line-height:1.4;letter-spacing:.12em;color:rgba(237,233,220,.72)}
+#rc .cr-res-kit .prio b{color:#3adb97}
+#rc .cr-res-kit .cr-todo{font-style:italic;font-weight:400;color:rgba(237,233,220,.5)}
+#rc .cr-res-kits.cr-one{grid-template-columns:minmax(0,420px);margin-bottom:24px}
+#rc.cr.rv .cr-win{border-left-color:#3adb97}
+#rc.cr.rv .cr-win .k{color:#89fbcb}
+#rc.cr.rv .cr-bar{background:rgba(137,251,203,.14)}
+#rc.cr.rv .cr-bar i{background:#1a5e41}
+#rc.cr.rv .cr-bars li.win .cr-bar i{background:#3adb97}
+#rc.cr.rv .cr-bars li.win .cr-bar-top b{color:#89fbcb}
+#rc.cr.rv .cr-res-kit{align-items:flex-start}
+#rc .cr-res-kit .a+.a{margin-top:10px}
+#rc .cr-story p{margin:0;max-width:65ch;font-size:17px;line-height:1.65}
+#rc .cr-story p+p{margin-top:14px}
+/* the plan the frens chose: big bold Almarai (Maurice, 2026-10-06) */
+#rc.cr.rv .cr-win h3{font-family:'Almarai',sans-serif!important;font-weight:800!important;font-size:clamp(28px,3.6vw,40px)!important;line-height:1.25!important;letter-spacing:.01em!important}
 </style>
 
 <div id="rc" class="cr rv">
@@ -555,7 +576,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 <script>
 (function () {
-  var DATA = {"_help":"Chapter 5 vote: Fight the Levian. Every fren rolls for the Levian and for each crew member. PREVIEW: opens/closes are placeholders until Maurice sets the window. Built by node scripts/build-crash.mjs river. Dice: from Chapter 5 on, one roll per die is drawn at random from every fren's rolls, and the results name whose roll it was (Maurice, 2026-10-04).","key":"river_vote","points":100,"opens":"2026-10-04T19:10:00Z","closes":"2026-10-05T20:00:00Z","title":["Fight the","Levian"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"The Levian rises out of the river and lunges, and Hale's torch is already lit. Roll for the Levian, then roll for every member of the crew. When voting closes, one roll for each die is drawn at random from everyone's rolls, and I'll name whose roll it was.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","questions":[{"id":"levian","kind":"rolls","kicker":"THE LEVIAN","title":"How dangerous is the Levian?","text":"Every fren rolls for the Levian. One roll is drawn at random from all of them: the higher it is, the harder the Levian fights.","items":[["levian","The Levian"]],"tiers":["","","","",""]},{"id":"approach","kind":"pickroll","kicker":"THE PLAN","title":"How do you approach the fight?","text":"Pick the plan, then roll for it. One roll is drawn at random from everyone's, and it decides how the plan goes.","options":[["Blitz","Let's make a bridge of this Levian's corpse! Most Dangerous, Most Daring"],["Run and Gun","Cautious but Involves Voluntarily Getting Chased"],["After the First Round of Combat, Try to Befriend the Levian 👀",""]],"dieLabel":"Roll for the plan"},{"id":"crew","kind":"rolls","kicker":"THE CREW","title":"How does the crew fight?","text":"Roll one die for each crew member. For each one, a single roll is drawn at random from everyone's rolls, and it decides how well they fight.","items":[["hale","Hale · Crest Knight"],["scarlett","Scarlett Holster · Gunslinger"],["orion","Orion Squints · Oracle"],["rune","Rune Overclock · Techtailor"],["sparrow","Sparrow Zipmeister · Intangible"]],"tiers":["","","","",""]},{"id":"priorities","kind":"grid","kicker":"THE CREW","title":"List the Priorities for Each Character","text":"Pick each crew member's top priority in the fight. Majority rules for each one.","items":[["prio_hale","Hale · Crest Knight"],["prio_scarlett","Scarlett Holster · Gunslinger"],["prio_orion","Orion Squints · Oracle"],["prio_rune","Rune Overclock · Techtailor"],["prio_sparrow","Sparrow Zipmeister · Intangible"]],"options":[["Attacking",""],["Healing",""],["Evading",""],["Defending",""],["Distracting",""]]}],"draw":true,"onAdventure":true};
+  var DATA = {"_help":"Chapter 5 vote: Fight the Levian. Every fren rolls for the Levian and for each crew member. PREVIEW: opens/closes are placeholders until Maurice sets the window. Built by node scripts/build-crash.mjs river. Dice: from Chapter 5 on, one roll per die is drawn at random from every fren's rolls, and the results name whose roll it was (Maurice, 2026-10-04).","key":"river_vote","points":100,"opens":"2026-10-04T19:10:00Z","closes":"2026-10-05T20:00:00Z","title":["Fight the","Levian"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"The Levian rises out of the river and lunges, and Hale’s torches are already lit. Voting is closed! See what happened!","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","questions":[{"id":"levian","kind":"rolls","kicker":"THE LEVIAN","title":"How dangerous is the Levian?","text":"Every fren rolls for the Levian. One roll is drawn at random from all of them: the higher it is, the harder the Levian fights.","items":[["levian","The Levian"]],"tiers":["","","","",""]},{"id":"approach","kind":"pickroll","kicker":"THE PLAN","title":"How do you approach the fight?","text":"Pick the plan, then roll for it. One roll is drawn at random from everyone's, and it decides how the plan goes.","options":[["Blitz","Let's make a bridge of this Levian's corpse! Most Dangerous, Most Daring"],["Run and Gun","Cautious but Involves Voluntarily Getting Chased"],["After the First Round of Combat, Try to Befriend the Levian 👀",""]],"dieLabel":"Roll for the plan"},{"id":"crew","kind":"rolls","kicker":"THE CREW","title":"How does the crew fight?","text":"Roll one die for each crew member. For each one, a single roll is drawn at random from everyone's rolls, and it decides how well they fight.","items":[["hale","Hale · Crest Knight"],["scarlett","Scarlett Holster · Gunslinger"],["orion","Orion Squints · Oracle"],["rune","Rune Overclock · Techtailor"],["sparrow","Sparrow Zipmeister · Intangible"]],"tiers":["","","","",""]},{"id":"priorities","kind":"grid","kicker":"THE CREW","title":"List the Priorities for Each Character","text":"Pick each crew member's top priority in the fight. Majority rules for each one.","items":[["prio_hale","Hale · Crest Knight"],["prio_scarlett","Scarlett Holster · Gunslinger"],["prio_orion","Orion Squints · Oracle"],["prio_rune","Rune Overclock · Techtailor"],["prio_sparrow","Sparrow Zipmeister · Intangible"]],"options":[["Attacking",""],["Healing",""],["Evading",""],["Defending",""],["Distracting",""]]}],"draw":true,"onAdventure":true,"badge":["#268e62","#1a5e41","#89fbcb"],"results":{"key":"river_vote","sealed":30,"draws":[{"id":"levian","name":"The Levian","roll":2,"by":"@aliciathebookdragon","from":31},{"id":"approach","name":"The plan","roll":8,"by":"Nadia","from":31},{"id":"hale","name":"Hale · Crest Knight","roll":5,"by":"@redheadsreadingsmut","from":31},{"id":"scarlett","name":"Scarlett Holster · Gunslinger","roll":18,"by":"@hellojolleyo","from":30},{"id":"orion","name":"Orion Squints · Oracle","roll":4,"by":"@dearthedays","from":31},{"id":"rune","name":"Rune Overclock · Techtailor","roll":10,"by":"@dearthedays","from":31},{"id":"sparrow","name":"Sparrow Zipmeister · Intangible","roll":4,"by":"@chris.varen","from":31}],"picks":[{"id":"approach","name":"How do you approach the fight?","counts":{"Blitz":9,"Run and Gun":10,"After the First Round of Combat, Try to Befriend the Levian 👀":11},"winner":"After the First Round of Combat, Try to Befriend the Levian 👀","tie":null},{"id":"prio_hale","name":"Hale · Crest Knight","counts":{"Attacking":17,"Healing":0,"Evading":1,"Defending":8,"Distracting":4},"winner":"Attacking","tie":null},{"id":"prio_scarlett","name":"Scarlett Holster · Gunslinger","counts":{"Attacking":15,"Healing":0,"Evading":2,"Defending":8,"Distracting":5},"winner":"Attacking","tie":null},{"id":"prio_orion","name":"Orion Squints · Oracle","counts":{"Attacking":0,"Healing":20,"Evading":5,"Defending":1,"Distracting":4},"winner":"Healing","tie":null},{"id":"prio_rune","name":"Rune Overclock · Techtailor","counts":{"Attacking":4,"Healing":1,"Evading":7,"Defending":10,"Distracting":8},"winner":"Defending","tie":null},{"id":"prio_sparrow","name":"Sparrow Zipmeister · Intangible","counts":{"Attacking":7,"Healing":3,"Evading":8,"Defending":5,"Distracting":7},"winner":"Evading","tie":null}],"outcomes":{"levian":"Oh, thank Ghan for Alicia, the Book Dragon! This Levian is the opposite of formidable. It's an old Levian with no teeth, so the worst it can do is fall on you.","approach":"After getting the Levian's measure, Sparrow pops up in front of the giant creature, holding out her hand. I think she's forgotten what just happened because...","hale":"Hale draws his twin blades and tries to attack the beast, but trips over Rune's drones, which Rune sent over to protect the knight. He hits the water, his torches boiling the immediate area. Steam rises.","scarlett":"Scarlett, the southern belle, drops to the ground, rifle scope to her eye, and fills this thing with button holes up its exposed belly. It roars in pain!","orion":"In a sudden panic, Orion stabs Rune with a stim pack, sending him into a manic spree.","rune":"Two shield plates and a shield dome deployment later, his gunner drone twitching as it flies away from the fallen Crest Knight, worried it might be in trouble, and he passes out from the adrenaline.","sparrow":"So when Sparrow pops up in front of the Levian, holding out a hand, the big serpent goes down to get a sniff, Sparrow giggles, but then, fast as lightning, the serpent snaps down on Sparrow, closing the Intangible inside its old, wrinkly, scaled mouth.\n\nSparrow appears about ten meters back, cursing as she exits her portal. The Levian opens its now empty mouth to reveal wisps of black smoke but no dinner. And, confused, it dives back into the water and swims away."},"story":"A series of mishaps on this merry misadventure leads to an unlikely outcome...","storyTitle":"The Levian Fiasco"},"resultsLive":true};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
@@ -1319,7 +1340,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   $('rc-close').textContent = when(CLOSES);
   if (closed) { $('rc-close-k').textContent = 'VOTING CLOSED'; $('rc-close-s').textContent = 'The votes are in.'; }
   $('rc-count').textContent = '…';
-  jsonp({ action: 'advcount', vote: DATA.key }, function (res) { $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
+  jsonp({ action: 'advcount', vote: DATA.key }, function (res) { if ($('cr-results')) return; $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
   if (notYet) { var wait = OPENS - Date.now(); if (wait < 2147483647) setTimeout(function () { location.reload(); }, wait + 1500); }
   render();
 
@@ -1336,10 +1357,11 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   // After the vote: the supplies (each kit's average), the winning direction, and any tie the Captain rolls for.
   var RES = DATA.results, CAPTAIN = (location.hash.match(/captain=([^&]+)/) || [])[1] || '';
   function d20badge(n, i) {
-    return '<div class="cr-d20"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="crg' + i + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs>' +
-      '<polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#crg' + i + ')" stroke="#c3a6ff" stroke-width="2.5" stroke-linejoin="round"/>' +
-      '<polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(195,166,255,.55)" stroke-width="1.5" stroke-linejoin="round"/>' +
-      '<path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(195,166,255,.45)" stroke-width="1.5" fill="none"/></svg><span>' + n + '</span></div>';
+    var c = DATA.badge || ['#7b4ee1', '#2d1c53', '#c3a6ff'];   // the badge's face colors and edge, per color story
+    return '<div class="cr-d20"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="crg' + i + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + c[0] + '"/><stop offset="1" stop-color="' + c[1] + '"/></linearGradient></defs>' +
+      '<polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#crg' + i + ')" stroke="' + c[2] + '" stroke-width="2.5" stroke-linejoin="round"/>' +
+      '<polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="' + c[2] + '" stroke-opacity=".55" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '<path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="' + c[2] + '" stroke-opacity=".45" stroke-width="1.5" fill="none"/></svg><span>' + n + '</span></div>';
   }
   function tieWinner(t, roll) { return t.options[roll % 2 === 1 ? 0 : 1]; }
   function showResults() {
@@ -1441,7 +1463,62 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       });
     };
   }
-  if (RES && (DATA.resultsLive || (PREVIEW && /[?&]results/.test(location.search)))) showResults();
+  // A drawn-roll vote (Chapter 5 on): each die shows the one roll drawn and whose it was, the plan shows its
+  // votes, and each crew member shows their drawn roll and the priority the frens picked for them.
+  function showDraws() {
+    ['cw-start', 'cr-questions', 'rc-orders'].forEach(function (id) { var el = $(id); if (el) el.hidden = true; });
+    $('rc-close-k').textContent = 'VOTING CLOSED'; $('rc-close-s').textContent = 'The votes are in.';
+    $('rc-count').textContent = fmt(RES.sealed);
+    var qs = {}, draw = {}, pick = {}, outs = RES.outcomes || {};
+    DATA.questions.forEach(function (q) { qs[q.id] = q; });
+    RES.draws.forEach(function (d) { draw[d.id] = d; });
+    RES.picks.forEach(function (p) { pick[p.id] = p; });
+    function outcome(id) {
+      return outs[id] ? paras(outs[id], 'a') : PREVIEW ? '<p class="a cr-todo">Outcome goes here.</p>' : '';
+    }
+    function paras(t, cls) { return String(t).split(/\n\s*\n/).map(function (p) { return '<p' + (cls ? ' class="' + cls + '"' : '') + '>' + esc(p.trim()) + '</p>'; }).join(''); }
+    function card(id, label, extra, i) {
+      var d = draw[id];
+      return '<article class="cr-res-kit">' + d20badge(d.roll, i) + '<div><p class="q">' + esc(label.toUpperCase()) + '</p>' +
+        '<p class="by">Rolled by <b>' + esc(d.by) + '</b></p>' + (extra || '') + outcome(id) + '</div></article>';
+    }
+    function bars(p, q) {
+      var total = 0, desc = {};
+      for (var k in p.counts) total += p.counts[k];
+      q.options.forEach(function (o) { desc[o[0]] = o[1]; });
+      return '<ol class="cr-bars">' + q.options.slice().sort(function (a, b) { return p.counts[b[0]] - p.counts[a[0]]; }).map(function (o) {
+        var n = p.counts[o[0]], pct = total ? Math.round(n / total * 100) : 0;
+        return '<li class="' + (p.winner === o[0] ? 'win' : '') + '"><div class="cr-bar-top"><b>' + esc(o[0]) + '</b><span>' + n + ' vote' + (n === 1 ? '' : 's') + '</span></div>' +
+          (desc[o[0]] ? '<p>' + esc(desc[o[0]]) + '</p>' : '') + '<div class="cr-bar"><i style="width:' + pct + '%"></i></div></li>';
+      }).join('') + '</ol>';
+    }
+    // the story of what happened leads, when there is one; the rolls follow
+    var html = RES.story ? '<section class="rc-step cr-story"><header><p class="rc-kick">THE VOTES ARE IN · ' + RES.sealed + ' FRENS VOTED</p><h2>' + esc(RES.storyTitle || 'What Happens') + '</h2></header>' + paras(RES.story, '') + '</section>' : '', n = 0;
+    DATA.questions.forEach(function (q) {
+      if (q.kind === 'rolls' && q.items.length === 1) {
+        html += '<section class="rc-step"><header><p class="rc-kick">' + (RES.story ? esc(q.kicker || '') : 'THE VOTES ARE IN · ' + RES.sealed + ' FRENS VOTED') + '</p><h2>' + esc(q.items[0][1]) + '</h2>' +
+          '<p>One roll was drawn at random from everyone’s rolls.</p></header><div class="cr-res-kits cr-one">' + card(q.items[0][0], q.items[0][1], '', n++) + '</div></section>';
+      } else if (q.kind === 'pickroll') {
+        var p = pick[q.id], desc = {};
+        q.options.forEach(function (o) { desc[o[0]] = o[1]; });
+        html += '<section class="rc-step"><header><p class="rc-kick">' + esc(q.kicker || '') + '</p><h2>' + esc(q.title) + '</h2></header>' +
+          (p.winner ? '<div class="cr-win"><p class="k">THE FRENS CHOSE</p><h3>' + esc(p.winner) + '</h3>' + (desc[p.winner] ? '<p>' + esc(desc[p.winner]) + '</p>' : '') + '</div>'
+            : '<div class="cr-win"><p class="k">THE FRENS ARE SPLIT</p><h3>Tie!</h3></div>') +
+          '<div class="cr-res-kits cr-one">' + card(q.id, 'Roll for the plan', '', n++) + '</div>' + bars(p, q) + '</section>';
+      } else if (q.kind === 'rolls') {
+        var grid = DATA.questions.filter(function (g) { return g.kind === 'grid'; })[0];
+        html += '<section class="rc-step"><header><p class="rc-kick">' + esc(q.kicker || '') + '</p><h2>' + esc(q.title) + '</h2>' +
+          '<p>One roll drawn for each crew member, and the top priority the frens picked for them.</p></header><div class="cr-res-kits">' +
+          q.items.map(function (it, i) {
+            var g = grid && pick[grid.items[i][0]], top = g && g.winner ? g.winner : g && g.tie ? g.tie.join(' / ') : '';
+            return card(it[0], it[1], top ? '<p class="prio">PRIORITY <b>' + esc(top) + '</b> · ' + g.counts[(g.winner || g.tie[0])] + ' votes</p>' : '', n++);
+          }).join('') + '</div></section>';
+      }
+    });
+    var box = document.createElement('div'); box.id = 'cr-results'; box.innerHTML = html;
+    $('rc-orders').insertAdjacentElement('afterend', box);
+  }
+  if (RES && (DATA.resultsLive || (PREVIEW && /[?&]results/.test(location.search)))) (RES.draws ? showDraws : showResults)();
 
 })();
 </script>
