@@ -1334,7 +1334,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   $('rc-close').textContent = when(CLOSES);
   if (closed) { $('rc-close-k').textContent = 'VOTING CLOSED'; $('rc-close-s').textContent = 'The votes are in.'; }
   $('rc-count').textContent = '…';
-  jsonp({ action: 'advcount', vote: DATA.key }, function (res) { $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
+  jsonp({ action: 'advcount', vote: DATA.key }, function (res) { if ($('cr-results')) return; $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
   if (notYet) { var wait = OPENS - Date.now(); if (wait < 2147483647) setTimeout(function () { location.reload(); }, wait + 1500); }
   render();
 
