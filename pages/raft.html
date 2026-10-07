@@ -1307,10 +1307,12 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     send(payload, function (res) {
       if (res && res.ok) {
         S.sealed = true; store(STORE, S);
-        if (res.count) $('rc-count').textContent = fmt(res.count);
-        $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.status === 'new' ? '+' + res.points + ' POINTS' : 'PLAN UPDATED') + '</b>' +
+        if (res.count && !DATA.raft) $('rc-count').textContent = fmt(res.count);
+        // the raft rolls pay nothing themselves: the pieces already paid 20 each (a fren asked about '0 points', 2026-10-07)
+        if (DATA.raft) $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.status === 'new' ? 'ROLLS SEALED' : 'ROLLS UPDATED') + '</b>Your rolls are in. The points come from your raft pieces, ' + DATA.raft.points + ' for each one you claimed, and they land on the leaderboard at the next tally.</p>';
+        else $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.status === 'new' ? '+' + res.points + ' POINTS' : 'PLAN UPDATED') + '</b>' +
           (res.status === 'new' ? 'Your plan is with the Captain. The points land on the leaderboard at the next tally.' : 'Your new plan replaces your old one.') + ' You can change your vote until it closes.</p>';
-        btn.textContent = 'SEAL MY PLAN'; btn.disabled = false;
+        btn.textContent = DATA.sealLabel || 'SEAL MY PLAN'; btn.disabled = false;
         return;
       }
       btn.disabled = false; btn.textContent = 'TRY AGAIN';
