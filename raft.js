@@ -112,7 +112,7 @@
     function free(x, y) {
       var x0 = Math.max(0, Math.floor((x - pad) / C)), x1 = Math.min(cols - 1, Math.floor((x + S + pad) / C)), y0 = Math.max(0, Math.floor((y - pad) / C)), y1 = Math.min(rows - 1, Math.floor((y + S + pad) / C));
       for (var gy = y0; gy <= y1; gy++) for (var gx = x0; gx <= x1; gx++) if (grid[gy * cols + gx]) return false;
-      for (var j = 0; j < placed.length; j++) { var c = placed[j]; if (Math.abs(c[0] - x) < 140 && Math.abs(c[1] - y) < 140) return false; }
+      for (var j = 0; j < placed.length; j++) { var c = placed[j]; if (Math.abs(c[0] - x) < 90 && Math.abs(c[1] - y) < 90) return false; }
       return true;
     }
     here.forEach(function (id, k) {
@@ -120,7 +120,7 @@
       // each piece aims for its own stretch of the page, then looks outward for an empty spot
       var aimY = top0 + (bottom0 - top0) * ((k + 0.15 + hash(id, 1) * 0.7) / here.length), aimX = 16 + (vw - 32 - S) * hash(id, 2);
       var spot = null;
-      for (var dy = 0; dy < 900 && !spot; dy += 24) {
+      for (var dy = 0; dy < 4000 && !spot; dy += 24) {
         for (var side = 0; side < 2 && !spot; side++) {
           var y = aimY + (side ? -dy : dy); if (y < top0 || y > bottom0) continue;
           for (var dx = 0; dx < vw && !spot; dx += 32) {
