@@ -892,6 +892,27 @@
     });
   }
 
+  // Menu words never spill out of their buttons (Maurice, 2026-10-07): a link or button whose words are wider than
+  // its box shrinks its type until they fit. Checked whenever a menu opens (they have no size while hidden).
+  var FIT_MENU = '#header .header-nav-folder-content a, #header .header-menu .ma-ovgroup a, #hunt-nav .mn-dd-in a, #hunt-nav .mn-cta, #hunt-nav-ov a';
+  function fitMenuText() {
+    Array.prototype.forEach.call(document.querySelectorAll(FIT_MENU), function (a) {
+      if (!a.offsetWidth || getComputedStyle(a).display === 'inline') return;
+      a.style.removeProperty('font-size');
+      var size = parseFloat(getComputedStyle(a).fontSize), n = 0;
+      while (a.scrollWidth > a.clientWidth + 1 && size > 9 && n++ < 40) { size -= 0.5; a.style.setProperty('font-size', size + 'px', 'important'); }
+    });
+  }
+  var fitQueued = false;
+  function queueFit() { if (fitQueued) return; fitQueued = true; requestAnimationFrame(function () { requestAnimationFrame(function () { fitQueued = false; fitMenuText(); }); }); }
+  function menuFit() {
+    if (window.__maMenuFit) return; window.__maMenuFit = true;
+    ['mouseover', 'focusin', 'click', 'touchend'].forEach(function (ev) { document.addEventListener(ev, function (e) {
+      if (e.target && e.target.closest && e.target.closest('#header, #hunt-nav, #hunt-nav-ov, .mn-burger')) { queueFit(); setTimeout(queueFit, 350); }
+    }, true); });
+    addEventListener('resize', queueFit);
+  }
+
   function scan() {
     lockedChest53();
     if (document.body) quietWord();
@@ -902,6 +923,7 @@
     fixedBackgrounds();
     nativeReveal();
     centerDropdowns();
+    menuFit();
     Array.prototype.forEach.call(document.querySelectorAll('[data-ma-page]'), mount);
   }
   window.__maLoader = scan;
