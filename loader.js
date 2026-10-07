@@ -720,7 +720,7 @@
   // The raft hunt (chapter 6, 2026-10-07): raft.js hides the pieces on every page; it checks its own hours.
   function raftHunt() {
     if (window.__raftLoaded) return; window.__raftLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'raft.js?v=5'; s.async = true; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = GH + 'raft.js?v=6'; s.async = true; document.head.appendChild(s);
   }
   function huntGift() {
     huntRiver();

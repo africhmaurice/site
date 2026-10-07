@@ -4,7 +4,7 @@
    fren to click it, and pays 20 points. A fren carries 5. The sheet keeps the count (raftstate, raftclaim). */
 (function () {
   if (window.__raft) return; window.__raft = true;
-  var R = {"foundAtLeast":95,"opens":"2026-10-07T16:12:00Z","closes":"2026-10-08T19:00:00Z","total":100,"perFren":5,"points":20,"kinds":[["plank","a plank"],["rope","a coil of rope"],["barrel","a barrel"],["oar","an oar"],["sail","a patch of sailcloth"]],"pages":{"/home":[5,10,13,29,54,56,57,67,90],"/the-hunt":[3,14,19,20,41,43,46,47,49,70,76,80,96],"/adventure":[24,33,40,48,58,69,73,75,77,99],"/leaderboard":[1,39,44,72],"/contests":[2,62,85,93],"/lootbox-clue":[16,17,18,64,71],"/rules":[25,31,37,38,65,95],"/preorder":[15,42,45,84,87,92],"/newsletter":[4,8,74],"/questions":[7,83,89],"/profile":[21,50,79],"/the-treasure":[6,28,32,34],"/red-city":[11,12,22,68],"/the-crew":[9,52,55,97],"/the-crash":[60,81,86,98],"/the-river":[36,51,61,66,94],"/links":[23,30,59],"/press-kit":[26,27,35],"/act-one-winners":[78,82,91],"/points":[88,100],"/privacy-policy":[53,63]},"names":{"/home":"Home","/the-hunt":"The Hunt","/adventure":"The Adventure So Far","/leaderboard":"Leaderboard","/contests":"Contests","/lootbox-clue":"Clues","/rules":"Official Rules","/preorder":"Pre-Order","/newsletter":"Newsletter","/questions":"Questions?","/profile":"Treasure Hunter Profile","/the-treasure":"The Treasure","/red-city":"Shopping in the Red City","/the-crew":"Meet the Crew","/the-crash":"Crash Landing","/the-river":"Fight the Levian","/links":"Links","/press-kit":"Press Room","/act-one-winners":"Act One Winners","/points":"Submit Points","/privacy-policy":"Privacy Policy"}};
+  var R = {"foundAtLeast":95,"spots":{"26":{"sel":"#cello","edge":"top-in","f":0.93},"27":{"sel":"form.formkit-form","edge":"right","f":0.8},"35":{"sel":"#hq-form","edge":"left","f":0.75},"52":{"sel":"#how-it-works .m-grid3 > div:nth-child(2)","edge":"bottom","f":0.88},"97":{"sel":"#uk","edge":"top","f":0.9}},"opens":"2026-10-07T16:12:00Z","closes":"2026-10-08T19:00:00Z","total":100,"perFren":5,"points":20,"kinds":[["plank","a plank"],["rope","a coil of rope"],["barrel","a barrel"],["oar","an oar"],["sail","a patch of sailcloth"]],"pages":{"/home":[5,10,13,26,29,54,56,57,67,90],"/the-hunt":[3,14,19,20,41,43,46,47,49,52,70,76,80,96],"/adventure":[24,33,40,48,58,69,73,75,77,99],"/leaderboard":[1,39,44,72],"/contests":[2,62,85,93],"/lootbox-clue":[16,17,18,64,71],"/rules":[25,31,37,38,65,95,97],"/preorder":[15,42,45,84,87,92],"/newsletter":[4,8,27,74],"/questions":[7,35,83,89],"/profile":[21,50,79],"/the-treasure":[6,28,32,34],"/red-city":[11,12,22,68],"/the-crew":[9,55],"/the-crash":[60,81,86,98],"/the-river":[36,51,61,66,94],"/links":[23,30,59],"/act-one-winners":[78,82,91],"/points":[88,100],"/privacy-policy":[53,63]},"names":{"/home":"Home","/the-hunt":"The Hunt","/adventure":"The Adventure So Far","/leaderboard":"Leaderboard","/contests":"Contests","/lootbox-clue":"Clues","/rules":"Official Rules","/preorder":"Pre-Order","/newsletter":"Newsletter","/questions":"Questions?","/profile":"Treasure Hunter Profile","/the-treasure":"The Treasure","/red-city":"Shopping in the Red City","/the-crew":"Meet the Crew","/the-crash":"Crash Landing","/the-river":"Fight the Levian","/links":"Links","/act-one-winners":"Act One Winners","/points":"Submit Points","/privacy-policy":"Privacy Policy"}};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var RAFT_URL = 'https://www.mauriceafrich.com/the-raft';
   // github.io previews, or ?raft-preview on the live site: every piece shows, and grabbing one is make-believe
@@ -125,6 +125,16 @@
     }
     here.forEach(function (id, k) {
       var b = buttons[id]; if (!b) return;
+      // a hand-placed piece (R.spots) sits on the line of a white box: the last five, moved by Maurice on 2026-10-07
+      var pin = (R.spots || {})[id], el = pin && document.querySelector(pin.sel);
+      if (el) {
+        var r = el.getBoundingClientRect(), L = r.left + scrollX, T = r.top + scrollY, h = S / 2;
+        var px = pin.edge === 'left' ? L - h : pin.edge === 'right' ? L + r.width - h : L + r.width * pin.f - h;
+        var py = pin.edge === 'top' ? T - h : pin.edge === 'top-in' ? T + 6 : pin.edge === 'bottom' ? T + r.height - h : T + r.height * pin.f - h;
+        px = Math.max(16, Math.min(vw - 16 - S, px));
+        b.hidden = false; b.style.left = Math.round(px) + 'px'; b.style.top = Math.round(py) + 'px'; placed.push([px, py]);
+        return;
+      }
       // each piece aims for its own stretch of the page, then looks outward for an empty spot
       var aimY = top0 + (bottom0 - top0) * ((k + 0.15 + hash(id, 1) * 0.7) / here.length), aimX = 16 + (vw - 32 - S) * hash(id, 2);
       var spot = null;
