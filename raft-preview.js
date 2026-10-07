@@ -55,6 +55,11 @@
     '.raft-piece:hover,.raft-piece:focus-visible{transform:scale(1.15);outline:none}' +
     // a fren with all 5 still sees the pieces left, but can't take them (Maurice, 2026-10-07)
     '.raft-full .raft-piece{cursor:default;pointer-events:none}' +
+    // the more the frens find, the harder the rest are to see (Maurice, 2026-10-07): at 50 found no glow and no bobbing,
+    // with 25 left the pieces fade to 25%, and with the final 10 left, to 10%
+    '.raft-hard .raft-piece{filter:none;animation:none;rotate:0deg;translate:0 0}' +
+    '.raft-faint .raft-piece{opacity:.25}' +
+    '.raft-ghost .raft-piece{opacity:.1}' +
     '.raft-full .raft-piece:hover{transform:none}' +
     '.raft-piece.raft-gone{opacity:0;transform:translateY(-40px) scale(.6);pointer-events:none}' +
     '@keyframes raftBob{0%,100%{translate:0 0;rotate:-6deg}50%{translate:0 -5px;rotate:6deg}}' +
@@ -149,7 +154,9 @@
       buttons[id] = b; layer.appendChild(b);
     });
   }
-  function lockFull() { layer.classList.toggle('raft-full', mine.length >= R.perFren); Array.prototype.forEach.call(layer.querySelectorAll('.raft-piece'), function (b) { b.tabIndex = mine.length >= R.perFren ? -1 : 0; }); }
+  function lockFull() {
+    layer.classList.toggle('raft-hard', found >= 50); layer.classList.toggle('raft-faint', found >= R.total - 25); layer.classList.toggle('raft-ghost', found >= R.total - 10);
+    layer.classList.toggle('raft-full', mine.length >= R.perFren); Array.prototype.forEach.call(layer.querySelectorAll('.raft-piece'), function (b) { b.tabIndex = mine.length >= R.perFren ? -1 : 0; }); }
   function drop(id) { var b = buttons[id]; if (!b) return; b.classList.add('raft-gone'); setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 400); delete buttons[id]; }
 
   // ---- the popup: who are you, what you found ----------------------------------------

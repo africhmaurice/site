@@ -526,6 +526,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .rf-where li.done span{color:rgba(237,233,220,.5)}
 @media (max-width:760px){#rc .rf-top{grid-template-columns:minmax(0,1fr)}}
 #rc .rf-cd{font-weight:800;color:#a2f590;font-variant-numeric:tabular-nums;white-space:nowrap}
+#rc .rf-hard{margin:0 0 20px;padding:20px;border:2px solid #a2f590;background:rgba(162,245,144,.08);font-weight:800;font-size:18px;line-height:1.45;color:#fffffe}
 </style>
 
 <div id="rc" class="cr rf">
@@ -1555,6 +1556,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     sec.innerHTML = '<header><p class="rc-kick">STEP 2 · THE RAFT</p><h2>Find 5 pieces</h2>' +
       '<p>Pieces of the raft are hidden all over mauriceafrich.com. When you spot one, click it to grab it. Each claimed piece pays ' + RAFT.points + ' points, and once a fren grabs a piece, it’s gone for everyone else. You can carry ' + RAFT.perFren + '.</p>' +
       '<p>If the frens don’t find all ' + RAFT.total + ' in time, the crew crosses on whatever they built, and the raft is only as good as its pieces.</p></header>' +
+      (found >= 50 ? '<p class="rf-hard">You found 50! Oh no, it looks like the remaining pieces just got a little harder to find...</p>' : '') +
       '<div class="rf-top"><div class="rf-count"><div class="k">PIECES FOUND</div><div class="v rc-num">' + (raftKnown ? found : '…') + '<small> / ' + RAFT.total + '</small></div>' +
       '<div class="rf-bar" role="img" aria-label="' + found + ' of ' + RAFT.total + ' raft pieces found">' + cells + '</div></div>' +
       '<div class="rf-mine"><div class="k">YOUR PIECES · ' + raftMine.length + ' OF ' + RAFT.perFren + '</div><div class="rf-slots">' + slots + '</div>' +
