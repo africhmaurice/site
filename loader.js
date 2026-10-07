@@ -705,10 +705,23 @@
         var a = crash.cloneNode(false); a.href = SITE + '/the-river'; a.textContent = 'FIGHT THE LEVIAN';
         box.insertBefore(a, crash.nextSibling);
       });
+      // Cross the River (chapter 6, 2026-10-07) follows Fight the Levian
+      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/the-river"]'), function (river) {
+        var box = river.parentNode;
+        if (box.querySelector('a[href$="/the-raft"]')) return;
+        var a = river.cloneNode(false); a.href = SITE + '/the-raft'; a.textContent = 'CROSS THE RIVER';
+        box.insertBefore(a, river.nextSibling);
+      });
     });
+  }
+  // The raft hunt (chapter 6, 2026-10-07): raft.js hides the pieces on every page; it checks its own hours.
+  function raftHunt() {
+    if (window.__raftLoaded) return; window.__raftLoaded = true;
+    var s = document.createElement('script'); s.src = GH + 'raft.js?v=1'; s.async = true; document.head.appendChild(s);
   }
   function huntGift() {
     huntRiver();
+    raftHunt();
     var caret = '<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg>';
     Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
       if (nav.querySelector('.mn-gift')) return;

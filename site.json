@@ -177,6 +177,12 @@
       "source": "bot:squarespace-river.html"
     },
     {
+      "slug": "raft",
+      "url": "/the-raft",
+      "title": "Cross the River (Chapter 6, the raft hunt)",
+      "source": "bot:squarespace-raft.html"
+    },
+    {
       "slug": "adventure",
       "url": "/adventure",
       "title": "The Adventure So Far (every Choose Your Own Adventure beat)",
