@@ -219,19 +219,23 @@
 
   function start() {
     document.body.appendChild(layer); document.body.appendChild(pop);
+    // The pieces go out straight away, from what this browser last heard; the sheet answers slowly (20 s or more),
+    // and when it does, any piece a fren has taken since drops away (Maurice, 2026-10-07).
+    var cached = load('thRaft:taken');
+    if (cached && cached.ids && Date.now() - cached.at < 6 * 3600000) { cached.ids.forEach(function (t) { taken[t] = true; }); found = cached.ids.length; }
+    addPieces(); place(); lockFull();
+    // the page keeps settling as code blocks and pictures load, so look again a few times
+    var n = 0, t = setInterval(function () { place(); if (++n >= 8) clearInterval(t); }, 2000);
+    var rt; addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(place, 250); });
     var ready = function (res) {
-      if (res && res.ok) {
-        (res.taken || []).forEach(function (t) { taken[t] = true; });
-        found = (res.taken || []).length;
-        if (res.mine) { mine = res.mine; if (me.email) save(MINE, { email: me.email, ids: mine }); }
-      }
-      addPieces(); place(); lockFull();
-      // the page keeps settling as code blocks and pictures load, so look again a few times
-      var n = 0, t = setInterval(function () { place(); if (++n >= 8) clearInterval(t); }, 2000);
-      var rt; addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(place, 250); });
+      if (!res || !res.ok) return;
+      (res.taken || []).forEach(function (id) { if (!taken[id]) { taken[id] = true; drop(id); } });
+      found = (res.taken || []).length;
+      save('thRaft:taken', { at: Date.now(), ids: res.taken || [] });
+      if (res.mine) { mine = res.mine; if (me.email) save(MINE, { email: me.email, ids: mine }); }
+      lockFull(); place();
     };
-    if (PREVIEW) ready({ ok: true, taken: [], mine: mine });
-    else jsonp({ action: 'raftstate', email: me.email || '' }, ready);
+    if (!PREVIEW) jsonp({ action: 'raftstate', email: me.email || '' }, ready);
   }
   if (document.readyState === 'complete') setTimeout(start, 1500);
   else addEventListener('load', function () { setTimeout(start, 1500); });
