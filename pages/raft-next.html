@@ -1563,7 +1563,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     if (PREVIEW) {
       // a make-believe count, so the preview shows the raft half built
       raftTaken = []; for (var i = 1; i <= RAFT.total; i++) if ((i * 37) % 100 < 41) raftTaken.push(i);
-      raftKnown = true; raftPanel(); render(); return;
+      raftKnown = true; $('rc-count').textContent = fmt(raftTaken.length) + ' / ' + RAFT.total; raftPanel(); render(); return;
     }
     jsonp({ action: 'raftstate', email: me.email || '' }, function (res) {
       if (res && res.ok) {
