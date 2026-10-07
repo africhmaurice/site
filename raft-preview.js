@@ -4,7 +4,7 @@
    fren to click it, and pays 20 points. A fren carries 5. The sheet keeps the count (raftstate, raftclaim). */
 (function () {
   if (window.__raft) return; window.__raft = true;
-  var R = {"opens":"","closes":"","total":100,"perFren":5,"points":20,"kinds":[["plank","a plank"],["rope","a coil of rope"],["barrel","a barrel"],["oar","an oar"],["sail","a patch of sailcloth"]],"pages":{"/home":[5,10,13,29,54,56,57,67,90],"/the-hunt":[3,14,19,20,41,43,46,47,49,70,76,80,96],"/adventure":[24,33,40,48,58,69,73,75,77,99],"/leaderboard":[1,39,44,72],"/contests":[2,62,85,93],"/lootbox-clue":[16,17,18,64,71],"/rules":[25,31,37,38,65,95],"/preorder":[15,42,45,84,87,92],"/newsletter":[4,8,74],"/questions":[7,83,89],"/profile":[21,50,79],"/the-treasure":[6,28,32,34],"/red-city":[11,12,22,68],"/the-crew":[9,52,55,97],"/the-crash":[60,81,86,98],"/the-river":[36,51,61,66,94],"/links":[23,30,59],"/press-kit":[26,27,35],"/act-one-winners":[78,82,91],"/points":[88,100],"/privacy-policy":[53,63]},"names":{"/home":"Home","/the-hunt":"The Hunt","/adventure":"The Adventure So Far","/leaderboard":"Leaderboard","/contests":"Contests","/lootbox-clue":"Clues","/rules":"Official Rules","/preorder":"Pre-Order","/newsletter":"Newsletter","/questions":"Questions?","/profile":"Treasure Hunter Profile","/the-treasure":"The Treasure","/red-city":"Shopping in the Red City","/the-crew":"Meet the Crew","/the-crash":"Crash Landing","/the-river":"Fight the Levian","/links":"Links","/press-kit":"Press Room","/act-one-winners":"Act One Winners","/points":"Submit Points","/privacy-policy":"Privacy Policy"}};
+  var R = {"opens":"2026-10-07T16:12:00Z","closes":"2026-10-08T19:00:00Z","total":100,"perFren":5,"points":20,"kinds":[["plank","a plank"],["rope","a coil of rope"],["barrel","a barrel"],["oar","an oar"],["sail","a patch of sailcloth"]],"pages":{"/home":[5,10,13,29,54,56,57,67,90],"/the-hunt":[3,14,19,20,41,43,46,47,49,70,76,80,96],"/adventure":[24,33,40,48,58,69,73,75,77,99],"/leaderboard":[1,39,44,72],"/contests":[2,62,85,93],"/lootbox-clue":[16,17,18,64,71],"/rules":[25,31,37,38,65,95],"/preorder":[15,42,45,84,87,92],"/newsletter":[4,8,74],"/questions":[7,83,89],"/profile":[21,50,79],"/the-treasure":[6,28,32,34],"/red-city":[11,12,22,68],"/the-crew":[9,52,55,97],"/the-crash":[60,81,86,98],"/the-river":[36,51,61,66,94],"/links":[23,30,59],"/press-kit":[26,27,35],"/act-one-winners":[78,82,91],"/points":[88,100],"/privacy-policy":[53,63]},"names":{"/home":"Home","/the-hunt":"The Hunt","/adventure":"The Adventure So Far","/leaderboard":"Leaderboard","/contests":"Contests","/lootbox-clue":"Clues","/rules":"Official Rules","/preorder":"Pre-Order","/newsletter":"Newsletter","/questions":"Questions?","/profile":"Treasure Hunter Profile","/the-treasure":"The Treasure","/red-city":"Shopping in the Red City","/the-crew":"Meet the Crew","/the-crash":"Crash Landing","/the-river":"Fight the Levian","/links":"Links","/press-kit":"Press Room","/act-one-winners":"Act One Winners","/points":"Submit Points","/privacy-policy":"Privacy Policy"}};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var RAFT_URL = 'https://www.mauriceafrich.com/the-raft';
   // github.io previews, or ?raft-preview on the live site: every piece shows, and grabbing one is make-believe
@@ -53,6 +53,9 @@
     '.raft-piece{position:absolute;width:48px;height:48px;padding:4px;margin:0;border:0;border-radius:0;background:none;cursor:pointer;pointer-events:auto;filter:drop-shadow(0 0 6px rgba(137,251,203,.95)) drop-shadow(0 3px 4px rgba(11,23,15,.45));animation:raftBob 2.6s ease-in-out infinite;transition:transform .35s ease,opacity .35s ease}' +
     '.raft-piece svg{display:block;width:40px;height:40px}' +
     '.raft-piece:hover,.raft-piece:focus-visible{transform:scale(1.15);outline:none}' +
+    // a fren with all 5 still sees the pieces left, but can't take them (Maurice, 2026-10-07)
+    '.raft-full .raft-piece{cursor:default;pointer-events:none}' +
+    '.raft-full .raft-piece:hover{transform:none}' +
     '.raft-piece.raft-gone{opacity:0;transform:translateY(-40px) scale(.6);pointer-events:none}' +
     '@keyframes raftBob{0%,100%{translate:0 0;rotate:-6deg}50%{translate:0 -5px;rotate:6deg}}' +
     '@media (prefers-reduced-motion:reduce){.raft-piece{animation:none}}' +
@@ -112,7 +115,7 @@
     function free(x, y) {
       var x0 = Math.max(0, Math.floor((x - pad) / C)), x1 = Math.min(cols - 1, Math.floor((x + S + pad) / C)), y0 = Math.max(0, Math.floor((y - pad) / C)), y1 = Math.min(rows - 1, Math.floor((y + S + pad) / C));
       for (var gy = y0; gy <= y1; gy++) for (var gx = x0; gx <= x1; gx++) if (grid[gy * cols + gx]) return false;
-      for (var j = 0; j < placed.length; j++) { var c = placed[j]; if (Math.abs(c[0] - x) < 140 && Math.abs(c[1] - y) < 140) return false; }
+      for (var j = 0; j < placed.length; j++) { var c = placed[j]; if (Math.abs(c[0] - x) < 90 && Math.abs(c[1] - y) < 90) return false; }
       return true;
     }
     here.forEach(function (id, k) {
@@ -120,7 +123,7 @@
       // each piece aims for its own stretch of the page, then looks outward for an empty spot
       var aimY = top0 + (bottom0 - top0) * ((k + 0.15 + hash(id, 1) * 0.7) / here.length), aimX = 16 + (vw - 32 - S) * hash(id, 2);
       var spot = null;
-      for (var dy = 0; dy < 900 && !spot; dy += 24) {
+      for (var dy = 0; dy < 4000 && !spot; dy += 24) {
         for (var side = 0; side < 2 && !spot; side++) {
           var y = aimY + (side ? -dy : dy); if (y < top0 || y > bottom0) continue;
           for (var dx = 0; dx < vw && !spot; dx += 32) {
@@ -146,6 +149,7 @@
       buttons[id] = b; layer.appendChild(b);
     });
   }
+  function lockFull() { layer.classList.toggle('raft-full', mine.length >= R.perFren); Array.prototype.forEach.call(layer.querySelectorAll('.raft-piece'), function (b) { b.tabIndex = mine.length >= R.perFren ? -1 : 0; }); }
   function drop(id) { var b = buttons[id]; if (!b) return; b.classList.add('raft-gone'); setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 400); delete buttons[id]; }
 
   // ---- the popup: who are you, what you found ----------------------------------------
@@ -186,7 +190,7 @@
       if (res && res.found != null) found = res.found;
       if (res && res.ok) {
         drop(id);
-        var full = mine.length >= R.perFren;
+        var full = mine.length >= R.perFren; lockFull();
         show('<p class="rp-k">+' + R.points + ' POINTS</p><div class="rp-row">' + art(id) + '<p class="rp-h">You found ' + esc(kindOf(id)[1]) + '!</p></div>' + line() +
           (full ? '<p>That’s all ' + R.perFren + '. Head to the raft and roll for the crossing.</p>' : '<p>Keep looking. Pieces are hidden all over this website.</p>') +
           '<div class="rp-btns">' + (full ? LINK : '<button type="button" class="rp-btn ghost" id="rp-ok">KEEP LOOKING</button>' + LINK) + '</div>');
@@ -214,7 +218,7 @@
         found = (res.taken || []).length;
         if (res.mine) { mine = res.mine; if (me.email) save(MINE, { email: me.email, ids: mine }); }
       }
-      addPieces(); place();
+      addPieces(); place(); lockFull();
       // the page keeps settling as code blocks and pictures load, so look again a few times
       var n = 0, t = setInterval(function () { place(); if (++n >= 8) clearInterval(t); }, 2000);
       var rt; addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(place, 250); });

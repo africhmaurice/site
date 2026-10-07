@@ -53,6 +53,9 @@
     '.raft-piece{position:absolute;width:48px;height:48px;padding:4px;margin:0;border:0;border-radius:0;background:none;cursor:pointer;pointer-events:auto;filter:drop-shadow(0 0 6px rgba(137,251,203,.95)) drop-shadow(0 3px 4px rgba(11,23,15,.45));animation:raftBob 2.6s ease-in-out infinite;transition:transform .35s ease,opacity .35s ease}' +
     '.raft-piece svg{display:block;width:40px;height:40px}' +
     '.raft-piece:hover,.raft-piece:focus-visible{transform:scale(1.15);outline:none}' +
+    // a fren with all 5 still sees the pieces left, but can't take them (Maurice, 2026-10-07)
+    '.raft-full .raft-piece{cursor:default;pointer-events:none}' +
+    '.raft-full .raft-piece:hover{transform:none}' +
     '.raft-piece.raft-gone{opacity:0;transform:translateY(-40px) scale(.6);pointer-events:none}' +
     '@keyframes raftBob{0%,100%{translate:0 0;rotate:-6deg}50%{translate:0 -5px;rotate:6deg}}' +
     '@media (prefers-reduced-motion:reduce){.raft-piece{animation:none}}' +
@@ -146,6 +149,7 @@
       buttons[id] = b; layer.appendChild(b);
     });
   }
+  function lockFull() { layer.classList.toggle('raft-full', mine.length >= R.perFren); Array.prototype.forEach.call(layer.querySelectorAll('.raft-piece'), function (b) { b.tabIndex = mine.length >= R.perFren ? -1 : 0; }); }
   function drop(id) { var b = buttons[id]; if (!b) return; b.classList.add('raft-gone'); setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 400); delete buttons[id]; }
 
   // ---- the popup: who are you, what you found ----------------------------------------
@@ -186,7 +190,7 @@
       if (res && res.found != null) found = res.found;
       if (res && res.ok) {
         drop(id);
-        var full = mine.length >= R.perFren;
+        var full = mine.length >= R.perFren; lockFull();
         show('<p class="rp-k">+' + R.points + ' POINTS</p><div class="rp-row">' + art(id) + '<p class="rp-h">You found ' + esc(kindOf(id)[1]) + '!</p></div>' + line() +
           (full ? '<p>That’s all ' + R.perFren + '. Head to the raft and roll for the crossing.</p>' : '<p>Keep looking. Pieces are hidden all over this website.</p>') +
           '<div class="rp-btns">' + (full ? LINK : '<button type="button" class="rp-btn ghost" id="rp-ok">KEEP LOOKING</button>' + LINK) + '</div>');
@@ -214,7 +218,7 @@
         found = (res.taken || []).length;
         if (res.mine) { mine = res.mine; if (me.email) save(MINE, { email: me.email, ids: mine }); }
       }
-      addPieces(); place();
+      addPieces(); place(); lockFull();
       // the page keeps settling as code blocks and pictures load, so look again a few times
       var n = 0, t = setInterval(function () { place(); if (++n >= 8) clearInterval(t); }, 2000);
       var rt; addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(place, 250); });
