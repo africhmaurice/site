@@ -901,12 +901,13 @@
   function fitMenuText() {
     Array.prototype.forEach.call(document.querySelectorAll(FIT_MENU), function (a) {
       if (!a.offsetWidth || getComputedStyle(a).display === 'inline') return;
-      a.style.removeProperty('font-size');
+      a.style.removeProperty('font-size'); a.style.removeProperty('white-space');
       // measure the words themselves against the room inside the padding (scrollWidth misses words running into the padding)
       var cs = getComputedStyle(a), size = parseFloat(cs.fontSize), n = 0, range = document.createRange();
-      var room = a.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-      var wide = function () { range.selectNodeContents(a); return range.getBoundingClientRect().width > room + 0.5; };
+      var wide = function () { range.selectNodeContents(a); return range.getBoundingClientRect().width > a.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) + 0.5; };
       while (wide() && size > 9 && n++ < 40) { size -= 0.5; a.style.setProperty('font-size', size + 'px', 'important'); }
+      // a browser with a large minimum font size won't shrink the words, so they wrap onto two lines instead
+      if (wide()) { a.style.removeProperty('font-size'); a.style.setProperty('white-space', 'normal', 'important'); }
     });
   }
   var fitQueued = false;
