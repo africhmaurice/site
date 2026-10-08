@@ -152,6 +152,8 @@ Yet again, you might try.`],
   [64, '4 words: edeuaegiltxsehdlas'],
   // Box 65 is the "loot boxes" link in the Discord section of the 10/5 newsletter. Same clue as 53 on purpose (Maurice, 2026-10-04).
   [65, "Don't miss a single chapter."],
+  // Box 66 (Maurice, 2026-10-07).
+  [66, 'Brando Sando and I have this person in common.'],
   [73, 'you already have it'],
 ];
 
