@@ -728,6 +728,19 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     document.getElementById('lb-email').onkeydown = function (e) { if (e.key === 'Enter') btn.click(); };
   }
 
+  // A first-ever find means someone just joined the hunt (name, email, and country in). Meta hears it as
+  // CompleteRegistration so the ads can be judged and optimized on new hunters, not taps (Maurice, 2026-10-07).
+  // fbq only exists when the visitor allowed the Pixel (the site's cookies.js). Sent once per email per browser.
+  function newHunter(res) {
+    try {
+      if (typeof window.fbq !== 'function') return;
+      var KEY = 'lb-hunter-sent', who = '|' + String(me.email || '').toLowerCase() + '|', sent = localStorage.getItem(KEY) || '';
+      if (sent.indexOf(who) >= 0) return;
+      window.fbq('track', 'CompleteRegistration', { content_name: 'Treasure Hunt', status: 'new hunter', box: res.box ? res.box.n : '' });
+      localStorage.setItem(KEY, (sent ? sent.slice(0, -1) : '') + who);
+    } catch (e) {}
+  }
+
   // ---- the two things this page does --------------------------------------
   function claim() {
     say('<p class="lb-bang">OPENING THE BOX...</p>');
@@ -735,6 +748,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
            handle: me.handle, platform: me.platform, country: me.country }, function (res) {
       if (!res || !res.ok) return showError((res && res.error) || 'network');
       save(CARD, { found: res.found, count: res.count, at: Date.now() });
+      if (res.status === 'new' && res.count === 1) newHunter(res);
       // 'already' only comes back for a box they found some time ago. A retry of a
       // claim that did land is answered 'new', so a slow round trip still reads as
       // the find it was.
