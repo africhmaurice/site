@@ -1309,7 +1309,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         S.sealed = true; store(STORE, S);
         if (res.count && !DATA.raft) $('rc-count').textContent = fmt(res.count);
         // the raft rolls pay nothing themselves: the pieces already paid 20 each (a fren asked about '0 points', 2026-10-07)
-        if (DATA.raft) $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.status === 'new' ? 'ROLLS SEALED' : 'ROLLS UPDATED') + '</b>Your rolls are in. The points come from your raft pieces, ' + DATA.raft.points + ' for each one you claimed' + (DATA.rollBonus ? ', plus a ' + DATA.rollBonus.points + '-point bonus once all ' + DATA.raft.total + ' pieces are found' : '') + '. They land on the leaderboard at the next tally.</p>';
+        if (DATA.raft) $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.bonus ? '+' + res.bonus + ' POINTS · THE RAFT IS BUILT' : res.status === 'new' ? 'ROLLS SEALED' : 'ROLLS UPDATED') + '</b>' + (res.bonus ? 'All ' + DATA.raft.total + ' pieces were found, so sealing your rolls earns you a ' + res.bonus + '-point bonus for finding the raft so fast. ' : '') + 'Your rolls are in. The points come from your raft pieces, ' + DATA.raft.points + ' for each one you claimed' + (DATA.rollBonus ? ', plus a ' + DATA.rollBonus.points + '-point bonus once all ' + DATA.raft.total + ' pieces are found' : '') + '. They land on the leaderboard at the next tally.</p>';
         else $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.status === 'new' ? '+' + res.points + ' POINTS' : 'PLAN UPDATED') + '</b>' +
           (res.status === 'new' ? 'Your plan is with the Captain. The points land on the leaderboard at the next tally.' : 'Your new plan replaces your old one.') + ' You can change your vote until it closes.</p>';
         btn.textContent = DATA.sealLabel || 'SEAL MY PLAN'; btn.disabled = false;
@@ -1539,7 +1539,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   }
   // the message for each difficulty stage; Maurice wrote the 50 one, the rest follow it (2026-10-07)
   function raftStage(found) {
-    var t = found >= RAFT.total ? 'You found all ' + RAFT.total + '! The raft is built. Everyone who rolls gets a 500-point bonus for finding it so fast.'
+    var t = found >= RAFT.total ? 'You found all ' + RAFT.total + '! The raft is built! Everyone who rolls and seals their rolls gets a 500-point bonus for finding it so fast.'
       : found >= RAFT.total - 10 ? 'You found ' + (RAFT.total - 10) + '! The final ten are barely there now. Look closely...'
       : found >= RAFT.total - 25 ? 'You found ' + (RAFT.total - 25) + '! The last 25 pieces are fading out...'
       : found >= 50 ? 'You found 50! Oh no, it looks like the remaining pieces just got a little harder to find...' : '';
