@@ -119,4 +119,41 @@
     }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready); else ready();
+
+  // ---- What people do on the site, for Meta (Maurice, 2026-10-08) ----
+  // Everything goes through fbq, which only exists once the visitor allowed the Pixel (and is revoked if they
+  // declined later), so these follow the cookie choice. Nothing personal is sent: no names, no emails.
+  // The loot box page (new hunters, finds) and Submit Points (tasks, riddles) send their own events.
+  function px(kind, name, data) { try { if (typeof window.fbq === 'function') window.fbq(kind, name, data || {}); } catch (e) {} }
+  var STORES = /(^|\.)(amazon\.[a-z.]+|audible\.[a-z.]+|barnesandnoble\.com|bookshop\.org|books\.apple\.com|waterstones\.com|walmart\.com|kobo\.com|target\.com|booksamillion\.com|indigo\.ca|blackwells\.co\.uk|forbiddenplanet\.com|hodderscape\.co\.uk|hudsonbooksellers\.com|kinokuniya\.com|libro\.fm|simonandschuster\.com|booktopia\.com\.au|dymocks\.com\.au|foyles\.co\.uk|hive\.co\.uk|powells\.com)$/;
+  function storeOf(a) {
+    var host = (a.hostname || '').toLowerCase().replace(/^www\./, '');
+    if (STORES.test(host)) return host;
+    if (host === 'play.google.com' && /^\/store\/(books|audiobooks)/.test(a.pathname)) return host;
+    return '';
+  }
+  // A tap on any store link is a step toward a pre-order: InitiateCheckout. A tap toward the merch shop: ShopTap.
+  // The /links page sends its own events for its tiles (a[data-link]), so those are skipped here.
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest && e.target.closest('a[href]');
+    if (!a || a.hasAttribute('data-link')) return;
+    var store = storeOf(a);
+    if (store) px('track', 'InitiateCheckout', { content_name: "Cello's Gate", store: store, page: location.pathname });
+    else if (/^shop\.mauriceafrich\.com$/i.test(a.hostname || '')) px('trackCustom', 'ShopTap', { page: location.pathname });
+  }, true);
+  // Newsletter sign-ups through an embedded Kit form (the /newsletter page and any other): Lead, once Kit has
+  // answered without an error.
+  document.addEventListener('submit', function (e) {
+    var f = e.target;
+    if (!f || !f.classList || !f.classList.contains('formkit-form')) return;
+    var mail = f.querySelector('input[type="email"], input[name="email_address"]');
+    if (!mail || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail.value || '')) return;
+    var tries = 0;
+    (function check() {
+      var bad = f.querySelector('.formkit-alert-error'), good = f.querySelector('.formkit-alert-success');
+      if (bad && bad.textContent.trim()) return;
+      if ((good && good.textContent.trim()) || ++tries > 40) return px('track', 'Lead', { form: 'newsletter', page: location.pathname });
+      setTimeout(check, 250);
+    })();
+  }, true);
 })();

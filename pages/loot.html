@@ -743,6 +743,18 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     } catch (e) {}
   }
 
+  // Every new find tells Meta too (LootBoxClaim, with the box and how many this hunter has), so ads can reach active
+  // hunters (Maurice, 2026-10-08). Once per box per email per browser, so a retried claim is not counted twice.
+  function lootFound(res) {
+    try {
+      if (typeof window.fbq !== 'function' || !res.box) return;
+      var KEY = 'lb-found-sent', id = '|' + String(me.email || '').toLowerCase() + ':' + res.box.n + '|', sent = localStorage.getItem(KEY) || '';
+      if (sent.indexOf(id) >= 0) return;
+      window.fbq('trackCustom', 'LootBoxClaim', { box: res.box.n, found: res.count || 0 });
+      localStorage.setItem(KEY, ((sent ? sent.slice(0, -1) : '') + id).slice(-4000));
+    } catch (e) {}
+  }
+
   // ---- the two things this page does --------------------------------------
   function claim() {
     say('<p class="lb-bang">OPENING THE BOX...</p>');
@@ -751,6 +763,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       if (!res || !res.ok) return showError((res && res.error) || 'network');
       save(CARD, { found: res.found, count: res.count, at: Date.now() });
       if (res.status === 'new' && res.count === 1) newHunter(res);
+      if (res.status === 'new') lootFound(res);
       // 'already' only comes back for a box they found some time ago. A retry of a
       // claim that did land is answered 'new', so a slow round trip still reads as
       // the find it was.

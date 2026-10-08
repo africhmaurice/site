@@ -666,8 +666,15 @@ h1,h2,h3{text-wrap:balance}
         btn.disabled = false; btn.textContent = mode === 'points' ? 'Submit Points!' : 'Submit Answer!';
         return (err.textContent = ERR[(res && res.error)] || ERR.server);
       }
+      sentToMeta(label);
       done(label);
     });
+  }
+
+  // A task or riddle that reached the sheet tells Meta too (TaskSubmitted), so ads can reach the hunters who put in
+  // the work (Maurice, 2026-10-08). fbq only exists when the visitor allowed the Pixel. No names or emails are sent.
+  function sentToMeta(label) {
+    try { if (typeof window.fbq === 'function') window.fbq('trackCustom', 'TaskSubmitted', { kind: mode === 'riddle' ? 'riddle' : 'task', task: String(label || '').slice(0, 60) }); } catch (e) {}
   }
 
   function done(label) {
