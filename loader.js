@@ -902,8 +902,11 @@
     Array.prototype.forEach.call(document.querySelectorAll(FIT_MENU), function (a) {
       if (!a.offsetWidth || getComputedStyle(a).display === 'inline') return;
       a.style.removeProperty('font-size');
-      var size = parseFloat(getComputedStyle(a).fontSize), n = 0;
-      while (a.scrollWidth > a.clientWidth + 1 && size > 9 && n++ < 40) { size -= 0.5; a.style.setProperty('font-size', size + 'px', 'important'); }
+      // measure the words themselves against the room inside the padding (scrollWidth misses words running into the padding)
+      var cs = getComputedStyle(a), size = parseFloat(cs.fontSize), n = 0, range = document.createRange();
+      var room = a.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      var wide = function () { range.selectNodeContents(a); return range.getBoundingClientRect().width > room + 0.5; };
+      while (wide() && size > 9 && n++ < 40) { size -= 0.5; a.style.setProperty('font-size', size + 'px', 'important'); }
     });
   }
   var fitQueued = false;
