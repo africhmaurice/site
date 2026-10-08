@@ -445,10 +445,10 @@
     // where the pages' own phone layout starts, so a narrow laptop never gets a phone menu over a desktop page.
     st.textContent = '@media (min-width:1101px) and (max-width:1240px){#hunt-nav{background:#1a5e41!important;padding:9px clamp(24px,4vw,58px)!important}' +
       '#hunt-nav .mn-row{display:flex!important}#hunt-nav .mn-burger{display:none!important}}' +
-      '#hunt-nav .mn-links>.mn-drop.mn-earn{display:none}#hunt-nav.mn-compact .mn-links>.mn-drop.mn-earn{display:flex}#hunt-nav.mn-compact .mn-links>a.mn-ep,#hunt-nav.mn-compact .mn-links>a.mn-linkpage{display:none}' +
+      '#hunt-nav .mn-links>.mn-drop.mn-earn{display:none}#hunt-nav.mn-compact .mn-links>.mn-drop.mn-earn{display:flex}#hunt-nav.mn-compact .mn-links>a.mn-ep{display:none}' +
       // folded, the row also sits a little tighter, so it still fits at larger font sizes
       '#hunt-nav.mn-compact{padding-left:clamp(16px,2.4vw,40px)!important;padding-right:clamp(16px,2.4vw,40px)!important}' +
-      '#hunt-nav.mn-compact .mn-links{gap:clamp(10px,1vw,18px)}#hunt-nav.mn-compact .mn-right{gap:clamp(12px,1.4vw,24px)}#hunt-nav.mn-compact .mn-row{gap:16px}' +
+      '#hunt-nav.mn-compact .mn-links{gap:clamp(10px,.8vw,18px)}#hunt-nav.mn-compact .mn-links .mn-link{font-size:clamp(10px,.84vw,14px)!important}#hunt-nav.mn-compact .mn-right{gap:clamp(12px,1.4vw,24px)}#hunt-nav.mn-compact .mn-row{gap:16px}' +
       '#hunt-nav.mn-burgered .mn-row{display:none!important}#hunt-nav.mn-burgered .mn-burger{display:flex!important}';
     document.head.appendChild(st);
   }
@@ -465,7 +465,6 @@
     var list = d.querySelector('.mn-dd-in');
     eps.forEach(function (a) { if (ACTMENU && /#tasks$|#riddles$/.test(a.href)) return; var c = document.createElement('a'); c.href = a.href; c.textContent = a.textContent; list.appendChild(c); });
     if (ACTMENU) earnActs(list);
-    earnLinks(nav, list);
     links.insertBefore(d, eps[0]);
   }
   function navFits(nav) {
@@ -766,8 +765,8 @@
       (a.querySelector('.header-menu-nav-item-content') || a).textContent = 'Links';
     });
   }
-  // The green hunt menu (desktop row and phone menu) gets LINKS right after MARKET. When the row is folded
-  // (mn-compact), LINKS steps out of the row and sits first in the EARN POINTS dropdown instead.
+  // The green hunt menu (desktop row and phone menu) gets LINKS right after MARKET (Maurice, 2026-10-07: in the row,
+  // not folded into EARN POINTS).
   function huntLinks() {
     Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav .mn-merch, #hunt-nav-ov .mn-merch'), function (m) {
       if (m.parentNode.querySelector('.mn-linkpage')) return;
@@ -775,16 +774,6 @@
       a.className = m.className.replace('mn-merch', 'mn-linkpage'); a.textContent = 'LINKS';
       m.parentNode.insertBefore(a, m.nextSibling);
     });
-    // the fold may already be built (fonts can finish loading first)
-    Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
-      var list = nav.querySelector('.mn-earn .ma-grp') || nav.querySelector('.mn-earn .mn-dd-in');
-      if (list) earnLinks(nav, list);
-    });
-  }
-  function earnLinks(nav, list) {
-    if (!nav.querySelector('.mn-links>a.mn-linkpage') || list.querySelector('.mn-earn-links')) return;
-    var c = document.createElement('a'); c.href = SITE + '/links'; c.className = 'mn-earn-links'; c.textContent = 'LINKS';
-    list.insertBefore(c, list.querySelector(':scope > a'));   // first link, under the box heading when there is one
   }
 
   function quietWord() {
