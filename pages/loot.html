@@ -737,6 +737,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       var KEY = 'lb-hunter-sent', who = '|' + String(me.email || '').toLowerCase() + '|', sent = localStorage.getItem(KEY) || '';
       if (sent.indexOf(who) >= 0) return;
       window.fbq('track', 'CompleteRegistration', { content_name: 'Treasure Hunt', status: 'new hunter', box: res.box ? res.box.n : '' });
+      // the same moment as a custom event too: Engagement campaigns can't pick CompleteRegistration, but can pick this
+      window.fbq('trackCustom', 'NewHunter', { box: res.box ? res.box.n : '' });
       localStorage.setItem(KEY, (sent ? sent.slice(0, -1) : '') + who);
     } catch (e) {}
   }
