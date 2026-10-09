@@ -1,7 +1,7 @@
-<!-- Generated copy of squarespace-raft.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
+<!-- Generated copy of squarespace-out.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
 <!-- ============================================================
-     CROSS THE RIVER - the raft hunt: find 5 pieces hidden across the site, then roll for the raft, the crossing, and the Levian.
-     Built by scripts/build-crash.mjs from config/raft-vote.json and games/crash.*; the dice come
+     RIVER MAYHEM - the vote in the water: roll for the river, for each member of the crew, and for every kit.
+     Built by scripts/build-crash.mjs from config/out-vote.json and games/crash.*; the dice come
      from games/redcity.template.html. Edit those and rebuild, never this file.
      ============================================================ -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -175,7 +175,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 @font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
 #rc{--cream:#f3ead9;--paper:#ede9dc;--hair:rgba(243,234,217,.18);--hair2:rgba(243,234,217,.4);--mint:#c53200;--lime:#a2f590;--ember:#fd7547;--red:#c1330a;--well:rgba(12,26,8,.35);--panel:rgba(38,142,98,.16);--muted:rgba(237,233,220,.72);
   box-sizing:border-box;position:relative;width:100vw;overflow-x:clip;
-  background:linear-gradient(rgba(33,50,38,.78),rgba(11,23,15,.9)),url('https://africhmaurice.github.io/site/assets/bg/monolith-canyon-as444233611.webp') center/cover no-repeat fixed;
+  background:linear-gradient(rgba(27,59,21,.8),rgba(11,23,15,.9)),url('https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp') center/cover no-repeat fixed;
   padding-top:clamp(140px,12vw,180px);padding-bottom:64px;color:#fffffe;font-family:'Almarai',sans-serif;letter-spacing:.03em;font-size:16px;line-height:1.55;text-align:left}
 #rc *,#rc *::before,#rc *::after{box-sizing:border-box}
 #rc [hidden]{display:none!important}
@@ -481,55 +481,30 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cr-tie-out b{color:#c3a6ff}
 @media (max-width:600px){#rc .cr-res-kit{padding:16px}}
 
-/* the raft hunt (chapter 6), on top of the crash vote's styles: the olive color story. The monolith canyon under a
-   deep green veil, ink panels, parchment and slate accents (#0b170f, #213226, #607667, #ede9dc, #f3ead9, #a2f590). */
-#rc.cr.rf{--mint:#fffffe;--ember:#a2f590;--red:#607667;--lime:#a2f590;--panel:rgba(11,23,15,.88);--well:rgba(255,255,255,.06);--hair:rgba(243,234,217,.2);--hair2:rgba(243,234,217,.42)}
-#rc.cr.rf .rc-hero h1{color:#fffffe}
-#rc.cr.rf .rc-hero h1 span{color:#a2f590}
-#rc.cr.rf .rc-hero .rc-kick{color:#a2f590}
-#rc.cr.rf .rc-lede{color:#ede9dc}
-#rc.cr.rf .rc-stat{background:rgba(11,23,15,.88);border-color:rgba(243,234,217,.24)}
-#rc.cr.rf .rc-stat .v.e{color:#a2f590}
-#rc.cr.rf .rc-step{background:rgba(11,23,15,.88);border-color:rgba(243,234,217,.18)}
-#rc.cr.rf .rc-cta{background:#607667;border-color:#f3ead9;color:#fffffe}
-#rc.cr.rf .rc-cta:hover:not(:disabled){background:#213226}
-#rc.cr.rf .rc-cta:disabled{background:rgba(11,23,15,.55);border-color:rgba(243,234,217,.4);color:rgba(237,233,220,.6)}
-#rc.cr.rf .rc-roll{background:#607667}
-#rc.cr.rf .rc-roll:hover:not(:disabled){background:#213226}
-#rc.cr.rf .rc-roll:disabled{opacity:.5;cursor:not-allowed}
-#rc.cr.rf .rc-die .face{fill:#607667;stroke:#ede9dc}
-#rc.cr.rf .cr-kit h3{color:#a2f590}
-#rc.cr.rf .cw-orders b{color:#a2f590}
+/* the river vote, chapter 7, on top of the crash vote's styles: the green color story. The overgrown sphere under a deep
+   forest veil, ink panels, parchment text, forest accents (#0b170f, #1b3b15, #2c6021, #57bb41, #a2f590, #ede9dc). */
+#rc.cr.ot{--mint:#fffffe;--ember:#a2f590;--red:#2c6021;--lime:#a2f590;--panel:rgba(11,23,15,.88);--well:rgba(255,255,255,.06);--hair:rgba(243,234,217,.2);--hair2:rgba(243,234,217,.42)}
+#rc.cr.ot .rc-hero h1{color:#fffffe}
+#rc.cr.ot .rc-hero h1 span{color:#a2f590}
+#rc.cr.ot .rc-hero .rc-kick{color:#a2f590}
+#rc.cr.ot .rc-lede{color:#ede9dc}
+#rc.cr.ot .rc-stat{background:rgba(11,23,15,.88);border-color:rgba(162,245,144,.3)}
+#rc.cr.ot .rc-stat .v.e{color:#a2f590}
+#rc.cr.ot .rc-step{background:rgba(11,23,15,.88);border-color:rgba(162,245,144,.22)}
+#rc.cr.ot .rc-cta{background:#2c6021;border-color:#f3ead9;color:#fffffe}
+#rc.cr.ot .rc-cta:hover:not(:disabled){background:#57bb41;color:#0b170f}
+#rc.cr.ot .rc-cta:disabled{background:rgba(11,23,15,.55);border-color:rgba(243,234,217,.4);color:rgba(237,233,220,.6)}
+#rc.cr.ot .rc-roll{background:#2c6021}
+#rc.cr.ot .rc-roll:hover:not(:disabled){background:#57bb41;color:#0b170f}
+#rc.cr.ot .rc-die .face{fill:#2c6021;stroke:#a2f590}
+#rc.cr.ot .cr-kit h3{color:#a2f590}
+#rc.cr.ot .cw-orders b{color:#a2f590}
 #rc .cr-kit h3 small{display:block;margin-top:6px;font-size:11px;letter-spacing:.14em;color:rgba(237,233,220,.72)}
 #rc .cr-kit h3{flex-direction:column;align-items:flex-start;justify-content:flex-end;min-height:4.6em}
-/* the raft panel: the count, your 5 pieces, and where to look */
-#rc .rf-top{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px}
-#rc .rf-count,#rc .rf-mine,#rc .rf-where{background:var(--well);border:1px solid var(--hair);padding:20px;display:grid;gap:12px;align-content:start;min-width:0}
-#rc .rf-raft .k{font-weight:800;font-size:12px;letter-spacing:.14em;color:#a2f590}
-#rc .rf-count .v{font-family:'Atomic Marker',cursive;font-size:clamp(40px,5vw,56px);line-height:1.2;letter-spacing:.03em;color:#fffffe}
-#rc .rf-count .v small{font-size:.5em;color:rgba(237,233,220,.7)}
-#rc .rf-bar{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:3px}
-#rc .rf-bar i{display:block;aspect-ratio:1/2;background:rgba(243,234,217,.12);border:1px solid rgba(243,234,217,.18)}
-#rc .rf-bar i.in{background:#ede9dc;border-color:#ede9dc}
-#rc .rf-bar i.mine{background:#a2f590;border-color:#a2f590}
-#rc .rf-slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-#rc .rf-slot{aspect-ratio:1;border:1.5px dashed rgba(243,234,217,.4);display:grid;place-items:center;min-width:0}
-#rc .rf-slot span{font-weight:800;font-size:14px;color:rgba(237,233,220,.5)}
-#rc .rf-slot.got{border-style:solid;border-color:#a2f590;background:rgba(162,245,144,.1)}
-#rc .rf-slot svg{width:80%;height:80%}
-#rc .rf-note{margin:0;font-size:14px;line-height:1.45;color:#ede9dc}
-#rc .rf-where{margin-top:20px}
-#rc .rf-where ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 20px}
-#rc .rf-where li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--hair);font-size:15px}
-#rc .rf-where li a{color:#fffffe;font-weight:700;text-decoration:underline;text-underline-offset:3px}
-#rc .rf-where li span{flex:none;font-weight:800;font-size:12px;letter-spacing:.1em;color:#a2f590;text-transform:uppercase}
-#rc .rf-where li.done span{color:rgba(237,233,220,.5)}
-@media (max-width:760px){#rc .rf-top{grid-template-columns:minmax(0,1fr)}}
-#rc .rf-cd{font-weight:800;color:#a2f590;font-variant-numeric:tabular-nums;white-space:nowrap}
-#rc .rf-hard{margin:0 0 20px;padding:20px;border:2px solid #a2f590;background:rgba(162,245,144,.08);font-weight:800;font-size:18px;line-height:1.45;color:#fffffe}
+#rc .cr-one{grid-template-columns:minmax(0,320px);margin-top:20px}
 </style>
 
-<div id="rc" class="cr rf">
+<div id="rc" class="cr ot">
   <header class="rc-hero">
     <div>
       <p class="rc-kick" id="cr-kick"></p>
@@ -569,11 +544,11 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 <script>
 (function () {
-  var DATA = {"_help":"Chapter 6: cross the river. The rolls after the raft hunt (config/raft.json): a fren rolls these three once they have 5 raft pieces (needsRaft). One roll per die is drawn at random from the sealed rolls (Maurice, 2026-10-04). The pieces pay the points, so the rolls pay 0. Built by node scripts/build-crash.mjs raft. Opened 2026-10-07T16:12:00Z when it went live; ends Thursday, October 8 at 3:00 PM ET (Maurice, 2026-10-07). Dice opened to everyone on 2026-10-08 (needsRaft false), after all 100 pieces were found.","key":"raft_roll","points":0,"needsRaft":false,"opens":"2026-10-07T16:12:00Z","closes":"2026-10-08T19:00:00Z","title":["Cross the","River"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"The Levian is gone (probably) but the river is still too fast to swim. The crew needs a raft, and the 100 pieces they need are scattered all over this website. Find 5 pieces, roll for the raft, the crossing, and the Levian. You have {countdown} to find all 100, or they'll patch together what they have, and if they don't have enough, well... Let's not test that option, yeah?","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY ROLLS","questions":[{"id":"crossing","kind":"rolls","kicker":"THE CROSSING","title":"Roll for the crossing","text":"Once you have your 5 pieces, roll all three. When time’s up, one roll for each die is drawn at random from everyone’s rolls, and I’ll name whose roll it was.","items":[["integrity","The Raft · How well it holds together"],["crossing","The Crossing · How well the crew makes it across"],["levian","The Levian · Does it come back with frens?"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each die."}],"draw":true,"onAdventure":false,"badge":["#607667","#213226","#ede9dc"],"rollBonus":{"key":"raft_bonus","points":500,"label":"Raft bonus: found it so fast"},"results":{"key":"raft_roll","sealed":24,"draws":[{"id":"integrity","name":"The Raft · How well it holds together","roll":9,"by":"@queen_0f_ink","from":24},{"id":"crossing","name":"The Crossing · How well the crew makes it across","roll":11,"by":"@dennisreadslitrpg","from":24},{"id":"levian","name":"The Levian · Does it come back with frens?","roll":17,"by":"@4eyedgoonie","from":24}],"picks":[],"outcomes":{"integrity":"The raft breaks apart about halfway through the crossing.","crossing":"The crew gets swept down the river, so they’re stuck in the water.","levian":"Fortunately, the Levian doesn’t come back."},"story":"The frens find all 100 pieces, and the crew lashes together a raft. It floats ... for a while. About halfway across, it breaks apart, and the river sweeps the crew downstream. Now they’re stuck in the water.\n\nFortunately, the Levian doesn’t come back. But there are other things in this river...","storyTitle":"","lede":"The Levian is gone (probably), the frens found all 100 pieces, and the crew lashes together a raft. Rolling is closed! See what happened!"},"resultsLive":true,"raft":{"total":100,"perFren":5,"points":20,"kinds":[["plank","a plank"],["rope","a coil of rope"],["barrel","a barrel"],["oar","an oar"],["sail","a patch of sailcloth"]],"pages":{"/home":[5,10,13,26,29,54,56,57,67,90],"/the-hunt":[3,14,19,20,35,41,43,46,47,49,52,70,76,80,96],"/adventure":[24,33,40,48,58,69,73,75,77,99],"/leaderboard":[1,39,44,72],"/contests":[2,62,85,93],"/lootbox-clue":[16,17,18,64,71],"/rules":[25,31,37,38,65,95,97],"/preorder":[15,42,45,84,87,92],"/newsletter":[4,8,27,74],"/questions":[7,83,89],"/profile":[21,50,79],"/the-treasure":[6,28,32,34],"/red-city":[11,12,22,68],"/the-crew":[9,55],"/the-crash":[60,81,86,98],"/the-river":[36,51,61,66,94],"/links":[23,30,59],"/act-one-winners":[78,82,91],"/points":[88,100],"/privacy-policy":[53,63]},"names":{"/home":"Home","/the-hunt":"The Hunt","/adventure":"The Adventure So Far","/leaderboard":"Leaderboard","/contests":"Contests","/lootbox-clue":"Clues","/rules":"Official Rules","/preorder":"Pre-Order","/newsletter":"Newsletter","/questions":"Questions?","/profile":"Treasure Hunter Profile","/the-treasure":"The Treasure","/red-city":"Shopping in the Red City","/the-crew":"Meet the Crew","/the-crash":"Crash Landing","/the-river":"Fight the Levian","/links":"Links","/act-one-winners":"Act One Winners","/points":"Submit Points","/privacy-policy":"Privacy Policy"}}};
+  var DATA = {"_help":"Chapter 7 vote: River Mayhem (named by Maurice, 2026-10-09). One roll per die is drawn at random from the sealed votes, and the results name whose roll it was (Maurice, 2026-10-04). Built by node scripts/build-crash.mjs out. Live 2026-10-09T02:15:00Z; closes at midnight ET at the end of Friday, October 9 (Maurice, 2026-10-08).","key":"out_vote","points":100,"opens":"2026-10-09T02:15:00Z","closes":"2026-10-10T04:00:00Z","title":["River","Mayhem"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"The raft broke apart. It’s gone. Now, the crew is in the water. Roll for the water, then roll for how each member of the crew fares, and then one more time for every kit they’re hauling with them. When voting closes, one roll for each die is drawn at random from everyone’s rolls, and I’ll name whose roll it was. And then we find out what happens next!","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY ROLLS","questions":[{"id":"water","kind":"rolls","kicker":"THE RIVER","title":"How dangerous is the water?","text":"Every fren rolls for the river. One roll is drawn at random from all of them: the lower it is, the more dangerous the water.","items":[["water","The Water"]],"tiers":["","","","",""]},{"id":"crew","kind":"rolls","kicker":"THE CREW","title":"How does each of them fare?","text":"Roll one die for each crew member. For each one, a single roll is drawn at random from everyone’s rolls, and it decides how they fare in the river.","items":[["hale","Hale · Crest Knight"],["scarlett","Scarlett Holster · Gunslinger"],["orion","Orion Squints · Oracle"],["rune","Rune Overclock · Techtailor"],["sparrow","Sparrow Zipmeister · Intangible"]],"tiers":["","","","",""]},{"id":"kits","kind":"rolls","kicker":"THE KITS","title":"How do the kits fare?","text":"The crew is hauling every kit they took with them (the Survival Kit was ruined). Roll one die for each: a single roll per kit is drawn at random from everyone’s, and it decides what makes it out of the river.","items":[["kit_defense","Defense Kit"],["kit_climbing","Climbing Kit"],["kit_medic","Field Medic Kit"],["kit_breach","Breach Kit"]],"tiers":["","","","",""]}],"draw":true,"onAdventure":true,"badge":["#2c6021","#1b3b15","#a2f590"]};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
-  var STORE = 'thRaft:v1', ME = 'thLoot:me';
+  var STORE = 'thOut:v1', ME = 'thLoot:me';
 
   var root = document.getElementById('rc');
   var $ = function (id) { return document.getElementById(id); };
@@ -649,7 +624,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       var c = document.createElement('canvas'); c.width = c.height = 256;
       var g = c.getContext('2d');
       var grad = g.createLinearGradient(0, 0, 0, 256);
-      grad.addColorStop(0, '#607667'); grad.addColorStop(1, '#213226');
+      grad.addColorStop(0, '#2c6021'); grad.addColorStop(1, '#1b3b15');
       g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
       g.fillStyle = '#fffffe'; g.textAlign = 'center'; g.textBaseline = 'middle';
       var word = lab ? String(lab[n]) : null;
@@ -1520,110 +1495,6 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     $('rc-orders').insertAdjacentElement('afterend', box);
   }
   if (RES && (DATA.resultsLive || (PREVIEW && /[?&]results/.test(location.search)))) (RES.draws ? showDraws : showResults)();
-  // ---- the raft hunt (chapter 6) ------------------------------------------------------------
-  // Before the rolls: how many of the 100 pieces the frens have found, the 5 you carry, and where to look.
-  // The dice stay locked until you have 5 (the sheet checks too: advroll answers error 'raft').
-  var RAFT = DATA.raft, raftTaken = [], raftMine = [], raftKnown = false;
-  var RAFT_MINE = 'thRaft:mine';
-  // the dice opened to everyone once the raft was built (Maurice, 2026-10-08): config needsRaft false
-  function raftLocked() { return !!RAFT && !!DATA.needsRaft && !PREVIEW && raftMine.length < RAFT.perFren; }
-  function raftLoad() {
-    try { var m = JSON.parse(localStorage.getItem(RAFT_MINE) || 'null'); if (m && me.email && m.email === me.email) raftMine = m.ids || []; } catch (e) {}
-  }
-  function raftArt(id) {
-    var k = RAFT.kinds[(id - 1) % RAFT.kinds.length][0];
-    var A = {
-      plank: '<rect x="6" y="17" width="36" height="14" fill="#f3ead9" stroke="#0b170f" stroke-width="2.5"/><path d="M10 22h12M26 26h12M14 27h6" stroke="#0b170f" stroke-width="1.6" fill="none"/>',
-      rope: '<circle cx="24" cy="24" r="15" fill="#f3ead9" stroke="#0b170f" stroke-width="2.5"/><circle cx="24" cy="24" r="9.5" fill="none" stroke="#0b170f" stroke-width="1.8"/><circle cx="24" cy="24" r="4.5" fill="#1a5e41" stroke="#0b170f" stroke-width="1.8"/>',
-      barrel: '<path d="M14 8h20c3 5 4 10 4 16s-1 11-4 16H14c-3-5-4-10-4-16s1-11 4-16z" fill="#f3ead9" stroke="#0b170f" stroke-width="2.5"/><path d="M11 17h26M11 31h26" stroke="#1a5e41" stroke-width="3.5"/>',
-      oar: '<path d="M8 40L30 18" stroke="#0b170f" stroke-width="6.5"/><path d="M8 40L30 18" stroke="#f3ead9" stroke-width="3"/><path d="M28 12l8-6 6 6-6 8-8 0z" fill="#1a5e41" stroke="#0b170f" stroke-width="2.5" stroke-linejoin="round"/>',
-      sail: '<path d="M10 8h28l-4 32H14z" fill="#f3ead9" stroke="#0b170f" stroke-width="2.5" stroke-linejoin="round"/><path d="M15 16h18M16 24h16M17 32h14" stroke="#0b170f" stroke-width="1.4"/>'
-    };
-    return '<svg viewBox="0 0 48 48" aria-hidden="true">' + A[k] + '</svg>';
-  }
-  // the message for each difficulty stage; Maurice wrote the 50 one, the rest follow it (2026-10-07)
-  function raftStage(found) {
-    var t = found >= RAFT.total ? 'You found all ' + RAFT.total + '! The raft is built! Everyone who rolls and seals their rolls gets a 500-point bonus for finding it so fast.'
-      : found >= RAFT.total - 10 ? 'You found ' + (RAFT.total - 10) + '! The final ten are barely there now. Look closely...'
-      : found >= RAFT.total - 25 ? 'You found ' + (RAFT.total - 25) + '! The last 25 pieces are fading out...'
-      : found >= 50 ? 'You found 50! Oh no, it looks like the remaining pieces just got a little harder to find...' : '';
-    return t ? '<p class="rf-hard">' + esc(t) + '</p>' : '';
-  }
-  function raftPanel() {
-    var sec = $('rf-raft');
-    if (!sec) {
-      sec = document.createElement('section'); sec.className = 'rc-step rf-raft'; sec.id = 'rf-raft';
-      $('cr-questions').parentNode.insertBefore(sec, $('cr-questions'));
-    }
-    var found = raftTaken.length, gone = {}, mineSet = {};
-    raftTaken.forEach(function (t) { gone[t] = true; });
-    raftMine.forEach(function (t) { mineSet[t] = true; });
-    var cells = '';
-    for (var i = 1; i <= RAFT.total; i++) cells += '<i class="' + (mineSet[i] ? 'mine' : gone[i] ? 'in' : '') + '"></i>';
-    var slots = '';
-    for (var k = 0; k < RAFT.perFren; k++) slots += '<div class="rf-slot' + (raftMine[k] ? ' got' : '') + '">' + (raftMine[k] ? raftArt(raftMine[k]) : '<span>' + (k + 1) + '</span>') + '</div>';
-    // which pages hide pieces, never how many are left; the list opens at the 12-hour mark (Maurice, 2026-10-07)
-    var hintAt = Date.parse(DATA.opens) + 12 * 3600000, hintOpen = PREVIEW || Date.now() >= hintAt;
-    var where = Object.keys(RAFT.pages).map(function (p) {
-      return '<li><a href="https://www.mauriceafrich.com' + p + '">' + esc(RAFT.names[p]) + '</a></li>';
-    }).join('');
-    sec.innerHTML = '<header><p class="rc-kick">STEP 2 · THE RAFT</p><h2>Find 5 pieces</h2>' +
-      '<p>Pieces of the raft are hidden all over mauriceafrich.com. When you spot one, click it to grab it. Each claimed piece pays ' + RAFT.points + ' points, and once a fren grabs a piece, it’s gone for everyone else. You can carry ' + RAFT.perFren + '.</p>' +
-      '<p>If the frens don’t find all ' + RAFT.total + ' in time, the crew crosses on whatever they built, and the raft is only as good as its pieces.</p></header>' +
-      raftStage(found) +
-      '<div class="rf-top"><div class="rf-count"><div class="k">PIECES FOUND</div><div class="v rc-num">' + (raftKnown ? found : '…') + '<small> / ' + RAFT.total + '</small></div>' +
-      '<div class="rf-bar" role="img" aria-label="' + found + ' of ' + RAFT.total + ' raft pieces found">' + cells + '</div></div>' +
-      '<div class="rf-mine"><div class="k">YOUR PIECES · ' + raftMine.length + ' OF ' + RAFT.perFren + '</div><div class="rf-slots">' + slots + '</div>' +
-      '<p class="rf-note">' + (!DATA.needsRaft && raftMine.length < RAFT.perFren ? 'The raft is built, so the dice are open to everyone. Roll for the crossing below.' : raftMine.length >= RAFT.perFren ? 'You have all ' + RAFT.perFren + '. Roll for the crossing below.' : PREVIEW ? 'Preview: the dice below are unlocked so you can try them.' : 'Find ' + (RAFT.perFren - raftMine.length) + ' more to unlock the dice.') + '</p></div></div>' +
-      '<div class="rf-where"><div class="k">WHERE TO LOOK</div>' + (hintOpen
-        ? (PREVIEW ? '<p class="rf-note">Preview: on the live page, this list shows up at the 12-hour mark (' + esc(when(hintAt)) + ').</p>' : '') + '<ul>' + where + '</ul>'
-        : '<p class="rf-note">Halfway through, at ' + esc(when(hintAt)) + ', I’ll tell you which pages are hiding pieces.</p>') + '</div>';
-  }
-  function raftRefresh() {
-    if (PREVIEW) {
-      // a make-believe count, so the preview shows the raft half built
-      raftTaken = []; for (var i = 1; i <= RAFT.total; i++) if ((i * 37) % 100 < 41) raftTaken.push(i);
-      raftKnown = true; $('rc-count').textContent = fmt(raftTaken.length) + ' / ' + RAFT.total; raftPanel(); render(); return;
-    }
-    jsonp({ action: 'raftstate', email: me.email || '' }, function (res) {
-      if (res && res.ok) {
-        raftTaken = res.taken || []; raftKnown = true;
-        if (res.mine) { raftMine = res.mine; try { localStorage.setItem(RAFT_MINE, JSON.stringify({ email: me.email, ids: raftMine })); } catch (e) {} }
-        $('rc-count').textContent = fmt(raftTaken.length) + ' / ' + RAFT.total;
-      }
-      raftPanel(); render();
-    });
-  }
-  // on the results view the hunt panel stays away; the stats say who rolled and the bonus
-  if (RAFT && $('cr-results')) {
-    $('rc-pts').closest('.rc-stat').querySelector('.k').textContent = 'THE RAFT BONUS';
-    $('rc-pts').closest('.rc-stat').querySelector('small').textContent = 'All 100 pieces were found, so everyone who sealed their rolls earned it.';
-    $('rc-pts').textContent = '+' + (DATA.rollBonus ? DATA.rollBonus.points : 0);
-    $('rc-count').closest('.rc-stat').querySelector('.k').textContent = 'FRENS WHO SEALED THEIR ROLLS';
-    $('rc-count').closest('.rc-stat').querySelector('small').textContent = 'One roll per die was drawn from theirs.';
-  } else if (RAFT) {
-    raftLoad();
-    $('rc-pts').closest('.rc-stat').querySelector('.k').textContent = 'EACH CLAIMED PIECE PAYS';
-    $('rc-pts').closest('.rc-stat').querySelector('small').textContent = 'Up to ' + RAFT.perFren + ' pieces each. They go straight to the leaderboard.';
-    $('rc-count').closest('.rc-stat').querySelector('.k').textContent = 'PIECES FOUND';
-    $('rc-count').closest('.rc-stat').querySelector('small').textContent = 'Every fren carries 5. It takes a crew.';
-    $('rc-close-k').textContent = 'THE RAFT HUNT ENDS';
-    $('rc-seal').textContent = DATA.sealLabel || 'SEAL MY PLAN';
-    document.querySelector('#rc-orders .rc-kick').textContent = 'THE CROSSING';
-    document.querySelector('#rc-orders h2').textContent = 'Seal your rolls';
-  }
-  if (RAFT && !$('cr-results')) { $('rc-pts').textContent = '+' + RAFT.points; raftRefresh(); }
-  // "You have {countdown} to find all 100": the time left until the raft hunt ends, ticking (Maurice, 2026-10-07)
-  if (RAFT && DATA.lede.indexOf('{countdown}') >= 0 && !$('cr-results')) {
-    var cdParts = DATA.lede.split('{countdown}');
-    $('cr-lede').innerHTML = esc(cdParts[0]) + '<b class="rf-cd" id="rf-cd"></b>' + esc(cdParts[1]);
-    var cdTick = function () {
-      var left = Math.max(0, CLOSES - Date.now()), h = Math.floor(left / 3600000), m = Math.floor(left / 60000) % 60, sec = Math.floor(left / 1000) % 60;
-      $('rf-cd').textContent = left ? h + 'h ' + ('0' + m).slice(-2) + 'm ' + ('0' + sec).slice(-2) + 's' : 'no time left';
-      if (left) setTimeout(cdTick, 1000 - (Date.now() % 1000));
-    };
-    cdTick();
-  }
 
 })();
 </script>

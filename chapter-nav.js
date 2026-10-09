@@ -10,7 +10,8 @@
     ['/the-crew', 'Meet the Crew', ['rgba(11,23,15,.6)', '#89fbcb', '#268e62']],
     ['/the-crash', 'Crash Landing', ['rgba(21,13,40,.78)', '#c3a6ff', '#7b4ee1']],
     ['/the-river', 'Fight the Levian', ['rgba(11,23,15,.9)', '#89fbcb', '#1a5e41']],
-    ['/the-raft', 'Cross the River', ['rgba(11,23,15,.88)', '#a2f590', '#607667']]
+    ['/the-raft', 'Cross the River', ['rgba(11,23,15,.88)', '#a2f590', '#607667']],
+    ['/river-mayhem', 'River Mayhem', ['rgba(11,23,15,.88)', '#a2f590', '#2c6021']]
   ];
   var path = (window.CHAPTER_PATH || location.pathname).replace(/\/+$/, '');
   var at = -1;
