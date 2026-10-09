@@ -100,3 +100,6 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 /* Adventure dice (Maurice, 10/9): the roll number sits centered on the die face, allowing for its 3D edge. */
 .av-die span{line-height:1 !important;letter-spacing:0 !important;margin:-.07em 0 0 -.05em !important}
+
+/* Games page (Maurice, 10/9): "The Treasure Hunt" above the game title matches the title, white with the same 3D. */
+.m-eyebrow[style*="Atomic Marker"]{color:#fffffe !important}

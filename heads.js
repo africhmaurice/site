@@ -83,7 +83,14 @@
     return true; }
   // Turned or scaled text (the rotated "Reward Unlocked!" stamps) gets the new font without the 3D layer.
   function turned(el) { for (var q = el; q && q !== document.body; q = q.parentElement) { var tf = getComputedStyle(q).transform; if (tf && tf !== 'none' && !/^matrix\(1, 0, 0, 1,/.test(tf)) return true; } return false; }
-  function scan() { var all = document.body ? document.body.getElementsByTagName('*') : [];
+  // The new logo (Maurice, 10/9): every copy of the old white wordmark, in the Squarespace header, the hunt menu, and the
+  // game pages, becomes the new cracked logo.
+  var LOGO = BASE + 'assets/img/logo-2026-white.webp';
+  function logos() { var im = document.getElementsByTagName('img');
+    for (var i = 0; i < im.length; i++) { var g = im[i], s = g.getAttribute('src') || g.getAttribute('data-src') || '';
+      if (g.dataset.maLogo || !/Maurice\+Africh\+Logo\+-\+White/i.test(s + (g.currentSrc || ''))) continue;
+      g.dataset.maLogo = '1'; g.removeAttribute('srcset'); g.removeAttribute('data-srcset'); g.removeAttribute('sizes'); g.src = LOGO; } }
+  function scan() { logos(); var all = document.body ? document.body.getElementsByTagName('*') : [];
     for (var i = 0; i < all.length; i++) { var el = all[i]; if (el.dataset && el.dataset.ci) continue;
       var cs = getComputedStyle(el), ff = cs.fontFamily; if (!HEAD.test(ff)) continue;
       el.dataset.ci = '1';
