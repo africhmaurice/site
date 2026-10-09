@@ -93,7 +93,7 @@
   function turned(el) { for (var q = el; q && q !== document.body; q = q.parentElement) { var tf = getComputedStyle(q).transform; if (tf && tf !== 'none' && !/^matrix\(1, 0, 0, 1,/.test(tf)) return true; } return false; }
   // The new logo (Maurice, 10/9): every copy of the old white wordmark, in the Squarespace header, the hunt menu, and the
   // game pages, becomes the new cracked logo.
-  var LOGO = BASE + 'assets/img/logo-2026-white.webp';
+  var LOGO = BASE + 'assets/img/logo-2026-white.webp?v=2';
   function logos() { var im = document.getElementsByTagName('img');
     for (var i = 0; i < im.length; i++) { var g = im[i], s = g.getAttribute('src') || g.getAttribute('data-src') || '';
       if (g.dataset.maLogo || !/Maurice\+Africh\+Logo\+-\+White|\/tm-wordmark\./i.test(s + (g.currentSrc || ''))) continue;
