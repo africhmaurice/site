@@ -147,9 +147,16 @@
         el.style.removeProperty('padding-top'); el.style.removeProperty('padding-bottom');
         fb.style.setProperty('padding-top', (parseFloat(fs2.paddingTop) * 2 + 6) + 'px', 'important'); fb.style.setProperty('padding-bottom', (parseFloat(fs2.paddingBottom) * 2 + 6) + 'px', 'important');
         fb.style.setProperty('margin-top', (parseFloat(fs2.marginTop) * 2) + 'px', 'important'); fb.style.setProperty('margin-bottom', (parseFloat(fs2.marginBottom) * 2) + 'px', 'important'); }
+      // Titles with a hand-placed line break ("Welcome to / the Hunt!", Maurice 10/9) stay on exactly those lines.
+      if (el.querySelector('br') && /^H[1-3]$/.test(el.tagName)) { el.style.setProperty('white-space', 'nowrap', 'important'); el.dataset.ciFit = el.style.getPropertyValue('font-size') || ''; fit(el); }
       if (cs.display !== 'inline' && (el.innerText || '').trim() && uniform(el, cs.fontSize) && !turned(el)) {
         if (cs.position === 'static') el.style.setProperty('position', 'relative');
         el.setAttribute('data-ci-x', lines(el)); place(el); } } }
+  // Shrink a no-wrap title just enough that its longest line fits its column (never bigger than the page set it).
+  function fit(el) { var o = el.dataset.ciFit; if (o) el.style.setProperty('font-size', o); else el.style.removeProperty('font-size'); var w = el.parentElement ? el.parentElement.clientWidth : 0;
+    if (w && el.scrollWidth > w) el.style.setProperty('font-size', (parseFloat(getComputedStyle(el).fontSize) * w / el.scrollWidth * 0.98) + 'px', 'important'); }
+  window.addEventListener('resize', function () { [].forEach.call(document.querySelectorAll('[data-ci-fit]'), fit); later(); });
+  if (document.fonts) document.fonts.ready.then(function () { [].forEach.call(document.querySelectorAll('[data-ci-fit]'), fit); later(); });
   var t; function soon() { clearTimeout(t); t = setTimeout(function () { scan(); later(); }, 120); }
   // New sections get scanned; text that changes in place (counters) only refreshes the 3D lines.
   // Headings whose own text changes (counting-up numbers) refresh their 3D on the next frame, so it never trails.
