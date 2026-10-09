@@ -21,7 +21,7 @@
     "@font-face{font-family:'CI Extrude';src:url('" + FONTS + "CrackedImperia-ExtrudeFlush.woff2?v=2') format('woff2');font-weight:100 900;font-display:block;size-adjust:" + SIZE + "}" +
     "[data-ci-x]{isolation:isolate}" +
     // The 3D: the heading's words again, in the Extrude font, behind the face, on the same lines.
-    "[data-ci-x]::before{content:attr(data-ci-x);position:absolute;left:var(--ci-x,0);top:var(--ci-y,0);width:var(--ci-w,auto);padding:0;border:0;box-sizing:content-box;font-family:'CI Extrude';font-size:inherit;line-height:var(--ci-lh,1.05);letter-spacing:inherit;word-spacing:inherit;text-align:inherit;text-transform:inherit;text-indent:inherit;white-space:pre;-webkit-text-stroke:0;color:var(--ci-depth);-webkit-text-fill-color:var(--ci-depth);background:none;filter:none;z-index:-1;pointer-events:none}";
+    "[data-ci-x]::before{content:attr(data-ci-x);position:absolute;left:var(--ci-x,0);top:calc(var(--ci-y,0px) + .0318em);width:var(--ci-w,auto);padding:0;border:0;box-sizing:content-box;font-family:'CI Extrude';font-size:inherit;line-height:var(--ci-lh,1.05);letter-spacing:inherit;word-spacing:inherit;text-align:inherit;text-transform:inherit;text-indent:inherit;white-space:pre;-webkit-text-stroke:0;color:var(--ci-depth);-webkit-text-fill-color:var(--ci-depth);background:none;filter:none;z-index:-1;pointer-events:none}";
   (document.head || document.documentElement).appendChild(st);
   var pre = document.createElement('link'); pre.rel = 'preload'; pre.as = 'font'; pre.type = 'font/woff2'; pre.crossOrigin = 'anonymous';
   pre.href = FONTS + 'CrackedImperia-Bold.woff2'; (document.head || document.documentElement).appendChild(pre);
@@ -142,9 +142,16 @@
         el.setAttribute('data-ci-x', lines(el)); place(el); } } }
   var t; function soon() { clearTimeout(t); t = setTimeout(function () { scan(); later(); }, 120); }
   // New sections get scanned; text that changes in place (counters) only refreshes the 3D lines.
+  // Headings whose own text changes (counting-up numbers) refresh their 3D on the next frame, so it never trails.
+  var live = [], raf = 0;
+  function flush() { raf = 0; live.forEach(function (e) { var t = lines(e); if (t && t !== e.getAttribute('data-ci-x')) e.setAttribute('data-ci-x', t); place(e); }); live = []; }
   function start() { scan(); later(); new MutationObserver(function (ms) {
-    for (var i = 0; i < ms.length; i++) if (ms[i].type === 'childList' && ms[i].addedNodes.length) return soon();
-    later(); }).observe(document.body, { childList: true, subtree: true, characterData: true }); }
+    var added = false;
+    for (var i = 0; i < ms.length; i++) { var m = ms[i], n = m.target.nodeType === 1 ? m.target : m.target.parentElement, h = n && n.closest && n.closest('[data-ci-x]');
+      if (h) { if (live.indexOf(h) < 0) live.push(h); continue; }
+      if (m.type === 'childList') for (var k = 0; k < m.addedNodes.length; k++) if (m.addedNodes[k].nodeType === 1) added = true; }
+    if (live.length && !raf) raf = requestAnimationFrame(flush);
+    if (added) soon(); else later(); }).observe(document.body, { childList: true, subtree: true, characterData: true }); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
   window.addEventListener('load', soon); window.addEventListener('resize', later);
   if (document.fonts) { document.fonts.addEventListener('loadingdone', later); document.fonts.ready.then(later); }
