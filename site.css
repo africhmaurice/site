@@ -103,3 +103,6 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 /* Games page (Maurice, 10/9): "The Treasure Hunt" above Skyword uses the same Light Scarlet as the other game pages. */
 .m-eyebrow[style*="Atomic Marker"]{color:#fd7547 !important}
+
+/* Hunt hero (Maurice, 10/9): "Welcome to / the Hunt!" always on two lines. */
+h1[style*="clamp(48px,7.4vw,160px)"]{white-space:nowrap !important;font-size:clamp(34px,6.2vw,140px) !important}

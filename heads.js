@@ -18,7 +18,7 @@
   var st = document.createElement('style'); st.id = 'ma-heads';
   st.textContent =
     "@font-face{font-family:'CI Face';src:url('" + FONTS + "CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:" + SIZE + "}" +
-    "@font-face{font-family:'CI Extrude';src:url('" + FONTS + "CrackedImperia-ExtrudeFlush.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:" + SIZE + "}" +
+    "@font-face{font-family:'CI Extrude';src:url('" + FONTS + "CrackedImperia-ExtrudeFlush.woff2?v=2') format('woff2');font-weight:100 900;font-display:block;size-adjust:" + SIZE + "}" +
     "[data-ci-x]{isolation:isolate}" +
     // The 3D: the heading's words again, in the Extrude font, behind the face, on the same lines.
     "[data-ci-x]::before{content:attr(data-ci-x);position:absolute;left:var(--ci-x,0);top:var(--ci-y,0);width:var(--ci-w,auto);padding:0;border:0;box-sizing:content-box;font-family:'CI Extrude';font-size:inherit;line-height:var(--ci-lh,1.05);letter-spacing:inherit;word-spacing:inherit;text-align:inherit;text-transform:inherit;text-indent:inherit;white-space:pre;-webkit-text-stroke:0;color:var(--ci-depth);-webkit-text-fill-color:var(--ci-depth);background:none;filter:none;z-index:-1;pointer-events:none}";
