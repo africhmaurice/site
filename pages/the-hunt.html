@@ -627,6 +627,14 @@ if(location.hash==='#golden')window.__goldenOpen();
 #map .mh-foot .mh-spot{width:clamp(12.67px,1.667vw,23.33px);height:clamp(12.67px,1.667vw,23.33px)}
 #map .mh-foot .mh-spot svg{filter:drop-shadow(0 9px 9px rgba(0,0,0,.6)) drop-shadow(0 2px 4px rgba(0,0,0,.45))}
 @media (prefers-reduced-motion:reduce){#map .mh-foot-in{transition:none}}
+/* chapters 6 and 7 (scripts/map-raft.mjs): the raft's wake across the river, the wreckage, the drift downstream */
+#map .mh-prints .wk{stroke:#fffffe;stroke-width:1.15;stroke-linecap:round;opacity:0;transition:opacity .25s ease}
+#map .mh-prints .wk.on{opacity:.95}
+#map .mh-prints .mh-wreck{opacity:0;transition:opacity .4s ease}
+#map .mh-prints .mh-wreck.on{opacity:1}
+#map .mh-prints .mh-wreck rect{fill:#c9a36b;stroke:#3b2410;stroke-width:.35}
+#map .mh-map.mh-break{animation:mh-bigshake .9s cubic-bezier(.36,.07,.19,.97) both}
+@media (prefers-reduced-motion:reduce){#map .mh-map.mh-break{animation:none}}
 /* the Levian's roar shakes the map and washes it in river green */
 #map .mh-map.mh-roar{animation:mh-bigshake .9s cubic-bezier(.36,.07,.19,.97) both}
 #map .mh-map.mh-roar::after{animation:mh-wave 1.4s ease-out both}
@@ -743,10 +751,14 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
             <path id="mh-fpath-orders" d="M947,854 Q905,892 862,886" fill="none" stroke="none"/><path id="mh-fpath-river" d="M862,886 Q832,872 822,836" fill="none" stroke="none"/>
             <g class="mh-x"><line x1="942" y1="849" x2="952" y2="859" stroke="#fffffe" stroke-width="4.2"/><line x1="952" y1="849" x2="942" y2="859" stroke="#fffffe" stroke-width="4.2"/>
               <line x1="942" y1="849" x2="952" y2="859" stroke="#c53200" stroke-width="2.4"/><line x1="952" y1="849" x2="942" y2="859" stroke="#c53200" stroke-width="2.4"/></g>
-            <g id="mh-fprints-orders"></g><g id="mh-fprints-river"></g>
+            <path id="mh-fpath-raft" d="M822,836 Q813,831 804,830" fill="none" stroke="none"/><path id="mh-fpath-drift" d="M804,830 C799,832 791,836 786,839 S778,846 776,848 S772,853 771,855 S767,859 765,861 S761,866 760,870" fill="none" stroke="none"/>
+            <g class="mh-wreck" id="mh-wreck"><rect x="798.6" y="827.45" width="4.8" height="1.1" transform="rotate(24 801 828)"/><rect x="804.1" y="830.95" width="4.8" height="1.1" transform="rotate(-38 806.5 831.5)"/><rect x="800.6" y="832.6500000000001" width="4.8" height="1.1" transform="rotate(70 803 833.2)"/><rect x="805.6" y="826.85" width="4.8" height="1.1" transform="rotate(8 808 827.4)"/></g>
+            <g id="mh-fprints-orders"></g><g id="mh-fprints-river"></g><g id="mh-fprints-raft"></g><g id="mh-fprints-drift"></g>
           </svg>
           <button type="button" class="mh-spot" id="mh-spot-orders" data-pop="mh-orders" hidden style="left:53.88%;top:73.83%" aria-label="Setting Out: Orders From the Captain"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
           <button type="button" class="mh-spot mh-river" id="mh-spot-river" data-pop="mh-river" hidden style="left:51.38%;top:69.67%" aria-label="The River"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
+          <button type="button" class="mh-spot" id="mh-spot-raft" data-pop="mh-raft" hidden style="left:50.25%;top:69.17%" aria-label="Cross the River: the raft breaks"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
+          <button type="button" class="mh-spot" id="mh-spot-mayhem" data-pop="mh-mayhem" hidden style="left:47.50%;top:72.50%" aria-label="River Mayhem"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring r3" cx="50" cy="50" r="46" pathLength="100"/><circle class="ring r2" cx="50" cy="50" r="36" pathLength="100"/><circle class="ring r1" cx="50" cy="50" r="26" pathLength="100"/><circle class="core" cx="50" cy="50" r="13"/></svg></button>
         </div></div>
         <div class="mh-roll" aria-hidden="true"></div>
         <div class="mh-switch" hidden role="group" aria-label="Which map"><button type="button" data-map="world" aria-pressed="false">WORLD MAP</button><button type="button" data-map="treasure" aria-pressed="true">TREASURE MAP</button><button type="button" data-map="foot" aria-pressed="false" hidden>ON FOOT</button></div>
@@ -895,7 +907,25 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
       <div class="mh-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/river-3-the-river.m4a"></audio></div>
     <details class="mh-tx"><summary>Read the transcript</summary><div><p><i>Rushing water, loud and close.</i></p><p><b>Rune</b>Well, there's the water, innit.</p><p><b>Scarlett</b>That ain't a river, sugar. That's a stampede.</p><p><b>Hale</b>Too deep to wade. Current'll take you.</p><p><b>Sparrow</b>I could blink across. Probably. Maybe. If I can see the other side.</p><p><b>Orion</b>The Sword is just beyond it... <i>[creepy music score]</i> but that is nothing compared to the endless tribulations of the water we must first--</p><p><b>Captain</b>You're at a river? Perfect. Fill your canteens. Then get across it. And whatever you do, don't fall in.</p><p><b>Rune</b>Why? What's in it, bruv?</p><p><b>Captain</b>How should I know? I'm not there, you fuckin' clink-stain. That's why you don't fall in!</p><p><b>Orion</b>Something is moving beneath the surface.</p><p><b>Rune</b>Where?</p><p><b>Hale</b>There! <i>[draws torch, hums as it glows]</i></p><p><i>Monster roar! A Levian, a giant sea serpent trapped in the river, rises from the water and lunges.</i></p></div></details>
     <p class="mh-blurb">A wide, fast river cuts across the valley between the crew and the Sword. There's no bridge, and then something massive pops out of the water--A LEVIAN! A giant sea serpent, for some reason, trapped within this river. It rises from the water and lunges.</p>
-    <a class="mh-cta" href="https://www.mauriceafrich.com/the-river">FIGHT THE LEVIAN</a>
+    <button type="button" class="mh-cta" data-next="cross">CROSS THE RIVER</button>
+  </div>
+</div>
+  <div class="mh-pop" id="mh-raft" role="dialog" aria-modal="true" aria-labelledby="mh-raft-t" hidden>
+  <div class="mh-card">
+    <button type="button" class="mh-x" aria-label="Close">&times;</button>
+    <p class="mh-kick">CROSS THE RIVER</p>
+    <h3 id="mh-raft-t">The Raft Breaks</h3>
+    <p class="mh-blurb">The frens find all 100 pieces, and the crew lashes together a raft. It floats ... for a while. About halfway across, it breaks apart, and the river sweeps the crew downstream. Now they’re stuck in the water.</p><p class="mh-blurb">Fortunately, the Levian doesn’t come back. But there are other things in this river...</p>
+    <button type="button" class="mh-cta" data-next="drift">DOWN THE RIVER</button>
+  </div>
+</div>
+  <div class="mh-pop" id="mh-mayhem" role="dialog" aria-modal="true" aria-labelledby="mh-mayhem-t" hidden>
+  <div class="mh-card">
+    <button type="button" class="mh-x" aria-label="Close">&times;</button>
+    <p class="mh-kick">IN THE WATER</p>
+    <h3 id="mh-mayhem-t">River Mayhem</h3>
+    <p class="mh-blurb">The raft broke apart. It’s gone. Now, the crew is in the water. Roll for the water, then roll for how each member of the crew fares, and then one more time for every kit they’re hauling with them. When voting closes, one roll for each die is drawn at random from everyone’s rolls, and I’ll name whose roll it was. And then we find out what happens next!</p>
+    <a class="mh-cta" href="https://www.mauriceafrich.com/river-mayhem">VOTE: RIVER MAYHEM</a>
   </div>
 </div>
   <script>(function(){
@@ -926,7 +956,13 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
         f.setAttribute('transform', 'translate(' + (a.x - Math.sin(ang) * side).toFixed(2) + ',' + (a.y + Math.cos(ang) * side).toFixed(2) + ') rotate(' + (ang * 180 / Math.PI).toFixed(1) + ')');
         f.innerHTML = '<ellipse cx="0.9" cy="0" rx="2.1" ry="1.0"/><ellipse cx="-2.1" cy="0" rx="0.95" ry="0.82"/>'; g.appendChild(f); } }
     Array.prototype.forEach.call(g.childNodes, function(f, i){ if(now||calm) f.classList.add('on'); else setTimeout(function(){ f.classList.add('on'); }, i * 110); }); }
-  function route(id, now){if(FOOT.indexOf(id)>=0)return prints(id, now);var m=document.querySelector('#mh-mask-'+id+' .wipe');if(!m)return;
+  function wake(id, now){ var path = document.getElementById('mh-fpath-'+id), g = document.getElementById('mh-fprints-'+id); if(!path||!g) return;
+    if(!g.childNodes.length){ var L = path.getTotalLength(), n = 0;
+      for(var d = 2; d < L - 1; d += 4.2, n++){ var a = path.getPointAtLength(d), b = path.getPointAtLength(Math.min(L, d + 2.2)), wob = id === 'drift' ? (n % 2 ? 1.1 : -1.1) : 0, ang = Math.atan2(b.y - a.y, b.x - a.x);
+        var l = document.createElementNS(SVGNS, 'line'); l.setAttribute('class', 'wk');
+        l.setAttribute('x1', (a.x - Math.sin(ang) * wob).toFixed(2)); l.setAttribute('y1', (a.y + Math.cos(ang) * wob).toFixed(2)); l.setAttribute('x2', (b.x - Math.sin(ang) * wob).toFixed(2)); l.setAttribute('y2', (b.y + Math.cos(ang) * wob).toFixed(2)); g.appendChild(l); } }
+    Array.prototype.forEach.call(g.childNodes, function(l, i){ if(now||calm) l.classList.add('on'); else setTimeout(function(){ l.classList.add('on'); }, i * 120); }); }
+  function route(id, now){if(id==='raft'||id==='drift')return wake(id, now);if(FOOT.indexOf(id)>=0)return prints(id, now);var m=document.querySelector('#mh-mask-'+id+' .wipe');if(!m)return;
     if(now||calm)m.style.transition='none';m.style.strokeDashoffset='0';}
   function later(ms, f){setTimeout(f, calm ? 0 : ms);}
 
@@ -955,7 +991,9 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
   // Where this browser left off.
   var done = seen();
   if (has('flight')) { route('degate-out', true); route('degate-in', true); }
-  ['degate', 'cathedral', 'sword', 'skull', 'crash', 'orders', 'river'].forEach(function(id){ if(has(id)) reveal(id); });
+  ['degate', 'cathedral', 'sword', 'skull', 'crash', 'orders', 'river', 'raft', 'mayhem'].forEach(function(id){ if(has(id)) reveal(id); });
+  if (has('raft')) { route('raft', true); var wr = document.getElementById('mh-wreck'); if (wr) wr.classList.add('on'); }
+  if (has('mayhem')) route('drift', true);
   ['cathedral', 'sword', 'skull', 'crash', 'orders', 'river'].forEach(function(id){ if(has(id)) route(id, true); });
   // Chapter 5, on foot: the switch gains ON FOOT and the treasure map becomes the view before the crash.
   function footSwitch(){ if(!sw) return; var f = sw.querySelector('[data-map="foot"]'), t = sw.querySelector('[data-map="treasure"]'); if(f) f.hidden = false; if(t) t.textContent = 'BEFORE THE CRASH'; }
@@ -965,6 +1003,19 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
     map.classList.add('mh-onfoot'); map.classList.remove('mh-close');
     later(700, function(){ showMap('foot');
       later(2700, function(){ route('orders'); later(1500, function(){ reveal('orders'); later(500, function(){ open('orders'); }); }); }); }); }
+  function crossRiver(){ if(has('raft') || !map) return; showMap('foot');
+    later(900, function(){ route('raft'); later(1500, function(){
+      if(!calm){ map.classList.remove('mh-break'); void map.offsetWidth; map.classList.add('mh-break'); }
+      var wr = document.getElementById('mh-wreck'); if (wr) wr.classList.add('on');
+      later(1000, function(){ reveal('raft'); later(500, function(){ open('raft'); onClose['mh-raft'] = drift; }); }); }); }); }
+  function drift(){ if(has('mayhem') || !map) return; route('drift'); later(2600, function(){ reveal('mayhem'); later(500, function(){ open('mayhem'); }); }); }
+  // A browser that already saw the river watches the crossing when the map comes into view.
+  if (has('river') && !has('raft') && map) {
+    if ('IntersectionObserver' in window) {
+      var io6 = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting && e.intersectionRatio >= 0.5) { io6.disconnect(); (window.maAfterLoading || function (f) { f(); })(function () { setTimeout(crossRiver, 600); }); } }); }, { threshold: [0, 0.5, 1] });
+      io6.observe(map);
+    } else crossRiver();
+  }
   if (has('crash') && !has('orders') && map) {
     if ('IntersectionObserver' in window) {
       var io5 = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting && e.intersectionRatio >= 0.5) { io5.disconnect(); (window.maAfterLoading || function (f) { f(); })(function () { setTimeout(setOut, 600); }); } }); }, { threshold: [0, 0.5, 1] });
@@ -985,14 +1036,16 @@ button.mh-cta{cursor:pointer;font-family:'Almarai',sans-serif}
   Array.prototype.forEach.call(document.querySelectorAll('#map .mh-spot'), function (b) {
     b.addEventListener('click', function () { var id = b.getAttribute('data-pop').replace(/^mh-/, ''); open(id);
       if (id === 'skull' && !has('crash')) onClose['mh-skull'] = shotDown;
-      if (id === 'crash' && !has('orders')) onClose['mh-crash'] = setOut; });
+      if (id === 'crash' && !has('orders')) onClose['mh-crash'] = setOut;
+      if (id === 'river' && !has('raft')) onClose['mh-river'] = crossRiver;
+      if (id === 'raft' && !has('mayhem')) onClose['mh-raft'] = drift; });
   });
   Array.prototype.forEach.call(pops, function (p) {
     p.querySelector('.mh-x').addEventListener('click',function(){close(p);});
     p.addEventListener('click',function(e){if(e.target===p)close(p);});
     var nx = p.querySelector('[data-next]');
     if (nx) nx.addEventListener('click', function(){ var to = nx.getAttribute('data-next');
-      onClose[p.id] = to.indexOf('pop:') === 0 ? function(){ open(to.slice(4)); } : to === 'unroll' ? (has('unrolled') ? function(){ showMap('treasure'); } : unroll) : (has(to) ? null : function(){ step(to); });
+      onClose[p.id] = to === 'cross' ? crossRiver : to === 'drift' ? drift : to.indexOf('pop:') === 0 ? function(){ open(to.slice(4)); } : to === 'unroll' ? (has('unrolled') ? function(){ showMap('treasure'); } : unroll) : (has(to) ? null : function(){ step(to); });
       close(p); });
     var a = p.querySelector('audio'); if (!a) return;
     var btn = p.querySelector('.mh-pbtn'), fill = p.querySelector('.mh-pfill'), t = p.querySelector('.mh-ptime'),
