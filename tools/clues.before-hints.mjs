@@ -107,7 +107,7 @@ const boards = CLUES.map(([n, text, o = {}]) => {
 }).join('\n');
 
 // A flash clue: one click shows its image full screen for a split second, then it's gone.
-// flashFill: the image covers the whole screen (a photo) instead of sitting centred on white (a logo).
+// flashFill: the image covers the whole screen (a photo) instead of sitting centered on white (a logo).
 const flashJs = `  <script>(function(){var s=document.getElementById('loot-clue');if(!s)return;
     Array.prototype.forEach.call(s.querySelectorAll('.lc-flash'),function(b){var src=b.getAttribute('data-flash');new Image().src=src;
       function go(){var o=document.createElement('div');o.className='lc-flash-ov'+(b.hasAttribute('data-fill')?' fill':'');o.innerHTML='<img alt="" src="'+src+'">';document.body.appendChild(o);setTimeout(function(){o.remove();},110);}

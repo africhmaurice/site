@@ -369,7 +369,7 @@ window.maAnimate = function(a, b, ms, step, done){
   var t0 = performance.now();
   (function frame(t){ var k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3); step(a + (b - a) * e); if(k < 1) requestAnimationFrame(frame); else if(done) done(); })(t0);
 };
-// A burst of confetti in the site's colours from an element (or the middle of the screen).
+// A burst of confetti in the site's colors from an element (or the middle of the screen).
 window.maConfetti = function(from){
   if(still) return;
   var r = from && from.getBoundingClientRect ? from.getBoundingClientRect() : null;

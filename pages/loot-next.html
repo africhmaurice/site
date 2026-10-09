@@ -471,7 +471,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       var who = [me.first_name, me.handle].filter(Boolean).join('  ·  ');
       if (who) t(who, W / 2, 212, '700 30px Almarai', T.text);
       t(lastFound.length + ' OF ' + TOTAL + ' FOUND', W / 2, 268, '800 34px Almarai', T.hi, 6);
-      // The grid: 11 across, found chests in full colour, the rest faint.
+      // The grid: 11 across, found chests in full color, the rest faint.
       var cols = 11, cell = 80, gx = (W - cols * cell) / 2, gy = 300;
       round(gx - 16, gy - 16, cols * cell + 32, Math.ceil(TOTAL / cols) * cell + 32, 24); x.fillStyle = T.panel; x.fill();
       x.strokeStyle = T.line; x.lineWidth = 3; x.stroke();

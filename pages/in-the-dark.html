@@ -35,7 +35,7 @@ html,body{margin:0 !important;padding:0 !important;background:#060d08 !important
     return {rise:ms(Jt-w/360),set:ms(Jt+w/360)};}
   for(var k=-2;k<=1;k++){if(now>=sun(n0+k).set&&now<sun(n0+k+1).rise)return true;}return false;}
   var d=document.getElementById('ma-dark');
-  // Fill the whole window: no Squarespace padding, colours or header space around it.
+  // Fill the whole window: no Squarespace padding, colors or header space around it.
   var sec=d.closest('section.page-section')||d.parentElement.closest('section');if(sec){sec.style.background='#060d08';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
   var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
   document.documentElement.style.background=document.body.style.background='#060d08';

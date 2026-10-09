@@ -516,7 +516,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     return 'You rolled ' + r + '.' + (PREVIEW ? ' (Preview roll, not recorded.)' : '');
   }
   // ---- the 3D d20 ------------------------------------------------------
-  // A real twenty-sided die in red metal (three.js, MIT licence, from cdnjs), numbered like a table die: opposite
+  // A real twenty-sided die in red metal (three.js, MIT license, from cdnjs), numbered like a table die: opposite
   // faces add up to 21. It tumbles while the roll is on its way, then bounces and settles with the
   // rolled face up. The clatter is made on the spot with Web Audio, so there is no sound file.
   // If three.js cannot load, the flat die (D20 above) stays and everything else works the same.
@@ -667,7 +667,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
     function stopLoop(d) { if (d.raf) cancelAnimationFrame(d.raf); d.raf = 0; }
 
-    // ---- the throw: a real physics roll (cannon.js, MIT licence, from cdnjs) -----------------
+    // ---- the throw: a real physics roll (cannon.js, MIT license, from cdnjs) -----------------
     // The die is thrown from its card with a random force, spin and angle, and the physics decides
     // everything after that: the tumbling, the bounces off the table and the screen edges, and where
     // it comes to rest. Nothing steers it. Every face of a d20 is the same shape, so the numbers can

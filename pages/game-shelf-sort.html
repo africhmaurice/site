@@ -77,7 +77,7 @@ html,body{margin:0 !important;padding:0 !important}
 .hg-next strong{color:#c53200;font-size:18px}
 .hg-more{text-align:center;margin:26px 0 0;font-weight:700;font-size:15px;letter-spacing:.06em}
 .hg-more a{color:#c53200}
-/* Sort the Shelf: Maurice's bookcase, cover and spine art (assets/shelf/), tinted in every brand colour. */
+/* Sort the Shelf: Maurice's bookcase, cover and spine art (assets/shelf/), tinted in every brand color. */
 /* bookcase on the left, books on the right; phones stack them with the wider bookcase on top */
 .ss-board{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1fr);gap:clamp(16px,2.6vw,30px);align-items:center;max-width:980px;margin:0 auto}
 .ss-case{position:relative;width:100%;aspect-ratio:803/1300;background:url(https://africhmaurice.github.io/site/assets/shelf/bookcase-narrow.webp) center/100% 100% no-repeat;container-type:inline-size;--inset:7%}
@@ -700,7 +700,7 @@ var HG_GAME = {"key":"shelf_sort","label":"Sort the Shelf","points":40,"startDat
   st.solved = st.solved || []; st.won = st.won || st.solved.slice(); st.miss = st.miss || 0; st.tried = st.tried || [];
   var order = st.order || HG.shuffle([].concat.apply([], groups.map(function (x) { return x.items; })), g.index * 7919 + 17);
   st.order = order;
-  // Unsorted books: one of 16 shades (each main colour, 10% darker, 10% and 20% lighter) (the same for everyone that day). A shelf, once sorted, is one colour.
+  // Unsorted books: one of 16 shades (each main color, 10% darker, 10% and 20% lighter) (the same for everyone that day). A shelf, once sorted, is one color.
   var PALETTE = ['green-dark','green','green-light','green-lighter','emerald-dark','emerald','emerald-light','emerald-lighter','ember-dark','ember','ember-light','ember-lighter','violet-dark','violet','violet-light','violet-lighter'];
   var LIGHT = { 'green-lighter': 1, 'emerald-light': 1, 'emerald-lighter': 1, 'ember-light': 1, 'ember-lighter': 1 };
   var SHELF_COLOUR = ['emerald', 'ember', 'violet', 'green'];

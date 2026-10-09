@@ -485,7 +485,7 @@ ${BLEED('hq')}
 `;
 }
 
-// On a tall screen Squarespace stretches a short page to the window and paints the rest in its own colour.
+// On a tall screen Squarespace stretches a short page to the window and paints the rest in its own color.
 // These pages hand that leftover space to the dark footer instead, so there is no big empty band.
 const FOOTER_FILL = '<style>#siteWrapper{display:flex !important;flex-direction:column !important}#siteWrapper>*{flex:none}#siteWrapper>#footer-sections{flex:1 0 auto}</style>';
 // The Squarespace block around a page keeps the height of its grid cell; let it shrink to the page (as the game pages do).
