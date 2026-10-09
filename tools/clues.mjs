@@ -138,6 +138,8 @@ Yet again, you might try.`],
   ['50–52', 'In celebration of Act 2 beginning, here are three loot boxes!', { button: ['Claim them', 'https://www.mauriceafrich.com/stack-the-colors'] }],
   // Box 53, The Locked Loot Box (Maurice, 2026-10-04): a locked chest in the teal under the newsletter signup; its key hides on the home page.
   [53, "Don't miss a single chapter."],
+  // Box 54, The Saga Press Loot Box (Maurice, 2026-10-09).
+  [54, 'SP HOT NEW SCIFI'],
   // Aaron Hall's clue (Maurice, 2026-10-03).
   [55, 'Who gave that caveman a microphone!?'],
   // PixelCait's box (Maurice, 2026-10-04; his wording, emoji included).
@@ -147,6 +149,8 @@ Yet again, you might try.`],
   [57, "What's the longest word Maurice knows how to spell without looking up?", { answer: { salt: 'lw57:', hash: 'd3251280966d0626c672fd2a1bd87912fdbef23a6fb61987344ff26a99be97a1', go: '/longest-word' }, hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'lung disease' }] }],
   // Box 60 is a Pin on Maurice's Sky Pirates of Imperia Pinterest board (Maurice, 2026-10-04).
   [60, "the picture app & a task of the captain's making"],
+  // Box 61, The Puzzled Loot Box: the jigsaw, from Hunt puzzle card #22 (Maurice, 2026-10-09).
+  [61, 'some assembly required'],
   // Box 62 sits in the red desert of the world map, under the treasure map (Maurice, 2026-10-04).
   [62, "you've been here before, but the progression has spoiled your view"],
   // Box 63: one of Maurice's old Instagram story highlights, renamed to "/the-highlight-box".
