@@ -50,8 +50,8 @@ drown your enemies in the
 slow-cooked abyss!`],
   [5, 'WINE DADDY 45'],
   [6, 'NEEWWWW ACHIEVEMENT! This loot box is shaped like a cat girl, you dirty little lynx! I bet you like that, don\'t you?'],
-  [7, 'Keep yapping and you never know.'],
-  [8, 'Howie Day is a ______-er. 3rd/6'],
+  [7, 'Keep yapping and you never know.', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'wide', pics: [['', ART + 'clue-7-hint-1.jpg']] }] }],
+  [8, 'Howie Day is a ______-er. 3rd/6', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'Written by E.P.' }] }],
   [9, 'Destination X'],
   [10, 'nuh ay thuh nuh sih buh oof kuh tuh ock'],
   [11, `the clock says tik.
@@ -118,15 +118,18 @@ Yet again, you might try.`],
   // Box 35, The "Like and Subscribe!" Box on Zach's Bookshelf (Maurice, 2026-10-05).
   [35, 'el greco, flipped en espanol, 9th fave of the 9th fave'],
   [36, 'Slide & Find'],
-  [38, 'Lost in a sea of icons, trapped inside of a well.'],
-  [39, 'From ink to parchment, one of us waits. Words are cheap, even free, when the mind never abates.'],
+  [38, 'Lost in a sea of icons, trapped inside of a well.', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'wide', pics: [['', ART + 'clue-38-hint-1.jpg']] }] }],
+  [39, 'From ink to parchment, one of us waits. Words are cheap, even free, when the mind never abates.\n\nFree additional clue: check the shop.', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'wide', pics: [['', ART + 'clue-39-hint-1.jpg']] }] }],
   [41, 'Trapped in the tunnels beneath the ochre landscape.'],
   // Box 44 is the link on Maurice's Reddit profile (Maurice, 2026-10-05).
   [44, 'Mods Must Hate to See You Coming'],
   // Box 45 is in a YouTube video description (Maurice, 2026-10-05; his wording, exactly).
   [45, '032726 22K 5BIWICEMMTRA VD'],
   // Box 46, The Ludicrous Loot Box: say "ludicrous" in the Trench Discord and Carl-bot DMs the box (Maurice, 2026-10-05).
-  [46, '“Get back, motherf*cker, you don’t know me like that!”'],
+  [46, '“Get back, motherf*cker, you don’t know me like that!”', { hints: [
+    { price: 25, button: 'Pay 25 points for a hint.', pics: [['', ART + 'clue-46-hint-1.jpg']] },
+    { price: 10, button: 'Sacrifice 10 additional points for another clue.', shape: 'wide', pics: [['', ART + 'clue-46-hint-2.jpg']] }
+  ] }],
   // Box 48, The Hodderscape Loot Box (Maurice, 2026-10-05).
   [48, 'Hotter Escapes? Never heard of it, bruv.'],
   // Box 49, Grey's Hidden Daddy Issues (Maurice, 2026-10-06).
@@ -147,11 +150,11 @@ Yet again, you might try.`],
   // Box 62 sits in the red desert of the world map, under the treasure map (Maurice, 2026-10-04).
   [62, "you've been here before, but the progression has spoiled your view"],
   // Box 63: one of Maurice's old Instagram story highlights, renamed to "/the-highlight-box".
-  [63, '#nomadlife'],
+  [63, '#nomadlife', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'square', pics: [['', ART + 'clue-63-hint-1.jpg']] }] }],
   // Behind the Saga deluxe on the link page (Maurice, 2026-10-04).
-  [64, '4 words: edeuaegiltxsehdlas'],
+  [64, '4 words: edeuaegiltxsehdlas', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: '5 3 6 4' }] }],
   // Box 65 is the "loot boxes" link in the Discord section of the 10/5 newsletter. Same clue as 53 on purpose (Maurice, 2026-10-04).
-  [65, "Don't miss a single chapter."],
+  [65, "Don't miss a single chapter.", { hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'Sign up today to stay up to date on all things Sky Pirate!' }] }],
   // Box 66 (Maurice, 2026-10-07).
   [66, 'Brando Sando and I have this person in common.'],
   [73, 'you already have it'],
