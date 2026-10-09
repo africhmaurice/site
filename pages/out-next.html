@@ -1262,7 +1262,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     }).join('') + '</ul>';
     var m = missing();
     $('rc-seal').disabled = locked || !!m.length;
-    if (!$('rc-result').innerHTML) $('rc-msg').textContent = locked ? (notYet ? 'Voting opens ' + when(OPENS) + '.' : 'Voting has closed.') : m.length ? 'Still to do: ' + m.join(', ') + '.' : '';
+    if (!$('rc-result').innerHTML) $('rc-msg').textContent = locked ? (notYet ? 'Voting opens ' + when(OPENS) + '.' : 'Voting has closed.') : m.length ? 'Still to do: ' + m.join(' · ') : '';
   }
   function render() { renderQuestions(); renderOrders(); renderWho(); }
 
@@ -1310,6 +1310,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   $('cr-title').innerHTML = esc(DATA.title[0]) + ' <span>' + esc(DATA.title[1]) + '</span>';
   $('cr-lede').textContent = DATA.lede;
   $('rc-pts').textContent = '+' + DATA.points;
+  if (DATA.sealLabel) $('rc-seal').textContent = DATA.sealLabel;
   $('rc-close').textContent = when(CLOSES);
   if (closed) { $('rc-close-k').textContent = 'VOTING CLOSED'; $('rc-close-s').textContent = 'The votes are in.'; }
   $('rc-count').textContent = '…';
