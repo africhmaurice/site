@@ -173,20 +173,32 @@ const HUNT_QUOTE = [
   'That’s why I built this treasure hunt. Because I thought it would be fun (which is a cornerstone of my brand), I thought it would help us sell a lot of books, and I thought, by the end of it, a lot more people would know my name. We’ll see, huh? If nothing else, I know we’re all having a pretty damn good time.',
 ];
 const HUNT_QUOTE_BY = 'Maurice Africh, Author of “Cello’s Gate”';
-const STATS_DATE = 'October 5, 2026';
-// [big number, what it means]
+const STATS_DATE = 'October 7, 2026';
+// [group title, [[big number, what it means]], wide (spans the full row, two stats per line)]
 const HIGHLIGHTS = [
-  ['Reach', [
-    ['90×', 'Site traffic: 15,377 visits since the hunt started, about 960 a day.'],
-    ['2,505', 'New Goodreads “want to read” adds during the hunt.'],
-    ['394', 'Hunters from 12 countries: the U.S., the UK, Canada, Australia, India, Estonia, Ireland, Austria, Japan, Poland, Norway, and Portugal.'],
+  ['The Headline Numbers', [
+    ['412', 'Readers have joined the hunt, from 13 countries.'],
+    ['7,503', 'Tasks completed: posts, riddles, games, and finds.'],
+    ['414,340', 'Points earned by the crew together. Act One beat its 40,000 goal five times over, and Act Two is already past its 200,000 goal.'],
+    ['7,332', 'Sweepstakes entries.'],
+    ['74', 'Copies of “Cello’s Gate” pre-ordered or gifted through the hunt, a month before release.'],
+    ['90×', 'Website traffic: 17,359 visits since the hunt opened, about 1,000 a day, up from about 10 a day before it.'],
+    ['2,563', 'New Goodreads “want to read” adds during the hunt.'],
+    ['+46%', 'Discord community growth, from 171 to 249 members.'],
+  ], true],
+  ['Readers Doing the Marketing', [
+    ['502', 'Public social posts by players: 269 “share the hunt” posts, 64 book-recommendation carousels featuring “Cello’s Gate,” 123 scorecards, 35 merch photos, and 11 Balance Challenge videos.'],
+    ['60', 'Requests from readers asking 34 libraries and 26 bookstores to stock the book. Two stores have already said yes.'],
+    ['77', 'Reading-app adds by 36 readers, on Goodreads, StoryGraph, Fable, and more.'],
+    ['21', 'New players recruited by other players.'],
   ]],
-  ['Engagement', [
-    ['6,676', 'Tasks completed, about 415 a day.'],
-    ['6,515', 'Sweepstakes entries.'],
-    ['2,013', 'Loot boxes found.'],
-    ['1,771', 'Daily game wins, plus 1,183 riddles solved.'],
-    ['378,520', 'Crew points. Act One beat its 40,000 goal five times over, and Act Two is at 178,520 of its 200,000 goal.'],
+  ['Readers Are Hooked', [
+    ['2,232', 'Hidden loot boxes found, across 56 different boxes hidden around the internet.'],
+    ['1,295', 'Riddles solved.'],
+    ['2,197', 'Daily puzzle wins across 7 original games.'],
+    ['103', 'Votes steering a live choose-your-own-adventure story set in the book’s world.'],
+    ['44', 'Items bought from the merch shop.'],
+    ['11', 'Pieces of fan art and fan fiction, created before the book is even out.'],
   ]],
 ];
 const STATS = [
@@ -199,11 +211,11 @@ const HUNT_FACTS = [
   ['Dates', 'September 20 to November 1, 2026. It ends two days before “Cello’s Gate” comes out.'],
   ['Where', 'mauriceafrich.com/the-hunt'],
   ['Who', 'Free and open to everyone, everywhere. The Treasure and sweepstakes prizes are for U.S. and UK residents, 18 and older.'],
-  ['Players', '394 sky pirates from 12 countries: the U.S., the UK, Canada, Australia, India, Estonia, Ireland, Austria, Japan, Poland, Norway, and Portugal.'],
-  ['Traffic', 'Site traffic is up about 90 times: 15,377 visits since the hunt started, about 960 a day, compared with about 10 a day in September before it.'],
-  ['Play', 'Tasks, riddles, clues, six daily bookish games (including Skyword, Blades & Brass, and Crest Quest), 101 hidden loot boxes, and a fan fiction contest.'],
+  ['Players', '412 sky pirates from 13 countries: the U.S., the UK, Canada, Australia, India, Estonia, Ireland, Austria, Japan, Poland, Norway, Portugal, and Spain.'],
+  ['Traffic', 'Site traffic is up about 90 times: 17,359 visits since the hunt started, about 1,000 a day, compared with about 10 a day in September before it.'],
+  ['Play', 'Tasks, riddles, clues, seven daily bookish games (including Skyword, Blades & Brass, and Crest Quest), 101 hidden loot boxes, and a fan fiction contest.'],
   ['Story', 'Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!'],
-  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 378,520 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two is at 178,520 of its 200,000 goal.'],
+  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 414,340 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two has already passed its 200,000 goal.'],
   ['Acts', 'Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1). Winners are announced the day after each act ends.'],
   ['Treasure', 'The top three on the U.S. and UK leaderboards win The Treasure: signed editions, art prints, custom bookmarks, enamel pins, an advance audiobook, and more.'],
 ];
@@ -297,6 +309,9 @@ ${fonts}
 #press .pp-hl-row b{padding-right:26px!important}
 #press .pp-hl-row b,#press .pp-hl-row span{padding:16px 0;border-top:1px solid rgba(255,255,254,.12);display:flex;align-items:center}
 #press .pp-hl-col h3 + .pp-hl-row b,#press .pp-hl-col h3 + .pp-hl-row span{border-top:0}
+#press .pp-hl-col.wide{grid-column:1/-1;grid-template-columns:max-content minmax(0,1fr) max-content minmax(0,1fr);column-gap:0}
+#press .pp-hl-col.wide .pp-hl-row span{padding-right:28px}
+#press .pp-hl-col.wide h3 + .pp-hl-row + .pp-hl-row b,#press .pp-hl-col.wide h3 + .pp-hl-row + .pp-hl-row span{border-top:0}
 #press .pp-hl-row b{font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:56px;line-height:1;color:#fffffe;text-align:left;white-space:nowrap}
 #press .pp-hl-row span{font-size:16px;line-height:1.5;color:#ede9dc}
 #press .pp-stat{padding:20px 18px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);text-align:center}
@@ -333,6 +348,8 @@ ${cardCss('#press')}
   #press .pp-imgs{grid-template-columns:1fr 1fr}
   #press .pp-stats{grid-template-columns:1fr 1fr}
   #press .pp-hl{grid-template-columns:1fr}
+  #press .pp-hl-col.wide{grid-template-columns:max-content minmax(0,1fr)}
+  #press .pp-hl-col.wide h3 + .pp-hl-row + .pp-hl-row b,#press .pp-hl-col.wide h3 + .pp-hl-row + .pp-hl-row span{border-top:1px solid rgba(255,255,254,.12)}
   #press .pp-hl-row b{font-size:34px}
   #press .pp-hunt .pp-facts{grid-template-columns:1fr}
   #press .pp-hunt .pp-facts dd{border-top:0;padding-top:0}
@@ -358,7 +375,7 @@ ${cardCss('#press')}
       <p class="pp-motto">${esc(HUNT_MOTTO)}</p>
       <p class="pp-hunt-lede">${HUNT_HOW}</p>
       <div class="pp-ways">${HUNT_WAYS.map(([h, t]) => `<div class="pp-way"><h3>${esc(h)}</h3><p>${esc(t)}</p></div>`).join('')}</div>
-      <div class="pp-hl">${HIGHLIGHTS.map(([head, rows]) => `<div class="pp-hl-col"><h3>${esc(head)}</h3>${rows.map(([n, t]) => `<div class="pp-hl-row"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join('')}</div>`).join('')}</div>
+      <div class="pp-hl">${HIGHLIGHTS.map(([head, rows, wide]) => `<div class="pp-hl-col${wide ? ' wide' : ''}"><h3>${esc(head)}</h3>${rows.map(([n, t]) => `<div class="pp-hl-row"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join('')}</div>`).join('')}</div>
       <p class="pp-asof">As of ${esc(STATS_DATE)}.</p>
       <blockquote class="pp-quote">${HUNT_QUOTE.map((p, i, a) => `<p>${i === 0 ? '“' : ''}${esc(p)}${i === a.length - 1 ? '”' : ''}</p>`).join('')}<cite>${esc(HUNT_QUOTE_BY)}</cite></blockquote>
       <dl class="pp-facts">${HUNT_FACTS.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
