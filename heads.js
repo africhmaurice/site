@@ -125,7 +125,7 @@
       var c = cs.color;
       // The footer sign-off ("This website was designed by sky pirates", Maurice 10/9): lighter, with double the room.
       var foot = /designed by sky pirates/i.test(el.textContent || '') && el.closest('footer, .sqs-block');
-      if (foot) { c = '#b3c2b8'; el.style.setProperty('color', c, 'important'); el.style.setProperty('-webkit-text-fill-color', c, 'important'); }
+      if (foot) { c = 'rgb(179, 194, 184)'; el.style.setProperty('color', c, 'important'); el.style.setProperty('-webkit-text-fill-color', c, 'important'); }
       el.style.setProperty('--ci-depth', dark(c) ? 'color-mix(in srgb, ' + c + ' 35%, #fff)' : 'color-mix(in srgb, ' + c + ' 42%, #000)');
       // Aura Spectrum cards (Maurice, 10/9): the 3D takes the card's own color instead of a gray: a darker shade of
       // it behind light lettering, a lighter shade behind dark lettering.
