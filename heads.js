@@ -68,11 +68,19 @@
       for (var i = 0; i < rs.length; i++) { var q = rs[i]; if (!q.width) continue; if (q.left < L) L = q.left; if (q.right > R) R = q.right; if (q.top < T) { T = q.top; h = q.height; } } }
     var b = el.getBoundingClientRect(); if (R < L || !b.width) return;
     if (Math.abs(b.width - el.offsetWidth) > 2 || Math.abs(b.height - el.offsetHeight) > 2) return;
-    var lh = parseFloat(getComputedStyle(el).lineHeight) || h;
+    var s = getComputedStyle(el), lh = parseFloat(s.lineHeight) || h;
     el.style.setProperty('--ci-lh', lh + 'px');
+    // A plain block heading lays its lines out in its own content box, so the 3D gets exactly that box and lines up
+    // line for line at any width. Only flex and grid headings (centered by the layout, not by text-align) use the
+    // measured letters.
+    if (!/flex|grid/.test(s.display)) {
+      el.style.setProperty('--ci-x', parseFloat(s.paddingLeft) + 'px');
+      el.style.setProperty('--ci-y', parseFloat(s.paddingTop) + 'px');
+      el.style.setProperty('--ci-w', (el.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight)) + 'px');
+      return; }
     el.style.setProperty('--ci-x', (L - b.left - el.clientLeft) + 'px');
     el.style.setProperty('--ci-y', (T - b.top - el.clientTop - (lh - h) / 2) + 'px');
-    el.style.setProperty('--ci-w', Math.ceil(R - L + 2) + 'px'); }
+    el.style.setProperty('--ci-w', (R - L + 0.5) + 'px'); }
   function relines() { document.querySelectorAll('[data-ci-x]').forEach(function (e) { var t = lines(e); if (t && t !== e.getAttribute('data-ci-x')) e.setAttribute('data-ci-x', t); place(e); }); }
   var rt; function later() { clearTimeout(rt); rt = setTimeout(relines, 200); }
   // The 3D copy only lines up when all the text inside is heading text at one size, in one flow of lines.
