@@ -98,6 +98,13 @@
     for (var i = 0; i < im.length; i++) { var g = im[i], s = g.getAttribute('src') || g.getAttribute('data-src') || '';
       if (g.dataset.maLogo || !/Maurice\+Africh\+Logo\+-\+White|\/tm-wordmark\./i.test(s + (g.currentSrc || ''))) continue;
       g.dataset.maLogo = '1'; g.removeAttribute('srcset'); g.removeAttribute('data-srcset'); g.removeAttribute('sizes'); g.src = LOGO; } }
+  // Browser-tab icon (Maurice, 10/9): the cracked Comet, Scarlet in light mode and white in dark mode. Squarespace's own
+  // setting holds the same picture; this covers pages before that copy refreshes. (Skipped on the shop, which has its own.)
+  if (!/shop\.mauriceafrich|myshopify/.test(location.hostname)) (function () { var head = document.head || document.documentElement;
+    [].forEach.call(document.querySelectorAll('link[rel~="icon"],link[rel="apple-touch-icon"]'), function (l) { l.parentNode.removeChild(l); });
+    [['light', 'favicon-2026-light.png'], ['dark', 'favicon-2026-dark.png']].forEach(function (m) { var l = document.createElement('link'); l.rel = 'icon'; l.type = 'image/png';
+      l.media = '(prefers-color-scheme: ' + m[0] + ')'; l.href = BASE + 'assets/img/' + m[1]; head.appendChild(l); });
+    var a = document.createElement('link'); a.rel = 'apple-touch-icon'; a.href = BASE + 'assets/img/favicon-2026-light.png'; head.appendChild(a); })();
   function scan() { logos(); var all = document.body ? document.body.getElementsByTagName('*') : [];
     for (var i = 0; i < all.length; i++) { var el = all[i]; if (el.dataset && el.dataset.ci) continue;
       var cs = getComputedStyle(el), ff = cs.fontFamily; if (!HEAD.test(ff)) continue;
