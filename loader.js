@@ -24,6 +24,9 @@
   // Cookie choices and the Meta Pixel (Maurice, 2026-10-07): cookies.js asks visitors in Europe first, loads the
   // Pixel for everyone else, and adds Cookie Preferences to the footer. Squarespace's banner and Pixel are off.
   (function () { var s = document.createElement('script'); s.src = BASE + 'cookies.js'; (document.head || document.documentElement).appendChild(s); })();
+  // Headings (Maurice, 2026-10-09): heads.js turns every Atomic Marker and Cinzel heading into Cracked Imperia Bold
+  // with its 3D (Extrude Flush). Clue and puzzle text keeps its own capitals and line breaks.
+  (function () { var s = document.createElement('script'); s.src = BASE + 'heads.js'; (document.head || document.documentElement).appendChild(s); })();
 
   function runScripts(root) {
     var scripts = Array.prototype.slice.call(root.querySelectorAll('script'));
