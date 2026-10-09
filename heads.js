@@ -97,7 +97,7 @@
   function logos() { var im = document.getElementsByTagName('img');
     for (var i = 0; i < im.length; i++) { var g = im[i], s = g.getAttribute('src') || g.getAttribute('data-src') || '';
       if (g.dataset.maLogo || !/Maurice\+Africh\+Logo\+-\+White|\/tm-wordmark\./i.test(s + (g.currentSrc || ''))) continue;
-      g.dataset.maLogo = '1'; g.removeAttribute('srcset'); g.removeAttribute('data-srcset'); g.removeAttribute('sizes'); g.src = LOGO; } }
+      g.dataset.maLogo = '1'; padSoon(); g.removeAttribute('srcset'); g.removeAttribute('data-srcset'); g.removeAttribute('sizes'); g.src = LOGO; } }
   // Browser-tab icon (Maurice, 10/9): the cracked Comet, Scarlet in light mode and white in dark mode. Squarespace's own
   // setting holds the same picture; this covers pages before that copy refreshes. (Skipped on the shop, which has its own.)
   if (!/shop\.mauriceafrich|myshopify/.test(location.hostname)) (function () { var head = document.head || document.documentElement;
@@ -105,6 +105,16 @@
     [['light', 'favicon-2026-light.png'], ['dark', 'favicon-2026-dark.png']].forEach(function (m) { var l = document.createElement('link'); l.rel = 'icon'; l.type = 'image/png';
       l.media = '(prefers-color-scheme: ' + m[0] + ')'; l.href = BASE + 'assets/img/' + m[1]; head.appendChild(l); });
     var a = document.createElement('link'); a.rel = 'apple-touch-icon'; a.href = BASE + 'assets/img/favicon-2026-light.png'; head.appendChild(a); })();
+  // Twice the room under the logo as above it (Maurice, 10/9), in every header at every width.
+  function padLogo() { [].forEach.call(document.querySelectorAll('img[data-ma-logo]'), function (g) {
+    var bar = g.closest('#header, #hunt-nav, header'), box = g.closest('.header-title-logo, .header-mobile-logo, .mn-logo') || g.parentElement;
+    if (!bar || !box || !g.getBoundingClientRect().height) return;
+    box.style.removeProperty('padding-bottom');
+    var r = g.getBoundingClientRect(), b = bar.getBoundingClientRect(), above = r.top - b.top, below = b.bottom - r.bottom;
+    var add = Math.round(2 * above - below); if (add > 0) box.style.setProperty('padding-bottom', add + 'px', 'important'); }); }
+  var pt; function padSoon() { clearTimeout(pt); pt = setTimeout(padLogo, 150); }
+  window.addEventListener('resize', padSoon); window.addEventListener('load', padSoon);
+  document.addEventListener('load', function (e) { if (e.target && e.target.dataset && e.target.dataset.maLogo) padSoon(); }, true);
   function scan() { logos(); var all = document.body ? document.body.getElementsByTagName('*') : [];
     for (var i = 0; i < all.length; i++) { var el = all[i]; if (el.dataset && el.dataset.ci) continue;
       var cs = getComputedStyle(el), ff = cs.fontFamily; if (!HEAD.test(ff)) continue;

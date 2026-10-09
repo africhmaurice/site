@@ -430,6 +430,12 @@
       p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), a);
       p.removeChild(a);
     });
+    // Questions? (Maurice, 2026-10-09): no longer its own menu item; it closes the Current Progress dropdown instead.
+    var cp = q('.mn-dd-in, .mn-ovgroup, .ma-grp').filter(function (g) { return g.querySelector('a[href*="/leaderboard"]'); });
+    if (cp.length) {
+      q('a[href$="/questions"]').forEach(function (a) { if (!cp.some(function (g) { return g.contains(a); })) a.parentNode.removeChild(a); });
+      cp.forEach(function (g) { if (!g.querySelector('a[href$="/questions"]')) g.appendChild(actLink(SITE + '/questions', 'QUESTIONS?')); });
+    }
     // the phone menu: Tasks, Riddles, Clues, Games and Contests become one Earn Points group, split by act
     var ov = root.id === 'hunt-nav-ov' ? root : root.querySelector('#hunt-nav-ov');
     var first = ov && Array.prototype.filter.call(ov.children, function (el) { return el.tagName === 'A' && EARN.test(el.href); });
