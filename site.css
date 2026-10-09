@@ -94,3 +94,9 @@
 
 /* Date endings (21st, 30th): small and tucked up. Scaled with transform so a browser minimum font size cannot blow them up. */
 sup{font-size:.6em !important;line-height:0 !important;display:inline-block !important;transform:scale(.72) !important;transform-origin:left 30% !important;vertical-align:.7em !important;letter-spacing:.02em;margin-right:-.12em}
+
+/* Home review strip (Maurice, 10/9): the Collider title "8 Sci-Fi Books That Are / Perfect From Cover to Cover" fits on two lines. */
+@media (min-width:768px){#block-6bf9ee63ee552da00661 p{font-size:min(21.18px,1.2vw) !important}}
+
+/* Adventure dice (Maurice, 10/9): the roll number sits centered on the die face, allowing for its 3D edge. */
+.av-die span{line-height:1 !important;letter-spacing:0 !important;margin:-.07em 0 0 -.05em !important}

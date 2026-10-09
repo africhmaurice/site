@@ -21,10 +21,38 @@
     "@font-face{font-family:'CI Extrude';src:url('" + FONTS + "CrackedImperia-ExtrudeFlush.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:" + SIZE + "}" +
     "[data-ci-x]{isolation:isolate}" +
     // The 3D: the heading's words again, in the Extrude font, behind the face, on the same lines.
-    "[data-ci-x]::before{content:attr(data-ci-x);position:absolute;inset:0;padding:inherit;border:0 solid transparent;border-width:inherit;box-sizing:border-box;font-family:'CI Extrude';font-size:inherit;line-height:var(--ci-lh,1.05);letter-spacing:inherit;word-spacing:inherit;text-align:inherit;text-transform:inherit;text-indent:inherit;white-space:pre;-webkit-text-stroke:0;color:var(--ci-depth);-webkit-text-fill-color:var(--ci-depth);background:none;filter:none;z-index:-1;pointer-events:none}";
+    "[data-ci-x]::before{content:attr(data-ci-x);position:absolute;left:var(--ci-x,0);top:var(--ci-y,0);width:var(--ci-w,auto);padding:0;border:0;box-sizing:content-box;font-family:'CI Extrude';font-size:inherit;line-height:var(--ci-lh,1.05);letter-spacing:inherit;word-spacing:inherit;text-align:inherit;text-transform:inherit;text-indent:inherit;white-space:pre;-webkit-text-stroke:0;color:var(--ci-depth);-webkit-text-fill-color:var(--ci-depth);background:none;filter:none;z-index:-1;pointer-events:none}";
   (document.head || document.documentElement).appendChild(st);
   var pre = document.createElement('link'); pre.rel = 'preload'; pre.as = 'font'; pre.type = 'font/woff2'; pre.crossOrigin = 'anonymous';
   pre.href = FONTS + 'CrackedImperia-Bold.woff2'; (document.head || document.documentElement).appendChild(pre);
+
+  // Drawn graphics (the game share cards and anything else painted on a canvas): text drawn in Atomic Marker is drawn in
+  // Cracked Imperia instead, with the Extrude Flush 3D painted underneath in the same color rule as the headings.
+  (function () {
+    var P = window.CanvasRenderingContext2D && CanvasRenderingContext2D.prototype; if (!P) return;
+    var d = Object.getOwnPropertyDescriptor(P, 'font'); if (!d || !d.set) return;
+    try { document.fonts.load('40px "CI Face"'); document.fonts.load('40px "CI Extrude"'); } catch (e) {}
+    // Pages wait for Atomic Marker before drawing; make that wait cover the new fonts too.
+    try { var load = document.fonts.load.bind(document.fonts);
+      document.fonts.load = function (f, t) { var p = load(f, t); if (!/atomic.?marker/i.test(f)) return p;
+        return Promise.all([p, load('40px "CI Face"'), load('40px "CI Extrude"')]).then(function (r) { return r[0]; }); }; } catch (e) {}
+    Object.defineProperty(P, 'font', { configurable: true, get: d.get, set: function (v) {
+      var s = String(v); this.__ci = /atomic.?marker/i.test(s);
+      d.set.call(this, this.__ci ? s.replace(/(["']?)atomic.?marker\1/i, '"CI Face"') : s); } });
+    var fill = P.fillText;
+    P.fillText = function (t, x, y, w) {
+      if (this.__ci && typeof this.fillStyle === 'string') {
+        var c = this.fillStyle, f = this.font;
+        this.save(); d.set.call(this, f.replace('"CI Face"', '"CI Extrude"'));
+        this.fillStyle = cdark(c) ? mix(c, 0.35, 255) : mix(c, 0.42, 0);
+        if (w === undefined) fill.call(this, t, x, y); else fill.call(this, t, x, y, w);
+        this.restore(); }
+      return w === undefined ? fill.call(this, t, x, y) : fill.call(this, t, x, y, w); };
+    function rgb(c) { var m; if ((m = /^#([0-9a-f]{6})$/i.exec(c))) return [parseInt(m[1].slice(0, 2), 16), parseInt(m[1].slice(2, 4), 16), parseInt(m[1].slice(4), 16)];
+      if ((m = c.match(/[\d.]+/g)) && m.length >= 3) return [+m[0], +m[1], +m[2]]; return [255, 255, 255]; }
+    function cdark(c) { var v = rgb(c); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2] <= 110; }
+    function mix(c, k, to) { var v = rgb(c); return 'rgb(' + v.map(function (n) { return Math.round(n * k + to * (1 - k)); }).join(',') + ')'; }
+  })();
 
   // A color counts as dark below this brightness; dark headings get the light 3D.
   function dark(c) { var m = c.match(/[\d.]+/g); if (!m) return false; return 0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2] <= 110; }
@@ -33,7 +61,19 @@
     while ((n = w.nextNode())) { var re = /\S+/g, m; while ((m = re.exec(n.textContent))) { r.setStart(n, m.index); r.setEnd(n, m.index + m[0].length);
       var rc = r.getClientRects()[0]; if (!rc) continue; if (top === null || Math.abs(rc.top - top) > rc.height / 2) { out.push([]); top = rc.top; } out[out.length - 1].push(m[0]); } }
     return out.map(function (l) { return l.join(' '); }).join('\n'); }
-  function relines() { document.querySelectorAll('[data-ci-x]').forEach(function (e) { var t = lines(e); if (t && t !== e.getAttribute('data-ci-x')) e.setAttribute('data-ci-x', t); }); }
+  // Where the letters really are inside the heading: the 3D copy is placed on that box. A turned or scaled heading
+  // (the rotated stamps) can't be measured this way, so it keeps the 3D at the box corner.
+  function place(el) { var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n, r = document.createRange(), L = 1e9, T = 1e9, R = -1e9, h = 0;
+    while ((n = w.nextNode())) { if (!n.textContent.trim()) continue; r.selectNodeContents(n); var rs = r.getClientRects();
+      for (var i = 0; i < rs.length; i++) { var q = rs[i]; if (!q.width) continue; if (q.left < L) L = q.left; if (q.right > R) R = q.right; if (q.top < T) { T = q.top; h = q.height; } } }
+    var b = el.getBoundingClientRect(); if (R < L || !b.width) return;
+    if (Math.abs(b.width - el.offsetWidth) > 2 || Math.abs(b.height - el.offsetHeight) > 2) return;
+    var lh = parseFloat(getComputedStyle(el).lineHeight) || h;
+    el.style.setProperty('--ci-lh', lh + 'px');
+    el.style.setProperty('--ci-x', (L - b.left - el.clientLeft) + 'px');
+    el.style.setProperty('--ci-y', (T - b.top - el.clientTop - (lh - h) / 2) + 'px');
+    el.style.setProperty('--ci-w', Math.ceil(R - L + 2) + 'px'); }
+  function relines() { document.querySelectorAll('[data-ci-x]').forEach(function (e) { var t = lines(e); if (t && t !== e.getAttribute('data-ci-x')) e.setAttribute('data-ci-x', t); place(e); }); }
   var rt; function later() { clearTimeout(rt); rt = setTimeout(relines, 200); }
   // The 3D copy only lines up when all the text inside is heading text at one size, in one flow of lines.
   function uniform(el, size) { var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n;
@@ -41,6 +81,8 @@
       if (!/atomic.?marker|cinzel|CI Face/i.test(s.fontFamily) || s.fontSize !== size) return false;
       for (var q = p; q && q !== el; q = q.parentElement) if (getComputedStyle(q).display !== 'inline') return false; }
     return true; }
+  // Turned or scaled text (the rotated "Reward Unlocked!" stamps) gets the new font without the 3D layer.
+  function turned(el) { for (var q = el; q && q !== document.body; q = q.parentElement) { var tf = getComputedStyle(q).transform; if (tf && tf !== 'none' && !/^matrix\(1, 0, 0, 1,/.test(tf)) return true; } return false; }
   function scan() { var all = document.body ? document.body.getElementsByTagName('*') : [];
     for (var i = 0; i < all.length; i++) { var el = all[i]; if (el.dataset && el.dataset.ci) continue;
       var cs = getComputedStyle(el), ff = cs.fontFamily; if (!HEAD.test(ff)) continue;
@@ -49,16 +91,33 @@
       var keep = kept(el);
       if (!keep) el.style.setProperty('text-transform', 'uppercase', 'important');
       var c = cs.color;
+      // The footer sign-off ("This website was designed by sky pirates", Maurice 10/9): lighter, with double the room.
+      var foot = /designed by sky pirates/i.test(el.textContent || '') && el.closest('footer, .sqs-block');
+      if (foot) { c = '#b3c2b8'; el.style.setProperty('color', c, 'important'); el.style.setProperty('-webkit-text-fill-color', c, 'important'); }
       el.style.setProperty('--ci-depth', dark(c) ? 'color-mix(in srgb, ' + c + ' 35%, #fff)' : 'color-mix(in srgb, ' + c + ' 42%, #000)');
+      // Aura Spectrum cards (Maurice, 10/9): the 3D takes the card's own color instead of a gray: a darker shade of
+      // it behind light lettering, a lighter shade behind dark lettering.
+      var card = el.closest && el.closest('#ma-aura .au-card');
+      if (card) { var cb = getComputedStyle(card), m = (cb.backgroundImage.match(/rgba?\([^)]*\)/) || [cb.backgroundColor])[0];
+        if (m && !/rgba\(0, 0, 0, 0\)/.test(m)) el.style.setProperty('--ci-depth', dark(c) ? 'color-mix(in srgb, ' + m + ' 55%, #fff)' : 'color-mix(in srgb, ' + m + ' 50%, #000)'); }
       // One 3D layer per heading: on the outermost heading element, so pieces inside it aren't doubled.
       var p = el.parentElement, inner = false; while (p) { if (p.hasAttribute && p.hasAttribute('data-ci-d')) { inner = true; break; } p = p.parentElement; }
       if (inner) continue;
       el.setAttribute('data-ci-d', '');
       if (keep) el.style.setProperty('--ci-lh', cs.lineHeight === 'normal' ? '1.2' : cs.lineHeight);
-      else { el.style.setProperty('line-height', '1.05', 'important'); el.style.setProperty('letter-spacing', '0.03em', 'important'); el.style.setProperty('text-wrap', 'balance'); }
-      if (cs.display !== 'inline' && (el.innerText || '').trim() && uniform(el, cs.fontSize)) {
+      else { var h0 = el.offsetHeight;
+        el.style.setProperty('line-height', '1.05', 'important'); el.style.setProperty('letter-spacing', '0.03em', 'important'); el.style.setProperty('text-wrap', 'balance');
+        var lost = h0 - el.offsetHeight;
+        // Only for headings in normal page flow; labels inside bars, badges, and positioned boxes keep their size.
+        var pd = el.parentElement ? getComputedStyle(el.parentElement).display : '';
+        if (lost > 1 && cs.display === 'block' && cs.position === 'static' && !/flex|grid/.test(pd)) { el.style.setProperty('padding-top', 'calc(' + cs.paddingTop + ' + ' + (lost / 2) + 'px)', 'important'); el.style.setProperty('padding-bottom', 'calc(' + cs.paddingBottom + ' + ' + (lost / 2) + 'px)', 'important'); } }
+      if (foot) { var fb = el.closest('h1,h2,h3,h4,h5,h6,p') || el, fs2 = getComputedStyle(fb);
+        el.style.removeProperty('padding-top'); el.style.removeProperty('padding-bottom');
+        fb.style.setProperty('padding-top', (parseFloat(fs2.paddingTop) * 2 + 6) + 'px', 'important'); fb.style.setProperty('padding-bottom', (parseFloat(fs2.paddingBottom) * 2 + 6) + 'px', 'important');
+        fb.style.setProperty('margin-top', (parseFloat(fs2.marginTop) * 2) + 'px', 'important'); fb.style.setProperty('margin-bottom', (parseFloat(fs2.marginBottom) * 2) + 'px', 'important'); }
+      if (cs.display !== 'inline' && (el.innerText || '').trim() && uniform(el, cs.fontSize) && !turned(el)) {
         if (cs.position === 'static') el.style.setProperty('position', 'relative');
-        el.setAttribute('data-ci-x', lines(el)); } } }
+        el.setAttribute('data-ci-x', lines(el)); place(el); } } }
   var t; function soon() { clearTimeout(t); t = setTimeout(function () { scan(); later(); }, 120); }
   // New sections get scanned; text that changes in place (counters) only refreshes the 3D lines.
   function start() { scan(); later(); new MutationObserver(function (ms) {
