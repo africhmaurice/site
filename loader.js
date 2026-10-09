@@ -718,6 +718,11 @@
     });
   }
   // The raft hunt (chapter 6, 2026-10-07): raft.js hides the pieces on every page; it checks its own hours.
+  // Chapter buttons (2026-10-09): Previous chapter / See the map / Next chapter at the foot of each chapter page.
+  function chapterNav() {
+    if (window.__chapterNavLoaded) return; window.__chapterNavLoaded = true;
+    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=2'; s.async = true; document.head.appendChild(s);
+  }
   function raftHunt() {
     if (window.__raftLoaded) return; window.__raftLoaded = true;
     var s = document.createElement('script'); s.src = GH + 'raft.js?v=8'; s.async = true; document.head.appendChild(s);
@@ -726,6 +731,7 @@
     huntLinks();
     huntRiver();
     raftHunt();
+    chapterNav();
     var caret = '<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg>';
     Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
       if (nav.querySelector('.mn-gift')) return;
