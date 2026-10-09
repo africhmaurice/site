@@ -88,7 +88,7 @@
   var LOGO = BASE + 'assets/img/logo-2026-white.webp';
   function logos() { var im = document.getElementsByTagName('img');
     for (var i = 0; i < im.length; i++) { var g = im[i], s = g.getAttribute('src') || g.getAttribute('data-src') || '';
-      if (g.dataset.maLogo || !/Maurice\+Africh\+Logo\+-\+White/i.test(s + (g.currentSrc || ''))) continue;
+      if (g.dataset.maLogo || !/Maurice\+Africh\+Logo\+-\+White|\/tm-wordmark\./i.test(s + (g.currentSrc || ''))) continue;
       g.dataset.maLogo = '1'; g.removeAttribute('srcset'); g.removeAttribute('data-srcset'); g.removeAttribute('sizes'); g.src = LOGO; } }
   function scan() { logos(); var all = document.body ? document.body.getElementsByTagName('*') : [];
     for (var i = 0; i < all.length; i++) { var el = all[i]; if (el.dataset && el.dataset.ci) continue;
