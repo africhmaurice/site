@@ -20,8 +20,13 @@
     '.tm-nav.ma-one .tm-nav__link{font-size:clamp(10.5px,.88vw,14.4px)}' +   // the website's menu size
     '.tm-nav.ma-one.ma-fs .tm-nav__link{font-size:var(--ma-fs)!important}' +
     '.tm-header.ma-burger .tm-nav{display:none!important}.tm-header.ma-burger .tm-burger{display:inline-flex!important}' +
+    // the icon tab: small, square, in the header's green, hanging from the bar's right edge (desktop menu only)
+    '@media (min-width:1101px){.tm-header:not(.ma-burger) .tm-header__row{position:relative}' +
+    '.tm-header:not(.ma-burger) .tm-header__icons{position:absolute;top:100%;right:var(--ma-pad,4vw);z-index:4;display:flex;gap:2px;padding:0 6px 3px;background:var(--ma-hbg,#1a5e41);border-radius:0}' +
+    '.tm-header:not(.ma-burger) .tm-header__icons .tm-icon-btn{width:30px;height:30px}' +
+    '.tm-header:not(.ma-burger) .tm-header__icons svg{width:16px;height:16px}}' +
     '.tm-th .tm-drop__panel{left:0;transform:none}' +
-    '.tm-drop__in.tm-mega3{display:grid;grid-template-columns:repeat(3,minmax(262px,auto));gap:12px;padding:16px;align-items:start;max-height:calc(100vh - 120px);overflow-y:auto}' +
+    '.tm-drop__in.tm-mega3{display:grid;grid-template-columns:repeat(3,minmax(262px,auto));gap:12px;padding:16px;align-items:start;width:max-content;max-height:calc(100vh - 120px);overflow-y:auto}' +
     '.tm-mega3 .tm-col{display:flex;flex-direction:column;gap:12px}' +
     '.tm-drop__in a.tm-top{display:block;text-align:center;border:1px solid rgba(243,234,217,.3);padding:14px!important;font-weight:800;letter-spacing:.12em}' +
     '.tm-grp>span:first-child,.tm-mnav .ma-mgrp>span:first-child{align-self:stretch;display:block;text-align:center;border-bottom:2px solid rgba(243,234,217,.45);padding-bottom:5px;margin-bottom:10px;line-height:1.3}' +
@@ -132,14 +137,18 @@
     requestAnimationFrame(function () { var r = p.getBoundingClientRect(), vw = document.documentElement.clientWidth, s = 0;
       if (!r.width) return; if (r.right > vw - 16) s = vw - 16 - r.right; if (r.left + s < 16) s = 16 - r.left; if (s) p.style.marginLeft = Math.round(s) + 'px'; });
   }
-  // 25px between links. When the row would push the search and cart icons past the header's right padding, the
-  // spacing tightens (to 12px), then the words shrink a little (to 11px); if even that doesn't fit, the menu button
-  // takes over, as it does below 1100px.
+  // 25px between links, like the website: the search and cart icons hang in a small tab under the bar (Maurice, 10/10),
+  // so the row is the website's row. If it still doesn't fit, the spacing tightens (to 12px), then the words shrink a
+  // little (to 11px), and past that the menu button takes over (the icons go back into the bar beside it).
   function fitGap(nav) {
-    var hdr = nav.closest('.tm-header') || document.body, row = nav.parentNode, icons = document.querySelector('.tm-header__icons');
+    var hdr = nav.closest('.tm-header') || document.body, row = nav.parentNode;
     hdr.classList.remove('ma-burger'); nav.style.removeProperty('--ma-gap'); nav.style.removeProperty('--ma-fs'); nav.classList.remove('ma-fs');
-    if (!icons || !nav.offsetWidth) return;
-    var over = function () { var rs = getComputedStyle(row); return icons.getBoundingClientRect().right - (row.getBoundingClientRect().right - parseFloat(rs.paddingRight)); };
+    // the tab takes the bar's own green and lines up with its right padding
+    var bg = getComputedStyle(hdr).backgroundColor; if (/rgba\(0, 0, 0, 0\)|transparent/.test(bg)) bg = getComputedStyle(row).backgroundColor;
+    if (!/rgba\(0, 0, 0, 0\)|transparent/.test(bg)) hdr.style.setProperty('--ma-hbg', bg);
+    hdr.style.setProperty('--ma-pad', getComputedStyle(row).paddingRight);
+    if (!nav.offsetWidth) return;
+    var over = function () { var rs = getComputedStyle(row), last = nav.lastElementChild; return last.getBoundingClientRect().right - (row.getBoundingClientRect().right - parseFloat(rs.paddingRight)); };
     var o = over(), n = nav.children.length - 1;
     if (o <= 0.5 || n < 1) return;
     nav.style.setProperty('--ma-gap', Math.max(12, GAP - Math.ceil(o / n)) + 'px');
