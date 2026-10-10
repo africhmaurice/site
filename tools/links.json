@@ -147,6 +147,26 @@
    ]
   },
   {
+   "id": "events",
+   "title": "Launch Events",
+   "layout": "two",
+   "tone": "violet",
+   "links": [
+    {
+     "id": "event-malaprops",
+     "label": "Malaprop’s Launch, Nov 2",
+     "url": "https://malaprops.com/event/2026-11-02/maurice-africh",
+     "bg": "monolith-canyon-as444233611"
+    },
+    {
+     "id": "event-mysterious-galaxy",
+     "label": "Mysterious Galaxy Virtual, Nov 5",
+     "url": "https://mystgalaxy.com/110526Africh",
+     "bg": "cavern-ruins-as581365050"
+    }
+   ]
+  },
+  {
    "id": "hunt",
    "title": "The Treasure Hunt",
    "tone": "green",

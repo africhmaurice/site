@@ -13,8 +13,14 @@ const FEATURES = [
   { home: true, outlet: 'Kirkus Reviews', type: 'Review', title: 'Cello’s Gate: The Sky Pirates of Imperia', date: 'Aug 2026',
     quote: 'Readers should enjoy this thinly veiled literary love letter to pop-culture SF.',
     url: 'https://www.kirkusreviews.com/book-reviews/maurice-africh/cellos-gate-the-sky-pirates-of-imperia/' },
+  { home: true, star: true, outlet: 'Publishers Weekly', type: 'Review', title: 'Cello’s Gate (The Sky Pirates of Imperia #1)', date: 'Sep 2026',
+    quote: 'Readers will find this swashbuckling mix of technology and magic un-put-downable.',
+    url: 'https://www.publishersweekly.com/9781668242834' },
   { home: true, outlet: 'Library Journal', type: 'Review', title: 'Cello’s Gate', date: '2026',
     url: 'https://www.libraryjournal.com/review/cellos-gate-100013820' },
+  { home: true, outlet: 'Collider', type: 'List', title: '10 Sci-Fi Books That Are Perfect From Start to Finish', date: 'Sep 2026',
+    quote: 'A rip-roaring ride from the first to the final page.',
+    url: 'https://collider.com/sci-fi-books-perfect-start-to-finish/' },
   { home: true, outlet: 'Collider', type: 'List', title: '8 Sci-Fi Books That Are Perfect From Cover to Cover', date: 'Aug 2026',
     quote: '…absolutely great read that cannot be missed.',
     url: 'https://collider.com/sci-fi-books-perfect-cover-to-cover/' },
@@ -62,7 +68,7 @@ const host = (u) => new URL(u).hostname.replace(/^www\./, '');
 
 const card = (f) => `
       <a class="pr-card" href="${esc(f.url)}" target="_blank" rel="noopener">
-        <span class="pr-meta"><span class="pr-type pr-${f.type.toLowerCase()}">${esc(f.type)}</span><span>${esc(f.date)}</span></span>
+        <span class="pr-meta"><span class="pr-type pr-${f.type.toLowerCase()}">${f.star ? '★ Starred ' : ''}${esc(f.type)}</span><span>${esc(f.date)}</span></span>
         <span class="pr-outlet">${esc(f.outlet)}</span>
         <span class="pr-title">${esc(f.title)}</span>${f.quote ? `
         <span class="pr-quote">“${esc(f.quote)}”</span>` : ''}
@@ -138,6 +144,7 @@ const DESCRIPTION = [
 ].join('');
 // [quote, name, book or handle, isHandle]
 const PRAISE = [
+  ['Readers will find this swashbuckling mix of technology and magic un-put-downable.', 'PUBLISHERS WEEKLY', 'starred review', true],
   ['This stellar debut is exactly the kind of book I love to read. It’s got scheming immortals, a perilous quest, and a ragtag band of eclectic, eccentric, exceedingly dangerous misfits setting out on a grand adventure. And did I mention the monsters? The skyships? The witty banter? Wait, are we sure I didn’t write this myself? This one’s a must-read, and I can’t wait to see where it goes from here.', 'NICHOLAS EAMES', 'KINGS OF THE WYLD'],
   ['The very definition of rip-roaring.', 'RICHARD SWAN', 'THE JUSTICE OF KINGS'],
   ['The most fun I’ve had reading this year.', 'SMITTY', '@smitty1423', true],
@@ -173,31 +180,31 @@ const HUNT_QUOTE = [
   'That’s why I built this treasure hunt. Because I thought it would be fun (which is a cornerstone of my brand), I thought it would help us sell a lot of books, and I thought, by the end of it, a lot more people would know my name. We’ll see, huh? If nothing else, I know we’re all having a pretty damn good time.',
 ];
 const HUNT_QUOTE_BY = 'Maurice Africh, Author of “Cello’s Gate”';
-const STATS_DATE = 'October 7, 2026';
+const STATS_DATE = 'October 10, 2026';
 // [group title, [[big number, what it means]], wide (spans the full row, two stats per line)]
 const HIGHLIGHTS = [
   ['The Headline Numbers', [
-    ['412', 'Readers have joined the hunt, from 13 countries.'],
-    ['7,503', 'Tasks completed: posts, riddles, games, and finds.'],
-    ['414,340', 'Points earned by the crew together. Act One beat its 40,000 goal five times over, and Act Two is already past its 200,000 goal.'],
-    ['7,332', 'Sweepstakes entries.'],
-    ['74', 'Copies of “Cello’s Gate” pre-ordered or gifted through the hunt, a month before release.'],
-    ['90×', 'Website traffic: 17,359 visits since the hunt opened, about 1,000 a day, up from about 10 a day before it.'],
-    ['2,563', 'New Goodreads “want to read” adds during the hunt.'],
-    ['+46%', 'Discord community growth, from 171 to 249 members.'],
+    ['528', 'Readers have joined the hunt, from 14 countries.'],
+    ['9,348', 'Tasks completed: posts, riddles, games, and finds.'],
+    ['501,970', 'Points earned by the crew together. Act One beat its 40,000 goal five times over, and Act Two is already past its 200,000 goal.'],
+    ['9,117', 'Sweepstakes entries.'],
+    ['80', 'Copies of “Cello’s Gate” pre-ordered or gifted through the hunt, weeks before release.'],
+    ['85×', 'Website traffic: 18,997 visits since the hunt opened, about 940 a day, up from about 10 a day before it.'],
+    ['2,650', 'New Goodreads “want to read” adds during the hunt.'],
+    ['+53%', 'Discord community growth, from 171 to 261 members.'],
   ], true],
   ['Readers Doing the Marketing', [
-    ['502', 'Public social posts by players: 269 “share the hunt” posts, 64 book-recommendation carousels featuring “Cello’s Gate,” 123 scorecards, 35 merch photos, and 11 Balance Challenge videos.'],
-    ['60', 'Requests from readers asking 34 libraries and 26 bookstores to stock the book. Two stores have already said yes.'],
+    ['669', 'Public social posts by players: 340 “share the hunt” posts, 93 book-recommendation carousels featuring “Cello’s Gate,” 143 scorecards, 73 merch photos, and 20 Balance Challenge videos.'],
+    ['62', 'Requests from readers asking 34 libraries and 28 bookstores to stock the book. Four stores have already said yes.'],
     ['77', 'Reading-app adds by 36 readers, on Goodreads, StoryGraph, Fable, and more.'],
-    ['21', 'New players recruited by other players.'],
+    ['22', 'New players recruited by other players.'],
   ]],
   ['Readers Are Hooked', [
-    ['2,232', 'Hidden loot boxes found, across 56 different boxes hidden around the internet.'],
-    ['1,295', 'Riddles solved.'],
-    ['2,197', 'Daily puzzle wins across 7 original games.'],
-    ['103', 'Votes steering a live choose-your-own-adventure story set in the book’s world.'],
-    ['44', 'Items bought from the merch shop.'],
+    ['2,624', 'Hidden loot boxes found, across 61 different boxes hidden around the internet.'],
+    ['1,467', 'Riddles solved.'],
+    ['2,942', 'Daily puzzle wins across 7 original games.'],
+    ['137', 'Votes steering a live choose-your-own-adventure story set in the book’s world.'],
+    ['45', 'Items bought from the merch shop.'],
     ['11', 'Pieces of fan art and fan fiction, created before the book is even out.'],
   ]],
 ];
@@ -211,18 +218,18 @@ const HUNT_FACTS = [
   ['Dates', 'September 20 to November 1, 2026. It ends two days before “Cello’s Gate” comes out.'],
   ['Where', 'mauriceafrich.com/the-hunt'],
   ['Who', 'Free and open to everyone, everywhere. The Treasure and sweepstakes prizes are for U.S. and UK residents, 18 and older.'],
-  ['Players', '412 sky pirates from 13 countries: the U.S., the UK, Canada, Australia, India, Estonia, Ireland, Austria, Japan, Poland, Norway, Portugal, and Spain.'],
-  ['Traffic', 'Site traffic is up about 90 times: 17,359 visits since the hunt started, about 1,000 a day, compared with about 10 a day in September before it.'],
+  ['Players', '528 sky pirates from 14 countries: the U.S., the UK, Canada, Australia, India, Estonia, Germany, Ireland, Austria, Japan, Poland, Norway, Portugal, and Spain.'],
+  ['Traffic', 'Site traffic is up about 85 times: 18,997 visits since the hunt started, about 940 a day, compared with about 10 a day in September before it.'],
   ['Play', 'Tasks, riddles, clues, seven daily bookish games (including Skyword, Blades & Brass, and Crest Quest), 101 hidden loot boxes, and a fan fiction contest.'],
   ['Story', 'Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!'],
-  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 414,340 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two has already passed its 200,000 goal.'],
+  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 501,970 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two has already passed its 200,000 goal.'],
   ['Acts', 'Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1). Winners are announced the day after each act ends.'],
   ['Treasure', 'The top three on the U.S. and UK leaderboards win The Treasure: signed editions, art prints, custom bookmarks, enamel pins, an advance audiobook, and more.'],
 ];
 // Launch events. url: the store's event or registration page (null until it's posted).
 const EVENTS = [
-  { date: 'Mon, Nov 2', time: '6 PM Eastern', title: 'Launch at Malaprop’s Bookstore/Cafe', place: 'In store at 55 Haywood St, Asheville, North Carolina', url: null },
-  { date: 'Thu, Nov 5', time: '6 PM Pacific', title: 'Virtual event with Mysterious Galaxy', place: 'Online, hosted by Mysterious Galaxy in San Diego. Open to anyone.', url: null },
+  { date: 'Mon, Nov 2', time: '6 PM Eastern', title: 'Launch at Malaprop’s Bookstore/Cafe', place: 'In store at 55 Haywood St, Asheville, North Carolina. Free, with registration to reserve a seat.', url: 'https://malaprops.com/event/2026-11-02/maurice-africh' },
+  { date: 'Thu, Nov 5', time: '6 PM Pacific', title: 'Virtual event with Mysterious Galaxy', place: 'Online on Crowdcast, hosted by Mysterious Galaxy in San Diego. Free to register and open to anyone.', url: 'https://mystgalaxy.com/110526Africh' },
 ];
 const eventCard = (e) => {
   const inner = `<span class="pp-ev-date">${esc(e.date)}<small>${esc(e.time)}</small></span><span class="pp-ev-title">${esc(e.title)}</span><span class="pp-ev-place">${esc(e.place)}</span>`;
@@ -404,7 +411,7 @@ ${cardCss('#press')}
         <div class="pp-desc">${DESCRIPTION}</div>
       </div>
       <h3 class="pp-sub">Praise for Cello’s Gate</h3>
-      <div class="pp-praise">${PRAISE.map(([q, name, by, handle]) => `<figure><blockquote>“${esc(q)}”</blockquote><figcaption>—<b>${esc(name)},</b> ${handle ? `<i>${esc(by)}</i>` : `Author of <i>${esc(by)}</i>`}</figcaption></figure>`).join('')}</div>
+      <div class="pp-praise">${PRAISE.map(([q, name, by, handle]) => `<figure><blockquote>“${esc(q)}”</blockquote><figcaption>—<b>${esc(name)}${by ? ',' : ''}</b>${by ? ' ' + (handle ? `<i>${esc(by)}</i>` : `Author of <i>${esc(by)}</i>`) : ''}</figcaption></figure>`).join('')}</div>
       <hr class="pp-rule">
       <h3 class="pp-sub">About the author</h3>
       <p class="pp-bio">Maurice Africh is an ex-theater kid with a passion for tasty food, semi-luxurious travel, reality competition television shows, D&amp;D, and fantasy novels. He currently lives in Asheville, North Carolina with his beautiful wife, Rachel, and his cute, albeit cranky chihuahua, Toby.</p>
