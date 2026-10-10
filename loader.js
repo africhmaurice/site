@@ -1144,7 +1144,18 @@
     addEventListener('resize', queueFit);
   }
 
+  // Box headings in the menus (Earn Points, Current Progress, Adventure, Oracle's Gift) aren't links, so a line
+  // under each one sets it apart from the links below it (Maurice, 2026-10-10). Desktop panels and phone menus.
+  function headRule() {
+    if (document.getElementById('ma-head-rule')) return;
+    var st = document.createElement('style'); st.id = 'ma-head-rule';
+    st.textContent = ['#header .ma-grp>span:first-child', '#hunt-nav .ma-grp>span:first-child', '#header .header-menu .ma-ovgroup>span:first-child', '#hunt-nav-ov .mn-ovgroup>span:first-child']
+      .join(',') + '{align-self:stretch!important;display:block!important;text-align:center!important;border-bottom:2px solid rgba(243,234,217,.45)!important;padding-bottom:5px!important;margin-bottom:10px!important;line-height:1.3!important}';
+    (document.head || document.documentElement).appendChild(st);
+  }
+
   function scan() {
+    headRule();
     lockedChest53();
     if (document.body) quietWord();
     huntGift();
