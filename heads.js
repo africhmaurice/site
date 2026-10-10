@@ -149,19 +149,25 @@
         fb.style.setProperty('margin-top', (parseFloat(fs2.marginTop) * 2) + 'px', 'important'); fb.style.setProperty('margin-bottom', (parseFloat(fs2.marginBottom) * 2) + 'px', 'important'); }
       // Titles with a hand-placed line break ("Welcome to / the Hunt!", Maurice 10/9) stay on exactly those lines.
       if (el.querySelector('br') && /^H[1-3]$/.test(el.tagName)) { el.style.setProperty('white-space', 'nowrap', 'important'); el.dataset.ciFit = el.style.getPropertyValue('font-size') || ''; fit(el); }
+      // One-word headings (the profile's point totals, 10/9) never break inside the word; they shrink to fit instead.
+      else if (!keep && cs.display !== 'inline' && /^\S+$/.test((el.textContent || '').trim())) { el.style.setProperty('white-space', 'nowrap', 'important'); el.dataset.ciOne = ''; one(el); }
       if (cs.display !== 'inline' && (el.innerText || '').trim() && uniform(el, cs.fontSize) && !turned(el)) {
         if (cs.position === 'static') el.style.setProperty('position', 'relative');
         el.setAttribute('data-ci-x', lines(el)); place(el); } } }
   // Shrink a no-wrap title just enough that its longest line fits its column (never bigger than the page set it).
-  function fit(el) { var o = el.dataset.ciFit; if (o) el.style.setProperty('font-size', o); else el.style.removeProperty('font-size'); var w = el.parentElement ? el.parentElement.clientWidth : 0;
+  function fit(el) { var o = el.dataset.ciFit; if (o) el.style.setProperty('font-size', o); else el.style.removeProperty('font-size'); var pe = el.parentElement, ps = pe && getComputedStyle(pe), w = pe ? pe.clientWidth - parseFloat(ps.paddingLeft) - parseFloat(ps.paddingRight) : 0;
     if (w && el.scrollWidth > w) el.style.setProperty('font-size', (parseFloat(getComputedStyle(el).fontSize) * w / el.scrollWidth * 0.98) + 'px', 'important'); }
-  window.addEventListener('resize', function () { [].forEach.call(document.querySelectorAll('[data-ci-fit]'), fit); later(); });
-  if (document.fonts) document.fonts.ready.then(function () { [].forEach.call(document.querySelectorAll('[data-ci-fit]'), fit); later(); });
+  // A one-word heading is only resized once it is too wide for its box; until then the page's own size stands.
+  function one(el) { if (el.dataset.ciFit !== undefined) return fit(el); var pe = el.parentElement, ps = pe && getComputedStyle(pe), w = pe ? pe.clientWidth - parseFloat(ps.paddingLeft) - parseFloat(ps.paddingRight) : 0;
+    if (w && el.scrollWidth > w) { el.dataset.ciFit = el.style.getPropertyValue('font-size') || ''; fit(el); } }
+  function refit() { [].forEach.call(document.querySelectorAll('[data-ci-fit]:not([data-ci-one])'), fit); [].forEach.call(document.querySelectorAll('[data-ci-one]'), one); }
+  window.addEventListener('resize', function () { refit(); later(); });
+  if (document.fonts) document.fonts.ready.then(function () { refit(); later(); });
   var t; function soon() { clearTimeout(t); t = setTimeout(function () { scan(); later(); }, 120); }
   // New sections get scanned; text that changes in place (counters) only refreshes the 3D lines.
   // Headings whose own text changes (counting-up numbers) refresh their 3D on the next frame, so it never trails.
   var live = [], raf = 0;
-  function flush() { raf = 0; live.forEach(function (e) { var t = lines(e); if (t && t !== e.getAttribute('data-ci-x')) e.setAttribute('data-ci-x', t); place(e); }); live = []; }
+  function flush() { raf = 0; live.forEach(function (e) { if (e.dataset.ciOne !== undefined) one(e); else if (e.dataset.ciFit !== undefined) fit(e); var t = lines(e); if (t && t !== e.getAttribute('data-ci-x')) e.setAttribute('data-ci-x', t); place(e); }); live = []; }
   function start() { scan(); later(); new MutationObserver(function (ms) {
     var added = false;
     for (var i = 0; i < ms.length; i++) { var m = ms[i], n = m.target.nodeType === 1 ? m.target : m.target.parentElement, h = n && n.closest && n.closest('[data-ci-x]');

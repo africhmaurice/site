@@ -507,6 +507,7 @@
     });
   }
   function fitNavs() {
+    huntOne();
     actify(document.getElementById('hunt-nav-ov'));
     Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
       actify(nav);
@@ -533,9 +534,11 @@
   // hidden from the top level (it can't nest folders); its pages are managed there as before.
   var HUNT = '/new-dropdown-1', ADV = '/adventure-menu', huntBuilt = false;
   function huntCss() {
-    var st = document.createElement('style');
+    if (document.getElementById('ma-hunt-css')) return;
+    var st = document.createElement('style'); st.id = 'ma-hunt-css';
     var box = 'background:rgba(9,23,7,.95);border:1px solid rgba(243,234,217,.25);min-width:170px;padding:0;';
-    st.textContent =
+    // the same panel opens from the main menu and from the green hunt menu (one menu, Maurice 2026-10-09)
+    var desk = function (P) { return (
       '#header .header-display-desktop .ma-hunt-dd{' + box + '}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-mega{display:grid;grid-template-columns:auto auto;gap:16px;padding:16px;align-items:start}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-mega-links{display:flex;flex-direction:column}' +
@@ -553,6 +556,13 @@
       '#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-profile{background:#c1330a!important;border:1.5px solid #f3ead9;margin:4px 0!important;padding:9px 16px!important}#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-profile:hover{background:#e04a12!important;color:#fff!important}#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-profile svg{display:none}' +
       '#header .header-display-desktop .ma-hunt-dd{overflow:visible}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-grp a.ma-hl.mn-profile{white-space:nowrap!important;padding:9px 10px!important}' +
+      // three columns: The Treasure Hunt over Earn Points, Submit Points over Current Progress, then Adventure
+      '#header .header-display-desktop .ma-hunt-dd .ma-mega.ma-mega3{display:grid;grid-template-columns:repeat(3,minmax(250px,auto));gap:12px;padding:16px;align-items:start}' +
+      '#header .header-display-desktop .ma-hunt-dd .ma-col{display:flex;flex-direction:column;gap:12px}' +
+      '#header .header-display-desktop .ma-hunt-dd a.ma-hl.ma-top{text-align:center!important;border:1px solid rgba(243,234,217,.3);padding:14px!important;font-weight:800!important;letter-spacing:.12em!important}'
+      ).split('#header .header-display-desktop .ma-hunt-dd').join(P); };
+    st.textContent = desk('#header .header-display-desktop .ma-hunt-dd') + desk('#hunt-nav .ma-hunt-dd') +
+      '#hunt-nav .mn-dd-in.ma-hunt-dd{display:block}' +
       // phone menu: the hunt phone menu's boxed groups
       '#header .header-menu .ma-ovgroup{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(243,234,217,.3);padding:14px 16px 16px;margin:10px auto;width:86%;box-sizing:border-box}' +
       '#header .header-menu .ma-ovgroup>span{font-family:\'Almarai\',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590}' +
@@ -561,6 +571,154 @@
     document.head.appendChild(st);
   }
   function plainText(a) { return (a.textContent || '').replace(/\s+/g, ' ').trim(); }
+  // One menu (Maurice, 2026-10-09). The main menu reads, left to right: THE TREASURE HUNT (dropdown), TRENCH MARKET,
+  // LINKS, NEWSLETTER, JOIN THE DISCORD!, ORACLE'S GIFT (dropdown), GAMES, and the Pre-Order dropdown, 25px apart.
+  // Submit is no longer its own item. The Treasure Hunt dropdown has three columns: THE TREASURE HUNT (the Hunt page)
+  // over Earn Points, SUBMIT POINTS over Current Progress, then Adventure; Games moved out of it to the top row.
+  // The green hunt menu on the hunt pages shows exactly the same menu.
+  var MEGA = [[['link', 'THE TREASURE HUNT', '/the-hunt'], ['group', 'EARN POINTS']], [['link', 'SUBMIT POINTS', '/points'], ['group', 'CURRENT PROGRESS']], [['group', 'ADVENTURE']]];
+  var DISCORD = 'https://discord.gg/d36Xnj4umU', GAP = 25;
+  function megaLink(a, cls) {
+    var n = document.createElement('a'); n.href = a.getAttribute('href'); n.className = cls;
+    ['mn-vote', 'mn-profile'].forEach(function (c) { if (a.classList.contains(c)) n.classList.add(c); });
+    if (a.getAttribute('style')) n.setAttribute('style', a.getAttribute('style'));
+    if (a.getAttribute('target')) { n.target = a.getAttribute('target'); n.rel = 'noopener'; }
+    var svg = a.classList.contains('mn-profile') && a.querySelector('svg');
+    if (svg) n.appendChild(document.importNode(svg, true));
+    n.appendChild(document.createTextNode(plainText(a)));
+    return n;
+  }
+  // a hunt phone menu's boxed groups (after actify), by heading
+  function megaModel(ov) {
+    var gs = {};
+    Array.prototype.forEach.call(ov.children, function (el) {
+      if (!el.classList.contains('mn-ovgroup')) return;
+      var h = el.firstElementChild; if (h && h.tagName !== 'A') gs[plainText(h).toUpperCase()] = el;
+    });
+    return gs;
+  }
+  // a group's heading and links, copied, without Games (it's on the top row now)
+  function groupKids(g, cls, add) {
+    var seen = {};   // each link once, even where a page's copy of the menu got it twice
+    Array.prototype.forEach.call(g.children, function (c) {
+      if (c.tagName === 'A') { var k = (c.getAttribute('href') || '') + '|' + plainText(c); if (seen[k] || /\/games\/?$/.test(c.getAttribute('href') || '')) return; seen[k] = 1; add(megaLink(c, cls)); }
+      else { var h = document.createElement('span'); h.textContent = plainText(c); if (c.className) h.className = c.className; add(h); }
+    });
+  }
+  function megaPanel(ov) {
+    var gs = megaModel(ov), mega = document.createElement('div'); mega.className = 'ma-mega ma-mega3';
+    MEGA.forEach(function (col) {
+      var c = document.createElement('div'); c.className = 'ma-col';
+      col.forEach(function (it) {
+        if (it[0] === 'link') { var a = document.createElement('a'); a.href = SITE + it[2]; a.className = 'ma-hl ma-top'; a.textContent = it[1]; c.appendChild(a); return; }
+        if (!gs[it[1]]) return;
+        var box = document.createElement('div'); box.className = 'ma-grp';
+        groupKids(gs[it[1]], 'ma-hl', function (k) { box.appendChild(k); });
+        c.appendChild(box);
+      });
+      mega.appendChild(c);
+    });
+    return mega;
+  }
+  // 25px between the links wherever the row fits; on a narrower laptop the spacing tightens just enough to keep the
+  // Pre-Order button where the header's right edge has always been.
+  var gapT;
+  function mainGap() {
+    Array.prototype.forEach.call(document.querySelectorAll('#header .header-display-desktop .header-nav-list'), function (list) {
+      list.style.removeProperty('--ma-gap');
+      var vis = Array.prototype.filter.call(list.children, function (i) { return i.offsetWidth; });
+      if (!vis.length) return;
+      var wrap = list.closest('.header-nav-wrapper') || list.parentNode, edge = Math.min(wrap.getBoundingClientRect().right, document.documentElement.clientWidth - 16);
+      var over = vis[vis.length - 1].getBoundingClientRect().right - edge;
+      if (over > 0) list.style.setProperty('--ma-gap', Math.max(6, GAP - Math.ceil(over / vis.length)) + 'px');
+    });
+  }
+  // Main menu order and spacing (desktop row and phone menu). Waits until Market, Links, and Oracle's Gift are in.
+  function mainOrder() {
+    if (!document.getElementById('header')) return;
+    if (!document.getElementById('ma-one-gap')) {
+      var st = document.createElement('style'); st.id = 'ma-one-gap';
+      st.textContent = '#header .header-display-desktop .header-nav-list{gap:0!important}#header .header-display-desktop .header-nav{padding-left:24px!important}' +
+        '#header .header-display-desktop .header-nav-item{margin-left:calc(var(--ma-gap,' + GAP + 'px) / 2)!important;margin-right:calc(var(--ma-gap,' + GAP + 'px) / 2)!important}';
+      document.head.appendChild(st);
+      window.addEventListener('resize', function () { clearTimeout(gapT); gapT = setTimeout(mainGap, 120); });
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(mainGap);
+    }
+    mainGap();
+    Array.prototype.forEach.call(document.querySelectorAll('#header .header-nav-list'), function (list) {
+      if (list.getAttribute('data-ma-order')) return;
+      var items = Array.prototype.slice.call(list.children);
+      var find = function (sel) { for (var i = 0; i < items.length; i++) if (items[i].querySelector(sel)) return items[i]; return null; };
+      var hunt = find('.header-nav-folder-title[data-href="' + HUNT + '"]'), market = find('a[href="' + MERCH_URL + '"]'), links = find('a[href$="/links"]');
+      var pre = preOrder(items), gift = find('.header-nav-folder-title[data-href="' + GIFT + '"]');
+      if (!hunt || !market || !links || !pre) return;
+      list.setAttribute('data-ma-order', '1');
+      var submit = find('.header-nav-folder-title[data-href="/submit"]'); if (submit) submit.style.display = 'none';
+      var games = links.cloneNode(true), ga = games.querySelector('a'); ga.href = SITE + '/games'; ga.textContent = 'Games';
+      ga.removeAttribute('aria-current'); games.classList.remove('header-nav-item--active');
+      [hunt, market, links, find('a[href$="/newsletter"]'), find('a[href*="discord"]'), gift, games].forEach(function (it) { if (it) list.insertBefore(it, pre); });
+    });
+    mainGap();
+    var root = document.querySelector('.header-menu-nav [data-folder="root"]');
+    var huntRow = root && root.querySelector('a[data-folder-id="' + HUNT + '"]');
+    if (!huntRow || root.getAttribute('data-ma-order')) return;
+    var rowList = huntRow.closest('.header-menu-nav-item').parentNode, rows = Array.prototype.slice.call(rowList.children);
+    var rfind = function (sel) { for (var i = 0; i < rows.length; i++) if (rows[i].querySelector(sel)) return rows[i]; return null; };
+    var rLinks = rfind('a[href$="/links"]'), rPre = preOrder(rows);
+    if (!rLinks || !rPre || !rfind('a[href="' + MERCH_URL + '"]')) return;
+    root.setAttribute('data-ma-order', '1');
+    var rSub = rfind('a[data-folder-id="/submit"]'); if (rSub) rSub.style.display = 'none';
+    var rGames = rLinks.cloneNode(true), rga = rGames.querySelector('a'); rga.href = SITE + '/games';
+    (rga.querySelector('.header-menu-nav-item-content') || rga).textContent = 'Games';
+    [huntRow.closest('.header-menu-nav-item'), rfind('a[href="' + MERCH_URL + '"]'), rLinks, rfind('a[href$="/newsletter"]'), rfind('a[href*="discord"]'), rfind('a[data-folder-id="' + GIFT + '"]'), rGames]
+      .forEach(function (r) { if (r) rowList.insertBefore(r, rPre); });
+  }
+  // The green hunt menu (copied into each hunt page) becomes the same menu: desktop row and phone menu.
+  function huntOne() {
+    var ov = document.getElementById('hunt-nav-ov');
+    Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
+      var links = nav.querySelector('.mn-links'), gift = nav.querySelector('.mn-gift');
+      if (nav.getAttribute('data-one') || !links || !gift || !ov) return;
+      nav.setAttribute('data-one', '1');
+      actify(nav); actify(ov); huntCss(); navCss();   // act links first, so they aren't added again inside the new panel
+      if (!document.getElementById('ma-one-nav')) {
+        var st = document.createElement('style'); st.id = 'ma-one-nav';
+        st.textContent = '#hunt-nav .mn-right .mn-links{gap:' + GAP + 'px}#hunt-nav .mn-row .mn-right{gap:' + GAP + 'px}' +
+          '#hunt-nav.mn-compact .mn-right .mn-links{gap:clamp(10px,.9vw,18px)}#hunt-nav.mn-compact .mn-row .mn-right{gap:16px}' +
+          '#hunt-nav .ma-th>.mn-dd{z-index:3}#hunt-nav-ov .mn-ovgroup a.mn-profile{white-space:nowrap}';
+        document.head.appendChild(st);
+      }
+      var caret = nav.querySelector('.mn-caret'), cta = nav.querySelector('.mn-drop-cta'), ctaIn = cta && links.contains(cta);
+      var mk = function (href, text, cls) { var a = document.createElement('a'); a.href = href; a.className = 'mn-link' + (cls ? ' ' + cls : ''); a.textContent = text;
+        if (href === DISCORD) { a.target = '_blank'; a.rel = 'noopener'; } return a; };
+      var th = document.createElement('div'); th.className = 'mn-drop ma-th';
+      th.innerHTML = '<a href="' + SITE + '/the-hunt" class="mn-link" aria-haspopup="true">THE TREASURE HUNT' + (caret ? caret.outerHTML : '') + '</a><div class="mn-dd"><div class="mn-dd-in ma-hunt-dd"></div></div>';
+      th.querySelector('.mn-dd-in').appendChild(megaPanel(ov));
+      // the wide panel opens under its link but stays 16px inside the screen
+      var dd = th.querySelector('.mn-dd'), place = function () {
+        dd.style.transform = '';
+        requestAnimationFrame(function () { var r = dd.getBoundingClientRect(), vw = document.documentElement.clientWidth, s = 0;
+          if (!r.width) return; if (r.right > vw - 16) s = vw - 16 - r.right; if (r.left + s < 16) s = 16 - r.left;
+          if (s) dd.style.transform = 'translateX(calc(-50% + ' + Math.round(s) + 'px))'; }); };
+      th.addEventListener('mouseenter', place); th.addEventListener('focusin', place);
+      var row = [th, mk(MERCH_URL, 'TRENCH MARKET', 'mn-merch'), mk(SITE + '/links', 'LINKS', 'mn-linkpage'), mk(SITE + '/newsletter', 'NEWSLETTER'), mk(DISCORD, 'JOIN THE DISCORD!'), gift, mk(SITE + '/games', 'GAMES')];
+      while (links.firstChild) links.removeChild(links.firstChild);
+      row.forEach(function (el) { links.appendChild(el); });
+      if (ctaIn) links.appendChild(cta);
+      nav.setAttribute('data-fit', '1');   // no Earn Points fold now; it still tightens or uses the menu button when it doesn't fit
+    });
+    if (!ov || ov.getAttribute('data-one') || !ov.querySelector('.mn-gift')) return;
+    ov.setAttribute('data-one', '1'); actify(ov);
+    var gs = megaModel(ov);
+    Object.keys(gs).forEach(function (k) { var seen = {}; Array.prototype.forEach.call(gs[k].querySelectorAll('a'), function (a) {
+      var key = a.getAttribute('href') + '|' + plainText(a); if (seen[key] || /\/games\/?$/.test(a.getAttribute('href') || '')) a.parentNode.removeChild(a); seen[key] = 1; }); });
+    var ol = function (href, text, cls) { var a = document.createElement('a'); a.href = href; a.textContent = text; if (cls) a.className = cls;
+      if (href === DISCORD) { a.target = '_blank'; a.rel = 'noopener'; } return a; };
+    var order = [ov.querySelector('.mn-x'), ov.querySelector('.mn-ovlogo'), ol(SITE + '/the-hunt', 'THE TREASURE HUNT'), gs['EARN POINTS'], ol(SITE + '/points', 'SUBMIT POINTS'), gs['CURRENT PROGRESS'], gs['ADVENTURE'],
+      ol(MERCH_URL, 'TRENCH MARKET', 'mn-merch'), ol(SITE + '/links', 'LINKS', 'mn-linkpage'), ol(SITE + '/newsletter', 'NEWSLETTER'), ol(DISCORD, 'JOIN THE DISCORD!'), ov.querySelector('.mn-gift'), ol(SITE + '/games', 'GAMES'), ov.querySelector(':scope > .mn-cta')];
+    while (ov.firstChild) ov.removeChild(ov.firstChild);
+    order.forEach(function (el) { if (el) ov.appendChild(el); });
+  }
   function huntDropdown() {
     if (huntBuilt || !document.getElementById('header')) return;
     var huntList = document.querySelector('#header .header-display-desktop .header-nav-folder-title[data-href="' + HUNT + '"] + .header-nav-folder-content');
@@ -588,6 +746,28 @@
         if (svg) n.appendChild(document.importNode(svg, true));
         n.appendChild(document.createTextNode(plainText(a)));
         return n;
+      }
+      // One menu (Maurice, 2026-10-09): three columns, built the same way for the green hunt menu (megaPanel).
+      if (ov) {
+        huntList.innerHTML = ''; huntList.classList.add('ma-hunt-dd'); huntList.appendChild(megaPanel(ov));
+        var pnl = document.querySelector('.header-menu-nav [data-folder="' + HUNT + '"] .header-menu-nav-folder-content');
+        if (!pnl) return;
+        Array.prototype.forEach.call(pnl.querySelectorAll('.header-menu-nav-item:not(.header-menu-controls)'), function (r) { r.remove(); });
+        var gs = megaModel(ov);
+        MEGA.forEach(function (col) { col.forEach(function (it) {
+          var row = document.createElement('div'); row.className = 'container header-menu-nav-item';
+          if (it[0] === 'link') {
+            var a = document.createElement('a'); a.href = SITE + it[2]; a.tabIndex = -1;
+            a.innerHTML = '<div class="header-menu-nav-item-content"></div>'; a.firstChild.textContent = it[1]; row.appendChild(a);
+          } else {
+            if (!gs[it[1]]) return;
+            var g = document.createElement('div'); g.className = 'ma-ovgroup';
+            groupKids(gs[it[1]], '', function (k) { if (k.tagName === 'A') { k.className = k.classList.contains('mn-profile') ? 'mn-profile' : ''; k.tabIndex = -1; } g.appendChild(k); });
+            row.appendChild(g);
+          }
+          pnl.appendChild(row);
+        }); });
+        return;
       }
       // Desktop looks like the phone menu (Maurice, 2026-09-27): the plain links in a column on the left, and the
       // phone menu's boxed groups (small green heading, links under it) in a column on the right.
@@ -675,7 +855,7 @@
       if (old) old.closest('.header-nav-item').style.display = 'none';
       if (!hunt || !tpl) return;
       var item = tpl.cloneNode(true), a = item.querySelector('a');
-      a.href = MERCH_URL; a.removeAttribute('target'); a.textContent = 'Market';
+      a.href = MERCH_URL; a.removeAttribute('target'); a.textContent = 'Trench Market';
       hunt.closest('.header-nav-item').parentNode.insertBefore(item, hunt.closest('.header-nav-item'));
       var gift = giftFolder(list);
       if (gift) { var pre = preOrder(list.children); list.insertBefore(gift, pre); }
@@ -688,7 +868,7 @@
     var tplRow = root.querySelector('.header-menu-nav-item--external');
     if (!huntRow || !tplRow) return;
     var row = tplRow.cloneNode(true), ra = row.querySelector('a');
-    ra.href = MERCH_URL; ra.removeAttribute('target'); ra.textContent = 'Market';
+    ra.href = MERCH_URL; ra.removeAttribute('target'); ra.textContent = 'Trench Market';
     huntRow.closest('.header-menu-nav-item').parentNode.insertBefore(row, huntRow.closest('.header-menu-nav-item'));
     // the phone menu: an Oracle's Gift row that opens its own panel, like the Submit row does
     var subRow = root.querySelector('a[data-folder-id="/submit"]'), subPanel = document.querySelector('.header-menu-nav [data-folder="/submit"]');
@@ -968,9 +1148,11 @@
     lockedChest53();
     if (document.body) quietWord();
     huntGift();
+    huntOne();
     mainMerch();
     dropLinktree();
     huntDropdown();
+    mainOrder();
     fixedBackgrounds();
     nativeReveal();
     centerDropdowns();
