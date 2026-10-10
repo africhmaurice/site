@@ -1,7 +1,7 @@
 // Trench Market's menu is the website's menu (Maurice, 2026-10-10): THE TREASURE HUNT (dropdown), TRENCH MARKET
-// (dropdown: Shop All and every category in the shop), LINKS, NEWSLETTER, JOIN THE DISCORD!, ORACLE'S GIFT
-// (dropdown), and the Pre-Order dropdown, 25px apart. Games sits in The Treasure Hunt panel under Earn Points, and
-// Oracle's Gift is also the last box of its third column. The Treasure Hunt panel is built from the same
+// (dropdown: Shop All and every category in the shop), LINKS, NEWSLETTER, JOIN THE DISCORD!, and the Pre-Order
+// dropdown, 25px apart. Games sits in The Treasure Hunt panel under Earn Points, and Oracle's Gift is the last box of
+// its third column. The panel's words and spacing match the website's exactly. The Treasure Hunt panel is built from the same
 // pages/hunt-menu.html as the website's (the act links work like loader.js actify), in the same three columns,
 // with a line under each box heading. Loaded by the shop theme (layout/theme.liquid) after its own tm.js.
 (function () {
@@ -17,16 +17,20 @@
   var css = document.createElement('style'); css.id = 'ma-shop-menu';
   css.textContent =
     '.tm-nav.ma-one{gap:var(--ma-gap,' + GAP + 'px)!important}' +
+    '.tm-nav.ma-one .tm-nav__link{font-size:clamp(10.5px,.88vw,14.4px)}' +   // the website's menu size
     '.tm-nav.ma-one.ma-fs .tm-nav__link{font-size:var(--ma-fs)!important}' +
     '.tm-header.ma-burger .tm-nav{display:none!important}.tm-header.ma-burger .tm-burger{display:inline-flex!important}' +
     '.tm-th .tm-drop__panel{left:0;transform:none}' +
-    '.tm-drop__in.tm-mega3{display:grid;grid-template-columns:repeat(3,minmax(250px,auto));gap:12px;padding:16px;align-items:start;max-height:calc(100vh - 120px);overflow-y:auto}' +
+    '.tm-drop__in.tm-mega3{display:grid;grid-template-columns:repeat(3,minmax(262px,auto));gap:12px;padding:16px;align-items:start;max-height:calc(100vh - 120px);overflow-y:auto}' +
     '.tm-mega3 .tm-col{display:flex;flex-direction:column;gap:12px}' +
     '.tm-drop__in a.tm-top{display:block;text-align:center;border:1px solid rgba(243,234,217,.3);padding:14px!important;font-weight:800;letter-spacing:.12em}' +
     '.tm-grp>span:first-child,.tm-mnav .ma-mgrp>span:first-child{align-self:stretch;display:block;text-align:center;border-bottom:2px solid rgba(243,234,217,.45);padding-bottom:5px;margin-bottom:10px;line-height:1.3}' +
     '.tm-grp span.ma-sub,.tm-mnav span.ma-sub{display:block;align-self:stretch;font:800 11px/1.3 Almarai,sans-serif;letter-spacing:.16em;text-transform:uppercase;text-align:center;color:#fff;margin:10px 0 4px;padding:4px 10px;white-space:nowrap}' +
     'span.ma-sub-one{background:#482d85}span.ma-sub-two{background:#1a5e41;outline:1px solid #89fbcb}span.ma-sub-all{background:rgba(243,234,217,.14)}' +
-    '.tm-grp a.tm-drop__btn{white-space:nowrap}' +
+    // the panel's sizes are the website's (loader.js huntCss), so it looks the same on both
+    '.tm-mega3 a{font:700 clamp(12px,.92vw,14.4px)/1.2 Almarai,sans-serif!important;letter-spacing:.07em!important;padding:8px 14px!important}' +
+    '.tm-mega3 a.tm-top{padding:14px!important;font-weight:800!important;letter-spacing:.12em!important}' +
+    '.tm-mega3 a.tm-drop__btn{white-space:nowrap;padding:9px 10px!important;margin:4px 0}' +
     '.tm-drop__in.ma-boxed{padding:12px}.tm-drop__in.ma-boxed .tm-grp a{text-align:center}' +
     // phone menu: the hunt groups boxed like the website's phone menu
     '.tm-mnav .ma-mgrp{display:flex;flex-direction:column;align-items:center;border:1px solid rgba(243,234,217,.3);padding:12px 14px 10px;margin:8px 0}' +
@@ -175,7 +179,7 @@
     var tm = drop('TRENCH MARKET', '/'), tmIn = boxed(tm, 'TRENCH MARKET');
     cats(tmIn, function (a) { tmIn.appendChild(a); });
     var gift = drop("ORACLE'S GIFT", SITE + '/oracles-gift/aura-spectrum'); boxed(gift, "ORACLE'S GIFT").appendChild(link(SITE + '/oracles-gift/aura-spectrum', 'AURA SPECTRUM'));
-    var row = [th, tm, link(SITE + '/links', 'LINKS', 'tm-nav__link'), link(SITE + '/newsletter', 'NEWSLETTER', 'tm-nav__link'), link(DISCORD, 'JOIN THE DISCORD!', 'tm-nav__link'), gift];
+    var row = [th, tm, link(SITE + '/links', 'LINKS', 'tm-nav__link'), link(SITE + '/newsletter', 'NEWSLETTER', 'tm-nav__link'), link(DISCORD, 'JOIN THE DISCORD!', 'tm-nav__link')];
     while (nav.firstChild) nav.removeChild(nav.firstChild);
     row.forEach(function (n) { nav.appendChild(n); });
     if (pre) { nav.appendChild(pre); boxed(pre, "PRE-ORDER CELLO'S GATE"); }
@@ -190,7 +194,7 @@
       sum(mHunt, 'THE TREASURE HUNT'); sum(mShop, 'TRENCH MARKET'); sum(mGift, "ORACLE'S GIFT");
       cats(mShop, function (a) { mShop.appendChild(a); }, true);
       mGift.appendChild(link(SITE + '/oracles-gift/aura-spectrum', 'AURA SPECTRUM'));
-      var mrow = [mHunt, mShop, link(SITE + '/links', 'LINKS'), link(SITE + '/newsletter', 'NEWSLETTER'), link(DISCORD, 'JOIN THE DISCORD!'), mGift];
+      var mrow = [mHunt, mShop, link(SITE + '/links', 'LINKS'), link(SITE + '/newsletter', 'NEWSLETTER'), link(DISCORD, 'JOIN THE DISCORD!')];
       while (list.firstChild) list.removeChild(list.firstChild);
       mrow.forEach(function (n) { list.appendChild(n); });
       if (mPre) list.appendChild(mPre);
