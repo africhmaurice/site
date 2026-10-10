@@ -205,5 +205,8 @@
       if (list) { mHunt.appendChild(link(SITE + '/the-hunt', 'THE TREASURE HUNT')); mHunt.appendChild(link(SITE + '/points', 'SUBMIT POINTS')); }
     });
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build); else build();
+  // Built once the theme's own scripts have run (tm.js wires up the theme's dropdowns), so they never double up on
+  // these: at DOMContentLoaded, or at load if this arrives later.
+  if (document.readyState === 'complete') build();
+  else { document.addEventListener('DOMContentLoaded', build); window.addEventListener('load', build); }
 })();
