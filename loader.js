@@ -572,12 +572,29 @@
   }
   function plainText(a) { return (a.textContent || '').replace(/\s+/g, ' ').trim(); }
   // One menu (Maurice, 2026-10-09). The main menu reads, left to right: THE TREASURE HUNT (dropdown), TRENCH MARKET,
-  // LINKS, NEWSLETTER, JOIN THE DISCORD!, ORACLE'S GIFT (dropdown), GAMES, and the Pre-Order dropdown, 25px apart.
+  // LINKS, NEWSLETTER, JOIN THE DISCORD!, ORACLE'S GIFT (dropdown), and the Pre-Order dropdown, 25px apart.
   // Submit is no longer its own item. The Treasure Hunt dropdown has three columns: THE TREASURE HUNT (the Hunt page)
-  // over Earn Points, SUBMIT POINTS over Current Progress, then Adventure; Games moved out of it to the top row.
+  // over Earn Points (Games back in it, Maurice 10/10), SUBMIT POINTS over Current Progress, then Adventure with
+  // Oracle's Gift under it.
   // The green hunt menu on the hunt pages shows exactly the same menu.
-  var MEGA = [[['link', 'THE TREASURE HUNT', '/the-hunt'], ['group', 'EARN POINTS']], [['link', 'SUBMIT POINTS', '/points'], ['group', 'CURRENT PROGRESS']], [['group', 'ADVENTURE']]];
+  var MEGA = [[['link', 'THE TREASURE HUNT', '/the-hunt'], ['group', 'EARN POINTS']], [['link', 'SUBMIT POINTS', '/points'], ['group', 'CURRENT PROGRESS']], [['group', 'ADVENTURE'], ['gift']]];
   var DISCORD = 'https://discord.gg/d36Xnj4umU', GAP = 25;
+  // Trench Market is a dropdown on every menu (Maurice, 2026-10-10): Shop All and every category in the shop. The shop
+  // doesn't share its category list with other sites, so it is listed here; the shop's own menu (shopmenu.js) reads it live.
+  var SHOP = 'https://shop.mauriceafrich.com', SHOP_CATS = [['Shop All', '/collections/merch'], ['Stickers', '/collections/stickers'], ['Apparel', '/collections/apparel'], ['Hats', '/collections/hats'],
+    ['Beanies', '/collections/beanies'], ['Pins', '/collections/pins'], ['Mugs', '/collections/mugs'], ['Puzzles', '/collections/puzzles'], ['Prints', '/collections/art-prints']];
+  var TM = '/trench-market';
+  // the main menu's Trench Market dropdown, made from the Oracle's Gift dropdown
+  function marketFolder(gift) {
+    var item = gift.cloneNode(true), btn = item.querySelector('.header-nav-folder-title');
+    btn.setAttribute('data-href', TM); btn.setAttribute('aria-controls', 'trench-market'); btn.setAttribute('aria-expanded', 'false');
+    item.querySelector('.header-nav-folder-title-text').textContent = 'Trench Market';
+    var box = item.querySelector('.header-nav-folder-content'), tpl = box.querySelector('.header-nav-folder-item').cloneNode(true);
+    box.id = 'trench-market'; box.innerHTML = ''; box.classList.remove('ma-boxdd'); item.removeAttribute('data-ma-boxed');
+    SHOP_CATS.forEach(function (c) { var row = tpl.cloneNode(true), a = row.querySelector('a'); a.href = SHOP + c[1]; a.removeAttribute('target');
+      a.querySelector('.header-nav-folder-item-content').textContent = c[0]; box.appendChild(row); });
+    return item;
+  }
   function megaLink(a, cls) {
     var n = document.createElement('a'); n.href = a.getAttribute('href'); n.className = cls;
     ['mn-vote', 'mn-profile'].forEach(function (c) { if (a.classList.contains(c)) n.classList.add(c); });
@@ -597,13 +614,20 @@
     });
     return gs;
   }
-  // a group's heading and links, copied, without Games (it's on the top row now)
+  // a group's heading and links, copied
   function groupKids(g, cls, add) {
     var seen = {};   // each link once, even where a page's copy of the menu got it twice
     Array.prototype.forEach.call(g.children, function (c) {
-      if (c.tagName === 'A') { var k = (c.getAttribute('href') || '') + '|' + plainText(c); if (seen[k] || /\/games\/?$/.test(c.getAttribute('href') || '')) return; seen[k] = 1; add(megaLink(c, cls)); }
+      if (c.tagName === 'A') { var k = (c.getAttribute('href') || '') + '|' + plainText(c); if (seen[k]) return; seen[k] = 1; add(megaLink(c, cls)); }
       else { var h = document.createElement('span'); h.textContent = plainText(c); if (c.className) h.className = c.className; add(h); }
     });
+  }
+  // the Oracle's Gift box at the foot of the panel's third column (Maurice, 2026-10-10)
+  function giftBox(boxCls, linkCls) {
+    var box = document.createElement('div'); box.className = boxCls;
+    var h = document.createElement('span'); h.textContent = "ORACLE'S GIFT"; box.appendChild(h);
+    var a = document.createElement('a'); a.href = AURA_URL; a.className = linkCls; a.textContent = 'AURA SPECTRUM'; box.appendChild(a);
+    return box;
   }
   function megaPanel(ov) {
     var gs = megaModel(ov), mega = document.createElement('div'); mega.className = 'ma-mega ma-mega3';
@@ -611,6 +635,7 @@
       var c = document.createElement('div'); c.className = 'ma-col';
       col.forEach(function (it) {
         if (it[0] === 'link') { var a = document.createElement('a'); a.href = SITE + it[2]; a.className = 'ma-hl ma-top'; a.textContent = it[1]; c.appendChild(a); return; }
+        if (it[0] === 'gift') { c.appendChild(giftBox('ma-grp', 'ma-hl')); return; }
         if (!gs[it[1]]) return;
         var box = document.createElement('div'); box.className = 'ma-grp';
         groupKids(gs[it[1]], 'ma-hl', function (k) { box.appendChild(k); });
@@ -631,6 +656,35 @@
       var wrap = list.closest('.header-nav-wrapper') || list.parentNode, edge = Math.min(wrap.getBoundingClientRect().right, document.documentElement.clientWidth - 16);
       var over = vis[vis.length - 1].getBoundingClientRect().right - edge;
       if (over > 0) list.style.setProperty('--ma-gap', Math.max(6, GAP - Math.ceil(over / vis.length)) + 'px');
+    });
+  }
+  // Every dropdown is a box with its title and a line under it (Maurice, 2026-10-10): the hunt menu's way, now on
+  // every menu. The Treasure Hunt panel already has its own boxes.
+  function boxDrop(drop, title) {
+    var inn = drop.querySelector('.mn-dd-in'); if (!inn || inn.querySelector('.ma-grp')) return;
+    var g = document.createElement('div'); g.className = 'ma-grp';
+    var h = document.createElement('span'); h.textContent = title; g.appendChild(h);
+    while (inn.firstChild) g.appendChild(inn.firstChild);
+    inn.appendChild(g); inn.classList.add('ma-boxed');
+  }
+  function boxMainDrops() {
+    if (!document.getElementById('ma-boxdd')) {
+      var st = document.createElement('style'); st.id = 'ma-boxdd';
+      var P = '#header .header-display-desktop .header-nav-folder-content.ma-boxdd';
+      st.textContent = P + '{padding:12px!important}' +
+        P + ' .ma-grp{display:flex;flex-direction:column;align-items:stretch;gap:2px;border:1px solid rgba(243,234,217,.3);padding:12px 14px 10px}' +
+        P + ' .ma-grp>span{font-family:Almarai,sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590;text-transform:uppercase;white-space:nowrap}' +
+        P + ' .header-nav-folder-item,' + P + ' .header-nav-folder-item a,' + P + ' .header-nav-folder-item-content{text-align:center!important;justify-content:center!important}' + P + ' .header-nav-folder-item a{display:block!important;padding-left:14px!important;padding-right:14px!important}';
+      document.head.appendChild(st);
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#header .header-display-desktop .header-nav-item--folder'), function (item) {
+      var t = item.querySelector('.header-nav-folder-title'), box = item.querySelector('.header-nav-folder-content');
+      if (!t || !box || item.getAttribute('data-ma-boxed') || t.getAttribute('data-href') === HUNT || box.classList.contains('ma-hunt-dd')) return;
+      item.setAttribute('data-ma-boxed', '1');
+      var g = document.createElement('div'); g.className = 'ma-grp';
+      var h = document.createElement('span'); h.textContent = plainText(t.querySelector('.header-nav-folder-title-text') || t); g.appendChild(h);
+      Array.prototype.forEach.call(box.querySelectorAll('.header-nav-folder-item'), function (r) { g.appendChild(r); });
+      box.appendChild(g); box.classList.add('ma-boxdd');
     });
   }
   // Main menu order and spacing (desktop row and phone menu). Waits until Market, Links, and Oracle's Gift are in.
@@ -654,9 +708,8 @@
       if (!hunt || !market || !links || !pre) return;
       list.setAttribute('data-ma-order', '1');
       var submit = find('.header-nav-folder-title[data-href="/submit"]'); if (submit) submit.style.display = 'none';
-      var games = links.cloneNode(true), ga = games.querySelector('a'); ga.href = SITE + '/games'; ga.textContent = 'Games';
-      ga.removeAttribute('aria-current'); games.classList.remove('header-nav-item--active');
-      [hunt, market, links, find('a[href$="/newsletter"]'), find('a[href*="discord"]'), gift, games].forEach(function (it) { if (it) list.insertBefore(it, pre); });
+      var shop = gift ? marketFolder(gift) : market; if (shop !== market) market.style.display = 'none';
+      [hunt, shop, links, find('a[href$="/newsletter"]'), find('a[href*="discord"]'), gift].forEach(function (it) { if (it) list.insertBefore(it, pre); });
     });
     mainGap();
     var root = document.querySelector('.header-menu-nav [data-folder="root"]');
@@ -668,9 +721,19 @@
     if (!rLinks || !rPre || !rfind('a[href="' + MERCH_URL + '"]')) return;
     root.setAttribute('data-ma-order', '1');
     var rSub = rfind('a[data-folder-id="/submit"]'); if (rSub) rSub.style.display = 'none';
-    var rGames = rLinks.cloneNode(true), rga = rGames.querySelector('a'); rga.href = SITE + '/games';
-    (rga.querySelector('.header-menu-nav-item-content') || rga).textContent = 'Games';
-    [huntRow.closest('.header-menu-nav-item'), rfind('a[href="' + MERCH_URL + '"]'), rLinks, rfind('a[href$="/newsletter"]'), rfind('a[href*="discord"]'), rfind('a[data-folder-id="' + GIFT + '"]'), rGames]
+    // the phone menu's Trench Market row opens its own panel of categories, like the Oracle's Gift row
+    var rMarket = rfind('a[href="' + MERCH_URL + '"]'), rGift = rfind('a[data-folder-id="' + GIFT + '"]'), gPanel = document.querySelector('.header-menu-nav [data-folder="' + GIFT + '"]');
+    if (rGift && gPanel) {
+      var tmRow = rGift.cloneNode(true), ta = tmRow.querySelector('a'); ta.setAttribute('data-folder-id', TM); ta.setAttribute('href', TM);
+      tmRow.querySelector('.header-nav-folder-title-text').textContent = 'Trench Market';
+      var tmPanel = gPanel.cloneNode(true); tmPanel.setAttribute('data-folder', TM);
+      var pRows = tmPanel.querySelectorAll('.header-menu-nav-item:not(.header-menu-controls)'), pTpl = pRows[0], pList = pTpl.parentNode;
+      Array.prototype.forEach.call(pRows, function (x) { x.parentNode.removeChild(x); });
+      SHOP_CATS.forEach(function (c) { var x = pTpl.cloneNode(true), xa = x.querySelector('a'); xa.href = SHOP + c[1]; xa.querySelector('.header-menu-nav-item-content').textContent = c[0]; pList.appendChild(x); });
+      gPanel.parentNode.insertBefore(tmPanel, gPanel.nextSibling);
+      if (rMarket) rMarket.style.display = 'none'; rMarket = tmRow;
+    }
+    [huntRow.closest('.header-menu-nav-item'), rMarket, rLinks, rfind('a[href$="/newsletter"]'), rfind('a[href*="discord"]'), rfind('a[data-folder-id="' + GIFT + '"]')]
       .forEach(function (r) { if (r) rowList.insertBefore(r, rPre); });
   }
   // The green hunt menu (copied into each hunt page) becomes the same menu: desktop row and phone menu.
@@ -701,7 +764,12 @@
           if (!r.width) return; if (r.right > vw - 16) s = vw - 16 - r.right; if (r.left + s < 16) s = 16 - r.left;
           if (s) dd.style.transform = 'translateX(calc(-50% + ' + Math.round(s) + 'px))'; }); };
       th.addEventListener('mouseenter', place); th.addEventListener('focusin', place);
-      var row = [th, mk(MERCH_URL, 'TRENCH MARKET', 'mn-merch'), mk(SITE + '/links', 'LINKS', 'mn-linkpage'), mk(SITE + '/newsletter', 'NEWSLETTER'), mk(DISCORD, 'JOIN THE DISCORD!'), gift, mk(SITE + '/games', 'GAMES')];
+      // Trench Market, Oracle's Gift, and Pre-Order: each a box with its title and a line under it, on every menu
+      var tm = document.createElement('div'); tm.className = 'mn-drop ma-tm';
+      tm.innerHTML = '<a href="' + MERCH_URL + '" class="mn-link" aria-haspopup="true">TRENCH MARKET' + (caret ? caret.outerHTML : '') + '</a><div class="mn-dd"><div class="mn-dd-in"></div></div>';
+      SHOP_CATS.forEach(function (c) { var a = document.createElement('a'); a.href = SHOP + c[1]; a.textContent = c[0].toUpperCase(); tm.querySelector('.mn-dd-in').appendChild(a); });
+      [[tm, 'TRENCH MARKET'], [gift, "ORACLE'S GIFT"], [cta, "PRE-ORDER CELLO'S GATE"]].forEach(function (d) { if (d[0]) boxDrop(d[0], d[1]); });
+      var row = [th, tm, mk(SITE + '/links', 'LINKS', 'mn-linkpage'), mk(SITE + '/newsletter', 'NEWSLETTER'), mk(DISCORD, 'JOIN THE DISCORD!'), gift];
       while (links.firstChild) links.removeChild(links.firstChild);
       row.forEach(function (el) { links.appendChild(el); });
       if (ctaIn) links.appendChild(cta);
@@ -711,11 +779,13 @@
     ov.setAttribute('data-one', '1'); actify(ov);
     var gs = megaModel(ov);
     Object.keys(gs).forEach(function (k) { var seen = {}; Array.prototype.forEach.call(gs[k].querySelectorAll('a'), function (a) {
-      var key = a.getAttribute('href') + '|' + plainText(a); if (seen[key] || /\/games\/?$/.test(a.getAttribute('href') || '')) a.parentNode.removeChild(a); seen[key] = 1; }); });
+      var key = a.getAttribute('href') + '|' + plainText(a); if (seen[key]) a.parentNode.removeChild(a); seen[key] = 1; }); });
     var ol = function (href, text, cls) { var a = document.createElement('a'); a.href = href; a.textContent = text; if (cls) a.className = cls;
       if (href === DISCORD) { a.target = '_blank'; a.rel = 'noopener'; } return a; };
+    var tmGroup = document.createElement('div'); tmGroup.className = 'mn-ovgroup mn-merch-group'; tmGroup.appendChild(document.createElement('span')).textContent = 'TRENCH MARKET';
+    SHOP_CATS.forEach(function (c) { tmGroup.appendChild(ol(SHOP + c[1], c[0].toUpperCase())); });
     var order = [ov.querySelector('.mn-x'), ov.querySelector('.mn-ovlogo'), ol(SITE + '/the-hunt', 'THE TREASURE HUNT'), gs['EARN POINTS'], ol(SITE + '/points', 'SUBMIT POINTS'), gs['CURRENT PROGRESS'], gs['ADVENTURE'],
-      ol(MERCH_URL, 'TRENCH MARKET', 'mn-merch'), ol(SITE + '/links', 'LINKS', 'mn-linkpage'), ol(SITE + '/newsletter', 'NEWSLETTER'), ol(DISCORD, 'JOIN THE DISCORD!'), ov.querySelector('.mn-gift'), ol(SITE + '/games', 'GAMES'), ov.querySelector(':scope > .mn-cta')];
+      tmGroup, ol(SITE + '/links', 'LINKS', 'mn-linkpage'), ol(SITE + '/newsletter', 'NEWSLETTER'), ol(DISCORD, 'JOIN THE DISCORD!'), ov.querySelector('.mn-gift'), ov.querySelector(':scope > .mn-cta')];
     while (ov.firstChild) ov.removeChild(ov.firstChild);
     order.forEach(function (el) { if (el) ov.appendChild(el); });
   }
@@ -759,6 +829,8 @@
           if (it[0] === 'link') {
             var a = document.createElement('a'); a.href = SITE + it[2]; a.tabIndex = -1;
             a.innerHTML = '<div class="header-menu-nav-item-content"></div>'; a.firstChild.textContent = it[1]; row.appendChild(a);
+          } else if (it[0] === 'gift') {
+            var gb = giftBox('ma-ovgroup', ''); gb.querySelector('a').tabIndex = -1; row.appendChild(gb);
           } else {
             if (!gs[it[1]]) return;
             var g = document.createElement('div'); g.className = 'ma-ovgroup';
@@ -1164,6 +1236,7 @@
     dropLinktree();
     huntDropdown();
     mainOrder();
+    if (document.querySelector('#header .header-nav-list[data-ma-order]')) boxMainDrops();
     fixedBackgrounds();
     nativeReveal();
     centerDropdowns();
