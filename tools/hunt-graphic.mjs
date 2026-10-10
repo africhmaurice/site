@@ -3,7 +3,7 @@
 // the first four showing a real page from the hunt over its background art at 90%.
 // Stills go to Documents/Hunt Media/Hunt Graphic/, and the 16:9 one is also copied to assets/press/ for the Press Room.
 // Update NUMBERS (and AS_OF) before rendering. Page captures live in Hunt Media/Hunt Graphic/sources/ (see SOURCES).
-import { mkdirSync, copyFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, copyFileSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
@@ -14,7 +14,13 @@ const DOCS = resolve(ROOT, '..');
 const OUT = join(DOCS, 'Hunt Media', 'Hunt Graphic');
 const SRC = join(OUT, 'sources');
 const BG = join(DOCS, 'maurice-africh-design-system', 'assets', 'backgrounds');
-const FONT = join(DOCS, 'maurice-africh-design-system', 'fonts', 'AtomicMarker-Regular.otf');
+const FONT = join(DOCS, 'maurice-africh-design-system', 'fonts', 'AtomicMarker-Regular.otf'); // kept for GFX_TITLE=marker renders
+// Titles: Cracked Imperia Bold with the Extrude Flush 3D behind it, the same pair the website uses (heads.js).
+const CI = join(ROOT, 'assets', 'fonts', 'CrackedImperia-Bold.woff2');
+const CIX = join(ROOT, 'assets', 'fonts', 'CrackedImperia-ExtrudeFlush.woff2');
+// Seams: Maurice's crack (2026-10-10), keyed out and brightened into the Scarlet range by scratch tooling.
+const CRACK = join(DOCS, 'maurice-africh-design-system', 'assets', 'textures', 'seam-crack.png');
+const CRACK_DATA = 'data:image/png;base64,' + readFileSync(CRACK).toString('base64');
 const url = (p) => 'file:///' + p.split('\\').join('/');
 const req = createRequire(join(DOCS, 'maurice-africh-design-system', '.ds-sync', 'package.json'));
 const { chromium } = req('playwright');
@@ -27,7 +33,7 @@ const PANELS = [
   { title: ['Rewards'], sub: '20+ rewards unlocked by collective points for all hunters.', bg: 'neon-rain-street-as439051128.webp', page: 'rewards.png', tint: '26,94,65' },
   { title: ['Tasks & Riddles'], sub: 'To earn points and unlock secret rewards.', bg: 'energy-gate-as555671153.webp', page: 'tasks.png', tint: '44,96,33' },
   { title: ['Loot Boxes'], sub: '101 loot boxes hidden all over the internet.', bg: 'red-tree-palace-as461430569.webp', page: 'loot.png', tint: '145,37,1' },
-  { title: ['Choose', 'Your Own', 'Adventure'], lockup: ['Choose', 'Your Own', 'Adventure'], sub: 'Vote on where the crew goes and roll the dice!', bg: 'world-map-imperia.webp', page: null, tint: '26,94,65', pos: '72% 38%' },
+  { title: ['Adventure'], sub: 'Vote on where the crew goes and roll the dice!', bg: 'world-map-imperia.webp', page: null, tint: '26,94,65', pos: '72% 38%' },
 ];
 
 // cols = slanted columns (wide sizes); rows = slanted bands (square and tall sizes).
@@ -103,8 +109,8 @@ function html(f) {
 </div>`).join('');
   // "Choose / Your / Own" stacked small, with "Adventure" as tall as the stack beside it.
   const titleHtml = (p) => p.lockup
-    ? `<span class="lk" style="display:inline-flex"><span class="st"><i>${p.lockup.slice(0, -1).map(esc).join('</i><i>')}</i></span><span class="big">${esc(p.lockup[p.lockup.length - 1])}</span></span>`
-    : p.title.map((l) => `<span>${esc(l)}</span>`).join('');
+    ? `<span class="lk" style="display:inline-flex"><span class="st">${p.lockup.slice(0, -1).map((l) => `<i class="ci" data-x="${esc(l)}">${esc(l)}</i>`).join('')}</span><span class="big ci" data-x="${esc(p.lockup[p.lockup.length - 1])}">${esc(p.lockup[p.lockup.length - 1])}</span></span>`
+    : p.title.map((l) => `<span class="ci" data-x="${esc(l)}">${esc(l)}</span>`).join('');
   const labelHtml = labels.map(({ p }, i) => `
 <div class="label" data-i="${i}"${p.lockup ? ' data-lockup="1"' : ''} style="text-align:${f.mode === 'cols' ? 'center' : 'left'}">
   <h2>${titleHtml(p)}</h2>${f.sub ? `<p>${esc(p.sub)}</p>` : ''}
@@ -114,6 +120,11 @@ function html(f) {
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
 @font-face{font-family:'Atomic Marker';src:url('${url(FONT)}') format('opentype')}
+@font-face{font-family:'CI Face';src:url('${url(CI)}') format('woff2');size-adjust:109.5%}
+@font-face{font-family:'CI Extrude';src:url('${url(CIX)}') format('woff2');size-adjust:109.5%}
+/* The 3D: the same words again in the Extrude font, behind the face, in 42% of the face color. */
+.ci{position:relative;isolation:isolate}
+.ci::before{content:attr(data-x);position:absolute;left:0;right:0;text-align:inherit;top:.0318em;font-family:'CI Extrude';white-space:pre;color:var(--d,#6b6b6b);z-index:-1;pointer-events:none}
 *{box-sizing:border-box;margin:0;padding:0}
 body{width:${W}px;height:${H}px;overflow:hidden;position:relative;background:#0b170f;font-family:'Almarai',sans-serif;color:#fffffe}
 .panel{position:absolute;inset:0}
@@ -124,45 +135,48 @@ body{width:${W}px;height:${H}px;overflow:hidden;position:relative;background:#0b
 .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.1) 24%,rgba(0,0,0,.86) 38%,rgba(0,0,0,.9) 60%,rgba(0,0,0,.45) 80%,rgba(0,0,0,.6) 100%),linear-gradient(rgba(var(--t),.25),rgba(var(--t),.25))}
 .shade.sr{background:linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.86) 54%,rgba(0,0,0,.35) 76%,rgba(0,0,0,.12) 100%),linear-gradient(rgba(var(--t),.25),rgba(var(--t),.25))}
 svg.seams{position:absolute;inset:0;z-index:2;overflow:visible}
-.seam{font-family:'Atomic Marker';fill:#ff4c0f}
+.seam{font-family:'CI Face';fill:#ff4c0f}
 .top{position:absolute;left:0;right:0;z-index:3;text-align:center;display:flex;flex-direction:column;align-items:center;gap:${f.title * 0.16}px;background:linear-gradient(180deg,rgba(0,0,0,.9),rgba(0,0,0,.6) 70%,rgba(0,0,0,0))}
 .rowsTop{background:#0b170f}
 .kicker{line-height:1;font-weight:800;font-size:${f.title * 0.2}px;letter-spacing:.24em;color:#3adb97}
-h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:${f.title}px;line-height:.8;padding-top:${f.title * 0.15}px;text-shadow:0 6px 30px rgba(0,0,0,.7)}
-h1 span{color:#ff4c0f}
+h1{font-family:'CI Face',sans-serif;font-weight:400;font-size:${f.title}px;line-height:1.05;letter-spacing:.03em;text-transform:uppercase;padding-top:${f.title * 0.08}px}
+h1 .ci{display:inline-block}
+h1 .or{color:#ff4c0f;--d:#6b2006}
 .when{display:inline-block;padding:${f.title * 0.07}px ${f.title * 0.22}px;background:rgba(0,0,0,.85);border:2px solid #ff4c0f;font-weight:800;font-size:${f.title * 0.21}px;letter-spacing:.12em;line-height:1.35}
 .when b{color:#3adb97;font-weight:800;margin-left:.6em}
 .label{position:absolute;z-index:3}
 .label h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:${f.label}px;line-height:.98;text-shadow:0 4px 18px rgba(0,0,0,.9)}
-${BEBAS ? `.label h2{font-family:'Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.02em;line-height:.9}` : ''}
+${BEBAS ? `.label h2{font-family:'CI Face',sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.03em;line-height:1.05;text-shadow:none}` : ''}
 .label h2 > span{display:block;white-space:nowrap}
-.lk{align-items:stretch;gap:.6em;line-height:.8;vertical-align:top}
+.lk{align-items:stretch;gap:.6em;line-height:1.05;vertical-align:top}
 .lk .st{display:flex;flex-direction:column;justify-content:space-between;font-size:.56em;text-align:right;white-space:nowrap}
 .lk .st i{font-style:normal;display:block;line-height:1}
-.lk .big{font-size:1.5em;line-height:.8;display:block}
+.lk .big{font-size:1.5em;line-height:1.05;display:block}
 .label p{text-wrap:balance}
 .label p{margin-top:${f.label * 0.22}px;font-weight:800;font-size:${f.sub}px;line-height:1.3;text-shadow:0 2px 10px rgba(0,0,0,1),0 0 3px rgba(0,0,0,.9)}
 .foot{position:absolute;left:0;right:0;bottom:0;z-index:3;display:flex;align-items:center;justify-content:center;gap:${W * 0.035}px;background:rgba(0,0,0,.9);border-top:3px solid #ff4c0f;padding:0 ${W * 0.03}px}
 .stat{text-align:center}
-.stat b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:${f.footer * 0.4}px;line-height:1}
+.stat b{display:block;font-family:'CI Face',sans-serif;font-weight:400;font-size:${f.footer * 0.4}px;line-height:1}
 .stat span{display:block;margin-top:${f.footer * 0.04}px;font-weight:800;font-size:${f.footer * 0.13}px;letter-spacing:.16em;color:#89fbcb}
 .free{font-weight:800;font-size:${f.footer * 0.13}px;letter-spacing:.12em;line-height:1.6;color:#fffffe;border-left:2px solid rgba(255,255,254,.3);padding-left:${W * 0.03}px}
 .asof{font-weight:700;color:rgba(255,255,254,.6)}
+.frame{position:absolute;inset:0;z-index:6;pointer-events:none;border:${Math.max(4, Math.round(Math.min(W, H) * 0.006))}px solid #ff4c0f}
 </style></head><body>
 ${panelHtml}
 <svg class="seams" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
-  <defs><filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="${Math.max(4, W * 0.004)}" result="b"/><feFlood flood-color="#ff4c0f" flood-opacity=".7"/><feComposite in2="b" operator="in" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-  ${seams.map(([x1, y1, x2, y2], i) => `<g class="sg" data-i="${i}" data-seam="${x1},${y1},${x2},${y2}" filter="url(#glow)"><text class="seam" font-size="400" x="0" y="0">/</text></g>`).join('')}
+  <defs><filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="${Math.max(2, W * 0.0018)}" result="b"/><feFlood flood-color="#ff4c0f" flood-opacity=".45"/><feComposite in2="b" operator="in" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  ${seams.map(([x1, y1, x2, y2], i) => `<g class="sg" data-i="${i}" data-seam="${x1},${y1},${x2},${y2}"><text class="seam" font-size="400" x="0" y="0">/</text></g>`).join('')}
 </svg>
 ${head}
 ${labelHtml}
 ${foot}
+<div class="frame"></div>
 <script>
-// Stretch the Atomic Marker slash so it runs along each seam, thick enough to cover the panel edge.
+// Stretch the Cracked Imperia slash so it runs along each seam, thick enough to cover the panel edge.
 // Measures the slash's real ink (the text box includes empty space) and its stroke width at mid-height.
 function inkBox(){
   const c = document.createElement('canvas'); c.width = 900; c.height = 900; const x = c.getContext('2d');
-  x.font = "400px 'Atomic Marker'"; x.fillText('/', 200, 600);
+  x.font = "400px 'CI Face'"; x.fillText('/', 200, 600);
   const d = x.getImageData(0, 0, 900, 900).data, on = (xx, yy) => d[(yy * 900 + xx) * 4 + 3] > 40;
   let a = 900, t = 900, e = 0, g = 0;
   for (let yy = 0; yy < 900; yy++) for (let xx = 0; xx < 900; xx++) if (on(xx, yy)) { if (xx < a) a = xx; if (xx > e) e = xx; if (yy < t) t = yy; if (yy > g) g = yy; }
@@ -170,22 +184,58 @@ function inkBox(){
   return { x: a - 200, y: t - 600, w: e - a + 1, h: g - t + 1, thick: n };
 }
 let INK;
-// Lays the slash along a seam: its length runs the seam, its stroke is T wide, and a skew sets the lean.
-function placeSeams(){
-  INK = INK || inkBox();
+// Lays the crack along a seam, in pieces at its natural proportions. Every other piece is flipped top to bottom so
+// the ends meet, and each seam is randomly mirrored and given its own piece lengths so no two seams look alike.
+// The panels are then clipped along each crack's centerline, so no panel shows past its crack into the next one.
+const CRACK_URL = ${JSON.stringify(CRACK_DATA)}, CRACK_W = 212, CRACK_H = 2000;
+async function crackProfile(){
+  const img = new Image(); img.src = CRACK_URL; await img.decode();
+  const c = document.createElement('canvas'); c.width = CRACK_W; c.height = CRACK_H; const x = c.getContext('2d'); x.drawImage(img, 0, 0);
+  const d = x.getImageData(0, 0, CRACK_W, CRACK_H).data, mid = []; let last = CRACK_W / 2;
+  for (let y = 0; y < CRACK_H; y += 4) { let sum = 0, n = 0; for (let xx = 0; xx < CRACK_W; xx++) if (d[(y * CRACK_W + xx) * 4 + 3] > 128) { sum += xx; n++; } if (n) last = sum / n; mid.push([last, y]); }
+  mid.push([last, CRACK_H]); return mid;
+}
+async function placeSeams(){
+  const MID = await crackProfile();
   const T = ${f.mode === 'cols' ? W * 0.011 : H * 0.009};
-  document.querySelectorAll('.sg').forEach((g) => {
-    const t = g.querySelector('text');
+  const NS = 'http://www.w3.org/2000/svg', wide = T * 3.2, natural = CRACK_H * wide / CRACK_W;
+  const lines = [];
+  document.querySelectorAll('.sg').forEach((g, gi) => {
+    let seed = 11 + gi * 977; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
     const [x1, y1, x2, y2] = g.dataset.seam.split(',').map(Number);
-    const vertical = Math.abs(y2 - y1) >= Math.abs(x2 - x1);
-    const L = vertical ? Math.abs(y2 - y1) : Math.abs(x2 - x1);
-    const R = vertical ? (y1 < y2 ? x1 - x2 : x2 - x1) : (x1 < x2 ? y2 - y1 : y1 - y2);
-    const A = T / INK.thick, D = (L * 1.04) / INK.h, runG = INK.w - INK.thick;
-    const C = (A * runG - R) / INK.h;
-    const cx = INK.x + INK.w / 2, cy = INK.y + INK.h / 2, mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
-    const m = [A, 0, C, D, -A * cx - C * cy, -D * cy];
-    t.setAttribute('transform', 'translate(' + mx + ',' + my + ')' + (vertical ? '' : ' rotate(-90)') + ' matrix(' + m.join(',') + ')');
+    const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), rad = Math.atan2(dy, dx) - Math.PI / 2, deg = rad * 180 / Math.PI;
+    const n = Math.max(1, Math.round(L / natural));
+    const parts = Array.from({ length: n }, () => 0.85 + rnd() * 0.3), sum = parts.reduce((q, v) => q + v, 0);
+    const fx = rnd() < 0.5 ? -1 : 1; let fy = rnd() < 0.5 ? -1 : 1;
+    g.textContent = '';
+    const pts = []; let at = 0;
+    parts.forEach((v) => {
+      const Lk = L * v / sum, m = (at + Lk / 2) / L; at += Lk;
+      const mx = x1 + dx * m, my = y1 + dy * m, h = Lk * 1.04;
+      const im = document.createElementNS(NS, 'image');
+      im.setAttribute('href', CRACK_URL); im.setAttribute('width', wide); im.setAttribute('height', h); im.setAttribute('preserveAspectRatio', 'none');
+      im.setAttribute('transform', 'translate(' + mx + ',' + my + ') rotate(' + deg + ') scale(' + fx + ',' + fy + ') translate(' + (-wide / 2) + ',' + (-h / 2) + ')');
+      g.appendChild(im);
+      // The crack's centerline in page coordinates, through the same transform.
+      const cs = Math.cos(rad), sn = Math.sin(rad);
+      MID.forEach(([ix, iy]) => {
+        const u = fx * (ix / CRACK_W * wide - wide / 2), w = fy * (iy / CRACK_H * h - h / 2);
+        const px = mx + u * cs - w * sn, py = my + u * sn + w * cs;
+        pts.push([px, py, ((px - x1) * dx + (py - y1) * dy) / L]);
+      });
+      fy = -fy;
+    });
+    pts.sort((p1, p2) => p1[2] - p2[2]);
+    lines.push(pts.map(([px, py]) => [Math.round(px * 10) / 10, Math.round(py * 10) / 10]));
   });
+  // Panel i sits between boundary i and boundary i + 1 (the outer edges of the image are straight).
+  const panels = [...document.querySelectorAll('.panel')], P = (a) => a.map(([px, py]) => px + 'px ' + py + 'px').join(',');
+  if (${JSON.stringify(f.mode)} === 'cols') {
+    const edge = (k) => k === 0 ? [[-40, -40], [-40, ${H} + 40]] : k === 5 ? [[${W} + 40, -40], [${W} + 40, ${H} + 40]] : lines[k - 1];
+    panels.forEach((el, i) => { el.style.clipPath = 'polygon(' + P(edge(i)) + ',' + P(edge(i + 1).slice().reverse()) + ')'; });
+  } else {
+    panels.forEach((el, i) => { el.style.clipPath = 'polygon(' + P(lines[i]) + ',' + P(lines[i + 1].slice().reverse()) + ')'; });
+  }
 }
 // Animation for the video versions; stills use setT(99).
 const ease = (x) => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
@@ -255,13 +305,13 @@ function fitLabels(){
     const p = el.querySelector('p'); if (p && L.mode === 'cols') { p.style.marginLeft = 'auto'; p.style.marginRight = 'auto'; }
   });
 }
-document.fonts.ready.then(() => { placeSeams(); fitLabels(); setT(99); window.__ready = true; const lp = document.querySelector('.label p'); window.__sub = lp ? getComputedStyle(lp).fontSize : ''; });
+Promise.all([document.fonts.load("40px 'CI Face'"), document.fonts.load("40px 'CI Extrude'")]).then(() => document.fonts.ready).then(() => placeSeams()).then(() => { fitLabels(); setT(99); window.__ready = true; const lp = document.querySelector('.label p'); window.__sub = lp ? getComputedStyle(lp).fontSize : ''; });
 </script>
 </body></html>`;
 }
 
 function headInner(f) {
-  return `<div class="kicker">CELLO’S GATE · THE SKY PIRATES OF IMPERIA</div><h1>The <span>Treasure</span> Hunt</h1><div class="when">SEPTEMBER 20 – NOVEMBER 1, 2026<b>MAURICEAFRICH.COM/THE-HUNT</b></div>`;
+  return `<div class="kicker">CELLO’S GATE · THE SKY PIRATES OF IMPERIA</div><h1><span class="ci" data-x="The">The</span> <span class="ci or" data-x="Treasure">Treasure</span> <span class="ci" data-x="Hunt">Hunt</span></h1><div class="when">SEPTEMBER 20 – NOVEMBER 1, 2026<b>MAURICEAFRICH.COM/THE-HUNT</b></div>`;
 }
 
 const BEBAS = process.env.GFX_TITLE !== 'marker';

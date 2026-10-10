@@ -282,7 +282,7 @@ ${fonts}
 #press .pp-img:last-child img{object-fit:cover}
 #press .pp-desc p{font-size:16px;line-height:1.65;color:#ede9dc;margin:0 0 16px}
 #press .pp-desc .pp-lead{font-weight:800;color:#fffffe}
-#press .pp-desc .pp-tag{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.2vw,30px);letter-spacing:.03em;color:#fffffe;line-height:1.35;text-align:center;background:rgba(11,23,15,.9);border-left:4px solid #ff4c0f;padding:12px 18px}
+#press .pp-desc .pp-tag{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.2vw,30px);letter-spacing:.03em;color:#fffffe;line-height:1.35;text-align:center;padding:12px 0}
 #press .pp-sub{font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(30px,2.8vw,42px);line-height:1;color:#89fbcb;margin:40px 0 20px}
 #press .pp-praise{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:18px}
 #press .pp-praise figure{margin:0;padding:22px 24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);display:flex;flex-direction:column;justify-content:space-between;gap:14px}
@@ -386,7 +386,7 @@ ${cardCss('#press')}
       <p class="pp-asof">As of ${esc(STATS_DATE)}.</p>
       <blockquote class="pp-quote">${HUNT_QUOTE.map((p, i, a) => `<p>${i === 0 ? '“' : ''}${esc(p)}${i === a.length - 1 ? '”' : ''}</p>`).join('')}<cite>${esc(HUNT_QUOTE_BY)}</cite></blockquote>
       <dl class="pp-facts">${HUNT_FACTS.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
-      <figure class="pp-gfx"><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener"><img src="${BASE}assets/press/hunt-overview.webp" width="2400" height="1350" alt="The Cello’s Gate Treasure Hunt: five panels split by brush slashes. Sweepstakes: 3 sweepstakes, 10 winners each. Rewards: 20+ rewards unlocked by collective points for all hunters. Tasks and Riddles: to earn points and unlock secret rewards. Loot Boxes: 101 loot boxes hidden all over the internet. Choose Your Own Adventure: vote on where the crew goes and roll the dice. " loading="lazy"></a><figcaption><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener">Download the full-size graphic ↓</a></figcaption></figure>
+      <figure class="pp-gfx"><a href="${BASE}assets/press/hunt-overview.png?v=1010" target="_blank" rel="noopener"><img src="${BASE}assets/press/hunt-overview.webp?v=1010" width="2400" height="1350" alt="The Cello’s Gate Treasure Hunt: five panels split by brush slashes. Sweepstakes: 3 sweepstakes, 10 winners each. Rewards: 20+ rewards unlocked by collective points for all hunters. Tasks and Riddles: to earn points and unlock secret rewards. Loot Boxes: 101 loot boxes hidden all over the internet. Choose Your Own Adventure: vote on where the crew goes and roll the dice. " loading="lazy"></a><figcaption><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener">Download the full-size graphic ↓</a></figcaption></figure>
       <div class="pp-cta"><a class="pp-btn" href="/the-hunt">See the hunt</a><a class="pp-btn" href="/leaderboard">Live leaderboard</a></div>
     </section>
 
