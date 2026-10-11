@@ -661,6 +661,7 @@
       if(run!==S)return;
       if(res&&res.ok){
         if(typeof res.prizesToday==='number')setPrizesToday(res.prizesToday);
+        if(res.status==='host'){msg('Practice run. Your runs stay off the board.');return;}
         var t=(res.rank?'Logged! You are #'+res.rank+' this week.':'Logged!')+' Best this week: '+fmt(res.best)+'.';
         if(res.paid)t+=' +'+res.paid*25+' hunt points from prizes.';
         msg(t);whoEl.hidden=false;whoEl.innerHTML='<p class="ar-quiet">Playing as '+esc(me.first_name||me.email)+'. <a class="ar-notme">Not you?</a></p>';
