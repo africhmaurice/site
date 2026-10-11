@@ -85,6 +85,7 @@ html,body{margin:0 !important;padding:0 !important}
 .cq-cell.dark img{filter:invert(1)}
 .cq-x{font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(16px,3.6vw,24px);line-height:1;color:rgba(17,17,17,.55);pointer-events:none}
 .cq-cell.dark .cq-x{color:rgba(255,255,254,.7)}
+.cq-x.auto{opacity:.6}
 .cq-cell.bad::after{content:'';position:absolute;inset:3px;border:3px solid #c53200;pointer-events:none}
 .cq-cell.dark.bad::after{border-color:#fffffe}
 .cq-cell.pop img{animation:cq-pop .2s ease}
@@ -255,7 +256,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     <div class="cq-key"><span><b>&times;</b>TAP ONCE: NOT HERE</span><span><img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/games/crest.png" alt="">TAP TWICE: CREST</span></div>
     <div class="cq-board" id="cq-board" role="grid" aria-label="Crest Quest board"></div>
     <p class="cq-timer" id="cq-timer"></p>
-    <div class="cq-tools"><button type="button" class="hg-btn ghost" id="cq-undo">UNDO</button><button type="button" class="hg-btn ghost" id="cq-clear">CLEAR</button></div>
+    <div class="cq-tools"><button type="button" class="hg-btn ghost" id="cq-auto" aria-pressed="true">AUTO X: ON</button><button type="button" class="hg-btn ghost" id="cq-undo">UNDO</button><button type="button" class="hg-btn ghost" id="cq-clear">CLEAR</button></div>
     <p class="hg-toast" id="hg-toast" role="status" aria-live="polite"></p>
 
     <div class="hg-result" id="hg-result" aria-live="polite"></div>
@@ -696,6 +697,11 @@ var HG_GAME = {"key":"crest_quest","label":"Crest Quest","points":25,"startDate"
     if (st.cells[i] === 'c') { cells[i].classList.remove('pop'); void cells[i].offsetWidth; cells[i].classList.add('pop'); }
     paint(); check();
   }
+  // Auto X (Maurice, 2026-10-11): on by default, a player can turn it off. Every empty square a crest rules out
+  // (same row, column, or color, or touching it) shows an X. It is worked out from the crests each time, so undo,
+  // clear, and removing a crest never leave stray marks.
+  var AUTO = true; try { AUTO = localStorage.getItem('cqAutoX') !== 'off'; } catch (e) {}
+  function blocked(i) { var ri = Math.floor(i / N), ci = i % N; return crests().some(function (j) { if (j === i) return false; var rj = Math.floor(j / N), cj = j % N; return ri === rj || ci === cj || R[i] === R[j] || (Math.abs(ri - rj) <= 1 && Math.abs(ci - cj) <= 1); }); }
   function crests() { var o = []; st.cells.forEach(function (v, i) { if (v === 'c') o.push(i); }); return o; }
   // crests that share a row, column, or color, or touch another crest
   function clashes() {
@@ -709,9 +715,9 @@ var HG_GAME = {"key":"crest_quest","label":"Crest Quest","points":25,"startDate"
   function paint() {
     var bad = clashes();
     cells.forEach(function (b, i) {
-      var v = st.cells[i];
-      b.innerHTML = v === 'c' ? '<img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/games/crest.png" alt="">' : v === 'x' ? '<span class="cq-x">&times;</span>' : '';
-      b.setAttribute('aria-label', 'Row ' + (Math.floor(i / N) + 1) + ', column ' + (i % N + 1) + ', ' + NAMES[R[i]] + ': ' + (v === 'c' ? 'crest' : v === 'x' ? 'marked empty' : 'empty'));
+      var v = st.cells[i], auto = AUTO && v === '' && blocked(i);
+      b.innerHTML = v === 'c' ? '<img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/games/crest.png" alt="">' : v === 'x' ? '<span class="cq-x">&times;</span>' : auto ? '<span class="cq-x auto">&times;</span>' : '';
+      b.setAttribute('aria-label', 'Row ' + (Math.floor(i / N) + 1) + ', column ' + (i % N + 1) + ', ' + NAMES[R[i]] + ': ' + (v === 'c' ? 'crest' : v === 'x' ? 'marked empty' : auto ? 'ruled out' : 'empty'));
       b.classList.toggle('bad', !!bad[i]);
     });
     g.save();
@@ -735,6 +741,10 @@ var HG_GAME = {"key":"crest_quest","label":"Crest Quest","points":25,"startDate"
     st.secs++; document.getElementById('cq-timer').textContent = fmt(st.secs);
     if (st.secs % 5 === 0) g.save();
   }, 1000);
+  var autoBtn = document.getElementById('cq-auto');
+  function paintAuto() { autoBtn.textContent = 'AUTO X: ' + (AUTO ? 'ON' : 'OFF'); autoBtn.setAttribute('aria-pressed', AUTO ? 'true' : 'false'); }
+  autoBtn.onclick = function () { AUTO = !AUTO; try { localStorage.setItem('cqAutoX', AUTO ? 'on' : 'off'); } catch (e) {} paintAuto(); paint(); };
+  paintAuto();
   document.getElementById('cq-undo').onclick = function () {
     if (st.done || !st.hist.length) return;
     var h = st.hist.pop().split(':'); st.cells[+h[0]] = h[1] || ''; paint();
