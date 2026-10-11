@@ -403,7 +403,7 @@ var HG = (function () {
         resultEl.className = 'hg-result win'; resultEl.style.display = 'block';
         // the game sets api.share = { label, stat, timed, icons } before it calls win
         if (window.HGShare && api.share && SHARE[o.key]) HGShare.show({ game: o.label, board: (o.noun || 'Puzzle') + ' #' + (index + 1), day: day,
-          theme: SHARE[o.key][0], site: SHARE[o.key][1], label: api.share.label, stat: api.share.stat, timed: api.share.timed, icons: api.share.icons,
+          theme: SHARE[o.key][0], site: SHARE[o.key][1], label: api.share.label, stat: api.share.stat, timed: api.share.timed, icons: api.share.icons, tint: api.share.tint, outline: api.share.outline,
           time: api.share.timed ? '' : (playEl ? clock() : api.share.time) });
         var head = '<div class="hg-bang">' + (message || 'NICE WORK!') + '</div>' + (extra ? '<p style="margin-bottom:10px">' + extra + '</p>' : '');
         if (state.claimed) return claimed(state.claimed);
@@ -533,7 +533,7 @@ var HG = (function () {
 // HGShare.show(o) adds a panel under the win box: a 1200x600 PNG card, Save and Copy buttons, and where to post it.
 //   o.game 'Blades & Brass'   o.board 'Board #1'   o.day '2026-10-02'   o.theme violet, scarlet, green, teal, ink or parchment
 //   o.label 'SOLVED IN'       o.stat '1:25'        o.site 'mauriceafrich.com/blades-and-brass'
-//   o.icons [image urls]      o.grid [['#3adb97', ...], ...] rows of colored squares (Skyword)
+//   o.icons [image urls] (o.tint: one-color icons in the text color; o.outline false: no outline)      o.grid [['#3adb97', ...], ...] rows of colored squares (Skyword)
 //   o.timed true: the panel says "time" instead of "result"     o.after the element the panel goes under
 var HGShare = (function () {
   var DISCORD = 'https://discord.gg/TV8SNnSGdb', url = null, opts = null;
@@ -598,7 +598,12 @@ var HGShare = (function () {
       x.fillStyle = T.text; x.font = '84px "Atomic Marker", cursive'; fit(x, o.game.toUpperCase(), 80, 236, 600);
       x.fillStyle = T.text; x.font = '700 26px Almarai, sans-serif'; spaced(x, o.board.toUpperCase(), 80, 300, 2);
       x.fillStyle = T.soft; spaced(x, o.date.toUpperCase(), 80, 342, 2);
-      icons.forEach(function (im, k) { x.fillStyle = o.theme === 'teal' || o.theme === 'green' ? '#0b170f' : '#607667'; x.fillRect(80 + k * 124, 380, 108, 108); if (im) x.drawImage(im, 86 + k * 124, 386, 96, 96); });
+      // No square behind the icons (Maurice, 2026-10-11): a one-color icon (o.tint) takes the card's text color; an icon with
+      // its own colors gets a thin die-cut outline in that color so it reads on every card (o.outline false skips it).
+      icons.forEach(function (im, k) { if (!im) return; var px = 86 + k * 124, py = 386, sz = 96, m = document.createElement('canvas'); m.width = m.height = sz; var mx = m.getContext('2d'); mx.drawImage(im, 0, 0, sz, sz); mx.globalCompositeOperation = 'source-in'; mx.fillStyle = T.text; mx.fillRect(0, 0, sz, sz);
+        if (o.tint) { x.drawImage(m, px, py); return; }
+        if (o.outline !== false) for (var a = 0; a < 16; a++) x.drawImage(m, px + Math.cos(a / 8 * Math.PI) * 3, py + Math.sin(a / 8 * Math.PI) * 3);
+        x.drawImage(im, px, py, sz, sz); });
       if (o.grid) {
         var sq = Math.min(22, Math.floor(130 / o.grid.length) - 4);
         o.grid.forEach(function (row, r) { row.forEach(function (col, k) { x.fillStyle = T.band; x.fillRect(78 + k * (sq + 5), 370 + r * (sq + 5), sq + 4, sq + 4); x.fillStyle = col; x.fillRect(80 + k * (sq + 5), 372 + r * (sq + 5), sq, sq); }); });
