@@ -1230,10 +1230,292 @@
     (document.head || document.documentElement).appendChild(st);
   }
 
+  // ---- Batch 2 site tricks: loot boxes 87-93 (added at the batch 2 launch) -----------------------------------
+  // 87 Secret Phrase: type SKYPIRATE (or SKY PIRATE) on any page, outside a text field, and box 87 drops in from the top.
+  //    Phones have no keyboard to listen to, so typing the phrase into any text field on the site works too
+  //    (the Questions form, the newsletter box, Submit Points). Nothing is sent: the field is only watched.
+  // 88 Move the Comet: the Comet that falls into the U of the header logo can be dragged out. Box 88 sits in the
+  //    U's ring behind it (it shows through the hole); click it once the Comet is out of the way. Dragging never goes
+  //    home; a normal click on the logo still does.
+  // 89 First Minute Only: on /leaderboard, box 89 sits at the end of the button row under the board, but only during
+  //    the first minute of every hour by the visitor's own clock (:00:00 to :00:59).
+  // 90 High Contrast Only: on /questions, box 90 sits under the intro, shown only when the device is in a high
+  //    contrast mode (prefers-contrast: more, or forced colors / Windows contrast themes).
+  // 91 Print It: on /lootbox-clue, box 91 and its claim link print right under the intro. The link text is written
+  //    just before printing and wiped after, so it is never sitting in the page.
+  // 92 Copy Trap: on /lootbox-clue, copying clue #92 adds a line with the box 92 claim link.
+  // 93 Deliberate Typo: on /newsletter, "first looks" becomes "frist looks", and "frist" quietly opens box 93.
+  var B2 = window.__maB2 || (window.__maB2 = {});
+  var B2K = {
+    87: 'N0pCRlNENzY9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
+    88: 'RUEyTUY5M0o9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
+    89: 'RDY1WFNBWE09Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
+    90: 'RUZCUFk2V0E9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
+    91: 'TTdSNzNDRk49Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
+    92: 'MkNORThHUTQ9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
+    93: 'VjJNQkJQNEU9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo'
+  };
+  var b2url = function (n) { return atob(B2K[n]).split('').reverse().join(''); };
+  var b2open = function (n) { location.href = b2url(n); };
+  var b2art = function (n) { return 'https://africhmaurice.github.io/leaderboard/loot/' + n + '.png'; };
+  var b2path = function () { return location.pathname.replace(/\/+$/, '') || '/'; };
+  // Tries fn now and every half second until it says it is done (true), up to about 15 seconds.
+  var b2wait = function (name, fn) {
+    if (B2[name]) return; B2[name] = 'trying';
+    var tries = 0, go = function () { var ok = false; try { ok = fn(); } catch (e) { ok = true; } if (ok) B2[name] = 'done'; else if (++tries < 30) setTimeout(go, 500); };
+    go();
+  };
+  function b2css() {
+    if (document.getElementById('ma-b2-css')) return;
+    var st = document.createElement('style'); st.id = 'ma-b2-css';
+    st.textContent =
+      '.ma-b2-drop{position:fixed;inset:0;z-index:2147482000;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:28px;padding:clamp(110px,22vh,220px) 20px 20px;background:rgba(11,23,15,0);transition:background .35s ease}' +
+      '.ma-b2-drop.ma-b2-on{background:rgba(11,23,15,.86)}' +
+      '.ma-b2-drop .ma-b2-box,.ma-b2-drop .ma-b2-box:hover{display:block;width:min(58vw,240px);height:auto;min-width:0;min-height:0;padding:0!important;margin:0;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;cursor:pointer;transform:translateY(-130vh);-webkit-tap-highlight-color:transparent}' +
+      '.ma-b2-drop.ma-b2-on .ma-b2-box{transform:none;transition:transform .9s cubic-bezier(.3,1.3,.5,1)}' +
+      '.ma-b2-drop .ma-b2-box img{display:block;width:100%;height:auto;filter:drop-shadow(0 0 30px rgba(137,251,203,.45))}' +
+      '.ma-b2-drop .ma-b2-box:focus-visible{outline:3px solid #89fbcb;outline-offset:8px}' +
+      '.ma-b2-drop .ma-b2-x{position:static;flex:none;width:48px;height:48px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;padding:0!important;margin:0;border:2px solid #f3ead9!important;border-radius:0;background:#0b170f!important;color:#f3ead9!important;box-shadow:none!important;cursor:pointer}' +
+      '.ma-b2-drop .ma-b2-x:hover,.ma-b2-drop .ma-b2-x:focus-visible{background:#f3ead9!important;color:#0b170f!important}' +
+      '.ma-b2-drop .ma-b2-x svg{width:20px;height:20px}' +
+      '.ma-b2-logo{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;isolation:isolate}' +
+      '.ma-b2-cm{position:absolute;pointer-events:none;margin:0;padding:0}' +
+      '.ma-b2-cm img{position:absolute;display:block;max-width:none;margin:0;padding:0;border:0;-webkit-user-drag:none;user-select:none}' +
+      '.ma-b2-cm-under{z-index:-1}.ma-b2-cm-over{z-index:2}' +
+      '.ma-b2-cm-over span{position:absolute;box-sizing:content-box;pointer-events:auto;cursor:grab;touch-action:none;-webkit-tap-highlight-color:transparent}' +
+      '.ma-b2-cm-over span.ma-b2-held{cursor:grabbing}' +
+      '.ma-b2-cm-over span img{position:static;width:100%;height:100%}' +
+      '#lb-more .ma-b2-89,#lb-more .ma-b2-89:hover{display:block;align-self:center;width:72px;height:72px;min-width:0;min-height:0;padding:0!important;margin:0;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;cursor:pointer}' +
+      '#lb-more .ma-b2-89[hidden]{display:none}' +
+      '#lb-more .ma-b2-89 img{display:block;width:100%;height:100%;filter:drop-shadow(0 4px 0 rgba(0,0,0,.35))}' +
+      '#lb-more .ma-b2-89:hover{transform:scale(1.06)}' +
+      '.ma-b2-hc{display:none}' +
+      '@media (prefers-contrast:more),(forced-colors:active){.ma-b2-hc{display:flex;justify-content:center;margin:24px 0 0;forced-color-adjust:none}}' +
+      '.ma-b2-hc button,.ma-b2-hc button:hover{display:block;width:120px;height:auto;min-width:0;min-height:0;padding:0!important;margin:0;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;cursor:pointer;forced-color-adjust:none}' +
+      '.ma-b2-hc img{display:block;width:100%;height:auto;forced-color-adjust:none}' +
+      '.ma-b2-hc button:focus-visible{outline:3px solid CanvasText;outline-offset:6px}' +
+      '.ma-b2-print{display:none}' +
+      '@media print{.ma-b2-print{display:block!important;box-sizing:border-box;max-width:560px;margin:28px auto;padding:24px;border:3px solid #000;background:#fff;color:#000;text-align:center;font-family:Almarai,sans-serif;break-inside:avoid;page-break-inside:avoid}' +
+      '.ma-b2-print img{display:block;width:170px;height:auto;margin:0 auto 16px}.ma-b2-print p{margin:0 0 10px!important;padding:0!important;color:#000!important;opacity:1!important;transform:none!important;text-shadow:none!important;font-family:Almarai,sans-serif!important;font-size:15px!important;font-weight:400!important;line-height:1.5!important;letter-spacing:0!important;text-transform:none!important}' +
+      '.ma-b2-print p.ma-b2-u{margin:0!important;font-weight:700!important;font-size:16px!important;word-break:break-all}}' +
+      '@media (prefers-reduced-motion:reduce){.ma-b2-drop,.ma-b2-drop.ma-b2-on .ma-b2-box{transition:none}}';
+    document.head.appendChild(st);
+  }
+  // The shared reveal: the box falls in from the top of the screen. Click it to claim; the X, Escape, or a click
+  // outside it puts it away.
+  function b2drop(n) {
+    try {
+      if (document.querySelector('.ma-b2-drop')) return;
+      b2css();
+      var d = document.createElement('div'); d.className = 'ma-b2-drop'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Loot box ' + n);
+      d.innerHTML = '<button type="button" class="ma-b2-box" aria-label="Open loot box ' + n + '"><img src="' + b2art(n) + '" alt="Loot box ' + n + '" draggable="false"></button>' +
+        '<button type="button" class="ma-b2-x" aria-label="Close"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M3 3l14 14M17 3L3 17"/></svg></button>';
+      var shut = function () { document.removeEventListener('keydown', esc, true); if (d.parentNode) d.parentNode.removeChild(d); };
+      var esc = function (e) { if (e.key === 'Escape') shut(); };
+      // Only a click that starts and ends on the dark backdrop closes it (letting go of a long press over it does not).
+      var downOnBack = false;
+      d.addEventListener('pointerdown', function (e) { downOnBack = e.target === d; });
+      d.addEventListener('click', function (e) { if (e.target === d && downOnBack) shut(); downOnBack = false; });
+      d.querySelector('.ma-b2-x').addEventListener('click', shut);
+      d.querySelector('.ma-b2-box').addEventListener('click', function () { b2open(n); });
+      document.addEventListener('keydown', esc, true);
+      document.body.appendChild(d);
+      requestAnimationFrame(function () { requestAnimationFrame(function () { d.classList.add('ma-b2-on'); }); });
+    } catch (e) {}
+  }
+
+  // 87
+  function b2phrase() {
+    if (B2.phrase) return; B2.phrase = 1;
+    var said = function (s) { return /SKYPIRATE$/.test(String(s || '').toUpperCase().replace(/[^A-Z]/g, '')); };
+    var buf = '';
+    document.addEventListener('keydown', function (e) {
+      try {
+        var t = e.target;
+        if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+        if (e.ctrlKey || e.metaKey || e.altKey || !e.key || e.key.length !== 1) return;
+        // the space in SKY PIRATE should not scroll the page
+        if (e.key === ' ' && /SKY$/.test(buf.toUpperCase().replace(/[^A-Z]/g, ''))) e.preventDefault();
+        buf = (buf + e.key).slice(-24);
+        if (said(buf)) { buf = ''; b2drop(87); }
+      } catch (er) {}
+    }, true);
+    document.addEventListener('input', function (e) {
+      try {
+        var t = e.target;
+        if (!t || !/^(INPUT|TEXTAREA)$/.test(t.tagName) || t.type === 'password') return;
+        if (said(t.value)) b2drop(87);
+      } catch (er) {}
+    }, true);
+  }
+
+  // 88
+  // Where the Comet sits in the 640 x 396 logo, and where box 88 hides behind it (center x, center y, size).
+  var CM = { box: [207, 4, 84, 146], loot: [263, 122, 74], w: 640 };
+  var CMBASE = 'https://africhmaurice.github.io/site/assets/img/';
+  function b2comet() {
+    var found = false;
+    Array.prototype.forEach.call(document.querySelectorAll('.header-title-logo img[data-ma-logo], .header-mobile-logo img[data-ma-logo], #hunt-nav .mn-logo img[data-ma-logo]'), function (img) {
+      found = true;
+      if (img.__maComet) return; img.__maComet = 1;
+      var a = img.closest('a') || img.parentElement; if (!a) return;
+      b2css(); a.classList.add('ma-b2-logo'); img.setAttribute('draggable', 'false');
+      if (getComputedStyle(a).position === 'static') a.style.position = 'relative';
+      var under = document.createElement('span'), over = document.createElement('span');
+      under.className = 'ma-b2-cm ma-b2-cm-under'; over.className = 'ma-b2-cm ma-b2-cm-over';
+      under.innerHTML = '<img src="' + b2art(88) + '" alt="" draggable="false">';
+      over.innerHTML = '<span role="img" aria-label="The Comet"><img src="' + CMBASE + 'logo-comet.png" alt="" draggable="false"></span>';
+      a.appendChild(under); a.appendChild(over);
+      var loot = under.firstChild, grip = over.firstChild, dx = 0, dy = 0, moved = false, drag = null, ate = 0;
+      // The logo without its Comet stays in place; box 88 sits behind it (showing through the U's hole) and the
+      // Comet sits on top, both laid exactly over the logo picture.
+      var place = function () {
+        var r = img.getBoundingClientRect(), p = a.getBoundingClientRect(); if (!r.width) return;
+        [under, over].forEach(function (o) { o.style.left = (r.left - p.left) + 'px'; o.style.top = (r.top - p.top) + 'px'; o.style.width = r.width + 'px'; o.style.height = r.height + 'px'; });
+        var k = r.width / CM.w, L = CM.loot, B = CM.box, pad = 6;   // pad: a few pixels of extra grip around the thin Comet
+        // The header's own image rules size every picture in the logo, so these sizes are set as important.
+        var set = function (el, prop, v) { el.style.setProperty(prop, v, 'important'); };
+        set(loot, 'width', L[2] * k + 'px'); set(loot, 'height', L[2] * k + 'px'); set(loot, 'max-height', 'none'); set(loot, 'left', (L[0] - L[2] / 2) * k + 'px'); set(loot, 'top', (L[1] - L[2] / 2) * k + 'px');
+        set(grip, 'left', (B[0] * k - pad) + 'px'); set(grip, 'top', (B[1] * k - pad) + 'px'); set(grip, 'width', B[2] * k + 'px'); set(grip, 'height', B[3] * k + 'px'); set(grip, 'padding', pad + 'px');
+        var ci = grip.firstChild; set(ci, 'width', B[2] * k + 'px'); set(ci, 'height', B[3] * k + 'px'); set(ci, 'max-height', 'none'); set(ci, 'max-width', 'none');
+        grip.style.transform = 'translate(' + dx * r.width + 'px,' + dy * r.width + 'px)';
+        // The box stays out of sight until the Comet has been pulled clear of the ring.
+        set(loot, 'visibility', Math.sqrt(dx * dx + dy * dy) > 0.07 ? 'visible' : 'hidden');
+      };
+      var swap = function () { if (!/nocomet/.test(img.src)) img.src = CMBASE + 'logo-2026-white-nocomet.webp'; };
+      swap(); place();
+      img.addEventListener('load', function () { swap(); place(); });
+      window.addEventListener('resize', place); setTimeout(place, 600); setTimeout(place, 2500);
+      grip.addEventListener('pointerdown', function (e) {
+        if (e.button) return; e.preventDefault(); e.stopPropagation();
+        var r = img.getBoundingClientRect(); drag = { x: e.clientX, y: e.clientY, dx: dx, dy: dy, w: r.width };
+        try { grip.setPointerCapture(e.pointerId); } catch (er) {} grip.classList.add('ma-b2-held');
+      });
+      grip.addEventListener('pointermove', function (e) {
+        if (!drag) return;
+        var mx = e.clientX - drag.x, my = e.clientY - drag.y; if (Math.abs(mx) + Math.abs(my) > 3) moved = true;
+        dx = drag.dx + mx / drag.w; dy = drag.dy + my / drag.w; place();
+      });
+      var drop = function () { if (!drag) return; drag = null; grip.classList.remove('ma-b2-held'); if (moved) ate = Date.now(); };
+      grip.addEventListener('pointerup', drop); grip.addEventListener('pointercancel', drop);
+      grip.addEventListener('touchstart', function (e) { e.preventDefault(); }, { passive: false });
+      grip.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
+      // Clicks on the logo: on the Comet or right after a drag, nothing happens. With the Comet out of the way, a
+      // click on the hole where it was opens box 88. Any other click still goes home.
+      a.addEventListener('click', function (e) {
+        if (Date.now() - ate < 400 || (e.target && e.target.closest && e.target.closest('.ma-b2-cm-over'))) { e.preventDefault(); e.stopPropagation(); return; }
+        if (!moved) return;
+        var lr = loot.getBoundingClientRect(), gr = grip.getBoundingClientRect();
+        var inLoot = e.clientX >= lr.left && e.clientX <= lr.right && e.clientY >= lr.top && e.clientY <= lr.bottom;
+        var covered = e.clientX >= gr.left && e.clientX <= gr.right && e.clientY >= gr.top && e.clientY <= gr.bottom;
+        if (inLoot && !covered) { e.preventDefault(); e.stopPropagation(); b2drop(88); }
+      }, true);
+      a.addEventListener('dragstart', function (e) { e.preventDefault(); });
+    });
+    return found;
+  }
+
+  // 89
+  function b2minute() {
+    if (b2path() !== '/leaderboard') return true;
+    var row = document.getElementById('lb-more');
+    if (!row) return false;
+    if (row.querySelector('.ma-b2-89')) return true;
+    b2css();
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'ma-b2-89'; b.hidden = true; b.setAttribute('aria-label', 'Open loot box 89');
+    b.innerHTML = '<img src="' + b2art(89) + '" alt="Loot box 89" draggable="false">';
+    b.addEventListener('click', function () { if (new Date().getMinutes() === 0) b2open(89); });
+    row.appendChild(b);
+    var tick = function () { var on = new Date().getMinutes() === 0; if (b.hidden === on) b.hidden = !on; };
+    tick(); setInterval(tick, 1000);
+    return true;
+  }
+
+  // 90
+  function b2contrast() {
+    if (b2path() !== '/questions') return true;
+    var head = document.querySelector('#hq .hq-head');
+    if (!head) return false;
+    if (head.querySelector('.ma-b2-hc')) return true;
+    b2css();
+    var w = document.createElement('div'); w.className = 'ma-b2-hc';
+    w.innerHTML = '<button type="button" aria-label="Open loot box 90"><img src="' + b2art(90) + '" alt="Loot box 90" draggable="false"></button>';
+    w.firstChild.addEventListener('click', function () { b2open(90); });
+    head.appendChild(w);
+    return true;
+  }
+
+  // 91
+  function b2print() {
+    if (b2path() !== '/lootbox-clue') return true;
+    var intro = document.querySelector('#loot-clue .lc-intro');
+    if (!intro) return false;
+    if (document.querySelector('.ma-b2-print')) return true;
+    b2css();
+    var p = document.createElement('div'); p.className = 'ma-b2-print'; p.setAttribute('aria-hidden', 'true');
+    p.innerHTML = '<img src="' + b2art(91) + '" alt="Loot box 91"><p>You printed the clues. Very old school. This one only shows up on paper:</p><p class="ma-b2-u"></p>';
+    intro.parentNode.insertBefore(p, intro.nextSibling);
+    var u = p.querySelector('.ma-b2-u');
+    var fill = function () { try { u.textContent = b2url(91); } catch (e) {} };
+    var wipe = function () { u.textContent = ''; };
+    window.addEventListener('beforeprint', fill);
+    window.addEventListener('afterprint', wipe);
+    try { var mq = matchMedia('print'), ch = function (m) { if (m.matches) fill(); else wipe(); }; if (mq.addEventListener) mq.addEventListener('change', ch); else mq.addListener(ch); } catch (e) {}
+    return true;
+  }
+
+  // 92
+  function b2copy() {
+    if (b2path() !== '/lootbox-clue') return true;
+    if (B2.copyOn) return true; B2.copyOn = 1;
+    document.addEventListener('copy', function (e) {
+      try {
+        var card = document.querySelector('#loot-clue .lc-board[data-clue="92"]'), sel = window.getSelection();
+        if (!card || !sel || !sel.rangeCount || sel.isCollapsed || !e.clipboardData) return;
+        var r = sel.getRangeAt(0);
+        if (!card.contains(r.startContainer) && !card.contains(r.endContainer) && !r.intersectsNode(card)) return;
+        e.clipboardData.setData('text/plain', sel.toString() + '\n\nP.S. Clippy saw that. Here is loot box 92 for your trouble: ' + b2url(92));
+        e.preventDefault();
+      } catch (er) {}
+    });
+    return true;
+  }
+
+  // 93
+  function b2typo() {
+    if (b2path() !== '/newsletter') return true;
+    if (document.querySelector('.ma-b2-typo')) return true;
+    var phrase = 'exclusive first looks', tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), n;
+    while ((n = tw.nextNode())) {
+      var at = n.nodeValue.indexOf(phrase);
+      if (at < 0) continue;
+      var w = n.splitText(at + 10); w.splitText(5);
+      var s = document.createElement('span'); s.className = 'ma-b2-typo'; s.textContent = 'frist';
+      w.parentNode.replaceChild(s, w);
+      s.addEventListener('click', function () { b2open(93); });
+      return true;
+    }
+    return false;
+  }
+
+  function b2Tricks() {
+    try { b2phrase(); } catch (e) {}
+    b2wait('comet', b2comet);
+    // Header logos inside pages the loader mounts (the hunt menu) arrive later: look again once they have.
+    if (!B2.cometAgain) { B2.cometAgain = 1; setTimeout(function () { try { b2comet(); } catch (e) {} }, 4000); setTimeout(function () { try { b2comet(); } catch (e) {} }, 9000); }
+    b2wait('minute', b2minute);
+    b2wait('contrast', b2contrast);
+    b2wait('print', b2print);
+    b2wait('copy', b2copy);
+    b2wait('typo', b2typo);
+  }
+  // ---- end of batch 2 site tricks ----
+
   function scan() {
     headRule();
     lockedChest53();
     if (document.body) quietWord();
+    b2Tricks();
     huntGift();
     huntOne();
     mainMerch();

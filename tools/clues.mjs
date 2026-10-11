@@ -147,6 +147,8 @@ Yet again, you might try.`],
   // Box 57, The Longest Word (Maurice, 2026-10-04): answered right on the card, then on to /longest-word.
   // Only the answer's fingerprint is here, never the word.
   [57, "What's the longest word Maurice knows how to spell without looking up?", { answer: { salt: 'lw57:', hash: 'd3251280966d0626c672fd2a1bd87912fdbef23a6fb61987344ff26a99be97a1', go: '/longest-word' }, hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'lung disease' }] }],
+  // Box 58 is in Gary Furlong's Linktree (Maurice, 2026-10-11).
+  [58, 'Not American.'],
   // Box 60 is a Pin on Maurice's Sky Pirates of Imperia Pinterest board (Maurice, 2026-10-04).
   [60, "the picture app & a task of the captain's making"],
   // Box 61, The Puzzled Loot Box: the jigsaw, from Hunt puzzle card #22 (Maurice, 2026-10-09).
@@ -162,6 +164,21 @@ Yet again, you might try.`],
   // Box 66 (Maurice, 2026-10-07).
   [66, 'Brando Sando and I have this person in common.'],
   [73, 'you already have it'],
+  // Batch 2 (Maurice, 2026-10-11). 74: at Level 7 of Airship Runner.
+  [74, 'Level 7'],
+  // 87-93 are tricks in loader.js (b2Tricks): type the phrase, drag the Comet out of the header logo, /leaderboard in
+  // the first minute of an hour, /questions in high contrast, print this page, copy clue 92, the /newsletter typo.
+  [87, 'QWERTY + “SKYPIRATE”'],
+  [88, 'Move the Comet'],
+  [89, 'Leaders First Minute'],
+  // hc: the clue can only be read in high contrast mode (it's the same color as the card otherwise).
+  [90, '????', { hc: true }],
+  [91, '', { img: ART + 'clue-91.png', alt: 'A printer', sticker: true }],
+  [92, 'Don’t get Snippy with Clippy, the Clipboard.'],
+  [93, 'Do I need an editor for this website?'],
+  // 95 and 96 are in the fine print at the bottom of /rules and /privacy-policy.
+  [95, 'An icon that reads RULEBOOK.'],
+  [96, 'Sky Privacy'],
 ];
 
 // The few lines above the cards that say what they are.
@@ -203,7 +220,7 @@ const boards = CLUES.map(([n, text, o = {}]) => {
     ${body}
   </div>`;
   // fill: the whole card is one color (the clue is the color itself).
-  return `  <div class="lc-board${o.flash ? ' lc-flash' : ''}" data-clue="${n}"${o.fill ? ` style="background:${esc(o.fill)};min-height:220px"` : ''}${o.flash ? ` data-flash="${esc(o.flash)}"${o.flashFill ? ' data-fill' : ''} role="button" tabindex="0"` : ''}>
+  return `  <div class="lc-board${o.flash ? ' lc-flash' : ''}${o.hc ? ' lc-hc' : ''}" data-clue="${n}"${o.fill ? ` style="background:${esc(o.fill)};min-height:220px"` : ''}${o.flash ? ` data-flash="${esc(o.flash)}"${o.flashFill ? ' data-fill' : ''} role="button" tabindex="0"` : ''}>
     <div class="lc-num">#${n}</div>
     ${body}
   </div>`;
@@ -341,7 +358,7 @@ h = h.slice(0, a) + `<section id="loot-clue">\n${INTRO}\n${FINDS}\n  <div class=
 // Background: the darkest Green at 90% over the art, held still while the page scrolls (Maurice, 2026-09-30).
 h = h.replace(/(#loot-clue\{min-height:80vh;[^}]*background:)linear-gradient\(rgba\([^)]*\),rgba\([^)]*\)\)/, '$1linear-gradient(rgba(27,59,21,.9),rgba(27,59,21,.9))');
 
-// Styles: number in Atomic Marker, clue in Almarai (no forced capitals), two boards per row.
+// Styles: number in Cracked Imperia, clue in Almarai (no forced capitals), two boards per row.
 const css = `#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;max-width:1240px;width:100%;align-items:stretch}
 #loot-clue .lc-intro{max-width:760px;width:100%;text-align:center}
 #loot-clue .lc-btn{display:inline-block;margin-top:24px;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;border-radius:0;padding:13px 28px;border:2px solid #fffffe;background:#fffffe;color:#1b3b15}
@@ -354,16 +371,18 @@ const css = `#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,min
 #loot-clue .lc-finds-msg label{display:block;font-weight:700;margin-bottom:10px}
 #loot-clue .lc-finds-msg input{display:block;width:100%;box-sizing:border-box;margin-top:6px;font:inherit;font-size:16px;padding:10px 12px;border-radius:0;border:2px solid #fffffe;background:rgba(11,23,15,.35);color:#fffffe}
 #loot-clue .lc-board[hidden]{display:none!important}
-#loot-clue .lc-title{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(44px,5.4vw,76px);line-height:1.1;color:#89fbcb;margin:0 0 22px;text-wrap:balance}
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+#loot-clue .lc-title{font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(44px,5.4vw,76px);line-height:1.1;color:#89fbcb;margin:0 0 22px;text-wrap:balance}
 #loot-clue .lc-intro p{text-transform:none;letter-spacing:.02em;font-size:clamp(17px,1.5vw,21px);line-height:1.6;text-wrap:pretty;margin:0 auto 14px}
 #loot-clue .lc-board{box-sizing:border-box;max-width:none;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 44px 52px}
-#loot-clue .lc-num{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,3.4vw,52px);line-height:1;color:#89fbcb;margin:0 0 22px}
+#loot-clue .lc-num{font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(34px,3.4vw,52px);line-height:1;color:#89fbcb;margin:0 0 22px}
+#loot-clue .lc-hc .lc-text{color:transparent;user-select:none}@media (prefers-contrast:more){#loot-clue .lc-hc .lc-text{color:#fffffe;user-select:auto}}@media (forced-colors:active){#loot-clue .lc-hc .lc-text{color:CanvasText;user-select:auto}}
 #loot-clue .lc-text{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(18px,1.6vw,23px);line-height:1.55;letter-spacing:.02em;color:#fffffe;white-space:pre-line;text-transform:none;margin:0}
 #loot-clue .lc-link{text-decoration:underline;text-underline-offset:4px;cursor:default}#loot-clue .lc-link:hover{color:#fffffe}
 #loot-clue .lc-flash,#loot-clue .lc-flash *{cursor:default}
 #loot-clue .lc-img{display:block;width:100%;max-width:420px;height:auto;border:3px solid #0b170f;box-shadow:4px 5px 0 rgba(0,0,0,.35)}#loot-clue .lc-img.lc-sticker{border:0;box-shadow:none;max-width:300px;margin-top:14px}
 .lc-flash-ov{position:fixed;inset:0;z-index:2147483646;background:#fffffe;display:flex;align-items:center;justify-content:center;pointer-events:none}.lc-flash-ov img{width:min(60vw,448px);height:auto}.lc-flash-ov.fill{background:#0b170f}.lc-flash-ov.fill img{width:100%;height:100%;object-fit:cover}
-.lc-flash-ov.lc-say{background:#0b170f;color:#fffffe;font-family:'Atomic Marker',cursive;font-size:clamp(44px,9vw,120px);letter-spacing:.02em}
+.lc-flash-ov.lc-say{background:#0b170f;color:#fffffe;font-family:'Cracked Imperia',Impact,sans-serif;font-size:clamp(44px,9vw,120px);letter-spacing:.02em}
 #loot-clue .lc-hint{width:100%;margin-top:26px;display:flex;flex-direction:column;align-items:center;gap:18px;font-family:'Almarai',sans-serif;text-transform:none;letter-spacing:.02em}
 #loot-clue .lc-step{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
 #loot-clue .lc-hint [hidden]{display:none!important}
@@ -396,7 +415,7 @@ const css = `#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,min
 #loot-clue .lc-said{display:flex;align-items:center;gap:14px;box-sizing:border-box;max-width:100%;padding:14px 20px;background:rgba(11,23,15,.8);border:2px solid currentColor;border-radius:0;text-align:left}
 #loot-clue .lc-said[hidden]{display:none}
 #loot-clue .lc-said svg{flex:none;width:48px;height:46px}
-#loot-clue .lc-said b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(20px,1.8vw,25px);line-height:1.25;letter-spacing:.03em}
+#loot-clue .lc-said b{display:block;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(20px,1.8vw,25px);line-height:1.25;letter-spacing:.03em}
 #loot-clue .lc-said.wrong{color:#fd7547}#loot-clue .lc-said.right{color:#a2f590}
 @media (max-width:480px){#loot-clue .lc-answer-row{flex-direction:column}#loot-clue .lc-answer-go{width:100%}}
 @media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}#loot-clue .lc-hint-pics{gap:10px}}`;

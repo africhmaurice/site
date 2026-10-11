@@ -1,0 +1,725 @@
+<!-- ============================================================
+     AIRSHIP RUNNER - an endless sky runner and weekly high-score race; hides loot box 74. Lives at /airship-runner.
+     Clue (Clues page, card #74, Maurice's wording): "level 7".
+     Play: the airship flies up a five-lane sky. Swipe or tap left/right (phones), arrow keys or A/D (desktop), or
+     click either half of the sky. Storm clouds, rival ships, floating rocks, and cannon fire come down the lanes and
+     the speed keeps rising. Score = distance flown + 100 for each ruby. Levels run on time: every level is 15 seconds and
+     flies 10% faster than the last (banner at each), so Level 7 starts at 1:30.
+     From Level 7 on, loot box 74 appears as a pickup in an open lane; flying into it pauses the run and shows the
+     clickable box art (opens the claim link in a new tab, so the run is not lost), then KEEP FLYING.
+     Rare prize chests are worth 25 hunt points each, at most 4 a day (paid by the twice-daily run as Games rows).
+     Everyone shares one weekly board; the top score at Friday 11:59 PM New York time wins 500 points (Maurice
+     approves and pays it; see _batch2/airship-runner/patch-airship-runner.mjs).
+     Backend: ENDPOINT below. Empty = preview mock (no requests at all; a fake board kept in this browser and
+     marked PREVIEW DATA). At launch set it to the Loot Boxes web app /exec URL (same as games/common.js), after
+     the lootbox.gs patch is deployed. ?runner-mock=1 forces the mock on a live page.
+     The player is the hunt's usual thLoot:me (shared with the loot box page and the daily games).
+     Runs pause when the tab is hidden; prefers-reduced-motion gets a calm mode (no shake, flashes, or debris).
+     DRAFT copy (all mine, none of it Maurice's yet): "Sky Pirate high-score race", "Five lanes, one airship, and
+     a whole sky trying to knock you out of it. Dodge left, dodge right, and fly as far as you can.", "Top score at
+     11:59 PM ET every Friday wins 500 points.", "Ready to fly?", "Swipe or tap left and right to change lanes.",
+     "Arrow keys or A and D to change lanes.", "The clock starts when you take off.", "PLAY", "Level N",
+     "+100 POINTS" (ruby, game score), "+25 HUNT POINTS" (crate), "Prize limit reached for today", "You found a loot box!", "Keep flying",
+     "Paused", "Ship down!", "Best this week", "Fly again", "Save my card", "Copy my score", the score form text,
+     the logging messages, "This week's top sky pirates", "Board closes in", "How it works" list, "No scores yet
+     this week. Be the first.", "PREVIEW DATA".
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+#ma-runner{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;overflow:hidden;
+  padding:clamp(120px,14vh,160px) clamp(16px,4vw,56px) 72px;background:#0b170f linear-gradient(180deg,#0b170f 0%,#1a1236 55%,#0b170f 100%);
+  color:#f3ead9;font-family:'Almarai',sans-serif}
+#ma-runner *{box-sizing:border-box;border-radius:0}
+#ma-runner [hidden]{display:none!important}
+#ma-runner .ar-head{max-width:900px;margin:0 auto clamp(28px,4vw,44px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}
+#ma-runner .ar-eye{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(20px,2.6vw,30px);line-height:1.25;letter-spacing:.04em;color:#ff4c0f}
+#ma-runner .ar-h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(44px,8vw,104px);line-height:1.2;letter-spacing:.03em;color:#fffffe;text-wrap:balance}
+#ma-runner .ar-tag{margin:0;max-width:640px;font-weight:700;font-size:clamp(16px,1.9vw,20px);line-height:1.55;color:#f3ead9;text-wrap:balance}
+#ma-runner .ar-weekly{margin:0;padding:12px 20px;border:2px solid #ff4c0f;font-weight:800;font-size:clamp(13px,1.4vw,15px);line-height:1.5;letter-spacing:.08em;text-transform:uppercase;color:#fffffe}
+#ma-runner .ar-wrap{display:grid;grid-template-columns:minmax(0,560px) minmax(0,340px);gap:32px;justify-content:center;align-items:start;max-width:1000px;margin:0 auto}
+#ma-runner .ar-game{display:flex;flex-direction:column;gap:12px;min-width:0}
+#ma-runner .ar-hud{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#ma-runner .ar-cell{background:#132219;border:2px solid rgba(243,234,217,.18);padding:8px 6px;text-align:center;display:flex;flex-direction:column;gap:4px;min-width:0}
+#ma-runner .ar-cell span{font-weight:800;font-size:11px;line-height:1.3;letter-spacing:.12em;color:#89fbcb}
+#ma-runner .ar-cell b{font-weight:800;font-size:clamp(16px,2.4vw,20px);line-height:1.2;color:#fffffe;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ma-runner .ar-stage{position:relative;width:100%;height:min(68vh,700px);min-height:420px;border:2px solid rgba(243,234,217,.25);background:#1a1236;overflow:hidden;
+  touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+#ma-runner canvas{display:block;width:100%;height:100%;touch-action:none;cursor:pointer}
+#ma-runner .ar-ov{position:absolute;inset:0;z-index:3;display:flex;padding:24px;overflow:auto;background:rgba(11,23,15,.84);text-align:center;touch-action:auto}
+#ma-runner .ar-ov.clear{background:rgba(11,23,15,.55)}
+#ma-runner .ar-in{margin:auto;width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:16px}
+#ma-runner .ar-big{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(34px,6vw,52px);line-height:1.2;letter-spacing:.04em;color:#fffffe}
+#ma-runner .ar-bang{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(36px,7vw,56px);line-height:1.2;letter-spacing:.04em;color:#ff4c0f}
+#ma-runner .ar-p{margin:0;font-weight:700;font-size:15px;line-height:1.55;letter-spacing:.03em;color:#f3ead9}
+#ma-runner .ar-quiet{margin:0;font-weight:700;font-size:13px;line-height:1.5;letter-spacing:.06em;color:#c3a6ff}
+#ma-runner .ar-quiet a{color:#a2f590;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+#ma-runner .ar-final{margin:0;display:flex;flex-direction:column;gap:6px}
+#ma-runner .ar-final span{font-weight:800;font-size:13px;letter-spacing:.14em;color:#89fbcb}
+#ma-runner .ar-final b{font-weight:800;font-size:clamp(48px,10vw,72px);line-height:1.1;color:#fffffe;font-variant-numeric:tabular-nums}
+#ma-runner .ar-stats{margin:0;font-weight:800;font-size:14px;line-height:1.5;letter-spacing:.08em;color:#f3ead9}
+#ma-runner .ar-msg{margin:0;min-height:22px;font-weight:700;font-size:15px;line-height:1.5;color:#a2f590}
+#ma-runner .ar-msg.err{color:#ff8a5c}
+#ma-runner .ar-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+#ma-runner .ar-btn{display:inline-block;margin:0;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;color:#fffffe;background:#c53200;border:2px solid #fffffe;padding:14px 24px;cursor:pointer;transition:transform .15s ease,background .15s ease}
+#ma-runner .ar-btn:hover,#ma-runner .ar-btn:focus-visible{background:#ff4c0f;transform:scale(1.04);outline:none}
+#ma-runner .ar-btn.big{font-size:clamp(20px,3vw,26px);padding:16px 48px}
+#ma-runner .ar-btn.ghost{background:transparent;border-color:#f3ead9}
+#ma-runner .ar-btn.ghost:hover,#ma-runner .ar-btn.ghost:focus-visible{background:#f3ead9;color:#0b170f}
+#ma-runner .ar-btn[disabled]{opacity:.6;cursor:default;transform:none}
+#ma-runner .ar-form{width:100%;display:flex;flex-direction:column;gap:8px;text-align:left}
+#ma-runner .ar-form label{font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#89fbcb;margin-top:4px}
+#ma-runner .ar-form input,#ma-runner .ar-form select{width:100%;margin:0;font-family:'Almarai',sans-serif;font-weight:700;font-size:16px;color:#0b170f;background:#fffffe;border:2px solid #fffffe;padding:10px 12px;outline:none}
+#ma-runner .ar-form input:focus,#ma-runner .ar-form select:focus{border-color:#7b4ee1}
+#ma-runner .ar-form .ar-btn{margin-top:10px;width:100%}
+#ma-runner .ar-boxbtn{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(56vw,220px)}
+#ma-runner .ar-boxbtn img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 30px rgba(255,76,15,.45))}
+#ma-runner .ar-boxbtn:hover img,#ma-runner .ar-boxbtn:focus-visible img{filter:drop-shadow(0 0 44px rgba(255,76,15,.7))}
+#ma-runner .ar-boxbtn:focus-visible{outline:3px solid #ff4c0f;outline-offset:8px}
+#ma-runner .ar-banner{position:absolute;left:12px;right:12px;top:26%;z-index:2;margin:0;text-align:center;pointer-events:none;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(40px,9vw,72px);line-height:1.2;letter-spacing:.04em;color:#fffffe;text-shadow:0 4px 24px rgba(11,23,15,.9);opacity:0}
+#ma-runner .ar-banner.on{animation:ar-pop 1.7s ease-out forwards}
+@keyframes ar-pop{0%{opacity:0;transform:scale(.7)}15%{opacity:1;transform:scale(1.08)}25%{transform:scale(1)}75%{opacity:1}100%{opacity:0;transform:translateY(-16px)}}
+#ma-runner .ar-toast{position:absolute;top:14px;left:50%;z-index:2;transform:translateX(-50%);margin:0;padding:8px 14px;background:rgba(11,23,15,.85);border:2px solid #89fbcb;color:#89fbcb;font-weight:800;font-size:14px;line-height:1.3;letter-spacing:.1em;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s ease}
+#ma-runner .ar-toast.on{opacity:1}
+#ma-runner .ar-toast.gold{border-color:#a2f590;color:#a2f590}
+#ma-runner .ar-toast.hot{border-color:#ff4c0f;color:#ff8a5c}
+#ma-runner .ar-key{background:#132219;border:2px solid rgba(243,234,217,.18);padding:24px;display:flex;flex-direction:column;gap:16px}
+#ma-runner .ar-kh{margin:0;font-weight:800;font-size:15px;line-height:1.3;letter-spacing:.14em;text-transform:uppercase;color:#a2f590}
+#ma-runner .ar-kcols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+#ma-runner .ar-kgrp{display:flex;flex-direction:column;gap:12px;min-width:0}
+#ma-runner .ar-ksub{margin:0;font-weight:800;font-size:13px;line-height:1.3;letter-spacing:.12em;text-transform:uppercase;color:#c3a6ff}
+#ma-runner .ar-klist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+#ma-runner .ar-klist li{display:flex;align-items:center;gap:14px;min-width:0}
+#ma-runner .ar-ki{flex:0 0 56px;width:56px;height:48px;display:flex;align-items:center;justify-content:center;gap:2px}
+#ma-runner .ar-ki img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+#ma-runner .ar-ki img.w{max-width:64%}#ma-runner .ar-ki img.b{max-width:30%}
+#ma-runner .ar-kt{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:14px;line-height:1.45;color:#f3ead9}
+#ma-runner .ar-kt b{font-weight:800;font-size:15px;color:#fffffe}
+#ma-runner .ar-kyou{display:flex;align-items:center;gap:14px;padding-top:16px;border-top:1px solid rgba(243,234,217,.18)}
+#ma-runner .ar-kyou p{margin:0;font-size:14px;line-height:1.5;color:#f3ead9;min-width:0}
+#ma-runner .ar-kyou b{font-weight:800;color:#fffffe}
+@media (max-width:560px){#ma-runner .ar-kcols{grid-template-columns:minmax(0,1fr)}#ma-runner .ar-key{padding:20px}}
+#ma-runner .ar-side{display:flex;flex-direction:column;gap:20px;min-width:0}
+#ma-runner .ar-panel{background:#132219;border:2px solid rgba(243,234,217,.18);padding:24px;display:flex;flex-direction:column;gap:14px}
+#ma-runner .ar-ph{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(24px,2.4vw,30px);line-height:1.25;letter-spacing:.03em;color:#a2f590}
+#ma-runner .ar-count{margin:0;font-weight:800;font-size:13px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase;color:#c3a6ff}
+#ma-runner .ar-mock{align-self:flex-start;margin:0;padding:4px 8px;background:#482d85;color:#fffffe;font-weight:800;font-size:11px;line-height:1.3;letter-spacing:.14em}
+#ma-runner .ar-board{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+#ma-runner .ar-board li{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid rgba(243,234,217,.1);font-weight:700;font-size:15px;line-height:1.4}
+#ma-runner .ar-board li:last-child{border-bottom:0}
+#ma-runner .ar-board i{font-style:normal;font-weight:800;color:#ff4c0f}
+#ma-runner .ar-board span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fffffe}
+#ma-runner .ar-board b{font-weight:800;color:#fffffe;font-variant-numeric:tabular-nums}
+#ma-runner .ar-board li.me span,#ma-runner .ar-board li.me b{color:#a2f590}
+#ma-runner .ar-board .ar-empty{display:block;color:#f3ead9;font-weight:700}
+#ma-runner .ar-how{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+#ma-runner .ar-how li{position:relative;padding-left:20px;font-weight:700;font-size:15px;line-height:1.5;color:#f3ead9}
+#ma-runner .ar-how li:before{content:'';position:absolute;left:0;top:.5em;width:8px;height:8px;background:#ff4c0f}
+@media (max-width:940px){
+  #ma-runner .ar-wrap{grid-template-columns:minmax(0,560px)}
+}
+@media (max-width:420px){
+  #ma-runner .ar-panel{padding:20px}
+  #ma-runner .ar-btn.big{padding:16px 40px}
+}
+@media (prefers-reduced-motion:reduce){
+  #ma-runner .ar-banner.on{animation:ar-fade 1.7s ease-out forwards}
+  #ma-runner .ar-btn{transition:none}
+}
+@keyframes ar-fade{0%{opacity:0}15%{opacity:1}75%{opacity:1}100%{opacity:0}}
+</style>
+<section id="ma-runner" aria-label="Airship Runner">
+  <header class="ar-head">
+    <p class="ar-eye">Highest Score Wins!</p>
+    <h1 class="ar-h1">Airship Runner</h1>
+    <p class="ar-tag">Five lanes, one airship—Navigate through the obstacles and survive as long as you can! Dodge left, dodge right, and collect extra rewards.</p>
+    <p class="ar-weekly">Top score at 11:59 PM ET every Friday wins 500 points.</p>
+  </header>
+  <div class="ar-wrap">
+    <div class="ar-game">
+      <div class="ar-hud" aria-live="off">
+        <div class="ar-cell"><span>SCORE</span><b data-hud="score">0</b></div>
+        <div class="ar-cell"><span>LEVEL</span><b data-hud="level">1</b></div>
+        <div class="ar-cell"><span>TIME</span><b data-hud="time">0:00</b></div>
+        <div class="ar-cell"><span>PRIZES</span><b data-hud="prizes">0/4</b></div>
+      </div>
+      <div class="ar-stage">
+        <canvas aria-label="Airship Runner game. Use the left and right arrow keys, or swipe, to change lanes."></canvas>
+        <p class="ar-banner" aria-live="polite"></p>
+        <p class="ar-toast"></p>
+        <div class="ar-ov ar-cover">
+          <div class="ar-in">
+            <p class="ar-big">Ready to fly?</p>
+            <button type="button" class="ar-btn big ar-play">PLAY</button>
+            <p class="ar-p ar-ctl">Arrow keys or A and D to change lanes.</p>
+            <p class="ar-quiet">The clock starts when you take off.</p>
+          </div>
+        </div>
+        <div class="ar-ov clear ar-pause" hidden>
+          <div class="ar-in">
+            <p class="ar-big">Paused</p>
+            <button type="button" class="ar-btn big ar-resume">KEEP FLYING</button>
+          </div>
+        </div>
+        <div class="ar-ov ar-loot" hidden>
+          <div class="ar-in">
+            <p class="ar-big">You found a loot box!</p>
+            <button class="ar-boxbtn" type="button" aria-label="Open loot box 74"><img src="https://africhmaurice.github.io/leaderboard/loot/74.png" alt="Loot box 74"></button>
+            <p class="ar-quiet ar-lootnote">Tap the box to open it. Your run waits for you.</p>
+            <button type="button" class="ar-btn ghost ar-keep">KEEP FLYING</button>
+          </div>
+        </div>
+        <div class="ar-ov ar-over" hidden>
+          <div class="ar-in">
+            <p class="ar-bang">Ship down!</p>
+            <p class="ar-final"><span>SCORE</span><b class="ar-fscore">0</b></p>
+            <p class="ar-stats"></p>
+            <p class="ar-msg" role="status"></p>
+            <div class="ar-who" hidden></div>
+            <div class="ar-row">
+              <button type="button" class="ar-btn ar-again">FLY AGAIN</button>
+            </div>
+            <div class="ar-row">
+              <button type="button" class="ar-btn ghost ar-save">SAVE MY CARD</button>
+              <button type="button" class="ar-btn ghost ar-copy">COPY MY SCORE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- the key: every picture in the run and what it does (DRAFT wording) -->
+      <section class="ar-key" aria-label="Key">
+        <h2 class="ar-kh">Key</h2>
+        <div class="ar-kcols">
+          <div class="ar-kgrp">
+            <p class="ar-ksub">Grab these</p>
+            <ul class="ar-klist">
+        <li><span class="ar-ki"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Ruby</b>+100 points to your score.</span></li>
+        <li><span class="ar-ki"><img src="https://africhmaurice.github.io/site/assets/games/74-crate.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Prize crate</b>+25 hunt points on the leaderboard, up to 4 a day.</span></li>
+            </ul>
+          </div>
+          <div class="ar-kgrp">
+            <p class="ar-ksub">Dodge these</p>
+            <ul class="ar-klist">
+        <li><span class="ar-ki"><img src="https://africhmaurice.github.io/site/assets/games/shared-storm-cloud-2.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Storm cloud</b>One hit and your ship goes down.</span></li>
+        <li><span class="ar-ki"><img src="https://africhmaurice.github.io/site/assets/games/shared-island-golem.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Floating island</b>Same here. Steer around it.</span></li>
+        <li><span class="ar-ki"><img src="https://africhmaurice.github.io/site/assets/games/74-rival.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Rival ship</b>Flies straight at you.</span></li>
+        <li><span class="ar-ki"><img src="https://africhmaurice.github.io/site/assets/games/74-warning-1.png" alt="" class="w" loading="lazy"><img src="https://africhmaurice.github.io/site/assets/games/74-cannonball.png" alt="" class="b" loading="lazy"></span><span class="ar-kt"><b>Warning, then cannon fire</b>The sign flashes at the top of a lane, then a cannonball comes down it fast.</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="ar-kyou">
+          <span class="ar-ki"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"></span>
+          <p><b>Your airship.</b> Swipe or tap left and right, or use the arrow keys or A and D. It starts slow, and each level lasts a little longer and flies faster than the last.</p>
+        </div>
+      </section>
+    </div>
+    <aside class="ar-side">
+      <div class="ar-panel">
+        <h2 class="ar-ph">This week’s top sky pirates</h2>
+        <p class="ar-count">Board closes in <span class="ar-left">...</span></p>
+        <p class="ar-mock" hidden>PREVIEW DATA</p>
+        <ol class="ar-board"><li><span class="ar-empty">Loading the board...</span></li></ol>
+      </div>
+      <div class="ar-panel">
+        <h2 class="ar-ph">How it works</h2>
+        <ul class="ar-how">
+          <li>Dodge storm clouds, rival ships, floating rocks, and cannon fire.</li>
+          <li>Grab rubies for 100 extra score each.</li>
+          <li>Rare prize crates are worth 25 hunt points each, up to 4 a day.</li>
+          <li>It starts slow. Each level lasts a little longer and flies faster than the last.</li>
+          <li>Top score on the board at 11:59 PM ET Friday wins 500 points. Then a new week starts.</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+<script>
+(function(){
+  var root=document.getElementById('ma-runner');if(!root)return;
+  // Fill the whole window: no Squarespace padding or colors around it.
+  var sec=root.closest('section.page-section');if(sec){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=root.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=root.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+
+  /* ---- settings ---- */
+  // The Loot Boxes web app. Empty = preview mock: nothing is sent anywhere. Set at launch (see the comment at the top).
+  var ENDPOINT='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var MOCK=!ENDPOINT||/[?&]runner-mock=1\b/.test(location.search);
+  var K='RkJKNkdRNko9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';   // loot box 74's claim link, scrambled
+  var PREVIEW_HOST=/^(|localhost|127\.0\.0\.1|africhmaurice\.github\.io)$/;
+  var ME='thLoot:me',TZ='America/New_York',SITE='mauriceafrich.com/airship-runner';
+  // These must match RUNNER in apps-script/lootbox.gs: the sheet checks every run against them.
+  var R={v0:10,levelSecs:15,speedGrow:1.1,xpBonus:100,xpGap:3,prizeFirst:20,prizeGap:30,prizesPerDay:4,boxLevel:7};
+  var calm=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var touchy=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+
+  var $=function(s){return root.querySelector(s);};
+  var stage=$('.ar-stage'),cv=$('canvas'),cx=cv.getContext('2d');
+  var hud={score:$('[data-hud=score]'),level:$('[data-hud=level]'),time:$('[data-hud=time]'),prizes:$('[data-hud=prizes]')};
+  var cover=$('.ar-cover'),pauseOv=$('.ar-pause'),lootOv=$('.ar-loot'),overOv=$('.ar-over'),banner=$('.ar-banner'),toastEl=$('.ar-toast');
+  if(touchy)$('.ar-ctl').textContent='Swipe or tap left and right to change lanes.';
+
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function fmt(n){return Math.floor(n).toLocaleString('en-US');}
+  function clock(s){s=Math.floor(s);return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
+  function load(k,d){try{var v=JSON.parse(localStorage.getItem(k)||'null');return v==null?d:v;}catch(e){return d;}}
+  function store(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+  /* ---- New York time: the day (for the prize limit) and the week (Saturday to Friday 11:59 PM) ---- */
+  function nyParts(d){
+    var f=new Intl.DateTimeFormat('en-US',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',weekday:'short',hour12:false}).formatToParts(d||new Date());
+    var o={};for(var i=0;i<f.length;i++)o[f[i].type]=f[i].value;if(o.hour==='24')o.hour='00';
+    o.wd=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(o.weekday);return o;
+  }
+  function today(){var p=nyParts();return p.year+'-'+p.month+'-'+p.day;}
+  function weekId(){var p=nyParts(),add=(5-p.wd+7)%7;return new Date(Date.UTC(+p.year,+p.month-1,+p.day+add)).toISOString().slice(0,10);}
+  function weekLeft(){var p=nyParts(),add=(5-p.wd+7)%7;return add*86400+86400-(+p.hour*3600+ +p.minute*60+ +p.second);}
+
+  /* ---- the player (shared with the loot box page and the daily games) ---- */
+  var me=load(ME,{})||{};
+  function prizesToday(){var p=load('thRunner:prizes',null);return p&&p.day===today()?+p.n||0:0;}
+  function setPrizesToday(n){store('thRunner:prizes',{day:today(),n:n});}
+
+  /* ---- talking to the sheet: POST, JSONP if that is blocked, one quiet retry (same as the daily games) ---- */
+  function api(action,payload,done){
+    payload=payload||{};payload.action=action;
+    if(MOCK)return setTimeout(function(){done(mock(payload));},300);
+    send(payload,done,1);
+  }
+  function send(payload,done,attempt){
+    var settled=false;
+    var finish=function(res){
+      if(settled)return;settled=true;
+      var flaky=!res||(!res.ok&&(res.error==='network'||res.error==='server'||res.error==='empty'));
+      if(flaky&&attempt<(res&&res.error==='empty'?3:2))return setTimeout(function(){send(payload,done,attempt+1);},1500);
+      done(res||{ok:false,error:'network'});
+    };
+    try{fetch(ENDPOINT,{method:'POST',body:JSON.stringify(payload)}).then(function(r){return r.json();}).then(finish).catch(function(){jsonp(payload,finish);});}
+    catch(e){jsonp(payload,finish);}
+  }
+  function jsonp(payload,done){
+    var name='arcb'+Math.random().toString(36).slice(2),q=['callback='+name];
+    for(var k in payload)if(payload[k]!=null&&payload[k]!=='')q.push(encodeURIComponent(k)+'='+encodeURIComponent(payload[k]));
+    var s=document.createElement('script');
+    var timer=setTimeout(function(){cleanup();done({ok:false,error:'network'});},30000);
+    function cleanup(){clearTimeout(timer);delete window[name];if(s.parentNode)s.parentNode.removeChild(s);}
+    window[name]=function(res){cleanup();done(res);};
+    s.onerror=function(){cleanup();done({ok:false,error:'network'});};
+    s.src=ENDPOINT+'?'+q.join('&');document.body.appendChild(s);
+  }
+
+  /* ---- preview mock: the same checks as the sheet, a fake board kept in this browser ---- */
+  // Levels run on time: every level lasts levelSecs (15 seconds), and the speed rises 10% per level, smoothly, so it is
+  // always speeding up a little. distAt is the distance flown by second t (the most a run can score from flying).
+  var LV_K=Math.log(R.speedGrow)/R.levelSecs;
+  function levelAt(t){return 1+Math.floor(t/R.levelSecs+1e-9);}
+  function distAt(t){return R.v0*(Math.exp(LV_K*t)-1)/LV_K;}
+  function mock(p){
+    var db=load('thRunner:mock',null);
+    if(!db||db.week!==weekId()){db={week:weekId(),board:[['Preview Pirate',3120,8],['@deckhand.preview',2480,8],['Sample Fren',1910,6],['@crowsnest.test',1460,5],['Mock Captain',990,3],['@cabin.boy',610,2]].map(function(r,i){return {email:'mock'+i+'@example.com',name:r[0],score:r[1],level:r[2],at:i};}),prizes:{}};}
+    var out;
+    if(p.action==='runstart')out={ok:true,ticket:'mock'+Date.now(),week:db.week};
+    else if(p.action==='runtop')out={ok:true,week:db.week,top:top(db),players:db.board.length};
+    else if(p.action==='runscore'){
+      var email=String(p.email||'').trim().toLowerCase(),score=Math.floor(+p.score),secs=+p.secs,xp=+p.xp||0,prizes=+p.prizes||0;
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))out={ok:false,error:'email'};
+      else if(xp>Math.floor(secs/R.xpGap)+1||score>Math.floor(distAt(secs)*1.03)+xp*R.xpBonus+5||prizes>(secs<R.prizeFirst?0:Math.floor((secs-R.prizeFirst)/R.prizeGap)+1))out={ok:false,error:'check'};
+      else{
+        var day=today(),had=db.prizes[email+'|'+day]||0,paid=Math.max(0,Math.min(prizes,R.prizesPerDay-had));db.prizes[email+'|'+day]=had+paid;
+        var name=p.handle?'@'+String(p.handle).replace(/^@+/,''):String(p.first_name||'A sky pirate');
+        var row=db.board.filter(function(r){return r.email===email;})[0];
+        if(!row){row={email:email,name:name,score:-1,level:1,at:Date.now()};db.board.push(row);}
+        row.name=name;if(score>row.score){row.score=score;row.level=levelAt(secs);row.at=Date.now();}
+        var all=db.board.slice().sort(cmp),rank=all.indexOf(row)+1;
+        out={ok:true,status:'new',best:row.score,rank:rank,players:all.length,paid:paid,prizesToday:had+paid,cap:R.prizesPerDay,week:db.week,top:top(db,email)};
+      }
+    }
+    store('thRunner:mock',db);
+    return out||{ok:false,error:'action'};
+    function cmp(a,b){return b.score-a.score||a.at-b.at;}
+    function top(d,email){return d.board.slice().sort(cmp).slice(0,10).map(function(r){return {name:r.name,score:r.score,level:r.level,me:r.email===email};});}
+  }
+
+  /* ---- the board ---- */
+  var boardEl=$('.ar-board'),leftEl=$('.ar-left');
+  if(MOCK)$('.ar-mock').hidden=false;
+  function myName(){return me.handle?'@'+String(me.handle).replace(/^@+/,''):(me.first_name||'');}
+  function paintBoard(list){
+    if(!list||!list.length){boardEl.innerHTML='<li><span class="ar-empty">No scores yet this week. Be the first.</span></li>';return;}
+    var mine=myName();
+    boardEl.innerHTML=list.map(function(r,i){return '<li'+((r.me||(mine&&r.name===mine))?' class="me"':'')+'><i>'+(i+1)+'</i><span>'+esc(r.name)+'</span><b>'+fmt(r.score)+'</b></li>';}).join('');
+  }
+  function refreshBoard(){api('runtop',{},function(res){if(res&&res.ok)paintBoard(res.top);else boardEl.innerHTML='<li><span class="ar-empty">The board is resting. Try again soon.</span></li>';});}
+  function tickWeek(){var s=weekLeft(),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);leftEl.textContent=(d?d+'d ':'')+h+'h '+('0'+m).slice(-2)+'m';}
+  tickWeek();setInterval(tickWeek,20000);refreshBoard();
+
+  /* ---- canvas size and sprites ---- */
+  var W=0,H=0,DPR=1,laneW=0,laneX=[],shipY=0,SPR={};
+  var ART='https://africhmaurice.github.io/site/assets/games/',PIC={};
+  function pic(k,file){var im=new Image();im.crossOrigin='anonymous';im.onload=function(){if(W)resize();};im.src=ART+file;PIC[k]=im;}
+  function ok(k){var im=PIC[k];return im&&im.complete&&im.naturalWidth>0;}
+  pic('storm','shared-storm-cloud-2.png');pic('rock','shared-island-golem.png');pic('ship','74-ship.png');pic('xp','74-ruby.png');pic('ball','74-cannonball.png');pic('crate','74-crate.png');pic('sky','74-sky.webp');pic('soft','shared-soft-cloud.png');
+  // the crash: four explosion drawings played in order
+  var BOOM=[1,2,3,4];BOOM.forEach(function(n){pic('boom'+n,'74-boom-'+n+'.png');});
+  // five warning signs in different colors, cycled so the warning flashes
+  var WARN=[1,2,3,4,5];WARN.forEach(function(n){pic('warn'+n,'74-warning-'+n+'.png');});
+  function warnPic(seed){var i=calm?0:(Math.floor(performance.now()/110)+(seed||0))%WARN.length;for(var t=0;t<WARN.length;t++){var k='warn'+WARN[(i+t)%WARN.length];if(ok(k))return PIC[k];}return null;}
+  // six flame drawings, flashed in quick turns so the fire flickers
+  var FLAMES=['shared-flame.png','74-flame-2.png','74-flame-3.png','74-flame-4.png','74-flame-5.png','74-flame-6.png'];
+  FLAMES.forEach(function(file,i){pic('flame'+i,file);});
+  function flame(seed){var n=FLAMES.length,i=calm?0:(Math.floor(performance.now()/70)+(seed||0))%n;for(var t=0;t<n;t++){var k='flame'+((i+t)%n);if(ok(k))return PIC[k];}return null;}
+
+  function sprite(w,h,fn){var c=document.createElement('canvas');c.width=Math.ceil(w*DPR);c.height=Math.ceil(h*DPR);var x=c.getContext('2d');x.scale(DPR,DPR);fn(x,w,h);c.w=w;c.h=h;return c;}
+  function resize(){
+    var r=stage.getBoundingClientRect(),oldH=H;
+    W=Math.max(200,r.width-4);H=Math.max(300,r.height-4);DPR=Math.min(2,window.devicePixelRatio||1);
+    cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);cx.setTransform(DPR,0,0,DPR,0,0);
+    laneW=W/5;laneX=[0,1,2,3,4].map(function(i){return laneW*(i+.5);});
+    build();shipY=H-SPR.ship.h*.9;
+    if(S){S.x=laneX[S.lane];if(oldH)S.ents.forEach(function(e){e.y*=H/oldH;e.x=laneX[e.lane];});}
+    draw();
+  }
+  function build(){
+    var sw=laneW*.86,sh=ok('ship')?sw*PIC.ship.naturalHeight/PIC.ship.naturalWidth:sw;
+    function shipPic(x,w,h){if(ok('ship'))x.drawImage(PIC.ship,0,0,w,h);else{x.beginPath();x.moveTo(w/2,0);x.lineTo(w,h*.8);x.lineTo(w/2,h*.62);x.lineTo(0,h*.8);x.closePath();x.fill();}}
+    SPR.ship=sprite(sw,sh,function(x,w,h){x.fillStyle='#c53200';shipPic(x,w,h);});
+    SPR.rival=sprite(sw*.92,sh*.92,function(x,w,h){x.translate(w,h);x.rotate(Math.PI);x.fillStyle='#482d85';shipPic(x,w,h);
+      if(ok('ship')){x.globalCompositeOperation='color';x.fillStyle='#482d85';x.fillRect(0,0,w,h);x.globalCompositeOperation='destination-in';shipPic(x,w,h);}});
+    if(ok('storm')){var tw=laneW*.92;SPR.storm=sprite(tw,tw*PIC.storm.naturalHeight/PIC.storm.naturalWidth,function(x,w,h){x.drawImage(PIC.storm,0,0,w,h);});}
+    if(!ok('storm'))SPR.storm=sprite(laneW*.86,laneW*.62,function(x,w,h){
+      [[.3,.62,.26],[.55,.5,.32],[.76,.64,.22],[.5,.72,.24]].forEach(function(c){x.fillStyle='#2d1c53';x.beginPath();x.arc(w*c[0],h*c[1],w*c[2],0,7);x.fill();});
+      [[.32,.5,.17],[.55,.36,.2],[.74,.52,.13]].forEach(function(c){x.fillStyle='#482d85';x.beginPath();x.arc(w*c[0],h*c[1],w*c[2],0,7);x.fill();});
+      x.fillStyle='rgba(195,166,255,.35)';x.beginPath();x.arc(w*.5,h*.3,w*.1,0,7);x.fill();
+    });
+    if(ok('rock')){var kw=laneW*.82;SPR.rock=sprite(kw,kw*PIC.rock.naturalHeight/PIC.rock.naturalWidth,function(x,w,h){x.drawImage(PIC.rock,0,0,w,h);});}
+    else SPR.rock=sprite(laneW*.74,laneW*.6,function(x,w,h){
+      x.fillStyle='#0b170f';x.beginPath();x.moveTo(w*.06,h*.36);x.lineTo(w*.94,h*.32);x.lineTo(w*.8,h*.62);x.lineTo(w*.58,h*.96);x.lineTo(w*.4,h*.74);x.lineTo(w*.2,h*.66);x.closePath();x.fill();
+      x.fillStyle='#132219';x.beginPath();x.moveTo(w*.1,h*.36);x.lineTo(w*.9,h*.33);x.lineTo(w*.74,h*.58);x.lineTo(w*.3,h*.6);x.closePath();x.fill();
+      x.fillStyle='#2c6021';x.beginPath();x.moveTo(w*.04,h*.36);x.lineTo(w*.3,h*.18);x.lineTo(w*.62,h*.14);x.lineTo(w*.96,h*.3);x.lineTo(w*.9,h*.4);x.lineTo(w*.08,h*.44);x.closePath();x.fill();
+      x.fillStyle='#57bb41';x.beginPath();x.moveTo(w*.26,h*.24);x.lineTo(w*.6,h*.18);x.lineTo(w*.7,h*.26);x.lineTo(w*.34,h*.3);x.closePath();x.fill();
+    });
+    if(ok('xp')){var xw=laneW*.95;SPR.xp=sprite(xw,xw*PIC.xp.naturalHeight/PIC.xp.naturalWidth,function(x,w,h){x.drawImage(PIC.xp,0,0,w,h);});}
+    else SPR.xp=sprite(laneW*.36,laneW*.36,function(x,w,h){
+      x.fillStyle='rgba(137,251,203,.22)';x.beginPath();x.arc(w/2,h/2,w/2,0,7);x.fill();
+      x.fillStyle='#89fbcb';x.beginPath();x.moveTo(w/2,h*.1);x.lineTo(w*.86,h/2);x.lineTo(w/2,h*.9);x.lineTo(w*.14,h/2);x.closePath();x.fill();
+      x.fillStyle='#fffffe';x.beginPath();x.moveTo(w/2,h*.24);x.lineTo(w*.66,h/2);x.lineTo(w/2,h*.5);x.lineTo(w*.36,h/2);x.closePath();x.fill();
+    });
+    if(ok('crate')){var pw2=laneW*.98;SPR.prize=sprite(pw2,pw2*PIC.crate.naturalHeight/PIC.crate.naturalWidth,function(x,w,h){x.drawImage(PIC.crate,0,0,w,h);
+      x.font='800 '+Math.round(h*.34)+'px Almarai, sans-serif';x.textAlign='center';x.textBaseline='middle';x.lineJoin='round';
+      x.lineWidth=Math.max(3,h*.09);x.strokeStyle='#0b170f';x.strokeText('+25',w/2,h*.54);x.fillStyle='#fffffe';x.fillText('+25',w/2,h*.54);});}
+    else SPR.prize=sprite(laneW*.56,laneW*.56,function(x,w,h){
+      x.fillStyle='rgba(162,245,144,.2)';x.beginPath();x.arc(w/2,h/2,w/2,0,7);x.fill();
+      var bw=w*.62,bh=h*.46,bx=(w-bw)/2,by=h*.3;
+      x.fillStyle='#2c6021';x.fillRect(bx,by,bw,bh);x.fillStyle='#1b3b15';x.fillRect(bx,by,bw,bh*.32);
+      x.fillStyle='#a2f590';x.fillRect(bx+bw*.14,by,bw*.1,bh);x.fillRect(bx+bw*.76,by,bw*.1,bh);x.fillRect(bx,by+bh*.3,bw,bh*.08);
+      x.fillStyle='#fffffe';x.font='800 '+Math.round(h*.2)+'px Almarai, sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('+25',w/2,by+bh*.66);
+    });
+    var bg=sprite(W,H,function(x,w,h){
+      var g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'#0b170f');g.addColorStop(.45,'#1a1236');g.addColorStop(1,'#2d1c53');x.fillStyle=g;x.fillRect(0,0,w,h);
+      var s=7;function rnd(){s=(s*16807)%2147483647;return s/2147483647;}
+      for(var i=0;i<70;i++){x.fillStyle='rgba(195,166,255,'+(.15+rnd()*.35)+')';var z=rnd()<.8?1:2;x.fillRect(rnd()*w,rnd()*h*.8,z,z);}
+    });
+    SPR.bg=bg;
+    if(ok('soft')){var sw2=laneW*2.1;SPR.cloud=sprite(sw2,sw2*PIC.soft.naturalHeight/PIC.soft.naturalWidth,function(x,w,h){x.globalAlpha=.16;x.drawImage(PIC.soft,0,0,w,h);});}
+    else SPR.cloud=sprite(laneW*2.2,laneW*1.1,function(x,w,h){x.fillStyle='rgba(243,234,217,.06)';x.beginPath();[[.24,.6,.22],[.44,.44,.3],[.68,.56,.26],[.5,.66,.26]].forEach(function(c){x.moveTo(w*c[0]+h*c[2],h*c[1]);x.arc(w*c[0],h*c[1],h*c[2],0,7);});x.fill();});
+  }
+  /* ---- the run ---- */
+  var S=null,mode='cover',raf=0,last=0,hudAt=0,clouds=[];
+  for(var ci=0;ci<6;ci++)clouds.push({x:Math.random(),y:Math.random(),k:.25+Math.random()*.35});
+  function newRun(){
+    return {t:0,score:0,xp:0,prizes:0,level:1,lane:2,x:laneX[2],tilt:0,ents:[],fx:[],travel:0,nextRow:0,open:2,
+      lastXp:-99,lastPrize:-99,lastBox:-99,gotBox:false,shake:0,dead:0,ticket:null,ticketWait:[],prop:0,lanes:0};
+  }
+  function speed(t){return R.v0*Math.exp(LV_K*t);}
+  function scroll(t){return H*.05*speed(t);}
+  function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+  function spawnRow(){
+    var L=S.level,k=L<2?1:L<3?rnd(1,2):L<5?rnd(2,3):(Math.random()<.25?4:rnd(2,3));
+    // the way through moves at most one lane a row, and never onto a lane with cannon fire still coming
+    var hot={};S.ents.forEach(function(e){if(e.kind==='cannon'&&e.y<shipY)hot[e.lane]=1;});
+    var ways=[S.open-1,S.open,S.open+1].filter(function(l){return l>=0&&l<=4&&!hot[l];});
+    var open=ways.length?ways[rnd(0,ways.length-1)]:S.open;S.open=open;
+    var lanes=shuffle([0,1,2,3,4].filter(function(l){return l!==open;})).slice(0,k);
+    var kinds=L<2?['storm','rock']:['storm','rock','rival','rival'];
+    lanes.forEach(function(l){var kind=kinds[rnd(0,kinds.length-1)];S.ents.push(ent(kind,l,-SPR[kind].h));});
+    // pickups go in the open lane
+    var already=prizesToday()+S.prizes;
+    if(S.level>=R.boxLevel&&!S.gotBox&&S.t-S.lastBox>6&&!S.ents.some(function(e){return e.kind==='box';})){S.lastBox=S.t;S.ents.push(ent('box',open,-laneW));}
+    else if(S.t>=R.prizeFirst&&S.t-S.lastPrize>=R.prizeGap&&already<R.prizesPerDay&&Math.random()<.2){S.lastPrize=S.t;S.ents.push(ent('prize',open,-SPR.prize.h));}
+    else if(S.t-S.lastXp>=R.xpGap&&Math.random()<.4){S.lastXp=S.t;S.ents.push(ent('xp',open,-SPR.xp.h));}
+    // cannon fire: faster than the sky, after a warning, never down a lane that is any row's way through
+    if(L>=3&&Math.random()<.08+.02*L){
+      var opens={};opens[open]=1;S.ents.forEach(function(e){if(e.row&&e.y<shipY)opens[e.row.open]=1;});
+      var free=lanes.filter(function(l){return !opens[l];});
+      if(free.length){var c=ent('cannon',free[rnd(0,free.length-1)],-laneW*.3);c.warn=.8;c.mult=1.7;S.ents.push(c);}
+    }
+    var mark={open:open};S.ents.forEach(function(e){if(e.y<0&&!e.row)e.row=mark;});
+  }
+  function ent(kind,lane,y){
+    var hw={storm:.36,rock:.3,rival:.24,cannon:.13,xp:.2,prize:.26,box:.34}[kind]*laneW;
+    var hh={storm:.3,rock:.32,rival:.3,cannon:.13,xp:.2,prize:.26,box:.34}[kind]*laneW;
+    return {kind:kind,lane:lane,x:laneX[lane],y:y,hw:hw,hh:hh,mult:1,warn:0,ph:Math.random()*6};
+  }
+  var bad={storm:1,rock:1,rival:1,cannon:1};
+
+  function step(dt){
+    S.t+=dt;var sp=scroll(S.t);
+    S.score=Math.floor(distAt(S.t))+S.xp*R.xpBonus;
+    var lv=levelAt(S.t);
+    if(lv>S.level){S.level=lv;showBanner('Level '+lv);}
+    S.travel+=sp*dt;
+    var gap=sp*Math.max(.5,1.15-.07*S.level);
+    if(S.travel>=S.nextRow){spawnRow();S.nextRow=S.travel+gap;}
+    var tx=laneX[S.lane];S.x+=(tx-S.x)*Math.min(1,dt*20);S.tilt=Math.max(-.35,Math.min(.35,(tx-S.x)/laneW*.5));
+    S.prop+=dt*30;
+    for(var i=S.ents.length-1;i>=0;i--){
+      var e=S.ents[i];
+      if(e.warn>0){e.warn-=dt;continue;}
+      e.y+=sp*dt*e.mult;e.ph+=dt;
+      if(e.y-e.hh>H+20){S.ents.splice(i,1);continue;}
+      if(Math.abs(e.x-S.x)<laneW*.2+e.hw&&Math.abs(e.y-shipY)<SPR.ship.h*.36+e.hh){
+        if(bad[e.kind])return crash();
+        S.ents.splice(i,1);
+        if(e.kind==='xp'){S.xp++;toast('+100 POINTS','');}
+        else if(e.kind==='prize'){
+          if(prizesToday()+S.prizes<R.prizesPerDay){S.prizes++;toast('+25 HUNT POINTS','gold');}else toast('Prize limit reached for today','hot');
+        }
+        else if(e.kind==='box'){S.gotBox=true;return openBox();}
+      }
+    }
+    if(!calm&&Math.random()<dt*20)S.fx.push({x:S.x+(Math.random()-.5)*laneW*.2,y:shipY+SPR.ship.h*.45,vx:(Math.random()-.5)*20,vy:sp*.5,life:.5,c:'rgba(243,234,217,'});
+    stepFx(dt);
+  }
+  function stepFx(dt){for(var i=S.fx.length-1;i>=0;i--){var f=S.fx[i];f.life-=dt;if(f.life<=0){S.fx.splice(i,1);continue;}f.x+=f.vx*dt;f.y+=f.vy*dt;}}
+
+  function draw(){
+    if(!W)return;
+    cx.save();
+    if(S&&S.shake>0&&!calm){cx.translate((Math.random()-.5)*S.shake*12,(Math.random()-.5)*S.shake*12);}
+    var t=S?S.t:0,trav=S?S.travel:0;
+    if(ok('sky')){var th=W*PIC.sky.naturalHeight/PIC.sky.naturalWidth,sy=(trav*.15)%th;for(var yy=sy-th;yy<H;yy+=th)cx.drawImage(PIC.sky,0,yy,W,th);}
+    else cx.drawImage(SPR.bg,0,0,W,H);
+    // clouds drift behind (slower in calm mode)
+    for(var i=0;i<clouds.length;i++){var c=clouds[i],cy=((c.y*H+trav*c.k*(calm?.5:1))%(H+SPR.cloud.h))-SPR.cloud.h;cx.drawImage(SPR.cloud,c.x*W-SPR.cloud.w/2,cy,SPR.cloud.w,SPR.cloud.h);}
+    // lane lines
+    cx.fillStyle='rgba(243,234,217,.07)';var off=trav%40;
+    for(var l=1;l<5;l++){for(var y=-40+off;y<H;y+=40)cx.fillRect(laneW*l-1,y,2,20);}
+    if(S){
+      for(var j=0;j<S.ents.length;j++)drawEnt(S.ents[j]);
+      for(var k=0;k<S.fx.length;k++){var f=S.fx[k];cx.fillStyle=f.c+Math.max(0,f.life).toFixed(2)+')';cx.fillRect(f.x-2,f.y-2,4,4);}
+    }
+    if(S&&mode==='crash'&&ok('boom1')){var bi=Math.min(BOOM.length-1,Math.floor(S.dead/.16)),bp=PIC['boom'+BOOM[bi]];
+      if(ok('boom'+BOOM[bi])){var bw=SPR.ship.w*1.5,bh=bw*bp.naturalHeight/bp.naturalWidth;cx.save();cx.globalAlpha=Math.max(0,Math.min(1,(1-S.dead)*3));cx.drawImage(bp,S.x-bw/2,shipY-bh/2,bw,bh);cx.restore();}}
+    else if(!S||mode!=='crash'||Math.floor(S.dead*12)%2===0)drawShip(S?S.x:laneX[2],shipY,S?S.tilt:0,S?S.prop:0);
+    cx.restore();
+  }
+  function drawShip(x,y,tilt,prop){
+    var sp=SPR.ship;cx.save();cx.translate(x,y);cx.rotate(tilt);
+    cx.drawImage(sp,-sp.w/2,-sp.h/2,sp.w,sp.h);
+    // engine flame at the stern
+    var fl=calm?1:.75+.25*Math.sin(prop*3),gy=sp.h*.5,gr=sp.w*.09*fl;
+    var fp=flame(0);if(fp){var ew=sp.w*.24,eh=ew*fp.naturalHeight/fp.naturalWidth;cx.drawImage(fp,-ew/2,gy-sp.h*.08,ew,eh);cx.restore();return;}
+    cx.fillStyle='rgba(255,76,15,.35)';cx.beginPath();cx.arc(0,gy,gr*1.8,0,7);cx.fill();
+    cx.fillStyle='#ff4c0f';cx.beginPath();cx.arc(0,gy,gr,0,7);cx.fill();
+    cx.fillStyle='#ffd9b0';cx.beginPath();cx.arc(0,gy,gr*.45,0,7);cx.fill();
+    cx.restore();
+  }
+  var boxImg=new Image();boxImg.crossOrigin='anonymous';boxImg.src='https://africhmaurice.github.io/leaderboard/loot/74.png';
+  function drawEnt(e){
+    var s;
+    if(e.kind==='cannon'&&e.warn>0){
+      var wp=warnPic(e.lane);if(wp){var ww=laneW*.96,wh=ww*wp.naturalHeight/wp.naturalWidth,wk=calm?1:1+.06*Math.sin(e.warn*30);cx.save();cx.translate(e.x,8+wh/2);cx.scale(wk,wk);cx.drawImage(wp,-ww/2,-wh/2,ww,wh);cx.restore();return;}
+      if(calm||Math.floor(e.warn*8)%2===0){cx.fillStyle='#ff4c0f';var wx=e.x,ws=laneW*.16;cx.beginPath();cx.moveTo(wx-ws,10);cx.lineTo(wx+ws,10);cx.lineTo(wx,10+ws*1.3);cx.closePath();cx.fill();}
+      return;
+    }
+    if(e.kind==='cannon'){
+      var r=laneW*.13;
+      var tp=flame(e.lane);if(tp){var fw=r*2.6,fh=fw*tp.naturalHeight/tp.naturalWidth;
+        cx.save();cx.translate(e.x,e.y+r*.2);cx.scale(1,-1);cx.drawImage(tp,-fw/2,0,fw,fh);cx.restore();}
+      else for(var i=3;i>0;i--){cx.fillStyle='rgba(255,76,15,'+(.12*i)+')';cx.beginPath();cx.arc(e.x,e.y-r*i*1.1,r*(1-i*.15),0,7);cx.fill();}
+      if(ok('ball'))cx.drawImage(PIC.ball,e.x-r*1.1,e.y-r*1.1,r*2.2,r*2.2);
+      else{cx.fillStyle='#0b170f';cx.beginPath();cx.arc(e.x,e.y,r,0,7);cx.fill();cx.strokeStyle='#ff4c0f';cx.lineWidth=2;cx.stroke();}
+      return;
+    }
+    if(e.kind==='box'){
+      var bs=laneW*.9,pulse=calm?0:Math.sin(e.ph*6)*.08;
+      cx.fillStyle='rgba(255,76,15,'+(.22+pulse)+')';cx.beginPath();cx.arc(e.x,e.y,bs*.55,0,7);cx.fill();
+      if(boxImg.complete&&boxImg.naturalWidth)cx.drawImage(boxImg,e.x-bs/2,e.y-bs/2,bs,bs);else{cx.fillStyle='#c53200';cx.fillRect(e.x-bs*.3,e.y-bs*.25,bs*.6,bs*.5);}
+      return;
+    }
+    s=SPR[e.kind];var bob=(e.kind==='xp'||e.kind==='prize')&&!calm?Math.sin(e.ph*5)*3:0;
+    cx.drawImage(s,e.x-s.w/2,e.y-s.h/2+bob,s.w,s.h);
+    if(e.kind==='storm'&&!ok('storm')&&!calm&&Math.sin(e.ph*9)>.93){
+      cx.fillStyle='#89fbcb';var bx=e.x,by=e.y+s.h*.3,z=laneW*.08;
+      cx.beginPath();cx.moveTo(bx,by);cx.lineTo(bx-z,by+z*2);cx.lineTo(bx,by+z*2);cx.lineTo(bx-z*.6,by+z*4);cx.lineTo(bx+z,by+z*1.6);cx.lineTo(bx,by+z*1.6);cx.closePath();cx.fill();
+    }
+  }
+
+  function loop(now){
+    raf=0;var dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;
+    if(mode==='run')step(dt);
+    else if(mode==='crash'){S.dead+=dt;S.shake=Math.max(0,S.shake-dt*1.5);stepFx(dt);if(S.dead>1)return over();}
+    else return;
+    draw();
+    if(now-hudAt>100){hudAt=now;paintHud();}
+    raf=requestAnimationFrame(loop);
+  }
+  function go(){if(!raf){last=performance.now();raf=requestAnimationFrame(loop);}}
+  function paintHud(){
+    hud.score.textContent=fmt(S?S.score:0);hud.level.textContent=S?S.level:1;hud.time.textContent=clock(S?S.t:0);
+    hud.prizes.textContent=Math.min(R.prizesPerDay,prizesToday()+(S&&mode!=='over'?S.prizes:0))+'/'+R.prizesPerDay;
+  }
+
+  var bannerT=0,toastT=0;
+  function showBanner(text){banner.textContent=text;banner.classList.remove('on');void banner.offsetWidth;banner.classList.add('on');clearTimeout(bannerT);bannerT=setTimeout(function(){banner.classList.remove('on');},1800);}
+  function toast(text,kind){toastEl.textContent=text;toastEl.className='ar-toast on'+(kind?' '+kind:'');clearTimeout(toastT);toastT=setTimeout(function(){toastEl.className='ar-toast';},1300);}
+
+  /* ---- controls ---- */
+  function move(d){if(mode!=='run')return;var n=Math.max(0,Math.min(4,S.lane+d));if(n!==S.lane){S.lane=n;S.lanes++;}}
+  document.addEventListener('keydown',function(e){
+    if(mode==='run'){
+      var k=e.key;
+      if(k==='ArrowLeft'||k==='a'||k==='A'){e.preventDefault();move(-1);}
+      else if(k==='ArrowRight'||k==='d'||k==='D'){e.preventDefault();move(1);}
+      else if(k==='Escape'||k==='p'||k==='P'){e.preventDefault();pause();}
+      else if(k==='ArrowUp'||k==='ArrowDown'||k===' '){e.preventDefault();}
+    }
+  });
+  var tx0=0,ty0=0,tUsed=false;
+  cv.addEventListener('touchstart',function(e){e.preventDefault();var t=e.changedTouches[0];tx0=t.clientX;ty0=t.clientY;tUsed=false;},{passive:false});
+  cv.addEventListener('touchmove',function(e){
+    e.preventDefault();var t=e.changedTouches[0],dx=t.clientX-tx0;
+    // one swipe is one lane; keep dragging a good way further for the next one
+    if(Math.abs(dx)>(tUsed?64:24)){move(dx<0?-1:1);tUsed=true;tx0=t.clientX;ty0=t.clientY;}
+  },{passive:false});
+  cv.addEventListener('touchend',function(e){
+    e.preventDefault();if(tUsed)return;var t=e.changedTouches[0],r=cv.getBoundingClientRect();
+    move(t.clientX-r.left<r.width/2?-1:1);
+  },{passive:false});
+  cv.addEventListener('mousedown',function(e){var r=cv.getBoundingClientRect();move(e.clientX-r.left<r.width/2?-1:1);});
+
+  /* ---- start, pause, loot box, crash, game over ---- */
+  function start(){
+    cover.hidden=overOv.hidden=true;
+    S=newRun();mode='run';paintHud();
+    var r=stage.getBoundingClientRect();if(r.top<0||r.bottom>window.innerHeight){try{stage.scrollIntoView({block:'center',behavior:calm?'auto':'smooth'});}catch(e){}}
+    var run=S;
+    api('runstart',{},function(res){run.ticket=res&&res.ok?res.ticket:'';var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});
+    go();
+  }
+  function pause(){if(mode!=='run')return;mode='paused';pauseOv.hidden=false;paintHud();}
+  function resume(){if(mode!=='paused'&&mode!=='box')return;pauseOv.hidden=lootOv.hidden=true;mode='run';go();}
+  document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});
+  window.addEventListener('blur',function(){pause();});
+  function openBox(){mode='box';lootOv.hidden=false;paintHud();draw();}
+  function crash(){
+    mode='crash';S.dead=0;S.shake=calm?0:1;
+    if(!calm)for(var i=0;i<18;i++){var a=Math.random()*6.3,v=60+Math.random()*160;S.fx.push({x:S.x,y:shipY,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.6+Math.random()*.5,c:i%2?'rgba(255,76,15,':'rgba(243,234,217,'});}
+    paintHud();
+  }
+  function over(){
+    mode='over';draw();paintHud();
+    $('.ar-fscore').textContent=fmt(S.score);
+    $('.ar-stats').textContent='LEVEL '+S.level+'  ·  TIME '+clock(S.t)+'  ·  RUBIES '+S.xp+(S.prizes?'  ·  PRIZES '+S.prizes:'');
+    overOv.hidden=false;
+    var run=S;
+    if(run.score<=0){msg('');return;}
+    if(me.email)submit(run);else who(run);
+  }
+  var msgEl=$('.ar-msg'),whoEl=$('.ar-who');
+  function msg(t,err){msgEl.textContent=t;msgEl.className='ar-msg'+(err?' err':'');}
+  function who(run){
+    msg('Put your score on the board:');
+    whoEl.hidden=false;
+    whoEl.innerHTML='<div class="ar-form"><label for="ar-first">First name</label><input id="ar-first" autocomplete="given-name">'+
+      '<label for="ar-email">Email you use for the hunt</label><input id="ar-email" type="email" autocomplete="email" inputmode="email">'+
+      '<label for="ar-handle">Social handle (shown on the board)</label><input id="ar-handle" placeholder="@yourname" autocomplete="off">'+
+      '<label for="ar-platform">Where that handle lives</label><select id="ar-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select>'+
+      '<label for="ar-country">Country</label><select id="ar-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select>'+
+      '<input id="ar-other" placeholder="Which country?" hidden>'+
+      '<button type="button" class="ar-btn" id="ar-saveme">SAVE MY SCORE</button></div>';
+    var c=whoEl.querySelector('#ar-country'),other=whoEl.querySelector('#ar-other');
+    c.onchange=function(){other.hidden=c.value!=='__other';};
+    whoEl.querySelector('#ar-saveme').onclick=function(){
+      var p={first_name:whoEl.querySelector('#ar-first').value.trim(),email:whoEl.querySelector('#ar-email').value.trim(),handle:whoEl.querySelector('#ar-handle').value.trim(),
+        platform:whoEl.querySelector('#ar-platform').value,country:c.value==='__other'?other.value.trim():c.value};
+      if(!p.first_name)return msg('A first name, please.',1);
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email))return msg('That email does not look right.',1);
+      if(!p.country)return msg('Which country are you hunting from?',1);
+      me=p;store(ME,me);whoEl.hidden=true;whoEl.innerHTML='';submit(run);
+    };
+  }
+  function submit(run){
+    if(run.ticket===null){msg('Logging your run...');run.ticketWait.push(function(){submit(run);});return;}
+    if(!run.ticket){msg('The ship could not check in when this run started, so it cannot go on the board. Fly again!',1);return;}
+    msg('Logging your run...');
+    api('runscore',{ticket:run.ticket,email:me.email,first_name:me.first_name,handle:me.handle,platform:me.platform,country:me.country,
+      score:run.score,secs:Math.round(run.t*10)/10,level:run.level,xp:run.xp,prizes:run.prizes},function(res){
+      if(run!==S)return;
+      if(res&&res.ok){
+        if(typeof res.prizesToday==='number')setPrizesToday(res.prizesToday);
+        var t=(res.rank?'Logged! You are #'+res.rank+' this week.':'Logged!')+' Best this week: '+fmt(res.best)+'.';
+        if(res.paid)t+=' +'+res.paid*25+' hunt points from prizes.';
+        msg(t);whoEl.hidden=false;whoEl.innerHTML='<p class="ar-quiet">Playing as '+esc(me.first_name||me.email)+'. <a class="ar-notme">Not you?</a></p>';
+        whoEl.querySelector('.ar-notme').onclick=function(){try{localStorage.removeItem(ME);}catch(e){}me={};who(run);};
+        if(res.top)paintBoard(res.top);paintHud();return;
+      }
+      var e=res&&res.error;
+      if(e==='slow'){msg('Easy, captain. Logging it in a few seconds...');return setTimeout(function(){submit(run);},6000);}
+      msg(({email:'That email does not look right.',closed:'The hunt is over, so runs no longer go on the board.',ticket:'This run took too long to check in, so it cannot go on the board.',
+        check:'The Captain could not verify this run.',limit:'That is a lot of flying for one day. Come back tomorrow!'})[e]||'The ship is slow today. Give it another go in a moment.',1);
+      if(!e||e==='network'||e==='server'||e==='empty'){whoEl.hidden=false;whoEl.innerHTML='<button type="button" class="ar-btn ghost">TRY AGAIN</button>';whoEl.querySelector('button').onclick=function(){whoEl.hidden=true;submit(run);};}
+    });
+  }
+
+  $('.ar-play').addEventListener('click',start);
+  $('.ar-again').addEventListener('click',function(){whoEl.hidden=true;whoEl.innerHTML='';start();});
+  $('.ar-resume').addEventListener('click',resume);
+  $('.ar-keep').addEventListener('click',resume);
+  $('.ar-boxbtn').addEventListener('click',function(){
+    var u=atob(K).split('').reverse().join('');
+    if(PREVIEW_HOST.test(location.hostname)){$('.ar-lootnote').textContent='Preview: this is where loot box 74 opens.';return;}
+    // A new tab keeps the run alive; if the browser blocks it, go there in this tab.
+    var w=window.open(u,'_blank');if(w){try{w.opener=null;}catch(e){}}else location.href=u;
+  });
+
+  /* ---- share card ---- */
+  function card(){
+    var c=document.createElement('canvas'),Wc=1200,Hc=600;c.width=Wc;c.height=Hc;var x=c.getContext('2d');
+    x.fillStyle='#0b170f';x.fillRect(0,0,Wc,Hc);x.fillStyle='#2d1c53';x.fillRect(0,0,Wc,14);x.fillRect(0,Hc-14,Wc,14);
+    x.strokeStyle='rgba(162,245,144,.35)';x.lineWidth=2;x.strokeRect(40,54,Wc-80,Hc-108);
+    x.fillStyle='#607667';x.font='800 22px Almarai, sans-serif';x.fillText("CELLO'S GATE TREASURE HUNT",80,122);
+    x.fillStyle='#fffffe';x.font='84px "Cracked Imperia", cursive';fit(x,'AIRSHIP RUNNER',80,236,620);
+    x.font='700 26px Almarai, sans-serif';x.fillText('LEVEL '+S.level+'  ·  TIME '+clock(S.t),80,300);
+    x.fillStyle='#607667';x.fillText('WEEK ENDING '+new Date(weekId()+'T12:00:00Z').toLocaleDateString('en-US',{timeZone:'UTC',month:'long',day:'numeric'}).toUpperCase(),80,342);
+    if(SPR.ship){x.save();x.translate(150,440);var cw=110,ch=cw*SPR.ship.h/SPR.ship.w;x.drawImage(SPR.ship,-cw/2,-ch/2,cw,ch);x.restore();}
+    x.textAlign='center';x.fillStyle='#fffffe';x.font='800 26px Almarai, sans-serif';x.fillText('SCORE',930,196);
+    x.fillStyle='#3adb97';x.font='800 150px Almarai, sans-serif';fit(x,fmt(S.score),930,360,380);
+    x.fillStyle='#fffffe';x.font='700 21px Almarai, sans-serif';fit(x,SITE.toUpperCase(),930,470,360);
+    return c.toDataURL('image/png');
+  }
+  function fit(x,s,px,py,max){var m=/^(.*?)(\d+)px\s*(.*)$/.exec(x.font),size=+m[2];while(x.measureText(s).width>max&&size>12){size--;x.font=m[1]+size+'px '+m[3];}x.fillText(s,px,py);}
+  function shareText(){return 'Airship Runner: '+fmt(S.score)+' points, level '+S.level+'. Beat me at '+SITE;}
+  $('.ar-save').addEventListener('click',function(){
+    var btn=this,url=card();
+    fetch(url).then(function(r){return r.blob();}).then(function(b){
+      var name='airship-runner-'+today()+'.png',file=typeof File==='function'?new File([b],name,{type:'image/png'}):null;
+      if(file&&navigator.canShare&&navigator.canShare({files:[file]})&&/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent))return navigator.share({files:[file],text:shareText()}).catch(function(){});
+      var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();
+      setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);btn.textContent='SAVED!';setTimeout(function(){btn.textContent='SAVE MY CARD';},2200);
+    });
+  });
+  $('.ar-copy').addEventListener('click',function(){
+    var btn=this,done=function(){btn.textContent='COPIED!';setTimeout(function(){btn.textContent='COPY MY SCORE';},2200);};
+    try{navigator.clipboard.writeText(shareText()).then(done,function(){window.prompt('Copy your score:',shareText());});}catch(e){window.prompt('Copy your score:',shareText());}
+  });
+
+  var rT=0;window.addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(resize,120);});
+  resize();paintHud();
+  // Preview only (local file, localhost, or github.io with ?runner-test=1): lets the preview script read the run.
+  if(PREVIEW_HOST.test(location.hostname)&&/[?&]runner-test=1\b/.test(location.search))window.__arTest={run:function(){return S;},lanes:function(){return laneX;},shipY:function(){return shipY;},mode:function(){return mode;}};
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){build();draw();});
+})();
+</script>

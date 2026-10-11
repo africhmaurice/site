@@ -9,7 +9,7 @@
   var BASE = me ? me.src.replace(/heads\.js.*$/, '') : 'https://africhmaurice.github.io/site/';
   var FONTS = BASE + 'assets/fonts/';
   var SIZE = '109.5%'; // Cracked Imperia is 9.5% narrower than Atomic Marker; this keeps every line the same width.
-  var HEAD = /atomic.?marker|cinzel/i;
+  var HEAD = /atomic.?marker|cracked.?imperia|cinzel/i;
   // Puzzle text: clue poems and titles, the clue flash, and game words. Capital letters and line breaks can be part of
   // a clue (tools/clues.mjs), so these keep their own case, spacing, and line height; only the font changes.
   var KEEP = '#loot-clue .lc-clue,#loot-clue .lc-poem,#loot-clue .lc-said,.lc-flash-ov,#ma-longword .lw-word,.cw-clues,[data-ci-keep]';
@@ -34,11 +34,11 @@
     try { document.fonts.load('40px "CI Face"'); document.fonts.load('40px "CI Extrude"'); } catch (e) {}
     // Pages wait for Atomic Marker before drawing; make that wait cover the new fonts too.
     try { var load = document.fonts.load.bind(document.fonts);
-      document.fonts.load = function (f, t) { var p = load(f, t); if (!/atomic.?marker/i.test(f)) return p;
+      document.fonts.load = function (f, t) { var p = load(f, t); if (!/atomic.?marker|cracked.?imperia/i.test(f)) return p;
         return Promise.all([p, load('40px "CI Face"'), load('40px "CI Extrude"')]).then(function (r) { return r[0]; }); }; } catch (e) {}
     Object.defineProperty(P, 'font', { configurable: true, get: d.get, set: function (v) {
-      var s = String(v); this.__ci = /atomic.?marker/i.test(s);
-      d.set.call(this, this.__ci ? s.replace(/(["']?)atomic.?marker\1/i, '"CI Face"') : s); } });
+      var s = String(v); this.__ci = /atomic.?marker|cracked.?imperia/i.test(s);
+      d.set.call(this, this.__ci ? s.replace(/(["']?)(?:atomic.?marker|cracked.?imperia)\1/i, '"CI Face"') : s); } });
     var fill = P.fillText;
     P.fillText = function (t, x, y, w) {
       if (this.__ci && typeof this.fillStyle === 'string') {
@@ -86,7 +86,7 @@
   // The 3D copy only lines up when all the text inside is heading text at one size, in one flow of lines.
   function uniform(el, size) { var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n;
     while ((n = w.nextNode())) { if (!n.textContent.trim()) continue; var p = n.parentElement, s = getComputedStyle(p);
-      if (!/atomic.?marker|cinzel|CI Face/i.test(s.fontFamily) || s.fontSize !== size) return false;
+      if (!/atomic.?marker|cracked.?imperia|cinzel|CI Face/i.test(s.fontFamily) || s.fontSize !== size) return false;
       for (var q = p; q && q !== el; q = q.parentElement) if (getComputedStyle(q).display !== 'inline') return false; }
     return true; }
   // Turned or scaled text (the rotated "Reward Unlocked!" stamps) gets the new font without the 3D layer.

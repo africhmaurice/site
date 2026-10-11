@@ -303,6 +303,12 @@
       "source": "pages/longest-word.html"
     },
     {
+      "slug": "airship-runner",
+      "url": "/airship-runner",
+      "title": "Airship Runner (loot box 74, weekly high score)",
+      "source": "pages/airship-runner.html"
+    },
+    {
       "slug": "some-assembly-required",
       "url": "/some-assembly-required",
       "title": "Some Assembly Required (loot box 61 jigsaw)",

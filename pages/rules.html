@@ -26,11 +26,11 @@
   #hunt-nav .mn-row{display:none}
   #hunt-nav .mn-burger{display:flex}
 }
-@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
 html{scroll-behavior:smooth}
 html,body{margin:0 !important;padding:0 !important}
 #rules-hero{background:#0b170f;padding:170px 32px 70px;text-align:center}
-#rules-hero h1{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(48px,7vw,110px);line-height:1.15;color:#fff;margin:0 0 18px}
+#rules-hero h1{font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(48px,7vw,110px);line-height:1.15;color:#fff;margin:0 0 18px}
 #rules-hero .r-sub{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(16px,1.6vw,22px);letter-spacing:.06em;color:#a2f590;margin:0 0 44px}
 #rules-hero .r-jumps{display:flex;justify-content:center;flex-wrap:wrap;gap:14px}
 #rules-hero .r-jumps a{font-family:'Almarai',sans-serif;font-weight:700;font-size:14px;letter-spacing:.08em;color:#fff;text-decoration:none;border:2px solid #f3ead9;padding:12px 22px;background:rgba(12,26,8,.35);transition:background .15s ease,color .15s ease}
@@ -38,8 +38,8 @@ html,body{margin:0 !important;padding:0 !important}
 #rules-body{background:#fbf9f4;padding:70px 32px 90px;font-family:'Almarai',sans-serif;color:#111}
 #rules-body .r-wrap{max-width:860px;margin:0 auto}
 #rules-body .r-callout{border:3px solid #c1330a;background:#fff;padding:36px 32px;margin:0 0 70px}
-#rules-body .r-callout .r-callout-title{font-family:'Atomic Marker',cursive;font-size:clamp(26px,3vw,40px);color:#c1330a;line-height:1.15;margin:0 0 18px}
-#rules-body h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(32px,4vw,54px);line-height:1.15;color:#111;margin:0 0 12px}
+#rules-body .r-callout .r-callout-title{font-family:'Cracked Imperia',Impact,sans-serif;font-size:clamp(26px,3vw,40px);color:#c1330a;line-height:1.15;margin:0 0 18px}
+#rules-body h2{font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(32px,4vw,54px);line-height:1.15;color:#111;margin:0 0 12px}
 #rules-body .r-allcaps{font-weight:800;font-size:16px;letter-spacing:.04em;margin:0 0 36px}
 #rules-body h3{font-size:17px;font-weight:800;letter-spacing:.03em;margin:36px 0 10px}
 #rules-body p{font-size:15.5px;line-height:1.75;margin:0 0 14px}
@@ -429,6 +429,10 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
       <h3>15. Winners List.</h3>
       <p>Sponsor will make winners' surnames and state or county available on request. Email <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@secondworldbooks.com</a> with subject line "Fan Contest Winners" within 60 days after November 30, 2026. Winners who object to this disclosure may tell Sponsor when notified, except where a regulator requires the information.</p>
+      <!-- Loot box 95 (batch 2): one in-world line of small print at the very bottom; the word "loot" opens the box. DRAFT copy. -->
+      <style>#rules-body p.ma-fine-95{margin:64px 0 0;font-size:11px;line-height:1.6;letter-spacing:.01em;color:#6f6f6f}#ma-fine-95w{cursor:default}</style>
+      <p class="ma-fine-95">Small print under the small print: if you read every rule all the way down to here, you are exactly the kind of sky pirate the Imperial courts warned me about, and you have earned a little <span id="ma-fine-95w">loot</span>.</p>
+      <script>(function(){var w=document.getElementById('ma-fine-95w');if(!w)return;var k='MlFYWllDRFM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';w.addEventListener('click',function(){location.href=atob(k).split('').reverse().join('');});})();</script>
     </div>
   </div>
 </section>
