@@ -506,8 +506,7 @@
     var t=S?S.t:0,trav=S?S.travel:0;
     if(ok('sky')){var th=W*PIC.sky.naturalHeight/PIC.sky.naturalWidth,sy=(trav*.15)%th;for(var yy=sy-th;yy<H;yy+=th)cx.drawImage(PIC.sky,0,yy,W,th);}
     else cx.drawImage(SPR.bg,0,0,W,H);
-    // clouds drift behind (slower in calm mode)
-    for(var i=0;i<clouds.length;i++){var c=clouds[i],cy=((c.y*H+trav*c.k*(calm?.5:1))%(H+SPR.cloud.h))-SPR.cloud.h;cx.drawImage(SPR.cloud,c.x*W-SPR.cloud.w/2,cy,SPR.cloud.w,SPR.cloud.h);}
+    // no background clouds (Maurice, 10/12)
     // lane lines
     cx.fillStyle='rgba(243,234,217,.07)';var off=trav%40;
     for(var l=1;l<5;l++){for(var y=-40+off;y<H;y+=40)cx.fillRect(laneW*l-1,y,2,20);}
