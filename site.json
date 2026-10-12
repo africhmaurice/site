@@ -309,6 +309,12 @@
       "source": "pages/airship-runner.html"
     },
     {
+      "slug": "not-found",
+      "url": "/not-found",
+      "title": "404 page (loot box 40)",
+      "source": "pages/not-found.html"
+    },
+    {
       "slug": "some-assembly-required",
       "url": "/some-assembly-required",
       "title": "Some Assembly Required (loot box 61 jigsaw)",
