@@ -120,6 +120,8 @@ Yet again, you might try.`],
   [36, 'Slide & Find'],
   [38, 'Lost in a sea of icons, trapped inside of a well.', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'wide', pics: [['', ART + 'clue-38-hint-1.jpg']] }] }],
   [39, 'From ink to parchment, one of us waits. Words are cheap, even free, when the mind never abates.\n\nFree additional clue: check the shop.', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'wide', pics: [['', ART + 'clue-39-hint-1.jpg']] }] }],
+  // Box 40 is the 0 in 404 on the site's Page Not Found page (Maurice, 2026-10-11).
+  [40, 'Loot Box Not Found!'],
   [41, 'Trapped in the tunnels beneath the ochre landscape.'],
   // Box 44 is the link on Maurice's Reddit profile (Maurice, 2026-10-05).
   [44, 'Mods Must Hate to See You Coming'],
