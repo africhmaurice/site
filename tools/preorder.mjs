@@ -10,6 +10,11 @@ const BASE = 'https://africhmaurice.github.io/site/';
 
 // [region, format, store, url]
 const RETAILERS = [
+  // Special editions (Maurice, 2026-10-12): their own section at the top of the page.
+  ['se', 'U.S.', 'Walmart Exclusive Edition', 'https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704'],
+  ['se', 'UK', 'Waterstones Exclusive Edition', 'https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227'],
+  ['se', 'Signed', 'The Broken Binding', 'https://thebrokenbindingsub.com/products/cellos-gate'],
+
   ['us', 'Hardcover', 'Amazon', 'https://www.amazon.com/dp/1668242834'],
   ['us', 'Hardcover', 'Barnes & Noble', 'https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834'],
   ['us', 'Hardcover', 'Bookshop.org', 'https://bookshop.org/p/books/cello-s-gate-maurice-africh/867e45638f69e94f?ean=9781668242834&next=t'],
@@ -32,6 +37,7 @@ const RETAILERS = [
   ['us', 'Audiobook', 'Audiobooks.com', 'https://www.audiobooks.com/audiobook/cellos-gate/1014560'],
 
   ['uk', 'Hardcover', 'Waterstones', 'https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399763073'],
+  ['uk', 'Hardcover', 'Waterstones Exclusive Edition', 'https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227'],
   ['uk', 'Hardcover', 'Amazon UK', 'https://www.amazon.co.uk/s?k=9781399763073'],
   ['uk', 'Hardcover', 'Bookshop.org UK', 'https://uk.bookshop.org/p/books/cello-s-gate-maurice-africh/8f39e20930ef9b5f?ean=9781399763073&affiliate=10403'],
   ['uk', 'Hardcover', "Blackwell's", 'https://blackwells.co.uk/bookshop/product/9781399763073'],
@@ -63,8 +69,8 @@ const RETAILERS = [
   ['nz', 'Paperback', 'The Nile', 'https://www.thenile.co.nz/books/maurice-africh/cellos-gate/9781399763080'],
   ['nz', 'Hardcover', 'Hachette NZ', 'https://www.hachette.co.nz/maurice-africh/cellos-gate'],
 ];
-const REGIONS = [['us', 'United States'], ['uk', 'United Kingdom'], ['ca', 'Canada'], ['au', 'Australia'], ['nz', 'New Zealand']];
-const FORMATS = ['Hardcover', 'Paperback', 'Ebook', 'Audiobook'];
+const REGIONS = [['se', 'Special Editions'], ['us', 'United States'], ['uk', 'United Kingdom'], ['ca', 'Canada'], ['au', 'Australia'], ['nz', 'New Zealand']];
+const FORMATS = ['U.S.', 'UK', 'Signed', 'Hardcover', 'Paperback', 'Ebook', 'Audiobook'];
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const btn = (store, url) => `<a class="po-btn" href="${esc(url)}" target="_blank" rel="noopener">${esc(store)}</a>`;

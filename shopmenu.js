@@ -176,7 +176,28 @@
     });
   }
 
+  // The new special editions sit right after Walmart's in every Pre-Order list (Maurice, 2026-10-12): the Waterstones
+  // Exclusive Edition and the Broken Binding edition. Added here so the Squarespace, hunt, and shop menus all match.
+  var SPECIAL = [['Waterstones Exclusive Edition', 'https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227'],
+    ['Broken Binding Special Edition', 'https://thebrokenbindingsub.com/products/cellos-gate']];
+  function specialEditions() {
+    Array.prototype.forEach.call(document.querySelectorAll('a[href*="Walmart-Exclusive-Hardcover"]'), function (a) {
+      if (a.__maSE || a.querySelector('img') || !a.closest('#header, #hunt-nav, #hunt-nav-ov, .header-menu, .tm-header')) return;
+      a.__maSE = true;
+      // a link alone in its own wrapper (Squarespace's folder items) gets its wrapper copied, so the new ones line up
+      var unit = a.parentNode.children.length === 1 && /header-nav-folder-item|header-menu-nav-item/.test(a.parentNode.className) ? a.parentNode : a;
+      var box = unit.parentNode, after = unit, caps = a.textContent.trim() === a.textContent.trim().toUpperCase();
+      SPECIAL.forEach(function (s) {
+        if (box.querySelector('a[href="' + s[1] + '"]')) return;
+        var n = unit.cloneNode(true), link = n.tagName === 'A' ? n : n.querySelector('a');
+        link.href = s[1]; link.textContent = caps ? s[0].toUpperCase() : s[0]; link.__maSE = true;
+        box.insertBefore(n, after.nextSibling); after = n;
+      });
+    });
+  }
+
   function build() {
+    specialEditions();
     var nav = document.querySelector('.tm-nav'), list = document.querySelector('.tm-mnav__list');
     if (!nav || nav.classList.contains('ma-one')) return;
     var pre = [].filter.call(nav.children, function (c) { return c.querySelector && c.querySelector('.tm-nav__cta'); })[0] || nav.querySelector('.tm-nav__cta');
@@ -208,6 +229,7 @@
       mrow.forEach(function (n) { list.appendChild(n); });
       if (mPre) list.appendChild(mPre);
     }
+    specialEditions(); setTimeout(specialEditions, 1500);
 
     fetch(BASE + 'pages/hunt-menu.html', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (html) {
       var gs = shape(new DOMParser().parseFromString(html, 'text/html'));
