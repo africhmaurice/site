@@ -94,6 +94,10 @@
 #ma-runner .ar-ki{flex:0 0 56px;width:56px;height:48px;display:flex;align-items:center;justify-content:center;gap:2px}
 #ma-runner .ar-ki img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 #ma-runner .ar-ki img.w{max-width:64%}#ma-runner .ar-ki img.b{max-width:30%}
+#ma-runner .ar-ki.glow img{animation:ar-breathe 2.4s ease-in-out infinite}
+#ma-runner .ar-ki.ruby{--g:255,76,15}#ma-runner .ar-ki.crate{--g:255,214,120}
+@keyframes ar-breathe{0%,100%{transform:scale(1);filter:drop-shadow(0 0 4px rgba(var(--g),.45))}50%{transform:scale(1.07);filter:drop-shadow(0 0 12px rgba(var(--g),.9))}}
+@media (prefers-reduced-motion:reduce){#ma-runner .ar-ki.glow img{animation:none;filter:drop-shadow(0 0 8px rgba(var(--g),.7))}}
 #ma-runner .ar-kt{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:14px;line-height:1.45;color:#f3ead9}
 #ma-runner .ar-kt b{font-weight:800;font-size:15px;color:#fffffe}
 #ma-runner .ar-kyou{display:flex;align-items:center;gap:14px;padding-top:16px;border-top:1px solid rgba(243,234,217,.18)}
@@ -197,8 +201,8 @@
           <div class="ar-kgrp">
             <p class="ar-ksub">Grab these</p>
             <ul class="ar-klist">
-        <li><span class="ar-ki"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Ruby</b>+100 points to your score.</span></li>
-        <li><span class="ar-ki"><img src="https://africhmaurice.github.io/site/assets/games/74-crate.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Prize crate</b>+25 hunt points on the leaderboard, up to 4 a day.</span></li>
+        <li><span class="ar-ki glow ruby"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Ruby</b>+100 points to your score.</span></li>
+        <li><span class="ar-ki glow crate"><img src="https://africhmaurice.github.io/site/assets/games/74-crate.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Prize crate</b>+25 hunt points on the leaderboard, up to 4 a day.</span></li>
             </ul>
           </div>
           <div class="ar-kgrp">
@@ -554,7 +558,15 @@
       return;
     }
     s=SPR[e.kind];var bob=(e.kind==='xp'||e.kind==='prize')&&!calm?Math.sin(e.ph*5)*3:0;
-    cx.drawImage(s,e.x-s.w/2,e.y-s.h/2+bob,s.w,s.h);
+    if(e.kind==='xp'||e.kind==='prize'){
+      // rubies glow Scarlet and crates warm gold, breathing every 2.4 s and swelling about 7% (Maurice, 10/12); steady glow in calm mode
+      var br=calm?.5:.5+.5*Math.sin(e.ph*Math.PI*2/2.4),sc=calm?1.03:1+.07*br,gc=e.kind==='xp'?'255,76,15':'255,214,120';
+      cx.save();cx.translate(e.x,e.y+bob);cx.scale(sc,sc);
+      cx.fillStyle='rgba('+gc+','+(.10+.12*br)+')';cx.beginPath();cx.arc(0,0,s.w*.62,0,Math.PI*2);cx.fill();
+      cx.shadowColor='rgba('+gc+','+(.5+.45*br)+')';cx.shadowBlur=10+16*br;
+      cx.drawImage(s,-s.w/2,-s.h/2,s.w,s.h);cx.restore();
+    }
+    else cx.drawImage(s,e.x-s.w/2,e.y-s.h/2+bob,s.w,s.h);
     if(e.kind==='storm'&&!ok('storm')&&!calm&&Math.sin(e.ph*9)>.93){
       cx.fillStyle='#89fbcb';var bx=e.x,by=e.y+s.h*.3,z=laneW*.08;
       cx.beginPath();cx.moveTo(bx,by);cx.lineTo(bx-z,by+z*2);cx.lineTo(bx,by+z*2);cx.lineTo(bx-z*.6,by+z*4);cx.lineTo(bx+z,by+z*1.6);cx.lineTo(bx,by+z*1.6);cx.closePath();cx.fill();
