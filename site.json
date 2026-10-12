@@ -189,6 +189,12 @@
       "source": "bot:squarespace-out.html"
     },
     {
+      "slug": "washed-ashore",
+      "url": "/washed-ashore",
+      "title": "Washed Ashore Vote (Chapter 8, on the shore)",
+      "source": "bot:squarespace-ashore.html"
+    },
+    {
       "slug": "adventure",
       "url": "/adventure",
       "title": "The Adventure So Far (every Choose Your Own Adventure beat)",

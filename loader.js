@@ -987,13 +987,20 @@
         var a = raft.cloneNode(false); a.href = SITE + '/river-mayhem'; a.textContent = 'RIVER MAYHEM';
         box.insertBefore(a, raft.nextSibling);
       });
+      // Washed Ashore (chapter 8, 2026-10-12) follows River Mayhem
+      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/river-mayhem"]'), function (mayhem) {
+        var box = mayhem.parentNode;
+        if (box.querySelector('a[href$="/washed-ashore"]')) return;
+        var a = mayhem.cloneNode(false); a.href = SITE + '/washed-ashore'; a.textContent = 'WASHED ASHORE';
+        box.insertBefore(a, mayhem.nextSibling);
+      });
     });
   }
   // The raft hunt (chapter 6, 2026-10-07): raft.js hides the pieces on every page; it checks its own hours.
   // Chapter buttons (2026-10-09): Previous chapter / See the map / Next chapter at the foot of each chapter page.
   function chapterNav() {
     if (window.__chapterNavLoaded) return; window.__chapterNavLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=3'; s.async = true; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=4'; s.async = true; document.head.appendChild(s);
   }
   function raftHunt() {
     if (window.__raftLoaded) return; window.__raftLoaded = true;
