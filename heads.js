@@ -20,6 +20,8 @@
     "@font-face{font-family:'CI Face';src:url('" + FONTS + "CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:" + SIZE + "}" +
     "@font-face{font-family:'CI Extrude';src:url('" + FONTS + "CrackedImperia-ExtrudeFlush.woff2?v=2') format('woff2');font-weight:100 900;font-display:block;size-adjust:" + SIZE + "}" +
     "[data-ci-x]{isolation:isolate}" +
+    // While the page is changing width, the 3D waits out of sight until it is lined up again (Maurice, 10/13).
+    "html.ma-ci-rs [data-ci-x]::before{visibility:hidden}" +
     // The 3D: the heading's words again, in the Extrude font, behind the face, on the same lines.
     "[data-ci-x]::before{content:attr(data-ci-x);position:absolute;left:var(--ci-x,0);top:calc(var(--ci-y,0px) + .0318em);width:var(--ci-w,auto);padding:0;border:0;box-sizing:content-box;font-family:'CI Extrude';font-size:inherit;line-height:var(--ci-lh,1.05);letter-spacing:inherit;word-spacing:inherit;text-align:inherit;text-transform:inherit;text-indent:inherit;white-space:pre;-webkit-text-stroke:0;color:var(--ci-depth);-webkit-text-fill-color:var(--ci-depth);background:none;filter:none;z-index:-1;pointer-events:none}";
   (document.head || document.documentElement).appendChild(st);
@@ -81,7 +83,7 @@
     el.style.setProperty('--ci-x', (L - b.left - el.clientLeft) + 'px');
     el.style.setProperty('--ci-y', (T - b.top - el.clientTop - (lh - h) / 2) + 'px');
     el.style.setProperty('--ci-w', (R - L + 0.5) + 'px'); }
-  function relines() { document.querySelectorAll('[data-ci-x]').forEach(function (e) { var t = lines(e); if (t && t !== e.getAttribute('data-ci-x')) e.setAttribute('data-ci-x', t); place(e); }); }
+  function relines() { document.querySelectorAll('[data-ci-x]').forEach(function (e) { var t = lines(e); if (t && t !== e.getAttribute('data-ci-x')) e.setAttribute('data-ci-x', t); place(e); }); document.documentElement.classList.remove('ma-ci-rs'); }
   var rt; function later() { clearTimeout(rt); rt = setTimeout(relines, 200); }
   // The 3D copy only lines up when all the text inside is heading text at one size, in one flow of lines.
   function uniform(el, size) { var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n;
@@ -161,7 +163,9 @@
   function one(el) { if (el.dataset.ciFit !== undefined) return fit(el); var pe = el.parentElement, ps = pe && getComputedStyle(pe), w = pe ? pe.clientWidth - parseFloat(ps.paddingLeft) - parseFloat(ps.paddingRight) : 0;
     if (w && el.scrollWidth > w) { el.dataset.ciFit = el.style.getPropertyValue('font-size') || ''; fit(el); } }
   function refit() { [].forEach.call(document.querySelectorAll('[data-ci-fit]:not([data-ci-one])'), fit); [].forEach.call(document.querySelectorAll('[data-ci-one]'), one); }
-  window.addEventListener('resize', function () { refit(); later(); });
+  // Only a change of width hides the 3D: phones resize the height whenever the address bar slides in or out.
+  var lastW = window.innerWidth;
+  window.addEventListener('resize', function () { if (window.innerWidth !== lastW) { lastW = window.innerWidth; document.documentElement.classList.add('ma-ci-rs'); } refit(); later(); });
   if (document.fonts) document.fonts.ready.then(function () { refit(); later(); });
   var t; function soon() { clearTimeout(t); t = setTimeout(function () { scan(); later(); }, 120); }
   // New sections get scanned; text that changes in place (counters) only refreshes the 3D lines.
