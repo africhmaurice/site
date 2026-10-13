@@ -7,6 +7,10 @@
      same form). lootbox.gs checks it against the towers' spacing and top speed (NEEDLE there must match SPACING and
      P.speed here) and keeps each person's best of the week (tabs Needle Runs / Needle Best). Maurice's runs are
      practice runs. Top score at Friday 11:59 PM ET wins 500, paid by hand (npm run needle-winner).
+     Golden chests (Maurice, 10/13): one each in gaps 50, 75, 150, and 300 (CHESTS). Each is 25 hunt points, and once you
+     catch one it's gone for the rest of the day (New York time), in this browser right away and on the sheet for good:
+     the run sends the gaps of the chests it caught (chests) and lootbox.gs pays each gap once a day per person as Games
+     rows (needle_prize, day "yyyy-MM-dd#<gap>"), checked against the gaps cleared. Art: golden-chest.png.
      Rock towers: his taller tower, and his super tall tower (76-rock-giant.png) wherever a tower has to reach high.
      Maurice's idea (2026-10-06): "Flappy Birds with an Airship (similar to the airship runner)".
      Maurice's red side-view airship flies right through his sky, between rock towers (rising from the ground)
@@ -95,7 +99,7 @@
 <section id="ma-flappy" aria-label="Thread the Needle airship game">
   <p class="fl-eye">Loot Box 76</p>
   <h1 class="fl-h1">Thread the Needle</h1>
-  <p class="fl-how">Tap, click, or press space to give the airship some lift. Thread the gaps between the rock towers and the storms.</p>
+  <p class="fl-how">Tap, click, or press space to give the airship some lift. Thread the gaps between the rock towers and the storms. Golden chests wait in gaps 50, 75, 150, and 300: 25 hunt points each, and once you catch one it’s gone until tomorrow.</p>
     <p class="fl-weekly">Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week.</p>
   <div class="fl-stage" tabindex="0" role="button" aria-label="Airship game. Tap or press space to flap.">
     <canvas></canvas>
@@ -135,12 +139,12 @@
   // Physics, in world units: the sky is 600 tall, and as wide as the stage allows.
   var H=600,GOAL=100,COLW=72,SPACING=250;
   var P=calm?{g:1150,flap:-370,maxv:520,speed:128,gap:212}:{g:1500,flap:-430,maxv:620,speed:170,gap:180};
-  var BOXS=56;
+  var BOXS=56,CHEST=44,CHESTS=[50,75,150,300];
   var img=new Image(),imgOk=false;img.onload=function(){imgOk=true;};img.src='https://africhmaurice.github.io/leaderboard/loot/76.png';
   var ART='https://africhmaurice.github.io/site/assets/games/';
   function pic(f){var i=new Image();i.src=ART+f;return i;}
   function ok(i){return i.complete&&i.naturalWidth>0;}
-  var shipImg=pic('76-ship.png'),rockImg=pic('76-rock-tower.png'),giantImg=pic('76-rock-giant.png'),fireImg=pic('76-fire-tower.png'),mistImg=[pic('76-mist-1.webp'),pic('76-mist-2.webp'),pic('76-mist-3.webp')],boomImg=[pic('74-boom-1.png'),pic('74-boom-2.png'),pic('74-boom-3.png'),pic('74-boom-4.png')];
+  var chestImg=pic('golden-chest.png'),shipImg=pic('76-ship.png'),rockImg=pic('76-rock-tower.png'),giantImg=pic('76-rock-giant.png'),fireImg=pic('76-fire-tower.png'),mistImg=[pic('76-mist-1.webp'),pic('76-mist-2.webp'),pic('76-mist-3.webp')],boomImg=[pic('74-boom-1.png'),pic('74-boom-2.png'),pic('74-boom-3.png'),pic('74-boom-4.png')];
   // Tower sizes in world units. The rock art (his taller tower, 10/12) is about 1:2.27, the fire art about 1:3.8. GROUND is the bottom of the sky.
   var RW=116,RH=263,FW=92,FH=351,GROUND=H-6;
   // It gets harder as you go: faster, and tighter gaps.
@@ -164,9 +168,9 @@
   }
   reset();
   function spawn(x){
-    S.n++;var box=S.n>=GOAL&&!S.gotBox,gap=box?gapNow()+50:gapNow(),reach=box?100:150;
+    S.n++;var chest=CHESTS.indexOf(S.n)>=0&&gotToday().indexOf(S.n)<0,box=!chest&&S.n>=GOAL&&!S.gotBox,gap=box?gapNow()+50:gapNow(),reach=box?100:150;
     var gy=Math.max(gap/2+50,Math.min(GROUND-gap/2-60,S.lastGy+rnd(-reach,reach)));S.lastGy=gy;
-    S.cols.push({x:x,gy:gy,gap:gap,box:box,passed:false,seed:Math.random()*1000,bob:Math.random()*6});
+    S.cols.push({x:x,gy:gy,gap:gap,box:box,chest:chest,n:S.n,passed:false,seed:Math.random()*1000,bob:Math.random()*6});
   }
 
   // ---- input ----
@@ -212,6 +216,7 @@
     for(var i=S.sparks.length-1;i>=0;i--){var p=S.sparks[i];p.vy+=700*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;if(p.life<=0)S.sparks.splice(i,1);}
     if(S.state==='title'||S.state==='ready'){S.y=H*.45+Math.sin(S.t*2.6)*10;S.vy=0;return;}
     if(S.state==='play')S.rt=(S.rt||0)+dt;
+    if(S.pop&&S.pop.t>0)S.pop.t-=dt;
     if(S.state==='resume'||S.state==='paused'||S.state==='won')return;
     if(S.state==='dead'){
       S.deadT+=dt;if(S.y<H+40){S.vy=Math.min(S.vy+P.g*dt,P.maxv);S.y+=S.vy*dt;}
@@ -230,6 +235,10 @@
       var c=S.cols[k],top=c.gy-c.gap/2,bot=c.gy+c.gap/2;
       if(c.box&&!c.got&&!S.gotBox){var by=c.gy+Math.sin(S.t*2+c.bob)*(calm?10:18),bx=c.x+COLW/2;
         if(hitRect(sx,S.y,16,bx-BOXS/2,by-BOXS/2,BOXS,BOXS)){c.got=true;S.gotBox=true;S.state='won';S.vy=0;winBurst(bx,by);setTimeout(showWin,calm?150:550);return;}}
+      if(c.chest&&!c.gotChest){var cy=c.gy+Math.sin(S.t*2.4+c.bob)*(calm?8:14),cx2=c.x+COLW/2;
+        if(hitRect(sx,S.y,16,cx2-CHEST/2,cy-CHEST/2,CHEST,CHEST)){c.gotChest=true;S.chests=(S.chests||[]).concat(c.n);markGot(c.n);
+          S.pop={t:1.4,txt:'+25 hunt points'};
+          if(!calm){var pc=['#f1d48a','#ffd678','#fffffe'];for(var q=0;q<16;q++)S.sparks.push({x:cx2,y:cy,vx:rnd(-220,220),vy:rnd(-320,80),life:rnd(.4,.8),c:pc[q%3],s:rnd(4,7)});}}}
       if(hitTower(sx,S.y,c,bot,top)){crash(CRASH[Math.floor(Math.random()*CRASH.length)]);return;}
       if(!c.passed&&c.x+COLW<sx-15){c.passed=true;S.score++;}
     }
@@ -246,7 +255,7 @@
   }
   function crash(line){S.state='dead';S.deadT=0;S.boom={x:shipX(),y:S.y};S.vy=Math.min(S.vy,-120);S.crashLine=line;if(!calm)S.shake=1;
     if(S.score>best){best=S.score;lsSet('ma-flappy-best',String(best));showBest();}}
-  function showDead(){d.querySelector('.fl-box2').hidden=!S.gotBox;d.querySelector('.fl-dline').textContent=S.crashLine;d.querySelector('.fl-dscore').textContent='Gaps: '+S.score+'. Best: '+best+'.';ovDead.hidden=false;
+  function showDead(){d.querySelector('.fl-box2').hidden=!S.gotBox;d.querySelector('.fl-dline').textContent=S.crashLine;d.querySelector('.fl-dscore').textContent='Gaps: '+S.score+'.'+(S.chests&&S.chests.length?' Chests: '+S.chests.length+'.':'')+' Best: '+best+'.';ovDead.hidden=false;
     var run=S;if(run.logged)return;run.logged=true;if(run.score<=0){msg('');return;}if(me.email)submit(run);else who(run);}
   function winBurst(x,y){if(S.score>best){best=S.score;lsSet('ma-flappy-best',String(best));showBest();}lsSet('ma-flappy-won','1');
     if(calm)return;var cols=['#a2f590','#89fbcb','#f3ead9','#ff4c0f','#c3a6ff'];for(var i=0;i<40;i++)S.sparks.push({x:x,y:y,vx:rnd(-320,320),vy:rnd(-460,160),life:rnd(.6,1.2),c:cols[i%5],s:rnd(5,9)});}
@@ -282,6 +291,12 @@
     var h=fireH(bot),sy0=fireImg.naturalHeight*.04;
     ctx.drawImage(fireImg,0,sy0,fireImg.naturalWidth,fireImg.naturalHeight-sy0,x,bot-h,FW,h);
   }
+  function chest(c){
+    if(!c.chest||c.gotChest||!ok(chestImg))return;var cx2=c.x+COLW/2,cy=c.gy+Math.sin(S.t*2.4+c.bob)*(calm?8:14);
+    var br=calm?.5:.5+.5*Math.sin(S.t*Math.PI*2/2.4),sz=CHEST*(calm?1.03:1+.07*br),hh=sz*chestImg.naturalHeight/chestImg.naturalWidth;
+    ctx.save();ctx.translate(cx2,cy);ctx.fillStyle='rgba(255,214,120,'+(.12+.12*br)+')';ctx.beginPath();ctx.arc(0,0,sz*.75,0,Math.PI*2);ctx.fill();
+    ctx.shadowColor='rgba(255,214,120,'+(.55+.4*br)+')';ctx.shadowBlur=12+16*br;ctx.drawImage(chestImg,-sz/2,-hh/2,sz,hh);ctx.restore();
+  }
   function lootbox(c){
     if(!c.box||c.got||S.gotBox)return;var bx=c.x+COLW/2,by=c.gy+Math.sin(S.t*2+c.bob)*(calm?10:18);
     ctx.save();ctx.translate(bx,by);ctx.rotate(calm?0:Math.sin(S.t*1.6+c.bob)*.08);
@@ -311,7 +326,9 @@
     var sub=null;
     if(S.state==='ready'||S.state==='resume')sub='Tap to flap';
     else if(S.state==='play'&&S.score>=GOAL-1&&!S.gotBox)sub='Fly into the loot box!';
-    if(sub){ctx.strokeText(sub.toUpperCase(),W/2,82);ctx.fillStyle='#a2f590';ctx.fillText(sub.toUpperCase(),W/2,82);}
+    if(S.pop&&S.pop.t>0){sub=S.pop.txt;}
+    if(sub){ctx.strokeText(sub.toUpperCase(),W/2,82);ctx.fillStyle=S.pop&&S.pop.t>0?(S.pop.full?'#ff8a5c':'#ffd678'):'#a2f590';ctx.fillText(sub.toUpperCase(),W/2,82);}
+    if(S.chests&&S.chests.length){ctx.textAlign='right';var ct='CHESTS '+S.chests.length;ctx.strokeText(ct,W-16,22);ctx.fillStyle='#ffd678';ctx.fillText(ct,W-16,22);ctx.textAlign='center';}
   }
   function sparks(){for(var i=0;i<S.sparks.length;i++){var p=S.sparks[i];ctx.globalAlpha=Math.max(0,Math.min(1,p.life*1.5));ctx.fillStyle=p.c;ctx.fillRect(p.x-p.s/2,p.y-p.s/2,p.s,p.s);}ctx.globalAlpha=1;}
   function draw(dt){
@@ -319,12 +336,12 @@
     ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);
     var k=scale*dpr,sh=S.shake?Math.sin(S.t*70)*6*S.shake:0;ctx.setTransform(k,0,0,k,sh*k,0);
     sky(dt);
-    for(var i=0;i<S.cols.length;i++){storm(S.cols[i]);tower(S.cols[i]);lootbox(S.cols[i]);}
+    for(var i=0;i<S.cols.length;i++){storm(S.cols[i]);tower(S.cols[i]);chest(S.cols[i]);lootbox(S.cols[i]);}
     ship();boom();sparks();hud();
   }
 
   // test hooks, only when the preview harness sets window.__flapTest before the page loads
-  if(window.__flapTest)window.__flap={snap:function(){var sx=shipX(),n=null;for(var i=0;i<S.cols.length;i++){if(S.cols[i].x+COLW>sx-20){n=S.cols[i];break;}}return {state:S.state,score:S.score,y:S.y,vy:S.vy,speed:speed(),gap:n?n.gap:0,gy:n?n.gy:0,dx:n?n.x-sx:0};},tap:function(){return tap();},setScore:function(v){S.score=v;},jump:function(v){S.score=v;S.n=v+S.cols.length;},got:function(){return !!S.gotBox;}};
+  if(window.__flapTest)window.__flap={raw:function(){return S;},snap:function(){var sx=shipX(),n=null;for(var i=0;i<S.cols.length;i++){if(S.cols[i].x+COLW>sx-20){n=S.cols[i];break;}}return {state:S.state,score:S.score,y:S.y,vy:S.vy,speed:speed(),gap:n?n.gap:0,gy:n?n.gy:0,dx:n?n.x-sx:0};},tap:function(){return tap();},setScore:function(v){S.score=v;},jump:function(v){S.score=v;S.n=v+S.cols.length;},got:function(){return !!S.gotBox;}};
 
   // ---- the weekly board (same web app and checks style as Airship Runner) ----
   var ENDPOINT='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
@@ -336,6 +353,10 @@
   function load(k,dflt){try{var v=JSON.parse(localStorage.getItem(k)||'null');return v==null?dflt:v;}catch(e){return dflt;}}
   function store(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   var me=load(ME,{})||{};
+  // the chests this person has caught today (New York day): those stay out of the sky until tomorrow
+  function nyDay(){var p=nyParts();return p.year+'-'+p.month+'-'+p.day;}
+  function gotToday(){var c=load('thNeedle:got',null);return c&&c.day===nyDay()&&c.gaps&&c.gaps.slice?c.gaps.slice():[];}
+  function markGot(g){var a=gotToday();if(a.indexOf(+g)<0)a.push(+g);store('thNeedle:got',{day:nyDay(),gaps:a});}
   function msg(t,err){dmsgEl.textContent=t;dmsgEl.className='fl-dmsg'+(err?' err':'');msgEl.textContent=t;msgEl.className='fl-msg'+(err?' err':'');}
   function api(action,payload,done){payload=payload||{};payload.action=action;send(payload,done,1);}
   function send(payload,done,attempt){
@@ -392,10 +413,11 @@
     if(!run.ticket){msg('The ship could not check in when this run started, so it cannot go on the board. Fly again!',1);return;}
     msg('Logging your run...');
     api('needlescore',{ticket:run.ticket,email:me.email,first_name:me.first_name,handle:me.handle,platform:me.platform,country:me.country,
-      score:run.score,secs:Math.round((run.rt||0)*10)/10},function(res){
+      score:run.score,secs:Math.round((run.rt||0)*10)/10,chests:(run.chests||[]).join(',')},function(res){
       if(res&&res.ok){
         if(res.status==='host'){msg('Practice run. Your runs stay off the board.');return;}
-        msg((res.rank?'Logged! You are #'+res.rank+' this week.':'Logged!')+' Best this week: '+fmt(res.best)+'.');
+        if(res.gotToday&&res.gotToday.forEach)res.gotToday.forEach(markGot);
+        msg((res.rank?'Logged! You are #'+res.rank+' this week.':'Logged!')+' Best this week: '+fmt(res.best)+'.'+(res.paid?' +'+res.paid*25+' hunt points from chests.':(run.chests&&run.chests.length?' Those chests were already paid today.':'')));
         postEl.hidden=false;whoEl.hidden=false;whoEl.innerHTML='<p class="fl-quiet">Playing as '+esc(me.first_name||me.email)+'. <a class="fl-notme">Not you?</a></p>';
         whoEl.querySelector('.fl-notme').onclick=function(){try{localStorage.removeItem(ME);}catch(e){}me={};who(run);};
         if(res.top)paintBoard(res.top);return;
