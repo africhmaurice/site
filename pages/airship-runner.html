@@ -19,7 +19,7 @@
      a whole sky trying to knock you out of it. Dodge left, dodge right, and fly as far as you can.", "Top score at
      11:59 PM ET every Friday wins 500 points.", "Ready to fly?", "Swipe or tap left and right to change lanes.",
      "Arrow keys or A and D to change lanes.", "The clock starts when you take off.", "PLAY", "Level N",
-     "+100 POINTS" (ruby, game score), "+25 HUNT POINTS" (crate), "Prize limit reached for today", "You found a loot box!", "Keep flying",
+     "+100 POINTS" (ruby, game score), "+25 HUNT POINTS" (prize chest: the golden chest, which replaced the wooden crate 10/13), "Prize limit reached for today", "You found a loot box!", "Keep flying",
      "Paused", "Ship down!", "Best this week", "Fly again", "Save my card", "Copy my score", the score form text,
      the logging messages, "This week's top sky pirates", "Board closes in", "How it works" list, "No scores yet
      this week. Be the first.", "PREVIEW DATA".
@@ -204,7 +204,7 @@
             <p class="ar-ksub">Grab these</p>
             <ul class="ar-klist">
         <li><span class="ar-ki glow ruby"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Ruby</b>+100 points to your score.</span></li>
-        <li><span class="ar-ki glow crate"><img src="https://africhmaurice.github.io/site/assets/games/74-crate.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Prize crate</b>+25 hunt points on the leaderboard, up to 4 a day.</span></li>
+        <li><span class="ar-ki glow crate"><img src="https://africhmaurice.github.io/site/assets/games/golden-chest.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Prize chest</b>+25 hunt points on the leaderboard, up to 4 a day.</span></li>
             </ul>
           </div>
           <div class="ar-kgrp">
@@ -235,7 +235,7 @@
         <ul class="ar-how">
           <li>Dodge storm clouds, rival ships, floating rocks, and cannon fire.</li>
           <li>Grab rubies for 100 extra score each.</li>
-          <li>Rare prize crates are worth 25 hunt points each, up to 4 a day.</li>
+          <li>Rare prize chests are worth 25 hunt points each, up to 4 a day.</li>
           <li>It starts slow. Every 15 seconds is a new level, and each one flies faster than the last.</li>
           <li>Check the key for tips!</li>
           <li>Top score on the board at 11:59 PM ET Friday wins 500 points. Then a new week starts.</li>
@@ -369,7 +369,7 @@
   var ART='https://africhmaurice.github.io/site/assets/games/',PIC={};
   function pic(k,file){var im=new Image();im.crossOrigin='anonymous';im.onload=function(){if(W)resize();};im.src=ART+file;PIC[k]=im;}
   function ok(k){var im=PIC[k];return im&&im.complete&&im.naturalWidth>0;}
-  pic('storm','shared-storm-cloud-2.png');pic('rock','shared-island-golem.png');pic('ship','74-ship.png');pic('xp','74-ruby.png');pic('ball','74-cannonball.png');pic('crate','74-crate.png');pic('sky','74-sky.webp');pic('soft','shared-soft-cloud.png');
+  pic('storm','shared-storm-cloud-2.png');pic('rock','shared-island-golem.png');pic('ship','74-ship.png');pic('xp','74-ruby.png');pic('ball','74-cannonball.png');pic('crate','golden-chest.png');pic('sky','74-sky.webp');pic('soft','shared-soft-cloud.png');
   // the crash: four explosion drawings played in order
   var BOOM=[1,2,3,4];BOOM.forEach(function(n){pic('boom'+n,'74-boom-'+n+'.png');});
   // five warning signs in different colors, cycled so the warning flashes
@@ -561,7 +561,7 @@
     }
     s=SPR[e.kind];var bob=(e.kind==='xp'||e.kind==='prize')&&!calm?Math.sin(e.ph*5)*3:0;
     if(e.kind==='xp'||e.kind==='prize'){
-      // rubies glow Scarlet and crates warm gold, breathing every 2.4 s and swelling about 7% (Maurice, 10/12); steady glow in calm mode
+      // rubies glow Scarlet and prize chests warm gold, breathing every 2.4 s and swelling about 7% (Maurice, 10/12); steady glow in calm mode
       var br=calm?.5:.5+.5*Math.sin(e.ph*Math.PI*2/2.4),sc=calm?1.03:1+.07*br,gc=e.kind==='xp'?'255,76,15':'255,214,120';
       cx.save();cx.translate(e.x,e.y+bob);cx.scale(sc,sc);
       cx.fillStyle='rgba('+gc+','+(.10+.12*br)+')';cx.beginPath();cx.arc(0,0,s.w*.62,0,Math.PI*2);cx.fill();
