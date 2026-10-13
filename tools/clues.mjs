@@ -140,8 +140,8 @@ Yet again, you might try.`],
   ['50–52', 'In celebration of Act 2 beginning, here are three loot boxes!', { button: ['Claim them', 'https://www.mauriceafrich.com/stack-the-colors'] }],
   // Box 53, The Locked Loot Box (Maurice, 2026-10-04): a locked chest in the teal under the newsletter signup; its key hides on the home page.
   [53, "Don't miss a single chapter."],
-  // Box 54, The Saga Press Loot Box (Maurice, 2026-10-09).
-  [54, 'SP HOT NEW SCIFI'],
+  // Box 54, The Saga Press Loot Box (Maurice, 2026-10-09). Clue pulled for now (Maurice, 2026-10-12); put it back to restore:
+  // [54, 'SP HOT NEW SCIFI'],
   // Aaron Hall's clue (Maurice, 2026-10-03).
   [55, 'Who gave that caveman a microphone!?'],
   // PixelCait's box (Maurice, 2026-10-04; his wording, emoji included).
