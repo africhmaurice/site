@@ -136,6 +136,24 @@
 @keyframes ar-fade{0%{opacity:0}15%{opacity:1}75%{opacity:1}100%{opacity:0}}
 </style>
 <section id="ma-runner" aria-label="Airship Runner">
+<!-- ARCADE-TABS:BEGIN (pasted by tools/arcade.mjs from treasure-hunt-leaderboard/games/_tabs.html; do not edit here) -->
+<div class="ma-arcade" style="width:min(100%,760px);margin:0 auto;position:relative;z-index:2">
+<style>.hg-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:760px;margin:0 auto 38px;position:relative;z-index:2}.hg-tabs a{display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.25}.hg-tabs a{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(13px,1.2vw,16px);letter-spacing:.08em;text-decoration:none;border:2px solid #fffffe;padding:11px 24px;color:#fffffe;background:rgba(11,23,15,.4);transition:background .15s ease,color .15s ease}.hg-tabs a:hover{background:rgba(255,255,255,.14);color:#fffffe}.hg-tabs a[hidden]{display:none!important}.hg-tabs a.on,.hg-tabs a.on:hover{background:#fffffe;color:#111}@media (max-width:560px){.hg-tabs{gap:6px}.hg-tabs a{padding:9px 6px;font-size:11px;letter-spacing:.03em}}</style>
+    <h2 class="hg-arcade" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.2;letter-spacing:.03em;color:#fffffe;text-align:center;margin:0 auto 16px;position:relative;z-index:2">THE ARCADE</h2>
+    <nav class="hg-tabs" data-on="airship_runner" aria-label="Daily games">
+      <a href="https://www.mauriceafrich.com/games" data-k="skyword">SKYWORD</a>
+      <a href="https://www.mauriceafrich.com/sort-the-shelf" data-k="shelf_sort">SORT THE SHELF</a>
+      <a href="https://www.mauriceafrich.com/book-icons" data-k="emoji_reads">BOOK ICONS</a>
+      <a href="https://www.mauriceafrich.com/crossword" data-k="crossword">CROSSWORD</a>
+      <a href="https://www.mauriceafrich.com/blades-and-brass" data-k="blades_brass" data-unlock="50000" data-act="two" hidden>BLADES &amp; BRASS</a>
+      <a href="https://www.mauriceafrich.com/matching-auras" data-k="matching_auras" data-unlock="100000" data-act="two" hidden>MATCHING AURAS</a>
+      <a href="https://www.mauriceafrich.com/crest-quest" data-k="crest_quest" data-unlock="150000" data-act="two" hidden>CREST QUEST</a>
+      <a href="https://www.mauriceafrich.com/airship-runner" data-k="airship_runner">AIRSHIP RUNNER</a>
+      <a href="https://www.mauriceafrich.com/thread-the-needle" data-k="thread_needle">THREAD THE NEEDLE</a>
+    </nav>
+    <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++){var act=lk[j].getAttribute('data-act'),n=act?+((d.acts||{})[act])||0:+d.crewTotal||0;if(n>=+lk[j].getAttribute('data-unlock'))lk[j].hidden=false;}}).catch(function(){});})();</script>
+</div>
+<!-- ARCADE-TABS:END -->
   <header class="ar-head">
     <p class="ar-eye">Highest Score Wins!</p>
     <h1 class="ar-h1">Airship Runner</h1>
@@ -185,6 +203,7 @@
             <div class="ar-who" hidden></div>
             <div class="ar-row">
               <button type="button" class="ar-btn ar-again">FLY AGAIN</button>
+              <button type="button" class="ar-btn ghost ar-cardbtn" hidden>EXPORT MY CARD</button>
             </div>
             <div class="ar-row">
               <button type="button" class="ar-btn ghost ar-save">SAVE MY CARD</button>
@@ -244,6 +263,152 @@
     </aside>
   </div>
 </section>
+<script>/* ARCADE-CARD:BEGIN (pasted by tools/arcade.mjs from tools/arcade-card.js; do not edit here) */
+// ---- the arcade card (Airship Runner, Thread the Needle; Maurice 2026-10-13) ----
+// Built on the daily games' share card (treasure-hunt-leaderboard/games/share.js): a 1200x600 PNG in one of the six brand
+// colors with the run's score, time, and place on this week's board. tools/arcade.mjs pastes this file into each arcade
+// page between ARCADE-CARD markers; edit it here, then run node tools/arcade.mjs.
+//   ArcadeCard.show(o)  after a run: o.game 'Thread the Needle', o.after (element the panel goes under), o.label 'GAPS',
+//                       o.stat '312', o.line 'TIME 4:51' (optional), o.name '@handle', o.site 'mauriceafrich.com/...',
+//                       o.icon (image url of the player's ship)
+//   ArcadeCard.update(o) when the board answers: o.rank (place this week), o.best (best this week)
+var ArcadeCard = (function () {
+  var DISCORD = 'https://discord.gg/TV8SNnSGdb', url = null, opts = null, panel = null;
+  var THEMES = {
+    violet: { bg: '#482d85', band: '#2d1c53', text: '#fffffe', soft: 'rgba(255,255,254,.72)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
+    scarlet: { bg: '#c53200', band: '#912501', text: '#fffffe', soft: 'rgba(255,255,254,.75)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
+    green: { bg: '#2c6021', band: '#1b3b15', text: '#fffffe', soft: 'rgba(255,255,254,.72)', stat: '#a2f590', frame: 'rgba(162,245,144,.4)' },
+    teal: { bg: '#268e62', band: '#1a5e41', text: '#fffffe', soft: 'rgba(255,255,254,.75)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
+    ink: { bg: '#0b170f', band: '#213226', text: '#fffffe', soft: '#607667', stat: '#3adb97', frame: 'rgba(162,245,144,.35)' },
+    parchment: { bg: '#fffffe', band: '#c53200', text: '#0b170f', soft: '#607667', stat: '#c53200', frame: 'rgba(11,23,15,.25)' }
+  };
+  var NAMES = { violet: 'Violet', scarlet: 'Scarlet', green: 'Green', teal: 'Teal', ink: 'Ink', parchment: 'Parchment' };
+  var css = document.createElement('style');
+  css.textContent = '.ac-card{width:min(100%,640px);margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:16px;padding:clamp(22px,4vw,30px) clamp(18px,3vw,28px);background:#132219;border:2px solid rgba(243,234,217,.18);color:#fffffe;text-align:center;box-sizing:border-box}' +
+    '.ac-card *{box-sizing:border-box;border-radius:0}' +
+    '.ac-h{font-family:"Cracked Imperia",Impact,sans-serif;font-weight:400;font-size:clamp(26px,4.4vw,38px);line-height:1.25;letter-spacing:.03em;color:#a2f590;margin:0}' +
+    '.ac-img{display:block;width:100%;max-width:560px;aspect-ratio:2/1;background:#0b170f;border:2px solid rgba(162,245,144,.35)}' +
+    '.ac-sw{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0;padding:0;border:0}' +
+    '.ac-sw legend{width:100%;padding:0;margin:0 0 10px;font-family:"Almarai",sans-serif;font-weight:700;font-size:14px;letter-spacing:.08em;color:#fffffe;text-align:center}' +
+    '.ac-swatch{width:34px;height:34px;margin:0;border:2px solid rgba(255,255,254,.55);padding:0;cursor:pointer;transition:transform .12s ease}' +
+    '.ac-swatch:hover{transform:scale(1.1)}.ac-swatch[aria-pressed="true"]{outline:3px solid #a2f590;outline-offset:3px}' +
+    '.ac-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}' +
+    '.ac-btns button{margin:0;min-width:200px;font-family:"Almarai",sans-serif;font-weight:800;font-size:15px;letter-spacing:.08em;color:#fffffe;background:#c53200;border:2px solid #fffffe;padding:12px 20px;cursor:pointer;transition:background .15s ease,transform .15s ease}' +
+    '.ac-btns button:hover,.ac-btns button:focus-visible{background:#ff4c0f;transform:scale(1.04);outline:none}' +
+    '.ac-how{font-family:"Almarai",sans-serif;font-size:clamp(14px,1.8vw,16px);line-height:1.6;margin:0;max-width:480px;color:#f3ead9}.ac-how a{color:#a2f590}' +
+    '@media (prefers-reduced-motion:reduce){.ac-swatch,.ac-btns button{transition:none}}';
+  document.head.appendChild(css);
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function key() { return 'thArcadeColor:' + opts.game; }
+  function weekLine() {
+    // the Friday that ends this week, New York time (the board's week)
+    var f = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' }).formatToParts(new Date()), o = {};
+    f.forEach(function (p) { o[p.type] = p.value; });
+    var wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(o.weekday), add = (5 - wd + 7) % 7;
+    var d = new Date(Date.UTC(+o.year, +o.month - 1, +o.day + add, 12));
+    return 'WEEK ENDING ' + d.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
+  }
+  function show(o) {
+    opts = o; o.theme = 'ink';
+    try { var saved = localStorage.getItem(key()); if (saved && THEMES[saved]) o.theme = saved; } catch (e) {}
+    if (panel && panel.parentNode) panel.parentNode.removeChild(panel);
+    var d = document.createElement('div');
+    d.innerHTML = '<div class="ac-card" id="ac-card"><p class="ac-h">Export your card</p>' +
+      '<img loading="lazy" decoding="async" class="ac-img" alt="My ' + esc(o.game) + ' card: ' + esc(o.label.toLowerCase()) + ' ' + esc(o.stat) + '">' +
+      '<fieldset class="ac-sw"><legend>PICK YOUR COLOR</legend>' + Object.keys(THEMES).map(function (k) {
+        return '<button type="button" class="ac-swatch" data-theme="' + k + '" aria-pressed="' + (k === o.theme) + '" aria-label="' + NAMES[k] + '" title="' + NAMES[k] + '" style="background:' + THEMES[k].bg + '"></button>';
+      }).join('') + '</fieldset>' +
+      '<div class="ac-btns"><button type="button" class="ac-save">SAVE MY CARD</button><button type="button" class="ac-copy">COPY MY SCORE</button></div>' +
+      '<p class="ac-how">Post your card in <b>#🎯DAILY_GAMES</b> in the <a href="' + DISCORD + '" target="_blank" rel="noopener">Trench Community Discord</a> and see who can beat it.</p></div>';
+    panel = d.firstChild;
+    o.after.parentNode.insertBefore(panel, o.after.nextSibling);
+    panel.querySelector('.ac-sw').addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('.ac-swatch') : null; if (!b) return;
+      opts.theme = b.getAttribute('data-theme');
+      try { localStorage.setItem(key(), opts.theme); } catch (er) {}
+      [].forEach.call(panel.querySelectorAll('.ac-swatch'), function (s) { s.setAttribute('aria-pressed', String(s === b)); });
+      draw();
+    });
+    panel.querySelector('.ac-save').addEventListener('click', function () { save(this); });
+    panel.querySelector('.ac-copy').addEventListener('click', function () { copy(this); });
+    draw();
+    return panel;
+  }
+  function update(o) { if (!opts) return; for (var k in o) if (o[k] != null) opts[k] = o[k]; draw(); }
+  function load(src) { return new Promise(function (ok) { if (!src) return ok(null); var i = new Image(); i.crossOrigin = 'anonymous'; i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
+  function fit(x, s, px, py, max) {
+    var m = /^(.*?)(\d+)px\s*(.*)$/.exec(x.font), size = +m[2];
+    while (x.measureText(s).width > max && size > 12) { size -= 1; x.font = m[1] + size + 'px ' + m[3]; }
+    x.fillText(s, px, py);
+  }
+  function spaced(x, s, px, py, gap, max) {
+    if ('letterSpacing' in x) x.letterSpacing = gap + 'px';
+    if (max) fit(x, s, px, py, max); else x.fillText(s, px, py);
+    if ('letterSpacing' in x) x.letterSpacing = '0px';
+  }
+  function draw() {
+    var o = opts;
+    var fonts = document.fonts ? Promise.all([document.fonts.load('84px "Cracked Imperia"'), document.fonts.load('700 28px Almarai'), document.fonts.load('800 150px Almarai')]).catch(function () {}) : Promise.resolve();
+    return fonts.then(function () { return load(o.icon); }).then(function (icon) {
+      var W = 1200, H = 600, c = document.createElement('canvas'); c.width = W; c.height = H;
+      var x = c.getContext('2d'), T = THEMES[o.theme] || THEMES.ink;
+      x.fillStyle = T.bg; x.fillRect(0, 0, W, H);
+      x.fillStyle = T.band; x.fillRect(0, 0, W, 14); x.fillRect(0, H - 14, W, 14);
+      x.strokeStyle = T.frame; x.lineWidth = 2; x.strokeRect(40, 54, W - 80, H - 108);
+      x.textBaseline = 'alphabetic'; x.textAlign = 'left';
+      // left: whose run, which game, which week, and their ship
+      x.fillStyle = T.soft; x.font = '800 22px Almarai, sans-serif'; spaced(x, "THE ARCADE · CELLO'S GATE TREASURE HUNT", 80, 122, 3, 620);
+      x.fillStyle = T.text; x.font = '84px "Cracked Imperia", Impact, sans-serif'; spaced(x, o.game.toUpperCase(), 80, 230, 2, 600);
+      if (o.name) { x.fillStyle = T.text; x.font = '700 28px Almarai, sans-serif'; spaced(x, String(o.name).toUpperCase(), 80, 292, 2, 600); }
+      x.fillStyle = T.soft; x.font = '700 24px Almarai, sans-serif'; spaced(x, weekLine(), 80, o.name ? 336 : 300, 2, 600);
+      if (icon) {
+        var ih = 120, iw = Math.min(260, ih * icon.naturalWidth / icon.naturalHeight), px = 86, py = 380;
+        var m = document.createElement('canvas'); m.width = Math.ceil(iw); m.height = ih; var mx = m.getContext('2d');
+        mx.drawImage(icon, 0, 0, iw, ih); mx.globalCompositeOperation = 'source-in'; mx.fillStyle = T.text; mx.fillRect(0, 0, iw, ih);
+        for (var a = 0; a < 16; a++) x.drawImage(m, px + Math.cos(a / 8 * Math.PI) * 3, py + Math.sin(a / 8 * Math.PI) * 3);
+        x.drawImage(icon, px, py, iw, ih);
+      }
+      // right: the result, the time, the place on the board
+      x.textAlign = 'center';
+      x.fillStyle = T.text; x.font = '800 26px Almarai, sans-serif'; spaced(x, o.label.toUpperCase(), 930, 178, 4, 380);
+      x.fillStyle = T.stat; x.font = '800 150px Almarai, sans-serif'; fit(x, String(o.stat), 930, 330, 380);
+      var y = 384;
+      if (o.line) { x.fillStyle = T.text; x.font = '800 28px Almarai, sans-serif'; spaced(x, o.line.toUpperCase(), 930, y, 3, 380); y += 44; }
+      var place = o.rank ? '#' + o.rank + ' ON THIS WEEK’S BOARD' : (o.best ? 'BEST THIS WEEK: ' + o.best : '');
+      if (place) { x.fillStyle = T.stat; x.font = '800 26px Almarai, sans-serif'; spaced(x, place, 930, y, 2, 380); }
+      x.fillStyle = T.text; x.font = '700 21px Almarai, sans-serif'; fit(x, o.site.toUpperCase(), 930, 506, 360);
+      x.textAlign = 'left';
+      url = c.toDataURL('image/png');
+      var im = panel && panel.querySelector('.ac-img'); if (im) im.src = url;
+      return url;
+    });
+  }
+  function text() {
+    return opts.game + ': ' + opts.label.toLowerCase() + ' ' + opts.stat + (opts.line ? ' (' + opts.line.toLowerCase() + ')' : '') +
+      (opts.rank ? ', #' + opts.rank + ' on this week’s board' : '') + '. Play at ' + opts.site;
+  }
+  function save(btn) {
+    if (!url) return;
+    fetch(url).then(function (r) { return r.blob(); }).then(function (b) {
+      var name = opts.game.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + opts.stat + '.png';
+      var file = typeof File === 'function' ? new File([b], name, { type: 'image/png' }) : null;
+      // phones: the share sheet, so it can go straight into Discord. Everywhere else: a download.
+      if (file && navigator.canShare && navigator.canShare({ files: [file] }) && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        return navigator.share({ files: [file], text: text() }).catch(function () {});
+      }
+      var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = name;
+      document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+      btn.textContent = 'SAVED!'; setTimeout(function () { btn.textContent = 'SAVE MY CARD'; }, 2200);
+    });
+  }
+  function copy(btn) {
+    var done = function () { btn.textContent = 'COPIED!'; setTimeout(function () { btn.textContent = 'COPY MY SCORE'; }, 2200); };
+    try { navigator.clipboard.writeText(text()).then(done, function () { window.prompt('Copy your score:', text()); }); }
+    catch (e) { window.prompt('Copy your score:', text()); }
+  }
+  return { show: show, update: update, scrollTo: function () { if (panel) try { panel.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} } };
+})();
+/* ARCADE-CARD:END */</script>
 <script>
 (function(){
   var root=document.getElementById('ma-runner');if(!root)return;
@@ -645,6 +810,10 @@
     overOv.hidden=false;
     var run=S;
     if(run.score<=0){msg('');return;}
+    /* the export card for this run (Maurice, 10/13), under the game */
+    var cb=$('.ar-cardbtn');if(cb)cb.hidden=!window.ArcadeCard;
+    if(window.ArcadeCard)ArcadeCard.show({game:'Airship Runner',after:stage,label:'SCORE',stat:fmt(run.score),line:'LEVEL '+run.level+'  \u00b7  TIME '+clock(run.t),
+      name:myName(),site:'mauriceafrich.com/airship-runner',icon:ART+'74-ship.png'});
     if(me.email)submit(run);else who(run);
   }
   var msgEl=$('.ar-msg'),whoEl=$('.ar-who');
@@ -682,6 +851,7 @@
         if(res.status==='host'){msg('Practice run. Your runs stay off the board.');return;}
         var t=(res.rank?'Logged! You are #'+res.rank+' this week.':'Logged!')+' Best this week: '+fmt(res.best)+'.';
         if(res.paid)t+=' +'+res.paid*25+' hunt points from prizes.';
+        if(window.ArcadeCard&&res.status!=='host')ArcadeCard.update({rank:res.rank,best:fmt(res.best),name:myName()});
         msg(t);whoEl.hidden=false;whoEl.innerHTML='<p class="ar-quiet">Playing as '+esc(me.first_name||me.email)+'. <a class="ar-notme">Not you?</a></p>';
         whoEl.querySelector('.ar-notme').onclick=function(){try{localStorage.removeItem(ME);}catch(e){}me={};who(run);};
         if(res.top)paintBoard(res.top);paintHud();return;
@@ -695,6 +865,7 @@
   }
 
   $('.ar-play').addEventListener('click',start);
+  $('.ar-cardbtn').addEventListener('click',function(){if(window.ArcadeCard)ArcadeCard.scrollTo();});
   $('.ar-again').addEventListener('click',function(){whoEl.hidden=true;whoEl.innerHTML='';start();});
   $('.ar-resume').addEventListener('click',resume);
   $('.ar-keep').addEventListener('click',resume);
