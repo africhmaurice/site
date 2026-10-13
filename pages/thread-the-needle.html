@@ -15,7 +15,8 @@
      Maurice's idea (2026-10-06): "Flappy Birds with an Airship (similar to the airship runner)".
      Maurice's red side-view airship flies right through his sky, between rock towers (rising from the ground)
      and fire towers (hanging from above). Tap, click, or press space to give it lift. Each gap cleared scores 1.
-     It gets harder as you go: the sky speeds up 1.2% per gap (up to gap 40) and gaps tighten (up to gap 30).
+     It gets harder as you go: the sky speeds up 1.2% per gap (up to gap 40), then 0.6% per gap with no limit (Maurice
+     10/13), and gaps tighten (up to gap 30).
      Art (site/assets/games): 76-ship.png, 76-rock-tower.png, 76-fire-tower.png, 76-sky.webp.
      Loot box 76 floats in the middle of gap 100 (and every gap after it until it is caught; those gaps are
      wider). Flying into it pauses the run and shows loot box 76 as a button that opens the claim link
@@ -148,7 +149,9 @@
   // Tower sizes in world units. The rock art (his taller tower, 10/12) is about 1:2.27, the fire art about 1:3.8. GROUND is the bottom of the sky.
   var RW=116,RH=263,FW=92,FH=351,GROUND=H-6;
   // It gets harder as you go: faster, and tighter gaps.
-  function speed(){return P.speed*(1+Math.min(S.score,40)*(calm?.006:.012));}
+  // gaps 1-40 speed up 1.2% a gap (as at launch); after gap 40 it keeps climbing 0.6% a gap for as long as the run lasts,
+  // with no top speed (Maurice, 10/13). Calm skies: half the climb. lootbox.gs (needleMax_) uses the same curve.
+  function speed(){var s=S.score,k=calm?.5:1;return P.speed*(1+Math.min(s,40)*.012*k+Math.max(0,s-40)*.006*k);}
   function gapNow(){return P.gap-Math.min(S.score,30)*(calm?.6:1.2);}
   function rnd(a,b){return a+Math.random()*(b-a);}
   function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
@@ -429,6 +432,12 @@
       if(!e||e==='network'||e==='server'||e==='empty'){postEl.hidden=false;whoEl.hidden=false;whoEl.innerHTML='<button type="button" class="fl-btn ghost">TRY AGAIN</button>';whoEl.querySelector('button').onclick=function(){whoEl.hidden=true;submit(run);};}
     });
   }
+
+  // ---- preview hub only: start a run at a later gap, to test the late game ----
+  if(window.__pv){var dev=document.createElement('div');dev.style.cssText='display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;font:800 12px Almarai,sans-serif;letter-spacing:.1em;color:#c3a6ff';
+    dev.innerHTML='<span>PREVIEW: START AT GAP</span>'+[1,40,100,200,300,500].map(function(g){return '<button type="button" class="fl-btn ghost" data-g="'+g+'" style="padding:8px 14px;font-size:12px">'+g+'</button>';}).join('');
+    stage.parentNode.insertBefore(dev,stage);
+    dev.addEventListener('click',function(e){var g=e.target.getAttribute&&e.target.getAttribute('data-g');if(!g)return;begin();S.score=+g-1;S.n=+g-1;S.lastGy=H/2;});}
 
   // ---- loop ----
   var last=0,acc=0;
