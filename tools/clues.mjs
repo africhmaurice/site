@@ -137,7 +137,7 @@ Yet again, you might try.`],
   // Box 49, Grey's Hidden Daddy Issues (Maurice, 2026-10-06).
   [49, 'Amateur Historian, Full-Time Scientist, Reader?'],
   // Boxes 50, 51, and 52 all live in Stack the Colors (one per level), so one card covers all three.
-  ['50–52', 'In celebration of Act 2 beginning, here are three loot boxes!', { button: ['Claim them', 'https://www.mauriceafrich.com/stack-the-colors'] }],
+  ['50–52', 'In celebration of Act Two beginning, here are three loot boxes!', { button: ['Claim them', 'https://www.mauriceafrich.com/stack-the-colors'] }],
   // Box 53, The Locked Loot Box (Maurice, 2026-10-04): a locked chest in the teal under the newsletter signup; its key hides on the home page.
   [53, "Don't miss a single chapter."],
   // Box 54, The Saga Press Loot Box (Maurice, 2026-10-09). Clue pulled for now (Maurice, 2026-10-12); put it back to restore:
@@ -148,7 +148,7 @@ Yet again, you might try.`],
   [56, 'Stark ⚔️ Library'],
   // Box 57, The Longest Word (Maurice, 2026-10-04): answered right on the card, then on to /longest-word.
   // Only the answer's fingerprint is here, never the word.
-  [57, "What's the longest word Maurice knows how to spell without looking up?", { answer: { salt: 'lw57:', hash: 'd3251280966d0626c672fd2a1bd87912fdbef23a6fb61987344ff26a99be97a1', go: '/longest-word' }, hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'lung disease' }] }],
+  [57, "What's the longest word Maurice knows how to spell without looking it up?", { answer: { salt: 'lw57:', hash: 'd3251280966d0626c672fd2a1bd87912fdbef23a6fb61987344ff26a99be97a1', go: '/longest-word' }, hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'lung disease' }] }],
   // Box 58 is in Gary Furlong's Linktree (Maurice, 2026-10-11).
   [58, 'Not American.'],
   // Box 60 is a Pin on Maurice's Sky Pirates of Imperia Pinterest board (Maurice, 2026-10-04).
@@ -187,7 +187,7 @@ Yet again, you might try.`],
 // The few lines above the cards that say what they are.
 const INTRO = `  <div class="lc-intro">
     <h1 class="lc-title">The Clues</h1>
-    <p>Loot boxes are hidden all over the internet. On social media, reading apps, author websites, and more! Every card below is a clue that leads to one of them. Some are riddles, some are pictures, and some are hiding in plain sight.</p>
+    <p>Loot boxes are hidden all over the internet: on social media, reading apps, author websites, and more! Every card below is a clue that leads to one of them. Some are riddles, some are pictures, and some are hiding in plain sight.</p>
     <p>When you find a box, click it to claim it and earn points. Every loot box found earns you an extra entry into the sweepstakes!</p>
   </div>`;
 
@@ -378,7 +378,7 @@ const css = `#loot-clue .lc-grid{display:grid;grid-template-columns:repeat(2,min
 #loot-clue .lc-title{font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(44px,5.4vw,76px);line-height:1.1;color:#89fbcb;margin:0 0 22px;text-wrap:balance}
 #loot-clue .lc-intro p{text-transform:none;letter-spacing:.02em;font-size:clamp(17px,1.5vw,21px);line-height:1.6;text-wrap:pretty;margin:0 auto 14px}
 #loot-clue .lc-board{box-sizing:border-box;max-width:none;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 44px 52px}
-#loot-clue .lc-num{font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(34px,3.4vw,52px);line-height:1;color:#89fbcb;margin:0 0 22px}
+#loot-clue .lc-num{font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(34px,3.4vw,52px);line-height:1;color:#89fbcb;margin:0 0 22px;--ci-depth:#0b3a26!important}   /* deep emerald so the 3D layer reads on the emerald cards (Maurice, 2026-10-13) */
 #loot-clue .lc-hc .lc-text{color:transparent;user-select:none}@media (prefers-contrast:more){#loot-clue .lc-hc .lc-text{color:#fffffe;user-select:auto}}@media (forced-colors:active){#loot-clue .lc-hc .lc-text{color:CanvasText;user-select:auto}}
 #loot-clue .lc-text{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(18px,1.6vw,23px);line-height:1.55;letter-spacing:.02em;color:#fffffe;white-space:pre-line;text-transform:none;margin:0}
 #loot-clue .lc-link{text-decoration:underline;text-underline-offset:4px;cursor:default}#loot-clue .lc-link:hover{color:#fffffe}

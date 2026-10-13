@@ -122,7 +122,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
           <a href="https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834" target="_blank" rel="noopener">BARNES &amp; NOBLE</a>
           <a href="https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834/ref=sr_1_1?crid=279A8MV3ZYP0T&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;dib_tag=se&amp;keywords=cellos+gate&amp;qid=1770340593&amp;sprefix=cellos%27+gate%2Caps%2C179&amp;sr=8-1&amp;ascsubtag=srctok-f7d285c3c39c18b3&amp;btn_ref=srctok-f7d285c3c39c18b3" target="_blank" rel="noopener">AMAZON</a>
           <a href="https://www.amazon.com/Audible-Cellos-Gate/dp/B0GKZWW416/ref=tmm_aud_swatch_0?_encoding=UTF8&amp;dib_tag=se&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;qid=1770340593&amp;sr=8-1&amp;ascsubtag=srctok-d4f496760f7c524a&amp;btn_ref=srctok-d4f496760f7c524a" target="_blank" rel="noopener">AUDIBLE</a>
-          <a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener">WALMART SPECIAL EDITION</a>
+          <a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener">WALMART EXCLUSIVE SPECIAL EDITION</a>
           <a href="https://www.mauriceafrich.com/preorder" class="mn-all">ALL RETAILERS &rarr;</a>
         </div></div>
       </div>
@@ -412,6 +412,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc.cr .rc-hero h1{font-family:'Atomic Marker',cursive!important;line-height:1.2;letter-spacing:.03em}
 #rc.cr .rc-hero h1 span{color:#9e74fd}
 #rc.cr .rc-stat .v.e{color:#9e74fd}
+#rc.cr .rc-stat .v.e{--ci-depth:#140c26!important}   /* the points 3D reads on the purple card */
 #rc.cr .rc-cta{background:#482d85;border-color:#f3ead9;color:#fff}
 #rc.cr .rc-cta:hover:not(:disabled){background:#7b4ee1}
 #rc.cr .rc-cta:disabled{background:rgba(21,13,40,.5);border-color:rgba(243,234,217,.4);color:rgba(237,233,220,.6)}
@@ -494,6 +495,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc.cr.wa .rc-lede{color:#ede9dc}
 #rc.cr.wa .rc-stat{background:rgba(26,9,4,.88);border-color:rgba(253,117,71,.3)}
 #rc.cr.wa .rc-stat .v.e{color:#fd7547}
+#rc.cr.wa .rc-stat .v.e{--ci-depth:#912501!important}
 #rc.cr.wa .rc-step{background:rgba(26,9,4,.88);border-color:rgba(253,117,71,.22)}
 #rc.cr.wa .rc-cta{background:#c53200;border-color:#f3ead9;color:#fffffe}
 #rc.cr.wa .rc-cta:hover:not(:disabled){background:#ff4c0f;color:#1a0904}
@@ -526,8 +528,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <p class="rc-lede" id="cr-lede"></p>
     </div>
     <div class="rc-stats">
-      <div class="rc-stat"><div class="k">FRENS WHO HAVE VOTED</div><div class="v rc-num" id="rc-count">…</div><small>One vote each. You can change yours until it closes.</small></div>
-      <div class="rc-stat"><div class="k">FOR VOTING</div><div class="v e rc-num" id="rc-pts"></div><small>Seal your plan and the points go straight to the leaderboard.</small></div>
+      <div class="rc-stat"><div class="k">FRENS WHO HAVE VOTED</div><div class="v rc-num" id="rc-count">…</div><small class="rc-open-only">One vote each. You can change yours until it closes.</small></div>
+      <div class="rc-stat"><div class="k">FOR VOTING</div><div class="v e rc-num" id="rc-pts"></div><small class="rc-open-only">Seal your plan and the points go straight to the leaderboard.</small></div>
       <div class="rc-stat"><div class="k" id="rc-close-k">VOTING CLOSES</div><div class="v rc-num cw-when" id="rc-close">…</div><small id="rc-close-s">You have 24 hours.</small></div>
     </div>
   </header>
@@ -558,7 +560,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 <script>
 (function () {
-  var DATA = {"_help":"Chapter 8 vote: Washed Ashore (Maurice's outline, 2026-10-12). Red in the adventure color rotation. One roll per die is drawn at random from the sealed votes, and the results name whose roll it was. Built by node scripts/build-crash.mjs ashore. Open and close times are placeholders until Maurice sets them.","key":"ashore_vote","points":100,"opens":"2026-10-13T00:00:00Z","closes":"2026-10-14T04:00:00Z","title":["Washed","Ashore"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"The crew is out of the river, but not together. Hale is alone by the cliffs with half of Orion, and the Defense Kit is still out in the water. Rune and Sparrow wash up farther up the bank. Roll for Hale’s dive, choose where he goes next, and roll for the shore where Rune and Sparrow land. When voting closes, one roll for each die is drawn at random from everyone’s rolls, and I’ll name whose roll it was.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY VOTE","questions":[{"id":"kit","kind":"rolls","kicker":"THE DEFENSE KIT","title":"Does Hale get the Defense Kit?","text":"Hale jumps back into the river after the supply crate. Every fren rolls for his dive, and one roll is drawn at random from all of them: the higher it is, the better it goes.","items":[["kit_dive","Hale’s Dive"]],"tiers":["","","","",""]},{"id":"hale_next","kind":"pick","kicker":"HALE","title":"After Hale gets back on shore, what does he do?","text":"Pick one. The choice with the most votes wins.","options":[["A. Follow the river","Follow the river, searching for frens."],["B. Walk inland","Walk inland and try to find his bearings."],["C. Find the Levian","Look for the Levian’s corpse down the river because, one, that’s food, and two, he needs to find Orion’s legs."]]},{"id":"shore","kind":"rolls","kicker":"RUNE AND SPARROW","title":"How dangerous is the shore where Rune and Sparrow land?","text":"Every fren rolls for the shore, and one roll is drawn at random from all of them: the lower it is, the more dangerous the shore.","items":[["shore","The Shore"]],"tiers":["","","","",""]}],"draw":true,"onAdventure":true,"badge":["#c53200","#912501","#fd7547"]};
+  var DATA = {"_help":"Chapter 8 vote: Washed Ashore (Maurice's outline, 2026-10-12). Red in the adventure color rotation. One roll per die is drawn at random from the sealed votes, and the results name whose roll it was. Built by node scripts/build-crash.mjs ashore. Open and close times are placeholders until Maurice sets them.","key":"ashore_vote","points":100,"opens":"2026-10-13T00:00:00Z","closes":"2026-10-14T04:00:00Z","title":["Washed","Ashore"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"The crew is out of the river, but not together. Hale is alone by the cliffs with half of Orion, and the Defense Kit is still out in the water. Rune made it across, and Sparrow teleported to the shore near him. Roll for Hale’s dive, choose where he goes next, and roll for the shore where Rune and Sparrow land. When voting closes, one roll for each die is drawn at random from everyone’s rolls, and I’ll name whose roll it was.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY VOTE","questions":[{"id":"kit","kind":"rolls","kicker":"THE DEFENSE KIT","title":"Does Hale get the Defense Kit?","text":"Hale jumps back into the river after the supply crate. Every fren rolls for his dive, and one roll is drawn at random from all of them: the higher it is, the better it goes.","items":[["kit_dive","Hale’s Dive"]],"tiers":["","","","",""]},{"id":"hale_next","kind":"pick","kicker":"HALE","title":"After Hale gets back on shore, what does he do?","text":"Pick one. The choice with the most votes wins.","options":[["A. Follow the river","Follow the river, searching for frens."],["B. Walk inland","Walk inland and try to find his bearings."],["C. Find the Levian","Look for the Levian’s corpse down the river because, one, that’s food, and two, he needs to find Orion’s legs."]]},{"id":"shore","kind":"rolls","kicker":"RUNE AND SPARROW","title":"How dangerous is the shore where Rune and Sparrow land?","text":"Every fren rolls for the shore, and one roll is drawn at random from all of them: the lower it is, the more dangerous the shore.","items":[["shore","The Shore"]],"tiers":["","","","",""]}],"draw":true,"onAdventure":true,"badge":["#c53200","#912501","#fd7547"]};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
@@ -1054,7 +1056,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     }
     if (who.getAttribute('data-me') === '') return;
     who.setAttribute('data-me', '');
-    who.innerHTML = '<p class="rc-quiet" style="margin-bottom:10px">Before you roll, tell the Captain who you are. You only do this once; the loot box page and the Daily Word remember you too.</p>' +
+    who.innerHTML = '<p class="rc-quiet" style="margin-bottom:10px">Before you roll, tell the Captain who you are. You only do this once; the loot box page and Skyword remember you too.</p>' +
       '<div class="rc-form">' +
       '<label>First name<input id="rc-first" autocomplete="given-name"></label>' +
       '<label>Email you use for the hunt<input id="rc-email" type="email" autocomplete="email" inputmode="email"></label>' +
@@ -1326,7 +1328,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   $('rc-pts').textContent = '+' + DATA.points;
   if (DATA.sealLabel) $('rc-seal').textContent = DATA.sealLabel;
   $('rc-close').textContent = when(CLOSES);
-  if (closed) { $('rc-close-k').textContent = 'VOTING CLOSED'; $('rc-close-s').textContent = 'The votes are in.'; }
+  // a closed vote drops the lines that only make sense while it is open
+  if (closed) { $('rc-close-k').textContent = 'VOTING CLOSED'; $('rc-close-s').textContent = 'The votes are in.'; [].forEach.call(document.querySelectorAll('#rc .rc-open-only'), function (el) { el.style.display = 'none'; }); }
   $('rc-count').textContent = '…';
   if (!DATA.raft) jsonp({ action: 'advcount', vote: DATA.key }, function (res) { if ($('cr-results')) return; $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
   if (notYet) { var wait = OPENS - Date.now(); if (wait < 2147483647) setTimeout(function () { location.reload(); }, wait + 1500); }
@@ -1380,7 +1383,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         ? '<div class="cr-win"><p class="k">THE FRENS CHOSE</p><h3>' + esc(p.winner) + '</h3>' + (desc[p.winner] ? '<p>' + esc(desc[p.winner]) + '</p>' : '') + '</div>'
         : p.captain
           // already rolled: say who won up front, and keep the roll to watch
-          ? '<div class="cr-win" data-tie-head="' + p.id + '"><p class="k">THE CAPTAIN’S ROLL</p><h3>' + esc(p.captain.winner) + '</h3><p>Won the Captain’s roll after a ' + p.counts[p.tie[0]] + ' to ' + p.counts[p.tie[1]] + ' tie.</p></div>' + tieBlock(p)
+          ? '<div class="cr-win" data-tie-head="' + p.id + '"><p class="k">THE CAPTAIN’S ROLL</p><h3>' + esc(p.captain.winner) + '</h3><p>Won the Captain’s Roll after a ' + p.counts[p.tie[0]] + ' to ' + p.counts[p.tie[1]] + ' tie.</p></div>' + tieBlock(p)
           : '<div class="cr-win" data-tie-head="' + p.id + '"><p class="k">THE FRENS ARE SPLIT</p><h3>Tie!</h3><p>The Captain rolls for it.</p></div>' + tieBlock(p);
       return '<section class="rc-step"><header><p class="rc-kick">' + esc(q.kicker || '') + '</p><h2>' + esc(q.title) + '</h2></header>' + head + '<ol class="cr-bars">' + bars + '</ol></section>';
     }).join('');
@@ -1414,7 +1417,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       if (h) {
         h.querySelector('.k').textContent = 'THE CAPTAIN’S ROLL';
         h.querySelector('h3').textContent = w;
-        h.querySelector('h3').nextElementSibling.textContent = 'Won the Captain’s roll after a ' + t.votes + ' to ' + t.votes + ' tie.';
+        h.querySelector('h3').nextElementSibling.textContent = 'Won the Captain’s Roll after a ' + t.votes + ' to ' + t.votes + ' tie.';
       }
       btn.textContent = 'WATCH IT AGAIN'; btn.disabled = false; el.classList.add('cr-tie-done');
     }

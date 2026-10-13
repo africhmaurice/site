@@ -12,6 +12,9 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(homedir(), 'OneDrive/Desktop/Writing/Novels/The Sky Pirates of Imperia/0 - Oracle Magic - Aura Spectrum HTML.html');
 const line = readFileSync(SRC, 'utf8').split('\n').find((l) => l.startsWith('const colorData = '));
 const COLORS = JSON.parse(line.replace(/^const colorData = /, '').replace(/;\s*$/, ''));
+// Spelling fixes Maurice approved for the page (2026-10-13); his chart file itself stays as it is.
+const SPELL = { 'Ironwilled': 'Iron-Willed', 'Shut Down': 'Shutdown' };
+for (const c of COLORS) c.words = c.words.map((w) => SPELL[w] || w);
 const GOAL = 80000;
 // Added words (tools/aura-additions.json) go after his, never in two colors and never repeating one of his.
 const ADD = JSON.parse(readFileSync(join(ROOT, 'tools/aura-additions.json'), 'utf8'));

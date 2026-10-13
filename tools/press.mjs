@@ -130,7 +130,7 @@ const contact = (c) => `
 
 const KIT_IMAGES = [
   ['cover-saga-floating.webp', 'Cello’s Gate, Saga Press hardcover', 'Book cover'],
-  ['cover-walmart-floating.webp', 'Cello’s Gate, Walmart Special Edition', 'Walmart Special Edition'],
+  ['cover-walmart-floating.webp', 'Cello’s Gate, Walmart Exclusive Special Edition', 'Walmart Exclusive Special Edition'],
   ['author-photo.webp', 'Maurice Africh', 'Author photo'],
 ];
 const DESCRIPTION = [
@@ -165,13 +165,13 @@ const FACTS = [
 ];
 
 // The Hunt section. DRAFT copy for Maurice to rewrite. Update STATS (and STATS_DATE) before each round of pitches.
-const HUNT_LEDE = 'From September 20th to November 1st, hundreds of readers from around the world are searching for treasure hidden all over the internet. I’ve partnered with 20+ Bookstagram, Booktok, and Booktube influencers—as well as journalists, friends, and complete strangers—to make this campaign as far-reaching and complex as possible while maintaining the core tenet of my brand:';
+const HUNT_LEDE = 'From September 20th to November 1st, hundreds of readers from around the world are searching for treasure hidden all over the internet. I’ve partnered with 20+ Bookstagram, BookTok, and BookTube influencers—as well as journalists, friends, and complete strangers—to make this campaign as far-reaching and complex as possible while maintaining the core tenet of my brand:';
 const HUNT_MOTTO = 'It’s gotta be fun.';
-const HUNT_HOW = 'The hunt is broken into three acts that follow a fully-interactive <b>Choose Your Own Adventure-Style Game &amp; Narrative</b> (hosted on my website). Treasure hunters solve riddles, follow clues, play daily bookish games, hunt down hidden loot boxes (like feral animals, mind you), and vote on where the story goes next. There are three ways to win:';
+const HUNT_HOW = 'The hunt is broken into three acts that follow a fully interactive <b>Choose Your Own Adventure-Style Game &amp; Narrative</b> (hosted on my website). Treasure hunters solve riddles, follow clues, play daily bookish games, hunt down hidden loot boxes (like feral animals, mind you), and vote on where the story goes next. There are three ways to win:';
 const HUNT_WAYS = [
-  ['Opportunity & Chance', 'Each act ends with a Sweepstakes, where all (U.S. & U.K.) participants are eligible to win awards. The Act One Sweepstakes will award 10 individuals a Signed Deluxe Edition of “Cello’s Gate.” And the sweepstakes rewards just get better as we progress through the hunt.'],
-  ['Effort & Dedication', 'Six treasure hunters (3 in the U.S. & 3 in the U.K.) with the most points at the end of the hunt will win a Treasure Box filled with bookish prizes.'],
-  ['Participation', 'During each act, the hunters will work together to collectively earn points to unlock rewards. There are 20+ rewards available during the hunt, including exclusive short stories, never-before-seen character back stories, new games and opportunities to earn points, and more!'],
+  ['Opportunity & Chance', 'Each act ends with a Sweepstakes, where U.S. participants are eligible to win awards (a UK prize draw is coming soon). The Act One Sweepstakes awarded five individuals a Signed Deluxe Edition of “Cello’s Gate.” And the sweepstakes rewards just get better as we progress through the hunt.'],
+  ['Effort & Dedication', 'Six treasure hunters (3 in the U.S. & 3 in the UK) with the most points at the end of the hunt will win a Treasure Box filled with bookish prizes.'],
+  ['Participation', 'During each act, the hunters will work together to collectively earn points to unlock rewards. There are 20+ rewards available during the hunt, including exclusive short stories, never-before-seen character backstories, new games and opportunities to earn points, and more!'],
 ];
 // Maurice's words, verbatim. One string per paragraph.
 const HUNT_QUOTE = [
@@ -189,7 +189,7 @@ const HIGHLIGHTS = [
     ['501,970', 'Points earned by the crew together. Act One beat its 40,000 goal five times over, and Act Two is already past its 200,000 goal.'],
     ['9,117', 'Sweepstakes entries.'],
     ['80', 'Copies of “Cello’s Gate” pre-ordered or gifted through the hunt, weeks before release.'],
-    ['85×', 'Website traffic: 18,997 visits since the hunt opened, about 940 a day, up from about 10 a day before it.'],
+    ['94×', 'Website traffic: 18,997 visits since the hunt opened, about 940 a day, up from about 10 a day before it.'],
     ['2,650', 'New Goodreads “want to read” adds during the hunt.'],
     ['+53%', 'Discord community growth, from 171 to 261 members.'],
   ], true],
@@ -217,9 +217,9 @@ const STATS = [
 const HUNT_FACTS = [
   ['Dates', 'September 20 to November 1, 2026. It ends two days before “Cello’s Gate” comes out.'],
   ['Where', 'mauriceafrich.com/the-hunt'],
-  ['Who', 'Free and open to everyone, everywhere. The Treasure and sweepstakes prizes are for U.S. and UK residents, 18 and older.'],
+  ['Who', 'Free and open to everyone, everywhere. The Treasure is for U.S. and UK residents (three winners each), and the sweepstakes are for U.S. residents, with a UK prize draw coming soon. Prize winners must be 18 or older.'],
   ['Players', '528 sky pirates from 14 countries: the U.S., the UK, Canada, Australia, India, Estonia, Germany, Ireland, Austria, Japan, Poland, Norway, Portugal, and Spain.'],
-  ['Traffic', 'Site traffic is up about 85 times: 18,997 visits since the hunt started, about 940 a day, compared with about 10 a day in September before it.'],
+  ['Traffic', 'Site traffic is up about 94 times: 18,997 visits since the hunt started, about 940 a day, compared with about 10 a day in September before it.'],
   ['Play', 'Tasks, riddles, clues, seven daily bookish games (including Skyword, Blades & Brass, and Crest Quest), 101 hidden loot boxes, and a fan fiction contest.'],
   ['Story', 'Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!'],
   ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 501,970 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two has already passed its 200,000 goal.'],
@@ -377,7 +377,7 @@ ${cardCss('#press')}
     <p class="pp-lede">All the information you might need for reviews, interviews, and who to talk to about “Cello’s Gate” and the Treasure Hunt Marketing Campaign. For review copies, interviews, and quotes, reach out to the crew listed in the contact section below.</p>
 
     <section class="pp-section pp-hunt" id="pp-hunt">
-      <h2 class="pp-hunt-title"><span class="w">Cello’s Gate</span><span>The Treasure Hunt</span><span class="pp-hunt-sub">An audacious, experiential book marketing campaign unlike anything that’s ever seen done before (probably)</span></h2>
+      <h2 class="pp-hunt-title"><span class="w">Cello’s Gate</span><span>The Treasure Hunt</span><span class="pp-hunt-sub">An audacious, experiential book marketing campaign unlike anything that’s ever been done before (probably)</span></h2>
       <p class="pp-hunt-lede">${HUNT_LEDE}</p>
       <p class="pp-motto">${esc(HUNT_MOTTO)}</p>
       <p class="pp-hunt-lede">${HUNT_HOW}</p>
@@ -414,7 +414,7 @@ ${cardCss('#press')}
       <div class="pp-praise">${PRAISE.map(([q, name, by, handle]) => `<figure><blockquote>“${esc(q)}”</blockquote><figcaption>—<b>${esc(name)}${by ? ',' : ''}</b>${by ? ' ' + (handle ? `<i>${esc(by)}</i>` : `Author of <i>${esc(by)}</i>`) : ''}</figcaption></figure>`).join('')}</div>
       <hr class="pp-rule">
       <h3 class="pp-sub">About the author</h3>
-      <p class="pp-bio">Maurice Africh is an ex-theater kid with a passion for tasty food, semi-luxurious travel, reality competition television shows, D&amp;D, and fantasy novels. He currently lives in Asheville, North Carolina with his beautiful wife, Rachel, and his cute, albeit cranky chihuahua, Toby.</p>
+      <p class="pp-bio">Maurice Africh is an ex-theater kid with a passion for tasty food, semi-luxurious travel, reality competition television shows, D&amp;D, and fantasy novels. He currently lives in Asheville, North Carolina, with his beautiful wife, Rachel, and his cute, albeit cranky, chihuahua, Toby.</p>
     </section>
 
     <section class="pp-section" id="pp-features">

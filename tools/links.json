@@ -112,7 +112,7 @@
     },
     {
      "id": "walmart-exclusive",
-     "label": "Walmart Special Edition",
+     "label": "Walmart Exclusive Special Edition",
      "logo": "logo-walmart.png",
      "bg": "floating-blocks-city-as311317794",
      "url": "https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704?classType=REGULAR&from=/search"
@@ -171,12 +171,6 @@
    "title": "The Treasure Hunt",
    "tone": "green",
    "links": [
-    {
-     "id": "the-hunt",
-     "label": "The Treasure Hunt is Live!",
-     "bg": "art-world-map.jpg",
-     "url": "https://www.mauriceafrich.com/the-hunt"
-    },
     {
      "id": "adventure",
      "label": "The Adventure",

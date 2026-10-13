@@ -205,7 +205,7 @@ h1,h2,h3{text-wrap:balance}
       <div class="mn-drop mn-drop-cta">
         <a href="https://www.mauriceafrich.com/preorder" class="mn-link mn-cta" aria-haspopup="true">PRE-ORDER CELLO'S GATE<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
         <div class="mn-dd"><div class="mn-dd-in">
-          <a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener">WALMART SPECIAL EDITION</a>
+          <a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener">WALMART EXCLUSIVE SPECIAL EDITION</a>
           <a href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399763073" target="_blank" rel="noopener">WATERSTONES</a>
           <a href="https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834" target="_blank" rel="noopener">BARNES &amp; NOBLE</a>
           <a href="https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834" target="_blank" rel="noopener">AMAZON</a>
@@ -319,13 +319,13 @@ h1,h2,h3{text-wrap:balance}
     { label: 'Submit Fan Fiction', send: 'Submit Fan Fiction', docs: true, hint: 'Your fan fiction as a .docx, .doc, .pdf, or .txt. Each entry counts.' },
     { label: 'Join the Trench Community Discord', send: 'Join the Trench Community Discord', hint: 'Any screenshot from inside the Discord: a post, your role, the server list.' },
     { label: "Join Maurice's Newsletter (Limit: 1)", send: "Join Maurice's Newsletter", hint: 'The confirmation email or the welcome screen.' },
-    { label: 'Reach level 10', send: 'Reach Level 10', hint: 'Your level in the Discord.' },
+    { label: 'Reach Level 10', send: 'Reach Level 10', hint: 'Your level in the Discord.' },
     { label: 'Reach Level 25', send: 'Reach Level 25', hint: 'Your level in the Discord.' },
     { label: 'Reading Apps', send: 'Reading Apps', detail: 'Which reading app did you add Cello\'s Gate to?',
       hint: "Cello's Gate shelved as Want to Read (or Read). One app per submission; each app counts once." },
     { label: 'Libraries', send: 'Library Request', detail: 'Which library did you contact?', hint: 'The request form filled in, or your message to the library. Up to three libraries.' },
     { label: 'Indie Bookstores', send: 'Indie Bookstore Request', detail: 'Which indie bookstore did you contact?', hint: 'Your request or message to the shop. Up to three bookstores.' },
-    { label: 'Comment "Hunt"', send: 'Comment "HUNT"', hint: 'Your HUNT comment.' },
+    { label: 'Comment "HUNT"', send: 'Comment "HUNT"', hint: 'Your HUNT comment.' },
     { label: 'Share the Hunt', send: 'Share the Hunt', pick: ['Where did you post it?', ['Instagram', 'TikTok', 'YouTube', 'Reddit', 'X', 'Threads', 'Facebook']],
       hint: 'Your post, with #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK). Once a day per social media account.' },
     { label: 'Recruit Three Frens', send: 'Recruit Three Frens', hint: 'Your comment tagging three frens on the launch video.' },
@@ -383,7 +383,7 @@ h1,h2,h3{text-wrap:balance}
   function $(id) { return document.getElementById(id); }
   function req() { return '<span class="sb-req">(required)</span>'; }
   function item(title, desc, body, id) {
-    return '<div class="sb-item"><label class="sb-title"' + (id ? ' for="' + id + '"' : '') + '>' + title + req() + '</label>' +
+    return '<div class="sb-item">' + (title ? '<label class="sb-title"' + (id ? ' for="' + id + '"' : '') + '>' + title + req() + '</label>' : '') +
       (desc ? '<p class="sb-desc">' + desc + '</p>' : '') + body + '</div>';
   }
 
@@ -421,7 +421,7 @@ h1,h2,h3{text-wrap:balance}
     var plat = me.platform || '';
     var platOpts = ['Instagram', 'TikTok', 'YouTube', 'None'];
     if (plat && platOpts.indexOf(plat) < 0) platOpts.splice(3, 0, plat);
-    return item('Full Name', 'Your first name and social media handle will be listed on the leaderboard.',
+    return item('', 'Your first name and social media handle will be listed on the leaderboard.',
         '<div class="sb-pair"><div><span class="sb-sub">First Name ' + req() + '</span><input type="text" id="sb-first" autocomplete="given-name" value="' + esc(first) + '"></div>' +
         '<div><span class="sb-sub">Last Name ' + req() + '</span><input type="text" id="sb-last" autocomplete="family-name" value="' + esc(last) + '"></div></div>') +
       item('What Country Do You Live In?', 'United States and United Kingdom residents enter separate promotions with separate prizes. Everyone else can earn points and unlock digital rewards.',
@@ -434,7 +434,7 @@ h1,h2,h3{text-wrap:balance}
         '<select id="sb-platform" class="' + (plat ? '' : 'empty') + '"><option value="">Choose an option.</option>' +
         platOpts.map(function (p) { return '<option' + (plat === p ? ' selected' : '') + '>' + p + '</option>'; }).join('') + '</select>' +
         '<input type="text" id="sb-handle" placeholder="@yourname" autocomplete="off" value="' + esc(me.handle || '') + '" style="' + (plat && plat !== 'None' ? '' : 'display:none;') + 'margin-top:10px">', 'sb-platform') +
-      item('Email Address', 'We\'ll use your email to run the Treasure Hunt, including verifying submissions and contacting you if you win.',
+      item('Email Address', 'I\'ll use your email to run the Treasure Hunt, including verifying submissions and contacting you if you win.',
         '<input type="email" id="sb-email" autocomplete="email" inputmode="email" value="' + esc(me.email || '') + '">', 'sb-email');
   }
   function wireMe() {

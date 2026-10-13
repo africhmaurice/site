@@ -122,7 +122,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
           <a href="https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834" target="_blank" rel="noopener">BARNES &amp; NOBLE</a>
           <a href="https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834/ref=sr_1_1?crid=279A8MV3ZYP0T&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;dib_tag=se&amp;keywords=cellos+gate&amp;qid=1770340593&amp;sprefix=cellos%27+gate%2Caps%2C179&amp;sr=8-1&amp;ascsubtag=srctok-f7d285c3c39c18b3&amp;btn_ref=srctok-f7d285c3c39c18b3" target="_blank" rel="noopener">AMAZON</a>
           <a href="https://www.amazon.com/Audible-Cellos-Gate/dp/B0GKZWW416/ref=tmm_aud_swatch_0?_encoding=UTF8&amp;dib_tag=se&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;qid=1770340593&amp;sr=8-1&amp;ascsubtag=srctok-d4f496760f7c524a&amp;btn_ref=srctok-d4f496760f7c524a" target="_blank" rel="noopener">AUDIBLE</a>
-          <a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener">WALMART SPECIAL EDITION</a>
+          <a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener">WALMART EXCLUSIVE SPECIAL EDITION</a>
           <a href="https://www.mauriceafrich.com/preorder" class="mn-all">ALL RETAILERS &rarr;</a>
         </div></div>
       </div>
@@ -449,6 +449,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc.cw{--mint:#fffffe;--ember:#89fbcb;--red:#268e62;--lime:#89fbcb}
 #rc.cw .rc-hero h1 span{color:#89fbcb}
 #rc.cw .rc-stat .v.e{color:#89fbcb}
+#rc.cw .rc-stat .v.e{--ci-depth:#03180f!important}   /* the points 3D reads on the teal card */
 #rc.cw .rc-cta{background:#268e62;border-color:#f3ead9;color:#fff}
 #rc.cw .rc-cta:hover:not(:disabled){background:#3adb97;color:#0b170f}
 #rc.cw .rc-cta:disabled{background:rgba(6,32,21,.45);border-color:rgba(243,234,217,.4);color:rgba(237,233,220,.6)}
@@ -520,9 +521,9 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <p class="rc-lede">The frens picked five jobs in the Red City. Now the crew needs faces, names, and a ship. Roll the die for each crew member, pick their names, specialties, and weapons, then roll for the ship that carries them to the island. Majority rules.</p>
     </div>
     <div class="rc-stats">
-      <div class="rc-stat"><div class="k">FRENS WHO HAVE VOTED</div><div class="v rc-num" id="rc-count">…</div><small>One vote each. You can change yours until it closes.</small></div>
-      <div class="rc-stat"><div class="k">FOR VOTING</div><div class="v e rc-num" id="rc-pts"></div><small>Seal your orders and the points go straight to the leaderboard.</small></div>
-      <div class="rc-stat"><div class="k">VOTING CLOSES</div><div class="v rc-num cw-when" id="rc-close">…</div><small>You have 24 hours.</small></div>
+      <div class="rc-stat"><div class="k">FRENS WHO HAVE VOTED</div><div class="v rc-num" id="rc-count">…</div><small class="rc-open-only">One vote each. You can change yours until it closes.</small></div>
+      <div class="rc-stat"><div class="k">FOR VOTING</div><div class="v e rc-num" id="rc-pts"></div><small class="rc-open-only">Seal your orders and the points go straight to the leaderboard.</small></div>
+      <div class="rc-stat"><div class="k">VOTING CLOSES</div><div class="v rc-num cw-when" id="rc-close">…</div><small class="rc-open-only">You have 24 hours.</small></div>
     </div>
   </header>
 
@@ -1063,7 +1064,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     }
     if (who.getAttribute('data-me') === '') return;
     who.setAttribute('data-me', '');
-    who.innerHTML = '<p class="rc-quiet" style="margin-bottom:10px">Before you roll, tell the Captain who you are. You only do this once; the loot box page and the Daily Word remember you too.</p>' +
+    who.innerHTML = '<p class="rc-quiet" style="margin-bottom:10px">Before you roll, tell the Captain who you are. You only do this once; the loot box page and Skyword remember you too.</p>' +
       '<div class="rc-form">' +
       '<label>First name<input id="rc-first" autocomplete="given-name"></label>' +
       '<label>Email you use for the hunt<input id="rc-email" type="email" autocomplete="email" inputmode="email"></label>' +
@@ -1426,6 +1427,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   DATA.jobs.forEach(function (j) { Dice.labels('g_' + j.key, LAB); });
   $('rc-pts').textContent = '+' + DATA.points;
   $('rc-close').textContent = when(CLOSES);
+  // a closed vote drops the lines that only make sense while it is open
+  if (closed) [].forEach.call(document.querySelectorAll('#rc .rc-open-only'), function (el) { el.style.display = 'none'; });
   $('rc-count').textContent = '…';
   jsonp({ action: 'crewcount' }, function (res) { $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
   // Before voting opens, the page can be explored but not rolled or sealed; it reloads itself when voting opens.
@@ -1502,7 +1505,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       var w = tieWinner(t, roll);
       out.innerHTML = 'The Captain rolled <b>' + roll + '</b>. ' + (roll % 2 ? 'Odd' : 'Even') + ': <b>' + esc(w) + '</b> it is!';
       var nm = document.querySelector('[data-tie-name="' + key + '"]');
-      if (nm) { nm.textContent = key === 'ship_color' ? w : w; var sub = nm.nextElementSibling; if (sub) sub.textContent = "Won the Captain's roll"; }
+      if (nm) { nm.textContent = key === 'ship_color' ? w : w; var sub = nm.nextElementSibling; if (sub) sub.textContent = "Won the Captain's Roll"; }
       btn.textContent = 'WATCH IT AGAIN'; btn.disabled = false; el.classList.add('cw-tie-done');
     }
     function play(roll) { Dice.spin(id); setTimeout(function () { Dice.land(id, roll, function () { reveal(roll); }); }, 700); }
