@@ -185,7 +185,7 @@
   d.querySelector('.fl-re2').addEventListener('click',function(){ovWin.hidden=true;S.state='resume';try{stage.focus({preventScroll:true});}catch(e){}});
   d.querySelector('.fl-res').addEventListener('click',function(){ovPause.hidden=true;S.state='resume';});
   function claim(){location.href=atob(K).split('').reverse().join('');}
-  d.querySelector('.fl-box').addEventListener('click',claim);d.querySelector('.fl-box2').addEventListener('click',claim);
+  d.querySelector('.fl-win .fl-box').addEventListener('click',claim);d.querySelector('.fl-box2').addEventListener('click',claim);
   document.addEventListener('keydown',function(e){
     if(e.code!=='Space'&&e.key!==' ')return;
     var t=e.target;if(t&&t!==stage&&/^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(t.tagName)&&t.getClientRects().length)return;
