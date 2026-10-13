@@ -44,8 +44,10 @@
 #ma-runner .ar-cell span{font-weight:800;font-size:11px;line-height:1.3;letter-spacing:.12em;color:#89fbcb}
 #ma-runner .ar-cell b{font-weight:800;font-size:clamp(16px,2.4vw,20px);line-height:1.2;color:#fffffe;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #ma-runner .ar-stage{position:relative;width:100%;height:min(68vh,700px);min-height:420px;border:2px solid rgba(243,234,217,.25);background:#1a1236;overflow:hidden;
-  touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
-#ma-runner canvas{display:block;width:100%;height:100%;touch-action:none;cursor:pointer}
+  touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+#ma-runner canvas{display:block;width:100%;height:100%;touch-action:pan-y;cursor:pointer}
+/* only a live run holds the screen still; otherwise a swipe scrolls the page (Maurice, 10/13) */
+#ma-runner .ar-stage.ar-live canvas{touch-action:none}
 #ma-runner .ar-ov{position:absolute;inset:0;z-index:3;display:flex;padding:24px;overflow:auto;background:rgba(11,23,15,.84);text-align:center;touch-action:auto}
 #ma-runner .ar-ov.clear{background:rgba(11,23,15,.55)}
 #ma-runner .ar-in{margin:auto;width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:16px}
@@ -604,14 +606,15 @@
     }
   });
   var tx0=0,ty0=0,tUsed=false;
-  cv.addEventListener('touchstart',function(e){e.preventDefault();var t=e.changedTouches[0];tx0=t.clientX;ty0=t.clientY;tUsed=false;},{passive:false});
+  setInterval(function(){stage.classList.toggle('ar-live',mode==='run');},120);
+  cv.addEventListener('touchstart',function(e){if(mode!=='run')return;e.preventDefault();var t=e.changedTouches[0];tx0=t.clientX;ty0=t.clientY;tUsed=false;},{passive:false});
   cv.addEventListener('touchmove',function(e){
-    e.preventDefault();var t=e.changedTouches[0],dx=t.clientX-tx0;
+    if(mode!=='run')return;e.preventDefault();var t=e.changedTouches[0],dx=t.clientX-tx0;
     // one swipe is one lane; keep dragging a good way further for the next one
     if(Math.abs(dx)>(tUsed?64:24)){move(dx<0?-1:1);tUsed=true;tx0=t.clientX;ty0=t.clientY;}
   },{passive:false});
   cv.addEventListener('touchend',function(e){
-    e.preventDefault();if(tUsed)return;var t=e.changedTouches[0],r=cv.getBoundingClientRect();
+    if(mode!=='run')return;e.preventDefault();if(tUsed)return;var t=e.changedTouches[0],r=cv.getBoundingClientRect();
     move(t.clientX-r.left<r.width/2?-1:1);
   },{passive:false});
   cv.addEventListener('mousedown',function(e){var r=cv.getBoundingClientRect();move(e.clientX-r.left<r.width/2?-1:1);});

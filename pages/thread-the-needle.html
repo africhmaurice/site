@@ -42,9 +42,11 @@
 #ma-flappy .fl-h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(36px,6.4vw,72px);line-height:1.2;letter-spacing:.03em;color:#fffffe;text-wrap:balance}
 #ma-flappy .fl-how{margin:0;max-width:620px;font-size:clamp(15px,1.6vw,18px);line-height:1.55;color:#f3ead9;text-wrap:balance}
 #ma-flappy .fl-stage{position:relative;width:min(100%,920px);height:clamp(420px,calc(100vh - 400px),600px);border:2px solid #f3ead9;background:#1a5e41;overflow:hidden;
-  touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;cursor:pointer;outline:none}
+  touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;cursor:pointer;outline:none}
 #ma-flappy .fl-stage:focus-visible{outline:3px solid #ff4c0f;outline-offset:4px}
-#ma-flappy .fl-stage canvas{display:block;width:100%;height:100%;touch-action:none}
+#ma-flappy .fl-stage canvas{display:block;width:100%;height:100%;touch-action:pan-y}
+/* only a live run holds the screen still; otherwise a swipe scrolls the page (Maurice, 10/13) */
+#ma-flappy .fl-stage.fl-live canvas{touch-action:none}
 #ma-flappy .fl-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;background:rgba(11,23,15,.84);cursor:default}
 #ma-flappy .fl-ov h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(32px,5vw,56px);line-height:1.2;letter-spacing:.03em;color:#fffffe;text-wrap:balance}
 #ma-flappy .fl-ov p{margin:0;max-width:440px;font-size:clamp(15px,1.7vw,19px);line-height:1.5;color:#f3ead9;text-wrap:balance}
@@ -177,8 +179,10 @@
   function begin(){reset();S.state='ready';S.y=H*.45;ovStart.hidden=ovDead.hidden=ovWin.hidden=ovPause.hidden=true;view();
     var run=S;run.ticket=null;run.ticketWait=[];postEl.hidden=true;whoEl.hidden=true;whoEl.innerHTML='';
     api('needlestart',{},function(res){run.ticket=res&&res.ok?res.ticket:'';var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});}
-  cv.addEventListener('touchstart',function(e){e.preventDefault();},{passive:false});
-  cv.addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
+  function liveRun(){return S&&(S.state==='play'||S.state==='ready'||S.state==='resume');}
+  setInterval(function(){stage.classList.toggle('fl-live',!!liveRun());},120);
+  cv.addEventListener('touchstart',function(e){if(liveRun())e.preventDefault();},{passive:false});
+  cv.addEventListener('touchmove',function(e){if(liveRun())e.preventDefault();},{passive:false});
   cv.addEventListener('pointerdown',function(e){if(e.button>0)return;e.preventDefault();tap();});
   d.querySelector('.fl-go').addEventListener('click',begin);
   d.querySelector('.fl-re').addEventListener('click',begin);
