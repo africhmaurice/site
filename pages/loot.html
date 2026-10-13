@@ -743,6 +743,20 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     } catch (e) {}
   }
 
+  // A brand-new hunter joins the Kit list through the "Hunter sign-up" form (id 10040495). Its rule tags them
+  // Hunt player and starts the Hunter Welcome sequence (Maurice, 2026-10-13). Not tied to the Pixel or cookies.
+  function joinKit() {
+    try {
+      var KEY = 'lb-kit-sent', who = '|' + String(me.email || '').toLowerCase() + '|', sent = localStorage.getItem(KEY) || '';
+      if (!me.email || sent.indexOf(who) >= 0) return;
+      var fd = new FormData();
+      fd.append('email_address', me.email);
+      if (me.first_name) fd.append('fields[first_name]', me.first_name);
+      fetch('https://app.kit.com/forms/10040495/subscriptions', { method: 'POST', body: fd, mode: 'no-cors' });
+      localStorage.setItem(KEY, (sent ? sent.slice(0, -1) : '') + who);
+    } catch (e) {}
+  }
+
   // Every new find tells Meta too (LootBoxClaim, with the box and how many this hunter has), so ads can reach active
   // hunters (Maurice, 2026-10-08). Once per box per email per browser, so a retried claim is not counted twice.
   function lootFound(res) {
@@ -762,7 +776,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
            handle: me.handle, platform: me.platform, country: me.country }, function (res) {
       if (!res || !res.ok) return showError((res && res.error) || 'network');
       save(CARD, { found: res.found, count: res.count, at: Date.now() });
-      if (res.status === 'new' && res.count === 1) newHunter(res);
+      if (res.status === 'new' && res.count === 1) { newHunter(res); joinKit(); }
       if (res.status === 'new') lootFound(res);
       // 'already' only comes back for a box they found some time ago. A retry of a
       // claim that did land is answered 'new', so a slow round trip still reads as
