@@ -1,0 +1,419 @@
+<!-- ============================================================
+     THREAD THE NEEDLE (named by Maurice 10/12; was Flap and Float) - loot box 76. PUBLIC game at /thread-the-needle
+     (launched 10/13, in the game tabs like Airship Runner).
+     Weekly board (Maurice, 10/13): the same flow as Airship Runner. A run asks the Loot Boxes web app for a ticket when it
+     starts (action=needlestart); when it ends, the score (gaps) and the flying time go to action=needlescore with the
+     player saved in this browser (thLoot:me, shared with the loot box page and Airship Runner; asked once with the
+     same form). lootbox.gs checks it against the towers' spacing and top speed (NEEDLE there must match SPACING and
+     P.speed here) and keeps each person's best of the week (tabs Needle Runs / Needle Best). Maurice's runs are
+     practice runs. Top score at Friday 11:59 PM ET wins 500, paid by hand (npm run needle-winner).
+     Rock towers: his taller tower, and his super tall tower (76-rock-giant.png) wherever a tower has to reach high.
+     Maurice's idea (2026-10-06): "Flappy Birds with an Airship (similar to the airship runner)".
+     Maurice's red side-view airship flies right through his sky, between rock towers (rising from the ground)
+     and fire towers (hanging from above). Tap, click, or press space to give it lift. Each gap cleared scores 1.
+     It gets harder as you go: the sky speeds up 1.2% per gap (up to gap 40) and gaps tighten (up to gap 30).
+     Art (site/assets/games): 76-ship.png, 76-rock-tower.png, 76-fire-tower.png, 76-sky.webp.
+     Loot box 76 floats in the middle of gap 100 (and every gap after it until it is caught; those gaps are
+     wider). Flying into it pauses the run and shows loot box 76 as a button that opens the claim link
+     (scrambled in K); "Keep flying" picks the run back up (Maurice, 10/12). The crash panel shows the box
+     again if it was caught that run. Hitting a tower or the bottom of the sky ends the run.
+     The sky is plain pale blue. Now and then one of his mist clouds (76-mist-1..3.webp) drifts past behind the
+     towers to show motion. A crash blows the airship up with the Airship Runner explosion frames (74-boom-1..4).
+     Both Maurice, 10/12.
+     The game pauses itself when the tab is hidden or the stage scrolls out of view; a tap resumes.
+     Reduced motion: "calm skies" (slower, gentler lift, wider gaps, half the speed-up, no shake, no sparks, still sky).
+     Best score is kept in localStorage (ma-flappy-best). Fixed 120-step physics, so it plays the same on any screen.
+     DRAFT copy (not Maurice's words yet): eyebrow "Loot Box 76"; the how-to line; "Cast off" and the start
+     Weekly line (DRAFT wording, Maurice 10/12: top score every Friday wins 500, board resets Fridays): "Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week."
+     panel line; "Tap to flap" hint; the crash heading "Crashed!" and the lines in CRASH; "Fly again";
+     "Paused" / "Keep flying"; the box hint "Fly into the loot box!"; the win heading "You caught it!" and
+     "Loot box 76 is yours. Tap the box to claim it."; the bar labels "Best:" and "Goal: 100 gaps";
+     the calm note "Calm skies on".
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+#ma-flappy{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;overflow:hidden;
+  padding:clamp(120px,14vh,160px) 16px 72px;background:#0b170f;color:#f3ead9;font-family:'Almarai',sans-serif;
+  display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center}
+#ma-flappy *{box-sizing:border-box;border-radius:0}
+#ma-flappy [hidden]{display:none!important}
+#ma-flappy .fl-eye{margin:0;font-weight:800;font-size:13px;line-height:1.4;letter-spacing:.24em;text-transform:uppercase;color:#ff4c0f}
+#ma-flappy .fl-h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(36px,6.4vw,72px);line-height:1.2;letter-spacing:.03em;color:#fffffe;text-wrap:balance}
+#ma-flappy .fl-how{margin:0;max-width:620px;font-size:clamp(15px,1.6vw,18px);line-height:1.55;color:#f3ead9;text-wrap:balance}
+#ma-flappy .fl-stage{position:relative;width:min(100%,920px);height:clamp(420px,calc(100vh - 400px),600px);border:2px solid #f3ead9;background:#1a5e41;overflow:hidden;
+  touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;cursor:pointer;outline:none}
+#ma-flappy .fl-stage:focus-visible{outline:3px solid #ff4c0f;outline-offset:4px}
+#ma-flappy .fl-stage canvas{display:block;width:100%;height:100%;touch-action:none}
+#ma-flappy .fl-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;background:rgba(11,23,15,.84);cursor:default}
+#ma-flappy .fl-ov h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(32px,5vw,56px);line-height:1.2;letter-spacing:.03em;color:#fffffe;text-wrap:balance}
+#ma-flappy .fl-ov p{margin:0;max-width:440px;font-size:clamp(15px,1.7vw,19px);line-height:1.5;color:#f3ead9;text-wrap:balance}
+#ma-flappy .fl-ov.win{background:rgba(44,96,33,.92)}
+#ma-flappy .fl-ov.win h2{color:#a2f590}
+#ma-flappy .fl-ov.dead h2{color:#ff4c0f}
+#ma-flappy .fl-btn{font-family:'Almarai',sans-serif;font-weight:800;font-size:16px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;color:#fffffe;background:#c53200;border:2px solid #fffffe;padding:14px 30px;margin:0;touch-action:manipulation;transition:background .15s ease,transform .15s ease}
+#ma-flappy .fl-btn:hover,#ma-flappy .fl-btn:focus-visible{background:#ff4c0f;outline:none;transform:scale(1.04)}
+#ma-flappy .fl-btn.ghost{background:transparent;border-color:#f3ead9;font-size:13px;padding:11px 22px}
+#ma-flappy .fl-btn.ghost:hover,#ma-flappy .fl-btn.ghost:focus-visible{background:#f3ead9;color:#0b170f}
+#ma-flappy .fl-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(44vw,210px,32vh);transition:transform .2s ease}
+#ma-flappy .fl-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 30px rgba(162,245,144,.45))}
+#ma-flappy .fl-box:hover,#ma-flappy .fl-box:focus-visible{transform:scale(1.05);outline:none}
+#ma-flappy .fl-box:focus-visible img{filter:drop-shadow(0 0 40px rgba(255,76,15,.7))}
+#ma-flappy .fl-bar{width:min(100%,920px);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-weight:800;font-size:13px;line-height:1.4;letter-spacing:.14em;text-transform:uppercase;color:#c3a6ff}
+#ma-flappy .fl-bar span{white-space:nowrap}
+#ma-flappy .fl-calm{color:#89fbcb}
+@media (max-width:760px){#ma-flappy .fl-stage{height:clamp(420px,calc(100vh - 220px),600px)}}
+@media (prefers-reduced-motion:reduce){#ma-flappy .fl-btn,#ma-flappy .fl-box{transition:none}}
+#ma-flappy .fl-post{width:min(100%,560px);display:flex;flex-direction:column;gap:12px;text-align:left}
+#ma-flappy .fl-msg{margin:0;min-height:22px;font-weight:700;font-size:15px;line-height:1.5;color:#a2f590;text-align:center}
+#ma-flappy .fl-msg.err{color:#ff8a5c}
+#ma-flappy .fl-quiet{margin:0;font-weight:700;font-size:13px;line-height:1.5;letter-spacing:.06em;color:#c3a6ff;text-align:center}
+#ma-flappy .fl-quiet a{color:#a2f590;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+#ma-flappy .fl-form{display:flex;flex-direction:column;gap:8px;padding:20px;background:#132219;border:2px solid rgba(243,234,217,.18)}
+#ma-flappy .fl-form label{font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#89fbcb;margin-top:4px}
+#ma-flappy .fl-form input,#ma-flappy .fl-form select{width:100%;margin:0;font-family:'Almarai',sans-serif;font-weight:700;font-size:16px;color:#0b170f;background:#fffffe;border:2px solid #fffffe;padding:10px 12px;outline:none}
+#ma-flappy .fl-form input:focus,#ma-flappy .fl-form select:focus{border-color:#7b4ee1}
+#ma-flappy .fl-form .fl-btn{margin-top:10px;width:100%}
+#ma-flappy .fl-dmsg{font-weight:700;color:#a2f590!important}
+#ma-flappy .fl-dmsg.err{color:#ff8a5c!important}
+#ma-flappy .fl-panel{width:min(100%,560px);background:#132219;border:2px solid rgba(243,234,217,.18);padding:24px;display:flex;flex-direction:column;gap:14px;text-align:left}
+#ma-flappy .fl-ph{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(24px,2.4vw,30px);line-height:1.25;letter-spacing:.03em;color:#a2f590}
+#ma-flappy .fl-count{margin:0;font-weight:800;font-size:13px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase;color:#c3a6ff}
+#ma-flappy .fl-board{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+#ma-flappy .fl-board li{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid rgba(243,234,217,.1);font-weight:700;font-size:15px;line-height:1.4}
+#ma-flappy .fl-board li:last-child{border-bottom:0}
+#ma-flappy .fl-board i{font-style:normal;font-weight:800;color:#ff4c0f}
+#ma-flappy .fl-board span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fffffe}
+#ma-flappy .fl-board b{font-weight:800;color:#fffffe;font-variant-numeric:tabular-nums}
+#ma-flappy .fl-board li.me span,#ma-flappy .fl-board li.me b{color:#a2f590}
+#ma-flappy .fl-board .fl-empty{display:block;grid-column:1/-1;white-space:normal;overflow:visible;color:#f3ead9;font-weight:700}
+@media (max-width:760px){#ma-flappy .fl-panel{padding:20px}}
+#ma-flappy .fl-weekly{margin:0;max-width:560px;padding:12px 20px;border:2px solid #ff4c0f;font-weight:800;font-size:clamp(13px,1.4vw,15px);line-height:1.5;letter-spacing:.08em;text-transform:uppercase;color:#fffffe}
+</style>
+<section id="ma-flappy" aria-label="Thread the Needle airship game">
+  <p class="fl-eye">Loot Box 76</p>
+  <h1 class="fl-h1">Thread the Needle</h1>
+  <p class="fl-how">Tap, click, or press space to give the airship some lift. Thread the gaps between the rock towers and the storms.</p>
+    <p class="fl-weekly">Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week.</p>
+  <div class="fl-stage" tabindex="0" role="button" aria-label="Airship game. Tap or press space to flap.">
+    <canvas></canvas>
+    <div class="fl-ov fl-start"><h2>Thread the Needle</h2><p>One tap, one puff of lift. Don&rsquo;t touch the rocks.</p><button class="fl-btn fl-go" type="button">Cast off</button></div>
+    <div class="fl-ov dead fl-dead" hidden><h2>Crashed!</h2><p class="fl-dline"></p><p class="fl-dscore"></p><p class="fl-dmsg" role="status"></p><button class="fl-box fl-box2" type="button" aria-label="Open loot box 76" hidden><img src="https://africhmaurice.github.io/leaderboard/loot/76.png" alt="Loot box 76"></button><button class="fl-btn fl-re" type="button">Fly again</button></div>
+    <div class="fl-ov fl-pause" hidden><h2>Paused</h2><button class="fl-btn fl-res" type="button">Keep flying</button></div>
+    <div class="fl-ov win fl-win" hidden><h2>You caught it!</h2><p>Loot box 76 is yours. Tap the box to claim it.</p>
+      <button class="fl-box" type="button" aria-label="Open loot box 76"><img loading="lazy" decoding="async" src="https://africhmaurice.github.io/leaderboard/loot/76.png" alt="Loot box 76"></button>
+      <button class="fl-btn ghost fl-re2" type="button">Keep flying</button></div>
+  </div>
+  <div class="fl-bar"><span class="fl-best">Best: 0</span><span class="fl-calm" hidden>Calm skies on</span><span>Goal: 100 gaps</span></div>
+  <div class="fl-post" hidden><p class="fl-msg" role="status"></p><div class="fl-who" hidden></div></div>
+  <div class="fl-panel">
+    <h2 class="fl-ph">This week’s top sky pirates</h2>
+    <p class="fl-count">Board closes in <span class="fl-left">...</span></p>
+    <ol class="fl-board"><li><span class="fl-empty">Loading the board...</span></li></ol>
+  </div>
+</section>
+<script>
+(function(){
+  var d=document.getElementById('ma-flappy');if(!d)return;
+  // Fill the whole window: no Squarespace padding or colors around it.
+  var sec=d.closest('section.page-section');if(sec){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+
+  var K='VE1NMks1RDk9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  var stage=d.querySelector('.fl-stage'),cv=stage.querySelector('canvas'),ctx=cv.getContext('2d');
+  var ovStart=d.querySelector('.fl-start'),ovDead=d.querySelector('.fl-dead'),ovPause=d.querySelector('.fl-pause'),ovWin=d.querySelector('.fl-win');
+  var bestEl=d.querySelector('.fl-best');
+  var calm=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  if(calm)d.querySelector('.fl-calm').hidden=false;
+
+  var CRASH=['The rocks were not impressed.','Ship: dented. Pride: also dented.','That tower came out of nowhere. It was there the whole time.','The crew would like to file a complaint.','Flap harder. Or softer. One of those.','The storm says hi. And also bye.'];
+  var LOW='Down into the clouds you go.';
+
+  // Physics, in world units: the sky is 600 tall, and as wide as the stage allows.
+  var H=600,GOAL=100,COLW=72,SPACING=250;
+  var P=calm?{g:1150,flap:-370,maxv:520,speed:128,gap:212}:{g:1500,flap:-430,maxv:620,speed:170,gap:180};
+  var BOXS=56;
+  var img=new Image(),imgOk=false;img.onload=function(){imgOk=true;};img.src='https://africhmaurice.github.io/leaderboard/loot/76.png';
+  var ART='https://africhmaurice.github.io/site/assets/games/';
+  function pic(f){var i=new Image();i.src=ART+f;return i;}
+  function ok(i){return i.complete&&i.naturalWidth>0;}
+  var shipImg=pic('76-ship.png'),rockImg=pic('76-rock-tower.png'),giantImg=pic('76-rock-giant.png'),fireImg=pic('76-fire-tower.png'),mistImg=[pic('76-mist-1.webp'),pic('76-mist-2.webp'),pic('76-mist-3.webp')],boomImg=[pic('74-boom-1.png'),pic('74-boom-2.png'),pic('74-boom-3.png'),pic('74-boom-4.png')];
+  // Tower sizes in world units. The rock art (his taller tower, 10/12) is about 1:2.27, the fire art about 1:3.8. GROUND is the bottom of the sky.
+  var RW=116,RH=263,FW=92,FH=351,GROUND=H-6;
+  // It gets harder as you go: faster, and tighter gaps.
+  function speed(){return P.speed*(1+Math.min(S.score,40)*(calm?.006:.012));}
+  function gapNow(){return P.gap-Math.min(S.score,30)*(calm?.6:1.2);}
+  function rnd(a,b){return a+Math.random()*(b-a);}
+  function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  var best=parseInt(lsGet('ma-flappy-best')||'0',10)||0;
+  function showBest(){bestEl.textContent='Best: '+best;}
+  showBest();
+
+  var W=600,scale=1,dpr=1;
+  function fit(){var r=cv.getBoundingClientRect();if(!r.width)return;dpr=Math.min(window.devicePixelRatio||1,2);cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr);scale=r.height/H;W=r.width/scale;}
+  fit();window.addEventListener('resize',fit);
+
+  var S;
+  function shipX(){return Math.min(W*.28,190);}
+  function reset(){
+    S={state:'title',t:S?S.t:0,y:H*.45,vy:0,score:0,cols:[],n:0,shake:0,sparks:[],deadT:0,crashLine:'',prop:0,lastGy:H/2};
+  }
+  reset();
+  function spawn(x){
+    S.n++;var box=S.n>=GOAL&&!S.gotBox,gap=box?gapNow()+50:gapNow(),reach=box?100:150;
+    var gy=Math.max(gap/2+50,Math.min(GROUND-gap/2-60,S.lastGy+rnd(-reach,reach)));S.lastGy=gy;
+    S.cols.push({x:x,gy:gy,gap:gap,box:box,passed:false,seed:Math.random()*1000,bob:Math.random()*6});
+  }
+
+  // ---- input ----
+  function flap(){S.vy=P.flap;}
+  function tap(){
+    if(S.state==='ready'||S.state==='resume'){S.state='play';flap();return true;}
+    if(S.state==='play'){flap();return true;}
+    return false;
+  }
+  function begin(){reset();S.state='ready';S.y=H*.45;ovStart.hidden=ovDead.hidden=ovWin.hidden=ovPause.hidden=true;view();
+    var run=S;run.ticket=null;run.ticketWait=[];postEl.hidden=true;whoEl.hidden=true;whoEl.innerHTML='';
+    api('needlestart',{},function(res){run.ticket=res&&res.ok?res.ticket:'';var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});}
+  cv.addEventListener('touchstart',function(e){e.preventDefault();},{passive:false});
+  cv.addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
+  cv.addEventListener('pointerdown',function(e){if(e.button>0)return;e.preventDefault();tap();});
+  d.querySelector('.fl-go').addEventListener('click',begin);
+  d.querySelector('.fl-re').addEventListener('click',begin);
+  d.querySelector('.fl-re2').addEventListener('click',function(){ovWin.hidden=true;S.state='resume';try{stage.focus({preventScroll:true});}catch(e){}});
+  d.querySelector('.fl-res').addEventListener('click',function(){ovPause.hidden=true;S.state='resume';});
+  function claim(){location.href=atob(K).split('').reverse().join('');}
+  d.querySelector('.fl-box').addEventListener('click',claim);d.querySelector('.fl-box2').addEventListener('click',claim);
+  document.addEventListener('keydown',function(e){
+    if(e.code!=='Space'&&e.key!==' ')return;
+    var t=e.target;if(t&&t!==stage&&/^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(t.tagName)&&t.getClientRects().length)return;
+    var r=stage.getBoundingClientRect();if(r.bottom<0||r.top>window.innerHeight)return;
+    if(S.state==='title'||(S.state==='dead'&&!ovDead.hidden)){e.preventDefault();begin();return;}
+    if(S.state==='paused'){e.preventDefault();ovPause.hidden=true;S.state='resume';return;}
+    if(tap())e.preventDefault();
+  });
+  // Bring the whole stage on screen when a run starts.
+  function view(){var r=stage.getBoundingClientRect();if(r.top<60||r.bottom>window.innerHeight)stage.scrollIntoView({block:'center',behavior:calm?'auto':'smooth'});}
+  function pause(){if(S.state==='play'){S.state='paused';ovPause.hidden=false;}}
+  document.addEventListener('visibilitychange',function(){if(document.hidden)pause();last=0;acc=0;});
+  if('IntersectionObserver' in window)new IntersectionObserver(function(es){es.forEach(function(en){if(en.intersectionRatio<.35)pause();});},{threshold:[0,.35,1]}).observe(stage);
+
+  // ---- simulation ----
+  function hitRect(cx,cy,r,x,y,w,h){var nx=Math.max(x,Math.min(cx,x+w)),ny=Math.max(y,Math.min(cy,y+h));var dx=cx-nx,dy=cy-ny;return dx*dx+dy*dy<r*r;}
+  function step(dt){
+    S.t+=dt;S.prop+=dt*(S.state==='play'?40:18);
+    if(S.shake>0)S.shake=Math.max(0,S.shake-dt*3);
+    for(var i=S.sparks.length-1;i>=0;i--){var p=S.sparks[i];p.vy+=700*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;if(p.life<=0)S.sparks.splice(i,1);}
+    if(S.state==='title'||S.state==='ready'){S.y=H*.45+Math.sin(S.t*2.6)*10;S.vy=0;return;}
+    if(S.state==='play')S.rt=(S.rt||0)+dt;
+    if(S.state==='resume'||S.state==='paused'||S.state==='won')return;
+    if(S.state==='dead'){
+      S.deadT+=dt;if(S.y<H+40){S.vy=Math.min(S.vy+P.g*dt,P.maxv);S.y+=S.vy*dt;}
+      if(S.deadT>.8&&ovDead.hidden){showDead();}
+      return;
+    }
+    // play
+    S.vy=Math.min(S.vy+P.g*dt,P.maxv);S.y+=S.vy*dt;
+    if(S.y<18){S.y=18;S.vy=Math.max(S.vy,0);}
+    var sx=shipX(),dx=speed()*dt;
+    if(!S.cols.length)spawn(W+140);
+    for(var j=0;j<S.cols.length;j++)S.cols[j].x-=dx;
+    var lastC=S.cols[S.cols.length-1];if(lastC.x<W+40)spawn(lastC.x+SPACING);
+    while(S.cols.length&&S.cols[0].x<-COLW-40)S.cols.shift();
+    for(var k=0;k<S.cols.length;k++){
+      var c=S.cols[k],top=c.gy-c.gap/2,bot=c.gy+c.gap/2;
+      if(c.box&&!c.got&&!S.gotBox){var by=c.gy+Math.sin(S.t*2+c.bob)*(calm?10:18),bx=c.x+COLW/2;
+        if(hitRect(sx,S.y,16,bx-BOXS/2,by-BOXS/2,BOXS,BOXS)){c.got=true;S.gotBox=true;S.state='won';S.vy=0;winBurst(bx,by);setTimeout(showWin,calm?150:550);return;}}
+      if(hitTower(sx,S.y,c,bot,top)){crash(CRASH[Math.floor(Math.random()*CRASH.length)]);return;}
+      if(!c.passed&&c.x+COLW<sx-15){c.passed=true;S.score++;}
+    }
+    if(S.y>GROUND-8){crash(LOW);}
+  }
+  // The rock tower is narrow at the top stones and wider below; the fire is wide above and thins to its tail.
+  // rockTop: where the rock tower starts (the gap's lower edge); fireEnd: where the flame ends (the gap's upper edge)
+  function fireH(bot){return Math.max(FH,bot+30);}
+  function hitTower(sx,sy,c,top,bot){
+    var mid=c.x+COLW/2,r=12,fl=mid-FW/2;
+    if(hitRect(sx,sy,r,mid-RW*.2,top+4,RW*.4,RH*.3)||hitRect(sx,sy,r,mid-RW*.34,top+RH*.3,RW*.68,H))return true;
+    var fh=fireH(bot);if(hitRect(sx,sy,r,fl+FW*.1,-60,FW*.82,bot-fh*.28+60)||hitRect(sx,sy,r,fl+FW*.12,bot-fh*.28,FW*.45,fh*.28-6))return true;
+    return false;
+  }
+  function crash(line){S.state='dead';S.deadT=0;S.boom={x:shipX(),y:S.y};S.vy=Math.min(S.vy,-120);S.crashLine=line;if(!calm)S.shake=1;
+    if(S.score>best){best=S.score;lsSet('ma-flappy-best',String(best));showBest();}}
+  function showDead(){d.querySelector('.fl-box2').hidden=!S.gotBox;d.querySelector('.fl-dline').textContent=S.crashLine;d.querySelector('.fl-dscore').textContent='Gaps: '+S.score+'. Best: '+best+'.';ovDead.hidden=false;
+    var run=S;if(run.logged)return;run.logged=true;if(run.score<=0){msg('');return;}if(me.email)submit(run);else who(run);}
+  function winBurst(x,y){if(S.score>best){best=S.score;lsSet('ma-flappy-best',String(best));showBest();}lsSet('ma-flappy-won','1');
+    if(calm)return;var cols=['#a2f590','#89fbcb','#f3ead9','#ff4c0f','#c3a6ff'];for(var i=0;i<40;i++)S.sparks.push({x:x,y:y,vx:rnd(-320,320),vy:rnd(-460,160),life:rnd(.6,1.2),c:cols[i%5],s:rnd(5,9)});}
+  function showWin(){ovWin.hidden=false;}
+
+  // ---- drawing ----
+  function moved(){return S.state==='play'||S.state==='dead'?1:.35;}
+  var scroll=0;
+  // one mist cloud at a time drifts past behind the towers, every few seconds, a little slower than the towers
+  var MIST=[],mistT=1.5;
+  function sky(dt){
+    ctx.fillStyle='#d6eef8';ctx.fillRect(0,0,W,H);
+    var mv=calm&&S.state!=='play'?0:moved();
+    mistT-=dt*mv;
+    if(mistT<=0){mistT=rnd(4,8);var im=mistImg[Math.floor(Math.random()*3)];MIST.push({im:im,x:W+20,y:rnd(-60,H-280),w:rnd(380,620),p:rnd(.5,.75),a:rnd(.5,.75)});}
+    for(var i=MIST.length-1;i>=0;i--){var m=MIST[i];m.x-=dt*speed()*m.p*mv*(calm?.5:1);if(m.x+m.w<-20){MIST.splice(i,1);continue;}
+      if(!ok(m.im))continue;ctx.globalAlpha=m.a;ctx.drawImage(m.im,m.x,m.y,m.w,m.w*m.im.naturalHeight/m.im.naturalWidth);}
+    ctx.globalAlpha=1;
+  }
+  function tower(c){
+    var mid=c.x+COLW/2,top=c.gy+c.gap/2;
+    if(!ok(rockImg)){ctx.fillStyle='#4a4440';ctx.fillRect(mid-RW*.34,top,RW*.68,H-top);return;}
+    // a tall reach gets his super tall tower (same stone size, 389 tall); below the stones the bottom stone repeats to the ground
+    var im=rockImg,th=RH;if(H-top>RH*.95&&ok(giantImg)){im=giantImg;th=RW*giantImg.naturalHeight/giantImg.naturalWidth;}
+    var sy0=im.naturalHeight*(im===rockImg?.84:.92),sh=im.naturalHeight*(im===rockImg?.12:.065),step=th*(im===rockImg?.12:.065);
+    for(var y=top+th*.95;y<H;y+=step-1)ctx.drawImage(im,0,sy0,im.naturalWidth,sh,mid-RW/2,y,RW,step);
+    ctx.drawImage(im,mid-RW/2,top,RW,th);
+  }
+  function storm(c){
+    var mid=c.x+COLW/2,bot=c.gy-c.gap/2,x=mid-FW/2;
+    if(!ok(fireImg)){ctx.fillStyle='#bb3c00';ctx.fillRect(x+FW*.1,0,FW*.8,bot);return;}
+    // the flame stretches taller when it has to reach past the top of the sky (its cut top edge stays hidden above)
+    var h=fireH(bot),sy0=fireImg.naturalHeight*.04;
+    ctx.drawImage(fireImg,0,sy0,fireImg.naturalWidth,fireImg.naturalHeight-sy0,x,bot-h,FW,h);
+  }
+  function lootbox(c){
+    if(!c.box||c.got||S.gotBox)return;var bx=c.x+COLW/2,by=c.gy+Math.sin(S.t*2+c.bob)*(calm?10:18);
+    ctx.save();ctx.translate(bx,by);ctx.rotate(calm?0:Math.sin(S.t*1.6+c.bob)*.08);
+    ctx.fillStyle='rgba(162,245,144,.22)';ctx.beginPath();ctx.arc(0,0,BOXS*.85,0,Math.PI*2);ctx.fill();
+    if(imgOk)ctx.drawImage(img,-BOXS*.6,-BOXS*.62,BOXS*1.2,BOXS*1.2);else{ctx.fillStyle='#c53200';ctx.fillRect(-BOXS/2,-BOXS/2,BOXS,BOXS);}
+    ctx.restore();
+  }
+  // the crash: four explosion frames, then the ship is gone
+  function boom(){
+    if(!S.boom||S.state!=='dead')return;var f=Math.floor(S.deadT/.09);if(f>3)return;var im=boomImg[f];if(!ok(im))return;
+    var w=150,h=w*im.naturalHeight/im.naturalWidth;ctx.drawImage(im,S.boom.x-w/2,S.boom.y-h/2,w,h);
+  }
+  function ship(){
+    if(S.state==='dead'&&S.deadT>.12)return;
+    var x=shipX(),y=S.y,a=Math.max(-.4,Math.min(.6,S.vy/800));if(S.state==='dead')a=Math.min(1.2,.6+S.deadT*2);
+    ctx.save();ctx.translate(x,y);ctx.rotate(a);
+    if(ok(shipImg)){var w=78,h=w*shipImg.naturalHeight/shipImg.naturalWidth;ctx.drawImage(shipImg,-w*.55,-h*.5,w,h);}
+    else{ctx.fillStyle='#9b1000';ctx.fillRect(-36,-10,72,20);}
+    ctx.restore();
+  }
+  function hud(){
+    if(S.state==='title')return;
+    ctx.textAlign='center';ctx.textBaseline='top';
+    ctx.font="400 46px 'Cracked Imperia', 'Almarai', sans-serif";ctx.lineWidth=6;ctx.strokeStyle='#0b170f';ctx.fillStyle='#fffffe';
+    var txt=String(S.score);ctx.strokeText(txt,W/2,20);ctx.fillText(txt,W/2,20);
+    ctx.font="800 15px 'Almarai', sans-serif";ctx.lineWidth=4;
+    var sub=null;
+    if(S.state==='ready'||S.state==='resume')sub='Tap to flap';
+    else if(S.state==='play'&&S.score>=GOAL-1&&!S.gotBox)sub='Fly into the loot box!';
+    if(sub){ctx.strokeText(sub.toUpperCase(),W/2,82);ctx.fillStyle='#a2f590';ctx.fillText(sub.toUpperCase(),W/2,82);}
+  }
+  function sparks(){for(var i=0;i<S.sparks.length;i++){var p=S.sparks[i];ctx.globalAlpha=Math.max(0,Math.min(1,p.life*1.5));ctx.fillStyle=p.c;ctx.fillRect(p.x-p.s/2,p.y-p.s/2,p.s,p.s);}ctx.globalAlpha=1;}
+  function draw(dt){
+    if(!(calm&&S.state!=='play'))scroll+=dt*speed()*moved()*(calm?.5:1);
+    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);
+    var k=scale*dpr,sh=S.shake?Math.sin(S.t*70)*6*S.shake:0;ctx.setTransform(k,0,0,k,sh*k,0);
+    sky(dt);
+    for(var i=0;i<S.cols.length;i++){storm(S.cols[i]);tower(S.cols[i]);lootbox(S.cols[i]);}
+    ship();boom();sparks();hud();
+  }
+
+  // test hooks, only when the preview harness sets window.__flapTest before the page loads
+  if(window.__flapTest)window.__flap={snap:function(){var sx=shipX(),n=null;for(var i=0;i<S.cols.length;i++){if(S.cols[i].x+COLW>sx-20){n=S.cols[i];break;}}return {state:S.state,score:S.score,y:S.y,vy:S.vy,speed:speed(),gap:n?n.gap:0,gy:n?n.gy:0,dx:n?n.x-sx:0};},tap:function(){return tap();},setScore:function(v){S.score=v;},jump:function(v){S.score=v;S.n=v+S.cols.length;},got:function(){return !!S.gotBox;}};
+
+  // ---- the weekly board (same web app and checks style as Airship Runner) ----
+  var ENDPOINT='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var ME='thLoot:me',TZ='America/New_York';
+  var postEl=d.querySelector('.fl-post'),msgEl=d.querySelector('.fl-msg'),whoEl=d.querySelector('.fl-who'),dmsgEl=d.querySelector('.fl-dmsg');
+  var boardEl=d.querySelector('.fl-board'),leftEl=d.querySelector('.fl-left');
+  function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function fmt(n){return Math.floor(n).toLocaleString('en-US');}
+  function load(k,dflt){try{var v=JSON.parse(localStorage.getItem(k)||'null');return v==null?dflt:v;}catch(e){return dflt;}}
+  function store(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+  var me=load(ME,{})||{};
+  function msg(t,err){dmsgEl.textContent=t;dmsgEl.className='fl-dmsg'+(err?' err':'');msgEl.textContent=t;msgEl.className='fl-msg'+(err?' err':'');}
+  function api(action,payload,done){payload=payload||{};payload.action=action;send(payload,done,1);}
+  function send(payload,done,attempt){
+    var settled=false;
+    var finish=function(res){if(settled)return;settled=true;
+      var flaky=!res||(!res.ok&&(res.error==='network'||res.error==='server'||res.error==='empty'));
+      if(flaky&&attempt<2)return setTimeout(function(){send(payload,done,attempt+1);},1500);
+      done(res||{ok:false,error:'network'});};
+    try{fetch(ENDPOINT,{method:'POST',body:JSON.stringify(payload)}).then(function(r){return r.json();}).then(finish).catch(function(){jsonp(payload,finish);});}
+    catch(e){jsonp(payload,finish);}
+  }
+  function jsonp(payload,done){
+    var name='flcb'+Math.random().toString(36).slice(2),q=['callback='+name];
+    for(var k in payload)if(payload[k]!=null&&payload[k]!=='')q.push(encodeURIComponent(k)+'='+encodeURIComponent(payload[k]));
+    var sc=document.createElement('script');var timer=setTimeout(function(){cleanup();done({ok:false,error:'network'});},30000);
+    function cleanup(){clearTimeout(timer);delete window[name];if(sc.parentNode)sc.parentNode.removeChild(sc);}
+    window[name]=function(res){cleanup();done(res);};sc.onerror=function(){cleanup();done({ok:false,error:'network'});};
+    sc.src=ENDPOINT+'?'+q.join('&');document.body.appendChild(sc);
+  }
+  function nyParts(){var f=new Intl.DateTimeFormat('en-US',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',weekday:'short',hour12:false}).formatToParts(new Date());
+    var o={};for(var i=0;i<f.length;i++)o[f[i].type]=f[i].value;if(o.hour==='24')o.hour='00';o.wd=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(o.weekday);return o;}
+  function weekLeft(){var p=nyParts(),add=(5-p.wd+7)%7;return add*86400+86400-(+p.hour*3600+ +p.minute*60+ +p.second);}
+  function myName(){return me.handle?'@'+String(me.handle).replace(/^@+/,''):(me.first_name||'');}
+  function paintBoard(list){
+    if(!list||!list.length){boardEl.innerHTML='<li><span class="fl-empty">No scores yet this week. Be the first.</span></li>';return;}
+    var mine=myName();
+    boardEl.innerHTML=list.map(function(r,i){return '<li'+((r.me||(mine&&r.name===mine))?' class="me"':'')+'><i>'+(i+1)+'</i><span>'+esc(r.name)+'</span><b>'+fmt(r.score)+'</b></li>';}).join('');
+  }
+  function refreshBoard(){api('needletop',{},function(res){if(res&&res.ok)paintBoard(res.top);else boardEl.innerHTML='<li><span class="fl-empty">The board is resting. Try again soon.</span></li>';});}
+  function tickWeek(){var t=weekLeft(),dd=Math.floor(t/86400),hh=Math.floor(t%86400/3600),mm=Math.floor(t%3600/60);leftEl.textContent=(dd?dd+'d ':'')+hh+'h '+('0'+mm).slice(-2)+'m';}
+  tickWeek();setInterval(tickWeek,20000);refreshBoard();
+  function who(run){
+    msg('Put your score on the board below.');postEl.hidden=false;whoEl.hidden=false;
+    whoEl.innerHTML='<div class="fl-form"><label for="fl-first">First name</label><input id="fl-first" autocomplete="given-name">'+
+      '<label for="fl-email">Email you use for the hunt</label><input id="fl-email" type="email" autocomplete="email" inputmode="email">'+
+      '<label for="fl-handle">Social handle (shown on the board)</label><input id="fl-handle" placeholder="@yourname" autocomplete="off">'+
+      '<label for="fl-platform">Where that handle lives</label><select id="fl-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select>'+
+      '<label for="fl-country">Country</label><select id="fl-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select>'+
+      '<input id="fl-other" placeholder="Which country?" hidden>'+
+      '<button type="button" class="fl-btn" id="fl-saveme">SAVE MY SCORE</button></div>';
+    var c=whoEl.querySelector('#fl-country'),other=whoEl.querySelector('#fl-other');
+    c.onchange=function(){other.hidden=c.value!=='__other';};
+    whoEl.querySelector('#fl-saveme').onclick=function(){
+      var p={first_name:whoEl.querySelector('#fl-first').value.trim(),email:whoEl.querySelector('#fl-email').value.trim(),handle:whoEl.querySelector('#fl-handle').value.trim(),
+        platform:whoEl.querySelector('#fl-platform').value,country:c.value==='__other'?other.value.trim():c.value};
+      if(!p.first_name)return msg('A first name, please.',1);
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email))return msg('That email does not look right.',1);
+      if(!p.country)return msg('Which country are you hunting from?',1);
+      me=p;store(ME,me);whoEl.hidden=true;whoEl.innerHTML='';submit(run);
+    };
+  }
+  function submit(run){
+    if(run.ticket===null){msg('Logging your run...');run.ticketWait.push(function(){submit(run);});return;}
+    if(!run.ticket){msg('The ship could not check in when this run started, so it cannot go on the board. Fly again!',1);return;}
+    msg('Logging your run...');
+    api('needlescore',{ticket:run.ticket,email:me.email,first_name:me.first_name,handle:me.handle,platform:me.platform,country:me.country,
+      score:run.score,secs:Math.round((run.rt||0)*10)/10},function(res){
+      if(res&&res.ok){
+        if(res.status==='host'){msg('Practice run. Your runs stay off the board.');return;}
+        msg((res.rank?'Logged! You are #'+res.rank+' this week.':'Logged!')+' Best this week: '+fmt(res.best)+'.');
+        postEl.hidden=false;whoEl.hidden=false;whoEl.innerHTML='<p class="fl-quiet">Playing as '+esc(me.first_name||me.email)+'. <a class="fl-notme">Not you?</a></p>';
+        whoEl.querySelector('.fl-notme').onclick=function(){try{localStorage.removeItem(ME);}catch(e){}me={};who(run);};
+        if(res.top)paintBoard(res.top);return;
+      }
+      var e=res&&res.error;
+      if(e==='slow'){msg('Easy, captain. Logging it in a few seconds...');return setTimeout(function(){submit(run);},6000);}
+      msg(({email:'That email does not look right.',closed:'The hunt is over, so runs no longer go on the board.',ticket:'This run took too long to check in, so it cannot go on the board.',
+        check:'The Captain could not verify this run.',limit:'That is a lot of flying for one day. Come back tomorrow!'})[e]||'The ship is slow today. Give it another go in a moment.',1);
+      if(!e||e==='network'||e==='server'||e==='empty'){postEl.hidden=false;whoEl.hidden=false;whoEl.innerHTML='<button type="button" class="fl-btn ghost">TRY AGAIN</button>';whoEl.querySelector('button').onclick=function(){whoEl.hidden=true;submit(run);};}
+    });
+  }
+
+  // ---- loop ----
+  var last=0,acc=0;
+  function frame(now){
+    if(!last)last=now;var dt=Math.min(.1,(now-last)/1000);last=now;acc+=dt;
+    while(acc>=1/120){step(1/120);acc-=1/120;}
+    draw(dt);requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // Preview-only peek for testing the page (nothing secret in it).
+  if(/[?&]preview=1\b/.test(location.search))d._peek=function(){return {state:S.state,x:shipX(),y:S.y,vy:S.vy,score:S.score,g:P.g,flap:P.flap,speed:P.speed,cols:S.cols.map(function(c){return {x:c.x,w:COLW,gy:c.gy,gap:c.gap,box:c.box};})};};
+})();
+</script>

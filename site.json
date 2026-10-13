@@ -315,6 +315,12 @@
       "source": "pages/airship-runner.html"
     },
     {
+      "slug": "thread-the-needle",
+      "url": "/thread-the-needle",
+      "title": "Thread the Needle (loot box 76, weekly high score)",
+      "source": "pages/thread-the-needle.html"
+    },
+    {
       "slug": "not-found",
       "url": "/not-found",
       "title": "404 page (loot box 40)",

@@ -417,6 +417,8 @@
     if (!ACTMENU || !root || root.getAttribute('data-acts')) return;
     root.setAttribute('data-acts', '1'); actCss();
     var q = function (sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); };
+    // The Games page is THE ARCADE in every menu (Maurice, 2026-10-13); the page address stays /games.
+    q('a[href$="/games"]').forEach(function (x) { if (/^\s*games\s*$/i.test(x.textContent)) x.textContent = 'THE ARCADE'; });
     q('.mn-dd-in a[href$="/leaderboard"], .mn-ovgroup a[href$="/leaderboard"]').forEach(function (a) {
       var p = a.parentNode, next = a.nextSibling;
       p.insertBefore(actLink(SITE + '/leaderboard?act=one', 'ACT ONE STANDINGS'), next);
