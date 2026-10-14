@@ -168,7 +168,7 @@ const FACTS = [
   ['Release', 'November 3, 2026'],
   ['U.S.', 'Saga Press · Hardcover ISBN 9781668242834'],
   ['UK', 'Hodderscape · Hardback ISBN 9781399763073'],
-  ['Audio', 'Simon Maverick'],
+  ['Audio', 'Simon Maverick · Narrated by Gary Furlong · November 3, 2026'],
   ['Editions', 'Walmart Special Edition (U.S.), Waterstones Exclusive (UK), and a signed Broken Binding edition that sold out in less than 48 hours.'],
   ['Goodreads', '26,996 want to read · 4.28 average from 1,114 ratings and 426 reviews (October 14, 2026)'],
   ['Home', 'Asheville, North Carolina'],
@@ -262,6 +262,8 @@ const ANGLES = [
   'Readers Wrote 924 Posts About a Book That Isn’t Out Yet',
   'A Starred Publishers Weekly Debut for Fans of Dungeon Crawler Carl and Red Rising',
 ];
+// The audiobook announcement reel (Instagram).
+const AUDIO_REEL = 'https://www.instagram.com/reel/DduDe5whGEI/';
 // Launch events. url: the store's event or registration page (null until it's posted).
 const EVENTS = [
   { date: 'Mon, Nov 2', time: '6 PM Eastern', title: 'Launch at Malaprop’s Bookstore/Cafe', place: 'In store at 55 Haywood St, Asheville, North Carolina. Free, with registration to reserve a seat.', url: 'https://malaprops.com/event/2026-11-02/maurice-africh' },
@@ -324,6 +326,11 @@ ${fonts}
 #press .pp-angles li{counter-increment:angle;display:grid;grid-template-columns:44px minmax(0,1fr);gap:18px;align-items:start;padding:22px 24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16)}
 #press .pp-angle-n::before{content:counter(angle,decimal-leading-zero);display:block;font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;font-size:40px;line-height:1;letter-spacing:.03em;color:#fd7547}
 #press .pp-angles p{margin:0;font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(26px,2vw,30px);line-height:1.12;color:#fffffe}
+#press .pp-audio{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:40px;align-items:center}
+#press .pp-audio-img img{width:100%;height:auto;display:block;border:1px solid rgba(255,255,254,.16);box-shadow:0 14px 24px rgba(0,0,0,.45)}
+#press .pp-audio-copy p{font-size:clamp(16px,1.3vw,18px);line-height:1.6;color:#ede9dc;margin:0 0 18px}
+#press .pp-audio-copy .pp-audio-lead{font-weight:800;color:#fffffe;font-size:clamp(18px,1.6vw,22px);line-height:1.45}
+#press .pp-audio-copy .pp-btn{display:inline-block;margin-top:6px;padding:12px 22px}
 #press .pp-sub{font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(30px,2.8vw,42px);line-height:1;color:#89fbcb;margin:40px 0 20px}
 #press .pp-praise{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:18px}
 #press .pp-praise figure{margin:0;padding:22px 24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);display:flex;flex-direction:column;justify-content:space-between;gap:14px}
@@ -399,6 +406,8 @@ ${cardCss('#press')}
   #press .pp-imgs{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (max-width:860px){
+  #press .pp-audio{grid-template-columns:1fr;gap:24px}
+  #press .pp-audio-img{max-width:300px}
   #press .pp-angles{grid-template-columns:1fr}
   #press .pp-imgs{grid-template-columns:1fr 1fr}
   #press .pp-stats{grid-template-columns:1fr 1fr}
@@ -474,6 +483,18 @@ ${cardCss('#press')}
       <hr class="pp-rule">
       <h3 class="pp-sub">About the author</h3>
       <p class="pp-bio">Maurice Africh is an ex-theater kid with a passion for tasty food, semi-luxurious travel, reality competition television shows, D&amp;D, and fantasy novels. He currently lives in Asheville, North Carolina, with his beautiful wife, Rachel, and his cute, albeit cranky, chihuahua, Toby.</p>
+    </section>
+
+    <section class="pp-section" id="pp-audio">
+      <h2>The Audiobook</h2>
+      <div class="pp-audio">
+        <a class="pp-audio-img" href="${AUDIO_REEL}" target="_blank" rel="noopener"><img src="${BASE}assets/press/audiobook-announcement.webp" width="810" height="1440" alt="Cello’s Gate audiobook announcement: Gary’s audition" loading="lazy"></a>
+        <div class="pp-audio-copy">
+          <p class="pp-audio-lead">The “Cello’s Gate” audiobook, narrated by Gary Furlong, comes out November 3, 2026, from Simon Maverick.</p>
+          <p>Watch the announcement and “Gary’s Audition” on Instagram.</p>
+          <a class="pp-btn" href="${AUDIO_REEL}" target="_blank" rel="noopener">Watch the announcement</a>
+        </div>
+      </div>
     </section>
 
     <section class="pp-section" id="pp-features">
