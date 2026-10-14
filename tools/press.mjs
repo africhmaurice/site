@@ -170,7 +170,7 @@ const FACTS = [
   ['UK', 'Hodderscape · Hardback ISBN 9781399763073'],
   ['Audio', 'Simon Maverick'],
   ['Editions', 'Walmart Special Edition (U.S.), Waterstones Exclusive (UK), and a signed Broken Binding edition that sold out in less than 48 hours.'],
-  ['Goodreads', '25,658 want to read · 4.28 average from 1,085 ratings (September 28, 2026)'],
+  ['Goodreads', '26,996 want to read · 4.28 average from 1,114 ratings and 426 reviews (October 14, 2026)'],
   ['Home', 'Asheville, North Carolina'],
 ];
 
@@ -195,34 +195,41 @@ const STATS_DATE = 'October 14, 2026';
 // The Headline Numbers are Maurice's own figures and order (2026-10-14).
 const HIGHLIGHTS = [
   ['The Headline Numbers', [
-    ['687', 'Treasure hunt participants, from 16 countries.'],
+    ['687', 'Treasure hunters (readers) from 16 countries.'],
     ['12,052', 'Hunt tasks completed successfully, not counting unsuccessful attempts.'],
-    ['924', 'Social posts about the hunt online, including 162 on Instagram, 124 on TikTok, 109 on Threads, 92 on Facebook, 64 on X, 62 on Reddit, and 47 on YouTube.'],
-    ['+7,386%', 'Website visitors since the hunt began: 17,139 visits, up from about 10 a day to about 745.'],
-    ['+10,891%', 'Website pageviews: 46,076 since the hunt began.'],
-    ['+3,096', 'Goodreads “want to read” adds, up 12.1%.'],
-    ['+29%', 'Newsletter subscribers: 536 new.'],
-    ['+56%', 'Discord members: 95 new, from 171 to 266.'],
-    ['+558%', 'Discord messages: 16,241 sent, compared with the 24 days before the hunt.'],
+    ['924', 'Social posts about the hunt online.'],
+    ['17,139', 'Website visitors since the hunt began: +7,386%. About 745 visitors a day.'],
+    ['46,076', 'Website page views: +10,891% since the hunt began.'],
+    ['+3,096', 'Goodreads “want to read” adds: +12.1%.'],
+    ['+29%', 'Newsletter subscribers.'],
+    ['+56%', 'Discord members.'],
+    ['16,241', 'Discord messages posted during the hunt, +558% compared to the 24 days before the hunt.'],
     ['+488', 'Instagram followers, up 3.2%.'],
   ], true],
-  ['Readers Doing the Marketing', [
-    ['92', 'Copies of “Cello’s Gate” pre-ordered or gifted through the hunt by 59 buyers, about 9% of players, weeks before release.'],
-    ['58', 'Requests from readers asking 34 libraries and 24 bookstores to stock the book. Four stores have already said yes.'],
-    ['77', 'Reading-app adds by 36 readers, on Goodreads, StoryGraph, Fable, and more.'],
-    ['22', 'New players recruited by other players.'],
-    ['60', 'Items bought from the merch shop.'],
-    ['12', 'Pieces of fan art and fan fiction, created before the book is even out.'],
-  ]],
+  // Rewards awarded = 16 digital rewards unlocked so far (Act One: The Blind Duel, Crew Dossier, phone background,
+  // Sort the Shelf, Book Icons, Crossword, Trench Market, +50 New Loot Boxes, Golden Loot Box; Act Two: Blades & Brass,
+  // Aura Color Search, Matching Auras, desktop background, Crest Quest, Airship Runner, Thread the Needle) x 687
+  // hunters, plus 15 Act One sweepstakes winners (U.S., UK, and world wheels, 5 each).
   ['Readers Are Hooked', [
-    ['94%', 'Of players have found at least one hidden loot box: 3,288 finds across 74 boxes hidden around the internet.'],
+    ['3,288', 'Loot boxes found.'],
     ['1,679', 'Riddles solved.'],
-    ['3,998', 'Daily puzzle wins across 7 original games.'],
-    ['170', 'Votes steering a live choose-your-own-adventure story set in the book’s world.'],
-    ['655,395', 'Points earned by the crew together. Act One beat its 40,000 goal five times over, and Act Two has passed 400,000, double its goal.'],
+    ['3,998', 'Daily puzzle wins across 7 games.'],
+    ['655,395', 'Points earned by the crew together.'],
     ['12,546', 'Sweepstakes entries.'],
-  ]],
+    ['11,007', 'Rewards awarded so far: 16 digital rewards unlocked for all 687 hunters, plus 15 sweepstakes winners.'],
+  ], true],
 ];
+// Title case for the stat lines (Maurice, 2026-10-14). Short joining words stay lowercase unless they start a phrase.
+const SMALL = new Set(['a', 'an', 'the', 'and', 'or', 'nor', 'but', 'of', 'to', 'in', 'on', 'at', 'by', 'for', 'from', 'with', 'as', 'per', 'via']);
+const titleCase = (t) => t.split(' ').map((w, i, all) => {
+  const m = w.match(/^([^A-Za-z]*)([A-Za-z][A-Za-z’'-]*)(.*)$/);
+  if (!m) return w;
+  const [, pre, word, post] = m;
+  const prev = i ? all[i - 1] : '';
+  const starts = i === 0 || /[:.!?]$/.test(prev) || /^[“(]/.test(pre);
+  if (!starts && SMALL.has(word.toLowerCase())) return pre + word.toLowerCase() + post;
+  return pre + word.charAt(0).toUpperCase() + word.slice(1) + post;
+}).join(' ');
 const STATS = [
   ['220', 'sky pirates'],
   ['173,820', 'crew points earned'],
@@ -231,11 +238,11 @@ const STATS = [
 ];
 const HUNT_FACTS = [
   ['Dates', 'September 20 to November 1, 2026. It ends two days before “Cello’s Gate” comes out.'],
-  ['Where', 'mauriceafrich.com/the-hunt'],
+  ['Where', '<a href="https://www.mauriceafrich.com/the-hunt">mauriceafrich.com/the-hunt</a>'],
   ['Who', 'Free and open to everyone, everywhere. The Treasure is for U.S. and UK residents (three winners each), and the sweepstakes are for U.S. residents, with a UK prize draw coming soon. Prize winners must be 18 or older.'],
   ['Players', '687 sky pirates from 16 countries: the U.S., the UK, Canada, Australia, India, Estonia, Germany, Ireland, Austria, Japan, Poland, Norway, Portugal, Spain, New Zealand, and Indonesia.'],
   ['Traffic', '17,139 more website visitors (up 7,386%) and 46,076 more pageviews (up 10,891%) since the hunt started.'],
-  ['Play', 'Tasks, riddles, clues, seven daily bookish games (including Skyword, Blades & Brass, and Crest Quest), 101 hidden loot boxes, and a fan fiction contest.'],
+  ['Play', 'Tasks, riddles, clues, seven daily bookish games (including Skyword, Blades & Brass, and Crest Quest), 101 hidden loot boxes, and a fan art contest.'],
   ['Story', 'Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!'],
   ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 655,395 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two has passed 400,000, double its 200,000 goal.'],
   ['Acts', 'Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1). Winners are announced the day after each act ends.'],
@@ -307,12 +314,12 @@ ${fonts}
 #press .pp-kit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:start}
 #press .pp-imgs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px;margin-bottom:36px}
 #press .pp-img{display:flex;flex-direction:column;gap:10px;color:#fffffe;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:.06em}
-#press .pp-img img{width:100%;aspect-ratio:4/5;object-fit:contain;display:block;border:1px solid rgba(255,255,254,.16);background:rgba(11,23,15,.9)}
-#press .pp-img:last-child img{object-fit:cover}
+#press .pp-img img{width:100%;aspect-ratio:4/5;object-fit:contain;display:block;background:none;border:0;filter:drop-shadow(0 14px 18px rgba(0,0,0,.55)) drop-shadow(0 3px 5px rgba(0,0,0,.35))}
+#press .pp-img:last-child img{object-fit:cover;filter:none;border:1px solid rgba(255,255,254,.16);box-shadow:0 14px 24px rgba(0,0,0,.45)}
 #press .pp-desc p{font-size:16px;line-height:1.65;color:#ede9dc;margin:0 0 16px}
 #press .pp-desc .pp-lead{font-weight:800;color:#fffffe}
 #press .pp-desc .pp-tag{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.2vw,30px);letter-spacing:.03em;color:#fffffe;line-height:1.35;text-align:center;padding:12px 0}
-#press .pp-angles-lede{font-size:clamp(16px,1.3vw,18px);line-height:1.6;color:#ede9dc;margin:-10px 0 26px;max-width:720px}
+#press .pp-angles-lede{font-size:clamp(16px,1.3vw,18px);line-height:1.6;color:#ede9dc;margin:-10px 0 26px}
 #press .pp-angles{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;counter-reset:angle}
 #press .pp-angles li{counter-increment:angle;display:grid;grid-template-columns:44px minmax(0,1fr);gap:18px;align-items:start;padding:22px 24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16)}
 #press .pp-angle-n::before{content:counter(angle,decimal-leading-zero);display:block;font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;font-size:40px;line-height:1;letter-spacing:.03em;color:#fd7547}
@@ -330,6 +337,8 @@ ${fonts}
 #press .pp-img:hover span{color:#a2f590}
 #press .pp-facts{margin:0;display:grid;grid-template-columns:130px minmax(0,1fr);gap:0}
 #press .pp-facts dt{white-space:nowrap}
+#press .pp-facts dd a{color:#fd7547;text-decoration:underline;text-underline-offset:3px}
+#press .pp-facts dd a:hover{color:#a2f590}
 #press .pp-facts dt,#press .pp-facts dd{margin:0;padding:12px 0;border-top:1px solid rgba(243,234,217,.12);font-size:15px;line-height:1.5}
 #press .pp-facts dt{font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#a2f590;padding-top:14px}
 #press .pp-bio{font-size:16px;line-height:1.65;color:#ede9dc;margin:26px 0 0}
@@ -426,10 +435,10 @@ ${cardCss('#press')}
       <p class="pp-motto">${esc(HUNT_MOTTO)}</p>
       <p class="pp-hunt-lede">${HUNT_HOW}</p>
       <div class="pp-ways">${HUNT_WAYS.map(([h, t]) => `<div class="pp-way"><h3>${esc(h)}</h3><p>${esc(t)}</p></div>`).join('')}</div>
-      <div class="pp-hl">${HIGHLIGHTS.map(([head, rows, wide]) => `<div class="pp-hl-col${wide ? ' wide' : ''}"><h3>${esc(head)}</h3>${rows.map(([n, t]) => `<div class="pp-hl-row"><b>${esc(n)}</b><span>${esc(t)}</span></div>`).join('')}</div>`).join('')}</div>
+      <div class="pp-hl">${HIGHLIGHTS.map(([head, rows, wide]) => `<div class="pp-hl-col${wide ? ' wide' : ''}"><h3>${esc(head)}</h3>${rows.map(([n, t]) => `<div class="pp-hl-row"><b>${esc(n)}</b><span>${esc(titleCase(t))}</span></div>`).join('')}</div>`).join('')}</div>
       <p class="pp-asof">As of ${esc(STATS_DATE)}.</p>
       <blockquote class="pp-quote">${HUNT_QUOTE.map((p, i, a) => `<p>${i === 0 ? '“' : ''}${esc(p)}${i === a.length - 1 ? '”' : ''}</p>`).join('')}<cite>${esc(HUNT_QUOTE_BY)}</cite></blockquote>
-      <dl class="pp-facts">${HUNT_FACTS.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
+      <dl class="pp-facts">${HUNT_FACTS.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${v.startsWith('<a ') ? v : esc(v)}</dd>`).join('')}</dl>
       <figure class="pp-gfx"><a href="${BASE}assets/press/hunt-overview.png?v=1010" target="_blank" rel="noopener"><img src="${BASE}assets/press/hunt-overview.webp?v=1010" width="2400" height="1350" alt="The Cello’s Gate Treasure Hunt: five panels split by brush slashes. Sweepstakes: 3 sweepstakes, 10 winners each. Rewards: 20+ rewards unlocked by collective points for all hunters. Tasks and Riddles: to earn points and unlock secret rewards. Loot Boxes: 101 loot boxes hidden all over the internet. Choose Your Own Adventure: vote on where the crew goes and roll the dice. " loading="lazy"></a><figcaption><a href="${BASE}assets/press/hunt-overview.png" target="_blank" rel="noopener">Download the full-size graphic ↓</a></figcaption></figure>
       <div class="pp-cta"><a class="pp-btn" href="/the-hunt">See the hunt</a><a class="pp-btn" href="/leaderboard">Live leaderboard</a></div>
     </section>
