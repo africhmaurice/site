@@ -49,6 +49,52 @@
    "url": "mailto:mauriceafrich@secondworldbooks.com"
   }
  ],
+ "editions": {
+  "title": "Choose Your Edition",
+  "items": [
+   {
+    "id": "ed-saga-deluxe",
+    "label": "Saga Deluxe Edition",
+    "note": "U.S. Hardcover, Sprayed Edges, Map Endpapers",
+    "img": "../img/ed-deluxe.webp",
+    "open": "preorder",
+    "bg": "pin-03.jpg"
+   },
+   {
+    "id": "ed-walmart",
+    "label": "Walmart Exclusive Special Edition",
+    "note": "New Cover, Bonus Brass Point Short Story",
+    "img": "../img/ed-walmart.webp",
+    "url": "https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704",
+    "bg": "pin-04.jpg"
+   },
+   {
+    "id": "ed-hodderscape",
+    "label": "Hodderscape Edition",
+    "note": "UK Hardcover, Direct from My UK Publisher",
+    "img": "../img/ed-hodderscape.webp",
+    "url": "https://hodderscape.co.uk/products/cellos-gate",
+    "bg": "pin-07.jpg"
+   },
+   {
+    "id": "ed-waterstones",
+    "label": "Waterstones Exclusive Edition",
+    "note": "UK Exclusive, Sprayed Edges and Endpapers",
+    "img": "../img/ed-waterstones.webp",
+    "url": "https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227",
+    "bg": "pin-10.jpg"
+   },
+   {
+    "id": "ed-broken-binding",
+    "label": "Signed Broken Binding Edition",
+    "note": "Signed, Foil Boards, Digital Edges",
+    "img": "../img/ed-broken-binding.webp",
+    "url": "https://thebrokenbindingsub.com/products/cellos-gate",
+    "bg": "pin-11.jpg",
+    "soldOut": true
+   }
+  ]
+ },
  "copper": {
   "id": "copper-loot-box",
   "label": "Copper Loot Box (for Beginners)",

@@ -29,6 +29,20 @@ const socials = D.socials.map((s) => /^mailto:/.test(s.url)
 const C = D.copper;
 const copperCard = `<a class="lk-copper" href="${esc(C.url)}" data-link="${C.id}" data-section="top"><img src="${asset(C.img)}" alt="" width="360" height="360"><span><b>${esc(C.label)}</b><small>${esc(C.sub)}</small></span>${arrow}</a>`;
 
+// the editions row up top (Maurice, 10/14): each book on its own art, its name, one line, and where to get it.
+// A card with 'open' scrolls to a section on this page (the Saga edition is sold everywhere, so it opens the store
+// grid); a sold-out card stays tappable but wears a SOLD OUT stamp.
+const E = D.editions;
+const edCard = (e) => {
+  const body = `<span class="lk-edart" style="background-image:url('${bgUrl(e.bg)}')"></span><span class="lk-edov"></span>`
+    + `<span class="lk-edin"><img class="lk-edimg" src="${asset(e.img)}" alt=""><b>${esc(e.label)}</b><small>${esc(e.note)}</small>`
+    + `<span class="lk-edcta">${e.soldOut ? 'Sold Out!' : 'Pre-Order'}</span></span>`
+    + (e.soldOut ? '<span class="lk-edstamp" aria-hidden="true">Sold Out</span>' : '');
+  const attrs = `class="lk-ed${e.soldOut ? ' lk-ed-out' : ''}" data-link="${e.id}" data-section="editions" aria-label="${esc(e.label)}${e.soldOut ? ' (Sold Out)' : ''}"`;
+  return e.open ? `<button type="button" ${attrs} data-open="${e.open}">${body}</button>` : `<a href="${esc(e.url)}"${ext(e.url)} ${attrs}>${body}</a>`;
+};
+const editions = E ? `<section class="lk-eds" id="lk-editions"><h2 class="lk-h">${esc(E.title)}</h2><div class="lk-edgrid">${E.items.map(edCard).join('')}</div></section>` : '';
+
 // the art behind a tile and its brand-color wash
 const backing = (bg, tone) => `<span class="lk-bgimg" style="background-image:url('${bgUrl(bg)}')"></span><span class="lk-ov lk-ov-${tone}"></span>`;
 const feature = D.feature.map((f) => {
@@ -138,11 +152,27 @@ const page = `<!-- ============================================================
 #ma-links .lk-news button:hover{transform:scale(1.04)}
 #ma-links .lk-news button[disabled]{opacity:.6;cursor:default;transform:none}
 #ma-links .lk-nmsg{margin:0;font-weight:700;font-size:15px;line-height:1.45;text-align:center;color:var(--parch)!important}
+#ma-links .lk-eds{display:flex;flex-direction:column;gap:14px}
+#ma-links .lk-edgrid{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+#ma-links .lk-ed{position:relative;flex:0 0 calc((100% - 8px)/2);display:block;overflow:hidden;padding:0;margin:0;border:1px solid rgba(255,255,254,.18);background:none;font:inherit;color:var(--parch)!important;text-decoration:none!important;text-align:center;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+@media (min-width:520px){#ma-links .lk-ed{flex-basis:calc((100% - 16px)/3)}}
+#ma-links .lk-ed:hover{transform:scale(1.03);z-index:2;box-shadow:0 10px 24px rgba(0,0,0,.5)}
+#ma-links .lk-edart,#ma-links .lk-edov{position:absolute;inset:0}
+#ma-links .lk-edart{background-size:cover;background-position:center}
+#ma-links .lk-edov{background:linear-gradient(180deg,rgba(11,23,15,.55),rgba(11,23,15,.9) 62%)}
+#ma-links .lk-edin{position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;height:100%;padding:20px 12px 20px}
+#ma-links .lk-edimg{display:block;height:clamp(150px,40vw,190px);width:auto;max-width:100%;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(0,0,0,.6))}
+#ma-links .lk-edin b{display:flex;align-items:center;justify-content:center;min-height:3.9em;font-weight:800;font-size:clamp(13px,3.6vw,15px);line-height:1.3;letter-spacing:.06em;text-transform:uppercase;text-wrap:balance}
+#ma-links .lk-edin small{min-height:4.2em;font-weight:700;font-size:clamp(11px,3vw,12px);line-height:1.4;opacity:.85;text-wrap:balance}
+#ma-links .lk-edcta{margin-top:auto;padding:8px 14px;background:var(--green);color:var(--ink);font-weight:800;font-size:12px;line-height:1;letter-spacing:.1em;text-transform:uppercase}
+#ma-links .lk-ed-out .lk-edimg{filter:grayscale(.75) brightness(.7) drop-shadow(0 10px 14px rgba(0,0,0,.6))}
+#ma-links .lk-ed-out .lk-edcta{background:rgba(255,255,254,.18);color:var(--parch)}
+#ma-links .lk-edstamp{position:absolute;top:58px;left:50%;transform:translateX(-50%) rotate(-12deg);padding:8px 14px;border:3px solid #fd7547;background:rgba(145,37,1,.9);color:var(--parch);font-family:'Atomic Marker',Impact,sans-serif;font-size:20px;line-height:1.2;letter-spacing:.06em;white-space:nowrap;pointer-events:none}
 #ma-links .lk-quiet{display:block;width:28px;height:28px;margin:4px auto 0;opacity:.35;transition:opacity .15s ease,transform .15s ease}
 #ma-links .lk-quiet img{display:block;width:100%;height:100%;object-fit:contain}
 #ma-links .lk-quiet:hover{opacity:1;transform:scale(1.15)}
 #ma-links .lk-foot{margin:0;text-align:center;font-size:13px;letter-spacing:.06em;color:var(--moss)!important}
-@media (prefers-reduced-motion:reduce){#ma-links .lk-tile,#ma-links .lk-copper,#ma-links .lk-soc,#ma-links .lk-promo,#ma-links .lk-quiet{transition:none}}
+@media (prefers-reduced-motion:reduce){#ma-links .lk-ed,#ma-links .lk-tile,#ma-links .lk-copper,#ma-links .lk-soc,#ma-links .lk-promo,#ma-links .lk-quiet{transition:none}}
 </style>
 <div id="ma-links">
   <div class="lk-sky" aria-hidden="true"></div><div class="lk-wash" aria-hidden="true"></div>
@@ -153,6 +183,7 @@ const page = `<!-- ============================================================
       ${D.lines.map((l) => `<p class="lk-line">${esc(l)}</p>`).join('')}
       <nav class="lk-socs" aria-label="Find Maurice">${socials}</nav>
     </header>
+    ${editions}
     ${copperCard}
     <div class="lk-feats">${feature}</div>
     ${signup}
@@ -215,10 +246,13 @@ ${sections}
       var a = e.target.closest('a[data-link]'); if (!a) return;
       hit('click', a.getAttribute('data-link'), a.getAttribute('data-section'));
       px('trackCustom', 'LinkTap', { link: a.getAttribute('data-link'), section: a.getAttribute('data-section'), campaign: CMP });
-      // A tap on a store (the Pre-Order grid or the Amazon icon) is the pre-order signal ads optimize for: the sale
-      // itself happens on the store's site, where the Pixel can't see it.
-      if (a.getAttribute('data-section') === 'preorder' || a.getAttribute('data-link') === 'amazon')
+      // A tap on a store (the editions row, the Pre-Order grid, or the Amazon icon) is the pre-order signal ads
+      // optimize for: the sale itself happens on the store's site, where the Pixel can't see it. PreOrderTap is the
+      // same tap as a custom event, which an Engagement campaign can optimize for (Maurice, 10/14).
+      if (/^(preorder|editions)$/.test(a.getAttribute('data-section')) || a.getAttribute('data-link') === 'amazon') {
         px('track', 'InitiateCheckout', { content_name: "Cello's Gate", content_category: a.getAttribute('data-link'), campaign: CMP });
+        px('trackCustom', 'PreOrderTap', { link: a.getAttribute('data-link'), section: a.getAttribute('data-section'), campaign: CMP });
+      }
     }, true);
   }
   // Tile words shrink to fit their tile (a long name like BeeristheMindKiller), never running past its padding.
@@ -266,11 +300,11 @@ ${sections}
       try { location.href = 'mailto:' + atob(a.getAttribute('data-m')).split('').reverse().join(''); } catch (err) {}
     });
   });
-  // The Pre-Order tile scrolls to the store grid (every section is open).
+  // The Pre-Order tile and the Saga edition card scroll to the store grid (every section is open).
   Array.prototype.forEach.call(root.querySelectorAll('[data-open]'), function (b) {
     b.addEventListener('click', function () {
       var s = document.getElementById('lk-' + b.getAttribute('data-open')); if (!s) return;
-      if (counting) hit('click', b.getAttribute('data-link'), 'buttons');
+      if (counting) hit('click', b.getAttribute('data-link'), b.getAttribute('data-section') || 'buttons');
       s.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
@@ -326,5 +360,5 @@ ${sections}
 </script>
 `;
 writeFileSync(join(ROOT, 'pages/links.html'), page);
-const n = D.sections.reduce((a, s) => a + s.links.length + (s.promo ? 1 : 0), 0) + D.socials.length + D.feature.length + 2;
+const n = D.sections.reduce((a, s) => a + s.links.length + (s.promo ? 1 : 0), 0) + D.socials.length + D.feature.length + (D.editions ? D.editions.items.length : 0) + 2;
 console.log('pages/links.html: ' + n + ' links in ' + D.sections.length + ' sections (' + (page.length / 1024).toFixed(0) + ' KB)');
