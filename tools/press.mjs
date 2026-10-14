@@ -330,6 +330,7 @@ ${fonts}
 #press .pp-audio-img img{width:100%;height:auto;display:block;border:1px solid rgba(255,255,254,.16);box-shadow:0 14px 24px rgba(0,0,0,.45)}
 #press .pp-audio-copy p{font-size:clamp(16px,1.3vw,18px);line-height:1.6;color:#ede9dc;margin:0 0 18px}
 #press .pp-audio-copy .pp-audio-lead{font-weight:800;color:#fffffe;font-size:clamp(18px,1.6vw,22px);line-height:1.45}
+#press .pp-audio-copy .pp-audio-bio{font-style:italic;font-size:clamp(15px,1.15vw,17px);margin-bottom:14px}
 #press .pp-audio-copy .pp-btn{display:inline-block;margin-top:6px;padding:12px 22px}
 #press .pp-sub{font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(30px,2.8vw,42px);line-height:1;color:#89fbcb;margin:40px 0 20px}
 #press .pp-praise{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:18px}
@@ -491,6 +492,10 @@ ${cardCss('#press')}
         <a class="pp-audio-img" href="${AUDIO_REEL}" target="_blank" rel="noopener"><img src="${BASE}assets/press/audiobook-announcement.webp" width="810" height="1440" alt="Cello’s Gate audiobook announcement: Gary’s audition" loading="lazy"></a>
         <div class="pp-audio-copy">
           <p class="pp-audio-lead">The “Cello’s Gate” audiobook, narrated by Gary Furlong, comes out November 3, 2026, from Simon Maverick.</p>
+          <p class="pp-audio-bio">Gary has narrated over 300 books across various genres, including young adult fiction, romance, and mystery.</p>
+          <p class="pp-audio-bio">He has also lent his voice to a multitude of projects, including commercials, video games, and animated series. Gary is known for his exceptional skill in accents and dialects, with fluency in Irish, British RP, and Standard American.</p>
+          <p class="pp-audio-bio">His ability to switch seamlessly between different accents and languages has made him a highly sought-after voice actor in the industry.</p>
+          <p class="pp-audio-bio">Gary’s outstanding work has been recognized by various prestigious organizations. He is the recipient of an Audie Award, which is given to exceptional audiobooks, and an ABR Audiobook Listener Award.</p>
           <p>Watch the announcement and “Gary’s Audition” on Instagram.</p>
           <a class="pp-btn" href="${AUDIO_REEL}" target="_blank" rel="noopener">Watch the announcement</a>
         </div>
