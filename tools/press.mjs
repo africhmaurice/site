@@ -16,7 +16,8 @@ const FEATURES = [
   { home: true, star: true, outlet: 'Publishers Weekly', type: 'Review', title: 'Cello’s Gate (The Sky Pirates of Imperia #1)', date: 'Sep 2026',
     quote: 'Readers will find this swashbuckling mix of technology and magic un-put-downable.',
     url: 'https://www.publishersweekly.com/9781668242834' },
-  { home: true, outlet: 'Library Journal', type: 'Review', title: 'Cello’s Gate', date: '2026',
+  { home: true, outlet: 'Library Journal', type: 'Review', title: 'Cello’s Gate', date: 'Aug 2026',
+    quote: 'An adventurous sci-fi fantasy with a unique pirate twist.',
     url: 'https://www.libraryjournal.com/review/cellos-gate-100013820' },
   { home: true, outlet: 'Collider', type: 'List', title: '10 Sci-Fi Books That Are Perfect From Start to Finish', date: 'Sep 2026',
     quote: 'A rip-roaring ride from the first to the final page.',
@@ -128,9 +129,12 @@ const contact = (c) => `
           : `<span class="pp-soon">Email coming soon</span>`}
       </div>`;
 
+// [file in assets/press, alt text, label, optional note shown as a Scarlet tag]
 const KIT_IMAGES = [
-  ['cover-saga-floating.webp', 'Cello’s Gate, Saga Press hardcover', 'Book cover'],
-  ['cover-walmart-floating.webp', 'Cello’s Gate, Walmart Exclusive Special Edition', 'Walmart Exclusive Special Edition'],
+  ['ed-deluxe.webp', 'Cello’s Gate, Saga Press U.S. hardcover with sprayed edges', 'U.S. Deluxe Edition'],
+  ['ed-walmart.webp', 'Cello’s Gate, Walmart Special Edition with an exclusive cover', 'Walmart Special Edition'],
+  ['ed-waterstones.webp', 'Cello’s Gate, Waterstones Exclusive UK hardback with sprayed edges', 'Waterstones Exclusive'],
+  ['ed-broken-binding.webp', 'Cello’s Gate, signed Broken Binding edition with foil boards', 'Broken Binding Signed Edition', 'Sold out in less than 48 hours'],
   ['author-photo.webp', 'Maurice Africh', 'Author photo'],
 ];
 const DESCRIPTION = [
@@ -145,8 +149,13 @@ const DESCRIPTION = [
 // [quote, name, book or handle, isHandle]
 const PRAISE = [
   ['Readers will find this swashbuckling mix of technology and magic un-put-downable.', 'PUBLISHERS WEEKLY', 'starred review', true],
+  ['An adventurous sci-fi fantasy with a unique pirate twist that balances human connections with action.', 'LIBRARY JOURNAL', '', true],
+  ['Readers should enjoy this thinly veiled literary love letter to pop-culture SF.', 'KIRKUS REVIEWS', '', true],
+  ['Cello’s Gate is a rip-roaring ride from the first to the final page.', 'COLLIDER', '10 Sci-Fi Books That Are Perfect From Start to Finish', true],
   ['This stellar debut is exactly the kind of book I love to read. It’s got scheming immortals, a perilous quest, and a ragtag band of eclectic, eccentric, exceedingly dangerous misfits setting out on a grand adventure. And did I mention the monsters? The skyships? The witty banter? Wait, are we sure I didn’t write this myself? This one’s a must-read, and I can’t wait to see where it goes from here.', 'NICHOLAS EAMES', 'KINGS OF THE WYLD'],
   ['The very definition of rip-roaring.', 'RICHARD SWAN', 'THE JUSTICE OF KINGS'],
+  ['A little Firefly, a little Dune, a hell of a ride.', 'DAVE RUDDEN', 'SISTER WAKE'],
+  ['Cello’s Gate truly was the wickedly wild and uniquely imaginative adventure I didn’t know I needed in my life.', 'ESMAY ROSALYNE', 'Grimdark Magazine', true],
   ['The most fun I’ve had reading this year.', 'SMITTY', '@smitty1423', true],
   ['Fun and thrilling with a cast of memorable characters. It’s hard to find a stronger debut novel.', 'AARON N. HALL', 'THE LEGEND OF UH'],
   ['Maurice has made fantasy fun again, and I cannot get enough of it. Cello’s Gate is the best debut I have ever read and it’s not even close. He took everything I love about fantasy and put it in one book.', 'NOAH BRISK', 'THE TETHERED GOD'],
@@ -160,6 +169,7 @@ const FACTS = [
   ['U.S.', 'Saga Press · Hardcover ISBN 9781668242834'],
   ['UK', 'Hodderscape · Hardback ISBN 9781399763073'],
   ['Audio', 'Simon Maverick'],
+  ['Editions', 'Walmart Special Edition (U.S.), Waterstones Exclusive (UK), and a signed Broken Binding edition that sold out in less than 48 hours.'],
   ['Goodreads', '25,658 want to read · 4.28 average from 1,085 ratings (September 28, 2026)'],
   ['Home', 'Asheville, North Carolina'],
 ];
@@ -180,32 +190,37 @@ const HUNT_QUOTE = [
   'That’s why I built this treasure hunt. Because I thought it would be fun (which is a cornerstone of my brand), I thought it would help us sell a lot of books, and I thought, by the end of it, a lot more people would know my name. We’ll see, huh? If nothing else, I know we’re all having a pretty damn good time.',
 ];
 const HUNT_QUOTE_BY = 'Maurice Africh, Author of “Cello’s Gate”';
-const STATS_DATE = 'October 10, 2026';
+const STATS_DATE = 'October 14, 2026';
 // [group title, [[big number, what it means]], wide (spans the full row, two stats per line)]
+// The Headline Numbers are Maurice's own figures and order (2026-10-14).
 const HIGHLIGHTS = [
   ['The Headline Numbers', [
-    ['528', 'Readers have joined the hunt, from 14 countries.'],
-    ['9,348', 'Tasks completed: posts, riddles, games, and finds.'],
-    ['501,970', 'Points earned by the crew together. Act One beat its 40,000 goal five times over, and Act Two is already past its 200,000 goal.'],
-    ['9,117', 'Sweepstakes entries.'],
-    ['80', 'Copies of “Cello’s Gate” pre-ordered or gifted through the hunt, weeks before release.'],
-    ['94×', 'Website traffic: 18,997 visits since the hunt opened, about 940 a day, up from about 10 a day before it.'],
-    ['2,650', 'New Goodreads “want to read” adds during the hunt.'],
-    ['+53%', 'Discord community growth, from 171 to 261 members.'],
+    ['687', 'Treasure hunt participants, from 16 countries.'],
+    ['12,052', 'Hunt tasks completed successfully, not counting unsuccessful attempts.'],
+    ['924', 'Social posts about the hunt online, including 162 on Instagram, 124 on TikTok, 109 on Threads, 92 on Facebook, 64 on X, 62 on Reddit, and 47 on YouTube.'],
+    ['+7,386%', 'Website visitors since the hunt began: 17,139 visits, up from about 10 a day to about 745.'],
+    ['+10,891%', 'Website pageviews: 46,076 since the hunt began.'],
+    ['+3,096', 'Goodreads “want to read” adds, up 12.1%.'],
+    ['+29%', 'Newsletter subscribers: 536 new.'],
+    ['+56%', 'Discord members: 95 new, from 171 to 266.'],
+    ['+558%', 'Discord messages: 16,241 sent, compared with the 24 days before the hunt.'],
+    ['+488', 'Instagram followers, up 3.2%.'],
   ], true],
   ['Readers Doing the Marketing', [
-    ['669', 'Public social posts by players: 340 “share the hunt” posts, 93 book-recommendation carousels featuring “Cello’s Gate,” 143 scorecards, 73 merch photos, and 20 Balance Challenge videos.'],
-    ['62', 'Requests from readers asking 34 libraries and 28 bookstores to stock the book. Four stores have already said yes.'],
+    ['92', 'Copies of “Cello’s Gate” pre-ordered or gifted through the hunt by 59 buyers, about 9% of players, weeks before release.'],
+    ['58', 'Requests from readers asking 34 libraries and 24 bookstores to stock the book. Four stores have already said yes.'],
     ['77', 'Reading-app adds by 36 readers, on Goodreads, StoryGraph, Fable, and more.'],
     ['22', 'New players recruited by other players.'],
+    ['60', 'Items bought from the merch shop.'],
+    ['12', 'Pieces of fan art and fan fiction, created before the book is even out.'],
   ]],
   ['Readers Are Hooked', [
-    ['2,624', 'Hidden loot boxes found, across 61 different boxes hidden around the internet.'],
-    ['1,467', 'Riddles solved.'],
-    ['2,942', 'Daily puzzle wins across 7 original games.'],
-    ['137', 'Votes steering a live choose-your-own-adventure story set in the book’s world.'],
-    ['45', 'Items bought from the merch shop.'],
-    ['11', 'Pieces of fan art and fan fiction, created before the book is even out.'],
+    ['94%', 'Of players have found at least one hidden loot box: 3,288 finds across 74 boxes hidden around the internet.'],
+    ['1,679', 'Riddles solved.'],
+    ['3,998', 'Daily puzzle wins across 7 original games.'],
+    ['170', 'Votes steering a live choose-your-own-adventure story set in the book’s world.'],
+    ['655,395', 'Points earned by the crew together. Act One beat its 40,000 goal five times over, and Act Two has passed 400,000, double its goal.'],
+    ['12,546', 'Sweepstakes entries.'],
   ]],
 ];
 const STATS = [
@@ -218,13 +233,27 @@ const HUNT_FACTS = [
   ['Dates', 'September 20 to November 1, 2026. It ends two days before “Cello’s Gate” comes out.'],
   ['Where', 'mauriceafrich.com/the-hunt'],
   ['Who', 'Free and open to everyone, everywhere. The Treasure is for U.S. and UK residents (three winners each), and the sweepstakes are for U.S. residents, with a UK prize draw coming soon. Prize winners must be 18 or older.'],
-  ['Players', '528 sky pirates from 14 countries: the U.S., the UK, Canada, Australia, India, Estonia, Germany, Ireland, Austria, Japan, Poland, Norway, Portugal, and Spain.'],
-  ['Traffic', 'Site traffic is up about 94 times: 18,997 visits since the hunt started, about 940 a day, compared with about 10 a day in September before it.'],
+  ['Players', '687 sky pirates from 16 countries: the U.S., the UK, Canada, Australia, India, Estonia, Germany, Ireland, Austria, Japan, Poland, Norway, Portugal, Spain, New Zealand, and Indonesia.'],
+  ['Traffic', '17,139 more website visitors (up 7,386%) and 46,076 more pageviews (up 10,891%) since the hunt started.'],
   ['Play', 'Tasks, riddles, clues, seven daily bookish games (including Skyword, Blades & Brass, and Crest Quest), 101 hidden loot boxes, and a fan fiction contest.'],
   ['Story', 'Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!'],
-  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 501,970 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two has already passed its 200,000 goal.'],
+  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 655,395 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two has passed 400,000, double its 200,000 goal.'],
   ['Acts', 'Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1). Winners are announced the day after each act ends.'],
   ['Treasure', 'The top three on the U.S. and UK leaderboards win The Treasure: signed editions, art prints, custom bookmarks, enamel pins, an advance audiobook, and more.'],
+];
+// Story angles: Maurice's own headline ideas for editors and hosts (2026-10-14), in his order.
+const ANGLES = [
+  'How One Author Has Hundreds of People Spending Hours Every Day Looking for Digital Treasure',
+  'The Future of Marketing Is Experiential & Community-Based—One Sci-Fantasy Author Is Paving the Way',
+  'How to Create a Cult Community May Be Hidden in One Author’s Discord Community & Launch Campaign',
+  'Move Over Taylor Swift: How One Sci-Fantasy Author Is Making His Fans Lose It with Hidden Loot Boxes Around the Web',
+  'Loot Boxes, Daily Games, & Social Media—How One Sci-Fantasy Author Is Reinventing Book Marketing',
+  'Sci-Fi & Fantasy Should Be Fun! One Author Is Proving That Fun Should Go Beyond the Pages',
+  'Reading Is Now a Community Hobby—How Social Media Is Changing the Way We Experience Books',
+  'A Choose Your Own Adventure Game & Hidden Loot Boxes: How the Author of Cello’s Gate Is Getting Buzz for His Breakout Sci-Fantasy Novel',
+  'He Self-Published His Debut in 2025. A Year Later, Simon & Schuster Is Releasing It.',
+  'Readers Wrote 924 Posts About a Book That Isn’t Out Yet',
+  'A Starred Publishers Weekly Debut for Fans of Dungeon Crawler Carl and Red Rising',
 ];
 // Launch events. url: the store's event or registration page (null until it's posted).
 const EVENTS = [
@@ -276,13 +305,18 @@ ${fonts}
 #press .pp-addr{display:block;margin-top:10px;font-size:14px;color:rgba(255,255,254,.7);white-space:nowrap;text-align:center}
 #press .pp-soon{margin-top:auto;display:block;text-align:center;font-size:14px;font-weight:700;letter-spacing:.06em;padding:12px 16px;border:1.5px dashed rgba(255,255,254,.35);color:rgba(255,255,254,.6)}
 #press .pp-kit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:start}
-#press .pp-imgs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:36px}
+#press .pp-imgs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px;margin-bottom:36px}
 #press .pp-img{display:flex;flex-direction:column;gap:10px;color:#fffffe;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:.06em}
 #press .pp-img img{width:100%;aspect-ratio:4/5;object-fit:contain;display:block;border:1px solid rgba(255,255,254,.16);background:rgba(11,23,15,.9)}
 #press .pp-img:last-child img{object-fit:cover}
 #press .pp-desc p{font-size:16px;line-height:1.65;color:#ede9dc;margin:0 0 16px}
 #press .pp-desc .pp-lead{font-weight:800;color:#fffffe}
 #press .pp-desc .pp-tag{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.2vw,30px);letter-spacing:.03em;color:#fffffe;line-height:1.35;text-align:center;padding:12px 0}
+#press .pp-angles-lede{font-size:clamp(16px,1.3vw,18px);line-height:1.6;color:#ede9dc;margin:-10px 0 26px;max-width:720px}
+#press .pp-angles{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;counter-reset:angle}
+#press .pp-angles li{counter-increment:angle;display:grid;grid-template-columns:44px minmax(0,1fr);gap:18px;align-items:start;padding:22px 24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16)}
+#press .pp-angle-n::before{content:counter(angle,decimal-leading-zero);display:block;font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;font-size:40px;line-height:1;letter-spacing:.03em;color:#fd7547}
+#press .pp-angles p{margin:0;font-weight:800;font-size:clamp(17px,1.35vw,19px);line-height:1.45;color:#fffffe}
 #press .pp-sub{font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(30px,2.8vw,42px);line-height:1;color:#89fbcb;margin:40px 0 20px}
 #press .pp-praise{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:18px}
 #press .pp-praise figure{margin:0;padding:22px 24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);display:flex;flex-direction:column;justify-content:space-between;gap:14px}
@@ -290,7 +324,8 @@ ${fonts}
 #press .pp-praise figcaption{font-size:14px;letter-spacing:.04em;color:rgba(255,255,254,.78)}
 #press .pp-praise figcaption b{color:#fd7547;letter-spacing:.08em}
 #press .pp-rule{border:0;border-top:1px solid rgba(243,234,217,.25);margin:40px 0 0}
-#press .pp-img span{color:#fffffe;white-space:nowrap}
+#press .pp-img span{color:#fffffe;line-height:1.35}
+#press .pp-img-note{align-self:flex-start;font-style:normal;font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;line-height:1.3;color:#fffffe;background:#c53200;padding:6px 8px}
 #press .pp-img span b{color:#ff4c0f;font-weight:800}
 #press .pp-img:hover span{color:#a2f590}
 #press .pp-facts{margin:0;display:grid;grid-template-columns:130px minmax(0,1fr);gap:0}
@@ -351,7 +386,11 @@ ${fonts}
 #press .pp-ev-place{font-size:15px;line-height:1.5;color:rgba(255,255,254,.78)}
 #press .pp-ev-go{font-size:13px;font-weight:700;letter-spacing:.05em;color:#3adb97}
 ${cardCss('#press')}
+@media (max-width:1100px){
+  #press .pp-imgs{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
 @media (max-width:860px){
+  #press .pp-angles{grid-template-columns:1fr}
   #press .pp-imgs{grid-template-columns:1fr 1fr}
   #press .pp-stats{grid-template-columns:1fr 1fr}
   #press .pp-hl{grid-template-columns:1fr}
@@ -368,6 +407,11 @@ ${cardCss('#press')}
   #press .pp-contacts{grid-template-columns:1fr}
   #press .pp-addr,#press .pp-facts dt,#press .pp-facts dd{white-space:normal;overflow-wrap:anywhere}
   #press .pr-grid{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  #press .pp-hl-col,#press .pp-hl-col.wide{grid-template-columns:minmax(0,1fr)}
+  #press .pp-hl-row b{padding-bottom:6px!important}
+  #press .pp-hl-row span{border-top:0!important;padding-top:0;padding-right:0}
 }
 </style>
 <div id="press">
@@ -390,6 +434,12 @@ ${cardCss('#press')}
       <div class="pp-cta"><a class="pp-btn" href="/the-hunt">See the hunt</a><a class="pp-btn" href="/leaderboard">Live leaderboard</a></div>
     </section>
 
+    <section class="pp-section" id="pp-angles">
+      <h2>Story Angles</h2>
+      <p class="pp-angles-lede">Headline ideas for editors, hosts, and writers. Take one as it is, or use it as a starting point.</p>
+      <ol class="pp-angles">${ANGLES.map((a) => `<li><span class="pp-angle-n" aria-hidden="true"></span><p>${esc(a)}</p></li>`).join('')}</ol>
+    </section>
+
     <section class="pp-section" id="pp-events">
       <h2>Launch Events</h2>
       <div class="pp-events">${EVENTS.map(eventCard).join('')}</div>
@@ -403,8 +453,8 @@ ${cardCss('#press')}
 
     <section class="pp-section" id="pp-kit">
       <h2>Press Kit</h2>
-      <div class="pp-imgs">${KIT_IMAGES.map(([f, alt, label]) => `
-        <a class="pp-img" href="${BASE}assets/press/${f}" target="_blank" rel="noopener"><img src="${BASE}assets/press/${f}" alt="${esc(alt)}" loading="lazy"><span>${esc(label)} <b>↓</b></span></a>`).join('')}
+      <div class="pp-imgs">${KIT_IMAGES.map(([f, alt, label, note]) => `
+        <a class="pp-img" href="${BASE}assets/press/${f}" target="_blank" rel="noopener"><img src="${BASE}assets/press/${f}" alt="${esc(alt)}" loading="lazy"><span>${esc(label)} <b>↓</b></span>${note ? `<em class="pp-img-note">${esc(note)}</em>` : ''}</a>`).join('')}
       </div>
       <div class="pp-kit">
         <dl class="pp-facts">${FACTS.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
