@@ -323,7 +323,7 @@ ${fonts}
 #press .pp-angles{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;counter-reset:angle}
 #press .pp-angles li{counter-increment:angle;display:grid;grid-template-columns:44px minmax(0,1fr);gap:18px;align-items:start;padding:22px 24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16)}
 #press .pp-angle-n::before{content:counter(angle,decimal-leading-zero);display:block;font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;font-size:40px;line-height:1;letter-spacing:.03em;color:#fd7547}
-#press .pp-angles p{margin:0;font-weight:800;font-size:clamp(17px,1.35vw,19px);line-height:1.45;color:#fffffe}
+#press .pp-angles p{margin:0;font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(26px,2vw,30px);line-height:1.12;color:#fffffe}
 #press .pp-sub{font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(30px,2.8vw,42px);line-height:1;color:#89fbcb;margin:40px 0 20px}
 #press .pp-praise{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:18px}
 #press .pp-praise figure{margin:0;padding:22px 24px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);display:flex;flex-direction:column;justify-content:space-between;gap:14px}
