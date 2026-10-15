@@ -697,12 +697,23 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       return mats;
     }
 
+    // One WebGL renderer draws every card die and each frame is copied onto that die's own 2D canvas.
+    // Browsers keep only about 16 WebGL canvases alive per page, so a vote with 20 dice (the Cerunine
+    // Attack, 2026-10-15) lost its first dice when each had its own.
+    var shared = null;
+    function sharedRenderer() {
+      if (shared) return shared;
+      shared = new T.WebGLRenderer({ antialias: true, alpha: true });
+      shared.outputEncoding = T.sRGBEncoding;
+      shared.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      shared.setSize(120, 120, false);
+      return shared;
+    }
     function build(id, node) {
       var cv = node.querySelector('canvas');
-      var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
-      r.outputEncoding = T.sRGBEncoding;
-      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-      r.setSize(120, 120, false);
+      var r = sharedRenderer(), px = Math.round(120 * Math.min(window.devicePixelRatio || 1, 2));
+      cv.width = px; cv.height = px;
+      var c2 = cv.getContext('2d');
       var scene = new T.Scene(), cam = new T.PerspectiveCamera(30, 1, 0.1, 50);
       cam.position.set(0, 0, 6.4); cam.lookAt(0, 0, 0);
       var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
@@ -711,7 +722,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       var mesh = new T.Mesh(dieGeometry(), dieMaterials(LAB[id]));
       mesh.quaternion.copy(idle());
       scene.add(mesh);
-      var d = { r: r, scene: scene, cam: cam, mesh: mesh, node: node, shadow: node.querySelector('.rc-die-shadow'), raf: 0, y: 0 };
+      var d = { r: r, c2: c2, scene: scene, cam: cam, mesh: mesh, node: node, shadow: node.querySelector('.rc-die-shadow'), raf: 0, y: 0 };
       dice[id] = d;
       return d;
     }
@@ -720,6 +731,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       d.mesh.position.y = d.y;
       if (d.shadow) { d.shadow.style.transform = 'translateX(-50%) scale(' + (1 - d.y * 0.45).toFixed(3) + ')'; d.shadow.style.opacity = (0.9 - d.y * 0.6).toFixed(2); }
       d.r.render(d.scene, d.cam);
+      var cv = d.c2.canvas; d.c2.clearRect(0, 0, cv.width, cv.height); d.c2.drawImage(d.r.domElement, 0, 0, cv.width, cv.height);
     }
 
     // ---- sound: a hard little knock plus a burst of clatter, a bit different every time
