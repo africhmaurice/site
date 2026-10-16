@@ -1,0 +1,187 @@
+<!-- ============================================================
+     THE LONG CLIMB - hidden page for loot box 86. Lives at /the-long-climb-53353 (hidden from search; Maurice 10/15). (Was The Long Fall; Maurice 10/15: "make it THE LONG CLIMB instead,
+     a platform jumping game that goes UP. You have to get to the top! And it goes from day to night").
+     The game fills the window. You start on the ground and jump from floating island to floating island, 24,000 units
+     up (about 200 islands, the same for everyone). Islands are one-way: you jump up through them and land on top.
+     Missing a jump just drops you to a lower island. From a third of the way up, some islands drift side to side.
+     The sky goes from bright day through sunset to night as you climb (stars and the moon come out near the top).
+     At the very top: loot box 86 on the last island. Walk into it and the box shows; clicking it opens the claim link.
+     Controls: arrows or A / D to move; Space, Up, or W to jump (hold for a higher jump). Phones: Left, Jump, Right buttons.
+     No progress bar. The title and controls line show at the start and fade once you begin climbing.
+     Art: the climber is Little Izzy (86-izzy.png, Maurice 10/16). Island, ground, cloud, sun, and moon are his 86-*.png (10/16). Not his yet: the stars, clouds, sun, and moon are drawn in code until Maurice draws them.
+     DRAFT copy (mine): the controls lines and "The top!".
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+#ma-climb{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;height:100vh;height:100dvh;background:#8fd3ff;overflow:hidden;font-family:'Almarai',sans-serif;
+  touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;outline:none}
+#ma-climb *{box-sizing:border-box;border-radius:0}
+#ma-climb [hidden]{display:none!important}
+#ma-climb canvas{position:absolute;inset:0;display:block;width:100%;height:100%}
+#ma-climb .lc-title{position:absolute;left:16px;right:16px;top:calc(62% + 28px);z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;pointer-events:none;transition:opacity .6s ease}
+#ma-climb .lc-title h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(44px,8vw,104px);line-height:1.2;letter-spacing:.04em;color:#fffffe;text-shadow:0 3px 0 rgba(11,23,15,.35)}
+#ma-climb .lc-title p{margin:0;padding:12px 20px;background:rgba(11,23,15,.78);font-weight:800;font-size:clamp(13px,1.5vw,16px);line-height:1.5;letter-spacing:.12em;text-transform:uppercase;color:#fffffe}
+#ma-climb .lc-title.gone{opacity:0}
+#ma-climb .lc-pad{position:absolute;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:3;display:none;gap:12px}
+#ma-climb.touch .lc-pad{display:flex}
+#ma-climb .lc-pad button{flex:1;min-height:60px;margin:0;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#fffffe;
+  background:rgba(11,23,15,.72);border:2px solid rgba(243,234,217,.7);touch-action:none;-webkit-tap-highlight-color:transparent}
+#ma-climb .lc-pad button.down{background:#1a5e41;border-color:#89fbcb}
+#ma-climb .lc-pad .j{flex:1.3}
+#ma-climb .lc-win{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px 16px;background:rgba(11,23,15,.72);text-align:center}
+#ma-climb .lc-win h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(36px,6vw,64px);line-height:1.2;letter-spacing:.04em;color:#fffffe}
+#ma-climb .lc-box{display:block;width:clamp(150px,22vh,230px);padding:0;margin:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#ma-climb .lc-box img{display:block;width:100%;height:auto;filter:drop-shadow(0 0 30px rgba(255,214,120,.55))}
+#ma-climb .lc-box:focus-visible{outline:3px solid #89fbcb;outline-offset:8px}
+</style>
+<section id="ma-climb" aria-label="The Long Climb" tabindex="0">
+  <canvas aria-hidden="true"></canvas>
+  <div class="lc-title"><h1>The Long Climb</h1><p class="lc-tip"></p></div>
+  <div class="lc-pad" aria-label="Controls"><button type="button" data-k="l">Left</button><button type="button" class="j" data-k="j">Jump</button><button type="button" data-k="r">Right</button></div>
+  <div class="lc-win" hidden><h2>The top!</h2><button class="lc-box" type="button" aria-label="Open loot box 86"><img src="https://africhmaurice.github.io/leaderboard/loot/86.png" alt="Loot box 86" draggable="false"></button></div>
+</section>
+<script>
+(function(){
+  var d=document.getElementById('ma-climb');if(!d||d.getAttribute('data-ready'))return;d.setAttribute('data-ready','1');
+  // Fill the whole window. Nothing above the game may clip it.
+  var sec=d.closest('section.page-section');if(sec){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+
+  var k='Q0oyRTI0OUY9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  var cv=d.querySelector('canvas'),ctx=cv.getContext('2d'),title=d.querySelector('.lc-title'),win=d.querySelector('.lc-win');
+  var still=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var touchy=(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window&&window.innerWidth<900);
+  if(touchy)d.classList.add('touch');
+  d.querySelector('.lc-tip').textContent=touchy?'Left, Jump, and Right buttons below. Get to the top.':'Arrows or A / D to move. Space, Up, or W to jump. Get to the top.';
+
+  var seed=86086;
+  function rnd(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}
+  function rr(a,b){return a+rnd()*(b-a);}
+
+  /* ---- the climb: a 600-unit-wide column of floating islands, 24,000 units tall, the same for everyone ----
+     Heights go UP from the ground (h = 0). Islands are one-way: you jump up through them and land on top. */
+  var WW=600,TOP=24000,GRAV=1800,JUMP=760,RUN=260;
+  var P=[{x:-400,w:1400,h:0,ground:1}],h=0,cx=300;
+  while(h<TOP-135){
+    /* wider gaps (Maurice 10/16: farther apart sideways, possible but a challenge). Each gap is a share of what a full
+       jump can cover at that height: how far you travel sideways (260/s) in the time it takes to rise dy and come back down
+       to it, less a safety margin. Gaps grow from about half a jump at the bottom to almost a full jump near the top. */
+    var dy=rr(85,135),w=rr(85,140)*(h>TOP*.6?.82:1);h+=dy;
+    var tAir=(JUMP+Math.sqrt(JUMP*JUMP-2*GRAV*dy))/GRAV,reach=RUN*tAir*.86,prev=P[P.length-1];
+    var hard=Math.min(1,h/TOP),gap=reach*rr(.35+.4*hard,.55+.4*hard);if(prev.amp)gap*=.6;
+    var pw=prev.ground?60:prev.w,dx=(pw+w)/2+gap,dir=rnd()<.5?-1:1,pc=prev.ground?cx:(prev.x0!==undefined?prev.x0:prev.x)+pw/2;
+    if(pc+dir*dx<w/2+12||pc+dir*dx>WW-w/2-12)dir=-dir;
+    cx=Math.max(w/2+12,Math.min(WW-w/2-12,pc+dir*dx));
+    var p={x:cx-w/2,w:w,h:Math.round(h)};
+    /* from a third of the way up, some islands drift side to side */
+    if(h>TOP*.3&&rnd()<.22&&!P[P.length-1].amp){p.amp=rr(50,100);p.amp=Math.max(20,Math.min(p.amp,p.x-6,WW-p.x-p.w-6));p.per=rr(2.6,4.2);p.ph=rr(0,6.28);p.x0=p.x;}
+    P.push(p);
+  }
+  /* the top island sits one easy jump above the last one */
+  var TOPP={x:Math.max(12,Math.min(WW-232,cx-110)),w:220,h:Math.round(h+rr(90,120)),top:1};P.push(TOPP);TOP=TOPP.h;
+  var BOX={x:TOPP.x+TOPP.w-50,h:TOP};
+
+  /* clouds and stars spread up the whole sky (drawn with parallax) */
+  var CL=[];for(var i=0;i<220;i++)CL.push({x:rr(-80,WW+80),h:rr(150,TOP+600),w:rr(70,190),v:rr(.45,.8)});
+  var ST=[];for(i=0;i<260;i++)ST.push({x:rnd(),y:rnd(),r:rnd()<.15?2:1.2,tw:rr(0,6.28)});
+
+  /* ---- day to night: sky colors by how high the camera is (top of screen, bottom of screen) ---- */
+  var SKY=[[0,'#5fb8f0','#cdeeff'],[.3,'#4aa3e6','#bfe6ff'],[.5,'#ff9a5c','#ffd28a'],[.62,'#c53200','#ff8a3d'],[.74,'#482d85','#c3a6ff'],[.88,'#120f22','#2a1b55'],[1,'#050a07','#120f22']];
+  function hex(c){return[parseInt(c.slice(1,3),16),parseInt(c.slice(3,5),16),parseInt(c.slice(5,7),16)];}
+  function mix(a,b,t){a=hex(a);b=hex(b);return 'rgb('+[0,1,2].map(function(i){return Math.round(a[i]+(b[i]-a[i])*t);}).join(',')+')';}
+  function skyAt(t){for(var j=1;j<SKY.length&&SKY[j][0]<t;j++);var a=SKY[j-1],b=SKY[Math.min(j,SKY.length-1)],u=b[0]>a[0]?Math.max(0,Math.min(1,(t-a[0])/(b[0]-a[0]))):0;return [mix(a[1],b[1],u),mix(a[2],b[2],u)];}
+
+  /* ---- the climber ---- */
+  var me={x:300,h:0,vx:0,vh:0,on:P[0],face:1,coy:0,buf:0},keys={l:0,r:0,j:0},cam=0,t=0,done=false;
+
+  var dpr=1,vw=0,vh=0,s=1,ox=0;
+  function size(){vw=d.clientWidth;vh=d.clientHeight;dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(vw*dpr);cv.height=Math.round(vh*dpr);
+    /* the 600-unit column fits the screen width on phones and is capped on wide screens so jumps stay readable */
+    s=Math.min(vw/WW,Math.max(1,vh/760));ox=(vw-WW*s)/2;}
+  function sy(hh){return vh*.62-(hh-cam)*s;}  /* screen y of a height */
+
+  function step(dt){
+    t+=dt;
+    P.forEach(function(p){if(p.amp){var nx=p.x0+p.amp*Math.sin(t*6.283/p.per+p.ph);p.dx=nx-p.x;p.x=nx;}});
+    if(done)return;
+    if(me.on&&me.on.amp)me.x+=me.on.dx;
+    me.vx=(keys.r-keys.l)*RUN;if(me.vx)me.face=me.vx>0?1:-1;
+    me.coy=me.on?.1:me.coy-dt;me.buf-=dt;
+    if(me.buf>0&&me.coy>0){me.vh=JUMP;me.on=null;me.coy=0;me.buf=0;}
+    me.vh-=GRAV*dt;if(!keys.j&&me.vh>280)me.vh-=GRAV*1.4*dt; /* let go early for a short hop */
+    me.vh=Math.max(me.vh,-1400);
+    var nh=me.h+me.vh*dt,nx=Math.max(13,Math.min(WW-13,me.x+me.vx*dt));
+    if(me.on&&(nx<me.on.x-6||nx>me.on.x+me.on.w+6))me.on=null;
+    if(me.on){nh=me.on.h;me.vh=0;}
+    else if(me.vh<=0){for(var i=0;i<P.length;i++){var p=P[i];if(p.h>me.h+1||p.h<nh-1)continue;if(nx>=p.x-6&&nx<=p.x+p.w+6){nh=p.h;me.vh=0;me.on=p;break;}}}
+    me.x=nx;me.h=nh;
+    /* camera follows up and down, a little ahead when climbing */
+    var want=Math.max(0,me.h+(me.vh>0?40:0));cam+=(want-cam)*Math.min(1,dt*5);
+    if(me.h>260)title.classList.add('gone');else title.classList.remove('gone');
+    if(me.on===TOPP&&Math.abs(me.x-BOX.x)<46){done=true;keys.l=keys.r=keys.j=0;win.hidden=false;try{win.querySelector('.lc-box').focus({preventScroll:true});}catch(e){}}
+  }
+
+  /* his art (Maurice 10/16): floating island, ground strip, cloud, sun, and moon */
+  var ART={};['island','ground','cloud','sun','moon'].forEach(function(n){var i=new Image();i.src='https://africhmaurice.github.io/site/assets/games/86-'+n+'.png';ART[n]=i;});
+  function okA(i){return i&&i.complete&&i.naturalWidth>0;}
+  function island(p){
+    var x=ox+p.x*s,y=sy(p.h),w=p.w*s;
+    if(p.ground){var gi=ART.ground;if(okA(gi)){var gh=Math.max(24,34*s),gw=gh*gi.naturalWidth/gi.naturalHeight;ctx.fillStyle='#451e07';ctx.fillRect(0,y+gh*.6,vw,vh-y);for(var gx=0;gx<vw;gx+=gw-1)ctx.drawImage(gi,gx,y-gh*.04,gw,gh);}
+      else{ctx.fillStyle='#2c6021';ctx.fillRect(0,y,vw,vh-y+2);}return;}
+    var ii=ART.island;
+    /* the grass top of his island (about 3% down the drawing) is where you stand */
+    if(okA(ii)){var ih=w*ii.naturalHeight/ii.naturalWidth;ctx.drawImage(ii,x-w*.01,y-ih*.04,w*1.02,ih);}
+    else{ctx.fillStyle='#2c6021';ctx.fillRect(x,y,w,Math.max(4,7*s));}
+    if(p.amp){ctx.fillStyle='rgba(195,166,255,.95)';ctx.fillRect(x+w/2-7*s,y+w*.42,14*s,4*s);}
+  }
+  var grey=new Image();grey.src='https://africhmaurice.github.io/site/assets/games/86-izzy.png';function ok(i){return i.complete&&i.naturalWidth>0;}
+  var boxImg=new Image();boxImg.src='https://africhmaurice.github.io/leaderboard/loot/86.png';
+  function draw(){
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    var tt=Math.max(0,Math.min(1,cam/TOP)),c=skyAt(tt),g=ctx.createLinearGradient(0,0,0,vh);g.addColorStop(0,c[0]);g.addColorStop(1,c[1]);ctx.fillStyle=g;ctx.fillRect(0,0,vw,vh);
+    /* sun sets, then the moon and stars come out */
+    var sunY=vh*(.12+tt*1.4);if(tt<.66&&okA(ART.sun)){var sz=Math.max(70,vw*.09);ctx.save();ctx.globalAlpha=tt<.5?1:Math.max(0,1-(tt-.5)/.16);ctx.drawImage(ART.sun,vw*.78-sz/2,sunY-sz/2,sz,sz*ART.sun.naturalHeight/ART.sun.naturalWidth);ctx.restore();}
+    var night=Math.max(0,Math.min(1,(tt-.7)/.2));
+    if(night>0){ST.forEach(function(st){var a=night*(still?.8:.55+.45*Math.sin(t*1.7+st.tw));ctx.fillStyle='rgba(255,255,254,'+a.toFixed(2)+')';ctx.fillRect(st.x*vw,st.y*vh,st.r,st.r);});
+      if(okA(ART.moon)){var mh=Math.max(70,vh*.12),mw=mh*ART.moon.naturalWidth/ART.moon.naturalHeight;ctx.save();ctx.globalAlpha=night;ctx.drawImage(ART.moon,vw*.18-mw/2,vh*.1,mw,mh);ctx.restore();}}
+    /* clouds behind, slower than the islands */
+    var cn=Math.round(255-130*Math.max(0,(tt-.45)/.5));
+    /* his cloud; it fades as night comes on */
+    var ca=tt>.85?.3:tt>.55?.85-(tt-.55)*1.8:.85;
+    if(okA(ART.cloud))CL.forEach(function(cl){var y=vh*.62-(cl.h-cam*cl.v)*s;if(y<-140||y>vh+60)return;var x=ox+cl.x*s,w=cl.w*s;ctx.save();ctx.globalAlpha=ca;ctx.drawImage(ART.cloud,x,y-w*.3,w,w*ART.cloud.naturalHeight/ART.cloud.naturalWidth);ctx.restore();});
+    /* islands */
+    for(var pi=P.length-1;pi>=0;pi--){var p=P[pi],y=sy(p.h);if(y<-200||y>vh+60)continue;island(p);}
+    /* loot box 86 on the top island */
+    var by=sy(TOP);if(by>-200&&by<vh+50&&boxImg.complete&&boxImg.naturalWidth){var bs=64*s,bob=still?0:Math.sin(t*3)*3;ctx.drawImage(boxImg,ox+BOX.x*s-bs/2,by-bs+bob,bs,bs);}
+    /* the climber: Little Izzy, his jumping character drawing (Maurice 10/16), flipped to face the way he runs, tipped a little in the air */
+    var x=ox+me.x*s,y=sy(me.h);if(ok(grey)){var gh=46*s,gw=gh*grey.naturalWidth/grey.naturalHeight;ctx.save();ctx.translate(x,y);ctx.scale(me.face,1);if(!me.on&&!still)ctx.rotate(-.08);ctx.drawImage(grey,-gw/2,-gh,gw,gh);ctx.restore();}
+  }
+
+  /* ---- input ---- */
+  function press(k2,v){if(done)return;if(k2==='j'){if(v&&!keys.j)me.buf=.12;}keys[k2]=v;}
+  var KM={ArrowLeft:'l',a:'l',A:'l',ArrowRight:'r',d:'r',D:'r',ArrowUp:'j',w:'j',W:'j',' ':'j'};
+  window.addEventListener('keydown',function(e){if(!document.body.contains(d))return;var tg=e.target&&e.target.tagName;if(tg==='INPUT'||tg==='TEXTAREA'||tg==='SELECT')return;
+    var k2=KM[e.key];if(!k2||e.altKey||e.ctrlKey||e.metaKey)return;if(e.repeat&&k2==='j'){e.preventDefault();return;}press(k2,1);e.preventDefault();});
+  window.addEventListener('keyup',function(e){var k2=KM[e.key];if(k2)keys[k2]=0;});
+  window.addEventListener('blur',function(){keys.l=keys.r=keys.j=0;});
+  Array.prototype.forEach.call(d.querySelectorAll('.lc-pad button'),function(b){var k2=b.getAttribute('data-k');
+    b.addEventListener('pointerdown',function(e){e.preventDefault();press(k2,1);b.classList.add('down');try{b.setPointerCapture(e.pointerId);}catch(er){}});
+    ['pointerup','pointercancel','lostpointercapture'].forEach(function(ev){b.addEventListener(ev,function(){keys[k2]=0;b.classList.remove('down');});});
+    b.addEventListener('contextmenu',function(e){e.preventDefault();});});
+  win.querySelector('.lc-box').addEventListener('click',function(){location.href=atob(k).split('').reverse().join('');});
+
+  var last=0;
+  function frame(ts){requestAnimationFrame(frame);var dt=last?Math.min(.05,(ts-last)/1000):0;last=ts;var n=Math.max(1,Math.ceil(dt/.008));for(var i=0;i<n;i++)step(dt/n);draw();}
+  size();window.addEventListener('resize',size);requestAnimationFrame(frame);
+  try{d.focus({preventScroll:true});}catch(e){}
+  /* the game is one full window: line it up with the top of the screen so the controls are never cut off */
+  function fit(){var r=d.getBoundingClientRect();if(Math.abs(r.top)>2){try{window.scrollTo(0,r.top+(window.pageYOffset||0));}catch(e){}}}
+  window.addEventListener('load',fit);setTimeout(fit,300);
+
+  /* test hooks, only with ?preview=1 and window.__climbTest set before load */
+  if(window.__climbTest&&/[?&]preview=1\b/.test(location.search))window.__climb={state:function(){return {h:me.h,x:me.x,on:me.on?P.indexOf(me.on):-1,n:P.length,done:done,cam:cam};},
+    plats:function(){return P.map(function(p){return [p.x,p.w,p.h,!!p.amp];});},keys:keys,press:press,
+    put:function(i){var p=P[i];me.on=p;me.h=p.h;me.x=p.x+p.w/2;me.vh=0;cam=me.h;}};
+})();
+</script>

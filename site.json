@@ -343,6 +343,36 @@
       "url": "/the-highlight-box",
       "title": "The Highlight Box (loot box 63)",
       "source": "pages/the-highlight-box.html"
+    },
+    {
+      "slug": "trench-run",
+      "url": "/trench-run",
+      "title": "Trench Run (loot box 77, Act Two 500K reward)",
+      "source": "pages/trench-run.html"
+    },
+    {
+      "slug": "descend-the-tower",
+      "url": "/descend-the-tower-13449",
+      "title": "Descend the Tower (loot box 75, Act Three puzzle #23)",
+      "source": "pages/descend-the-tower.html"
+    },
+    {
+      "slug": "the-long-climb",
+      "url": "/the-long-climb-53353",
+      "title": "The Long Climb (loot box 86, Act Three puzzle #24)",
+      "source": "pages/the-long-climb.html"
+    },
+    {
+      "slug": "match-the-crest",
+      "url": "/match-the-crest-60740",
+      "title": "Match the Crest (loot box 80, Act Three puzzle #25)",
+      "source": "pages/match-the-crest.html"
+    },
+    {
+      "slug": "constellations",
+      "url": "/constellations-33030",
+      "title": "Find the Constellations (loot box 79, Act Three puzzle #26)",
+      "source": "pages/constellations.html"
     }
   ],
   "staysInSquarespace": [

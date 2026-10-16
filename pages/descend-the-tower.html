@@ -1,0 +1,451 @@
+<!-- ============================================================
+     DESCEND THE TOWER - hidden page for loot box 75 (batch 2). Replaces Drop the Loot Box (the-claw.html).
+     Maurice's floor plan (Game Editor, 10/12). The loot box drops through ten floors, one game per floor:
+       1  The claw          a claw rides a rail at a speed that keeps changing; drop the box down the chute.
+       2  Lever order       five colored levers. A lightbulb flashes a 10-color sequence every so often; pull the
+                            levers in that order and the floor drops out.
+       3  Catapult launch   hold to pull the catapult back while a power meter rises and falls; let go to toss the box. It
+                            has to land in the trapdoor, which sits at a new distance every time. (Maurice 10/12.)
+       4  The moving chute  the chute slides back and forth along the deck; drop the box ahead of it (Maurice 10/15;
+                            replaced Conveyor belts, which took no skill).
+       5  Pipe path         tap pipe tiles (brand colors) to turn them until a path runs from the top to the bottom.
+       6  Trapdoors         the claw again, over a trapdoor that snaps open and shut; drop through while it's open.
+       7  The dark floor    pitch dark, with a tiny light that follows your finger or mouse; find and tap the trapdoor
+                            before the lantern runs out (40 seconds). Then the lights come up and the box drops in.
+       8  Wind tunnel       the claw again, but gusts push the falling box sideways; watch the streaks.
+       9  Cut the ropes     the box hangs on two ropes; cut them in the right order and time to swing it into the vault.
+       10 The last stretch  a long platform level (Maurice 10/15): gaps, spikes, rolling cannonballs, falling weights,
+                            moving platforms, a spring over a wall, then jump, jump, jump up to the trapdoor ledge.
+     Clock (Maurice 10/16): 15 seconds a floor, top-right, blinking red from 5; at zero the floor triggers itself (see CLOCK).
+     Spikes on floors 9 and 10 are his spike drawing, 75-spike.png (10/16).
+     Failing any floor sends the box back to floor 1 (Maurice: "They start over at floor 1"). The best floor reached is
+     kept in localStorage (ma-tower-best). Clearing floor 10 reveals loot box 75; clicking it opens the claim link
+     (scrambled in K). Controls: tap or click; space drops the claw; floor 10 uses arrows or A/D and space/W/up to jump,
+     with on-screen buttons on phones. Reduced motion: no shake and no sparks.
+     DRAFT copy (not Maurice's words yet): the heading, the how-to line, every floor's one-line instruction in FLOORS,
+     the fail lines in FAIL, "Floor N of 10", "Best: floor N", "Back to floor 1", the win heading and line.
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+#ma-tower{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;overflow:hidden;
+  padding:clamp(120px,14vh,160px) 16px 72px;background:#0b170f;color:#f3ead9;font-family:'Almarai',sans-serif;
+  display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center}
+#ma-tower *{box-sizing:border-box;border-radius:0}
+#ma-tower [hidden]{display:none!important}
+#ma-tower .tw-eye{margin:0;font-weight:800;font-size:13px;line-height:1.4;letter-spacing:.24em;text-transform:uppercase;color:#ff4c0f}
+#ma-tower .tw-h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(36px,6.4vw,72px);line-height:1.2;letter-spacing:.03em;color:#fffffe;text-wrap:balance}
+#ma-tower .tw-how{margin:0;max-width:600px;font-size:clamp(15px,1.6vw,18px);line-height:1.55;color:#f3ead9;text-wrap:balance}
+#ma-tower .tw-hud{width:min(100%,600px);display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+#ma-tower .tw-floor{color:#fffffe}
+#ma-tower .tw-best{color:#c3a6ff}
+#ma-tower .tw-stage{position:relative;width:min(100%,600px,calc((100vh - 170px) * .9375));aspect-ratio:600/640;border:2px solid #f3ead9;background:#132219;
+  touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;cursor:pointer;outline:none}
+#ma-tower .tw-stage:focus-visible{outline:3px solid #ff4c0f;outline-offset:4px}
+#ma-tower .tw-stage canvas{display:block;width:100%;height:100%;touch-action:none}
+#ma-tower .tw-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px 20px;background:rgba(11,23,15,.88)}
+#ma-tower .tw-ov h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(30px,4.6vw,46px);line-height:1.2;letter-spacing:.04em;color:#fffffe}
+#ma-tower .tw-ov p{margin:0;max-width:420px;font-size:clamp(14px,1.7vw,17px);line-height:1.5}
+#ma-tower .tw-btn{font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;color:#fffffe;background:#c53200;border:2px solid #fffffe;padding:13px 28px;margin:0;touch-action:manipulation}
+#ma-tower .tw-btn:hover,#ma-tower .tw-btn:focus-visible{background:#ff4c0f;outline:none}
+#ma-tower .tw-msg{margin:0;width:min(100%,600px);min-height:3em;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:clamp(15px,1.6vw,18px);line-height:1.45;color:#89fbcb}
+#ma-tower .tw-msg.miss{color:#ff4c0f}
+#ma-tower .tw-pad{display:none;gap:12px;width:min(100%,600px);justify-content:space-between}
+#ma-tower .tw-pad.on{display:flex}
+#ma-tower .tw-pad button{flex:1;min-height:56px;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#fffffe;background:#132219;border:1px solid rgba(243,234,217,.5);touch-action:none;-webkit-user-select:none;user-select:none}
+#ma-tower .tw-pad button.down{background:#1a5e41;border-color:#89fbcb}
+#ma-tower .tw-win{width:min(100%,600px);display:flex;flex-direction:column;align-items:center;gap:16px;padding:28px 24px 32px;background:#2c6021;border:2px solid #a2f590}
+#ma-tower .tw-win h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(34px,5vw,54px);line-height:1.2;letter-spacing:.03em;color:#a2f590}
+#ma-tower .tw-win p{margin:0;font-size:clamp(16px,1.7vw,19px);line-height:1.5;color:#fffffe;max-width:440px}
+#ma-tower .tw-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(56vw,240px)}
+#ma-tower .tw-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 30px rgba(162,245,144,.4))}
+@media (max-width:520px){#ma-tower .tw-hud{font-size:11px;letter-spacing:.08em}}
+</style>
+<section id="ma-tower" aria-label="Descend the Tower">
+  <p class="tw-eye">Loot Box 75</p>
+  <h1 class="tw-h1">Descend the Tower</h1>
+  <p class="tw-how">Get the loot box down ten floors, a different challenge on each one. Fail a floor and it's back to the top.</p>
+  <div class="tw-hud"><span class="tw-floor">Floor 1 of 10</span><span class="tw-best">Best: floor 1</span></div>
+  <div class="tw-stage" tabindex="0" role="application" aria-label="Descend the Tower game"><canvas></canvas>
+    <div class="tw-ov tw-start"><h2>Ten floors down</h2><p>Each floor tells you what to do. Fail one and the box goes back to floor 1.</p><button class="tw-btn tw-go" type="button">Start</button></div>
+  </div>
+  <p class="tw-msg" aria-live="polite"></p>
+  <div class="tw-pad" aria-label="Controls"><button type="button" data-k="l">Left</button><button type="button" data-k="j">Jump</button><button type="button" data-k="r">Right</button></div>
+  <div class="tw-win" hidden>
+    <h2>The bottom!</h2>
+    <p>Ten floors down. Loot box 75 is yours. Tap the box to claim it.</p>
+    <button class="tw-box" type="button" aria-label="Open loot box 75"><img src="https://africhmaurice.github.io/leaderboard/loot/75.png" alt="Loot box 75"></button>
+  </div>
+</section>
+<script>
+(function(){
+  var d=document.getElementById('ma-tower');if(!d||d.getAttribute('data-ready'))return;d.setAttribute('data-ready','1');
+  var sec=d.closest('section.page-section');if(sec){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+
+  var K='OURCQlBQRU09Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  var stage=d.querySelector('.tw-stage'),cv=stage.querySelector('canvas'),ctx=cv.getContext('2d');
+  var msgEl=d.querySelector('.tw-msg'),floorEl=d.querySelector('.tw-floor'),bestEl=d.querySelector('.tw-best'),startOv=d.querySelector('.tw-start'),pad=d.querySelector('.tw-pad'),winEl=d.querySelector('.tw-win');
+  var still=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var W=600,H=640,BW=72;
+  var img=new Image(),imgOk=false;img.onload=function(){imgOk=true;};img.src='https://africhmaurice.github.io/leaderboard/loot/75.png';
+  /* Maurice's tower art (10/13): the claw (closed, opening, open), the chain rail and hook, the deck and chute,
+     the bulb (one per lever color), the lever, the catapult (base and arm), pipe tiles, and confetti in brand colors. What rides down the tower is loot box 75 itself (Maurice, 10/13). The drawn shapes stay
+     as a fallback while an image loads. */
+  var ART='https://africhmaurice.github.io/site/assets/games/';function pic(f){var i=new Image();i.src=ART+f;return i;}function ok(i){return i&&i.complete&&i.naturalWidth>0;}
+  var A={claw:[pic('75-claw-0.png'),pic('75-claw-1.png'),pic('75-claw-2.png')],rail:pic('75-rail.png'),hook:pic('75-hook.png'),deckL:pic('75-deck-l.png'),deckR:pic('75-deck-r.png'),
+    rubble:pic('75-confetti.png'),lever:pic('75-lever.png'),catArm:pic('75-cat-arm.png'),catBase:pic('75-cat-base.png'),pipeS:pic('75-pipe-straight.png'),pipeE:pic('75-pipe-elbow.png'),
+    ball:pic('74-cannonball.png'),bulb:{off:pic('75-bulb-off.png'),'0':pic('75-bulb-violet.png'),'1':pic('75-bulb-scarlet.png'),'2':pic('75-bulb-green.png'),'3':pic('75-bulb-teal.png'),'4':pic('75-bulb-gold.png')}};
+  function rnd(a,b){return a+Math.random()*(b-a);}
+  function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  var best=parseInt(lsGet('ma-tower-best')||'1',10)||1;
+  var COL={violet:'#7b4ee1',scarlet:'#ff4c0f',green:'#57bb41',teal:'#3adb97',parch:'#f3ead9',ink:'#0b170f'};
+  var TINT=[['#0b170f','#2d1c53','#482d85'],['#0b170f','#912501','#c53200'],['#0b170f','#1b3b15','#2c6021'],['#0b170f','#1a5e41','#268e62'],['#0b170f','#213226','#607667']];
+  var FAIL=['Bonk. Back to the top.','The tower wins this round. Back to floor 1.','So close. Up you go again.','The crew would like to file a complaint. Floor 1 again.','Gravity is undefeated. Back to the top.'];
+  function say(t,miss){msgEl.textContent=t;msgEl.classList.toggle('miss',!!miss);}
+
+  /* ---- shared drawing ---- */
+  function sky(n){var t=TINT[(n-1)%TINT.length],g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,t[0]);g.addColorStop(.6,t[1]);g.addColorStop(1,t[2]);ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(243,234,217,.4)';for(var i=0;i<34;i++){var sx=(i*137.5)%W,sy=(i*71.3)%260+8;ctx.fillRect(sx,sy,i%5?1.5:2.5,i%5?1.5:2.5);}}
+  function box(x,y,s,a,alpha){ctx.save();ctx.globalAlpha=alpha===undefined?1:alpha;ctx.translate(x,y);if(a)ctx.rotate(a);s=s||BW;
+    if(imgOk)ctx.drawImage(img,-s/2-s*.04,-s/2-s*.07,s*1.08,s*1.08);else{ctx.fillStyle='#c53200';ctx.fillRect(-s/2,-s/2,s,s);}ctx.restore();}
+  var RAIL=60,HUB=104;
+  var HOLD=243,CS=.137; /* HOLD: where the claw holds the chest; CS: claw art scale */
+  function rail(){if(ok(A.rail)){var rw=A.rail.naturalWidth*.75,rh=A.rail.naturalHeight*.75;ctx.save();ctx.beginPath();ctx.rect(30,0,W-60,H);ctx.clip();ctx.drawImage(A.rail,30,48,rw,rh);ctx.drawImage(A.rail,30+rw-2,48,rw,rh);ctx.restore();return;}
+    ctx.fillStyle='#132219';ctx.fillRect(30,RAIL-12,W-60,24);ctx.strokeStyle='#f3ead9';ctx.lineWidth=2;ctx.strokeRect(30,RAIL-12,W-60,24);ctx.fillStyle='#f3ead9';for(var x=46;x<W-38;x+=32)ctx.fillRect(x-2,RAIL-2,4,4);}
+  function claw(x,open,bs){
+    if(ok(A.claw[0])&&ok(A.hook)){var fr=open<=0?A.claw[0]:open<.6?A.claw[1]:A.claw[2];
+      ctx.drawImage(A.hook,x+5-28.5,73.5,54,112.5);ctx.drawImage(fr,x-(752-300)*CS,175-10*CS,910*CS,802*CS);return HOLD;}
+    bs=bs||BW;var holdY=HOLD;
+    ctx.fillStyle='#c53200';ctx.strokeStyle='#0b170f';ctx.lineWidth=3;ctx.fillRect(x-30,RAIL-22,60,30);ctx.strokeRect(x-30,RAIL-22,60,30);
+    ctx.strokeStyle='#f3ead9';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,RAIL+8);ctx.lineTo(x,HUB);ctx.stroke();
+    ctx.fillStyle='#f3ead9';ctx.strokeStyle='#0b170f';ctx.fillRect(x-22,HUB-6,44,16);ctx.strokeRect(x-22,HUB-6,44,16);ctx.fillStyle='#ff4c0f';ctx.fillRect(x-4,HUB-2,8,8);
+    var sp=bs/2+6+open*20;[-1,1].forEach(function(s){[[9,'#0b170f'],[5,'#f3ead9']].forEach(function(l){ctx.strokeStyle=l[1];ctx.lineWidth=l[0];ctx.beginPath();ctx.moveTo(x+s*18,HUB+8);ctx.lineTo(x+s*sp,HUB+28);ctx.lineTo(x+s*sp,holdY+bs*.25);ctx.lineTo(x+s*(sp-14+open*10),holdY+bs*.45);ctx.stroke();});});
+    return holdY;}
+  function deckWithChute(y,cx,cw,col){ctx.fillStyle=col||'#2c6021';ctx.fillRect(0,y,cx-cw/2,H-y);ctx.fillRect(cx+cw/2,y,W-cx-cw/2,H-y);ctx.fillStyle='#a2f590';ctx.fillRect(0,y,cx-cw/2,4);ctx.fillRect(cx+cw/2,y,W-cx-cw/2,4);
+    ctx.fillStyle='#050b07';ctx.fillRect(cx-cw/2,y,cw,H-y);
+    if(ok(A.deckL)&&ok(A.deckR)){var l=cx-cw/2-160,r=cx+cw/2-6;ctx.drawImage(A.deckL,l,y-55,166,58);ctx.drawImage(A.deckR,r,y-55,58,58);ctx.fillStyle='#f3ead9';ctx.fillRect(0,y-4,Math.max(0,l+1),7);ctx.fillRect(r+57,y-4,W-r-57,7);return;}
+    ctx.fillStyle='#f3ead9';ctx.fillRect(cx-cw/2-8,y-12,8,16);ctx.fillRect(cx+cw/2,y-12,8,16);}
+  /* spikes (Maurice 10/16: "use a piece of the claw to make the spikes"): the claw's left finger, cropped from his
+     75-claw-2.png and flipped so the tip points up. A plain triangle shows only while the art loads. */
+  var SPIKE=pic('75-spike.png');
+  function spike(x,base,w,h){if(ok(SPIKE)){ctx.drawImage(SPIKE,x,base-h,w,h);return;}
+    ctx.fillStyle='#ff4c0f';ctx.beginPath();ctx.moveTo(x,base);ctx.lineTo(x+w/2,base-h);ctx.lineTo(x+w,base);ctx.fill();}
+  /* confetti (his, in brand colors) that falls away when a floor gives way (t from 0 to 1) */
+  function rubble(x,y,t){if(!ok(A.rubble)||t<=0||t>=1)return;ctx.save();ctx.globalAlpha=1-t;var w=300,h=w*A.rubble.naturalHeight/A.rubble.naturalWidth;ctx.drawImage(A.rubble,x-w/2,y-h*.3+t*160,w,h*.6);ctx.restore();}
+
+  /* ---- a claw that keeps changing speed (floors 1, 4, 6, 8) ---- */
+  function newClaw(){return {x:rnd(120,480),dir:Math.random()<.5?-1:1,speed:300,target:300,retT:0,open:0};}
+  function clawStep(c,dt,lo,hi){c.retT-=dt;if(c.retT<=0){c.retT=rnd(.35,.9);c.target=rnd(170,520);}c.speed+=(c.target-c.speed)*Math.min(1,dt*4);
+    c.x+=c.dir*c.speed*dt;if(c.x>=hi){c.x=hi;c.dir=-1;}else if(c.x<=lo){c.x=lo;c.dir=1;}if(c.open>0&&c.open<1)c.open=Math.min(1,c.open+dt*6);}
+
+  /* ================= the floors ================= */
+  var F={};
+  // 1 The claw
+  F[1]={name:'The claw',how:'Tap to drop the box down the chute. The claw keeps changing speed.',
+    init:function(){this.c=newClaw();this.cx=Math.round(rnd(140,460));this.cw=BW*1.35;this.b=null;},
+    step:function(dt){var c=this.c;if(!this.b){clawStep(c,dt,70,530);return;}var b=this.b;b.vy+=1900*dt;b.y+=b.vy*dt;
+      if(b.y+BW/2>=560){if(Math.abs(b.x-this.cx)<=(this.cw-BW)/2+8){if(b.y>620)clear();}else fail();}},
+    tap:function(){if(this.b)return;this.c.open=.01;this.b={x:this.c.x,y:HOLD,vy:0};},
+    draw:function(){sky(1);rail();var hy=claw(this.c.x,this.c.open);if(!this.b)box(this.c.x,HOLD);deckWithChute(560,this.cx,this.cw);if(this.b)box(this.b.x,this.b.y);}};
+  // 2 Lever order
+  var LC=[COL.violet,COL.scarlet,COL.green,COL.teal,'#f1d48a'];
+  F[2]={name:'Lever order',how:'Watch the lightbulb. Pull the levers in the same 10-color order.',
+    init:function(){this.seq=[];for(var i=0;i<10;i++)this.seq.push(Math.floor(Math.random()*5));this.pos=0;this.t=-1;this.pulled=[];this.drop=0;},
+    step:function(dt){this.t+=dt;for(var i=0;i<this.pulled.length;i++)this.pulled[i]=Math.max(0,this.pulled[i]-dt);if(this.drop){this.drop+=dt;if(this.drop>1)clear();}},
+    bulb:function(){/* plays the sequence (0.55 s a color), then rests 3.5 s, over and over */var cyc=10*.55+3.5,u=((this.t%cyc)+cyc)%cyc;if(u<10*.55){var i=Math.floor(u/.55);return (u-i*.55)<.42?this.seq[i]:-1;}return -1;},
+    lx:function(i){return 100+i*100;},
+    tap:function(x,y){if(this.drop||y<330)return;var i=Math.round((x-100)/100);if(i<0||i>4||Math.abs(x-this.lx(i))>44)return;this.pulled[i]=.3;
+      if(i===this.seq[this.pos]){this.pos++;if(this.pos>=10){this.drop=.001;say('The floor drops out!');}}else fail();},
+    draw:function(){sky(2);var on=this.bulb();
+      ctx.fillStyle='#132219';ctx.fillRect(250,26,100,16);
+      if(ok(A.bulb.off)){var bi=on>=0?A.bulb[String(on)]:A.bulb.off;if(on>=0){var gl=ctx.createRadialGradient(300,128,10,300,128,90);gl.addColorStop(0,'rgba(255,255,254,.35)');gl.addColorStop(1,'rgba(255,255,254,0)');ctx.fillStyle=gl;ctx.beginPath();ctx.arc(300,128,90,0,Math.PI*2);ctx.fill();}
+        ctx.drawImage(bi,300-51,40,103,130);}
+      else{ctx.strokeStyle='#f3ead9';ctx.lineWidth=3;ctx.beginPath();ctx.arc(300,110,44,0,Math.PI*2);ctx.fillStyle=on>=0?LC[on]:'#2b3b30';ctx.fill();ctx.stroke();
+      if(on>=0){ctx.fillStyle='rgba(255,255,254,.18)';ctx.beginPath();ctx.arc(300,110,74,0,Math.PI*2);ctx.fill();}ctx.fillStyle='#f3ead9';ctx.fillRect(284,150,32,22);}
+      for(var p=0;p<10;p++){ctx.fillStyle=p<this.pos?LC[this.seq[p]]:'rgba(243,234,217,.25)';ctx.fillRect(126+p*36,196,24,12);}
+      var fy=this.drop?560+this.drop*200:560;box(300,fy-BW/2-170,BW);ctx.fillStyle='#2c6021';ctx.fillRect(0,fy-180,W,12);if(this.drop){ctx.fillStyle='#050b07';ctx.fillRect(250,fy-180,100,12);rubble(300,380,this.drop);}
+      for(var i=0;i<5;i++){var x=this.lx(i),pulled=this.pulled[i]>0;ctx.fillStyle='#132219';ctx.fillRect(x-30,560,60,40);ctx.strokeStyle='#f3ead9';ctx.lineWidth=2;ctx.strokeRect(x-30,560,60,40);
+        if(ok(A.lever)){ctx.save();ctx.translate(x,0);if(pulled)ctx.scale(-1,1);ctx.drawImage(A.lever,-36,456,40,110);ctx.restore();var kx=x+(pulled?24.4:-24.4);
+          ctx.fillStyle=LC[i];ctx.beginPath();ctx.arc(kx,467,16,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#000';ctx.lineWidth=3;ctx.stroke();continue;}
+        ctx.strokeStyle='#f3ead9';ctx.lineWidth=8;ctx.beginPath();ctx.moveTo(x,566);ctx.lineTo(x+(pulled?26:-26),466);ctx.stroke();ctx.fillStyle=LC[i];ctx.beginPath();ctx.arc(x+(pulled?26:-26),460,20,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#0b170f';ctx.lineWidth=3;ctx.stroke();}}};
+  // 3 Catapult launch (Maurice, 10/12; replaced Bumpers, then The patrol)
+  F[3]={name:'Catapult launch',how:'Hold to pull the catapult back. The power rises and falls. Let go to toss the box into the trapdoor.',
+    init:function(){this.px=130;this.py=480;this.tx=Math.round(rnd(385,540));this.tw=BW*1.5;this.hold=false;this.p=0;this.pt=0;this.b=null;this.arm=0;},
+    step:function(dt){if(this.hold&&!this.b){this.pt+=dt;var u=(this.pt/1.1)%2;this.p=u<1?u:2-u;}
+      if(this.b){var b=this.b;b.vy+=1200*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.a+=dt*5;this.arm=Math.min(1,this.arm+dt*8);
+        if(b.inside){b.vx=0;b.x+=(this.tx-b.x)*Math.min(1,dt*10);if(b.y>620)clear();}else if(b.y+BW/2>=560){if(Math.abs(b.x-this.tx)<=(this.tw-BW)/2+10)b.inside=1;else fail(b.x<this.tx?'Too short. Back to floor 1.':'Too far. Back to floor 1.');}}},
+    tap:function(){if(this.b||this.hold)return;this.hold=true;this.pt=0;this.p=0;},
+    release:function(){if(!this.hold||this.b)return;this.hold=false;this.pl=this.p;var v=360+this.p*340,a=50*Math.PI/180;this.b={x:this.px+30,y:this.py-60,vx:Math.cos(a)*v,vy:-Math.sin(a)*v,a:0};},
+    draw:function(){sky(3);deckWithChute(560,this.tx,this.tw,'#2c6021');ctx.fillStyle='#f1d48a';ctx.font="800 13px Almarai,sans-serif";ctx.textAlign='center';ctx.fillText('TRAPDOOR',this.tx,600);
+      /* the catapult: a wooden base, wheels, and an arm that pulls back with the power and snaps forward on release */
+      var px=this.px,py=this.py,pull=this.b?(1-this.arm)*.7:this.p*.7,ang=-.35-pull*.9+(this.b?this.arm*1.4:0);
+      if(ok(A.catArm)&&ok(A.catBase)){var K=.17,X=function(v){return 140+(v-600)*K;},Y=function(v){return 560+(v-1391)*K;},Px=X(622),Py=Y(932),rot=this.b?-(1-this.arm)*(this.pl||0)*.55+this.arm*1.05:-this.p*.55;
+        ctx.drawImage(A.catBase,X(380),Y(900),440*K,500*K);
+        if(!this.b){var vx=(300-622)*K,vy=(600-932)*K,c=Math.cos(rot),sn=Math.sin(rot);box(Px+vx*c-vy*sn,Py+vx*sn+vy*c-BW*.28,BW*.8,rot);}else box(this.b.x,this.b.y,BW*.8,this.b.a);
+        ctx.save();ctx.translate(Px,Py);ctx.rotate(rot);ctx.drawImage(A.catArm,(230-622)*K,(490-932)*K,600*K,620*K);ctx.restore();}
+      else{
+      ctx.fillStyle='#6b4423';ctx.fillRect(px-50,py+40,120,22);ctx.strokeStyle='#0b170f';ctx.lineWidth=3;ctx.strokeRect(px-50,py+40,120,22);
+      ctx.fillStyle='#3a2a1a';[px-30,px+50].forEach(function(x){ctx.beginPath();ctx.arc(x,py+66,14,0,Math.PI*2);ctx.fill();ctx.stroke();});
+      ctx.fillStyle='#6b4423';ctx.fillRect(px+4,py-6,14,48);ctx.strokeRect(px+4,py-6,14,48);
+      ctx.save();ctx.translate(px+11,py);ctx.rotate(ang);ctx.fillStyle='#8a5a2e';ctx.fillRect(-4,-110,12,120);ctx.strokeRect(-4,-110,12,120);ctx.fillStyle='#3a2a1a';ctx.fillRect(-16,-122,36,16);ctx.restore();
+      if(!this.b){var hx=px+11+Math.sin(ang)*115,hy=py-Math.cos(ang)*115;box(hx,hy-BW*.35,BW*.8,ang);}else box(this.b.x,this.b.y,BW*.8,this.b.a);}
+      /* the power meter */ctx.fillStyle='rgba(11,23,15,.75)';ctx.fillRect(20,20,220,26);ctx.fillStyle=this.p>.85?'#ff4c0f':'#3adb97';ctx.fillRect(24,24,212*this.p,18);
+      ctx.strokeStyle='#f3ead9';ctx.lineWidth=2;ctx.strokeRect(20,20,220,26);ctx.fillStyle='#fffffe';ctx.font="800 12px Almarai,sans-serif";ctx.textAlign='left';ctx.fillText('POWER',250,38);}};
+  // 4 The moving chute (Maurice 10/15: replaced Conveyor belts, which took no skill; "make it another drop").
+  // The chute slides back and forth along the deck at its own speed while the claw changes speed overhead.
+  // The box takes about half a second to fall, so you have to drop it ahead of the chute.
+  F[4]={name:'The moving chute',how:'The chute slides along the floor. Drop the box ahead of it so they meet.',
+    init:function(){this.c=newClaw();this.cw=BW*1.5;this.cx=Math.round(rnd(160,440));this.cd=Math.random()<.5?-1:1;this.cs=rnd(150,200);this.b=null;},
+    step:function(dt){var lo=this.cw/2+40,hi=W-this.cw/2-40;
+      this.cx+=this.cd*this.cs*dt;if(this.cx>=hi){this.cx=hi;this.cd=-1;}else if(this.cx<=lo){this.cx=lo;this.cd=1;}
+      var c=this.c;if(!this.b){clawStep(c,dt,70,530);return;}var b=this.b;
+      if(b.inside){b.x=this.cx;b.y+=b.vy*dt;if(b.y>620)clear();return;}
+      b.vy+=1900*dt;b.y+=b.vy*dt;
+      if(b.y+BW/2>=560){if(Math.abs(b.x-this.cx)<=(this.cw-BW)/2+8)b.inside=1;else fail();}},
+    tap:function(){if(this.b)return;this.c.open=.01;this.b={x:this.c.x,y:HOLD,vy:0};},
+    draw:function(){sky(4);rail();var hy=claw(this.c.x,this.c.open);if(!this.b)box(this.c.x,HOLD);deckWithChute(560,this.cx,this.cw,'#1a5e41');
+      /* arrows on the deck show which way the chute is sliding */
+      ctx.fillStyle='#89fbcb';var ax=this.cx+this.cd*(this.cw/2+30);if(ax>20&&ax<W-20){ctx.beginPath();ctx.moveTo(ax+this.cd*12,590);ctx.lineTo(ax-this.cd*6,580);ctx.lineTo(ax-this.cd*6,600);ctx.fill();}
+      if(this.b)box(this.b.x,this.b.y);}};
+  // 5 Pipe path
+  F[5]={name:'Pipe path',how:'Tap the pipes to turn them. Connect the top to the bottom.',
+    init:function(){var C=5,R=5;this.C=C;this.R=R;var g=[];for(var r=0;r<R;r++){g.push([]);for(var c=0;c<C;c++)g[r].push(null);}
+      /* carve a path from the top to the bottom, then give every tile a random turn */
+      var c0=Math.floor(Math.random()*C),c=c0,r=0,from=0,path=[];var DIRS=[[0,-1],[1,0],[0,1],[-1,0]];
+      while(r<R){var opts=[2];if(c>0&&(!path.length||path[path.length-1][2]!==1))opts.push(3);if(c<C-1&&(!path.length||path[path.length-1][2]!==3))opts.push(1);
+        var to=r===R-1&&Math.random()<.6?2:opts[Math.floor(Math.random()*opts.length)];if(to!==2&&path.filter(function(p){return p[0]===r;}).length>2)to=2;
+        path.push([r,c,to,from]);var tl=g[r][c]={a:[from,to]};if(to===2){r++;from=0;}else{c+=DIRS[to][0];from=to===1?3:1;}}
+      this.c0=c0;this.c1=c;for(var rr=0;rr<R;rr++)for(var cc=0;cc<C;cc++){if(!g[rr][cc]){var k=Math.random()<.5?[0,2]:[0,1];g[rr][cc]={a:k};}
+        var turns=Math.floor(Math.random()*4);g[rr][cc].a=g[rr][cc].a.map(function(x){return (x+turns)%4;});}
+      this.g=g;this.done=0;this.flow=null;},
+    open:function(r,c){return this.g[r][c].a;},
+    connected:function(){/* follows the pipes from the top inlet; true when it reaches the bottom outlet */var r=0,c=this.c0,from=0,seen=0,cells=[];
+      while(seen++<40){var a=this.g[r][c].a;if(a.indexOf(from)<0)return false;cells.push([r,c]);var to=a[0]===from?a[1]:a[0];
+        if(to===2){if(r===this.R-1)return c===this.c1?cells:false;r++;from=0;}else if(to===0){return false;}else{c+=to===1?1:-1;if(c<0||c>=this.C)return false;from=to===1?3:1;}}return false;},
+    tile:function(){return {x0:75,y0:150,s:90};},
+    /* the box rides the lit pipe (Maurice 10/15): down the inlet, through every connected tile's center, out the bottom */
+    route:function(){var T=this.tile(),h=T.s/2,pts=[[T.x0+this.c0*T.s+h,60]];this.flow.forEach(function(p){pts.push([T.x0+p[1]*T.s+h,T.y0+p[0]*T.s+h]);});
+      pts.push([T.x0+this.c1*T.s+h,T.y0+this.R*T.s+h+40]);var L=0;for(var i=1;i<pts.length;i++)L+=Math.abs(pts[i][0]-pts[i-1][0])+Math.abs(pts[i][1]-pts[i-1][1]);this.pts=pts;this.len=L;},
+    at:function(d){var p=this.pts;for(var i=1;i<p.length;i++){var seg=Math.abs(p[i][0]-p[i-1][0])+Math.abs(p[i][1]-p[i-1][1]);if(d<=seg){var t=seg?d/seg:1;return [p[i-1][0]+(p[i][0]-p[i-1][0])*t,p[i-1][1]+(p[i][1]-p[i-1][1])*t];}d-=seg;}return p[p.length-1];},
+    step:function(dt){if(this.done){this.done+=dt;if(this.done>.35+this.len/520+.25)clear();}},
+    tap:function(x,y){if(this.done)return;var T=this.tile(),c=Math.floor((x-T.x0)/T.s),r=Math.floor((y-T.y0)/T.s);if(r<0||r>=this.R||c<0||c>=this.C)return;
+      this.g[r][c].a=this.g[r][c].a.map(function(v){return (v+1)%4;});var p=this.connected();if(p){this.flow=p;this.route();this.done=.001;say('The path is open!');}},
+    draw:function(){sky(5);var T=this.tile(),self=this,cols=[COL.teal,COL.violet,COL.scarlet,COL.green];
+      ctx.fillStyle='#050b07';ctx.fillRect(T.x0+this.c0*T.s+30,96,30,54);ctx.fillRect(T.x0+this.c1*T.s+30,T.y0+this.R*T.s,30,H);
+      for(var r=0;r<this.R;r++)for(var c=0;c<this.C;c++){var x=T.x0+c*T.s,y=T.y0+r*T.s,cx=x+T.s/2,cy=y+T.s/2,lit=this.flow&&this.flow.some(function(p){return p[0]===r&&p[1]===c;});
+        ctx.fillStyle='#132219';ctx.fillRect(x+2,y+2,T.s-4,T.s-4);
+        if(ok(A.pipeS)&&ok(A.pipeE)){var a=this.g[r][c].a,d0=Math.min(a[0],a[1]),d1=Math.max(a[0],a[1]),straight=(d1-d0)===2,k=straight?d0:(d0===0&&d1===3?3:d0);
+          ctx.strokeStyle=cols[(r+c)%4];ctx.lineWidth=2;ctx.strokeRect(x+3,y+3,T.s-6,T.s-6);ctx.save();ctx.translate(cx,cy);ctx.rotate(k*Math.PI/2);if(lit){ctx.shadowColor='#a2f590';ctx.shadowBlur=18;}
+          ctx.drawImage(straight?A.pipeS:A.pipeE,-T.s/2,-T.s/2,T.s,T.s);ctx.restore();
+          if(lit){ctx.strokeStyle='#a2f590';ctx.lineWidth=3;ctx.strokeRect(x+3,y+3,T.s-6,T.s-6);}continue;}
+        ctx.strokeStyle=lit?'#a2f590':cols[(r+c)%4];ctx.lineWidth=22;ctx.lineCap='butt';
+        this.g[r][c].a.forEach(function(dd){var v=[[0,-1],[1,0],[0,1],[-1,0]][dd];ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+v[0]*T.s/2,cy+v[1]*T.s/2);ctx.stroke();});
+        ctx.fillStyle=lit?'#a2f590':'#f3ead9';ctx.beginPath();ctx.arc(cx,cy,12,0,Math.PI*2);ctx.fill();}
+      ctx.fillStyle='#f3ead9';ctx.fillRect(T.x0+this.c1*T.s+20,T.y0+this.R*T.s,50,6);
+      /* after a short beat the box travels the path at a steady speed */
+      var bp=this.done?this.at(Math.max(0,this.done-.35)*520):[T.x0+this.c0*T.s+45,60];box(bp[0],bp[1],this.done?50:56);}};
+  // 6 Trapdoors
+  F[6]={name:'Trapdoors',how:'The trapdoor snaps open and shut. Drop the box while it’s open.',
+    init:function(){this.c=newClaw();this.cx=Math.round(rnd(160,440));this.cw=BW*1.5;this.b=null;this.t=0;this.per=rnd(1.5,2.1);},
+    isOpen:function(t){return ((t%this.per)+this.per)%this.per<this.per*.38;},
+    step:function(dt){this.t+=dt;var c=this.c;if(!this.b){clawStep(c,dt,70,530);return;}var b=this.b;b.vy+=1900*dt;b.y+=b.vy*dt;
+      if(!b.past&&b.y+BW/2>=560){if(Math.abs(b.x-this.cx)<=(this.cw-BW)/2+8&&this.isOpen(this.t))b.past=1;else fail();}if(b.y>640)clear();},
+    tap:function(){if(this.b)return;this.c.open=.01;this.b={x:this.c.x,y:HOLD,vy:0};},
+    draw:function(){sky(6);rail();var hy=claw(this.c.x,this.c.open);if(!this.b)box(this.c.x,HOLD);deckWithChute(560,this.cx,this.cw,'#482d85');
+      var o=this.isOpen(this.t);ctx.fillStyle='#f1d48a';if(!o)ctx.fillRect(this.cx-this.cw/2,556,this.cw,10);else{ctx.fillRect(this.cx-this.cw/2-6,560,8,50);ctx.fillRect(this.cx+this.cw/2-2,560,8,50);}
+      if(this.b)box(this.b.x,this.b.y);}};
+  // 7 The dark floor. Finding it is now clear (Maurice 10/15): the hatch is drawn as a trapdoor (planks, a gold
+  // frame, an iron ring) instead of a switch-like bar. Tap it and the lights come up, the trapdoor swings open,
+  // and the box drops in from above before the floor gives way.
+  F[7]={name:'The dark floor',how:'It’s pitch dark. Move your tiny light around and find the trapdoor. Tap it before the lantern runs out.',
+    init:function(){this.h={x:rnd(70,530),y:rnd(160,590)};this.p={x:300,y:320};this.t=40;this.found=0;},
+    step:function(dt){if(this.found){this.found+=dt;if(this.found>1.9)clear();}},
+    move:function(x,y){this.p={x:x,y:y};},
+    tap:function(x,y){if(this.found)return;this.p={x:x,y:y};if(Math.abs(x-this.h.x)<34&&Math.abs(y-this.h.y)<30){this.found=.001;say('You found the trapdoor!');}},
+    floor:function(){ctx.fillStyle='#3a2a1a';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#2a1d10';ctx.lineWidth=3;for(var y=10;y<H;y+=36){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}},
+    hatch:function(open){var h=this.h,w=60,hh=46;
+      if(open<=0){ctx.fillStyle='#5a3d1e';ctx.fillRect(h.x-w/2,h.y-hh/2,w,hh);ctx.strokeStyle='#2a1d10';ctx.lineWidth=2;for(var i=1;i<4;i++){ctx.beginPath();ctx.moveTo(h.x-w/2+i*w/4,h.y-hh/2);ctx.lineTo(h.x-w/2+i*w/4,h.y+hh/2);ctx.stroke();}
+        ctx.strokeStyle='#f1d48a';ctx.lineWidth=3;ctx.strokeRect(h.x-w/2,h.y-hh/2,w,hh);ctx.strokeStyle='#c9c9c9';ctx.lineWidth=3;ctx.beginPath();ctx.arc(h.x,h.y+4,7,0,Math.PI*2);ctx.stroke();return;}
+      /* open: a black hole with the two doors folded back */
+      ctx.fillStyle='#050302';ctx.fillRect(h.x-w/2,h.y-hh/2,w,hh);var f=Math.min(1,open);ctx.fillStyle='#5a3d1e';
+      ctx.fillRect(h.x-w/2-w/2*f,h.y-hh/2,w/2*f,hh);ctx.fillRect(h.x+w/2,h.y-hh/2,w/2*f,hh);ctx.strokeStyle='#f1d48a';ctx.lineWidth=3;ctx.strokeRect(h.x-w/2,h.y-hh/2,w,hh);},
+    draw:function(){var f=this.found;
+      if(!f){ctx.fillStyle='#050705';ctx.fillRect(0,0,W,H);ctx.save();ctx.beginPath();ctx.arc(this.p.x,this.p.y,30,0,Math.PI*2);ctx.clip();this.floor();this.hatch(0);ctx.restore();
+        var g=ctx.createRadialGradient(this.p.x,this.p.y,10,this.p.x,this.p.y,34);g.addColorStop(0,'rgba(255,214,120,0)');g.addColorStop(1,'rgba(255,214,120,.35)');ctx.strokeStyle=g;ctx.lineWidth=6;ctx.beginPath();ctx.arc(this.p.x,this.p.y,31,0,Math.PI*2);ctx.stroke();
+        return;}
+      /* found: lights up over 0.4 s, the doors swing open by 0.8 s, then the box drops in */
+      this.floor();this.hatch(still?1:Math.max(0,(f-.3)/.5));
+      var dark=still?0:Math.max(0,1-f/.4);if(dark>0){ctx.fillStyle='rgba(5,7,5,'+dark+')';ctx.fillRect(0,0,W,H);}
+      var ring=still?0:Math.min(1,f/.5);ctx.strokeStyle='rgba(162,245,144,'+(1-ring)+')';ctx.lineWidth=4;ctx.beginPath();ctx.arc(this.h.x,this.h.y,30+ring*60,0,Math.PI*2);ctx.stroke();
+      if(f>.8){var t=Math.min(1,(f-.8)/.7),y=-40+(this.h.y+40)*t*t,s=t<.85?48:48*(1-(t-.85)/.15*.7);ctx.save();ctx.beginPath();ctx.rect(0,0,W,this.h.y+(t<.85?H:0));ctx.clip();box(this.h.x,y,s);ctx.restore();}}};
+  // 8 Wind tunnel
+  F[8]={name:'Wind tunnel',how:'Gusts push the falling box sideways. Watch the streaks, then drop.',
+    init:function(){this.c=newClaw();this.cx=Math.round(rnd(150,450));this.cw=BW*1.45;this.b=null;this.wind=0;this.wt=0;this.wTarget=rnd(-220,220);this.streaks=[];for(var i=0;i<26;i++)this.streaks.push({x:rnd(0,W),y:rnd(160,540),l:rnd(30,70)});},
+    step:function(dt){this.wt-=dt;if(this.wt<=0){this.wt=rnd(1.4,2.8);this.wTarget=rnd(-240,240);}this.wind+=(this.wTarget-this.wind)*Math.min(1,dt*2);
+      var w=this.wind;this.streaks.forEach(function(s){s.x+=w*2.2*dt;if(s.x>W+80)s.x=-80;if(s.x<-80)s.x=W+80;});
+      var c=this.c;if(!this.b){clawStep(c,dt,70,530);return;}var b=this.b;b.vy+=900*dt;if(!b.inside){b.vx+=(this.wind-b.vx)*Math.min(1,dt*2.5);}else{b.vx=0;b.x+=(this.cx-b.x)*Math.min(1,dt*10);}b.x+=b.vx*dt;b.y+=b.vy*dt;
+      /* once the box is inside the chute it drops straight down; the wind can't push it back out */
+      if(b.inside){if(b.y>620)clear();}else if(b.y+BW/2>=560){if(Math.abs(b.x-this.cx)<=(this.cw-BW)/2+8)b.inside=1;else fail();}},
+    tap:function(){if(this.b)return;this.c.open=.01;this.b={x:this.c.x,y:HOLD,vx:0,vy:0};},
+    draw:function(){sky(8);var a=Math.min(.6,Math.abs(this.wind)/300);ctx.strokeStyle='rgba(243,234,217,'+a+')';ctx.lineWidth=2;var dir=this.wind>=0?1:-1;
+      this.streaks.forEach(function(s){ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x-dir*s.l,s.y);ctx.stroke();});
+      rail();var hy=claw(this.c.x,this.c.open);if(!this.b)box(this.c.x,HOLD);deckWithChute(560,this.cx,this.cw,'#1a5e41');if(this.b)box(this.b.x,this.b.y);}};
+  // 9 Cut the ropes
+  F[9]={name:'Cut the ropes',how:'Swipe across a rope or tap it to cut it. Swing the box into the vault.',
+    init:function(){this.ropes=[{ax:300,ay:60,len:300,cut:0},{ax:40,ay:380,len:180,cut:0}];
+      /* the box starts held to the left wall by the second rope */
+      var a=-.9;this.b={x:300+Math.sin(a)*300,y:60+Math.cos(a)*300,vx:0,vy:0};this.settle=0.8;this.vault={x0:440,x1:572,y:560};this.drag=null;},
+    step:function(dt){var b=this.b,sub=4,h=dt/sub;for(var k=0;k<sub;k++){b.vy+=1200*h;b.x+=b.vx*h;b.y+=b.vy*h;
+        this.ropes.forEach(function(r){if(r.cut)return;var dx=b.x-r.ax,dy=b.y-r.ay,dd=Math.sqrt(dx*dx+dy*dy);if(dd>r.len){var nx=dx/dd,ny=dy/dd;b.x=r.ax+nx*r.len;b.y=r.ay+ny*r.len;var vn=b.vx*nx+b.vy*ny;if(vn>0){b.vx-=vn*nx;b.vy-=vn*ny;}}});}
+      if(this.settle>0){this.settle-=dt;b.vx*=.9;b.vy*=.9;}
+      if(b.x<26){b.x=26;b.vx=Math.abs(b.vx)*.4;}if(b.x>W-26){b.x=W-26;b.vx=-Math.abs(b.vx)*.4;}
+      if(b.y+26>=this.vault.y){if(b.x>=this.vault.x0+12&&b.x<=this.vault.x1-12){if(b.y>600)clear();}else fail();}},
+    cutAt:function(x,y,x2,y2){var b=this.b,hit=false;this.ropes.forEach(function(r){if(r.cut)return;
+        /* distance from the tap (or swipe segment midpoint) to the rope line */function seg(px,py){var vx=b.x-r.ax,vy=b.y-r.ay,L=vx*vx+vy*vy,t=Math.max(0,Math.min(1,((px-r.ax)*vx+(py-r.ay)*vy)/L));var qx=r.ax+t*vx,qy=r.ay+t*vy;return Math.hypot(px-qx,py-qy);}
+        var dmin=seg(x,y);if(x2!==undefined){for(var i=1;i<=8;i++){dmin=Math.min(dmin,seg(x+(x2-x)*i/8,y+(y2-y)*i/8));}}if(dmin<16){r.cut=1;hit=true;}});return hit;},
+    tap:function(x,y){this.cutAt(x,y);},
+    swipe:function(x,y,x2,y2){this.cutAt(x,y,x2,y2);},
+    draw:function(){sky(9);var b=this.b,v=this.vault;ctx.fillStyle='#213226';ctx.fillRect(0,v.y,v.x0,H-v.y);ctx.fillRect(v.x1,v.y,W-v.x1,H-v.y);for(var x=8;x<v.x0-18;x+=22)spike(x,v.y+2,19,28);
+      ctx.fillStyle='#050b07';ctx.fillRect(v.x0,v.y,v.x1-v.x0,H-v.y);ctx.strokeStyle='#f1d48a';ctx.lineWidth=4;ctx.strokeRect(v.x0,v.y,v.x1-v.x0,H-v.y);ctx.fillStyle='#f1d48a';ctx.font="800 14px Almarai,sans-serif";ctx.textAlign='center';ctx.fillText('VAULT',(v.x0+v.x1)/2,v.y+30);
+      this.ropes.forEach(function(r){ctx.fillStyle='#f3ead9';ctx.fillRect(r.ax-8,r.ay-8,16,16);if(r.cut)return;ctx.strokeStyle='#c8a46a';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(r.ax,r.ay);ctx.lineTo(b.x,b.y);ctx.stroke();});
+      box(b.x,b.y,52);}};
+  // 10 The last stretch: a platform level. Longer with more to do (Maurice 10/15): gaps, spikes, rolling cannonballs,
+  // falling weights (a shadow warns where one will land), moving platforms over the wide gaps, a spring to bounce over
+  // a tall wall, and a jump-jump-jump finish up three floating steps to the trapdoor ledge. How to move is written on the
+  // screen. Shapes are drawn in code until Maurice draws them (cannonballs use his 74-cannonball.png).
+  F[10]={name:'The last stretch',how:'Move and jump past the gaps, spikes, cannonballs, and falling weights. Then jump, jump, jump up to the trapdoor.',
+    init:function(){this.L=4320;
+      this.ground=[[0,420],[520,900],[1000,1500],[1640,2100],[2400,3600]];
+      this.plats=[[440,470,90],[930,420,70],[3700,440,70],[3840,360,70],[3980,280,70],[4110,210,170]];
+      this.movers=[{x0:1530,y:470,w:80,amp:44,per:2.6,x:1530,dx:0},{x0:2205,y:480,w:90,amp:105,per:4.2,x:2205,dx:0}];
+      this.spikes=[[700,40],[1160,40],[1330,30],[1800,40],[2560,40],[2780,30],[3400,40]];
+      this.wall={x:3250,w:40,top:340};this.spring={x:3150,w:44,squash:0};
+      this.drops=[];this.dropT=1.2;this.zones=[[1050,1460],[2450,2980]];
+      this.balls=[];this.ballT=1.5;this.p={x:60,y:400,vx:0,vy:0,on:false};this.cam=0;this.end=4220;this.endY=210;this.done=0;this.t=0;this.keys={l:0,r:0,j:0};},
+    groundAt:function(x){var s=24;for(var i=0;i<this.ground.length;i++){var g=this.ground[i];if(x+s>g[0]&&x-s<g[1])return 520;}return null;},
+    step:function(dt){if(this.done){this.done+=dt;this.p.y+=200*dt;if(this.done>.9)clear();return;}
+      this.t+=dt;var self=this,p=this.p,k=this.keys,sp=230;
+      this.movers.forEach(function(m){var nx=m.x0+m.amp*Math.sin(self.t*2*Math.PI/m.per);m.dx=nx-m.x;m.x=nx;});
+      if(p.ride){p.x+=p.ride.dx;}
+      p.vx=(k.r-k.l)*sp;if(k.j&&p.on){p.vy=-640;p.on=false;}
+      p.vy+=1700*dt;if(!k.j&&p.vy<-250&&!p.boing)p.vy+=1500*dt;/* short hop when the jump is released early */
+      var ny=p.y+p.vy*dt,nx=Math.max(24,Math.min(this.L-24,p.x+p.vx*dt));p.on=false;p.ride=null;
+      /* the wall: you can't walk through it, only bounce over it or stand on top */
+      var wl=this.wall;if(nx+22>wl.x&&nx-22<wl.x+wl.w&&p.y+24>wl.top+2){nx=p.x<wl.x?wl.x-22:wl.x+wl.w+22;}
+      if(p.vy>=0){p.boing=false;var g=this.groundAt(nx);if(g!==null&&p.y+24<=g+2&&ny+24>=g){ny=g-24;p.vy=0;p.on=true;}
+        var tops=this.plats.map(function(pl){return [pl[0],pl[1],pl[2],null];}).concat(this.movers.map(function(m){return [m.x,m.y,m.w,m];})).concat([[wl.x,wl.top,wl.w,null]]);
+        for(var i=0;i<tops.length&&!p.on;i++){var pl=tops[i];if(nx>pl[0]-6&&nx<pl[0]+pl[2]+6&&p.y+24<=pl[1]+2&&ny+24>=pl[1]){ny=pl[1]-24;p.vy=0;p.on=true;p.ride=pl[3];}}
+        var sg=this.spring;if(nx>sg.x-8&&nx<sg.x+sg.w+8&&ny+24>=500&&ny+24<=530){ny=500-24;p.vy=-900;p.on=false;p.boing=true;sg.squash=.25;}}
+      if(this.spring.squash>0)this.spring.squash-=dt;
+      p.x=nx;p.y=ny;this.cam=Math.max(0,Math.min(this.L-W,p.x-W*.35));
+      if(p.y>H+40){fail('Down the gap. Back to floor 1.');return;}
+      for(var s=0;s<this.spikes.length;s++){var sk=this.spikes[s];if(p.x+18>sk[0]&&p.x-18<sk[0]+sk[1]&&p.y+24>500){fail('Spikes! Back to floor 1.');return;}}
+      /* falling weights: inside a zone, one drops just ahead of you after a short shadow warning */
+      this.dropT-=dt;var inZone=this.zones.some(function(z){return p.x>z[0]-150&&p.x<z[1];});
+      if(this.dropT<=0&&inZone){this.dropT=rnd(1.1,1.8);this.drops.push({x:p.x+rnd(40,170),y:-60,warn:.8,vy:0});}
+      for(var d=this.drops.length-1;d>=0;d--){var dr=this.drops[d];if(dr.warn>0){dr.warn-=dt;continue;}dr.vy+=2200*dt;dr.y+=dr.vy*dt;
+        if(dr.y>560){this.drops.splice(d,1);continue;}if(Math.abs(dr.x-p.x)<40&&Math.abs(dr.y-p.y)<44){fail('Flattened by a falling weight. Back to floor 1.');return;}}
+      this.ballT-=dt;if(this.ballT<=0&&this.cam<2900){this.ballT=rnd(2.2,3.6);this.balls.push({x:this.cam+W+30,y:500,vx:-rnd(170,240),a:0});}
+      for(var bb=this.balls.length-1;bb>=0;bb--){var bl=this.balls[bb];bl.x+=bl.vx*dt;bl.a+=bl.vx*dt/14;var gg=this.groundAt(bl.x);if(gg===null)bl.y+=300*dt;if(bl.x<this.cam-60||bl.y>H+40){this.balls.splice(bb,1);continue;}
+        if(Math.hypot(bl.x-p.x,bl.y-p.y)<34){fail('Flattened by a cannonball. Back to floor 1.');return;}}
+      if(p.on&&p.y+24<=this.endY+2&&p.x>this.end-30&&p.x<this.end+30){this.done=.001;say('The final trapdoor!');}},
+    draw:function(){sky(10);var c=this.cam;ctx.save();ctx.translate(-c,0);
+      this.ground.forEach(function(g){ctx.fillStyle='#2c6021';ctx.fillRect(g[0],520,g[1]-g[0],H-520);ctx.fillStyle='#a2f590';ctx.fillRect(g[0],520,g[1]-g[0],5);});
+      function plank(x,y,w,col){ctx.fillStyle=col;ctx.fillRect(x,y,w,14);ctx.strokeStyle='#0b170f';ctx.lineWidth=2;ctx.strokeRect(x,y,w,14);}
+      this.plats.forEach(function(pl){plank(pl[0],pl[1],pl[2],'#912501');});
+      this.movers.forEach(function(m){plank(m.x,m.y,m.w,'#7b4ee1');ctx.fillStyle='#c3a6ff';ctx.fillRect(m.x+m.w/2-8,m.y+4,16,6);});
+      var wl=this.wall;ctx.fillStyle='#213226';ctx.fillRect(wl.x,wl.top,wl.w,520-wl.top);ctx.strokeStyle='#f3ead9';ctx.lineWidth=2;ctx.strokeRect(wl.x,wl.top,wl.w,520-wl.top);
+      var sg=this.spring,sq=sg.squash>0?8:0;ctx.strokeStyle='#f1d48a';ctx.lineWidth=4;ctx.beginPath();for(var i=0;i<=4;i++){var yy=520-i*(20-sq)/4;ctx.lineTo(sg.x+(i%2?sg.w-8:8),yy);}ctx.stroke();ctx.fillStyle='#ff4c0f';ctx.fillRect(sg.x,500+sq,sg.w,8);
+      this.spikes.forEach(function(sk){for(var x=sk[0];x<sk[0]+sk[1]-2;x+=14)spike(x,522,14,22);});
+      this.drops.forEach(function(dr){if(dr.warn>0){ctx.fillStyle='rgba(11,23,15,'+(still?.5:.3+.3*Math.sin(dr.warn*20))+')';ctx.beginPath();ctx.ellipse(dr.x,518,30,6,0,0,Math.PI*2);ctx.fill();return;}
+        ctx.fillStyle='#3b3b3b';ctx.fillRect(dr.x-26,dr.y-22,52,44);ctx.fillStyle='#607667';ctx.fillRect(dr.x-10,dr.y-34,20,12);ctx.fillStyle='#f3ead9';ctx.font="800 13px Almarai,sans-serif";ctx.textAlign='center';ctx.fillText('10T',dr.x,dr.y+5);});
+      var ey=this.endY;ctx.fillStyle='#050b07';ctx.fillRect(this.end-34,ey-8,68,12);ctx.strokeStyle='#f1d48a';ctx.lineWidth=3;ctx.strokeRect(this.end-34,ey-8,68,12);ctx.fillStyle='#f1d48a';ctx.font="800 13px Almarai,sans-serif";ctx.textAlign='center';ctx.fillText('TRAPDOOR',this.end,ey-20);
+      this.balls.forEach(function(bl){if(ok(A.ball)){ctx.save();ctx.translate(bl.x,bl.y);ctx.rotate(bl.a);ctx.drawImage(A.ball,-16,-16,32,32);ctx.restore();}else{ctx.fillStyle='#2b2b2b';ctx.beginPath();ctx.arc(bl.x,bl.y,14,0,Math.PI*2);ctx.fill();}});
+      box(this.p.x,this.p.y,48);ctx.restore();
+      /* how to move, on the screen (Maurice 10/15) */
+      var tip=touchy?'USE THE LEFT, JUMP, AND RIGHT BUTTONS BELOW':'MOVE: ARROWS OR A / D     JUMP: SPACE, UP, OR W';
+      var tf=touchy?21:14,th=tf*2.3;ctx.font='800 '+tf+'px Almarai,sans-serif';var tw=Math.min(W-16,ctx.measureText(tip).width+32);ctx.fillStyle='rgba(11,23,15,.82)';ctx.fillRect(W/2-tw/2,14,tw,th);ctx.strokeStyle='#89fbcb';ctx.lineWidth=1;ctx.strokeRect(W/2-tw/2+.5,14.5,tw-1,th-1);
+      ctx.fillStyle='#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(tip,W/2,14+th/2,W-40);ctx.textBaseline='alphabetic';
+      /* a progress line so the longer course has a sense of distance */
+      var pr=Math.min(1,this.p.x/this.end);ctx.fillStyle='rgba(243,234,217,.25)';ctx.fillRect(40,H-16,W-80,4);ctx.fillStyle='#89fbcb';ctx.fillRect(40,H-16,(W-80)*pr,4);}};
+
+  /* ================= the tower ================= */
+  var n=1,cur=null,state='title',phase=0,t=0,shake=0,missI=Math.floor(Math.random()*FAIL.length);
+  function hud(){floorEl.textContent='Floor '+n+' of 10'+(cur?' · '+F[n].name:'');bestEl.textContent='Best: floor '+best;pad.classList.toggle('on',n===10&&state!=='title'&&touchy);}
+  var touchy=(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window&&window.innerWidth<900);
+  /* Every floor has a 15-second clock in the top-right corner (Maurice 10/16). It blinks red from 5. At zero the floor
+     triggers itself: the claw drops the box (1, 4, 6, 8), the catapult fires at whatever power it has (3), both ropes
+     are cut (9). Floors with no drop to make (2 lever order, 5 pipe path, 7 the dark floor) fail when time runs out.
+     Floor 10, the long platform run, has no clock; it can't be finished in 15 seconds. The clock stops once you act. */
+  var CLOCK=15,tl=CLOCK;
+  function timed(){return n!==10;}
+  function acted(){if(n===9)return cur.ropes.every(function(r){return r.cut;});return !!(cur.b||cur.drop||cur.done||cur.found||(cur.ropes&&cur.ropes.every(function(r){return r.cut;})));}
+  function autoTrigger(){
+    if(n===1||n===4||n===6||n===8)cur.tap(0,0);
+    else if(n===3){if(!cur.hold)cur.tap();cur.release();}
+    else if(n===9)cur.ropes.forEach(function(r){r.cut=1;});
+    else if(n===7)fail('The lantern ran out. Back to floor 1.');
+    else fail('Out of time. Back to floor 1.');}
+  function drawClock(){if(!timed()||(state!=='intro'&&state!=='play'))return;var sec=Math.max(0,Math.ceil(tl)),red=sec<=5&&state==='play';
+    ctx.fillStyle='rgba(11,23,15,.85)';ctx.fillRect(W-80,8,68,40);ctx.strokeStyle=red?'#ff4c0f':'#89fbcb';ctx.lineWidth=2;ctx.strokeRect(W-79,9,66,38);
+    if(red&&!still&&(tl%1)<.4)return;ctx.fillStyle=red?'#ff4c0f':'#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font="400 30px 'Cracked Imperia',Impact,sans-serif";ctx.fillText(String(sec),W-46,29);ctx.textBaseline='alphabetic';}
+  function enter(k){n=k;cur=F[n];cur.init();tl=CLOCK;state='intro';phase=1.3;if(n>best){best=n;lsSet('ma-tower-best',String(best));}hud();say(cur.how);}
+  function clear(){if(state!=='play')return;state='drop';phase=.8;if(n===10){state='won';setTimeout(showWin,still?100:600);}}
+  function fail(line){if(state!=='play')return;state='fail';phase=1.8;shake=still?0:1;say(line||FAIL[missI++%FAIL.length],true);}
+  function showWin(){lsSet('ma-tower-won','1');winEl.hidden=false;pad.classList.remove('on');say('Ten floors down!');try{winEl.scrollIntoView({block:'center',behavior:still?'auto':'smooth'});}catch(e){}}
+  d.querySelector('.tw-go').addEventListener('click',function(){startOv.hidden=true;enter(1);try{stage.focus({preventScroll:true});}catch(e){}});
+  d.querySelector('.tw-box').addEventListener('click',function(){location.href=atob(K).split('').reverse().join('');});
+  /* preview hub only (window.__pv): jump to any floor so Maurice can see them all; never on the live site */
+  if(window.__pv){
+    var pick=document.createElement('div');pick.style.cssText='display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;margin:0;max-width:640px';
+    var lab=document.createElement('span');lab.textContent='Preview: jump to floor';lab.style.cssText='width:100%;text-align:center;font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#89fbcb';pick.appendChild(lab);
+    for(var pf=1;pf<=10;pf++)(function(k){var b=document.createElement('button');b.type='button';b.textContent=k;b.setAttribute('aria-label','Jump to floor '+k);
+      b.style.cssText="min-width:44px;height:40px;padding:0 10px;margin:0;border:1px solid #89fbcb;border-radius:0;background:#132219;color:#fffffe;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;cursor:pointer";
+      b.addEventListener('click',function(){startOv.hidden=true;winEl.hidden=true;enter(k);try{stage.focus({preventScroll:true});}catch(e){}});pick.appendChild(b);})(pf);
+    stage.parentNode.insertBefore(pick,stage.nextSibling);
+  }
+
+  function step(dt){t+=dt;if(shake>0)shake=Math.max(0,shake-dt*3);
+    if(state==='intro'){phase-=dt;if(phase<=0)state='play';return;}
+    if(state==='play'){if(timed()&&!acted()){tl-=dt;if(tl<=0){tl=0;autoTrigger();}}if(state==='play')cur.step(dt);return;}
+    if(state==='drop'){phase-=dt;if(phase<=0)enter(n+1);return;}
+    if(state==='fail'){phase-=dt;if(phase<=0)enter(1);return;}}
+  function draw(){ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);var k=scale*dpr,sx=shake?Math.sin(t*80)*6*shake:0;ctx.setTransform(k,0,0,k,sx*k,0);
+    if(!cur){sky(1);rail();claw(300,0);box(300,HOLD);deckWithChute(560,300,BW*1.35);return;}
+    cur.draw();drawClock();
+    if(state==='drop')rubble(W/2,470,1-phase/.8);
+    if(state==='intro'||state==='drop'){var msg=state==='intro'?'FLOOR '+n:'FLOOR '+n+' CLEAR';ctx.fillStyle='rgba(11,23,15,.82)';ctx.fillRect(0,H/2-60,W,120);
+      ctx.fillStyle='#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font="400 54px 'Cracked Imperia',Impact,sans-serif";ctx.fillText(msg,W/2,H/2-8);
+      ctx.font="800 15px Almarai,sans-serif";ctx.fillStyle='#89fbcb';ctx.fillText((state==='intro'?F[n].name:'Down to floor '+(n+1)).toUpperCase(),W/2,H/2+36);ctx.textBaseline='alphabetic';}
+    if(state==='fail'){ctx.fillStyle='rgba(145,37,1,.55)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fffffe';ctx.textAlign='center';ctx.font="400 46px 'Cracked Imperia',Impact,sans-serif";ctx.fillText('BACK TO FLOOR 1',W/2,H/2);}}
+
+  /* ---- sizing and input ---- */
+  var scale=1,dpr=1;function fit(){var r=cv.getBoundingClientRect();if(!r.width)return;dpr=Math.min(window.devicePixelRatio||1,2);cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr);scale=r.width/W;}
+  fit();window.addEventListener('resize',fit);
+  function world(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H};}
+  var down=null;
+  cv.addEventListener('touchstart',function(e){e.preventDefault();},{passive:false});cv.addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
+  stage.addEventListener('pointercancel',function(){if(cur&&cur.release)cur.release();});stage.addEventListener('pointerleave',function(){if(cur&&cur.release)cur.release();});
+  stage.addEventListener('pointerdown',function(e){if(e.button>0||state!=='play')return;e.preventDefault();var w=world(e);down=w;if(cur.move)cur.move(w.x,w.y);if(cur.tap&&n!==9)cur.tap(w.x,w.y);});
+  stage.addEventListener('pointermove',function(e){if(state!=='play')return;var w=world(e);if(cur.move)cur.move(w.x,w.y);});
+  stage.addEventListener('pointerup',function(e){if(cur&&cur.release)cur.release();if(!down||state!=='play'){down=null;return;}var w=world(e);if(n===9){if(Math.hypot(w.x-down.x,w.y-down.y)>10)cur.swipe(down.x,down.y,w.x,w.y);else cur.tap(w.x,w.y);}down=null;});
+  function keyset(k,v){if(n===10&&cur&&cur.keys)cur.keys[k]=v;}
+  document.addEventListener('keydown',function(e){var t2=e.target;if(t2&&/^(INPUT|TEXTAREA|SELECT)$/.test(t2.tagName))return;if(state==='title'||!winEl.hidden)return;
+    var r=stage.getBoundingClientRect();if(r.bottom<0||r.top>window.innerHeight)return;
+    if(n===10){if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')keyset('l',1);else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')keyset('r',1);else if(e.key===' '||e.key==='ArrowUp'||e.key==='w'||e.key==='W')keyset('j',1);else return;e.preventDefault();return;}
+    if((e.key===' '||e.code==='Space')&&state==='play'&&cur.tap&&[1,3,4,6,8].indexOf(n)>=0){e.preventDefault();if(!e.repeat||n===3)cur.tap(0,0);}});
+  document.addEventListener('keyup',function(e){if((e.key===' '||e.code==='Space')&&cur&&cur.release)cur.release();if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')keyset('l',0);if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')keyset('r',0);if(e.key===' '||e.key==='ArrowUp'||e.key==='w'||e.key==='W')keyset('j',0);});
+  Array.prototype.forEach.call(pad.querySelectorAll('button'),function(b){var k=b.getAttribute('data-k');
+    b.addEventListener('pointerdown',function(e){e.preventDefault();keyset(k,1);b.classList.add('down');try{b.setPointerCapture(e.pointerId);}catch(er){}});
+    ['pointerup','pointercancel','pointerleave'].forEach(function(ev){b.addEventListener(ev,function(){keyset(k,0);b.classList.remove('down');});});});
+
+  var last=0,acc=0;function frame(now){if(!last)last=now;var dt=Math.min(.1,(now-last)/1000);last=now;acc+=dt;while(acc>=1/120){step(1/120);acc-=1/120;}draw();requestAnimationFrame(frame);}
+  document.addEventListener('visibilitychange',function(){last=0;acc=0;});requestAnimationFrame(frame);hud();
+
+  /* test hooks, only with ?preview=1 and window.__towerTest set before load */
+  if(window.__towerTest&&/[?&]preview=1\b/.test(location.search))window.__tower={go:function(k){startOv.hidden=true;enter(k);state='play';},floor:function(){return n;},state:function(){return state;},cur:function(){return cur;},clear:clear};
+})();
+</script>

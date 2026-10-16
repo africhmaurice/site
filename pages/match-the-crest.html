@@ -1,0 +1,129 @@
+<!-- ============================================================
+     MATCH THE CREST - hidden page for loot box 80 (Batch 2, "Memory"). Lives at /match-the-crest.
+     A card-flip memory game: 24 cards, 12 pairs, all Maurice's art (10/12). The back is his red skull card.
+     Fully random (Maurice, 10/12): each deal draws 12 of 35 faces: his 13 adult crew chibis, 9 kid crew stickers, 5 skull
+     emojis (the plain skull is out; it is a game item), the Comet, the Mark of the Crest (outline and solid), and game art
+     (storm cloud, ruby, skull key, golem island, red airship). Art: site/assets/games/80-*.webp.
+     Flip two at a time; a match stays face up. Match all 12 pairs in 25 moves or fewer (Maurice, 10/12; raised from 20 on 10/16) and loot box 80
+     drops in; clicking it opens the claim link. Run out of moves and the board shows "Out of moves" with a fresh deal.
+     Cards are dealt fresh on every load and on "Shuffle".
+     DRAFT (all words on this page are new, for Maurice to approve):
+       heading "Match the Crest"; line "Flip two cards at a time. Match every pair and the loot box is yours.";
+       counters "Moves" and "Pairs"; button "Shuffle"; win line "Every pair found. Box 80 is yours.".
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+#ma-memory{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;overflow-x:hidden;
+  padding:clamp(120px,14vh,160px) 20px 80px;background:radial-gradient(ellipse at 50% 0%,#1d1340 0%,#0b170f 60%);background-color:#0b170f;
+  color:#f3ead9;font-family:'Almarai',sans-serif;text-align:center}
+#ma-memory *{box-sizing:border-box;border-radius:0}
+#ma-memory [hidden]{display:none!important}
+#ma-memory .mc-wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
+#ma-memory h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(38px,6vw,68px);line-height:1.2;letter-spacing:.04em;color:#fffffe}
+#ma-memory .mc-lede{margin:0;font-weight:700;font-size:clamp(16px,1.8vw,19px);line-height:1.5;max-width:560px}
+#ma-memory .mc-bar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 24px;font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+#ma-memory .mc-bar b{color:#c3a6ff;font-weight:800}
+#ma-memory .mc-shuf{margin:0;padding:10px 18px;border:1px solid rgba(243,234,217,.45);background:none;color:#f3ead9;font:800 13px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-memory .mc-shuf:hover,#ma-memory .mc-shuf:focus-visible{border-color:#c3a6ff;color:#c3a6ff;outline:none}
+#ma-memory .mc-board{width:100%;max-width:640px;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:4px}
+#ma-memory .mc-card{position:relative;display:block;width:100%;aspect-ratio:5/7;margin:0;padding:0;border:0;background:none;cursor:pointer;perspective:700px;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+#ma-memory .mc-card:focus-visible{outline:3px solid #c3a6ff;outline-offset:3px}
+#ma-memory .mc-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .42s cubic-bezier(.3,1.3,.5,1)}
+#ma-memory .mc-card.up .mc-in{transform:rotateY(180deg)}
+#ma-memory .mc-f{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+#ma-memory .mc-back{background:#912501 url('https://africhmaurice.github.io/site/assets/games/80-back.webp') center/cover no-repeat;border:2px solid #0b170f}
+#ma-memory .mc-face{background:#f3ead9;border:2px solid #f3ead9;transform:rotateY(180deg);padding:10%}
+#ma-memory .mc-face img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
+#ma-memory .mc-face svg{width:72%;height:auto;overflow:visible}
+#ma-memory .mc-card.got .mc-face{border-color:#57bb41;box-shadow:0 0 0 3px #2c6021}
+#ma-memory .mc-card.got{cursor:default}
+#ma-memory .mc-card.miss .mc-face{border-color:#ff4c0f}
+#ma-memory .mc-win{display:flex;flex-direction:column;align-items:center;gap:20px;margin-top:8px}
+#ma-memory .mc-win p.mc-out{color:#ff4c0f}
+#ma-memory .mc-win p{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.25;letter-spacing:.04em;color:#a2f590}
+#ma-memory .mc-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(58vw,280px);animation:mcDrop .6s cubic-bezier(.25,1.5,.45,1) both}
+#ma-memory .mc-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 34px rgba(123,78,225,.55))}
+#ma-memory .mc-box:hover img,#ma-memory .mc-box:focus-visible img{filter:drop-shadow(0 0 44px rgba(195,166,255,.75))}
+#ma-memory .mc-box:focus-visible{outline:3px solid #c3a6ff;outline-offset:8px}
+@keyframes mcDrop{from{opacity:0;transform:translateY(-40px)}to{opacity:1;transform:none}}
+@media (max-width:640px){#ma-memory .mc-board{grid-template-columns:repeat(4,1fr);max-width:420px;gap:10px}}
+@media (prefers-reduced-motion:reduce){#ma-memory .mc-in{transition:none}#ma-memory .mc-box{animation:none}}
+</style>
+<section id="ma-memory" aria-label="Match the Crest">
+  <div class="mc-wrap">
+    <h1>Match the Crest</h1>
+    <p class="mc-lede">Flip two cards at a time. Match every pair in 25 moves or fewer and the loot box is yours.</p>
+    <div class="mc-bar"><span>Moves <b class="mc-moves">0/25</b></span><span>Pairs <b class="mc-pairs">0/10</b></span><button class="mc-shuf" type="button">Shuffle</button></div>
+    <div class="mc-board" role="grid" aria-label="Cards"></div>
+    <div class="mc-win" role="status" hidden>
+      <p>Every pair found. Box 80 is yours.</p>
+      <button class="mc-box" type="button" aria-label="Open loot box 80"><img src="https://africhmaurice.github.io/leaderboard/loot/80.png" alt="Loot box 80"></button>
+    </div>
+    <div class="mc-win mc-lose" role="status" hidden>
+      <p class="mc-out">Out of moves.</p>
+      <button class="mc-shuf mc-again" type="button">Deal again</button>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var d=document.getElementById('ma-memory');if(!d)return;
+  var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+
+  var k='ODZLUkRaNk49Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  // The card faces: Maurice's art, [file, name].
+  var ART='https://africhmaurice.github.io/site/assets/games/80-';
+  var ICON={
+    comet:['comet','Comet'],crest:['crest','Mark of the Crest'],
+    cello:['cello','Cello'],grey:['grey','Grey'],minn:['minn','Minn'],farlow:['farlow','Farlow'],bones:['bones','Bones'],willow:['willow','Willow'],
+    mars:['mars','Mars'],dot:['dot','Dot'],eddie:['eddie','Eddie'],littleizzy:['little-izzy','Little Izzy'],bigizzy:['big-izzy','Big Izzy'],dalia:['dalia','Dalia'],rook:['rook','Rook'],
+    angry:['angry','Angry skull'],crown:['crown','Crown'],crying:['crying','Crying skull'],dead:['dead','Knocked-out skull'],flaming:['flaming','Flaming skull'],
+    kidbones:['kid-bones','Young Bones'],kiddot:['kid-dot','Young Dot'],kideddie:['kid-eddie','Young Eddie'],kidfarlow:['kid-farlow','Young Farlow'],kidgrey:['kid-grey','Young Grey'],
+    kidizzy:['kid-izzy','Young Izzy'],kidmars:['kid-mars','Young Mars'],kidminn:['kid-minn','Young Minn'],kidwillow:['kid-willow','Young Willow'],
+    crestblack:['crest-black','Mark of the Crest, solid'],storm:['storm','Storm cloud'],ruby:['ruby','Ruby'],skullkey:['skull-key','Skull key'],golem:['golem-island','Golem island'],ship:['ship','Red airship']
+  };
+  var POOL=Object.keys(ICON);
+  /* load every face up front so a flip never shows an empty card */
+  Object.keys(ICON).forEach(function(n){var i=new Image();i.src=ART+ICON[n][0]+'.webp';});
+
+  var board=d.querySelector('.mc-board'),movesEl=d.querySelector('.mc-moves'),pairsEl=d.querySelector('.mc-pairs'),win=d.querySelector('.mc-win'),box=d.querySelector('.mc-box');
+  var open=[],lock=false,moves=0,pairs=0,TOTAL=12,MAXMOVES=25,lose=d.querySelector('.mc-lose');
+  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+  function deal(){
+    var pick=shuffle(POOL.slice()).slice(0,TOTAL);   /* fully random: any 12 of the 35 */
+    var cards=shuffle(pick.concat(pick));
+    board.innerHTML='';open=[];lock=false;moves=0;pairs=0;win.hidden=true;lose.hidden=true;show();
+    cards.forEach(function(n,i){
+      var b=document.createElement('button');b.type='button';b.className='mc-card';b.dataset.n=n;b.setAttribute('aria-label','Card '+(i+1)+', face down');
+      b.innerHTML='<span class="mc-in"><span class="mc-f mc-back"></span><span class="mc-f mc-face"><img src="'+ART+ICON[n][0]+'.webp" alt=""></span></span>';
+      b.addEventListener('click',function(){flip(b);});
+      board.appendChild(b);
+    });
+  }
+  function show(){movesEl.textContent=moves+'/'+MAXMOVES;movesEl.style.color=moves>=MAXMOVES-3?'#ff4c0f':'';pairsEl.textContent=pairs+'/'+TOTAL;}
+  function flip(b){
+    if(lock||b.classList.contains('up'))return;
+    b.classList.add('up');b.setAttribute('aria-label',ICON[b.dataset.n][1]);open.push(b);
+    if(open.length<2)return;
+    moves++;var a=open[0],c=open[1];open=[];
+    if(a.dataset.n===c.dataset.n){
+      a.classList.add('got');c.classList.add('got');pairs++;show();
+      if(pairs===TOTAL)setTimeout(function(){win.hidden=false;win.scrollIntoView({behavior:'smooth',block:'center'});},500);
+      else if(moves>=MAXMOVES)outOfMoves();
+      return;
+    }
+    show();lock=true;if(moves>=MAXMOVES){setTimeout(outOfMoves,700);return;}a.classList.add('miss');c.classList.add('miss');
+    setTimeout(function(){[a,c].forEach(function(x){x.classList.remove('up','miss');x.setAttribute('aria-label','Card, face down');});lock=false;},900);
+  }
+  /* 25 moves without every pair: the round is over */
+  function outOfMoves(){lock=true;lose.hidden=false;lose.scrollIntoView({behavior:'smooth',block:'center'});}
+  d.querySelector('.mc-shuf').addEventListener('click',deal);
+  d.querySelector('.mc-again').addEventListener('click',function(){deal();board.scrollIntoView({behavior:'smooth',block:'center'});});
+  box.addEventListener('click',function(){location.href=atob(k).split('').reverse().join('');});
+  deal();
+})();
+</script>
