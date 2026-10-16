@@ -57,6 +57,7 @@
     q('.mn-ovgroup a[href$="/leaderboard"]').forEach(function (a) {
       a.parentNode.insertBefore(link(SITE + '/leaderboard?act=one', 'ACT ONE STANDINGS'), a.nextSibling);
       a.parentNode.insertBefore(link(SITE + '/leaderboard?act=two', 'ACT TWO STANDINGS'), a.nextSibling.nextSibling);
+      a.parentNode.insertBefore(link(SITE + '/leaderboard?act=three', 'ACT THREE STANDINGS'), a.nextSibling.nextSibling.nextSibling);
     });
     q('.mn-ovgroup a[href$="/the-hunt#rewards"]').forEach(function (a) {
       var p = a.parentNode;

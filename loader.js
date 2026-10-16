@@ -423,6 +423,7 @@
       var p = a.parentNode, next = a.nextSibling;
       p.insertBefore(actLink(SITE + '/leaderboard?act=one', 'ACT ONE STANDINGS'), next);
       p.insertBefore(actLink(SITE + '/leaderboard?act=two', 'ACT TWO STANDINGS'), next);
+      p.insertBefore(actLink(SITE + '/leaderboard?act=three', 'ACT THREE STANDINGS'), next);
     });
     q('.mn-dd-in a[href$="/the-hunt#rewards"], .mn-ovgroup a[href$="/the-hunt#rewards"]').forEach(function (a) {
       var p = a.parentNode;
