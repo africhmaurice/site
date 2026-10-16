@@ -185,18 +185,25 @@
     put:function(i){var p=P[i];me.on=p;me.h=p.h;me.x=p.x+p.w/2;me.vh=0;cam=me.h;}};
 })();
 </script>
-<script>/* PARALLAX (Maurice, 2026-10-16): a library picture behind the game, drifting slower than the page */(function(){
+<script>/* PARALLAX v2 (Maurice, 2026-10-16): a library picture the size of the screen behind the game, moving at 30% of the scroll */(function(){
   var r=document.getElementById('ma-climb');if(!r||r.querySelector('.ma-plx'))return;
-  var dir=(window.innerWidth||1400)<=900?'m/':'d/',calm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var dir=(window.innerWidth||1400)<=900?'m/':'d/',calm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches,SPEED=.3;
   if(getComputedStyle(r).position==='static')r.style.position='relative';
   Array.prototype.forEach.call(r.children,function(c){var cs=getComputedStyle(c);if(cs.position==='static'){c.style.position='relative';}if(!cs.zIndex||cs.zIndex==='auto')c.style.zIndex='1';});
   var w=document.createElement('div');w.className='ma-plx';w.setAttribute('aria-hidden','true');
   w.style.cssText='position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none';
-  var im=document.createElement('div');im.style.cssText='position:absolute;left:0;right:0;top:-15%;height:130%;background:url(https://africhmaurice.github.io/site/assets/bg/'+dir+'garden-city-towers.webp) center/cover no-repeat;will-change:transform';
-  var wash=document.createElement('div');wash.style.cssText='position:absolute;inset:0;background:linear-gradient(rgba(11,23,15,.78),rgba(11,23,15,.88))';
+  var im=document.createElement('div');im.style.cssText='position:absolute;left:0;right:0;top:0;background:url(https://africhmaurice.github.io/site/assets/bg/'+dir+'garden-city-towers.webp) center/cover no-repeat;will-change:transform';
+  var wash=document.createElement('div');wash.style.cssText='position:absolute;inset:0;background:linear-gradient(rgba(11,23,15,.72),rgba(11,23,15,.84))';
   w.appendChild(im);w.appendChild(wash);r.insertBefore(w,r.firstChild);
-  if(calm)return;
-  var ticking=false;function move(){ticking=false;var b=r.getBoundingClientRect(),vh=window.innerHeight||800;var off=((vh/2)-(b.top+b.height/2))*.18;var max=b.height*.14;off=Math.max(-max,Math.min(max,off));im.style.transform='translate3d(0,'+off.toFixed(1)+'px,0)';}
+  var ticking=false;
+  function move(){ticking=false;
+    var vh=window.innerHeight||800,b=r.getBoundingClientRect(),rh=r.offsetHeight,past=-b.top,y;
+    // the picture follows at (1-SPEED) of the scroll past the game's top, so on screen it moves at SPEED
+    if(rh>vh*1.75){var H=Math.round(vh*1.25);im.style.height=H+'px';y=calm?0:Math.max(0,Math.min(rh-H,past*(1-SPEED)));}
+    // a game section shorter than that: a picture a little taller than the section, sliding within the extra
+    else{var ex=Math.round(vh*.5);im.style.height=(rh+ex)+'px';y=calm?-ex/2:Math.max(-ex,Math.min(0,past*(1-SPEED)-ex/2));}
+    im.style.transform='translate3d(0,'+y.toFixed(1)+'px,0)';
+  }
   function req(){if(!ticking){ticking=true;requestAnimationFrame(move);}}
-  window.addEventListener('scroll',req,{passive:true});window.addEventListener('resize',req);move();
+  window.addEventListener('scroll',req,{passive:true});window.addEventListener('resize',req);move();setTimeout(move,800);
 })();</script>
