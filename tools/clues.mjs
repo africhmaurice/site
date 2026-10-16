@@ -168,7 +168,10 @@ Yet again, you might try.`],
   [73, 'you already have it'],
   // Batch 2 (Maurice, 2026-10-11). 74: at Level 7 of Airship Runner.
   [74, 'Level 7'],
-  [76, 'The 100th Needle'],   // Thread the Needle: the box floats in the 100th gap (Maurice, 2026-10-13)
+  [75, '10 Floors'],   // Descend the Tower: the box waits past the 10th floor (Maurice, 2026-10-16, Act Three puzzle #23)
+  [76, 'The 100th Needle'],
+  [77, 'TRLVL5'],   // Trench Run: the box is on board 5 (Maurice, 2026-10-16)
+  [79, 'the 11th'],   // Find the Constellations: the secret 11th constellation (Maurice, 2026-10-16, Act Three puzzle #26)   // Thread the Needle: the box floats in the 100th gap (Maurice, 2026-10-13)
   // 87-93 are tricks in loader.js (b2Tricks): type the phrase, drag the Comet out of the header logo, /leaderboard in
   // the first minute of an hour, /questions in high contrast, print this page, copy clue 92, the /newsletter typo.
   [87, 'QWERTY + “SKYPIRATE”'],
