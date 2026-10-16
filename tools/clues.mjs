@@ -177,6 +177,7 @@ Mr. Song Man
 Haven't I Seen You Before?`],   // on Bard's Linktree (Maurice, 2026-10-16)
   [70, '', { img: ART + 'clue-70.webp', alt: '#WINNING' }],   // the word "winning" on /contests (Maurice, 2026-10-16)
   [71, 'No Purchase Necessary'],   // the line under the contest disclosure on /contests (Maurice, 2026-10-16)
+  [72, "Go back to the beginning"],   // in the Act One drawer above Riddles & Puzzles (Maurice 2026-10-16)
   [73, 'you already have it'],
   // Batch 2 (Maurice, 2026-10-11). 74: at Level 7 of Airship Runner.
   [74, 'Level 7'],
@@ -196,6 +197,7 @@ Haven't I Seen You Before?`],   // on Bard's Linktree (Maurice, 2026-10-16)
   [91, '', { img: ART + 'clue-91.png', alt: 'A printer', sticker: true }],
   [92, 'Don’t get Snippy with Clippy, the Clipboard.'],
   [93, 'Do I need an editor for this website?'],
+  [94, "Hey, don't write yourself off yet. It's only in your head. It just takes some time."],   // on the Act Two transmission's audio bar past halfway (Maurice 2026-10-16)
   // 95 and 96 are in the fine print at the bottom of /rules and /privacy-policy.
   [95, 'An icon that reads RULEBOOK.'],
   [96, 'Sky Privacy'],

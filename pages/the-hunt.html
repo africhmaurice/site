@@ -1587,6 +1587,7 @@ window.addEventListener('hashchange',go);document.addEventListener('click',funct
 #a2-crash .a2c-mid{flex:1;min-width:0;padding-right:8px}
 #a2-crash .a2c-label{font-weight:700;font-size:14px;line-height:1.3;letter-spacing:.1em;color:#0e2b1d;margin-bottom:10px}
 #a2-crash .a2c-track{position:relative;height:10px;background:rgba(14,43,29,.25);cursor:pointer}
+#a2-crash .a2c-box94{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;z-index:2;display:block;cursor:pointer;animation:a2c94 .5s cubic-bezier(.2,1.6,.4,1) both}#a2-crash .a2c-box94[hidden]{display:none}#a2-crash .a2c-box94 img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 6px #fffffe)}@keyframes a2c94{from{transform:scale(0)}to{transform:none}}@media (prefers-reduced-motion:reduce){#a2-crash .a2c-box94{animation:none}}
 #a2-crash .a2c-fill{position:absolute;top:0;bottom:0;left:0;width:0%;background:#1a5e41}
 #a2-crash .a2c-time{flex:none;font-weight:700;font-size:15px;letter-spacing:.05em;color:#0e2b1d}
 #a2-crash .a2c-cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px}
@@ -1599,7 +1600,7 @@ window.addEventListener('hashchange',go);document.addEventListener('click',funct
       <div class="a2c-eye">A TRANSMISSION FROM THE CAPTAIN</div>
       <div class="a2c-player">
         <button type="button" class="a2c-btn" aria-label="Play transmission"><svg class="a2c-play" viewBox="0 0 24 24" style="margin-left:3px"><path d="M7 4l13 8-13 8z"></path></svg><svg class="a2c-pause" viewBox="0 0 24 24" style="display:none"><rect x="5" y="4" width="5" height="16"></rect><rect x="14" y="4" width="5" height="16"></rect></svg></button>
-        <div class="a2c-mid"><div class="a2c-label">INCOMING TRANSMISSION - SHOT DOWN OVER DE’GATÉ</div><div class="a2c-track"><div class="a2c-fill"></div></div></div>
+        <div class="a2c-mid"><div class="a2c-label">INCOMING TRANSMISSION - SHOT DOWN OVER DE’GATÉ</div><div class="a2c-track"><div class="a2c-fill"></div><a href="#" class="a2c-box94" data-box="94" data-k="MjZGVUpNOUs9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo" onclick="event.stopPropagation();location.href=atob(this.dataset.k).split('').reverse().join('');return false" aria-label="Open loot box 94" hidden><img loading="lazy" decoding="async" src="https://africhmaurice.github.io/leaderboard/loot/94.png" alt=""></a></div></div>
         <div class="a2c-time">0:00</div>
         <audio preload="metadata" src="https://africhmaurice.github.io/site/assets/audio/degate-5-shot-down.m4a"></audio>
       </div>
@@ -1613,6 +1614,7 @@ function ui(){var on=!a.paused;ip.style.display=on?'none':'';ib.style.display=on
 b.addEventListener('click',function(){if(a.paused){Array.prototype.forEach.call(document.querySelectorAll('audio'),function(o){if(o!==a)o.pause();});a.play();}else a.pause();});
 tr.addEventListener('click',function(e){var x=tr.getBoundingClientRect();if(a.duration)a.currentTime=(e.clientX-x.left)/x.width*a.duration;});
 a.addEventListener('play',ui);a.addEventListener('pause',ui);
+a.addEventListener('timeupdate',function(){var bx=r.querySelector('.a2c-box94');if(bx&&bx.hidden&&a.duration&&a.currentTime>=a.duration/2)bx.hidden=false;});
 a.addEventListener('timeupdate',function(){if(a.duration)f.style.width=(a.currentTime/a.duration*100)+'%';t.textContent=fmt(a.currentTime);});
 a.addEventListener('ended',function(){f.style.width='0%';t.textContent='0:00';ui();});
 document.addEventListener('play',function(e){if(e.target!==a&&e.target.tagName==='AUDIO'&&!a.paused)a.pause();},true);})();</script>
@@ -1844,6 +1846,8 @@ window.addEventListener('hashchange',go);document.addEventListener('click',funct
       </div>
     </div>
     <div style="text-align:center;font-weight:700;font-style:italic;font-size:18px;color:#ede9dc;margin:-56px 0 90px">*ALL TASKS MUST BE SUCCESSFULLY SUBMITTED USING THE SUBMIT POINTS FORM TO BE COUNTED.</div>
+    <!-- Box 72, "Go back to the beginning" (Maurice, 2026-10-16) -->
+    <div style="display:flex;justify-content:center;margin:0 0 18px"><a href="#" data-box="72" data-k="TUM3UkdXVE09Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo" onclick="location.href=atob(this.dataset.k).split('').reverse().join('');return false" aria-label="Loot box" style="display:block;width:30px;height:30px;opacity:.4;cursor:default"><img src="https://africhmaurice.github.io/leaderboard/loot/72.png" alt="" loading="lazy" style="display:block;width:100%;height:100%;object-fit:contain"></a></div>
     <h3 class="m-taskhead" id="act1-riddles" style="font-family: 'Atomic Marker',cursive; font-weight: 400; font-size:clamp(44px,5.56vw,80px); color: #c3a6ff; text-align: center; margin: 0 0 56px;line-height:1.15">RIDDLES &amp; PUZZLES</h3>
     <div class="m-cards rd-grid" style="max-width:1420px;margin:0 auto 100px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:44px">
       <div class="tm-card" style="border-radius:0;padding:36px 32px;box-shadow:0 14px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;font-family:'Almarai',sans-serif;letter-spacing:.03em">
