@@ -166,6 +166,7 @@ Yet again, you might try.`],
   [65, "Don't miss a single chapter.", { hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'Sign up today to stay up to date on all things Sky Pirate!' }] }],
   // Box 66 (Maurice, 2026-10-07).
   [66, 'Brando Sando and I have this person in common.'],
+  [67, "To Be Or Not to Be"],   // the words ex-theater kid in the home page bio (loader.js theaterBox67, Maurice 2026-10-16)
   [69, `More Wax
 A Little Poetry
 A Mic &

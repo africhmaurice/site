@@ -1128,6 +1128,32 @@
     } catch (e) {}
   }
 
+  // Box 67, "To Be Or Not to Be" (Maurice, 2026-10-16): the words "ex-theater kid" in the home page bio look like plain
+  // text. Click them and the box appears right after them; click the box to claim it.
+  function theaterBox67() {
+    try {
+      if ((location.pathname.replace(/\/+$/, '') || '/') !== '/' || document.querySelector('.ma67-words')) return;
+      var K67 = 'NzVLSlVUSzY9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo', W = 'ex-theater kid';
+      var tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), t = null, n;
+      while ((n = tw.nextNode())) { if (n.nodeValue.indexOf(W) >= 0 && !n.parentElement.closest('[data-ma-page],script,style')) { t = n; break; } }
+      if (!t) return;
+      if (!document.getElementById('ma67-css')) {
+        var st = document.createElement('style'); st.id = 'ma67-css';
+        st.textContent = '.ma67-words{cursor:text;color:inherit}.ma67-box{display:inline-block;vertical-align:-.35em;width:0;height:1.6em;margin:0;padding:0;border:0;border-radius:0;background:none;cursor:pointer;overflow:hidden;transition:width .4s cubic-bezier(.2,1.6,.4,1),margin .4s ease}' +
+          '.ma67-box img{display:block;height:100%;width:auto}.ma67-box.ma67-on{width:1.8em;margin:0 .15em}.ma67-box:focus-visible{outline:2px solid #89fbcb;outline-offset:2px}' +
+          '@media (prefers-reduced-motion:reduce){.ma67-box{transition:none}}';
+        document.head.appendChild(st);
+      }
+      var i = t.nodeValue.indexOf(W), after = t.splitText(i); after.splitText(W.length);
+      var w = document.createElement('span'); w.className = 'ma67-words'; w.textContent = W; after.parentNode.replaceChild(w, after);
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'ma67-box'; b.tabIndex = -1; b.setAttribute('aria-label', 'Open loot box 67');
+      b.innerHTML = '<img src="https://africhmaurice.github.io/leaderboard/loot/67.png" alt="">';
+      w.parentNode.insertBefore(b, w.nextSibling);
+      w.addEventListener('click', function () { b.classList.add('ma67-on'); b.tabIndex = 0; });
+      b.addEventListener('click', function (e) { e.preventDefault(); if (!b.classList.contains('ma67-on')) return; location.href = atob(K67).split('').reverse().join(''); });
+    } catch (e) {}
+  }
+
   function lockedChest53() {
     try {
       var KEY = 'ma-key53', path = location.pathname.replace(/\/+$/, '') || '/';
@@ -1593,6 +1619,7 @@
     headRule();
     lockedChest53();
     handBox98();
+    theaterBox67();
     if (document.body) quietWord();
     b2Tricks();
     huntGift();
