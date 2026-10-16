@@ -16,7 +16,7 @@
        9  Cut the ropes     the box hangs on two ropes; cut them in the right order and time to swing it into the vault.
        10 The last stretch  a long platform level (Maurice 10/15): gaps, spikes, rolling cannonballs, falling weights,
                             moving platforms, a spring over a wall, then jump, jump, jump up to the trapdoor ledge.
-     Clock (Maurice 10/16): 15 seconds a floor, top-right, blinking red from 5; at zero the floor triggers itself (see CLOCK).
+     Clock (Maurice 10/16): 15 seconds a floor (25 on floor 2, Lever order), top-right, blinking red from 5; at zero the floor triggers itself (see CLOCK).
      Spikes on floors 9 and 10 are his spike drawing, 75-spike.png (10/16).
      Failing any floor sends the box back to floor 1 (Maurice: "They start over at floor 1"). The best floor reached is
      kept in localStorage (ma-tower-best). Clearing floor 10 reveals loot box 75; clicking it opens the claim link
@@ -381,6 +381,8 @@
      are cut (9). Floors with no drop to make (2 lever order, 5 pipe path, 7 the dark floor) fail when time runs out.
      Floor 10, the long platform run, has no clock; it can't be finished in 15 seconds. The clock stops once you act. */
   var CLOCK=15,tl=CLOCK;
+  // Floor 2, Lever order, gets 25 seconds to watch the bulb and pull the pattern (Maurice, 2026-10-16).
+  function clockFor(k){return k===2?25:CLOCK;}
   function timed(){return n!==10;}
   function acted(){if(n===9)return cur.ropes.every(function(r){return r.cut;});return !!(cur.b||cur.drop||cur.done||cur.found||(cur.ropes&&cur.ropes.every(function(r){return r.cut;})));}
   function autoTrigger(){
@@ -392,7 +394,7 @@
   function drawClock(){if(!timed()||(state!=='intro'&&state!=='play'))return;var sec=Math.max(0,Math.ceil(tl)),red=sec<=5&&state==='play';
     ctx.fillStyle='rgba(11,23,15,.85)';ctx.fillRect(W-80,8,68,40);ctx.strokeStyle=red?'#ff4c0f':'#89fbcb';ctx.lineWidth=2;ctx.strokeRect(W-79,9,66,38);
     if(red&&!still&&(tl%1)<.4)return;ctx.fillStyle=red?'#ff4c0f':'#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font="400 30px 'Cracked Imperia',Impact,sans-serif";ctx.fillText(String(sec),W-46,29);ctx.textBaseline='alphabetic';}
-  function enter(k){n=k;cur=F[n];cur.init();tl=CLOCK;state='intro';phase=1.3;if(n>best){best=n;lsSet('ma-tower-best',String(best));}hud();say(cur.how);}
+  function enter(k){n=k;cur=F[n];cur.init();tl=clockFor(k);state='intro';phase=1.3;if(n>best){best=n;lsSet('ma-tower-best',String(best));}hud();say(cur.how);}
   function clear(){if(state!=='play')return;state='drop';phase=.8;if(n===10){state='won';setTimeout(showWin,still?100:600);}}
   function fail(line){if(state!=='play')return;state='fail';phase=1.8;shake=still?0:1;say(line||FAIL[missI++%FAIL.length],true);}
   function showWin(){lsSet('ma-tower-won','1');winEl.hidden=false;pad.classList.remove('on');say('Ten floors down!');try{winEl.scrollIntoView({block:'center',behavior:still?'auto':'smooth'});}catch(e){}}
