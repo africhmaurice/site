@@ -395,5 +395,13 @@
   "button": "Sign Up",
   "form": "8271339",
   "done": "Success! Now check your email to confirm your subscription."
+ },
+ "excerpt": {
+  "id": "read-excerpt",
+  "label": "Read Excerpt",
+  "sub": "Read Chapter One of Cello’s Gate free on Simon & Schuster.",
+  "img": "../img/cellos-gate-book.webp",
+  "url": "https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834#excerpt",
+  "_note": "Maurice 2026-10-16 (Navi’s idea): the excerpt bar at the very top, under the title."
  }
 }

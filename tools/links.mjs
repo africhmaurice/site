@@ -26,6 +26,9 @@ const scramble = (u) => Buffer.from(u.replace(/^mailto:/, '').split('').reverse(
 const socials = D.socials.map((s) => /^mailto:/.test(s.url)
   ? `<a class="lk-soc" href="#email" data-m="${scramble(s.url)}" data-link="${s.id}" data-section="socials" aria-label="${esc(s.label)}" title="${esc(s.label)}"><img src="${asset(s.icon)}" alt=""></a>`
   : `<a class="lk-soc" href="${esc(s.url)}"${ext(s.url)} data-link="${s.id}" data-section="socials" aria-label="${esc(s.label)}" title="${esc(s.label)}"><img src="${asset(s.icon)}" alt=""></a>`).join('');
+// the Read Excerpt bar at the very top (Maurice, 2026-10-16)
+const X = D.excerpt;
+const excerptCard = X ? `<a class="lk-copper lk-excerpt" href="${esc(X.url)}"${ext(X.url)} data-link="${X.id}" data-section="top"><img src="${asset(X.img)}" alt="" width="360" height="360"><span><b>${esc(X.label)}</b><small>${esc(X.sub)}</small></span>${arrow}</a>` : '';
 const C = D.copper;
 const copperCard = `<a class="lk-copper" href="${esc(C.url)}" data-link="${C.id}" data-section="top"><img src="${asset(C.img)}" alt="" width="360" height="360"><span><b>${esc(C.label)}</b><small>${esc(C.sub)}</small></span>${arrow}</a>`;
 
@@ -95,6 +98,7 @@ const page = `<!-- ============================================================
 #ma-links .lk-soc img{display:block;max-width:26px;max-height:26px;width:auto;height:auto}
 #ma-links .lk-soc:hover{transform:scale(1.15)}
 #ma-links .lk-copper{display:flex;align-items:center;gap:16px;padding:14px 18px 14px 12px;border:2px solid #fd7547;background:linear-gradient(90deg,rgba(145,37,1,.94),rgba(197,50,0,.9));color:var(--parch)!important;text-decoration:none!important;transition:transform .15s ease}
+#ma-links .lk-excerpt{border-color:#9e74fd;background:linear-gradient(90deg,rgba(45,28,83,.95),rgba(72,45,133,.92));margin-bottom:8px}
 #ma-links .lk-copper img{flex:none;width:78px;height:78px;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
 #ma-links .lk-copper span{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
 #ma-links .lk-copper b{font-family:'Atomic Marker',Impact,sans-serif;font-weight:400;font-size:clamp(18px,5vw,22px);line-height:1.2;letter-spacing:.03em}
@@ -183,6 +187,7 @@ const page = `<!-- ============================================================
       ${D.lines.map((l) => `<p class="lk-line">${esc(l)}</p>`).join('')}
       <nav class="lk-socs" aria-label="Find Maurice">${socials}</nav>
     </header>
+    ${excerptCard}
     ${editions}
     ${copperCard}
     <div class="lk-feats">${feature}</div>
