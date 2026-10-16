@@ -402,6 +402,10 @@
     list.appendChild(actLink(SITE + '/the-hunt#act1-tasks', 'TASKS'));
     list.appendChild(actLink(SITE + '/the-hunt#act1-riddles', 'RIDDLES & PUZZLES'));
     list.appendChild(actSub('ACT TWO', 'two'));
+    list.appendChild(actLink(SITE + '/the-hunt#act2-tasks', 'TASKS'));
+    list.appendChild(actLink(SITE + '/the-hunt#act2-riddles', 'RIDDLES & PUZZLES'));
+    // Act Three (Maurice, 2026-10-16): its section owns #tasks and #riddles; Act Two's are in its drawer
+    list.appendChild(actSub('ACT THREE', 'three'));
     list.appendChild(actLink(SITE + '/the-hunt#tasks', 'TASKS'));
     list.appendChild(actLink(SITE + '/the-hunt#riddles', 'RIDDLES & PUZZLES'));
   }
@@ -410,7 +414,7 @@
     var st = document.createElement('style'); st.id = 'ma-act-menu';
     var sel = function (x) { return ['#hunt-nav ', '#hunt-nav-ov ', '#header '].map(function (p) { return p + x; }).join(','); };
     st.textContent = sel('span.ma-sub') + '{display:block!important;align-self:stretch;font-family:Almarai,sans-serif!important;font-weight:800!important;font-size:11px!important;letter-spacing:.16em!important;text-transform:uppercase!important;text-align:center!important;color:#fff!important;margin:10px 0 4px!important;padding:4px 10px!important;white-space:nowrap}' +
-      sel('span.ma-sub-one') + '{background:#482d85!important}' + sel('span.ma-sub-two') + '{background:#1a5e41!important;outline:1px solid #89fbcb}' + sel('span.ma-sub-all') + '{background:rgba(243,234,217,.14)!important}';
+      sel('span.ma-sub-one') + '{background:#482d85!important}' + sel('span.ma-sub-two') + '{background:#1a5e41!important;outline:1px solid #89fbcb}' + sel('span.ma-sub-all') + '{background:rgba(243,234,217,.14)!important}' + sel('span.ma-sub-three') + '{background:#912501!important;outline:1px solid #fd7547}';
     document.head.appendChild(st);
   }
   function actify(root) {
@@ -431,6 +435,7 @@
       p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), a);
       p.insertBefore(actLink(SITE + '/act-one-winners', 'ACT ONE WINNERS'), a);   // the replayed draws (Maurice, 2026-10-02)
       p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), a);
+      p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-three', 'ACT THREE'), a);
       p.removeChild(a);
     });
     // Questions? (Maurice, 2026-10-09): no longer its own menu item; it closes the Current Progress dropdown instead.
