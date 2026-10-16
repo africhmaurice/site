@@ -3,7 +3,7 @@
 //   1. THE ARCADE title and game buttons at the top, copied from the bot's games/_tabs.html (the same row every daily
 //      game page has), between ARCADE-TABS markers. Re-run this after adding a game to _tabs.html.
 //   2. The export card (tools/arcade-card.js), between ARCADE-CARD markers.
-// With no arguments it updates pages/airship-runner.html and pages/thread-the-needle.html; give paths to update other
+// With no arguments it updates pages/airship-runner.html, pages/thread-the-needle.html, and pages/trench-run.html (tabs only); give paths to update other
 // copies of those pages (for example a held copy). Idempotent.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const TABS = path.resolve(ROOT, '../treasure-hunt-leaderboard/games/_tabs.html');
 const CARD = path.join(ROOT, 'tools/arcade-card.js');
-const PAGES = { 'airship-runner': { tab: 'airship_runner', section: '<section id="ma-runner"' }, 'thread-the-needle': { tab: 'thread_needle', section: '<section id="ma-flappy"' } };
+const PAGES = { 'airship-runner': { tab: 'airship_runner', section: '<section id="ma-runner"' }, 'thread-the-needle': { tab: 'thread_needle', section: '<section id="ma-flappy"' }, 'trench-run': { tab: 'trench_run', section: '<section id="ma-chase"', noCard: true } };   // Trench Run: tabs only, no weekly board yet
 const files = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(PAGES).map((k) => path.join(ROOT, 'pages', k + '.html'));
 
 // the tab row: the style, the title, the buttons, and the script that marks this game and unlocks the Act Two games
@@ -35,6 +35,7 @@ for (const file of files) {
     const a = s.indexOf(P.section); if (a < 0) throw new Error(file + ': section not found');
     const b = s.indexOf('>', a) + 1; s = s.slice(0, b) + '\n' + tabs + s.slice(b);
   }
+  if (P.noCard) { const out = s.replace(/\n/g, eol); if (out !== raw) { fs.writeFileSync(file, out); console.log('updated', path.relative(ROOT, file)); } else console.log('ok already', path.relative(ROOT, file)); continue; }
   const cardTag = '<script>/* ARCADE-CARD:BEGIN (pasted by tools/arcade.mjs from tools/arcade-card.js; do not edit here) */\n' + card + '\n/* ARCADE-CARD:END */</script>';
   if (s.includes('/* ARCADE-CARD:BEGIN')) s = s.replace(/<script>\/\* ARCADE-CARD:BEGIN[\s\S]*?\/\* ARCADE-CARD:END \*\/<\/script>/, () => cardTag);
   else {
