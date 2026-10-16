@@ -108,7 +108,7 @@
   </div>
 </div>
 
-<script>/* Dark page: hide the Squarespace section color behind the game (same as the other arcade pages). */(function(){var d=document.getElementById('ma-stars');if(!d)return;var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}})();</script>
+<script>/* Dark page: hide the Squarespace section color behind the game (same as the other arcade pages). */(function(){var d=document.getElementById('ma-stars');if(!d)return;var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';})();</script>
 <script>
 (function(){
   var root=document.getElementById('ma-stars');if(!root)return;
