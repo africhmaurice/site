@@ -181,6 +181,22 @@
   // Exclusive Edition and the Broken Binding edition. Added here so the Squarespace, hunt, and shop menus all match.
   var SPECIAL = [['Waterstones Exclusive Edition', 'https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227'],
     ['Broken Binding Special Edition', 'https://thebrokenbindingsub.com/products/cellos-gate']];
+  // "Read Excerpt" first in the Pre-Order dropdown (Maurice, 2026-10-16): Chapter One on the Simon & Schuster page,
+  // which opens its excerpt section straight away. Copies the Walmart link's wrapper so it lines up with the others.
+  function readExcerpt() {
+    Array.prototype.forEach.call(document.querySelectorAll('a[href*="Walmart-Exclusive-Hardcover"]'), function (a) {
+      if (a.__maRX || a.querySelector('img') || !a.closest('#header, #hunt-nav, #hunt-nav-ov, .header-menu, .tm-header')) return;
+      a.__maRX = true;
+      var unit = a.parentNode.children.length === 1 && /header-nav-folder-item|header-menu-nav-item/.test(a.parentNode.className) ? a.parentNode : a;
+      var box = unit.parentNode, caps = a.textContent.trim() === a.textContent.trim().toUpperCase();
+      if (box.querySelector('a[href="https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834#excerpt"]')) return;
+      var n = unit.cloneNode(true), link = n.tagName === 'A' ? n : n.querySelector('a');
+      link.href = 'https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834#excerpt'; link.textContent = caps ? 'READ EXCERPT' : 'Read Excerpt'; link.__maSE = true; link.__maRX = true;
+      link.target = '_blank'; link.rel = 'noopener';
+      box.insertBefore(n, box.firstElementChild);
+    });
+  }
+
   function specialEditions() {
     Array.prototype.forEach.call(document.querySelectorAll('a[href*="Walmart-Exclusive-Hardcover"]'), function (a) {
       if (a.__maSE || a.querySelector('img') || !a.closest('#header, #hunt-nav, #hunt-nav-ov, .header-menu, .tm-header')) return;
@@ -198,7 +214,7 @@
   }
 
   function build() {
-    specialEditions();
+    specialEditions(); readExcerpt();
     var nav = document.querySelector('.tm-nav'), list = document.querySelector('.tm-mnav__list');
     if (!nav || nav.classList.contains('ma-one')) return;
     var pre = [].filter.call(nav.children, function (c) { return c.querySelector && c.querySelector('.tm-nav__cta'); })[0] || nav.querySelector('.tm-nav__cta');
@@ -230,7 +246,7 @@
       mrow.forEach(function (n) { list.appendChild(n); });
       if (mPre) list.appendChild(mPre);
     }
-    specialEditions(); setTimeout(specialEditions, 1500);
+    specialEditions(); readExcerpt(); setTimeout(function () { specialEditions(); readExcerpt(); }, 1500);
 
     fetch(BASE + 'pages/hunt-menu.html', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (html) {
       var gs = shape(new DOMParser().parseFromString(html, 'text/html'));
