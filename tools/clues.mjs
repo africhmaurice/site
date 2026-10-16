@@ -165,6 +165,7 @@ Yet again, you might try.`],
   [65, "Don't miss a single chapter.", { hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'Sign up today to stay up to date on all things Sky Pirate!' }] }],
   // Box 66 (Maurice, 2026-10-07).
   [66, 'Brando Sando and I have this person in common.'],
+  [71, 'No Purchase Necessary'],   // the line under the contest disclosure on /contests (Maurice, 2026-10-16)
   [73, 'you already have it'],
   // Batch 2 (Maurice, 2026-10-11). 74: at Level 7 of Airship Runner.
   [74, 'Level 7'],
