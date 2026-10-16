@@ -104,8 +104,7 @@
       <a href="https://www.mauriceafrich.com/thread-the-needle" data-k="thread_needle">THREAD THE NEEDLE</a>
       <a href="https://www.mauriceafrich.com/trench-run" data-k="trench_run">TRENCH RUN</a>
     </nav>
-    <script>/* Dark page: hide the Squarespace section color behind the game (same as the other arcade pages). */(function(){var d=document.getElementById('ma-chase');if(!d)return;var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}})();</script>
-<script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++){var act=lk[j].getAttribute('data-act'),n=act?+((d.acts||{})[act])||0:+d.crewTotal||0;if(n>=+lk[j].getAttribute('data-unlock'))lk[j].hidden=false;}}).catch(function(){});})();</script>
+    <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++){var act=lk[j].getAttribute('data-act'),n=act?+((d.acts||{})[act])||0:+d.crewTotal||0;if(n>=+lk[j].getAttribute('data-unlock'))lk[j].hidden=false;}}).catch(function(){});})();</script>
 </div>
 <!-- ARCADE-TABS:END -->
   <div class="ch-wrap">
@@ -156,6 +155,7 @@
   </div>
 </section>
 
+<script>/* Dark page: hide the Squarespace section color behind the game (same as the other arcade pages). */(function(){var d=document.getElementById('ma-chase');if(!d)return;var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}})();</script>
 <script>
 (function(){
   var root=document.getElementById('ma-chase');
@@ -582,7 +582,14 @@
     var CR=Math.max(3,T*.18);ctx.lineWidth=Math.max(1,T*.04);
     for(var r=r0;r<=r1;r++)for(var c=0;c<COLS;c++)if(coins[r]&&coins[r][c]){
       var w=RM()?1:Math.cos(anim*3.2+c*.9+r*.55),aw=Math.max(.12,Math.abs(w)),x0=cx(c),y0=cx(r);
-      if(ok(coinImg)){var cd=Math.max(10,T*.56);ctx.drawImage(coinImg,x0-cd*aw/2,y0-cd/2,cd*aw,cd);continue;}
+      /* his Izzy coin, 25% smaller (Maurice 10/16), spinning like a real coin: as it turns, its gold rim shows on one
+         side so it reads as a thick disc, and the far side is a touch darker */
+      if(ok(coinImg)){var cd=Math.max(8,T*.42),sg=w>=0?1:-1,rim=RM()?0:cd*.16*Math.sqrt(Math.max(0,1-aw*aw)),fx=x0+sg*rim/2,bx=x0-sg*rim/2;
+        if(rim>.4){ctx.fillStyle='#8a5a12';ctx.beginPath();ctx.ellipse(bx,y0,cd*aw/2,cd*.48,0,0,Math.PI*2);ctx.fill();ctx.fillRect(Math.min(bx,fx),y0-cd*.48,Math.abs(fx-bx),cd*.96);
+          ctx.fillStyle='#c8902a';ctx.fillRect(Math.min(bx,fx),y0-cd*.48,Math.abs(fx-bx),cd*.2);}
+        ctx.drawImage(coinImg,fx-cd*aw/2,y0-cd/2,cd*aw,cd);
+        if(w<0){ctx.fillStyle='rgba(60,35,5,.22)';ctx.beginPath();ctx.ellipse(fx,y0,cd*aw/2,cd/2,0,0,Math.PI*2);ctx.fill();}
+        continue;}
       ctx.fillStyle=w>=0?'#f1d48a':'#d9ab4a';ctx.strokeStyle='#8a5a12';
       ctx.beginPath();ctx.ellipse(x0,y0,CR*aw,CR,0,0,Math.PI*2);ctx.fill();ctx.stroke();
     }
