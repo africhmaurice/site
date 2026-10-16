@@ -921,9 +921,9 @@ var ArcadeCard = (function () {
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){build();draw();});
 })();
 </script>
-<script>/* PARALLAX v2 (Maurice, 2026-10-16): a library picture the size of the screen behind the game, moving at 30% of the scroll */(function(){
+<script>/* PARALLAX FIXED (Maurice, 2026-10-16): a library picture pinned to the screen behind the game while the page scrolls over it */(function(){
   var r=document.getElementById('ma-runner');if(!r||r.querySelector('.ma-plx'))return;
-  var dir=(window.innerWidth||1400)<=900?'m/':'d/',calm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches,SPEED=.3;
+  var dir=(window.innerWidth||1400)<=900?'m/':'d/';
   if(getComputedStyle(r).position==='static')r.style.position='relative';
   Array.prototype.forEach.call(r.children,function(c){var cs=getComputedStyle(c);if(cs.position==='static'){c.style.position='relative';}if(!cs.zIndex||cs.zIndex==='auto')c.style.zIndex='1';});
   var w=document.createElement('div');w.className='ma-plx';w.setAttribute('aria-hidden','true');
@@ -931,15 +931,17 @@ var ArcadeCard = (function () {
   var im=document.createElement('div');im.style.cssText='position:absolute;left:0;right:0;top:0;background:url(https://africhmaurice.github.io/site/assets/bg/'+dir+'city-skyline-panorama-as348070597.webp) center/cover no-repeat;will-change:transform';
   var wash=document.createElement('div');wash.style.cssText='position:absolute;inset:0;background:linear-gradient(rgba(11,23,15,.72),rgba(11,23,15,.84))';
   w.appendChild(im);w.appendChild(wash);r.insertBefore(w,r.firstChild);
-  var ticking=false;
-  function move(){ticking=false;
-    var vh=window.innerHeight||800,b=r.getBoundingClientRect(),rh=r.offsetHeight,past=-b.top,y;
-    // the picture follows at (1-SPEED) of the scroll past the game's top, so on screen it moves at SPEED
-    if(rh>vh*1.75){var H=Math.round(vh*1.25);im.style.height=H+'px';y=calm?0:Math.max(0,Math.min(rh-H,past*(1-SPEED)));}
-    // a game section shorter than that: a picture a little taller than the section, sliding within the extra
-    else{var ex=Math.round(vh*.5);im.style.height=(rh+ex)+'px';y=calm?-ex/2:Math.max(-ex,Math.min(0,past*(1-SPEED)-ex/2));}
-    im.style.transform='translate3d(0,'+y.toFixed(1)+'px,0)';
-  }
-  function req(){if(!ticking){ticking=true;requestAnimationFrame(move);}}
-  window.addEventListener('scroll',req,{passive:true});window.addEventListener('resize',req);move();setTimeout(move,800);
+  // best way: the picture is position:fixed (pinned to the screen by the browser itself, no stutter) and the section's
+  // clip-path keeps it inside the game. That only works when nothing above the game has a transform or filter, so check.
+  var el=r,clean=true;while(el&&el!==document.documentElement){var st=getComputedStyle(el);if(st.transform!=='none'||st.filter!=='none'||st.perspective!=='none'||/transform|filter|perspective/.test(st.willChange)||/paint|layout|strict|content/.test(st.contain||'')){clean=false;break;}el=el.parentElement;}
+  if(clean){w.style.clipPath='inset(0)';w.style.webkitClipPath='inset(0)';w.style.overflow='visible';
+    im.style.cssText+=';position:fixed;top:0;bottom:auto;height:100vh;height:100lvh;will-change:auto';return;}
+  // fallback: the picture is one screen tall (the tallest the phone screen gets, so it never shows a gap when the address bar
+  // hides) and slides down exactly as far as the page scrolls past the game's top, so it holds still on screen
+  var H=0;
+  function size(){H=Math.max(window.innerHeight||800,document.documentElement.clientHeight||0,window.visualViewport?Math.round(visualViewport.height):0);H=Math.min(H,r.offsetHeight||H);im.style.height=H+'px';}
+  function move(){var y=Math.max(0,Math.min((r.offsetHeight||H)-H,-r.getBoundingClientRect().top));im.style.transform='translate3d(0,'+y.toFixed(1)+'px,0)';}
+  window.addEventListener('scroll',move,{passive:true});
+  window.addEventListener('resize',function(){size();move();});
+  size();move();setTimeout(function(){size();move();},800);
 })();</script>
