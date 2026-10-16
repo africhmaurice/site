@@ -167,6 +167,7 @@ Yet again, you might try.`],
   // Box 66 (Maurice, 2026-10-07).
   [66, 'Brando Sando and I have this person in common.'],
   [67, "To Be Or Not to Be"],   // the words ex-theater kid in the home page bio (loader.js theaterBox67, Maurice 2026-10-16)
+  [68, "RL,WS"],   // the red square in the SKYWORD key (Maurice 2026-10-16)
   [69, `More Wax
 A Little Poetry
 A Mic &
