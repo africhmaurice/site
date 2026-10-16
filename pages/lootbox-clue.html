@@ -559,6 +559,10 @@ Free additional clue: check the shop.</div>
     <div class="lc-num">#41</div>
     <div class="lc-text">Trapped in the tunnels beneath the ochre landscape.</div>
   </div>
+  <div class="lc-board" data-clue="43">
+    <div class="lc-num">#43</div>
+    <img class="lc-img" src="https://africhmaurice.github.io/site/assets/clues/clue-43.webp" alt="A house + a slide" loading="lazy">
+  </div>
   <div class="lc-board" data-clue="44">
     <div class="lc-num">#44</div>
     <div class="lc-text">Mods Must Hate to See You Coming</div>
@@ -675,6 +679,20 @@ Free additional clue: check the shop.</div>
     <div class="lc-num">#66</div>
     <div class="lc-text">Brando Sando and I have this person in common.</div>
   </div>
+  <div class="lc-board" data-clue="69">
+    <div class="lc-num">#69</div>
+    <div class="lc-text">More Wax
+A Little Poetry
+A Mic &amp;
+Some Madness
+Spin Me A Yarn
+Mr. Song Man
+Haven't I Seen You Before?</div>
+  </div>
+  <div class="lc-board" data-clue="70">
+    <div class="lc-num">#70</div>
+    <img class="lc-img" src="https://africhmaurice.github.io/site/assets/clues/clue-70.webp" alt="#WINNING" loading="lazy">
+  </div>
   <div class="lc-board" data-clue="71">
     <div class="lc-num">#71</div>
     <div class="lc-text">No Purchase Necessary</div>
@@ -702,6 +720,14 @@ Free additional clue: check the shop.</div>
   <div class="lc-board" data-clue="79">
     <div class="lc-num">#79</div>
     <div class="lc-text">the 11th</div>
+  </div>
+  <div class="lc-board" data-clue="80">
+    <div class="lc-num">#80</div>
+    <img class="lc-img" src="https://africhmaurice.github.io/site/assets/clues/clue-80.gif" alt="I love finding a good set of twins." loading="lazy">
+  </div>
+  <div class="lc-board" data-clue="86">
+    <div class="lc-num">#86</div>
+    <div class="lc-text">get to the top</div>
   </div>
   <div class="lc-board" data-clue="87">
     <div class="lc-num">#87</div>
@@ -738,6 +764,19 @@ Free additional clue: check the shop.</div>
   <div class="lc-board" data-clue="96">
     <div class="lc-num">#96</div>
     <div class="lc-text">Sky Privacy</div>
+  </div>
+  <div class="lc-board" data-clue="97">
+    <div class="lc-num">#97</div>
+    <img class="lc-img" src="https://africhmaurice.github.io/site/assets/clues/clue-97.webp" alt="A crown + the wild jungle" loading="lazy">
+    <div class="lc-text">+ P1P2W7</div>
+    <form class="lc-answer" data-salt="pw97:" data-hash="59b447ed0112dd1cb80970df0a7122a04fa5a4539bbd9902803fa23372596843" data-lock="9Luvdrt+eYjpgMBCQhLHvlU190LO5q192HRAVSehL5Hzu+Rl9RQV/tix8y1k" autocomplete="off">
+      <div class="lc-answer-row"><input type="text" class="lc-answer-in" aria-label="The password for clue #97" placeholder="Enter the password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><button type="submit" class="lc-answer-go">Check</button></div>
+      <div class="lc-said" role="status" hidden></div>
+    </form>
+  </div>
+  <div class="lc-board" data-clue="100">
+    <div class="lc-num">#100</div>
+    <div class="lc-text">Not Hidden; Earned</div>
   </div>
   </div>
   <script>(function(){var s=document.getElementById('loot-clue');if(!s)return;
@@ -841,7 +880,7 @@ Free additional clue: check the shop.</div>
       f.addEventListener('submit',function(e){e.preventDefault();var a=norm(i.value);if(!a){i.focus();return;}btn.disabled=true;
         crypto.subtle.digest('SHA-256',new TextEncoder().encode(f.getAttribute('data-salt')+a)).then(function(h){btn.disabled=false;
           if(hex(h)!==f.getAttribute('data-hash')){say('wrong');i.focus();i.select();return;}
-          say('right');i.blur();btn.disabled=true;var go=f.getAttribute('data-go')+'#'+b64url(a);setTimeout(function(){location.href=go;},1100);
+          say('right');i.blur();btn.disabled=true;var lk=f.getAttribute('data-lock');if(lk){crypto.subtle.digest('SHA-256',new TextEncoder().encode('lock:'+f.getAttribute('data-salt')+a)).then(function(kb){var k=new Uint8Array(kb),c=atob(lk),o='';for(var j=0;j<c.length;j++)o+=String.fromCharCode(c.charCodeAt(j)^k[j%k.length]);setTimeout(function(){location.href=o;},1100);});return;}var go=f.getAttribute('data-go')+'#'+b64url(a);setTimeout(function(){location.href=go;},1100);
         },function(){btn.disabled=false;});});
     });})();</script>
 </section>

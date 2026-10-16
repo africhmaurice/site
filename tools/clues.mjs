@@ -123,6 +123,7 @@ Yet again, you might try.`],
   // Box 40 is the 0 in 404 on the site's Page Not Found page (Maurice, 2026-10-11).
   [40, 'Loot Box Not Found!'],
   [41, 'Trapped in the tunnels beneath the ochre landscape.'],
+  [43, '', { img: ART + 'clue-43.webp', alt: 'A house + a slide' }],   // hidden in the ACT THREE HAS BEGUN home slide (Maurice, 2026-10-16)
   // Box 44 is the link on Maurice's Reddit profile (Maurice, 2026-10-05).
   [44, 'Mods Must Hate to See You Coming'],
   // Box 45 is in a YouTube video description (Maurice, 2026-10-05; his wording, exactly).
@@ -165,6 +166,14 @@ Yet again, you might try.`],
   [65, "Don't miss a single chapter.", { hints: [{ price: 25, button: 'Pay 25 points for a hint.', text: 'Sign up today to stay up to date on all things Sky Pirate!' }] }],
   // Box 66 (Maurice, 2026-10-07).
   [66, 'Brando Sando and I have this person in common.'],
+  [69, `More Wax
+A Little Poetry
+A Mic &
+Some Madness
+Spin Me A Yarn
+Mr. Song Man
+Haven't I Seen You Before?`],   // on Bard's Linktree (Maurice, 2026-10-16)
+  [70, '', { img: ART + 'clue-70.webp', alt: '#WINNING' }],   // the word "winning" on /contests (Maurice, 2026-10-16)
   [71, 'No Purchase Necessary'],   // the line under the contest disclosure on /contests (Maurice, 2026-10-16)
   [73, 'you already have it'],
   // Batch 2 (Maurice, 2026-10-11). 74: at Level 7 of Airship Runner.
@@ -173,6 +182,8 @@ Yet again, you might try.`],
   [76, 'The 100th Needle'],
   [77, 'TRLVL5'],   // Trench Run: the box is on board 5 (Maurice, 2026-10-16)
   [79, 'the 11th'],   // Find the Constellations: the secret 11th constellation (Maurice, 2026-10-16, Act Three puzzle #26)   // Thread the Needle: the box floats in the 100th gap (Maurice, 2026-10-13)
+  [80, '', { img: ART + 'clue-80.gif', alt: 'I love finding a good set of twins.' }],   // Match the Crest (Maurice, 2026-10-16)
+  [86, 'get to the top'],   // The Long Climb (Maurice, 2026-10-16)
   // 87-93 are tricks in loader.js (b2Tricks): type the phrase, drag the Comet out of the header logo, /leaderboard in
   // the first minute of an hour, /questions in high contrast, print this page, copy clue 92, the /newsletter typo.
   [87, 'QWERTY + “SKYPIRATE”'],
@@ -186,6 +197,9 @@ Yet again, you might try.`],
   // 95 and 96 are in the fine print at the bottom of /rules and /privacy-policy.
   [95, 'An icon that reads RULEBOOK.'],
   [96, 'Sky Privacy'],
+  // Box 97 (Maurice, 2026-10-16): the right password opens the box; the claim link is locked with it (lock: in the answer box).
+  [97, '+ P1P2W7', { img: ART + 'clue-97.webp', alt: 'A crown + the wild jungle', answer: { salt: 'pw97:', hash: '59b447ed0112dd1cb80970df0a7122a04fa5a4539bbd9902803fa23372596843', lock: '9Luvdrt+eYjpgMBCQhLHvlU190LO5q192HRAVSehL5Hzu+Rl9RQV/tix8y1k', placeholder: 'Enter the password' } }],
+  [100, 'Not Hidden; Earned'],   // arrives on its own with the 99th find (lootbox.gs BONUSES, Maurice 2026-10-16)
 ];
 
 // The few lines above the cards that say what they are.
@@ -205,8 +219,8 @@ const boards = CLUES.map(([n, text, o = {}]) => {
   if (o.img) body += `<img class="lc-img${o.sticker ? ' lc-sticker' : ''}" src="${esc(o.img)}" alt="${esc(o.alt || '')}" loading="lazy">`;
   // Answer box: the answer is checked in the browser against its fingerprint (see answerJs), never sent or stored.
   if (o.answer) body += `
-    <form class="lc-answer" data-salt="${esc(o.answer.salt)}" data-hash="${esc(o.answer.hash)}" data-go="${esc(o.answer.go)}" autocomplete="off">
-      <div class="lc-answer-row"><input type="text" class="lc-answer-in" aria-label="Your answer to clue #${n}" placeholder="Your answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><button type="submit" class="lc-answer-go">Check</button></div>
+    <form class="lc-answer" data-salt="${esc(o.answer.salt)}" data-hash="${esc(o.answer.hash)}" ${o.answer.go ? ` data-go="${esc(o.answer.go)}"` : ''}${o.answer.lock ? ` data-lock="${esc(o.answer.lock)}"` : ''} autocomplete="off">
+      <div class="lc-answer-row"><input type="text" class="lc-answer-in" aria-label="Your answer to clue #${n}" placeholder="${esc(o.answer.placeholder || 'Your answer')}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><button type="submit" class="lc-answer-go">Check</button></div>
       <div class="lc-said" role="status" hidden></div>
     </form>`;
   // Paid hints: each step's button shows once the step before it is bought. Pictures load only once
@@ -353,7 +367,7 @@ const answerJs = `  <script>(function(){var s=document.getElementById('loot-clue
       f.addEventListener('submit',function(e){e.preventDefault();var a=norm(i.value);if(!a){i.focus();return;}btn.disabled=true;
         crypto.subtle.digest('SHA-256',new TextEncoder().encode(f.getAttribute('data-salt')+a)).then(function(h){btn.disabled=false;
           if(hex(h)!==f.getAttribute('data-hash')){say('wrong');i.focus();i.select();return;}
-          say('right');i.blur();btn.disabled=true;var go=f.getAttribute('data-go')+'#'+b64url(a);setTimeout(function(){location.href=go;},1100);
+          say('right');i.blur();btn.disabled=true;var lk=f.getAttribute('data-lock');if(lk){crypto.subtle.digest('SHA-256',new TextEncoder().encode('lock:'+f.getAttribute('data-salt')+a)).then(function(kb){var k=new Uint8Array(kb),c=atob(lk),o='';for(var j=0;j<c.length;j++)o+=String.fromCharCode(c.charCodeAt(j)^k[j%k.length]);setTimeout(function(){location.href=o;},1100);});return;}var go=f.getAttribute('data-go')+'#'+b64url(a);setTimeout(function(){location.href=go;},1100);
         },function(){btn.disabled=false;});});
     });})();</script>`;
 

@@ -629,11 +629,11 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         (left > 0 ? cta() : ''));
     drawCard(res.found, n);
   }
-  // Box 26 comes to you: it arrives on its own with the 25th find.
+  // Box 26 comes to you: it arrives on its own with the 25th find. Box 100 arrives with the 99th (2026-10-16).
   function bonusHtml(b) {
     return '<div class="lb-bonus">' + (ART ? '<img loading="lazy" decoding="async" class="lb-chest pop" src="' + chestUrl(b.n) + '" alt="Loot box #' + b.n + '">' : '') +
       '<p class="lb-bang">IT CAME TO YOU!</p>' +
-      '<p class="lb-say">Twenty-five boxes found, so loot box #' + b.n + ' found you. It is on your scorecard already.</p>' +
+      '<p class="lb-say">' + (b.n == 100 ? 'Ninety-nine' : 'Twenty-five') + ' boxes found, so loot box #' + b.n + ' found you. It is on your scorecard already.</p>' +
       '<div class="lb-pts">+' + (b.points || 50) + ' POINTS</div></div>';
   }
 
