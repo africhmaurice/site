@@ -199,6 +199,7 @@ Haven't I Seen You Before?`],   // on Bard's Linktree (Maurice, 2026-10-16)
   [96, 'Sky Privacy'],
   // Box 97 (Maurice, 2026-10-16): the right password opens the box; the claim link is locked with it (lock: in the answer box).
   [97, '+ P1P2W7', { img: ART + 'clue-97.webp', alt: 'A crown + the wild jungle', answer: { salt: 'pw97:', hash: '59b447ed0112dd1cb80970df0a7122a04fa5a4539bbd9902803fa23372596843', lock: '9Luvdrt+eYjpgMBCQhLHvlU190LO5q192HRAVSehL5Hzu+Rl9RQV/tix8y1k', placeholder: 'Enter the password' } }],
+  [98, "Unhand me!"],   // click Maurice's hand in the home page headshot (loader.js handBox98, Maurice 2026-10-16)
   [100, 'Not Hidden; Earned'],   // arrives on its own with the 99th find (lootbox.gs BONUSES, Maurice 2026-10-16)
 ];
 

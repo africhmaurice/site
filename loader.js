@@ -1087,6 +1087,47 @@
   // Box 53, The Locked Loot Box (Maurice, 2026-10-04): "You find the chest first, when you find the chest, you get the
   // key clue." The chest hides in the teal under the newsletter signup; the key hides in the home page's Meet Maurice
   // social row ("one of these things doesn't belong here"). The key is kept in this browser only.
+  // Box 98, "Unhand me!" (Maurice, 2026-10-16): his raised fist in the home page headshot. Click it and the box appears
+  // in his hand; click the box to claim it. The spot is set in the photo's own proportions (it is cropped with object-fit:
+  // cover), so it follows the fist at every width.
+  function handBox98() {
+    try {
+      if ((location.pathname.replace(/\/+$/, '') || '/') !== '/') return;
+      var K98 = 'VVA0N0ZSMkI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo', HAND = { x0: .69, x1: .875, y0: .33, y1: .47 };
+      var img = document.querySelector('img[src*="Maurice+Headshot"],img[data-src*="Maurice+Headshot"]');
+      if (!img || img.getAttribute('data-ma98')) return;
+      img.setAttribute('data-ma98', '1');
+      if (!document.getElementById('ma98-css')) {
+        var st = document.createElement('style'); st.id = 'ma98-css';
+        st.textContent = '.ma98-spot{position:absolute;z-index:3;display:block;padding:0;margin:0;border:0;border-radius:0;background:transparent;cursor:default;-webkit-tap-highlight-color:transparent}' +
+          '.ma98-spot:focus-visible{outline:2px solid #89fbcb;outline-offset:2px}' +
+          '.ma98-spot img{display:block;width:100%;height:100%;object-fit:contain;opacity:0;transform:scale(.3);transition:opacity .35s ease,transform .45s cubic-bezier(.2,1.6,.4,1);filter:drop-shadow(0 0 10px #ffd36b)}' +
+          '.ma98-spot.ma98-on{cursor:pointer}.ma98-spot.ma98-on img{opacity:1;transform:none}' +
+          '@media (prefers-reduced-motion:reduce){.ma98-spot img{transition:none}}';
+        document.head.appendChild(st);
+      }
+      var host = img.parentElement; if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'ma98-spot'; b.setAttribute('aria-label', 'His hand');
+      b.innerHTML = '<img src="https://africhmaurice.github.io/leaderboard/loot/98.png" alt="">';
+      host.appendChild(b);
+      var place = function () {
+        var W = img.clientWidth, H = img.clientHeight, nw = img.naturalWidth, nh = img.naturalHeight; if (!W || !H || !nw || !nh) return;
+        var sc = Math.max(W / nw, H / nh), rw = nw * sc, rh = nh * sc, pos = (getComputedStyle(img).objectPosition || '50% 50%').split(' ');
+        var px = parseFloat(pos[0]) / 100, py = parseFloat(pos[1] || pos[0]) / 100; if (isNaN(px)) px = .5; if (isNaN(py)) py = .5;
+        var ox = (W - rw) * px + img.offsetLeft, oy = (H - rh) * py + img.offsetTop;
+        var l = Math.max(img.offsetLeft, ox + HAND.x0 * rw), t = oy + HAND.y0 * rh, r = Math.min(img.offsetLeft + W, ox + HAND.x1 * rw), bt = oy + HAND.y1 * rh;
+        b.style.left = l + 'px'; b.style.top = t + 'px'; b.style.width = Math.max(30, r - l) + 'px'; b.style.height = Math.max(30, bt - t) + 'px';
+      };
+      b.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        if (!b.classList.contains('ma98-on')) { b.classList.add('ma98-on'); b.setAttribute('aria-label', 'Open loot box 98'); return; }
+        location.href = atob(K98).split('').reverse().join('');
+      });
+      place(); img.addEventListener('load', place); window.addEventListener('resize', place);
+      var n = 0, iv = setInterval(function () { place(); if (++n > 20) clearInterval(iv); }, 500);
+    } catch (e) {}
+  }
+
   function lockedChest53() {
     try {
       var KEY = 'ma-key53', path = location.pathname.replace(/\/+$/, '') || '/';
@@ -1551,6 +1592,7 @@
     specialEditions();
     headRule();
     lockedChest53();
+    handBox98();
     if (document.body) quietWord();
     b2Tricks();
     huntGift();
