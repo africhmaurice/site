@@ -440,9 +440,14 @@ var ArcadeCard = (function () {
   var scroll=0;
   // one mist cloud at a time drifts past behind the towers, every few seconds, a little slower than the towers
   var MIST=[],mistT=1.5;
+  /* PARALLAX (Maurice, 2026-10-16): a far city from the background library, scrolling at a tenth of the sky's speed */
+  var farImg=new Image();farImg.src='https://africhmaurice.github.io/site/assets/bg/'+((window.innerWidth||1400)<=900?'m/':'d/')+'floating-blocks-city-as311317794.webp';var farX=0;
   function sky(dt){
     ctx.fillStyle='#d6eef8';ctx.fillRect(0,0,W,H);
     var mv=calm&&S.state!=='play'?0:moved();
+    if(ok(farImg)){var fh=H,fw=fh*farImg.naturalWidth/farImg.naturalHeight;farX=(farX+dt*speed()*.1*mv)%fw;
+      ctx.globalAlpha=.3;for(var fx=-farX;fx<W;fx+=fw)ctx.drawImage(farImg,fx,0,fw,fh);ctx.globalAlpha=1;
+      ctx.fillStyle='rgba(214,238,248,.45)';ctx.fillRect(0,0,W,H);}
     mistT-=dt*mv;
     if(mistT<=0){mistT=rnd(4,8);var im=mistImg[Math.floor(Math.random()*3)];MIST.push({im:im,x:W+20,y:rnd(-60,H-280),w:rnd(380,620),p:rnd(.5,.75),a:rnd(.5,.75)});}
     for(var i=MIST.length-1;i>=0;i--){var m=MIST[i];m.x-=dt*speed()*m.p*mv*(calm?.5:1);if(m.x+m.w<-20){MIST.splice(i,1);continue;}

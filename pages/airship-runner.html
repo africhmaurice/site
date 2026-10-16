@@ -535,6 +535,8 @@ var ArcadeCard = (function () {
   var ART='https://africhmaurice.github.io/site/assets/games/',PIC={};
   function pic(k,file){var im=new Image();im.crossOrigin='anonymous';im.onload=function(){if(W)resize();};im.src=ART+file;PIC[k]=im;}
   function ok(k){var im=PIC[k];return im&&im.complete&&im.naturalWidth>0;}
+  /* PARALLAX (Maurice, 2026-10-16): a far nebula from the background library, behind the stars */
+  (function(){var im=new Image();im.crossOrigin='anonymous';im.src='https://africhmaurice.github.io/site/assets/bg/'+((window.innerWidth||1400)<=900?'m/':'d/')+'nebula-glow-as332921866.webp';PIC.far=im;})();
   pic('storm','shared-storm-cloud-2.png');pic('rock','shared-island-golem.png');pic('ship','74-ship.png');pic('xp','74-ruby.png');pic('ball','74-cannonball.png');pic('crate','golden-chest.png');pic('sky','74-sky.webp');pic('soft','shared-soft-cloud.png');
   // the crash: four explosion drawings played in order
   var BOOM=[1,2,3,4];BOOM.forEach(function(n){pic('boom'+n,'74-boom-'+n+'.png');});
@@ -676,7 +678,11 @@ var ArcadeCard = (function () {
     cx.save();
     if(S&&S.shake>0&&!calm){cx.translate((Math.random()-.5)*S.shake*12,(Math.random()-.5)*S.shake*12);}
     var t=S?S.t:0,trav=S?S.travel:0;
-    if(ok('sky')){var th=W*PIC.sky.naturalHeight/PIC.sky.naturalWidth,sy=(trav*.15)%th;for(var yy=sy-th;yy<H;yy+=th)cx.drawImage(PIC.sky,0,yy,W,th);}
+    if(ok('far')){var fw=Math.max(W,H*PIC.far.naturalWidth/PIC.far.naturalHeight),fh=fw*PIC.far.naturalHeight/PIC.far.naturalWidth,fy=(trav*.04)%fh;
+      for(var fyy=fy-fh;fyy<H;fyy+=fh)cx.drawImage(PIC.far,(W-fw)/2,fyy,fw,fh);
+      cx.fillStyle='rgba(11,10,30,.55)';cx.fillRect(0,0,W,H);
+      if(ok('sky')){var th=W*PIC.sky.naturalHeight/PIC.sky.naturalWidth,sy=(trav*.15)%th;cx.globalCompositeOperation='screen';for(var yy=sy-th;yy<H;yy+=th)cx.drawImage(PIC.sky,0,yy,W,th);cx.globalCompositeOperation='source-over';}}
+    else if(ok('sky')){var th=W*PIC.sky.naturalHeight/PIC.sky.naturalWidth,sy=(trav*.15)%th;for(var yy=sy-th;yy<H;yy+=th)cx.drawImage(PIC.sky,0,yy,W,th);}
     else cx.drawImage(SPR.bg,0,0,W,H);
     // no background clouds (Maurice, 10/12)
     // lane lines
