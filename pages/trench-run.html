@@ -312,7 +312,7 @@
   function pic(f,onload){var i=new Image();if(onload)i.onload=onload;i.src=ART+f;return i;}
   function ok(i){return i&&i.complete&&i.naturalWidth>0;}
   var boomImg=[pic('74-boom-1.png'),pic('74-boom-2.png'),pic('74-boom-3.png'),pic('74-boom-4.png')];
-  var coinImg=pic('77-coin.png'),cornerImg=pic('77-corner.png',function(){cacheWalls();draw();}),shotImg=pic('77-shot.png'),cannonImg=pic('77-cannon.png'),boostImg=pic('77-boost.png'),gateImg=pic('77-gate.png'),beamImg=pic('77-searchlight.png'),brassImg=pic('brass-point.png'),chestImg=pic('golden-chest.png'),crestImg=pic('80-crest.webp'),ballImg=pic('74-cannonball.png');
+  var coinStrip=pic('77-coin-spin.png'),coinImg=pic('77-coin.png'),cornerImg=pic('77-corner.png',function(){cacheWalls();draw();}),shotImg=pic('77-shot.png'),cannonImg=pic('77-cannon.png'),boostImg=pic('77-boost.png'),gateImg=pic('77-gate.png'),beamImg=pic('77-searchlight.png'),brassImg=pic('brass-point.png'),chestImg=pic('golden-chest.png'),crestImg=pic('80-crest.webp'),ballImg=pic('74-cannonball.png');
   var shipImg=pic('74-ship.png'),rivalImg=pic('74-rival.png'),rubyImg=pic('74-ruby.png'),wallImg=pic('77-wall.png',function(){cacheWalls();draw();});
   var tinted={};
   function tint(img,col,a){
@@ -713,14 +713,10 @@
     var CR=Math.max(3,T*.18);ctx.lineWidth=Math.max(1,T*.04);
     for(var r=r0;r<=r1;r++)for(var c=0;c<COLS;c++)if(coins[r]&&coins[r][c]){
       var w=RM()?1:Math.cos(anim*3.2+c*.9+r*.55),aw=Math.max(.12,Math.abs(w)),x0=cx(c),y0=cx(r);
-      /* his Izzy coin, 25% smaller (Maurice 10/16), spinning like a real coin: as it turns, its gold rim shows on one
-         side so it reads as a thick disc, and the far side is a touch darker */
-      if(ok(coinImg)){var cd=Math.max(8,T*.42),sg=w>=0?1:-1,rim=RM()?0:cd*.16*Math.sqrt(Math.max(0,1-aw*aw)),fx=x0+sg*rim/2,bx=x0-sg*rim/2;
-        if(rim>.4){ctx.fillStyle='#8a5a12';ctx.beginPath();ctx.ellipse(bx,y0,cd*aw/2,cd*.48,0,0,Math.PI*2);ctx.fill();ctx.fillRect(Math.min(bx,fx),y0-cd*.48,Math.abs(fx-bx),cd*.96);
-          ctx.fillStyle='#c8902a';ctx.fillRect(Math.min(bx,fx),y0-cd*.48,Math.abs(fx-bx),cd*.2);}
-        ctx.drawImage(coinImg,fx-cd*aw/2,y0-cd/2,cd*aw,cd);
-        if(w<0){ctx.fillStyle='rgba(60,35,5,.22)';ctx.beginPath();ctx.ellipse(fx,y0,cd*aw/2,cd/2,0,0,Math.PI*2);ctx.fill();}
-        continue;}
+      /* his Izzy coin in 3D (Maurice 10/17): 16 drawn frames of one half-turn in 77-coin-spin.png, played in a loop, one way,
+         Izzy always upright. Each coin starts at its own point in the turn so the trench shimmers. */
+      if(ok(coinStrip)){var cd=Math.max(8,T*.42),fs=cd*220/150,ph=RM()?0:((anim*1.6+c*.37+r*.21)%1+1)%1,fi=Math.floor(ph*16)%16;ctx.drawImage(coinStrip,fi*128,0,128,128,x0-fs/2,y0-fs/2,fs,fs);continue;}
+      if(ok(coinImg)){var cd2=Math.max(8,T*.42);ctx.drawImage(coinImg,x0-cd2/2,y0-cd2/2,cd2,cd2);        continue;}
       ctx.fillStyle=w>=0?'#f1d48a':'#d9ab4a';ctx.strokeStyle='#8a5a12';
       ctx.beginPath();ctx.ellipse(x0,y0,CR*aw,CR,0,0,Math.PI*2);ctx.fill();ctx.stroke();
     }
