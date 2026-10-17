@@ -83,7 +83,7 @@
   // 4. Images come from a copy of this site pinned to one publish, cached for a year (GitHub Pages only allows
   // 10 minutes, and every publish makes visitors download everything again). Anything newer than the pin
   // falls back to GitHub Pages by itself. tools/pin-assets.mjs moves the pin after a publish.
-  var PIN = '385af425ed3bfb3b90af6895afdf2aace5a47eae';
+  var PIN = 'a98c0d461835b2933d6962b26a1e83b3e6a1c434';
   var GH = 'https://africhmaurice.github.io/site/', CDN = PIN ? 'https://cdn.jsdelivr.net/gh/africhmaurice/site@' + PIN + '/' : '';
   function cdn(u) { return CDN && u.indexOf(GH + 'assets/') === 0 ? CDN + u.slice(GH.length) : u; }
   function prep(html) {
