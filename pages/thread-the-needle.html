@@ -632,10 +632,10 @@ var ArcadeCard = (function () {
 <script>/* PARALLAX FIXED (Maurice, 2026-10-16): a library picture pinned to the screen behind the game while the page scrolls over it */(function(){
   var r=document.getElementById('ma-flappy');if(!r||r.querySelector('.ma-plx'))return;
   var dir=(window.innerWidth||1400)<=900?'m/':'d/';
-  if(getComputedStyle(r).position==='static')r.style.position='relative';
+  if(getComputedStyle(r).position==='static')r.style.position='relative';r.style.isolation='isolate';/* the picture sits under everything in the game, even parts added later (the export card) */
   Array.prototype.forEach.call(r.children,function(c){var cs=getComputedStyle(c);if(cs.position==='static'){c.style.position='relative';}if(!cs.zIndex||cs.zIndex==='auto')c.style.zIndex='1';});
   var w=document.createElement('div');w.className='ma-plx';w.setAttribute('aria-hidden','true');
-  w.style.cssText='position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none';
+  w.style.cssText='position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none';
   var im=document.createElement('div');im.style.cssText='position:absolute;left:0;right:0;top:0;background:url(https://africhmaurice.github.io/site/assets/bg/'+dir+'dome-city-mist-as159145789.webp) center/cover no-repeat;will-change:transform';
   var wash=document.createElement('div');wash.style.cssText='position:absolute;inset:0;background:linear-gradient(rgba(11,23,15,.72),rgba(11,23,15,.84))';
   w.appendChild(im);w.appendChild(wash);r.insertBefore(w,r.firstChild);
