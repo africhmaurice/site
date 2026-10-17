@@ -330,13 +330,13 @@ h1,h2,h3{text-wrap:balance}
     { label: 'Indie Bookstores', send: 'Indie Bookstore Request', detail: 'Which indie bookstore did you contact?', hint: 'Your request or message to the shop. 150 points per bookstore, up to three bookstores.' },
     { label: 'An Indie Bookstore Stocked It', send: 'An Indie Bookstore Stocked It', detail: 'Which bookstore? Its name and city.',
       hint: 'A photo of Cello\'s Gate on the shelf, or the store\'s catalog page. 150 more points for each bookstore that stocks it (up to three).' },
-    { label: "Share Cello's Gate", send: "Share Cello's Gate", pick: ['Where did you share it?', ['Instagram', 'TikTok', 'YouTube', 'Reddit']], pick2: ['What did you do?', ['1 post', '3 comments on 3 recent posts']],
+    { label: "Share Cello's Gate", send: "Share Cello's Gate", account: 'that account', pick: ['Where did you share it?', ['Instagram', 'TikTok', 'YouTube', 'Reddit']], pick2: ['What did you do?', ['1 post', '3 comments on 3 recent posts']],
       hint: 'A screenshot of your post (with the hashtags), or of all 3 comments. Hunt-related posts don\'t count for this task. 100 points, once per day, per account.' },
-    { label: 'Fill Up the Sky Pirates of Imperia Subreddit With Content', send: 'Fill Up the Sky Pirates of Imperia Subreddit With Content', detail: 'Link to your post on r/SkyPiratesofImperia',
+    { label: 'Fill Up the Sky Pirates of Imperia Subreddit With Content', send: 'Fill Up the Sky Pirates of Imperia Subreddit With Content', detail: 'Link to your post on r/SkyPiratesofImperia', account: 'Reddit',
       hint: 'A screenshot of your post: a fan theory, fan cast, merch, meme, favorite line, speculation, or fan art. 100 points per post, one a day.' },
     { label: 'Interact on the Sky Pirates of Imperia Reddit Board', send: 'Interact on the Sky Pirates of Imperia Reddit Board', detail: 'Your Reddit username', comments: true, noProof: true,
       hint: "No screenshot needed. Type your Reddit username and how many comments you've made on r/SkyPiratesofImperia that haven't been paid yet. I check them on Reddit. 25 points per comment." },
-    { label: "Review Cello's Gate on a Bookish Subreddit", send: "Review Cello's Gate on a Bookish Subreddit", detail: 'Link to your review (not on r/SkyPiratesofImperia)',
+    { label: "Review Cello's Gate on a Bookish Subreddit", send: "Review Cello's Gate on a Bookish Subreddit", detail: 'Link to your review (not on r/SkyPiratesofImperia)', account: 'Reddit',
       hint: 'A screenshot of your honest review of Cello\'s Gate in a bookish subreddit. Any honest rating counts. 500 points.' },
     { label: 'Submit Fan Art', send: 'Submit Fan Art', media: true, hint: 'A PNG or JPEG of your fan art, or a video or audio file (MP4, MOV, MP3, M4A, WAV, up to 35 MB). 200 points per entry.' },
     { label: 'Submit Fan Fiction', send: 'Submit Fan Fiction', docs: true, media: true, hint: 'Your fan fiction as a .docx, .doc, .pdf, or .txt. You can add music or audio too (MP4, MP3, M4A, WAV, up to 35 MB). 200 points per entry.' },
@@ -345,7 +345,7 @@ h1,h2,h3{text-wrap:balance}
     { label: 'Reach Level 25', send: 'Reach Level 25', hint: 'Your level in the Discord. 100 points.' },
     { label: 'Become a Crest Knight', send: 'Become a Crest Knight', hint: 'Your level 50 or Crest Knight role in the Discord, or your Mark of the Crest. 200 points.' },
     { label: 'Play in the Tournament of Blades', send: 'Play in the Tournament of Blades', hint: 'A screenshot of your nomination or vote in today\'s Tournament of Blades in the Discord. 25 points per nomination or vote.' },
-    { label: 'Join the Sky Pirates Subreddit', send: 'Join the Sky Pirates Subreddit', hint: 'A screenshot showing you’ve joined r/SkyPiratesofImperia. 50 points.' },
+    { label: 'Join the Sky Pirates Subreddit', send: 'Join the Sky Pirates Subreddit', account: 'Reddit', hint: 'A screenshot showing you’ve joined r/SkyPiratesofImperia. 50 points.' },
     { label: 'Buy Something From Trench Market', send: 'Buy Something From Trench Market', items: true,
       hint: 'Your Trench Market receipt or order confirmation. 50 points for each item.' },
     { label: '(Semi-)Aggressive Recruiting', send: '(Semi-)Aggressive Recruiting', detail: 'Who did you recruit? Their name and handle.',
@@ -494,6 +494,8 @@ h1,h2,h3{text-wrap:balance}
         t.pick[1].map(function (p) { return '<option>' + p + '</option>'; }).join('') + '</select>', 'sb-pick');
       if (t && t.pick2) extra += item(esc(t.pick2[0]), '', '<select id="sb-pick2" class="empty"><option value="">Choose an option.</option>' +
         t.pick2[1].map(function (p) { return '<option>' + esc(p) + '</option>'; }).join('') + '</select>', 'sb-pick2');
+      // The username on the account the task used (Maurice, 2026-10-16), so it can be checked on that site.
+      if (t && t.account) extra += item(t.account === 'Reddit' ? 'Your Reddit username' : 'Your username on that account', '', '<input type="text" id="sb-account" autocomplete="off">', 'sb-account');
       $('sb-extra').innerHTML = extra;
       var pk = $('sb-pick'); if (pk) pk.onchange = function () { pk.className = pk.value ? '' : 'empty'; };
       var pk2 = $('sb-pick2'); if (pk2) pk2.onchange = function () { pk2.className = pk2.value ? '' : 'empty'; };
@@ -618,6 +620,7 @@ h1,h2,h3{text-wrap:balance}
       if (t.pick) { var p = $('sb-pick').value; if (!p) return (err.textContent = t.pick[0]); payload.task += ' (' + p + ')'; }
       if (t.pick2) { var p2 = $('sb-pick2').value; if (!p2) return (err.textContent = t.pick2[0]); payload.task += ' (' + p2 + ')'; }
       if (t.detail || t.area) { payload.details = $('sb-detail').value.trim(); if (!payload.details) return (err.textContent = t.detail || t.area); }
+      if (t.account) { var acc = $('sb-account').value.trim().replace(/^@/, ''); if (!acc) return (err.textContent = t.account === 'Reddit' ? 'Please type your Reddit username.' : 'Please type your username on that account.'); payload.details = (payload.details ? payload.details + ' | ' : '') + 'Account: ' + acc; }
       if (!payload.agree) return (err.textContent = ERR.agree);
       if (!t.noProof) {
         if (files.some(function (f) { return !f.url; })) return (err.textContent = 'Still reading your files. One moment.');
