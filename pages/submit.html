@@ -491,7 +491,7 @@ h1,h2,h3{text-wrap:balance}
       if (t && t.comments) extra += item('How many comments?', '', '<input type="number" id="sb-copies" min="1" max="500" value="1" inputmode="numeric">', 'sb-copies');
       if (t && t.area) extra = item(esc(t.area), '', '<textarea id="sb-detail"></textarea>', 'sb-detail');
       if (t && t.pick) extra = item(esc(t.pick[0]), '', '<select id="sb-pick" class="empty"><option value="">Choose an option.</option>' +
-        t.pick[1].map(function (p) { return '<option>' + p + '</option>'; }).join('') + '</select>', 'sb-pick');
+        t.pick[1].map(function (p) { return '<option>' + p + '</option>'; }).join('') + '</select>', 'sb-pick') + extra;   // keeps a text box built above (the GIF task has both, 2026-10-17)
       if (t && t.pick2) extra += item(esc(t.pick2[0]), '', '<select id="sb-pick2" class="empty"><option value="">Choose an option.</option>' +
         t.pick2[1].map(function (p) { return '<option>' + esc(p) + '</option>'; }).join('') + '</select>', 'sb-pick2');
       // The username on the account the task used (Maurice, 2026-10-16), so it can be checked on that site.
