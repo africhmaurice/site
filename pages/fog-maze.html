@@ -206,10 +206,10 @@ html,body{margin:0 !important;padding:0 !important;background:#0b170f !important
     cv.style.width=cv.style.height=size+'px';cv.width=cv.height=Math.round(size*dpr);
   }
   // A small gold coin: rim, face, inner ring, and a star stamp. squash < 1 makes it look like it is spinning.
-  /* his Izzy coin in 3D (Maurice 10/17): 16 frames of one half-turn, 77-coin-spin.png; ph is where in the turn it is (none = face on) */
+  /* his Izzy coin in 3D (Maurice 10/17): 32 frames of one half-turn (thin edge, slow spin), 77-coin-spin.png; ph is where in the turn it is (none = face on) */
   var coinStrip=new Image();coinStrip.src='https://africhmaurice.github.io/site/assets/games/77-coin-spin.png';
   function coin(cx,cy,r,squash,ph){
-    if(coinStrip.complete&&coinStrip.naturalWidth){var fs=2*r*220/150,fi=ph==null?0:Math.floor((((ph%1)+1)%1)*16)%16;ctx.drawImage(coinStrip,fi*128,0,128,128,cx-fs/2,cy-fs/2,fs,fs);return;}
+    if(coinStrip.complete&&coinStrip.naturalWidth){var fs=2*r*220/150,fi=ph==null?0:Math.floor((((ph%1)+1)%1)*32)%32;ctx.drawImage(coinStrip,fi*128,0,128,128,cx-fs/2,cy-fs/2,fs,fs);return;}
     ctx.save();ctx.translate(cx,cy);ctx.scale(Math.max(.15,squash),1);
     ctx.fillStyle='#8a5a0c';ctx.beginPath();ctx.arc(0,r*.08,r,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='#f2c14e';ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fill();
@@ -247,7 +247,7 @@ html,body{margin:0 !important;padding:0 !important;background:#0b170f !important
     }
     // Bonus coins (spinning) and the exit coin (big, glowing), only when inside the light.
     for(i=0;i<M.coins.length;i++){c=M.coins[i];if(c.got)continue;dd=Math.sqrt((c.x-ax)*(c.x-ax)+(c.y-ay)*(c.y-ay));if(dd>R)continue;
-      ctx.globalAlpha=1-Math.max(0,dd-(R-1.2))/1.2*.6;coin(ox+(c.x+.5)*cs,oy+(c.y+.5)*cs,cs*.2,reduce?1:.35+.65*Math.abs(Math.cos(t*2.4+i)),reduce?null:t*1.2+i*.23);}
+      ctx.globalAlpha=1-Math.max(0,dd-(R-1.2))/1.2*.6;coin(ox+(c.x+.5)*cs,oy+(c.y+.5)*cs,cs*.2,reduce?1:.35+.65*Math.abs(Math.cos(t*2.4+i)),reduce?null:t*.75+i*.23);}
     dd=Math.sqrt((M.ex-ax)*(M.ex-ax)+(M.ey-ay)*(M.ey-ay));
     if(dd<=R){var ecx=ox+(M.ex+.5)*cs,ecy=oy+(M.ey+.5)*cs,p=.6+.4*Math.sin(t*3);ctx.globalAlpha=1-Math.max(0,dd-(R-1.2))/1.2*.6;
       var eg=ctx.createRadialGradient(ecx,ecy,0,ecx,ecy,cs*.6);eg.addColorStop(0,'rgba(242,193,78,'+(.5*p)+')');eg.addColorStop(1,'rgba(242,193,78,0)');ctx.fillStyle=eg;ctx.fillRect(ecx-cs*.6,ecy-cs*.6,cs*1.2,cs*1.2);

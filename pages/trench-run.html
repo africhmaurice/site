@@ -713,9 +713,9 @@
     var CR=Math.max(3,T*.18);ctx.lineWidth=Math.max(1,T*.04);
     for(var r=r0;r<=r1;r++)for(var c=0;c<COLS;c++)if(coins[r]&&coins[r][c]){
       var w=RM()?1:Math.cos(anim*3.2+c*.9+r*.55),aw=Math.max(.12,Math.abs(w)),x0=cx(c),y0=cx(r);
-      /* his Izzy coin in 3D (Maurice 10/17): 16 drawn frames of one half-turn in 77-coin-spin.png, played in a loop, one way,
+      /* his Izzy coin in 3D (Maurice 10/17): 32 drawn frames of one half-turn in 77-coin-spin.png (thin edge, slow spin; Maurice 10/17), played in a loop, one way,
          Izzy always upright. Each coin starts at its own point in the turn so the trench shimmers. */
-      if(ok(coinStrip)){var cd=Math.max(8,T*.42),fs=cd*220/150,ph=RM()?0:((anim*1.6+c*.37+r*.21)%1+1)%1,fi=Math.floor(ph*16)%16;ctx.drawImage(coinStrip,fi*128,0,128,128,x0-fs/2,y0-fs/2,fs,fs);continue;}
+      if(ok(coinStrip)){var cd=Math.max(8,T*.42),fs=cd*220/150,ph=RM()?0:((anim*.75+c*.37+r*.21)%1+1)%1,fi=Math.floor(ph*32)%32;ctx.drawImage(coinStrip,fi*128,0,128,128,x0-fs/2,y0-fs/2,fs,fs);continue;}
       if(ok(coinImg)){var cd2=Math.max(8,T*.42);ctx.drawImage(coinImg,x0-cd2/2,y0-cd2/2,cd2,cd2);        continue;}
       ctx.fillStyle=w>=0?'#f1d48a':'#d9ab4a';ctx.strokeStyle='#8a5a12';
       ctx.beginPath();ctx.ellipse(x0,y0,CR*aw,CR,0,0,Math.PI*2);ctx.fill();ctx.stroke();
