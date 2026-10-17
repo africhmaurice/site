@@ -1593,7 +1593,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       var best = Math.max(r.rune.roll, r.sparrow.roll), win = best > roll;
       var who = r.rune.roll > roll && r.sparrow.roll > roll ? 'Rune and Sparrow both beat' : r.rune.roll > roll ? 'Rune beats' : 'Sparrow beats';
       mark.className = 'cr-mark ' + (win ? 'win' : 'lose');
-      mark.innerHTML = '<b>' + (win ? 'WIN' : 'LOSE') + '</b><span>' + (win ? who + ' the Cerunines’ ' + roll + '. One Cerunine down!'
+      var before = 0; for (var k in fight) if (fight[k] && +k !== r.n) before++;
+      mark.innerHTML = '<b>' + (win ? 'WIN' : 'LOSE') + '</b><span>' + (win ? who + ' the Cerunines’ ' + roll + (before < 4 ? '. One Cerunine down!' : before === 4 ? '. That’s the fifth Cerunine down. The pack is finished!' : '. The pack is already finished, but the crew keeps swinging.')
         : 'The Cerunines’ ' + roll + (best === roll ? ' ties' : ' beats') + ' the crew’s best roll of ' + best + '.') + '</span>';
       el.classList.add('cr-done'); btn.textContent = 'WATCH IT AGAIN'; btn.disabled = false;
       fight[r.n] = win; fightScore();
