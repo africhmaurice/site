@@ -207,7 +207,7 @@ html,body{margin:0 !important;padding:0 !important;background:#0b170f !important
   }
   // A small gold coin: rim, face, inner ring, and a star stamp. squash < 1 makes it look like it is spinning.
   /* his Izzy coin in 3D (Maurice 10/17): 32 frames of one half-turn (thin edge, slow spin), 77-coin-spin.png; ph is where in the turn it is (none = face on) */
-  var coinStrip=new Image();coinStrip.src='https://africhmaurice.github.io/site/assets/games/77-coin-spin.png';
+  var coinStrip=new Image();coinStrip.src='https://africhmaurice.github.io/site/assets/games/77-coin-spin.png?v=32';
   function coin(cx,cy,r,squash,ph){
     if(coinStrip.complete&&coinStrip.naturalWidth){var fs=2*r*220/150,fi=ph==null?0:Math.floor((((ph%1)+1)%1)*32)%32;ctx.drawImage(coinStrip,fi*128,0,128,128,cx-fs/2,cy-fs/2,fs,fs);return;}
     ctx.save();ctx.translate(cx,cy);ctx.scale(Math.max(.15,squash),1);

@@ -312,7 +312,7 @@
   function pic(f,onload){var i=new Image();if(onload)i.onload=onload;i.src=ART+f;return i;}
   function ok(i){return i&&i.complete&&i.naturalWidth>0;}
   var boomImg=[pic('74-boom-1.png'),pic('74-boom-2.png'),pic('74-boom-3.png'),pic('74-boom-4.png')];
-  var coinStrip=pic('77-coin-spin.png'),coinImg=pic('77-coin.png'),cornerImg=pic('77-corner.png',function(){cacheWalls();draw();}),shotImg=pic('77-shot.png'),cannonImg=pic('77-cannon.png'),boostImg=pic('77-boost.png'),gateImg=pic('77-gate.png'),beamImg=pic('77-searchlight.png'),brassImg=pic('brass-point.png'),chestImg=pic('golden-chest.png'),crestImg=pic('80-crest.webp'),ballImg=pic('74-cannonball.png');
+  var coinStrip=pic('77-coin-spin.png?v=32'),coinImg=pic('77-coin.png'),cornerImg=pic('77-corner.png',function(){cacheWalls();draw();}),shotImg=pic('77-shot.png'),cannonImg=pic('77-cannon.png'),boostImg=pic('77-boost.png'),gateImg=pic('77-gate.png'),beamImg=pic('77-searchlight.png'),brassImg=pic('brass-point.png'),chestImg=pic('golden-chest.png'),crestImg=pic('80-crest.webp'),ballImg=pic('74-cannonball.png');
   var shipImg=pic('74-ship.png'),rivalImg=pic('74-rival.png'),rubyImg=pic('74-ruby.png'),wallImg=pic('77-wall.png',function(){cacheWalls();draw();});
   var tinted={};
   function tint(img,col,a){
