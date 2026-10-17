@@ -351,6 +351,9 @@
     var guard=0;
     while(distLeft>1e-9&&guard++<50){
       if(!e.dir[0]&&!e.dir[1]){decide(e);if(!e.dir[0]&&!e.dir[1])return;}
+      /* a hair off a tile center (rounding from a partial step) counts as being on it: snap there and decide first,
+         so a ship can never skip the wall check for a tile and slide into a wall (Maurice 10/17, reported on board 8-9) */
+      if(center(e.x)&&center(e.y)&&(e.x!==Math.round(e.x)||e.y!==Math.round(e.y))){e.x=Math.round(e.x);e.y=Math.round(e.y);decide(e);if(!e.dir[0]&&!e.dir[1])return;}
       var tx=e.dir[0]?(e.dir[0]>0?Math.floor(e.x+1e-6)+1:Math.ceil(e.x-1e-6)-1):e.x;
       var ty=e.dir[1]?(e.dir[1]>0?Math.floor(e.y+1e-6)+1:Math.ceil(e.y-1e-6)-1):e.y;
       if(center(e.x)&&center(e.y)){tx=e.x+e.dir[0];ty=e.y+e.dir[1];}
