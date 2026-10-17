@@ -945,3 +945,16 @@ var ArcadeCard = (function () {
   window.addEventListener('resize',function(){size();move();});
   size();move();setTimeout(function(){size();move();},800);
 })();</script>
+
+<style>.wk-champ{margin:0 0 14px;padding:12px 16px;border:1px solid rgba(255,76,15,.55);font-weight:700;font-size:15px;line-height:1.45;letter-spacing:.02em;color:#f3ead9;text-align:center}.wk-champ b{color:#ff4c0f;white-space:nowrap}.wk-wins{font-size:.7em;font-weight:800;color:#ff4c0f;margin-left:2px;vertical-align:super;line-height:0}</style>
+<script>
+// Weekly champions (Maurice, 2026-10-17): a banner for the reigning champion and, in the top right of each name
+// on the board, how many weekly boards that player has won. Data: the leaderboard site's champions.json.
+(function(){var GAME='runner',P='ar';var board=document.querySelector('.'+P+'-board');if(!board)return;var panel=board.parentNode,wins={};
+function key(n){return String(n||'').trim().toLowerCase();}
+function sup(n){var s=document.createElement('sup');s.className='wk-wins';s.title=n+(n===1?' weekly win':' weekly wins');s.textContent=n;return s;}
+function mark(){var s=board.querySelectorAll('li>span');for(var i=0;i<s.length;i++){if(s[i].querySelector('sup'))continue;var w=wins[key(s[i].textContent)];if(w)s[i].appendChild(sup(w));}}
+fetch('https://africhmaurice.github.io/leaderboard/champions.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.ok?r.json():null;}).then(function(d){var g=d&&d.games&&d.games[GAME];if(!g)return;wins=g.wins||{};var c=g.champion;
+if(c){var p=document.createElement('p');p.className='wk-champ';p.appendChild(document.createTextNode('Congrats to '));var b=document.createElement('b');b.textContent=c.name;var n=wins[key(c.key)];if(n)b.appendChild(sup(n));p.appendChild(b);p.appendChild(document.createTextNode(', the Current Reigning '+g.title+' Champion!'));panel.insertBefore(p,panel.firstChild);}
+mark();new MutationObserver(mark).observe(board,{childList:true,subtree:true});}).catch(function(){});})();
+</script>
