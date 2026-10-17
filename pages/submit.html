@@ -334,6 +334,8 @@ h1,h2,h3{text-wrap:balance}
       hint: 'A screenshot of your post (with the hashtags), or of all 3 comments. Hunt-related posts don\'t count for this task. 100 points, once per day, per account.' },
     { label: 'Fill Up the Sky Pirates of Imperia Subreddit With Content', send: 'Fill Up the Sky Pirates of Imperia Subreddit With Content', detail: 'Link to your post on r/SkyPiratesofImperia',
       hint: 'A screenshot of your post: a fan theory, fan cast, merch, meme, favorite line, speculation, or fan art. 100 points per post, one a day.' },
+    { label: 'Interact on the Sky Pirates of Imperia Reddit Board', send: 'Interact on the Sky Pirates of Imperia Reddit Board', detail: 'Your Reddit username', comments: true, noProof: true,
+      hint: "No screenshot needed. Type your Reddit username and how many comments you've made on r/SkyPiratesofImperia that haven't been paid yet. I check them on Reddit. 25 points per comment." },
     { label: "Review Cello's Gate on a Bookish Subreddit", send: "Review Cello's Gate on a Bookish Subreddit", detail: 'Link to your review (not on r/SkyPiratesofImperia)',
       hint: 'A screenshot of your honest review of Cello\'s Gate in a bookish subreddit. Any honest rating counts. 500 points.' },
     { label: 'Submit Fan Art', send: 'Submit Fan Art', media: true, hint: 'A PNG or JPEG of your fan art, or a video or audio file (MP4, MOV, MP3, M4A, WAV, up to 35 MB). 200 points per entry.' },
@@ -486,6 +488,7 @@ h1,h2,h3{text-wrap:balance}
       if (t && t.copies) extra = item('How many copies?', 'Each copy of Cello\'s Gate counts.', '<input type="number" id="sb-copies" min="1" max="20" value="1" inputmode="numeric">', 'sb-copies');
       if (t && t.items) extra = item('How many items?', 'Each item on the receipt counts.', '<input type="number" id="sb-copies" min="1" max="20" value="1" inputmode="numeric">', 'sb-copies');
       if (t && t.detail) extra = item(esc(t.detail), '', '<input type="text" id="sb-detail" autocomplete="off">', 'sb-detail');
+      if (t && t.comments) extra += item('How many comments?', '', '<input type="number" id="sb-copies" min="1" max="500" value="1" inputmode="numeric">', 'sb-copies');
       if (t && t.area) extra = item(esc(t.area), '', '<textarea id="sb-detail"></textarea>', 'sb-detail');
       if (t && t.pick) extra = item(esc(t.pick[0]), '', '<select id="sb-pick" class="empty"><option value="">Choose an option.</option>' +
         t.pick[1].map(function (p) { return '<option>' + p + '</option>'; }).join('') + '</select>', 'sb-pick');
@@ -611,6 +614,7 @@ h1,h2,h3{text-wrap:balance}
       if (!t) return (err.textContent = ERR.task);
       payload.task = t.send;
       if (t.copies || t.items) { var n = Math.max(1, Math.min(20, parseInt($('sb-copies').value, 10) || 1)); if (n > 1) payload.task += ' (' + n + (t.items ? ' items)' : ' copies)'); }
+      if (t.comments) { var c = Math.max(1, Math.min(500, parseInt($('sb-copies').value, 10) || 1)); payload.task += ' (' + c + (c === 1 ? ' comment)' : ' comments)'); }
       if (t.pick) { var p = $('sb-pick').value; if (!p) return (err.textContent = t.pick[0]); payload.task += ' (' + p + ')'; }
       if (t.pick2) { var p2 = $('sb-pick2').value; if (!p2) return (err.textContent = t.pick2[0]); payload.task += ' (' + p2 + ')'; }
       if (t.detail || t.area) { payload.details = $('sb-detail').value.trim(); if (!payload.details) return (err.textContent = t.detail || t.area); }
