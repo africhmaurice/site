@@ -359,7 +359,9 @@
       if(center(e.x)&&center(e.y)){tx=e.x+e.dir[0];ty=e.y+e.dir[1];}
       var dd=Math.abs(tx-e.x)+Math.abs(ty-e.y);
       if(distLeft>=dd){e.x=tx;e.y=ty;distLeft-=dd;decide(e);}
-      else{e.x+=e.dir[0]*distLeft;e.y+=e.dir[1]*distLeft;distLeft=0;}
+      else{e.x+=e.dir[0]*distLeft;e.y+=e.dir[1]*distLeft;distLeft=0;
+        /* a partial step can land right on a center by rounding; decide there too, or the wall check for that tile is skipped */
+        if(center(e.x)&&center(e.y)){e.x=Math.round(e.x);e.y=Math.round(e.y);decide(e);}}
     }
   }
   function playerDecide(e){
