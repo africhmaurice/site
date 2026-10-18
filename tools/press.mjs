@@ -170,7 +170,7 @@ const FACTS = [
   ['UK', 'Hodderscape · Hardback ISBN 9781399763073'],
   ['Audio', 'Simon Maverick · Narrated by Gary Furlong · November 3, 2026'],
   ['Editions', 'Walmart Special Edition (U.S.), Waterstones Exclusive (UK), and a signed Broken Binding edition that sold out in less than 48 hours.'],
-  ['Goodreads', '26,996 want to read · 4.28 average from 1,114 ratings and 426 reviews (October 14, 2026)'],
+  ['Goodreads', '27,451 want to read · 4.29 average from 1,126 ratings and 431 reviews (October 17, 2026)'],
   ['Home', 'Asheville, North Carolina'],
 ];
 
@@ -190,33 +190,33 @@ const HUNT_QUOTE = [
   'That’s why I built this treasure hunt. Because I thought it would be fun (which is a cornerstone of my brand), I thought it would help us sell a lot of books, and I thought, by the end of it, a lot more people would know my name. We’ll see, huh? If nothing else, I know we’re all having a pretty damn good time.',
 ];
 const HUNT_QUOTE_BY = 'Maurice Africh, Author of “Cello’s Gate”';
-const STATS_DATE = 'October 14, 2026';
+const STATS_DATE = 'October 17, 2026';
 // [group title, [[big number, what it means]], wide (spans the full row, two stats per line)]
 // The Headline Numbers are Maurice's own figures and order (2026-10-14).
 const HIGHLIGHTS = [
   ['The Headline Numbers', [
-    ['687', 'Treasure hunters (readers) from 16 countries.'],
+    ['766', 'Treasure hunters (readers) from 18 countries.'],
     ['12,052', 'Hunt tasks completed successfully, not counting unsuccessful attempts.'],
     ['924', 'Social posts about the hunt online.'],
-    ['17,139', 'Website visitors since the hunt began: +7,386%. About 745 visitors a day.'],
-    ['46,076', 'Website page views: +10,891% since the hunt began.'],
-    ['+3,096', 'Goodreads “want to read” adds: +12.1%.'],
-    ['+29%', 'Newsletter subscribers.'],
-    ['+56%', 'Discord members.'],
+    ['19,122', 'Website visitors since the hunt began: +7,015%. About 708 visitors a day.'],
+    ['55,773', 'Website page views: +11,233% since the hunt began.'],
+    ['+3,180', 'Goodreads “want to read” adds: +12.5%.'],
+    ['+32%', 'Newsletter subscribers.'],
+    ['+57%', 'Discord members.'],
     ['16,241', 'Discord messages posted during the hunt, +558% compared to the 24 days before the hunt.'],
-    ['+488', 'Instagram followers, up 3.2%.'],
+    ['+612', 'Instagram followers, up 4.0%.'],
   ], true],
-  // Rewards awarded = 16 digital rewards unlocked so far (Act One: The Blind Duel, Crew Dossier, phone background,
+  // Rewards awarded (Oct 17) = 18 digital rewards: the 16 below plus Trench Run and the 500K Club (Act Two 500k). Was 16 (Act One: The Blind Duel, Crew Dossier, phone background,
   // Sort the Shelf, Book Icons, Crossword, Trench Market, +50 New Loot Boxes, Golden Loot Box; Act Two: Blades & Brass,
   // Aura Color Search, Matching Auras, desktop background, Crest Quest, Airship Runner, Thread the Needle) x 687
   // hunters, plus 15 Act One sweepstakes winners (U.S., UK, and world wheels, 5 each).
   ['Readers Are Hooked', [
-    ['3,288', 'Loot boxes found.'],
-    ['1,679', 'Riddles solved.'],
-    ['3,998', 'Daily puzzle wins across 7 games.'],
-    ['655,395', 'Points earned by the crew together.'],
-    ['12,546', 'Sweepstakes entries.'],
-    ['11,007', 'Rewards awarded so far: 16 digital rewards unlocked for all 687 hunters, plus 15 sweepstakes winners.'],
+    ['3,817', 'Loot boxes found.'],
+    ['2,023', 'Riddles solved.'],
+    ['4,933', 'Daily puzzle wins across 7 games.'],
+    ['772,916', 'Points earned by the crew together.'],
+    ['15,133', 'Sweepstakes entries.'],
+    ['13,803', 'Rewards awarded so far: 18 digital rewards unlocked for all 766 hunters, plus 15 sweepstakes winners.'],
   ], true],
 ];
 // Title case for the stat lines (Maurice, 2026-10-14). Short joining words stay lowercase unless they start a phrase.
@@ -240,11 +240,11 @@ const HUNT_FACTS = [
   ['Dates', 'September 20 to November 1, 2026. It ends two days before “Cello’s Gate” comes out.'],
   ['Where', '<a href="https://www.mauriceafrich.com/the-hunt">mauriceafrich.com/the-hunt</a>'],
   ['Who', 'Free and open to everyone, everywhere. The Treasure is for U.S. and UK residents (three winners each), and the sweepstakes are for U.S. residents, with a UK prize draw coming soon. Prize winners must be 18 or older.'],
-  ['Players', '687 sky pirates from 16 countries: the U.S., the UK, Canada, Australia, India, Estonia, Germany, Ireland, Austria, Japan, Poland, Norway, Portugal, Spain, New Zealand, and Indonesia.'],
-  ['Traffic', '17,139 more website visitors (up 7,386%) and 46,076 more pageviews (up 10,891%) since the hunt started.'],
+  ['Players', '766 sky pirates from 18 countries: the U.S., the UK, Canada, Australia, India, Estonia, Germany, Ireland, Austria, Japan, Poland, Norway, Portugal, Spain, New Zealand, Indonesia, the Philippines, and Italy.'],
+  ['Traffic', '19,122 more website visitors (up 7,015%) and 55,773 more pageviews (up 11,233%) since the hunt started.'],
   ['Play', 'Tasks, riddles, clues, seven daily bookish games (including Skyword, Blades & Brass, and Crest Quest), 101 hidden loot boxes, and a fan art contest.'],
   ['Story', 'Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!'],
-  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 655,395 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two has passed 400,000, double its 200,000 goal.'],
+  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 772,916 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two finished at 505,425, more than double its 200,000 goal. Act Three opened October 16 with a 600,000 goal.'],
   ['Acts', 'Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1). Winners are announced the day after each act ends.'],
   ['Treasure', 'The top three on the U.S. and UK leaderboards win The Treasure: signed editions, art prints, custom bookmarks, enamel pins, an advance audiobook, and more.'],
 ];
