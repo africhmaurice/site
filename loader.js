@@ -83,7 +83,7 @@
   // 4. Images come from a copy of this site pinned to one publish, cached for a year (GitHub Pages only allows
   // 10 minutes, and every publish makes visitors download everything again). Anything newer than the pin
   // falls back to GitHub Pages by itself. tools/pin-assets.mjs moves the pin after a publish.
-  var PIN = 'df2ecee7285cf1a6b2d307c41289e5268ca05f47';
+  var PIN = 'e0129c0564108d82794bbcb1e0d6cc616c2a3a38';
   var GH = 'https://africhmaurice.github.io/site/', CDN = PIN ? 'https://cdn.jsdelivr.net/gh/africhmaurice/site@' + PIN + '/' : '';
   function cdn(u) { return CDN && u.indexOf(GH + 'assets/') === 0 ? CDN + u.slice(GH.length) : u; }
   function prep(html) {
@@ -435,6 +435,7 @@
       p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), a);
       p.insertBefore(actLink(SITE + '/act-one-winners', 'ACT ONE WINNERS'), a);   // the replayed draws (Maurice, 2026-10-02)
       p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), a);
+      p.insertBefore(actLink(SITE + '/act-two-winners', 'ACT TWO WINNERS'), a);   // the replayed Act Two draws (Maurice, 2026-10-19)
       p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-three', 'ACT THREE'), a);
       p.removeChild(a);
     });
