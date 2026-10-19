@@ -181,6 +181,22 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #hunt-nav-ov .mn-ovgroup a.mn-profile{background:#c1330a;border:1.5px solid #f3ead9;padding:9px 16px}
 @media (min-height:860px){#hunt-nav-ov{justify-content:center;padding-top:32px}}
 </style>
+<style>
+/* PHONE MENU BAR (Maurice, 2026-10-19): on phones the hunt menu was a lone menu icon with no bar, so once you scrolled it
+   sat on top of the cards. Now it is a solid green bar with the logo on the left and the icon on the right, like the
+   bar on the rest of the site. Also when the full menu doesn't fit and folds into the icon (mn-burgered). */
+@media (max-width:1100px){
+  html body #hunt-nav{display:flex!important;align-items:center;justify-content:space-between;gap:16px;background:#1a5e41!important;padding:12px 20px!important;box-shadow:0 2px 10px rgba(0,0,0,.35)}
+  html body #hunt-nav .mn-row,html body #hunt-nav.mn-burgered .mn-row{display:flex!important;flex:none;margin:0;gap:0}
+  html body #hunt-nav .mn-right{display:none!important}
+  html body #hunt-nav .mn-logo img{width:104px!important}
+  html body #hunt-nav .mn-burger{display:flex!important;margin:0}
+}
+html body #hunt-nav.mn-burgered{display:flex!important;align-items:center;justify-content:space-between;gap:16px;background:#1a5e41!important}
+html body #hunt-nav.mn-burgered .mn-row{display:flex!important;flex:none;margin:0;gap:0}
+html body #hunt-nav.mn-burgered .mn-right{display:none!important}
+html body #hunt-nav.mn-burgered .mn-burger{display:flex!important;margin:0}
+</style>
 <nav id="hunt-nav">
   <div class="mn-row">
     <a href="https://www.mauriceafrich.com" class="mn-logo" aria-label="Maurice Africh home"><img src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
@@ -1316,7 +1332,7 @@ var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw
           <div class="rw-item" data-pts="150000" style="color:#607667"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:20px;height:20px;vertical-align:-3px;margin-right:10px"><rect x="4" y="11" width="16" height="10"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>New Game: Sky Gauntlet<span class="rw-badge">UNLOCKED!</span></div>
           <div class="rw-item" data-pts="300000" style="color:#607667"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:20px;height:20px;vertical-align:-3px;margin-right:10px"><rect x="4" y="11" width="16" height="10"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Bonus Reward: “A Secret.”<span class="rw-badge">UNLOCKED!</span></div>
           <div class="rw-item" data-pts="450000" style="color:#607667"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:20px;height:20px;vertical-align:-3px;margin-right:10px"><rect x="4" y="11" width="16" height="10"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Bonus Reward: “A Secret.”<span class="rw-badge">UNLOCKED!</span></div>
-          <div id="rw3-sweep" class="rw-item" data-pts="600000" style="color:#607667"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:20px;height:20px;vertical-align:-3px;margin-right:10px"><rect x="4" y="11" width="16" height="10"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Act Three Sweepstakes<span class="rw-badge">UNLOCKED!</span></div>
+          <div id="rw3-sweep" class="rw-item" data-pts="600000" style="color:#607667"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:20px;height:20px;vertical-align:-3px;margin-right:10px"><rect x="4" y="11" width="16" height="10"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Act Three Sweepstakes: Signed Deluxe Edition of “Cello’s Gate” + Signed Walmart Exclusive Special Edition of “Cello’s Gate” + Enamel Pin of Your Choice + Walmart Exclusive Special Edition Art Print + Map Print + Trench Market Shirt (5 Winners)<span class="rw-badge">UNLOCKED!</span></div>
           <div id="rw3-uk" class="rw-item" data-pts="600000" style="display:none;color:#607667"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:20px;height:20px;vertical-align:-3px;margin-right:10px"><rect x="4" y="11" width="16" height="10"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Act Three Prize Draw (UK): UK Hardcover of “Cello’s Gate” + Sky Pirates T-Shirt + Crew Print + Map Postcard + Chibi Crew Stickers + Skull Stickers + Temporary Tattoos (3 Winners)<span class="rw-badge">UNLOCKED!</span></div>
         </div>
         <div style="font-family:'Almarai',sans-serif;font-size:16px;color:#111;text-align:center;margin-top:28px">*Every successful task completed will earn an entry into the Act Three sweepstakes!</div>
