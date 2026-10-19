@@ -177,7 +177,8 @@ const page = `<!-- ============================================================
 #ma-links .lk-edin b{display:flex;align-items:center;justify-content:center;min-height:3.9em;font-weight:800;font-size:clamp(13px,3.6vw,15px);line-height:1.3;letter-spacing:.06em;text-transform:uppercase;text-wrap:balance}
 #ma-links .lk-edin small{min-height:4.2em;font-weight:700;font-size:clamp(11px,3vw,12px);line-height:1.4;opacity:.85;text-wrap:balance}
 #ma-links .lk-edcta{margin-top:auto;padding:8px 14px;background:var(--green);color:var(--ink);font-weight:800;font-size:12px;line-height:1;letter-spacing:.1em;text-transform:uppercase}
-#ma-links .lk-edframe{border:1px solid var(--parch)}
+/* the square audiobook cover keeps a square box, so its border sits flush on the art */
+#ma-links .lk-edframe{box-sizing:border-box;border:1px solid var(--parch);width:min(100%,clamp(150px,40vw,190px));height:auto;aspect-ratio:1;object-fit:cover}
 #ma-links .lk-ed-out .lk-edimg{filter:grayscale(.75) brightness(.7) drop-shadow(0 10px 14px rgba(0,0,0,.6))}
 #ma-links .lk-ed-out .lk-edcta{background:rgba(255,255,254,.18);color:var(--parch)}
 #ma-links .lk-edstamp{position:absolute;top:58px;left:50%;transform:translateX(-50%) rotate(-12deg);padding:8px 14px;border:3px solid #fd7547;background:rgba(145,37,1,.9);color:var(--parch);font-family:'Atomic Marker',Impact,sans-serif;font-size:20px;line-height:1.2;letter-spacing:.06em;white-space:nowrap;pointer-events:none}
