@@ -56,15 +56,15 @@
     "id": "ed-saga-deluxe",
     "label": "Saga Deluxe Edition",
     "note": "U.S. Hardcover, Sprayed Edges, Map Endpapers",
-    "img": "../img/ed-deluxe.webp",
-    "open": "preorder",
+    "img": "../img/ed-deluxe-sm.webp",
+    "url": "https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834",
     "bg": "pin-03.jpg"
    },
    {
     "id": "ed-walmart",
     "label": "Walmart Exclusive Special Edition",
     "note": "New Cover, Bonus Brass Point Short Story",
-    "img": "../img/ed-walmart.webp",
+    "img": "../img/ed-walmart-sm.webp",
     "url": "https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704",
     "bg": "pin-04.jpg"
    },
@@ -72,7 +72,7 @@
     "id": "ed-hodderscape",
     "label": "Hodderscape Edition",
     "note": "UK Hardcover, Direct from My UK Publisher",
-    "img": "../img/ed-hodderscape.webp",
+    "img": "../img/ed-hodderscape-sm.webp",
     "url": "https://hodderscape.co.uk/products/cellos-gate",
     "bg": "pin-07.jpg"
    },
@@ -80,7 +80,7 @@
     "id": "ed-waterstones",
     "label": "Waterstones Exclusive Edition",
     "note": "UK Exclusive, Sprayed Edges and Endpapers",
-    "img": "../img/ed-waterstones.webp",
+    "img": "../img/ed-waterstones-sm.webp",
     "url": "https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227",
     "bg": "pin-10.jpg"
    },
@@ -88,10 +88,18 @@
     "id": "ed-broken-binding",
     "label": "Signed Broken Binding Edition",
     "note": "Signed, Foil Boards, Digital Edges",
-    "img": "../img/ed-broken-binding.webp",
+    "img": "../img/ed-broken-binding-sm.webp",
     "url": "https://thebrokenbindingsub.com/products/cellos-gate",
     "bg": "pin-11.jpg",
     "soldOut": true
+   },
+   {
+    "id": "ed-audiobook",
+    "label": "Audiobook Edition",
+    "note": "Narrated by Audie Award Winner Gary Furlong",
+    "img": "../img/ed-audiobook.webp",
+    "url": "https://r.amzlink.to/?btn_url=https%3A%2F%2Fwww.amazon.com%2FAudible-Cellos-Gate%2Fdp%2FB0GKZWW416%2Fref%3Dtmm_aud_swatch_0%3F_encoding%3DUTF8%26dib_tag%3Dse%26dib%3DeyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps%26qid%3D1770340593%26sr%3D8-1&btn_ref=org-433bb393e1b8b503",
+    "bg": "pin-13.jpg"
    }
   ]
  },
@@ -195,6 +203,7 @@
   {
    "id": "events",
    "title": "Launch Events",
+   "top": true,
    "layout": "two",
    "tone": "violet",
    "links": [

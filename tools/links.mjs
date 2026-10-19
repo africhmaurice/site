@@ -61,10 +61,14 @@ function tile(l, s) {
   return `<a class="lk-tile" href="${esc(l.url)}"${ext(l.url)} data-link="${l.id}" data-section="${s.id}" aria-label="${esc(l.label)}" title="${esc(l.label)}">${backing(l.bg, s.tone)}<span class="lk-tin">${inner}</span></a>`;
 }
 const promo = (l, s) => `<a class="lk-promo" href="${esc(l.url)}"${ext(l.url)} data-link="${l.id}" data-section="${s.id}" aria-label="${esc(l.label)}" title="${esc(l.label)}"><img src="${asset(l.promo)}" alt="${esc(l.label)}"${lazy}></a>`;
-const sections = D.sections.map((s) => `<section class="lk-sec" id="lk-${s.id}"><h2 class="lk-h">${esc(s.title)}</h2>`
+// a section with "top": true sits right under the editions row (Maurice, 10/15: the launch events
+// "beneath the new edition preorder links")
+const section = (s) => `<section class="lk-sec" id="lk-${s.id}"><h2 class="lk-h">${esc(s.title)}</h2>`
   + (s.badge ? `<img class="lk-badge" src="${asset(s.badge)}" alt=""${lazy}>` : '')
   + `<div class="lk-grid lk-${s.layout || 'three'}">${s.links.map((l) => tile(l, s)).join('')}</div>`
-  + (s.promo ? promo(s.promo, s) : '') + '</section>').join('\n');
+  + (s.promo ? promo(s.promo, s) : '') + '</section>';
+const sections = D.sections.filter((s) => !s.top).map(section).join('\n');
+const topSections = D.sections.filter((s) => s.top).map(section).join('\n');
 // the newsletter signup posts straight to the Kit form the /newsletter page uses
 const N = D.newsletter;
 const signup = `<form class="lk-news" data-kit="${N.form}" novalidate><h2 class="lk-h">${esc(N.title)}</h2>
@@ -189,6 +193,7 @@ const page = `<!-- ============================================================
     </header>
     ${excerptCard}
     ${editions}
+    ${topSections}
     ${copperCard}
     <div class="lk-feats">${feature}</div>
     ${signup}
