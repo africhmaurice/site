@@ -38,7 +38,7 @@ const copperCard = `<a class="lk-copper" href="${esc(C.url)}" data-link="${C.id}
 const E = D.editions;
 const edCard = (e) => {
   const body = `<span class="lk-edart" style="background-image:url('${bgUrl(e.bg)}')"></span><span class="lk-edov"></span>`
-    + `<span class="lk-edin"><img class="lk-edimg" src="${asset(e.img)}" alt=""><b>${esc(e.label)}</b><small>${esc(e.note)}</small>`
+    + `<span class="lk-edin"><img class="lk-edimg${e.frame ? ' lk-edframe' : ''}" src="${asset(e.img)}" alt=""><b>${esc(e.label)}</b><small>${esc(e.note)}</small>`
     + `<span class="lk-edcta">${e.soldOut ? 'Sold Out!' : 'Pre-Order'}</span></span>`
     + (e.soldOut ? '<span class="lk-edstamp" aria-hidden="true">Sold Out</span>' : '');
   const attrs = `class="lk-ed${e.soldOut ? ' lk-ed-out' : ''}" data-link="${e.id}" data-section="editions" aria-label="${esc(e.label)}${e.soldOut ? ' (Sold Out)' : ''}"`;
@@ -48,9 +48,10 @@ const editions = E ? `<section class="lk-eds" id="lk-editions"><h2 class="lk-h">
 
 // the art behind a tile and its brand-color wash
 const backing = (bg, tone) => `<span class="lk-bgimg" style="background-image:url('${bgUrl(bg)}')"></span><span class="lk-ov lk-ov-${tone}"></span>`;
+// 'spin' is a strip of 32 frames (one half-turn of the Izzy coin, the Fog Maze art), played as a loop (Maurice, 10/18).
 const feature = D.feature.map((f) => {
-  const inner = (f.img ? `<img class="lk-fimg" src="${asset(f.img)}" alt="">` : '') + `<span class="lk-flabel">${esc(f.label)}</span>`;
-  const attrs = `class="lk-tile lk-feat${f.img ? '' : ' lk-feat-text'}" data-link="${f.id}" data-section="buttons" aria-label="${esc(f.label)}"`;
+  const inner = (f.spin ? `<span class="lk-fimg lk-spin" style="background-image:url('${asset(f.spin)}')" aria-hidden="true"></span>` : f.img ? `<img class="lk-fimg" src="${asset(f.img)}" alt="">` : '') + `<span class="lk-flabel">${esc(f.label)}</span>`;
+  const attrs = `class="lk-tile lk-feat${f.img || f.spin ? '' : ' lk-feat-text'}" data-link="${f.id}" data-section="buttons" aria-label="${esc(f.label)}"`;
   const body = `${backing(f.bg, f.tone)}<span class="lk-tin">${inner}</span>`;
   return f.open ? `<button type="button" ${attrs} data-open="${f.open}">${body}</button>` : `<a href="${esc(f.url)}"${ext(f.url)} ${attrs}>${body}</a>`;
 }).join('');
@@ -136,6 +137,8 @@ const page = `<!-- ============================================================
 #ma-links .lk-feat .lk-tin{justify-content:flex-end;gap:8px;padding:10px}
 #ma-links .lk-feat-text .lk-tin{justify-content:center}
 #ma-links .lk-fimg{display:block;flex:1;min-height:0;max-width:92%;width:auto;object-fit:contain;filter:drop-shadow(0 6px 12px rgba(0,0,0,.5))}
+#ma-links .lk-spin{--s:118px;flex:none;width:var(--s);height:var(--s);max-width:none;background-repeat:no-repeat;background-size:calc(var(--s) * 32) var(--s);background-position:0 0;animation:lk-spin 1.6s steps(32) infinite}
+@keyframes lk-spin{to{background-position:calc(var(--s) * -32) 0}}
 #ma-links .lk-flabel{font-weight:800;font-size:clamp(11px,3.3vw,15px);line-height:1.3;letter-spacing:.06em;text-transform:uppercase;text-wrap:balance;text-shadow:0 2px 8px rgba(0,0,0,.55)}
 #ma-links .lk-feat-text .lk-flabel{font-size:clamp(13px,4vw,18px)}
 /* phones: the three big tiles stack as wide rows, picture beside the words */
@@ -144,6 +147,7 @@ const page = `<!-- ============================================================
   #ma-links .lk-feat{aspect-ratio:auto;height:128px}
   #ma-links .lk-feat .lk-tin,#ma-links .lk-feat-text .lk-tin{flex-direction:row;justify-content:center;gap:14px;padding:24px}
   #ma-links .lk-fimg{flex:none;height:64px;max-width:22%}
+  #ma-links .lk-spin{--s:72px;max-width:none}
   #ma-links .lk-flabel,#ma-links .lk-feat-text .lk-flabel{font-size:clamp(12px,3.7vw,17px);text-align:left;white-space:nowrap;letter-spacing:.02em}
   #ma-links .lk-feat-text .lk-flabel{text-align:center}
 }
@@ -173,14 +177,19 @@ const page = `<!-- ============================================================
 #ma-links .lk-edin b{display:flex;align-items:center;justify-content:center;min-height:3.9em;font-weight:800;font-size:clamp(13px,3.6vw,15px);line-height:1.3;letter-spacing:.06em;text-transform:uppercase;text-wrap:balance}
 #ma-links .lk-edin small{min-height:4.2em;font-weight:700;font-size:clamp(11px,3vw,12px);line-height:1.4;opacity:.85;text-wrap:balance}
 #ma-links .lk-edcta{margin-top:auto;padding:8px 14px;background:var(--green);color:var(--ink);font-weight:800;font-size:12px;line-height:1;letter-spacing:.1em;text-transform:uppercase}
+#ma-links .lk-edframe{border:1px solid var(--parch)}
 #ma-links .lk-ed-out .lk-edimg{filter:grayscale(.75) brightness(.7) drop-shadow(0 10px 14px rgba(0,0,0,.6))}
 #ma-links .lk-ed-out .lk-edcta{background:rgba(255,255,254,.18);color:var(--parch)}
 #ma-links .lk-edstamp{position:absolute;top:58px;left:50%;transform:translateX(-50%) rotate(-12deg);padding:8px 14px;border:3px solid #fd7547;background:rgba(145,37,1,.9);color:var(--parch);font-family:'Atomic Marker',Impact,sans-serif;font-size:20px;line-height:1.2;letter-spacing:.06em;white-space:nowrap;pointer-events:none}
 #ma-links .lk-quiet{display:block;width:28px;height:28px;margin:4px auto 0;opacity:.35;transition:opacity .15s ease,transform .15s ease}
 #ma-links .lk-quiet img{display:block;width:100%;height:100%;object-fit:contain}
 #ma-links .lk-quiet:hover{opacity:1;transform:scale(1.15)}
+/* his logo in Parchment at the very bottom (Maurice, 10/18) */
+#ma-links .lk-flogo{display:block;width:min(48vw,180px);margin:0 auto;opacity:.92;transition:opacity .15s ease}
+#ma-links .lk-flogo img{display:block;width:100%;height:auto}
+#ma-links .lk-flogo:hover{opacity:1}
 #ma-links .lk-foot{margin:0;text-align:center;font-size:13px;letter-spacing:.06em;color:var(--moss)!important}
-@media (prefers-reduced-motion:reduce){#ma-links .lk-ed,#ma-links .lk-tile,#ma-links .lk-copper,#ma-links .lk-soc,#ma-links .lk-promo,#ma-links .lk-quiet{transition:none}}
+@media (prefers-reduced-motion:reduce){#ma-links .lk-spin{animation:none}#ma-links .lk-ed,#ma-links .lk-tile,#ma-links .lk-copper,#ma-links .lk-soc,#ma-links .lk-promo,#ma-links .lk-quiet{transition:none}}
 </style>
 <div id="ma-links">
   <div class="lk-sky" aria-hidden="true"></div><div class="lk-wash" aria-hidden="true"></div>
@@ -202,6 +211,7 @@ ${sections}
     </div>
     <a class="lk-quiet" href="${esc(D.quiet.url)}" data-link="${D.quiet.id}" data-section="quiet" aria-label="${esc(D.quiet.label)}" title="${esc(D.quiet.label)}"><img src="${asset(D.quiet.icon)}" alt=""${lazy}></a>
     <p class="lk-foot">mauriceafrich.com</p>
+    <a class="lk-flogo" href="https://www.mauriceafrich.com/" data-link="footer-logo" data-section="footer" aria-label="Maurice Africh"><img src="${BASE}assets/img/logo-2026-white.webp" alt="Maurice Africh" width="640" height="396"${lazy}></a>
   </div>
 </div>
 <script>

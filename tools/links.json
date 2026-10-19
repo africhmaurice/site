@@ -99,7 +99,8 @@
     "note": "Narrated by Audie Award Winner Gary Furlong",
     "img": "../img/ed-audiobook.webp",
     "url": "https://r.amzlink.to/?btn_url=https%3A%2F%2Fwww.amazon.com%2FAudible-Cellos-Gate%2Fdp%2FB0GKZWW416%2Fref%3Dtmm_aud_swatch_0%3F_encoding%3DUTF8%26dib_tag%3Dse%26dib%3DeyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps%26qid%3D1770340593%26sr%3D8-1&btn_ref=org-433bb393e1b8b503",
-    "bg": "pin-13.jpg"
+    "bg": "pin-13.jpg",
+    "frame": true
    }
   ]
  },
@@ -125,7 +126,7 @@
    "url": "https://www.mauriceafrich.com/the-hunt",
    "tone": "green",
    "bg": "art-world-map.jpg",
-   "img": "../img/golden-loot-box.webp"
+   "spin": "../games/77-coin-spin.png"
   },
   {
    "id": "discord",
