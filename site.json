@@ -201,6 +201,12 @@
       "source": "bot:squarespace-fight.html"
     },
     {
+      "slug": "the-reunion",
+      "url": "/the-reunion",
+      "title": "The Reunion Vote (Chapter 10, on the riverbank)",
+      "source": "bot:squarespace-reunion.html"
+    },
+    {
       "slug": "adventure",
       "url": "/adventure",
       "title": "The Adventure So Far (every Choose Your Own Adventure beat)",
