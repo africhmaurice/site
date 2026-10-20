@@ -200,6 +200,108 @@
         <p class="sgb-count">Board closes in <span class="sgb-left">...</span></p>
         <ol class="sgb-board"><li><span class="sgb-empty">Loading the board...</span></li></ol>
       </div>
+      <!-- SKY GAUNTLET GUIDE (Maurice 2026-10-20: "a guide that explains what everything is, including the weapon level and hull
+           durability"). DRAFT copy. Every number here comes from the game code: KIND, TIERS, MISS, DROPS, HULL, waveCfg. -->
+      <style>
+      #ma-gauntlet .sgk{width:min(100%,760px);box-sizing:border-box;margin:24px auto 0;background:#132219;border:2px solid rgba(243,234,217,.18);padding:24px;display:flex;flex-direction:column;gap:20px;text-align:left}
+      #ma-gauntlet .sgk h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(24px,2.4vw,30px);line-height:1.2;letter-spacing:.03em;color:#89fbcb}
+      #ma-gauntlet .sgk-sec{display:flex;flex-direction:column;gap:12px;min-width:0}
+      #ma-gauntlet .sgk-sec+.sgk-sec,#ma-gauntlet .sgk-cols,#ma-gauntlet .sgk-cols+.sgk-sec{padding-top:20px;border-top:1px solid rgba(243,234,217,.18)}
+#ma-gauntlet .sgk-cols .sgk-sec{padding-top:0;border-top:0}
+#ma-gauntlet .sgk-cols .sgk-sec .sgk-h+ul{margin-top:0}#ma-gauntlet .sgk-cols ul+.sgk-h{margin-top:12px}
+      #ma-gauntlet .sgk-h{margin:0;font-weight:800;font-size:13px;line-height:1.3;letter-spacing:.12em;text-transform:uppercase;color:#c3a6ff}
+      #ma-gauntlet .sgk-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+      #ma-gauntlet .sgk ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+      #ma-gauntlet .sgk li{display:flex;align-items:center;gap:14px;min-width:0}
+      #ma-gauntlet .sgk-i{position:relative;flex:0 0 52px;width:52px;height:48px;display:flex;align-items:center;justify-content:center}
+      #ma-gauntlet .sgk-i img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+      #ma-gauntlet .sgk-i.g img{filter:drop-shadow(0 0 7px rgba(var(--g),.85))}
+      #ma-gauntlet .sgk-i.ring::after{content:'';position:absolute;inset:3px;border:3px solid #89fbcb;border-radius:50%;border-right-color:transparent}
+      #ma-gauntlet .sgk-i .plus{position:absolute;font-weight:800;font-size:15px;color:#fffffe;-webkit-text-stroke:3px #0b170f;paint-order:stroke fill}
+      #ma-gauntlet .sgk-t{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:14px;line-height:1.45;color:#f3ead9}
+      #ma-gauntlet .sgk-t b{font-weight:800;font-size:15px;color:#fffffe}
+      #ma-gauntlet .sgk p{margin:0;font-size:14px;line-height:1.55;color:#f3ead9}
+      #ma-gauntlet .sgk p b{color:#fffffe}
+      #ma-gauntlet .sgk ul.sgk-lv{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+      #ma-gauntlet .sgk ul.sgk-lv li{flex-direction:column;align-items:flex-start;gap:4px;padding:10px;border:1px solid rgba(243,234,217,.18);font-size:13px;line-height:1.4;color:#f3ead9}
+      #ma-gauntlet .sgk-lv b{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#89fbcb}
+      #ma-gauntlet .sgk ul.sgk-tiers{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0;padding:0;list-style:none}
+      #ma-gauntlet .sgk ul.sgk-tiers li{gap:8px;font-size:13px;line-height:1.4;color:#f3ead9}
+      #ma-gauntlet .sgk-tiers i{flex:none;width:14px;height:14px;border:1px solid rgba(243,234,217,.6)}
+      @media (max-width:640px){#ma-gauntlet .sgk-cols{grid-template-columns:minmax(0,1fr)}#ma-gauntlet .sgk ul.sgk-lv{grid-template-columns:repeat(2,minmax(0,1fr))}#ma-gauntlet .sgk{padding:20px}}
+      </style>
+      <section class="sgk" aria-label="Sky Gauntlet guide">
+        <h2>How it works</h2>
+        <div class="sgk-sec">
+          <p class="sgk-h">Your airship</p>
+          <ul>
+            <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Your cannons never stop firing.</b>Fly anywhere in the lower part of the sky: arrows or WASD, or follow with the mouse or your finger. P or Esc pauses. You start with 3 lives.</span></li>
+          </ul>
+        </div>
+        <div class="sgk-sec">
+          <p class="sgk-h">Weapon level and hull</p>
+          <ul>
+            <li><span class="sgk-i g" style="--g:255,255,254"><img src="https://africhmaurice.github.io/site/assets/games/80-crest.webp" alt="" loading="lazy"></span><span class="sgk-t"><b>Mark of the Crest</b>Every crest you catch counts toward two upgrades that last the whole run. The top-left corner shows both, and how many crests you need for the next one.</span></li>
+          </ul>
+          <p><b>Weapon level.</b> More crests, better missiles:</p>
+          <ul class="sgk-lv">
+            <li><b>Level 1</b>Start. A thin bolt.</li>
+            <li><b>Level 2</b>2 crests. Chevrons, faster.</li>
+            <li><b>Level 3</b>4 crests. Fire darts, twice the damage.</li>
+            <li><b>Level 4</b>8 crests. Spinners, twice the damage, and they go through a ship.</li>
+            <li><b>Level 5</b>16 crests. A beam that burns whatever is above you.</li>
+          </ul>
+          <p><b>Hull durability.</b> Crests toughen your hull too, at twice the count: with 4 crests each life takes 2 hits, with 8 it takes 3, with 16 it takes 4, and it keeps doubling from there. Each hit costs one point of hull, the last one costs a life, and your hull refills for the next life.</p>
+        </div>
+        <div class="sgk-cols">
+          <div class="sgk-sec">
+            <p class="sgk-h">Grab these</p>
+            <ul>
+              <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Ruby</b>+250 points.</span></li>
+              <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/golden-chest.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Golden chest</b>+25 hunt points on the leaderboard, up to 4 a day.</span></li>
+              <li><span class="sgk-i g" style="--g:255,230,90"><img src="https://africhmaurice.github.io/site/assets/games/78-bolt.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Speed boost</b>Faster firing and faster flying for 10 seconds.</span></li>
+              <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/brass-point.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Brass Point</b>One more missile in every volley for 10 seconds.</span></li>
+              <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/swords.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Twin Torches</b>Slashes fly out to both sides and bounce off the walls for 10 seconds.</span></li>
+              <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/78-shield.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Shield</b>Blocks one hit. You can hold two.</span></li>
+              <li><span class="sgk-i g ring" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/78-shield.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Recharging shield</b>Blocks a hit, then comes back 12 seconds later, for the rest of that life.</span></li>
+              <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"><span class="plus">+1</span></span><span class="sgk-t"><b>+1 life</b>One more life, up to 6.</span></li>
+            </ul>
+            <p class="sgk-h">Specials, from wave 3</p>
+            <ul>
+              <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/78-scythe.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Scythe</b>A red slash sweeps up the sky and cuts down what it touches.</span></li>
+              <li><span class="sgk-i g" style="--g:255,255,254"><img src="https://africhmaurice.github.io/site/assets/games/trench-emblem.webp" alt="" loading="lazy"></span><span class="sgk-t"><b>Wave of energy</b>A ring of energy rings out from your ship: 2 hits to every ship it passes, and it clears the cannonballs it touches.</span></li>
+              <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/78-atomic.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Red atomic</b>3 hits to every ship on screen, and every cannonball is gone.</span></li>
+            </ul>
+          </div>
+          <div class="sgk-sec">
+            <p class="sgk-h">Dodge these</p>
+            <ul>
+              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-rival.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Rival ships</b>They loop around, swoop down at you, and drop cannonballs. 100 points a hit to sink one, 200 if it is diving.</span></li>
+            </ul>
+            <ul class="sgk-tiers" aria-label="Rival colors">
+              <li><i style="background:#3adb97"></i>Teal: 2 hits, wave 3+</li>
+              <li><i style="background:#57bb41"></i>Green: 3 hits, wave 10+</li>
+              <li><i style="background:#f3ead9"></i>Parchment: 4 hits, wave 15+</li>
+              <li><i style="background:#0b170f"></i>Ink: 5 hits, wave 20+</li>
+              <li><i style="background:#f1d48a"></i>Gold: 10 hits, wave 25+</li>
+            </ul>
+            <ul>
+              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-gunboat.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Gunboat</b>Crosses from the side, firing darts at you. 300 points.</span></li>
+              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-dart.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Dart</b>Dives straight at you from above, and from below too. 150 points.</span></li>
+              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-mine-layer.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Mine-layer</b>Crosses the top, dropping mines. Shoot the mines too. 400 points, 25 a mine.</span></li>
+              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-freighter.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Freighter</b>Slow and tough, 8 hits, and it bursts into 4 rubies. 800 points.</span></li>
+              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-flagship.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Destroyer</b>Every 5th wave. A boss with a hull bar that fires fans of darts. 5,000 points, and it drops a crest.</span></li>
+              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-lightning.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Lightning and wind</b>From wave 6, a flashing stripe warns where lightning will strike. From wave 8, gusts of wind push your ship.</span></li>
+            </ul>
+            <p>Tough ships get angry at half hull: faster, with a Scarlet glow.</p>
+          </div>
+        </div>
+        <div class="sgk-sec">
+          <p class="sgk-h">Scoring and the loot box</p>
+          <p>Every ship you sink adds its points, and clearing a wave adds 250 times the wave number. Survive 25 waves and loot box 78 floats down. Fly into it to claim it. The top score at 11:59 PM ET every Friday wins 500 hunt points.</p>
+        </div>
+      </section>
+      <!-- /SKY GAUNTLET GUIDE -->
     </div>
   </div>
 </section>
@@ -219,7 +321,7 @@
   function pic(f){var i=new Image();i.src=ART+f;return i;}
   function ok(i){return i&&i.complete&&i.naturalWidth>0;}
   var IMG={bolt:pic('78-bolt.png'),shield:pic('78-shield.png'),ship:pic('74-ship.png'),rival:pic('74-rival.png'),ball:pic('74-cannonball.png'),ruby:pic('74-ruby.png'),crate:pic('golden-chest.png'),crest:pic('80-crest.webp'),trench:pic('trench-emblem.webp'),scythe:pic('78-scythe.png'),atomic:pic('78-atomic.png'),miss:[1,2,3,4,5].map(function(n){return pic('78-missile-'+n+'.png');}),brass:pic('brass-point.png'),torch:pic('swords.png'),sky:pic('74-sky.webp'),
-    /* Maurice's new fleet (10/16) */gunboat:pic('78-gunboat.png'),dart:pic('78-dart.png'),layer:pic('78-mine-layer.png'),mine:pic('78-mine.png'),freighter:pic('78-freighter.png'),flagship:pic('78-flagship.png'),arrow:pic('78-dart-shot.png'),torchSlash:pic('78-torch-slash.png'),scytheSlash:pic('78-scythe-slash.png'),lightning:pic('76-lightning.png'),
+    /* Maurice's new fleet (10/16) */gunboat:pic('78-gunboat.png'),dart:pic('78-dart.png'),layer:pic('78-mine-layer.png'),mine:pic('78-mine.png'),freighter:pic('78-freighter.png'),flagship:pic('78-flagship.png'),arrow:pic('78-dart-shot.png'),torchSlash:pic('78-torch-slash.png'),scytheSlash:pic('78-scythe-slash.png'),lightning:pic('78-lightning.png'),
     boom:[pic('74-boom-1.png'),pic('74-boom-2.png'),pic('74-boom-3.png'),pic('74-boom-4.png')]};
   var boxImg=new Image();boxImg.src='https://africhmaurice.github.io/leaderboard/loot/78.png';
   var tinted={};
@@ -298,7 +400,7 @@
     else{q('gunboat',Math.min(4,1+Math.floor(n/2)));if(n>=2)q('dart',Math.min(9,1+n));if(n>=3)q('layer',Math.min(3,Math.floor((n)/3)));if(n>=4&&n%2===0)q('freighter',1);}
     S.queue.sort(function(a,b){return a.at-b.at;});S.qt=0;
     S.diveT=2.2;S.shootT=1.6;
-    S.banner=n%5===0?'Flagship!':'Wave '+S.wave;S.bannerT=1.6;hud();say('Wave '+S.wave);
+    S.banner=n%5===0?'Destroyer!':'Wave '+S.wave;S.bannerT=1.6;hud();say('Wave '+S.wave);
   }
 
   /* ---- the new fleet: sizes, toughness, points ---- */
@@ -366,7 +468,7 @@
   function kill(f){
     var pts=f.kind?KIND[f.kind].pts:(f.mode==='dive'?200:100)*f.max;S.score+=pts;S.kills++;hud();
     if(f.kind==='freighter'){for(var fz=0;fz<4;fz++)S.drops.push({x:f.x+(fz-1.5)*18,y:f.y,kind:'ruby'});}
-    if(f.kind==='flagship'){S.boss=null;boom(f.x,f.y,260);S.drops.push({x:f.x-40,y:f.y,kind:'crest'},{x:f.x,y:f.y,kind:pickDrop()},{x:f.x+40,y:f.y,kind:pickDrop()});S.banner='Flagship down!';S.bannerT=1.6;}
+    if(f.kind==='flagship'){S.boss=null;boom(f.x,f.y,260);S.drops.push({x:f.x-40,y:f.y,kind:'crest'},{x:f.x,y:f.y,kind:pickDrop()},{x:f.x+40,y:f.y,kind:pickDrop()});S.banner='Destroyer down!';S.bannerT=1.6;}
     if(f.kind==='mine')return;
     S.pops.push({x:f.x,y:f.y,txt:'+'+pts,t:.8});boom(f.x,f.y,64);
     var last=S.foes.length<=1;
@@ -720,13 +822,13 @@
     /* rival fleet: they point down; each color is tinted from his rival art; ink ships get a pale outline glow so they show on the night sky */
     /* storm lane: a warning stripe, then his lightning */
     if(S.storm){var st=S.storm;if(st.t<1.1){if(RM()||Math.floor(st.t*8)%2===0){ctx.fillStyle='rgba(255,230,90,.16)';ctx.fillRect(st.x-st.w/2,0,st.w,H);ctx.strokeStyle='rgba(255,230,90,.6)';ctx.lineWidth=2;ctx.strokeRect(st.x-st.w/2,0,st.w,H);}}
-      else if(st.t<1.4){if(ok(IMG.lightning)){var lh=H,lw=lh*IMG.lightning.naturalWidth/IMG.lightning.naturalHeight;ctx.drawImage(IMG.lightning,st.x-lw/2,0,lw,lh);}else{ctx.fillStyle='rgba(255,255,220,.85)';ctx.fillRect(st.x-st.w/4,0,st.w/2,H);}}}
+      else if(st.t<1.4){if(ok(IMG.lightning)){var lh=H,lw=lh*IMG.lightning.naturalWidth/IMG.lightning.naturalHeight;ctx.save();ctx.shadowColor='rgba(200,190,255,.9)';ctx.shadowBlur=18;ctx.drawImage(IMG.lightning,st.x-lw*.885,0,lw,lh);ctx.restore();}   /* Maurice 10/20: his white bolt (cut from the Pexels photo); its tip (88% across) lands on the warning stripe */else{ctx.fillStyle='rgba(255,255,220,.85)';ctx.fillRect(st.x-st.w/4,0,st.w/2,H);}}}
     /* wind: streaks across the sky while a gust blows */
     if(S.wind>0){ctx.strokeStyle='rgba(243,234,217,.35)';ctx.lineWidth=2;for(var ws=0;ws<18;ws++){var wy=(ws*41+S.t*30)%H,wx=((ws*97)+S.t*S.windV*3)%(W+120);if(wx<0)wx+=W+120;ctx.beginPath();ctx.moveTo(wx-60,wy);ctx.lineTo(wx-60+(S.windV>0?50:-50),wy);ctx.stroke();}}
     /* the new fleet, his drawings; a hit flashes them white; angry ships glow Scarlet */
     S.foes.forEach(function(f){if(!f.kind)return;var im={gunboat:IMG.gunboat,dart:IMG.dart,layer:IMG.layer,mine:IMG.mine,freighter:IMG.freighter,flagship:IMG.flagship}[f.kind];
       ctx.save();if(f.angry&&!RM()){ctx.shadowColor='rgba(255,76,15,.9)';ctx.shadowBlur=14;}if(f.kind==='flagship'){ctx.shadowColor='rgba(195,166,255,.95)';ctx.shadowBlur=18;}
-      if(ok(im))sprite(im,f.x,f.y,f.w,f.ang,f.flash>0?.55:1);else{ctx.fillStyle='#7b4ee1';ctx.fillRect(f.x-f.hw,f.y-f.hh,f.hw*2,f.hh*2);}ctx.restore();});
+      if(ok(im))sprite(im,f.x,f.y,f.w,f.kind==='flagship'?f.ang+Math.PI:f.ang,f.flash>0?.55:1);   /* the Destroyer flipped to match his drawing, wide base down (Maurice 10/20) */else{ctx.fillStyle='#7b4ee1';ctx.fillRect(f.x-f.hw,f.y-f.hh,f.hw*2,f.hh*2);}ctx.restore();});
     /* his dart arrows, pointing the way they fly */
     S.arrows.forEach(function(a){var ai=solidOf(IMG.arrow,'#f3ead9');if(ai){ctx.save();ctx.translate(a.x,a.y);ctx.rotate(Math.atan2(a.vy,a.vx)-Math.PI/2);var ah=28,aw2=ah*ai.width/ai.height;
       ctx.shadowColor='rgba(255,76,15,.9)';ctx.shadowBlur=8;ctx.drawImage(ai,-aw2/2,-ah/2,aw2,ah);ctx.restore();}else{ctx.fillStyle='#fffffe';ctx.fillRect(a.x-2,a.y-8,4,16);}});
@@ -801,7 +903,7 @@
   /* test hooks, only when the preview harness sets window.__siegeTest before the page loads */
   if(window.__siegeTest){
     window.__siege={launch:function(k){launch(k);},kinds:function(){return S.foes.map(function(f){return f.kind||'rival';});},queue:function(){return S.queue.length;},storm:function(){S.wave=Math.max(S.wave,8);S.stormT=0;S.windT=0;},fpos:function(){return S.foes.map(function(f){return [Math.round(f.x),Math.round(f.y),f.mode];});},snap:function(){return S&&{state:state,score:S.score,wave:S.wave,lives:S.lives,foes:S.foes.length,crests:S.crests,level:level(),shields:S.shields,crates:S.crates,temp:S.temp,drops:S.drops.length,boxOut:!!S.boxOut,x:S.x};},
-      tiers:function(){return S.foes.map(function(f){return f.tier+':'+f.max;});},mix:function(w){return mixFor(w);},clearWave:function(){S.foes=[];},toWave:function(n){S.wave=n-1;S.foes=[];S.queue=[];S.boss=null;},god:function(){S.inv=1e9;},hit:function(){S.inv=0;hitPlayer();},tick:function(sec){S.rs&&!S.rs.up&&(S.rs.t-=sec);},hull:function(){return {hull:S.hull,max:hullMax(),rs:S.rs&&{up:S.rs.up,t:Math.round(S.rs.t*10)/10},lives:S.lives};},give:function(k){collect(k,S.x,PY);},crests:function(n){S.crests=n;},
+      tiers:function(){return S.foes.map(function(f){return f.tier+':'+f.max;});},mix:function(w){return mixFor(w);},clearWave:function(){S.foes=[];},toWave:function(n){S.wave=n-1;S.foes=[];S.queue=[];S.boss=null;},god:function(){S.inv=1e9;},hit:function(){S.inv=0;hitPlayer();},strike:function(x){S.storm={x:x||W*.6,w:64,t:1.12,hit:1};S.stormT=99;},tick:function(sec){S.rs&&!S.rs.up&&(S.rs.t-=sec);},hull:function(){return {hull:S.hull,max:hullMax(),rs:S.rs&&{up:S.rs.up,t:Math.round(S.rs.t*10)/10},lives:S.lives};},give:function(k){collect(k,S.x,PY);},crests:function(n){S.crests=n;},
       level:function(n){S.crests=CRESTS[n];},special:function(k){S.drops.push({x:S.x,y:PY-40,kind:k});},rate:function(w){return dropRate(w);},drops:function(){var ks=Object.keys(DROPS);ks.forEach(function(k,i){S.drops.push({x:50+(i%5)*95,y:200+Math.floor(i/5)*110,kind:k});});},boxOut:function(){return !!S.boxOut;},paused:function(){return paused;},full:function(){return {t:S.t,x:S.x,y:S.y,qt:S.qt,sky:skyY,foes:S.foes.map(function(f){return [f.x,f.y];})};},grabBox:function(){if(S.boxOut){S.boxOut.y=PY;S.x=S.boxOut.x;S.target=S.boxOut.x;}}};
   }
 })();
