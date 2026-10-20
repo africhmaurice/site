@@ -105,7 +105,7 @@
   <div class="st-head">
     <p class="st-eye">Loot Box 79</p>
     <h1 class="st-h1">Find the Constellations</h1>
-    <p class="st-how">Find each constellation in the list below and draw it yourself: tap its stars to connect them, then press Check. Get at least 90% of its stars and it's charted.</p>
+    <p class="st-how">Find each constellation in the list below and draw it yourself: tap its stars to connect them, then press Check. Get at least 90% of its stars and it's charted. Wrong star? Drag it onto the right one, or into empty sky to take it out.</p>
   </div>
   <div class="st-resume" hidden role="region" aria-label="Saved game"><p class="st-rtext"></p><div class="st-rbtns"><button class="st-btn st-rgo solid" type="button">Continue</button><button class="st-btn st-rnew" type="button">Start over</button></div></div>
   <div class="st-sky" role="application" aria-label="Night sky. Tap stars to connect them, then press Check."><canvas></canvas></div>
@@ -135,7 +135,7 @@
   var SECRET={id:'secret-loot',name:'The Loot Box',secret:true,points:[[0.08,0.95],[0.92,0.95],[0.92,0.52],[0.86,0.3],[0.7,0.14],[0.5,0.09],[0.3,0.14],[0.14,0.3],[0.08,0.52],[0.5,0.62]],
     links:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,0],[8,2],[5,9]]};
   var ALL=SHAPES.concat([SECRET]);
-  var MSG={charted:'Charted: ',again:'You already charted that one.',close:'So close. Check the stars you missed.',none:'That isn\u2019t one of the constellations. Try again.',few:'Connect a few more stars first.',extra:'Close, but some of those stars aren’t part of it.',
+  var MSG={charted:'Charted: ',again:'You already charted that one.',close:'So close. Check the stars you missed.',none:'That isn\u2019t one of the constellations. Try again.',few:'Connect a few more stars first.',removed:'Star taken out. Undo puts it back.',extra:'Close, but some of those stars aren’t part of it.',
     secret:'All ten charted. A tenth constellation is hiding in the sky.',locked:'That one stays hidden until the other ten are charted.',all:'Every constellation is charted!'};
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -202,6 +202,7 @@
 
   // ---------- drawing ----------
   var path=[];   /* the stars tapped so far, in order: {x,y,id} in world units */
+  var hist=[],drag=null;   /* hist: the drawing before each change, for Undo; drag: a connected star being moved */
   function tw(ph,sp,t){return reduce?1:0.72+0.28*Math.sin(t*0.001*sp+ph);}
   function drawStars(t){
     var k=S;ctx.fillStyle='#fffffe';
@@ -222,9 +223,15 @@
     drawStars(t);
     L.pl.forEach(function(p,i){var id=ALL[i].id;if(!charted[id])return;var f=reduce?1:Math.min(1,(t-chartedAt[id])/1400);drawLines(i,f,0.85,1.6);});
     /* the player's drawing: Parchment lines, Scarlet rings on the tapped stars */
-    if(path.length){var k=S;ctx.strokeStyle='rgba(243,234,217,.85)';ctx.lineWidth=1.6;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
-      path.forEach(function(q,i){i?ctx.lineTo(q.x*k,q.y*k):ctx.moveTo(q.x*k,q.y*k);});ctx.stroke();
-      ctx.strokeStyle='#ff4c0f';ctx.lineWidth=1.8;path.forEach(function(q){ctx.beginPath();ctx.arc(q.x*k,q.y*k,6,0,6.283);ctx.stroke();});}
+    /* while a connected star is dragged (2026-10-20), its lines follow the finger, snap to the star it would land on (a Teal
+       ring), and fade when it is over empty sky, where letting go takes it out */
+    var dr=drag&&drag.moved?drag:null,shown=path;
+    if(dr)shown=path.map(function(q){return q.id!==dr.id?q:(dr.tgt?{x:dr.tgt.x,y:dr.tgt.y,id:q.id}:{x:dr.w.x,y:dr.w.y,id:q.id});});
+    if(shown.length){var k=S;ctx.strokeStyle='rgba(243,234,217,.85)';ctx.lineWidth=1.6;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
+      shown.forEach(function(q,i){i?ctx.lineTo(q.x*k,q.y*k):ctx.moveTo(q.x*k,q.y*k);});ctx.stroke();
+      ctx.strokeStyle='#ff4c0f';ctx.lineWidth=1.8;shown.forEach(function(q){if(dr&&q.id===dr.id)return;ctx.beginPath();ctx.arc(q.x*k,q.y*k,6,0,6.283);ctx.stroke();});
+      if(dr){ctx.lineWidth=2.2;if(dr.tgt){ctx.strokeStyle='#89fbcb';ctx.beginPath();ctx.arc(dr.tgt.x*k,dr.tgt.y*k,9,0,6.283);ctx.stroke();}
+        else{ctx.globalAlpha=.45;ctx.strokeStyle='#ff4c0f';ctx.setLineDash([3,3]);ctx.beginPath();ctx.arc(dr.w.x*k,dr.w.y*k,9,0,6.283);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;}}}
   }
   var raf=0;
   function loop(t){draw(t);raf=requestAnimationFrame(loop);}
@@ -301,8 +308,11 @@
 
   // ---------- tapping stars ----------
   var undoB=root.querySelector('.st-undo'),clearB=root.querySelector('.st-clear'),checkB=root.querySelector('.st-check'),saveB=root.querySelector('.st-save'),selEl=root.querySelector('.st-sel');
-  function tools(){undoB.disabled=clearB.disabled=saveB.disabled=!path.length;checkB.disabled=path.length<2;selEl.textContent=path.length?path.length+' star'+(path.length===1?'':'s')+' connected':'';kick();}
-  function clearPath(){path=[];tools();}
+  function tools(){undoB.disabled=!(hist.length||path.length);clearB.disabled=saveB.disabled=!path.length;checkB.disabled=path.length<2;selEl.textContent=path.length?path.length+' star'+(path.length===1?'':'s')+' connected':'';kick();}
+  function clearPath(){path=[];hist=[];tools();}
+  function snap(){hist.push(path.slice());if(hist.length>300)hist.shift();}
+  /* one star in place of another everywhere it was used, or taken out; then no star follows itself */
+  function tidy(p){return p.filter(function(q,i){return !i||p[i-1].id!==q.id;});}
   function toWorld(cx,cy){var r=cv.getBoundingClientRect();return{x:(cx-r.left)/S,y:(cy-r.top)/S};}
   /* the nearest star to a tap, constellation star or not, within a finger's reach */
   function nearest(w,reach){
@@ -312,16 +322,34 @@
     return best;
   }
   var down=null;
-  sky.addEventListener('pointerdown',function(e){down={x:e.clientX,y:e.clientY,t:performance.now(),touch:e.pointerType!=='mouse'};if(e.pointerType==='mouse')e.preventDefault();});
+  /* a connected star under this point, or null (Maurice 10/20, players' ask: fix one star without undoing the rest) */
+  function onPath(cx,cy,touch){var st=nearest(toWorld(cx,cy),touch?22:14);if(!st)return null;for(var i=0;i<path.length;i++)if(path[i].id===st.id)return st;return null;}
+  sky.addEventListener('pointerdown',function(e){down={x:e.clientX,y:e.clientY,t:performance.now(),touch:e.pointerType!=='mouse'};if(e.pointerType==='mouse')e.preventDefault();
+    var st=onPath(e.clientX,e.clientY,down.touch);drag=st?{id:st.id,x:e.clientX,y:e.clientY,moved:false,touch:down.touch,w:toWorld(e.clientX,e.clientY),tgt:null}:null;
+    if(drag){try{sky.setPointerCapture(e.pointerId);}catch(er){}}});
+  /* on phones a finger on a connected star drags it instead of scrolling the page */
+  sky.addEventListener('touchstart',function(e){var t=e.touches[0];if(t&&e.touches.length===1&&onPath(t.clientX,t.clientY,true))e.preventDefault();},{passive:false});
+  sky.addEventListener('touchmove',function(e){if(drag&&drag.moved)e.preventDefault();},{passive:false});
+  sky.addEventListener('pointermove',function(e){if(!drag)return;
+    if(!drag.moved&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<10)return;
+    drag.moved=true;drag.w=toWorld(e.clientX,e.clientY);var t=nearest(drag.w,drag.touch?22:14);drag.tgt=t&&t.id!==drag.id?t:null;
+    if(t&&t.id===drag.id)drag.tgt={x:t.x,y:t.y,id:t.id};kick();});
   sky.addEventListener('pointerup',function(e){
+    if(drag&&drag.moved){var g=drag;drag=null;down=null;snap();
+      if(g.tgt&&g.tgt.id!==g.id){path=tidy(path.map(function(q){return q.id===g.id?{x:g.tgt.x,y:g.tgt.y,id:g.tgt.id}:q;}));}
+      else if(!g.tgt){path=tidy(path.filter(function(q){return q.id!==g.id;}));say(MSG.removed);}
+      else hist.pop();
+      tools();return;}
+    drag=null;
     if(!down)return;var d=down;down=null;if(Math.hypot(e.clientX-d.x,e.clientY-d.y)>12)return;
     var st=nearest(toWorld(e.clientX,e.clientY),d.touch?22:14);if(!st)return;
     var last=path[path.length-1];if(last&&last.id===st.id)return;
-    path.push(st);tools();
+    snap();path.push(st);tools();
   });
-  sky.addEventListener('pointercancel',function(){down=null;});
-  undoB.addEventListener('click',function(){path.pop();tools();});
-  clearB.addEventListener('click',clearPath);
+  sky.addEventListener('pointercancel',function(){down=null;drag=null;kick();});
+  /* Undo steps back one change at a time: a tap, a dragged star, or Clear */
+  undoB.addEventListener('click',function(){if(hist.length)path=hist.pop();else path.pop();tools();});
+  clearB.addEventListener('click',function(){if(!path.length)return;snap();path=[];tools();});
   checkB.addEventListener('click',check);
 
   boxBtn.addEventListener('click',function(){location.href=atob(K).split('').reverse().join('');});
@@ -346,7 +374,7 @@
   }
   function restore(o){
     var out=[];(Array.isArray(o.path)?o.path.slice(0,5000):[]).forEach(function(id){var q=star(id);if(q&&!(out.length&&out[out.length-1].id===q.id))out.push(q);});
-    path=out;tools();
+    path=out;hist=[];tools();
   }
   function ago(t){var s=Math.max(0,(Date.now()-t)/1000),n;if(s<60)return'a moment ago';if(s<3600){n=Math.round(s/60);return n+' minute'+(n===1?'':'s')+' ago';}
     if(s<86400){n=Math.round(s/3600);return n+' hour'+(n===1?'':'s')+' ago';}n=Math.round(s/86400);return n+' day'+(n===1?'':'s')+' ago';}
@@ -366,7 +394,7 @@
   var rz=0;window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(function(){layout();if(!resEl.hidden)offer();},120);});
   if(!reduce)raf=requestAnimationFrame(loop);
   root.__stars={shapes:ALL,layout:function(){return L;},scale:function(){return S;},charted:charted,path:function(){return path;},check:check,clear:clearPath,saveKey:SAVE,save:saveNow,
-    tap:function(id){var q=star(id);if(q){path.push(q);tools();}}}; // test hook
+    tap:function(id){var q=star(id);if(q){snap();path.push(q);tools();}}}; // test hook
 })();
 </script>
 <script>/* PARALLAX v2 (Maurice, 2026-10-16): a library picture the size of the screen behind the game, moving at 30% of the scroll */(function(){
