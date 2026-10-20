@@ -36,7 +36,31 @@
 #ma-chase{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;padding:clamp(120px,14vh,160px) 20px 72px;
   background:radial-gradient(ellipse at 50% 0%,#132219 0%,#0b170f 70%);font-family:'Almarai',sans-serif;color:#f3ead9;text-align:center;overflow-x:hidden}
 #ma-chase *{box-sizing:border-box;border-radius:0}
-#ma-chase .ch-wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
+#ma-chase .ch-cols{width:100%;display:grid;grid-template-columns:minmax(0,600px) minmax(0,340px);gap:32px;justify-content:center;align-items:start}
+#ma-chase .ch-main{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0}
+#ma-chase .ch-side{display:flex;flex-direction:column;gap:20px;min-width:0}
+#ma-chase .ch-side .tr-panel{width:100%;margin:0}
+#ma-chase .ch-how{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;text-align:left}
+#ma-chase .ch-how li{position:relative;padding-left:20px;font-weight:700;font-size:15px;line-height:1.5;color:#f3ead9}
+#ma-chase .ch-how li:before{content:'';position:absolute;left:0;top:.5em;width:8px;height:8px;background:#ff4c0f}
+#ma-chase .tk{width:100%;box-sizing:border-box;margin:12px 0 0;background:#132219;border:2px solid rgba(243,234,217,.18);padding:24px;display:flex;flex-direction:column;gap:20px;text-align:left}
+#ma-chase .tk h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(24px,2.4vw,30px);line-height:1.2;letter-spacing:.03em;color:#89fbcb}
+#ma-chase .tk-sec{display:flex;flex-direction:column;gap:12px;min-width:0}
+#ma-chase .tk-sec+.tk-sec,#ma-chase .tk-cols,#ma-chase .tk-cols+.tk-sec{padding-top:20px;border-top:1px solid rgba(243,234,217,.18)}
+#ma-chase .tk-cols .tk-sec{padding-top:0;border-top:0}
+#ma-chase .tk-h{margin:0;font-weight:800;font-size:13px;line-height:1.3;letter-spacing:.12em;text-transform:uppercase;color:#c3a6ff}
+#ma-chase .tk-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+#ma-chase .tk ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+#ma-chase .tk li{display:flex;align-items:center;gap:14px;min-width:0}
+#ma-chase .tk-i{position:relative;flex:0 0 52px;width:52px;height:48px;display:flex;align-items:center;justify-content:center}
+#ma-chase .tk-i img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+#ma-chase .tk-i.g img{filter:drop-shadow(0 0 7px rgba(var(--g),.85))}
+#ma-chase .tk-t{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:14px;line-height:1.45;color:#f3ead9}
+#ma-chase .tk-t b{font-weight:800;font-size:15px;color:#fffffe}
+#ma-chase .tk p{margin:0;font-size:14px;line-height:1.55;color:#f3ead9}
+@media (max-width:980px){#ma-chase .ch-cols{display:flex;flex-direction:column;align-items:center;gap:20px;max-width:600px;margin:0 auto}#ma-chase .ch-main,#ma-chase .ch-side{display:contents}#ma-chase .ch-side .tr-panel{order:2}#ma-chase .ch-main .tk{order:3;margin-top:0}}
+@media (max-width:640px){#ma-chase .tk-cols{grid-template-columns:minmax(0,1fr)}#ma-chase .tk{padding:20px}}
+#ma-chase .ch-wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
 #ma-chase h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(40px,6.4vw,72px);line-height:1.2;letter-spacing:.04em;color:#fffffe;padding:0 4px}
 #ma-chase .ch-sub{margin:0;max-width:560px;font-size:clamp(15px,1.8vw,18px);line-height:1.55;color:#f3ead9}
 #ma-chase .ch-game{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -141,52 +165,113 @@
     <p class="ch-sub">Fly up the trench and earn enough points to open the gate at the top. Grab spinning coins, ride the boost currents, and stay out of the searchlights. A ruby cloaks your ship. The Brass Point lets you shoot back.</p>
     <p class="ch-weekly">Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week.</p>
     <div class="ch-game">
-      <div class="ch-hud">
-        <span class="ch-stat">Score<b class="ch-score">0</b></span>
-        <span class="ch-stat">Board<b class="ch-bn">1</b></span>
-        <span class="ch-stat">Gate<b class="ch-keys">0%</b></span>
-        <span class="ch-stat">Lives<span class="ch-lives"><i></i><i></i><i></i></span></span>
-        <button class="ch-pausebtn" type="button" disabled>Pause</button>
-      </div>
-      <div class="ch-board">
-        <canvas class="ch-cv" role="img" aria-label="Trench Run game board"></canvas>
-        <div class="ch-ov ch-start on">
-          <h2>Ready to fly?</h2>
-          <p class="ch-tip-keys">Arrows or WASD to steer. P pauses.</p>
-          <p class="ch-tip-touch">Swipe the board or use the pad.</p>
-          <button class="ch-btn ch-go" type="button">Set sail</button>
+      <div class="ch-cols">
+        <div class="ch-main">
+          <div class="ch-hud">
+            <span class="ch-stat">Score<b class="ch-score">0</b></span>
+            <span class="ch-stat">Board<b class="ch-bn">1</b></span>
+            <span class="ch-stat">Gate<b class="ch-keys">0%</b></span>
+            <span class="ch-stat">Lives<span class="ch-lives"><i></i><i></i><i></i></span></span>
+            <button class="ch-pausebtn" type="button" disabled>Pause</button>
+          </div>
+          <div class="ch-board">
+            <canvas class="ch-cv" role="img" aria-label="Trench Run game board"></canvas>
+            <div class="ch-ov ch-start on">
+              <h2>Ready to fly?</h2>
+              <p class="ch-tip-keys">Arrows or WASD to steer. P pauses.</p>
+              <p class="ch-tip-touch">Swipe the board or use the pad.</p>
+              <button class="ch-btn ch-go" type="button">Set sail</button>
+            </div>
+            <div class="ch-ov ch-pause">
+              <h2>Paused</h2>
+              <button class="ch-btn ch-resume" type="button">Resume</button>
+            </div>
+            <div class="ch-ov ch-over">
+              <h2>Shot down</h2>
+              <p class="ch-final"></p>
+              <p class="tr-dmsg" role="status"></p>
+              <button class="ch-box ch-box-over" type="button" hidden aria-label="Open loot box 77"><img src="https://africhmaurice.github.io/leaderboard/loot/77.png" alt="Loot box 77"></button>
+              <button class="ch-btn ch-again" type="button">Play again</button>
+              <a class="ch-btn ch-next" href="https://www.mauriceafrich.com/sky-gauntlet">NEXT GAME: SKY GAUNTLET</a>
+            </div>
+            <div class="ch-ov ch-found">
+              <h2>Loot box 77</h2>
+              <p>You found it. Click the box to claim it.</p>
+              <button class="ch-box ch-box-found" type="button" aria-label="Open loot box 77"><img src="https://africhmaurice.github.io/leaderboard/loot/77.png" alt="Loot box 77"></button>
+              <button class="ch-btn ghost ch-keep" type="button">Keep flying</button>
+            </div>
+          </div>
+          <div class="ch-pad" aria-label="Steering pad">
+            <button class="u" type="button" aria-label="Up" data-d="0"><span></span></button>
+            <button class="l" type="button" aria-label="Left" data-d="1"><span></span></button>
+            <button class="r" type="button" aria-label="Right" data-d="3"><span></span></button>
+            <button class="d" type="button" aria-label="Down" data-d="2"><span></span></button>
+          </div>
+          <div class="ch-live" aria-live="polite"></div>
+          <div class="tr-post" hidden><p class="tr-msg" role="status"></p><div class="tr-who" hidden></div></div>
+          <section class="tk" aria-label="Key">
+            <h2>Key</h2>
+            <div class="tk-sec">
+              <p class="tk-h">Your airship</p>
+              <ul>
+                    <li><span class="tk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"></span><span class="tk-t"><b>Fly up the trench.</b>Arrow keys or WASD; on a phone, swipe or use the pad. P or Esc pauses. You start with 3 lives.</span></li>
+              </ul>
+            </div>
+            <div class="tk-sec">
+              <p class="tk-h">The gate and the boards</p>
+              <ul>
+                    <li><span class="tk-i"><img src="https://africhmaurice.github.io/site/assets/games/77-gate.png" alt="" loading="lazy"></span><span class="tk-t"><b>The gate</b>It opens once you earn enough points on that board: 60% of the board’s coins, rounded to the hundred. Fly through the open gate for +1,000 and the next board.</span></li>
+              </ul>
+              <p>Every board is a new maze, the same for everyone, and each one is longer than the last. The forcefield walls and doors don’t hurt you; they just block the way. The doors open and close on a beat.</p>
+            </div>
+            <div class="tk-cols">
+              <div class="tk-sec">
+                <p class="tk-h">Grab these</p>
+                <ul>
+                    <li><span class="tk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/77-coin.png" alt="" loading="lazy"></span><span class="tk-t"><b>Coin</b>+10 points, and it counts toward opening the gate.</span></li>
+                    <li><span class="tk-i g" style="--g:255,255,254"><img src="https://africhmaurice.github.io/site/assets/games/80-crest.webp" alt="" loading="lazy"></span><span class="tk-t"><b>Crest checkpoint</b>+250 points. Three on every board. After you’re shot down, you come back at the last one you passed.</span></li>
+                    <li><span class="tk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/77-boost.png" alt="" loading="lazy"></span><span class="tk-t"><b>Boost current</b>Throws your ship 5 tiles up the trench.</span></li>
+                    <li><span class="tk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="tk-t"><b>Ruby</b>Cloaks your ship for 6 seconds (less on later boards): nothing can touch you, and searchlights can’t see you. Two on every board.</span></li>
+                    <li><span class="tk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/brass-point.png" alt="" loading="lazy"></span><span class="tk-t"><b>Brass Point</b>Comes after the first and second checkpoints: 10 seconds of shots. A hit knocks out a patrol ship for 8 seconds or destroys a hunter (+150).</span></li>
+                    <li><span class="tk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/golden-chest.png" alt="" loading="lazy"></span><span class="tk-t"><b>Golden chest</b>+500 points. One shows up every 18 to 26 seconds.</span></li>
+                </ul>
+              </div>
+              <div class="tk-sec">
+                <p class="tk-h">Dodge these</p>
+                <ul>
+                    <li><span class="tk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-rival.png" alt="" loading="lazy"></span><span class="tk-t"><b>Patrol ship</b>Flies back and forth along a straight run. One touch and you’re shot down.</span></li>
+                    <li><span class="tk-i"><img src="https://africhmaurice.github.io/site/assets/games/77-searchlight.png" alt="" loading="lazy"></span><span class="tk-t"><b>Searchlight</b>Swings its beam every 1.6 seconds. Get caught in it and a hunter launches from the light.</span></li>
+                    <li><span class="tk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-rival.png" alt="" loading="lazy"></span><span class="tk-t"><b>Hunter</b>A Scarlet rival that tracks you through the maze for 8 seconds.</span></li>
+                    <li><span class="tk-i"><img src="https://africhmaurice.github.io/site/assets/games/77-cannon.png" alt="" loading="lazy"></span><span class="tk-t"><b>Cannon</b>Fires down a long corridor. The corridor flashes Scarlet first, as a warning.</span></li>
+                </ul>
+              </div>
+            </div>
+            <div class="tk-sec">
+              <p class="tk-h">Scoring and the loot box</p>
+              <p>Your score is everything you collect: coins, checkpoints, gates, chests, and hunters. From board 5, loot box 77 waits in a dead end in the middle of the trench. Fly into it to claim it. The top score at 11:59 PM ET every Friday wins 500 hunt points.</p>
+            </div>
+          </section>
         </div>
-        <div class="ch-ov ch-pause">
-          <h2>Paused</h2>
-          <button class="ch-btn ch-resume" type="button">Resume</button>
-        </div>
-        <div class="ch-ov ch-over">
-          <h2>Shot down</h2>
-          <p class="ch-final"></p>
-          <p class="tr-dmsg" role="status"></p>
-          <button class="ch-box ch-box-over" type="button" hidden aria-label="Open loot box 77"><img src="https://africhmaurice.github.io/leaderboard/loot/77.png" alt="Loot box 77"></button>
-          <button class="ch-btn ch-again" type="button">Play again</button>
-          <a class="ch-btn ch-next" href="https://www.mauriceafrich.com/sky-gauntlet">NEXT GAME: SKY GAUNTLET</a>
-        </div>
-        <div class="ch-ov ch-found">
-          <h2>Loot box 77</h2>
-          <p>You found it. Click the box to claim it.</p>
-          <button class="ch-box ch-box-found" type="button" aria-label="Open loot box 77"><img src="https://africhmaurice.github.io/leaderboard/loot/77.png" alt="Loot box 77"></button>
-          <button class="ch-btn ghost ch-keep" type="button">Keep flying</button>
-        </div>
-      </div>
-      <div class="ch-pad" aria-label="Steering pad">
-        <button class="u" type="button" aria-label="Up" data-d="0"><span></span></button>
-        <button class="l" type="button" aria-label="Left" data-d="1"><span></span></button>
-        <button class="r" type="button" aria-label="Right" data-d="3"><span></span></button>
-        <button class="d" type="button" aria-label="Down" data-d="2"><span></span></button>
-      </div>
-      <div class="ch-live" aria-live="polite"></div>
-      <div class="tr-post" hidden><p class="tr-msg" role="status"></p><div class="tr-who" hidden></div></div>
-      <div class="tr-panel">
-        <h2 class="tr-ph">This week’s top sky pirates</h2>
-        <p class="tr-count">Board closes in <span class="tr-left">...</span></p>
-        <ol class="tr-board"><li><span class="tr-empty">Loading the board...</span></li></ol>
+        <aside class="ch-side">
+          <div class="tr-panel">
+            <h2 class="tr-ph">This week’s top sky pirates</h2>
+            <p class="tr-count">Board closes in <span class="tr-left">...</span></p>
+            <ol class="tr-board"><li><span class="tr-empty">Loading the board...</span></li></ol>
+          </div>
+          <div class="tr-panel ch-howp">
+            <h2 class="tr-ph">How it works</h2>
+            <ul class="ch-how">
+              <li>Fly up the trench and open the gate at the top.</li>
+              <li>Coins open the gate: collect 60% of a board’s coins.</li>
+              <li>Ride the boost currents, and stay out of the searchlights.</li>
+              <li>Rubies cloak your ship. Brass Point lets you shoot back.</li>
+              <li>Crest checkpoints save your spot.</li>
+              <li>From board 5, loot box 77 hides in a dead end.</li>
+              <li>Check the key for everything else!</li>
+              <li>Top score on the board at 11:59 PM ET Friday wins 500 points. Then a new week starts.</li>
+            </ul>
+          </div>
+        </aside>
       </div>
     </div>
   </div>

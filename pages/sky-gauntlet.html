@@ -57,7 +57,16 @@
 #ma-gauntlet{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;padding:clamp(120px,14vh,160px) 20px 72px;
   background:radial-gradient(ellipse at 50% 0%,#2d1c53 0%,#0b170f 70%);font-family:'Almarai',sans-serif;color:#f3ead9;text-align:center;overflow-x:hidden}
 #ma-gauntlet *{box-sizing:border-box;border-radius:0}
-#ma-gauntlet .sg-wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
+#ma-gauntlet .sg-cols{width:100%;display:grid;grid-template-columns:minmax(0,560px) minmax(0,340px);gap:32px;justify-content:center;align-items:start}
+#ma-gauntlet .sg-main{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0}
+#ma-gauntlet .sg-side{display:flex;flex-direction:column;gap:20px;min-width:0}
+#ma-gauntlet .sg-side .sgb-panel{width:100%;margin:0}
+#ma-gauntlet .sg-main .sgk{width:100%;margin-top:12px}
+#ma-gauntlet .sg-how{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+#ma-gauntlet .sg-how li{position:relative;padding-left:20px;font-weight:700;font-size:15px;line-height:1.5;color:#f3ead9}
+#ma-gauntlet .sg-how li:before{content:'';position:absolute;left:0;top:.5em;width:8px;height:8px;background:#ff4c0f}
+@media (max-width:940px){#ma-gauntlet .sg-cols{display:flex;flex-direction:column;align-items:center;gap:20px;max-width:560px;margin:0 auto}#ma-gauntlet .sg-main,#ma-gauntlet .sg-side{display:contents}#ma-gauntlet .sg-side .sgb-panel{order:2}#ma-gauntlet .sg-main .sgk{order:3;margin-top:0}}   /* phones: the game, the board, how it works, then the key */
+#ma-gauntlet .sg-wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
 #ma-gauntlet h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(40px,6.4vw,72px);line-height:1.2;letter-spacing:.04em;color:#fffffe;padding:0 4px}
 #ma-gauntlet .sg-sub{margin:0;max-width:560px;font-size:clamp(15px,1.8vw,18px);line-height:1.55;color:#f3ead9}
 #ma-gauntlet .sg-game{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -159,149 +168,168 @@
     <p class="sg-sub">Your cannons never stop firing. Slide left and right, shoot down the rival fleet, and catch what the rival ships drop. Survive 25 waves, and something drops in.</p>
     <p class="sg-weekly">Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week.</p>
     <div class="sg-game">
-      <div class="sg-hud">
-        <span class="sg-stat">Score<b class="sg-score">0</b></span>
-        <span class="sg-stat">Wave<b class="sg-wave">1</b></span>
-        <span class="sg-stat">Lives<span class="sg-lives"></span></span>
-        <button class="sg-pausebtn" type="button" disabled>Pause</button>
-      </div>
-      <div class="sg-stage">
-        <canvas class="sg-cv" role="img" aria-label="The Sky Gauntlet game"></canvas>
-        <div class="sg-ov sg-start on">
-          <h2>Ready for battle?</h2>
-          <p class="sg-tip-keys">Arrows, A and D, or the mouse to move. Your cannons fire on their own. P pauses.</p>
-          <p class="sg-tip-touch">Slide your finger to move. Your cannons fire on their own.</p>
-          <p>Catch what falls. The Mark of the Crest upgrades your missiles for good. Everything else is a short boost or a special attack.</p>
-          <button class="sg-btn sg-go" type="button">Launch</button>
+      <div class="sg-cols">
+        <div class="sg-main">
+          <div class="sg-hud">
+            <span class="sg-stat">Score<b class="sg-score">0</b></span>
+            <span class="sg-stat">Wave<b class="sg-wave">1</b></span>
+            <span class="sg-stat">Lives<span class="sg-lives"></span></span>
+            <button class="sg-pausebtn" type="button" disabled>Pause</button>
+          </div>
+          <div class="sg-stage">
+            <canvas class="sg-cv" role="img" aria-label="The Sky Gauntlet game"></canvas>
+            <div class="sg-ov sg-start on">
+              <h2>Ready for battle?</h2>
+              <p class="sg-tip-keys">Arrows, A and D, or the mouse to move. Your cannons fire on their own. P pauses.</p>
+              <p class="sg-tip-touch">Slide your finger to move. Your cannons fire on their own.</p>
+              <p>Catch what falls. The Mark of the Crest upgrades your missiles for good. Everything else is a short boost or a special attack.</p>
+              <button class="sg-btn sg-go" type="button">Launch</button>
+            </div>
+            <div class="sg-ov sg-pause">
+              <h2>Paused</h2>
+              <button class="sg-btn sg-resume" type="button">Resume</button>
+            </div>
+            <div class="sg-ov sg-over">
+              <h2>Shot down</h2>
+              <p class="sg-final"></p>
+              <p class="sgb-dmsg" role="status"></p>
+              <button class="sg-box sg-box-over" type="button" hidden aria-label="Open loot box 78"><img src="https://africhmaurice.github.io/leaderboard/loot/78.png" alt="Loot box 78"></button>
+              <button class="sg-btn sg-again" type="button">Play again</button>
+              <a class="sg-btn sg-next" href="https://www.mauriceafrich.com/games">NEXT GAME: SKYWORD</a>
+            </div>
+            <div class="sg-ov sg-found">
+              <h2>Loot box 78</h2>
+              <p>You caught it. Click the box to claim it.</p>
+              <button class="sg-box sg-box-found" type="button" aria-label="Open loot box 78"><img src="https://africhmaurice.github.io/leaderboard/loot/78.png" alt="Loot box 78"></button>
+              <button class="sg-btn ghost sg-keep" type="button">Keep flying</button>
+            </div>
+          </div>
+          <div class="sg-live" aria-live="polite"></div>
+          <div class="sgb-post" hidden><p class="sgb-msg" role="status"></p><div class="sgb-who" hidden></div></div>
+          <!-- SKY GAUNTLET GUIDE (Maurice 2026-10-20: "a guide that explains what everything is, including the weapon level and hull
+               durability"). DRAFT copy. Every number here comes from the game code: KIND, TIERS, MISS, DROPS, HULL, waveCfg. -->
+          <style>
+          #ma-gauntlet .sgk{width:min(100%,760px);box-sizing:border-box;margin:24px auto 0;background:#132219;border:2px solid rgba(243,234,217,.18);padding:24px;display:flex;flex-direction:column;gap:20px;text-align:left}
+          #ma-gauntlet .sgk h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(24px,2.4vw,30px);line-height:1.2;letter-spacing:.03em;color:#89fbcb}
+          #ma-gauntlet .sgk-sec{display:flex;flex-direction:column;gap:12px;min-width:0}
+          #ma-gauntlet .sgk-sec+.sgk-sec,#ma-gauntlet .sgk-cols,#ma-gauntlet .sgk-cols+.sgk-sec{padding-top:20px;border-top:1px solid rgba(243,234,217,.18)}
+    #ma-gauntlet .sgk-cols .sgk-sec{padding-top:0;border-top:0}
+    #ma-gauntlet .sgk-cols .sgk-sec .sgk-h+ul{margin-top:0}#ma-gauntlet .sgk-cols ul+.sgk-h{margin-top:12px}
+          #ma-gauntlet .sgk-h{margin:0;font-weight:800;font-size:13px;line-height:1.3;letter-spacing:.12em;text-transform:uppercase;color:#c3a6ff}
+          #ma-gauntlet .sgk-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+          #ma-gauntlet .sgk ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+          #ma-gauntlet .sgk li{display:flex;align-items:center;gap:14px;min-width:0}
+          #ma-gauntlet .sgk-i{position:relative;flex:0 0 52px;width:52px;height:48px;display:flex;align-items:center;justify-content:center}
+          #ma-gauntlet .sgk-i img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+          #ma-gauntlet .sgk-i.g img{filter:drop-shadow(0 0 7px rgba(var(--g),.85))}
+          #ma-gauntlet .sgk-i.ring::after{content:'';position:absolute;inset:3px;border:3px solid #89fbcb;border-radius:50%;border-right-color:transparent}
+          #ma-gauntlet .sgk-i .plus{position:absolute;font-weight:800;font-size:15px;color:#fffffe;-webkit-text-stroke:3px #0b170f;paint-order:stroke fill}
+          #ma-gauntlet .sgk-t{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:14px;line-height:1.45;color:#f3ead9}
+          #ma-gauntlet .sgk-t b{font-weight:800;font-size:15px;color:#fffffe}
+          #ma-gauntlet .sgk p{margin:0;font-size:14px;line-height:1.55;color:#f3ead9}
+          #ma-gauntlet .sgk p b{color:#fffffe}
+          #ma-gauntlet .sgk ul.sgk-lv{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+          #ma-gauntlet .sgk ul.sgk-lv li{flex-direction:column;align-items:flex-start;gap:4px;padding:10px;border:1px solid rgba(243,234,217,.18);font-size:13px;line-height:1.4;color:#f3ead9}
+          #ma-gauntlet .sgk-lv b{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#89fbcb}
+          #ma-gauntlet .sgk ul.sgk-tiers{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0;padding:0;list-style:none}
+          #ma-gauntlet .sgk ul.sgk-tiers li{gap:8px;font-size:13px;line-height:1.4;color:#f3ead9}
+          #ma-gauntlet .sgk-tiers i{flex:none;width:14px;height:14px;border:1px solid rgba(243,234,217,.6)}
+          @media (max-width:640px){#ma-gauntlet .sgk-cols{grid-template-columns:minmax(0,1fr)}#ma-gauntlet .sgk ul.sgk-lv{grid-template-columns:repeat(2,minmax(0,1fr))}#ma-gauntlet .sgk{padding:20px}}
+          </style>
+          <section class="sgk" aria-label="Key">
+            <h2>Key</h2>
+            <div class="sgk-sec">
+              <p class="sgk-h">Your airship</p>
+              <ul>
+                <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Your cannons never stop firing.</b>Fly anywhere in the lower part of the sky: arrows or WASD, or follow with the mouse or your finger. P or Esc pauses. You start with 3 lives.</span></li>
+              </ul>
+            </div>
+            <div class="sgk-sec">
+              <p class="sgk-h">Weapon level and hull</p>
+              <ul>
+                <li><span class="sgk-i g" style="--g:255,255,254"><img src="https://africhmaurice.github.io/site/assets/games/80-crest.webp" alt="" loading="lazy"></span><span class="sgk-t"><b>Mark of the Crest</b>Every crest you catch counts toward two upgrades that last the whole run. The top-left corner shows both, and how many crests you need for the next one.</span></li>
+              </ul>
+              <p><b>Weapon level.</b> More crests, better missiles:</p>
+              <ul class="sgk-lv">
+                <li><b>Level 1</b>Start. A thin bolt.</li>
+                <li><b>Level 2</b>2 crests. Chevrons, faster.</li>
+                <li><b>Level 3</b>4 crests. Fire darts, twice the damage.</li>
+                <li><b>Level 4</b>8 crests. Spinners, twice the damage, and they go through a ship.</li>
+                <li><b>Level 5</b>16 crests. A beam that burns whatever is above you.</li>
+              </ul>
+              <p><b>Hull durability.</b> Crests toughen your hull too, at twice the count: with 4 crests each life takes 2 hits, with 8 it takes 3, with 16 it takes 4, and it keeps doubling from there. Each hit costs one point of hull, the last one costs a life, and your hull refills for the next life.</p>
+            </div>
+            <div class="sgk-cols">
+              <div class="sgk-sec">
+                <p class="sgk-h">Grab these</p>
+                <ul>
+                  <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Ruby</b>+250 points.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/golden-chest.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Golden chest</b>+25 hunt points on the leaderboard, up to 4 a day.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,230,90"><img src="https://africhmaurice.github.io/site/assets/games/78-bolt.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Speed boost</b>Faster firing and faster flying for 10 seconds.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/brass-point.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Brass Point</b>One more missile in every volley for 10 seconds.</span></li>
+                  <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/swords.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Twin Torches</b>Slashes fly out to both sides and bounce off the walls for 10 seconds.</span></li>
+                  <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/78-shield.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Shield</b>Blocks one hit. You can hold two.</span></li>
+                  <li><span class="sgk-i g ring" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/78-shield.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Recharging shield</b>Blocks a hit, then comes back 12 seconds later, for the rest of that life.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"><span class="plus">+1</span></span><span class="sgk-t"><b>+1 life</b>One more life, up to 6.</span></li>
+                </ul>
+                <p class="sgk-h">Specials, from wave 3</p>
+                <ul>
+                  <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/78-scythe.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Scythe</b>A red slash sweeps up the sky and cuts down what it touches.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,255,254"><img src="https://africhmaurice.github.io/site/assets/games/trench-emblem.webp" alt="" loading="lazy"></span><span class="sgk-t"><b>Wave of energy</b>A ring of energy rings out from your ship: 2 hits to every ship it passes, and it clears the cannonballs it touches.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/78-atomic.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Red atomic</b>3 hits to every ship on screen, and every cannonball is gone.</span></li>
+                </ul>
+              </div>
+              <div class="sgk-sec">
+                <p class="sgk-h">Dodge these</p>
+                <ul>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-rival.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Rival ships</b>They loop around, swoop down at you, and drop cannonballs. 100 points a hit to sink one, 200 if it is diving.</span></li>
+                </ul>
+                <ul class="sgk-tiers" aria-label="Rival colors">
+                  <li><i style="background:#3adb97"></i>Teal: 2 hits, wave 3+</li>
+                  <li><i style="background:#57bb41"></i>Green: 3 hits, wave 10+</li>
+                  <li><i style="background:#f3ead9"></i>Parchment: 4 hits, wave 15+</li>
+                  <li><i style="background:#0b170f"></i>Ink: 5 hits, wave 20+</li>
+                  <li><i style="background:#f1d48a"></i>Gold: 10 hits, wave 25+</li>
+                </ul>
+                <ul>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-gunboat.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Gunboat</b>Crosses from the side, firing darts at you. 300 points.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-dart.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Dart</b>Dives straight at you from above, and from below too. 150 points.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-mine-layer.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Mine-layer</b>Crosses the top, dropping mines. Shoot the mines too. 400 points, 25 a mine.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-freighter.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Freighter</b>Slow and tough, 8 hits, and it bursts into 4 rubies. 800 points.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-flagship.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Destroyer</b>Every 5th wave. A boss with a hull bar that fires fans of darts. 5,000 points, and it drops a crest.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-lightning.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Lightning and wind</b>From wave 6, a flashing stripe warns where lightning will strike. From wave 8, gusts of wind push your ship.</span></li>
+                </ul>
+                <p>Tough ships get angry at half hull: faster, with a Scarlet glow.</p>
+              </div>
+            </div>
+            <div class="sgk-sec">
+              <p class="sgk-h">Scoring and the loot box</p>
+              <p>Every ship you sink adds its points, and clearing a wave adds 250 times the wave number. Survive 25 waves and loot box 78 floats down. Fly into it to claim it. The top score at 11:59 PM ET every Friday wins 500 hunt points.</p>
+            </div>
+          </section>
+          <!-- /SKY GAUNTLET GUIDE -->
         </div>
-        <div class="sg-ov sg-pause">
-          <h2>Paused</h2>
-          <button class="sg-btn sg-resume" type="button">Resume</button>
-        </div>
-        <div class="sg-ov sg-over">
-          <h2>Shot down</h2>
-          <p class="sg-final"></p>
-          <p class="sgb-dmsg" role="status"></p>
-          <button class="sg-box sg-box-over" type="button" hidden aria-label="Open loot box 78"><img src="https://africhmaurice.github.io/leaderboard/loot/78.png" alt="Loot box 78"></button>
-          <button class="sg-btn sg-again" type="button">Play again</button>
-          <a class="sg-btn sg-next" href="https://www.mauriceafrich.com/games">NEXT GAME: SKYWORD</a>
-        </div>
-        <div class="sg-ov sg-found">
-          <h2>Loot box 78</h2>
-          <p>You caught it. Click the box to claim it.</p>
-          <button class="sg-box sg-box-found" type="button" aria-label="Open loot box 78"><img src="https://africhmaurice.github.io/leaderboard/loot/78.png" alt="Loot box 78"></button>
-          <button class="sg-btn ghost sg-keep" type="button">Keep flying</button>
-        </div>
-      </div>
-      <div class="sg-live" aria-live="polite"></div>
-      <div class="sgb-post" hidden><p class="sgb-msg" role="status"></p><div class="sgb-who" hidden></div></div>
-      <div class="sgb-panel">
-        <h2 class="sgb-ph">This week’s top sky pirates</h2>
-        <p class="sgb-count">Board closes in <span class="sgb-left">...</span></p>
-        <ol class="sgb-board"><li><span class="sgb-empty">Loading the board...</span></li></ol>
-      </div>
-      <!-- SKY GAUNTLET GUIDE (Maurice 2026-10-20: "a guide that explains what everything is, including the weapon level and hull
-           durability"). DRAFT copy. Every number here comes from the game code: KIND, TIERS, MISS, DROPS, HULL, waveCfg. -->
-      <style>
-      #ma-gauntlet .sgk{width:min(100%,760px);box-sizing:border-box;margin:24px auto 0;background:#132219;border:2px solid rgba(243,234,217,.18);padding:24px;display:flex;flex-direction:column;gap:20px;text-align:left}
-      #ma-gauntlet .sgk h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(24px,2.4vw,30px);line-height:1.2;letter-spacing:.03em;color:#89fbcb}
-      #ma-gauntlet .sgk-sec{display:flex;flex-direction:column;gap:12px;min-width:0}
-      #ma-gauntlet .sgk-sec+.sgk-sec,#ma-gauntlet .sgk-cols,#ma-gauntlet .sgk-cols+.sgk-sec{padding-top:20px;border-top:1px solid rgba(243,234,217,.18)}
-#ma-gauntlet .sgk-cols .sgk-sec{padding-top:0;border-top:0}
-#ma-gauntlet .sgk-cols .sgk-sec .sgk-h+ul{margin-top:0}#ma-gauntlet .sgk-cols ul+.sgk-h{margin-top:12px}
-      #ma-gauntlet .sgk-h{margin:0;font-weight:800;font-size:13px;line-height:1.3;letter-spacing:.12em;text-transform:uppercase;color:#c3a6ff}
-      #ma-gauntlet .sgk-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-      #ma-gauntlet .sgk ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
-      #ma-gauntlet .sgk li{display:flex;align-items:center;gap:14px;min-width:0}
-      #ma-gauntlet .sgk-i{position:relative;flex:0 0 52px;width:52px;height:48px;display:flex;align-items:center;justify-content:center}
-      #ma-gauntlet .sgk-i img{max-width:100%;max-height:100%;object-fit:contain;display:block}
-      #ma-gauntlet .sgk-i.g img{filter:drop-shadow(0 0 7px rgba(var(--g),.85))}
-      #ma-gauntlet .sgk-i.ring::after{content:'';position:absolute;inset:3px;border:3px solid #89fbcb;border-radius:50%;border-right-color:transparent}
-      #ma-gauntlet .sgk-i .plus{position:absolute;font-weight:800;font-size:15px;color:#fffffe;-webkit-text-stroke:3px #0b170f;paint-order:stroke fill}
-      #ma-gauntlet .sgk-t{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:14px;line-height:1.45;color:#f3ead9}
-      #ma-gauntlet .sgk-t b{font-weight:800;font-size:15px;color:#fffffe}
-      #ma-gauntlet .sgk p{margin:0;font-size:14px;line-height:1.55;color:#f3ead9}
-      #ma-gauntlet .sgk p b{color:#fffffe}
-      #ma-gauntlet .sgk ul.sgk-lv{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-      #ma-gauntlet .sgk ul.sgk-lv li{flex-direction:column;align-items:flex-start;gap:4px;padding:10px;border:1px solid rgba(243,234,217,.18);font-size:13px;line-height:1.4;color:#f3ead9}
-      #ma-gauntlet .sgk-lv b{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#89fbcb}
-      #ma-gauntlet .sgk ul.sgk-tiers{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0;padding:0;list-style:none}
-      #ma-gauntlet .sgk ul.sgk-tiers li{gap:8px;font-size:13px;line-height:1.4;color:#f3ead9}
-      #ma-gauntlet .sgk-tiers i{flex:none;width:14px;height:14px;border:1px solid rgba(243,234,217,.6)}
-      @media (max-width:640px){#ma-gauntlet .sgk-cols{grid-template-columns:minmax(0,1fr)}#ma-gauntlet .sgk ul.sgk-lv{grid-template-columns:repeat(2,minmax(0,1fr))}#ma-gauntlet .sgk{padding:20px}}
-      </style>
-      <section class="sgk" aria-label="Sky Gauntlet guide">
-        <h2>How it works</h2>
-        <div class="sgk-sec">
-          <p class="sgk-h">Your airship</p>
-          <ul>
-            <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Your cannons never stop firing.</b>Fly anywhere in the lower part of the sky: arrows or WASD, or follow with the mouse or your finger. P or Esc pauses. You start with 3 lives.</span></li>
-          </ul>
-        </div>
-        <div class="sgk-sec">
-          <p class="sgk-h">Weapon level and hull</p>
-          <ul>
-            <li><span class="sgk-i g" style="--g:255,255,254"><img src="https://africhmaurice.github.io/site/assets/games/80-crest.webp" alt="" loading="lazy"></span><span class="sgk-t"><b>Mark of the Crest</b>Every crest you catch counts toward two upgrades that last the whole run. The top-left corner shows both, and how many crests you need for the next one.</span></li>
-          </ul>
-          <p><b>Weapon level.</b> More crests, better missiles:</p>
-          <ul class="sgk-lv">
-            <li><b>Level 1</b>Start. A thin bolt.</li>
-            <li><b>Level 2</b>2 crests. Chevrons, faster.</li>
-            <li><b>Level 3</b>4 crests. Fire darts, twice the damage.</li>
-            <li><b>Level 4</b>8 crests. Spinners, twice the damage, and they go through a ship.</li>
-            <li><b>Level 5</b>16 crests. A beam that burns whatever is above you.</li>
-          </ul>
-          <p><b>Hull durability.</b> Crests toughen your hull too, at twice the count: with 4 crests each life takes 2 hits, with 8 it takes 3, with 16 it takes 4, and it keeps doubling from there. Each hit costs one point of hull, the last one costs a life, and your hull refills for the next life.</p>
-        </div>
-        <div class="sgk-cols">
-          <div class="sgk-sec">
-            <p class="sgk-h">Grab these</p>
-            <ul>
-              <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Ruby</b>+250 points.</span></li>
-              <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/golden-chest.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Golden chest</b>+25 hunt points on the leaderboard, up to 4 a day.</span></li>
-              <li><span class="sgk-i g" style="--g:255,230,90"><img src="https://africhmaurice.github.io/site/assets/games/78-bolt.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Speed boost</b>Faster firing and faster flying for 10 seconds.</span></li>
-              <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/brass-point.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Brass Point</b>One more missile in every volley for 10 seconds.</span></li>
-              <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/swords.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Twin Torches</b>Slashes fly out to both sides and bounce off the walls for 10 seconds.</span></li>
-              <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/78-shield.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Shield</b>Blocks one hit. You can hold two.</span></li>
-              <li><span class="sgk-i g ring" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/78-shield.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Recharging shield</b>Blocks a hit, then comes back 12 seconds later, for the rest of that life.</span></li>
-              <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"><span class="plus">+1</span></span><span class="sgk-t"><b>+1 life</b>One more life, up to 6.</span></li>
-            </ul>
-            <p class="sgk-h">Specials, from wave 3</p>
-            <ul>
-              <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/78-scythe.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Scythe</b>A red slash sweeps up the sky and cuts down what it touches.</span></li>
-              <li><span class="sgk-i g" style="--g:255,255,254"><img src="https://africhmaurice.github.io/site/assets/games/trench-emblem.webp" alt="" loading="lazy"></span><span class="sgk-t"><b>Wave of energy</b>A ring of energy rings out from your ship: 2 hits to every ship it passes, and it clears the cannonballs it touches.</span></li>
-              <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/78-atomic.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Red atomic</b>3 hits to every ship on screen, and every cannonball is gone.</span></li>
+        <aside class="sg-side">
+          <div class="sgb-panel">
+            <h2 class="sgb-ph">This week’s top sky pirates</h2>
+            <p class="sgb-count">Board closes in <span class="sgb-left">...</span></p>
+            <ol class="sgb-board"><li><span class="sgb-empty">Loading the board...</span></li></ol>
+          </div>
+          <div class="sgb-panel sg-howp">
+            <h2 class="sgb-ph">How it works</h2>
+            <ul class="sg-how">
+              <li>Your cannons fire on their own. Fly anywhere in the lower part of the sky.</li>
+              <li>Shoot down the rival fleet and catch what the ships drop.</li>
+              <li>Crests raise your weapon level and toughen your hull.</li>
+              <li>Golden chests are worth 25 hunt points each, up to 4 a day.</li>
+              <li>Every 5th wave is a Destroyer.</li>
+              <li>Survive 25 waves, and loot box 78 floats down.</li>
+              <li>Check the key for everything else!</li>
+              <li>Top score on the board at 11:59 PM ET Friday wins 500 points. Then a new week starts.</li>
             </ul>
           </div>
-          <div class="sgk-sec">
-            <p class="sgk-h">Dodge these</p>
-            <ul>
-              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-rival.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Rival ships</b>They loop around, swoop down at you, and drop cannonballs. 100 points a hit to sink one, 200 if it is diving.</span></li>
-            </ul>
-            <ul class="sgk-tiers" aria-label="Rival colors">
-              <li><i style="background:#3adb97"></i>Teal: 2 hits, wave 3+</li>
-              <li><i style="background:#57bb41"></i>Green: 3 hits, wave 10+</li>
-              <li><i style="background:#f3ead9"></i>Parchment: 4 hits, wave 15+</li>
-              <li><i style="background:#0b170f"></i>Ink: 5 hits, wave 20+</li>
-              <li><i style="background:#f1d48a"></i>Gold: 10 hits, wave 25+</li>
-            </ul>
-            <ul>
-              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-gunboat.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Gunboat</b>Crosses from the side, firing darts at you. 300 points.</span></li>
-              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-dart.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Dart</b>Dives straight at you from above, and from below too. 150 points.</span></li>
-              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-mine-layer.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Mine-layer</b>Crosses the top, dropping mines. Shoot the mines too. 400 points, 25 a mine.</span></li>
-              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-freighter.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Freighter</b>Slow and tough, 8 hits, and it bursts into 4 rubies. 800 points.</span></li>
-              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-flagship.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Destroyer</b>Every 5th wave. A boss with a hull bar that fires fans of darts. 5,000 points, and it drops a crest.</span></li>
-              <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-lightning.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Lightning and wind</b>From wave 6, a flashing stripe warns where lightning will strike. From wave 8, gusts of wind push your ship.</span></li>
-            </ul>
-            <p>Tough ships get angry at half hull: faster, with a Scarlet glow.</p>
-          </div>
-        </div>
-        <div class="sgk-sec">
-          <p class="sgk-h">Scoring and the loot box</p>
-          <p>Every ship you sink adds its points, and clearing a wave adds 250 times the wave number. Survive 25 waves and loot box 78 floats down. Fly into it to claim it. The top score at 11:59 PM ET every Friday wins 500 hunt points.</p>
-        </div>
-      </section>
-      <!-- /SKY GAUNTLET GUIDE -->
+        </aside>
+      </div>
     </div>
   </div>
 </section>
