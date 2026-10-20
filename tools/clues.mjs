@@ -186,6 +186,7 @@ Haven't I Seen You Before?`],   // on Bard's Linktree (Maurice, 2026-10-16)
   [77, 'TRLVL5'],   // Trench Run: the box is on board 5 (Maurice, 2026-10-16)
   [79, 'the 11th'],   // Find the Constellations: the secret 11th constellation (Maurice, 2026-10-16, Act Three puzzle #26)   // Thread the Needle: the box floats in the 100th gap (Maurice, 2026-10-13)
   [80, '', { img: ART + 'clue-80.gif', alt: 'I love finding a good set of twins.' }],   // Match the Crest (Maurice, 2026-10-16)
+  [82, "Star gazer (level: expert)"],   // The Deep Sky, the secret 11th constellation (Maurice 10/19)
   [86, 'get to the top'],   // The Long Climb (Maurice, 2026-10-16)
   // 87-93 are tricks in loader.js (b2Tricks): type the phrase, drag the Comet out of the header logo, /leaderboard in
   // the first minute of an hour, /questions in high contrast, print this page, copy clue 92, the /newsletter typo.
