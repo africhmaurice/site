@@ -291,6 +291,12 @@
       "source": "pages/act-one-other-countries.html"
     },
     {
+      "slug": "act-two-other-countries",
+      "url": "/act-two-other-countries",
+      "title": "Act Two Other Countries (sent to winners)",
+      "source": "pages/act-two-other-countries.html"
+    },
+    {
       "slug": "aura-spectrum",
       "url": "/oracles-gift/aura-spectrum",
       "title": "The Oracle's Gift: Aura Color Spectrum (Act Two reward at 80k)",
