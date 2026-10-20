@@ -369,8 +369,11 @@ var HG = (function () {
     }).catch(function () {});
   }
 
+  // The weekly board of the game on this page (games/dailyboard.js), when it has one: gate() then covers the puzzle with START.
+  var gateBoard = null;
+
   function start(o) {
-    // o: { key, label, points, startDate, puzzles:[...], storeKey, noun }
+    // o: { key, label, points, startDate, puzzles:[...], storeKey, noun, board }
     var resultEl = document.getElementById('hg-result'), stampEl = document.getElementById('hg-stamp'), nextEl = document.getElementById('hg-next');
     var day = today(), index = dayNum(day) - dayNum(o.startDate);
     var preview = /[?&]hg-day=(\d+)/.exec(location.search);   // preview only: ?hg-day=5 shows puzzle #5
@@ -383,6 +386,12 @@ var HG = (function () {
       for (var i = localStorage.length - 1; i >= 0; i--) { var k = localStorage.key(i); if (k && k.indexOf(o.storeKey + ':') === 0 && k !== KEY) localStorage.removeItem(k); }
     } catch (e) {}
     function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+    // The weekly board (Maurice, 2026-10-20): today's puzzle only (never a ?hg-day= preview), on the server's clock.
+    var board = (o.board && window.HGBoard && puzzle && !preview) ? HGBoard.create({ game: o.key, label: ((document.querySelector('.hg-h1') || {}).textContent || o.label).trim(), day: day, send: send,
+      card: document.querySelector('.hg-card'), lineAfter: document.getElementById('hg-next'), me: function () { return me; },
+      onTime: function (s) { state.secs = s; save(); if (paintClock) paintClock(); if (api.onTime) api.onTime(s); } }) : null;
+    gateBoard = board;
+    if (board && board.started()) state.secs = board.elapsed();
 
     stampEl.innerHTML = esc(pretty(day)) + ' <span style="white-space:nowrap">&middot; ' + esc(o.noun || 'Puzzle') + ' #' + (index + 1) + '</span>';
     function tick() {
@@ -397,6 +406,8 @@ var HG = (function () {
       // Shows the win box: claimed already, one-click claim, or the first-time form.
       win: function (solution, detail, message, extra, pts) {
         var points = pts || o.points;
+        // the board's clock stops here; the solve moment goes to the web app at once
+        if (board) { board.solved({ solution: solution, detail: detail || '' }); if (board.elapsed() != null) state.secs = board.elapsed(); }
         state.done = 'win'; state.sol = solution; state.detail = detail; save();
         resultEl.className = 'hg-result win'; resultEl.style.display = 'block';
         // the game sets api.share = { label, stat, timed, icons } before it calls win
@@ -439,9 +450,11 @@ var HG = (function () {
         function claim() {
           var btn = document.getElementById('hg-claim'), err = document.getElementById('hg-err');
           btn.disabled = true; btn.textContent = 'CLAIMING...';
-          send({ action: 'game', game: o.key, day: day, solution: solution, detail: detail || '',
-            email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country }, function (res) {
-            if (res && res.ok) { state.claimed = res.status || 'new'; save(); return claimed(state.claimed); }
+          var payload = { action: 'game', game: o.key, day: day, solution: solution, detail: detail || '',
+            email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country };
+          if (board) { var bx = board.extra(); for (var bk in bx) payload[bk] = bx[bk]; }   // the ticket, and the page's own clock
+          send(payload, function (res) {
+            if (res && res.ok) { state.claimed = res.status || 'new'; save(); if (board) board.claimed(res); return claimed(state.claimed); }
             btn.disabled = false; btn.textContent = 'TRY AGAIN';
             var why = { stale: 'That puzzle has closed &mdash; only today\'s pays out.', closed: 'The hunt is over, so the daily games no longer earn points.',
               email: 'That email does not look right.', unsolved: 'The Captain could not match your answer to today\'s puzzle.',
@@ -453,6 +466,7 @@ var HG = (function () {
           resultEl.innerHTML = head + '<div class="hg-pts">+' + points + ' POINTS</div><p class="hg-quiet">' + (status === 'already'
             ? 'Already claimed for today &mdash; no need to submit anything.'
             : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>' +
+            (board && board.note() ? '<p class="hg-quiet dbd-note">' + board.note() + '</p>' : '') +
             (NEXT_GAME[o.key] ? '<a class="hg-claim hg-go" href="' + NEXT_GAME[o.key][1] + '">' + NEXT_GAME[o.key][0] + '</a>' : '');
         }
       },
@@ -464,21 +478,25 @@ var HG = (function () {
     };
 
     // The clock: games with a #hg-play area are covered until PLAY, then timed (paused while the tab is hidden).
-    var playEl = document.getElementById('hg-play'), clockEl = null;
+    var playEl = document.getElementById('hg-play'), clockEl = null, paintClock = null;
     function clock() { var s = state.secs || 0; return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
     api.clock = clock;
+    // whole seconds on the board's clock (wall time since START, then the board time once claimed), or null without a board
+    api.elapsed = function () { return board ? board.elapsed() : null; };
     if (playEl && puzzle) {
       state.secs = state.secs || 0;
       gate(playEl, !!(state.started || state.done), function () { if (!state.started) { state.started = true; save(); } });
       clockEl = document.createElement('p'); clockEl.className = 'hg-clock';
-      var box = playEl.parentNode.classList.contains('hg-gatebox') ? playEl.parentNode : playEl;
+      var box = /(^| )(hg-gatebox|dbd-gate)( |$)/.test(playEl.parentNode.className) ? playEl.parentNode : playEl;
       box.parentNode.insertBefore(clockEl, box.nextSibling);
-      var paintClock = function () { clockEl.textContent = (state.done ? 'TIME ' : '') + clock(); };
+      paintClock = function () { clockEl.textContent = (state.done ? 'TIME ' : '') + clock(); };
       paintClock();
       setInterval(function () {
         if (state.done) return paintClock();
-        if (!state.started || document.hidden) return;
-        state.secs++; paintClock(); if (state.secs % 5 === 0) save();
+        if (!state.started) return;
+        var be = api.elapsed();   // on a board the clock is wall time and keeps running while the tab is hidden
+        if (be != null) state.secs = be; else { if (document.hidden) return; state.secs++; }
+        paintClock(); if (state.secs % 5 === 0) save();
       }, 1000);
     }
 
@@ -508,8 +526,7 @@ var HG = (function () {
   // Timed games: the board stays covered until PLAY, so loading the page never starts the clock.
   // gate(el, started, go): started is true when today's game is already under way; go() runs on PLAY (or at once).
   function gate(el, started, go) {
-    if (started) { go(); return; }
-    if (!document.getElementById('hg-gate-css')) {
+    if (!document.getElementById('hg-gate-css')) {   // also on a reload of a game under way, so its clock keeps its look
       var css = document.createElement('style'); css.id = 'hg-gate-css';
       css.textContent = '.hg-gatebox{position:relative;min-height:230px}.hg-clock{text-align:center;font-weight:700;letter-spacing:.08em;font-size:14px;color:#607667;margin:14px 0 0}.hg-gatebox>.hg-gated{visibility:hidden}' +
         '.hg-gate{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;background:#0b170f;border:3px solid #111;text-align:center}' +
@@ -517,6 +534,8 @@ var HG = (function () {
         '.hg-gate p{margin:0;font-weight:700;font-size:15px;letter-spacing:.06em;line-height:1.5;color:#fffffe;max-width:300px}';
       document.head.appendChild(css);
     }
+    if (started) { go(); return; }
+    if (gateBoard) { gateBoard.cover(el, go); return; }   // a board game: its name and START, and the server's clock
     var box = document.createElement('div'); box.className = 'hg-gatebox';
     el.parentNode.insertBefore(box, el); box.appendChild(el); el.classList.add('hg-gated');
     var cover = document.createElement('div'); cover.className = 'hg-gate';
@@ -662,6 +681,180 @@ var HGShare = (function () {
   return { show: show };
 })();
 
+// ---- the weekly board for a daily game (inlined into the seven board games: by scripts/build-games.mjs and
+// scripts/build-new-games.mjs through games/common.js, and pasted into squarespace-wordle.html between DAILYBOARD markers) ----
+// Maurice, 2026-10-20. The puzzle stays covered until START. START asks the web app for a signed ticket for this game
+// and day (action=dailystart) and starts the clock at the same moment. The ticket and the start are kept in
+// localStorage ('thDaily:<game>:<day>'), so a reload keeps the first start: the clock is wall time and never resets
+// or pauses. The solve moment goes to the web app straight away (action=dailysolve), so the claim form never adds to
+// the time; the claim carries the ticket, and the board time the web app answers with is the official one, which
+// the clock then shows. A week runs Saturday 12:00 AM to Friday 11:59:59 PM New York time.
+var HGBoard = (function () {
+  var TZ = 'America/New_York', PFX = 'thDaily:';
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function fmt(s) { s = Math.max(0, Math.floor(+s || 0)); var h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + ('0' + m).slice(-2) : m) + ':' + ('0' + x).slice(-2); }
+  // The Friday that ends the week holding a New York day.
+  function friday(day) {
+    var p = day.split('-'), d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])), add = (5 - d.getUTCDay() + 7) % 7;
+    return new Date(d.getTime() + add * 86400000).toISOString().slice(0, 10);
+  }
+  // Midnight in New York at the start of a day, as a timestamp (EDT or EST, whichever holds that night).
+  function nyMidnight(day) {
+    var p = day.split('-');
+    for (var off = 4; off <= 5; off++) {
+      var t = Date.UTC(+p[0], +p[1] - 1, +p[2], off);
+      var h = new Intl.DateTimeFormat('en-US', { timeZone: TZ, hour: '2-digit', hour12: false }).format(new Date(t));
+      if (+h % 24 === 0) return t;
+    }
+    return Date.UTC(+p[0], +p[1] - 1, +p[2], 5);
+  }
+  function weekEnd(week) { var p = week.split('-'); return nyMidnight(new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + 1)).toISOString().slice(0, 10)); }
+
+  var CSS = '.dbd-gate{position:relative;min-height:260px}.dbd-gate>.dbd-hidden{visibility:hidden}' +
+    '.dbd-cover{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:16px;padding:clamp(48px,8vw,80px) 24px 24px;background:#0b170f;border:3px solid #111;text-align:center}' +
+    '.dbd-cover h2{margin:0;font-family:"Cracked Imperia",Impact,sans-serif;font-weight:400;font-size:clamp(26px,4vw,38px);line-height:1.2;letter-spacing:.03em;color:#a2f590}' +
+    '.dbd-cover button{margin:0;font-family:"Almarai",sans-serif;font-weight:700;font-size:clamp(20px,3vw,26px);letter-spacing:.08em;color:#fffffe;background:#c53200;border:2px solid #fffffe;border-radius:0;padding:16px 48px;cursor:pointer;transition:transform .15s ease,background .15s ease}' +
+    '.dbd-cover button:hover{background:#ff4c0f;transform:scale(1.04)}' +
+    '.dbd-cover p{margin:0;font-family:"Almarai",sans-serif;font-weight:700;font-size:15px;letter-spacing:.04em;line-height:1.5;color:#fffffe;max-width:340px}' +
+    '.dbd-line{text-align:center;font-family:"Almarai",sans-serif;font-weight:700;font-size:clamp(14px,1.7vw,16px);line-height:1.5;color:#213226;max-width:560px;margin:20px auto 0}' +
+    '.dbd-note{font-size:clamp(14px,1.7vw,16px) !important;line-height:1.5 !important;margin:16px auto 0 !important}' +
+    '.dbd-panel{background:#132219;border:2px solid rgba(243,234,217,.18);padding:24px;margin:24px auto 0;display:flex;flex-direction:column;gap:14px;font-family:"Almarai",sans-serif;text-align:left;box-sizing:border-box}' +
+    '.dbd-panel *{box-sizing:border-box}' +
+    '.dbd-ph{margin:0;font-family:"Cracked Imperia",Impact,sans-serif;font-weight:400;font-size:clamp(24px,2.4vw,30px);line-height:1.25;letter-spacing:.03em;color:#a2f590}' +
+    '.dbd-count{margin:0;font-weight:800;font-size:13px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase;color:#c3a6ff}' +
+    '.dbd-board{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}' +
+    '.dbd-board li{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid rgba(243,234,217,.1);font-weight:700;font-size:15px;line-height:1.4}' +
+    '.dbd-board li:last-child{border-bottom:0}' +
+    '.dbd-board i{font-style:normal;font-weight:800;color:#ff4c0f}' +
+    '.dbd-board span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fffffe}' +
+    '.dbd-board b{font-weight:800;color:#fffffe;font-variant-numeric:tabular-nums;white-space:nowrap}' +
+    '.dbd-board li.me span,.dbd-board li.me b{color:#a2f590}' +
+    '.dbd-board .dbd-empty{display:block;grid-column:1/-1;white-space:normal;overflow:visible;color:#f3ead9;font-weight:700}' +
+    '.hg-locked+.dbd-panel{display:none}' +
+    '@media (max-width:420px){.dbd-panel{padding:20px}.dbd-board li{grid-template-columns:26px minmax(0,1fr) auto;gap:10px;font-size:14px}}';
+  function css() { if (document.getElementById('dbd-css')) return; var s = document.createElement('style'); s.id = 'dbd-css'; s.textContent = CSS; document.head.appendChild(s); }
+
+  // o: { game, label, day, send(payload, done), card (the game's panel, the board goes after it), lineAfter (the
+  //      one-line rule goes right after this element), me() (the saved player, to mark their row), onTime(secs) }
+  function create(o) {
+    css();
+    var KEY = PFX + o.game + ':' + o.day, rec = null, pending = false, solve = null, pinging = false;
+    try {
+      rec = JSON.parse(localStorage.getItem(KEY) || 'null');
+      for (var i = localStorage.length - 1; i >= 0; i--) { var k = localStorage.key(i); if (k && k.indexOf(PFX + o.game + ':') === 0 && k !== KEY) localStorage.removeItem(k); }
+    } catch (e) {}
+    function save() { try { localStorage.setItem(KEY, JSON.stringify(rec)); } catch (e) {} }
+    function getTicket() {
+      if (!rec || rec.ticket || rec.end || pending) return;
+      pending = true;
+      o.send({ action: 'dailystart', game: o.game, day: o.day }, function (res) {
+        pending = false;
+        if (!res || !res.ok || !res.ticket || rec.ticket) return;
+        rec.ticket = res.ticket; save();
+        if (solve) ping();
+      });
+    }
+    function ping() {
+      if (!rec || !rec.ticket || !solve || rec.pinged || pinging) return;
+      pinging = true;
+      var p = { action: 'dailysolve', game: o.game, day: o.day, ticket: rec.ticket };
+      for (var k in solve) p[k] = solve[k];
+      o.send(p, function (res) { pinging = false; if (res && res.ok) { rec.pinged = true; save(); } });
+    }
+    if (rec && !rec.end) getTicket();   // started, but the ticket never came back (say the page was closed too soon)
+
+    // ---- the board panel and the one-line rule ----
+    var panel = null, boardEl = null, leftEl = null, week = friday(o.day), note = '';
+    if (o.lineAfter && o.lineAfter.parentNode) {
+      var line = document.createElement('p'); line.className = 'dbd-line';
+      line.textContent = 'Weekly leaderboard: most puzzles solved, then the fastest total time, wins 500 points every Friday at 11:59 PM ET.';
+      o.lineAfter.parentNode.insertBefore(line, o.lineAfter.nextSibling);
+    }
+    if (o.card && o.card.parentNode) {
+      panel = document.createElement('section'); panel.className = 'dbd-panel'; panel.setAttribute('aria-label', o.label + ' weekly board');
+      try { var mw = getComputedStyle(o.card).maxWidth; if (mw && mw !== 'none') panel.style.maxWidth = mw; } catch (e) {}
+      panel.innerHTML = '<h2 class="dbd-ph">This week’s top sky pirates</h2><p class="dbd-count">Board closes in <span class="dbd-left">...</span></p>' +
+        '<ol class="dbd-board"><li><span class="dbd-empty">Loading the board...</span></li></ol>';
+      o.card.parentNode.insertBefore(panel, o.card.nextSibling);
+      boardEl = panel.querySelector('.dbd-board'); leftEl = panel.querySelector('.dbd-left');
+      var tickWeek = function () {
+        var s = Math.max(0, Math.floor((weekEnd(week) - Date.now()) / 1000)), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+        leftEl.textContent = (d ? d + 'd ' : '') + h + 'h ' + ('0' + m).slice(-2) + 'm';
+      };
+      tickWeek(); setInterval(tickWeek, 20000);
+      refresh();
+    }
+    function myName() { var me = (o.me && o.me()) || {}; return me.handle ? '@' + String(me.handle).replace(/^@+/, '') : (me.first_name || ''); }
+    function paint(list) {
+      if (!boardEl) return;
+      if (!list || !list.length) { boardEl.innerHTML = '<li><span class="dbd-empty">No solves yet this week. Be the first.</span></li>'; return; }
+      var mine = myName().toLowerCase();
+      boardEl.innerHTML = list.map(function (r, i) {
+        var me = r.me || (mine && String(r.name).toLowerCase() === mine);
+        return '<li' + (me ? ' class="me"' : '') + '><i>' + (i + 1) + '</i><span>' + esc(r.name) + '</span><b>' + r.solved + ' solved · ' + fmt(r.secs) + ' total</b></li>';
+      }).join('');
+    }
+    function refresh() {
+      if (!boardEl) return;
+      o.send({ action: 'dailytop', game: o.game }, function (res) {
+        if (res && res.ok) { if (res.week) week = res.week; paint(res.top); }
+        else boardEl.innerHTML = '<li><span class="dbd-empty">The board is resting. Try again soon.</span></li>';
+      });
+    }
+
+    return {
+      started: function () { return !!rec; },
+      // whole seconds on the clock: the board's own time once the claim is in, otherwise wall time since START
+      elapsed: function () {
+        if (!rec) return null;
+        if (rec.server != null) return Math.floor(rec.server);
+        return Math.max(0, Math.floor(((rec.end || Date.now()) - rec.local) / 1000));
+      },
+      begin: function () { if (rec) return; rec = { local: Date.now() }; save(); getTicket(); },
+      // The puzzle is solved: stop the clock and tell the web app the moment (with what it needs to check the solve).
+      solved: function (payload) {
+        if (!rec) return;
+        if (!rec.end) { rec.end = Date.now(); save(); }
+        solve = payload || {}; ping();
+      },
+      // Added to the claim.
+      extra: function () {
+        if (!rec || !rec.ticket) return {};
+        return { ticket: rec.ticket, client_secs: rec.end ? Math.round((rec.end - rec.local) / 100) / 10 : '' };
+      },
+      // The claim's answer: the board time becomes the clock's time; the panel shows the new standings.
+      claimed: function (res) {
+        var t = res && res.timed;
+        if (t && t.ok && t.secs != null && rec) { rec.server = t.secs; save(); if (o.onTime) o.onTime(Math.floor(t.secs)); }
+        if (t && t.ok && t.top) paint(t.top); else refresh();
+        note = t && t.ok ? 'Board time: <b>' + fmt(t.secs) + '</b>' + (t.rank ? '. You are #' + t.rank + ' on this week’s board.' : '.')
+          : t && t.error === 'partial' ? 'Only fully solved puzzles count on the weekly board.'
+          : t && t.error === 'check' ? 'That time was too quick to count on the weekly board.'
+          : t && t.error === 'host' ? 'Practice play: not on the board.' : '';
+        return note;
+      },
+      // The line for the claimed box on a later visit.
+      note: function () { return rec && rec.server != null ? 'Board time: <b>' + fmt(rec.server) + '</b>.' : note; },
+      // The START cover over the puzzle (el stays in the page, hidden and out of reach, until START).
+      cover: function (el, go) {
+        var box = document.createElement('div'); box.className = 'dbd-gate';
+        el.parentNode.insertBefore(box, el); box.appendChild(el); el.classList.add('dbd-hidden');
+        el.setAttribute('aria-hidden', 'true'); el.setAttribute('inert', '');
+        var cover = document.createElement('div'); cover.className = 'dbd-cover';
+        cover.innerHTML = '<h2>' + esc(o.label) + '</h2><button type="button">START</button><p>The clock starts the moment you press START and keeps running until you solve it.</p>';
+        box.appendChild(cover);
+        var self = this;
+        cover.querySelector('button').onclick = function () {
+          self.begin(); cover.remove(); el.classList.remove('dbd-hidden'); el.removeAttribute('aria-hidden'); el.removeAttribute('inert'); go();
+        };
+        return box;
+      },
+      fmt: fmt
+    };
+  }
+  return { create: create, fmt: fmt, friday: friday, weekEnd: weekEnd };
+})();
+
 </script>
 <script>
 // The page runs edge to edge: drop the padding of the Squarespace section it sits in,
@@ -669,7 +862,7 @@ var HGShare = (function () {
 (function bleed(){var p=document.getElementById('hg-page'),cw=p&&p.closest('.content-wrapper'),sec=p&&p.closest('.page-section');if(cw){cw.style.paddingTop='0';cw.style.paddingBottom='0';}if(sec)sec.style.minHeight='0';var fe=p&&p.closest('.fluid-engine');if(fe)fe.style.display='block';})();
 </script>
 <script>
-var HG_GAME = {"key":"emoji_reads","label":"Book Icons","points":25,"startDate":"2026-09-24","unlockAt":0,"ready":true,"noun":"Book","storeKey":"thER","puzzles":["eyJlbW9qaSI6IvCfp4zimpTvuI/inqHvuI/imJXwn4+q8J+lkPCfkIkiLCJ0aXRsZSI6IkxlZ2VuZHMgJiBMYXR0ZXMiLCJhdXRob3IiOiJUcmF2aXMgQmFsZHJlZSIsImFjY2VwdCI6WyJsZWdlbmRzIGFuZCBsYXR0ZXMiLCJsZWdlbmRzIGxhdHRlcyIsImxlZ2VuZHMgJiBsYXR0ZXMiXX0=","eyJlbW9qaSI6IuKdhO+4j/CfkLrwn6aB8J+QifCfkZHwn6qRIiwidGl0bGUiOiJBIEdhbWUgb2YgVGhyb25lcyIsImF1dGhvciI6Ikdlb3JnZSBSLiBSLiBNYXJ0aW4iLCJhY2NlcHQiOlsiYSBnYW1lIG9mIHRocm9uZXMiLCJnYW1lIG9mIHRocm9uZXMiXX0=","eyJlbW9qaSI6IvCfj6Hwn6eZ8J+SjfCfkInwn5KwIiwidGl0bGUiOiJUaGUgSG9iYml0IiwiYXV0aG9yIjoiSi4gUi4gUi4gVG9sa2llbiIsImFjY2VwdCI6WyJ0aGUgaG9iYml0IiwiaG9iYml0Il19","eyJlbW9qaSI6IvCflLTirIbvuI/im4/vuI/wn6qQ8J+fofCfj5vvuI/wn5eh77iP8J+QjiIsInRpdGxlIjoiUmVkIFJpc2luZyIsImF1dGhvciI6IlBpZXJjZSBCcm93biIsImFjY2VwdCI6WyJyZWQgcmlzaW5nIl19","eyJlbW9qaSI6IvCfj7nwn5Gn8J+NnvCflKrwn5O68J+QpiIsInRpdGxlIjoiVGhlIEh1bmdlciBHYW1lcyIsImF1dGhvciI6IlN1emFubmUgQ29sbGlucyIsImFjY2VwdCI6WyJ0aGUgaHVuZ2VyIGdhbWVzIiwiaHVuZ2VyIGdhbWVzIl19","eyJlbW9qaSI6IvCfmIjim6rwn6eb8J+QuvCfp53wn6eZ8J+PtOKAjeKYoO+4j/Cfp5/impTvuI8iLCJ0aXRsZSI6IlRoZSBEZXZpbHMiLCJhdXRob3IiOiJKb2UgQWJlcmNyb21iaWUiLCJhY2NlcHQiOlsidGhlIGRldmlscyIsImRldmlscyJdfQ==","eyJlbW9qaSI6IvCfkajwn6my8J+RovCfkIjwn5Wz77iP8J+TuiIsInRpdGxlIjoiRHVuZ2VvbiBDcmF3bGVyIENhcmwiLCJhdXRob3IiOiJNYXR0IERpbm5pbWFuIiwiYWNjZXB0IjpbImR1bmdlb24gY3Jhd2xlciBjYXJsIiwiZGNjIl19","eyJlbW9qaSI6IvCfkbTwn4648J+RkfCfjLLimpTvuI/wn4+f77iP8J+nmfCfkIciLCJ0aXRsZSI6IktpbmdzIG9mIHRoZSBXeWxkIiwiYXV0aG9yIjoiTmljaG9sYXMgRWFtZXMiLCJhY2NlcHQiOlsia2luZ3Mgb2YgdGhlIHd5bGQiLCJraW5ncyBvZiB0aGUgd2lsZCJdfQ==","eyJlbW9qaSI6IuKMmvCfkaXwn5iK8J+puPCflLUiLCJ0aXRsZSI6IldhdGNobWVuIiwiYXV0aG9yIjoiQWxhbiBNb29yZSAmIERhdmUgR2liYm9ucyIsImFjY2VwdCI6WyJ3YXRjaG1lbiIsInRoZSB3YXRjaG1lbiJdfQ==","eyJlbW9qaSI6IvCfkY3wn4yM8J+TmPCfkKw077iP4oOjMu+4j+KDoyIsInRpdGxlIjoiVGhlIEhpdGNoaGlrZXIncyBHdWlkZSB0byB0aGUgR2FsYXh5IiwiYXV0aG9yIjoiRG91Z2xhcyBBZGFtcyIsImFjY2VwdCI6WyJ0aGUgaGl0Y2hoaWtlcnMgZ3VpZGUgdG8gdGhlIGdhbGF4eSIsImhpdGNoaGlrZXJzIGd1aWRlIHRvIHRoZSBnYWxheHkiLCJoaXRjaGhpa2VycyBndWlkZSIsInRoZSBoaXRjaGhpa2VyIHMgZ3VpZGUgdG8gdGhlIGdhbGF4eSJdfQ==","eyJlbW9qaSI6IvCfl6HvuI/wn6qeOe+4j+KDo+KYne+4j/Cfprfwn5Go4oCN8J+msiIsInRpdGxlIjoiVGhlIEJsYWRlIEl0c2VsZiIsImF1dGhvciI6IkpvZSBBYmVyY3JvbWJpZSIsImFjY2VwdCI6WyJ0aGUgYmxhZGUgaXRzZWxmIiwiYmxhZGUgaXRzZWxmIl19","eyJlbW9qaSI6IvCfp6zwn4+d77iP8J+mn/Cfmpnwn6aWIiwidGl0bGUiOiJKdXJhc3NpYyBQYXJrIiwiYXV0aG9yIjoiTWljaGFlbCBDcmljaHRvbiIsImFjY2VwdCI6WyJqdXJhc3NpYyBwYXJrIl19","eyJlbW9qaSI6IvCfjLfwn4yZ8J+qqPCfp5nwn5CJ8J+RufCfjInwn5Sl8J+lt/CfkqMiLCJ0aXRsZSI6IkdhcmRlbnMgb2YgdGhlIE1vb24iLCJhdXRob3IiOiJTdGV2ZW4gRXJpa3NvbiIsImFjY2VwdCI6WyJnYXJkZW5zIG9mIHRoZSBtb29uIiwibWFsYXphbiBnYXJkZW5zIG9mIHRoZSBtb29uIl19","eyJlbW9qaSI6IvCfmoDwn5mP8J+RqOKAjfCfj6vwn5W377iP8J+qqPCfjrYiLCJ0aXRsZSI6IlByb2plY3QgSGFpbCBNYXJ5IiwiYXV0aG9yIjoiQW5keSBXZWlyIiwiYWNjZXB0IjpbInByb2plY3QgaGFpbCBtYXJ5IiwiaGFpbCBtYXJ5Il19","eyJlbW9qaSI6IvCfjKvvuI/wn5Sp8J+qmfCfkZHwn5GXIiwidGl0bGUiOiJNaXN0Ym9ybjogVGhlIEZpbmFsIEVtcGlyZSIsImF1dGhvciI6IkJyYW5kb24gU2FuZGVyc29uIiwiYWNjZXB0IjpbIm1pc3Rib3JuIiwidGhlIGZpbmFsIGVtcGlyZSIsIm1pc3Rib3JuIHRoZSBmaW5hbCBlbXBpcmUiXX0=","eyJlbW9qaSI6IvCfkZHwn5eh77iP8J+Xoe+4j/CfpoXwn6eY8J+ltyIsInRpdGxlIjoiVGhlIEVtcGVyb3IncyBCbGFkZXMiLCJhdXRob3IiOiJCcmlhbiBTdGF2ZWxleSIsImFjY2VwdCI6WyJ0aGUgZW1wZXJvcnMgYmxhZGVzIiwiZW1wZXJvcnMgYmxhZGVzIiwidGhlIGVtcGVyb3IgcyBibGFkZXMiXX0=","eyJlbW9qaSI6IvCfk5zwn5Gl8J+Pq/Cfj5vvuI/imqEiLCJ0aXRsZSI6IlRoZSBXaWxsIG9mIHRoZSBNYW55IiwiYXV0aG9yIjoiSmFtZXMgSXNsaW5ndG9uIiwiYWNjZXB0IjpbInRoZSB3aWxsIG9mIHRoZSBtYW55Iiwid2lsbCBvZiB0aGUgbWFueSJdfQ==","eyJlbW9qaSI6IvCfj5zvuI/wn6qx8J+Mtu+4j/CfkYHvuI8iLCJ0aXRsZSI6IkR1bmUiLCJhdXRob3IiOiJGcmFuayBIZXJiZXJ0IiwiYWNjZXB0IjpbImR1bmUiXX0=","eyJlbW9qaSI6IvCfkZHwn5Gm8J+QlfCfl6HvuI/wn6eq4pig77iPIiwidGl0bGUiOiJBc3Nhc3NpbidzIEFwcHJlbnRpY2UiLCJhdXRob3IiOiJSb2JpbiBIb2JiIiwiYWNjZXB0IjpbImFzc2Fzc2lucyBhcHByZW50aWNlIiwiYXNzYXNzaW4gcyBhcHByZW50aWNlIiwidGhlIGFzc2Fzc2lucyBhcHByZW50aWNlIl19","eyJlbW9qaSI6IvCfkabwn5iI8J+QuvCfkI7wn5GR4pqU77iP8J+boe+4j/CfkbwiLCJ0aXRsZSI6Ik1hbGljZSIsImF1dGhvciI6IkpvaG4gR3d5bm5lIiwiYWNjZXB0IjpbIm1hbGljZSJdfQ==","eyJlbW9qaSI6IjXvuI/ig6Pwn42C8J+Mi/CfjI3wn6qoIiwidGl0bGUiOiJUaGUgRmlmdGggU2Vhc29uIiwiYXV0aG9yIjoiTi4gSy4gSmVtaXNpbiIsImFjY2VwdCI6WyJ0aGUgZmlmdGggc2Vhc29uIiwiZmlmdGggc2Vhc29uIiwidGhlIDV0aCBzZWFzb24iXX0=","eyJlbW9qaSI6IvCfkprwn5O/8J+Pme+4j/Cfl6HvuI/im7DvuI/wn5Go4oCN8J+RqeKAjfCfkabwn6WLIiwidGl0bGUiOiJKYWRlIENpdHkiLCJhdXRob3IiOiJGb25kYSBMZWUiLCJhY2NlcHQiOlsiamFkZSBjaXR5Il19","eyJlbW9qaSI6IvCflIvimIHvuI/wn4+04oCN4pig77iP4pqU77iP8J+MtPCflbfvuI/wn4678J+qqCIsInRpdGxlIjoiQ2VsbG8ncyBHYXRlIiwiYXV0aG9yIjoiTWF1cmljZSBBZnJpY2giLCJhY2NlcHQiOlsiY2VsbG9zIGdhdGUiLCJjZWxsbyBzIGdhdGUiXX0=","eyJlbW9qaSI6IvCfpJbwn5Sq8J+TuvCfjb/wn5iSIiwidGl0bGUiOiJBbGwgU3lzdGVtcyBSZWQiLCJhdXRob3IiOiJNYXJ0aGEgV2VsbHMiLCJhY2NlcHQiOlsiYWxsIHN5c3RlbXMgcmVkIiwibXVyZGVyYm90IiwidGhlIG11cmRlcmJvdCBkaWFyaWVzIiwibXVyZGVyYm90IGRpYXJpZXMiXX0=","eyJlbW9qaSI6IvCfpofwn5Kq8J+qk/Cfj5nvuI/wn6eqIiwidGl0bGUiOiJBYnNvbHV0ZSBCYXRtYW4iLCJhdXRob3IiOiJTY290dCBTbnlkZXIgJiBOaWNrIERyYWdvdHRhIiwiYWNjZXB0IjpbImFic29sdXRlIGJhdG1hbiJdfQ==","eyJlbW9qaSI6IvCfjIrwn4yK8J+RqPCfj7/wn5G08J+RrvCfqoQiLCJ0aXRsZSI6IlJpdmVycyBvZiBMb25kb24iLCJhdXRob3IiOiJCZW4gQWFyb25vdml0Y2giLCJhY2NlcHQiOlsicml2ZXJzIG9mIGxvbmRvbiIsIm1pZG5pZ2h0IHJpb3QiXX0=","eyJlbW9qaSI6IvCfkK3wn6aJ8J+mofCfpo7wn5Sr8J+koCIsInRpdGxlIjoiVGhlIEJ1aWxkZXJzIiwiYXV0aG9yIjoiRGFuaWVsIFBvbGFuc2t5IiwiYWNjZXB0IjpbInRoZSBidWlsZGVycyIsImJ1aWxkZXJzIl19","eyJlbW9qaSI6IuKbk++4j/Cfm7bwn5qj8J+qpuKaofCfkbzwn5CJIiwidGl0bGUiOiJUaGUgU2hhZG93IG9mIHRoZSBHb2RzIiwiYXV0aG9yIjoiSm9obiBHd3lubmUiLCJhY2NlcHQiOlsidGhlIHNoYWRvdyBvZiB0aGUgZ29kcyIsInNoYWRvdyBvZiB0aGUgZ29kcyJdfQ==","eyJlbW9qaSI6IvCfmrY377iP4oOj4o+z8J+UqfCflKrwn5G24pyN77iP8J+qkCIsInRpdGxlIjoiSHlwZXJpb24iLCJhdXRob3IiOiJEYW4gU2ltbW9ucyIsImFjY2VwdCI6WyJoeXBlcmlvbiJdfQ==","eyJlbW9qaSI6IuKal++4j+KcqPCfp6Dim5PvuI/wn5akIiwidGl0bGUiOiJBbGNoZW1pc2VkIiwiYXV0aG9yIjoiU2VuTGluWXUiLCJhY2NlcHQiOlsiYWxjaGVtaXNlZCIsImFsY2hlbWl6ZWQiXX0=","eyJlbW9qaSI6IvCfp5rinaTvuI/wn5CP8J+RtvCfmoDwn5CIIiwidGl0bGUiOiJTYWdhIiwiYXV0aG9yIjoiQnJpYW4gSy4gVmF1Z2hhbiAmIEZpb25hIFN0YXBsZXMiLCJhY2NlcHQiOlsic2FnYSJdfQ==","eyJlbW9qaSI6IvCfp5vwn4+w8J+mh/Cfp4Twn6m4IiwidGl0bGUiOiJEcmFjdWxhIiwiYXV0aG9yIjoiQnJhbSBTdG9rZXIiLCJhY2NlcHQiOlsiZHJhY3VsYSJdfQ==","eyJlbW9qaSI6IvCfkbvwn46T8J+Xne+4j/Cfj5vvuI/wn6m48J+UpSIsInRpdGxlIjoiTmludGggSG91c2UiLCJhdXRob3IiOiJMZWlnaCBCYXJkdWdvIiwiYWNjZXB0IjpbIm5pbnRoIGhvdXNlIiwidGhlIG5pbnRoIGhvdXNlIl19","eyJlbW9qaSI6IvCfkajigI3impXvuI/wn6eq4p6h77iP8J+ZiPCfjKvvuI8iLCJ0aXRsZSI6IlN0cmFuZ2UgQ2FzZSBvZiBEciBKZWt5bGwgYW5kIE1yIEh5ZGUiLCJhdXRob3IiOiJSb2JlcnQgTG91aXMgU3RldmVuc29uIiwiYWNjZXB0IjpbInN0cmFuZ2UgY2FzZSBvZiBkciBqZWt5bGwgYW5kIG1yIGh5ZGUiLCJ0aGUgc3RyYW5nZSBjYXNlIG9mIGRyIGpla3lsbCBhbmQgbXIgaHlkZSIsImRyIGpla3lsbCBhbmQgbXIgaHlkZSIsImpla3lsbCBhbmQgaHlkZSJdfQ==","eyJlbW9qaSI6IvCfj5vvuI/wn6eb8J+MkfCfl6HvuI/inJ3vuI/wn6SsIiwidGl0bGUiOiJFbXBpcmUgb2YgdGhlIFZhbXBpcmUiLCJhdXRob3IiOiJKYXkgS3Jpc3RvZmYiLCJhY2NlcHQiOlsiZW1waXJlIG9mIHRoZSB2YW1waXJlIl19","eyJlbW9qaSI6IvCflKzimqHwn6ef4p2E77iPIiwidGl0bGUiOiJGcmFua2Vuc3RlaW4iLCJhdXRob3IiOiJNYXJ5IFNoZWxsZXkiLCJhY2NlcHQiOlsiZnJhbmtlbnN0ZWluIiwidGhlIG1vZGVybiBwcm9tZXRoZXVzIiwiZnJhbmtlbnN0ZWluIG9yIHRoZSBtb2Rlcm4gcHJvbWV0aGV1cyJdfQ==","eyJlbW9qaSI6IvCfka3wn4+w4pig77iP8J+NrPCfkIjigI3irJsiLCJ0aXRsZSI6IldlIEhhdmUgQWx3YXlzIExpdmVkIGluIHRoZSBDYXN0bGUiLCJhdXRob3IiOiJTaGlybGV5IEphY2tzb24iLCJhY2NlcHQiOlsid2UgaGF2ZSBhbHdheXMgbGl2ZWQgaW4gdGhlIGNhc3RsZSJdfQ==","eyJlbW9qaSI6IvCfj4fwn46D8J+YtPCflbPvuI8iLCJ0aXRsZSI6IlRoZSBMZWdlbmQgb2YgU2xlZXB5IEhvbGxvdyIsImF1dGhvciI6Ildhc2hpbmd0b24gSXJ2aW5nIiwiYWNjZXB0IjpbInRoZSBsZWdlbmQgb2Ygc2xlZXB5IGhvbGxvdyIsImxlZ2VuZCBvZiBzbGVlcHkgaG9sbG93Iiwic2xlZXB5IGhvbGxvdyJdfQ==","eyJlbW9qaSI6IvCfjKrvuI/wn5Gn8J+QtvCfkaDwn5+h8J+bo++4jyIsInRpdGxlIjoiVGhlIFdvbmRlcmZ1bCBXaXphcmQgb2YgT3oiLCJhdXRob3IiOiJMLiBGcmFuayBCYXVtIiwiYWNjZXB0IjpbInRoZSB3b25kZXJmdWwgd2l6YXJkIG9mIG96IiwidGhlIHdpemFyZCBvZiBveiIsIndpemFyZCBvZiBveiIsIndvbmRlcmZ1bCB3aXphcmQgb2Ygb3oiXX0="]};
+var HG_GAME = {"key":"emoji_reads","label":"Book Icons","points":25,"startDate":"2026-09-24","unlockAt":0,"ready":true,"noun":"Book","storeKey":"thER","puzzles":["eyJlbW9qaSI6IvCfp4zimpTvuI/inqHvuI/imJXwn4+q8J+lkPCfkIkiLCJ0aXRsZSI6IkxlZ2VuZHMgJiBMYXR0ZXMiLCJhdXRob3IiOiJUcmF2aXMgQmFsZHJlZSIsImFjY2VwdCI6WyJsZWdlbmRzIGFuZCBsYXR0ZXMiLCJsZWdlbmRzIGxhdHRlcyIsImxlZ2VuZHMgJiBsYXR0ZXMiXX0=","eyJlbW9qaSI6IuKdhO+4j/CfkLrwn6aB8J+QifCfkZHwn6qRIiwidGl0bGUiOiJBIEdhbWUgb2YgVGhyb25lcyIsImF1dGhvciI6Ikdlb3JnZSBSLiBSLiBNYXJ0aW4iLCJhY2NlcHQiOlsiYSBnYW1lIG9mIHRocm9uZXMiLCJnYW1lIG9mIHRocm9uZXMiXX0=","eyJlbW9qaSI6IvCfj6Hwn6eZ8J+SjfCfkInwn5KwIiwidGl0bGUiOiJUaGUgSG9iYml0IiwiYXV0aG9yIjoiSi4gUi4gUi4gVG9sa2llbiIsImFjY2VwdCI6WyJ0aGUgaG9iYml0IiwiaG9iYml0Il19","eyJlbW9qaSI6IvCflLTirIbvuI/im4/vuI/wn6qQ8J+fofCfj5vvuI/wn5eh77iP8J+QjiIsInRpdGxlIjoiUmVkIFJpc2luZyIsImF1dGhvciI6IlBpZXJjZSBCcm93biIsImFjY2VwdCI6WyJyZWQgcmlzaW5nIl19","eyJlbW9qaSI6IvCfj7nwn5Gn8J+NnvCflKrwn5O68J+QpiIsInRpdGxlIjoiVGhlIEh1bmdlciBHYW1lcyIsImF1dGhvciI6IlN1emFubmUgQ29sbGlucyIsImFjY2VwdCI6WyJ0aGUgaHVuZ2VyIGdhbWVzIiwiaHVuZ2VyIGdhbWVzIl19","eyJlbW9qaSI6IvCfmIjim6rwn6eb8J+QuvCfp53wn6eZ8J+PtOKAjeKYoO+4j/Cfp5/impTvuI8iLCJ0aXRsZSI6IlRoZSBEZXZpbHMiLCJhdXRob3IiOiJKb2UgQWJlcmNyb21iaWUiLCJhY2NlcHQiOlsidGhlIGRldmlscyIsImRldmlscyJdfQ==","eyJlbW9qaSI6IvCfkajwn6my8J+RovCfkIjwn5Wz77iP8J+TuiIsInRpdGxlIjoiRHVuZ2VvbiBDcmF3bGVyIENhcmwiLCJhdXRob3IiOiJNYXR0IERpbm5pbWFuIiwiYWNjZXB0IjpbImR1bmdlb24gY3Jhd2xlciBjYXJsIiwiZGNjIl19","eyJlbW9qaSI6IvCfkbTwn4648J+RkfCfjLLimpTvuI/wn4+f77iP8J+nmfCfkIciLCJ0aXRsZSI6IktpbmdzIG9mIHRoZSBXeWxkIiwiYXV0aG9yIjoiTmljaG9sYXMgRWFtZXMiLCJhY2NlcHQiOlsia2luZ3Mgb2YgdGhlIHd5bGQiLCJraW5ncyBvZiB0aGUgd2lsZCJdfQ==","eyJlbW9qaSI6IuKMmvCfkaXwn5iK8J+puPCflLUiLCJ0aXRsZSI6IldhdGNobWVuIiwiYXV0aG9yIjoiQWxhbiBNb29yZSAmIERhdmUgR2liYm9ucyIsImFjY2VwdCI6WyJ3YXRjaG1lbiIsInRoZSB3YXRjaG1lbiJdfQ==","eyJlbW9qaSI6IvCfkY3wn4yM8J+TmPCfkKw077iP4oOjMu+4j+KDoyIsInRpdGxlIjoiVGhlIEhpdGNoaGlrZXIncyBHdWlkZSB0byB0aGUgR2FsYXh5IiwiYXV0aG9yIjoiRG91Z2xhcyBBZGFtcyIsImFjY2VwdCI6WyJ0aGUgaGl0Y2hoaWtlcnMgZ3VpZGUgdG8gdGhlIGdhbGF4eSIsImhpdGNoaGlrZXJzIGd1aWRlIHRvIHRoZSBnYWxheHkiLCJoaXRjaGhpa2VycyBndWlkZSIsInRoZSBoaXRjaGhpa2VyIHMgZ3VpZGUgdG8gdGhlIGdhbGF4eSJdfQ==","eyJlbW9qaSI6IvCfl6HvuI/wn6qeOe+4j+KDo+KYne+4j/Cfprfwn5Go4oCN8J+msiIsInRpdGxlIjoiVGhlIEJsYWRlIEl0c2VsZiIsImF1dGhvciI6IkpvZSBBYmVyY3JvbWJpZSIsImFjY2VwdCI6WyJ0aGUgYmxhZGUgaXRzZWxmIiwiYmxhZGUgaXRzZWxmIl19","eyJlbW9qaSI6IvCfp6zwn4+d77iP8J+mn/Cfmpnwn6aWIiwidGl0bGUiOiJKdXJhc3NpYyBQYXJrIiwiYXV0aG9yIjoiTWljaGFlbCBDcmljaHRvbiIsImFjY2VwdCI6WyJqdXJhc3NpYyBwYXJrIl19","eyJlbW9qaSI6IvCfjLfwn4yZ8J+qqPCfp5nwn5CJ8J+RufCfjInwn5Sl8J+lt/CfkqMiLCJ0aXRsZSI6IkdhcmRlbnMgb2YgdGhlIE1vb24iLCJhdXRob3IiOiJTdGV2ZW4gRXJpa3NvbiIsImFjY2VwdCI6WyJnYXJkZW5zIG9mIHRoZSBtb29uIiwibWFsYXphbiBnYXJkZW5zIG9mIHRoZSBtb29uIl19","eyJlbW9qaSI6IvCfmoDwn5mP8J+RqOKAjfCfj6vwn5W377iP8J+qqPCfjrYiLCJ0aXRsZSI6IlByb2plY3QgSGFpbCBNYXJ5IiwiYXV0aG9yIjoiQW5keSBXZWlyIiwiYWNjZXB0IjpbInByb2plY3QgaGFpbCBtYXJ5IiwiaGFpbCBtYXJ5Il19","eyJlbW9qaSI6IvCfjKvvuI/wn5Sp8J+qmfCfkZHwn5GXIiwidGl0bGUiOiJNaXN0Ym9ybjogVGhlIEZpbmFsIEVtcGlyZSIsImF1dGhvciI6IkJyYW5kb24gU2FuZGVyc29uIiwiYWNjZXB0IjpbIm1pc3Rib3JuIiwidGhlIGZpbmFsIGVtcGlyZSIsIm1pc3Rib3JuIHRoZSBmaW5hbCBlbXBpcmUiXX0=","eyJlbW9qaSI6IvCfkZHwn5eh77iP8J+Xoe+4j/CfpoXwn6eY8J+ltyIsInRpdGxlIjoiVGhlIEVtcGVyb3IncyBCbGFkZXMiLCJhdXRob3IiOiJCcmlhbiBTdGF2ZWxleSIsImFjY2VwdCI6WyJ0aGUgZW1wZXJvcnMgYmxhZGVzIiwiZW1wZXJvcnMgYmxhZGVzIiwidGhlIGVtcGVyb3IgcyBibGFkZXMiXX0=","eyJlbW9qaSI6IvCfk5zwn5Gl8J+Pq/Cfj5vvuI/imqEiLCJ0aXRsZSI6IlRoZSBXaWxsIG9mIHRoZSBNYW55IiwiYXV0aG9yIjoiSmFtZXMgSXNsaW5ndG9uIiwiYWNjZXB0IjpbInRoZSB3aWxsIG9mIHRoZSBtYW55Iiwid2lsbCBvZiB0aGUgbWFueSJdfQ==","eyJlbW9qaSI6IvCfj5zvuI/wn6qx8J+Mtu+4j/CfkYHvuI8iLCJ0aXRsZSI6IkR1bmUiLCJhdXRob3IiOiJGcmFuayBIZXJiZXJ0IiwiYWNjZXB0IjpbImR1bmUiXX0=","eyJlbW9qaSI6IvCfkZHwn5Gm8J+QlfCfl6HvuI/wn6eq4pig77iPIiwidGl0bGUiOiJBc3Nhc3NpbidzIEFwcHJlbnRpY2UiLCJhdXRob3IiOiJSb2JpbiBIb2JiIiwiYWNjZXB0IjpbImFzc2Fzc2lucyBhcHByZW50aWNlIiwiYXNzYXNzaW4gcyBhcHByZW50aWNlIiwidGhlIGFzc2Fzc2lucyBhcHByZW50aWNlIl19","eyJlbW9qaSI6IvCfkabwn5iI8J+QuvCfkI7wn5GR4pqU77iP8J+boe+4j/CfkbwiLCJ0aXRsZSI6Ik1hbGljZSIsImF1dGhvciI6IkpvaG4gR3d5bm5lIiwiYWNjZXB0IjpbIm1hbGljZSJdfQ==","eyJlbW9qaSI6IjXvuI/ig6Pwn42C8J+Mi/CfjI3wn6qoIiwidGl0bGUiOiJUaGUgRmlmdGggU2Vhc29uIiwiYXV0aG9yIjoiTi4gSy4gSmVtaXNpbiIsImFjY2VwdCI6WyJ0aGUgZmlmdGggc2Vhc29uIiwiZmlmdGggc2Vhc29uIiwidGhlIDV0aCBzZWFzb24iXX0=","eyJlbW9qaSI6IvCfkprwn5O/8J+Pme+4j/Cfl6HvuI/im7DvuI/wn5Go4oCN8J+RqeKAjfCfkabwn6WLIiwidGl0bGUiOiJKYWRlIENpdHkiLCJhdXRob3IiOiJGb25kYSBMZWUiLCJhY2NlcHQiOlsiamFkZSBjaXR5Il19","eyJlbW9qaSI6IvCflIvimIHvuI/wn4+04oCN4pig77iP4pqU77iP8J+MtPCflbfvuI/wn4678J+qqCIsInRpdGxlIjoiQ2VsbG8ncyBHYXRlIiwiYXV0aG9yIjoiTWF1cmljZSBBZnJpY2giLCJhY2NlcHQiOlsiY2VsbG9zIGdhdGUiLCJjZWxsbyBzIGdhdGUiXX0=","eyJlbW9qaSI6IvCfpJbwn5Sq8J+TuvCfjb/wn5iSIiwidGl0bGUiOiJBbGwgU3lzdGVtcyBSZWQiLCJhdXRob3IiOiJNYXJ0aGEgV2VsbHMiLCJhY2NlcHQiOlsiYWxsIHN5c3RlbXMgcmVkIiwibXVyZGVyYm90IiwidGhlIG11cmRlcmJvdCBkaWFyaWVzIiwibXVyZGVyYm90IGRpYXJpZXMiXX0=","eyJlbW9qaSI6IvCfpofwn5Kq8J+qk/Cfj5nvuI/wn6eqIiwidGl0bGUiOiJBYnNvbHV0ZSBCYXRtYW4iLCJhdXRob3IiOiJTY290dCBTbnlkZXIgJiBOaWNrIERyYWdvdHRhIiwiYWNjZXB0IjpbImFic29sdXRlIGJhdG1hbiJdfQ==","eyJlbW9qaSI6IvCfjIrwn4yK8J+RqPCfj7/wn5G08J+RrvCfqoQiLCJ0aXRsZSI6IlJpdmVycyBvZiBMb25kb24iLCJhdXRob3IiOiJCZW4gQWFyb25vdml0Y2giLCJhY2NlcHQiOlsicml2ZXJzIG9mIGxvbmRvbiIsIm1pZG5pZ2h0IHJpb3QiXX0=","eyJlbW9qaSI6IvCfkK3wn6aJ8J+mofCfpo7wn5Sr8J+koCIsInRpdGxlIjoiVGhlIEJ1aWxkZXJzIiwiYXV0aG9yIjoiRGFuaWVsIFBvbGFuc2t5IiwiYWNjZXB0IjpbInRoZSBidWlsZGVycyIsImJ1aWxkZXJzIl19","eyJlbW9qaSI6IuKbk++4j/Cfm7bwn5qj8J+qpuKaofCfkbzwn5CJIiwidGl0bGUiOiJUaGUgU2hhZG93IG9mIHRoZSBHb2RzIiwiYXV0aG9yIjoiSm9obiBHd3lubmUiLCJhY2NlcHQiOlsidGhlIHNoYWRvdyBvZiB0aGUgZ29kcyIsInNoYWRvdyBvZiB0aGUgZ29kcyJdfQ==","eyJlbW9qaSI6IvCfmrY377iP4oOj4o+z8J+UqfCflKrwn5G24pyN77iP8J+qkCIsInRpdGxlIjoiSHlwZXJpb24iLCJhdXRob3IiOiJEYW4gU2ltbW9ucyIsImFjY2VwdCI6WyJoeXBlcmlvbiJdfQ==","eyJlbW9qaSI6IuKal++4j+KcqPCfp6Dim5PvuI/wn5akIiwidGl0bGUiOiJBbGNoZW1pc2VkIiwiYXV0aG9yIjoiU2VuTGluWXUiLCJhY2NlcHQiOlsiYWxjaGVtaXNlZCIsImFsY2hlbWl6ZWQiXX0=","eyJlbW9qaSI6IvCfp5rinaTvuI/wn5CP8J+RtvCfmoDwn5CIIiwidGl0bGUiOiJTYWdhIiwiYXV0aG9yIjoiQnJpYW4gSy4gVmF1Z2hhbiAmIEZpb25hIFN0YXBsZXMiLCJhY2NlcHQiOlsic2FnYSJdfQ==","eyJlbW9qaSI6IvCfp5vwn4+w8J+mh/Cfp4Twn6m4IiwidGl0bGUiOiJEcmFjdWxhIiwiYXV0aG9yIjoiQnJhbSBTdG9rZXIiLCJhY2NlcHQiOlsiZHJhY3VsYSJdfQ==","eyJlbW9qaSI6IvCfkbvwn46T8J+Xne+4j/Cfj5vvuI/wn6m48J+UpSIsInRpdGxlIjoiTmludGggSG91c2UiLCJhdXRob3IiOiJMZWlnaCBCYXJkdWdvIiwiYWNjZXB0IjpbIm5pbnRoIGhvdXNlIiwidGhlIG5pbnRoIGhvdXNlIl19","eyJlbW9qaSI6IvCfkajigI3impXvuI/wn6eq4p6h77iP8J+ZiPCfjKvvuI8iLCJ0aXRsZSI6IlN0cmFuZ2UgQ2FzZSBvZiBEciBKZWt5bGwgYW5kIE1yIEh5ZGUiLCJhdXRob3IiOiJSb2JlcnQgTG91aXMgU3RldmVuc29uIiwiYWNjZXB0IjpbInN0cmFuZ2UgY2FzZSBvZiBkciBqZWt5bGwgYW5kIG1yIGh5ZGUiLCJ0aGUgc3RyYW5nZSBjYXNlIG9mIGRyIGpla3lsbCBhbmQgbXIgaHlkZSIsImRyIGpla3lsbCBhbmQgbXIgaHlkZSIsImpla3lsbCBhbmQgaHlkZSJdfQ==","eyJlbW9qaSI6IvCfj5vvuI/wn6eb8J+MkfCfl6HvuI/inJ3vuI/wn6SsIiwidGl0bGUiOiJFbXBpcmUgb2YgdGhlIFZhbXBpcmUiLCJhdXRob3IiOiJKYXkgS3Jpc3RvZmYiLCJhY2NlcHQiOlsiZW1waXJlIG9mIHRoZSB2YW1waXJlIl19","eyJlbW9qaSI6IvCflKzimqHwn6ef4p2E77iPIiwidGl0bGUiOiJGcmFua2Vuc3RlaW4iLCJhdXRob3IiOiJNYXJ5IFNoZWxsZXkiLCJhY2NlcHQiOlsiZnJhbmtlbnN0ZWluIiwidGhlIG1vZGVybiBwcm9tZXRoZXVzIiwiZnJhbmtlbnN0ZWluIG9yIHRoZSBtb2Rlcm4gcHJvbWV0aGV1cyJdfQ==","eyJlbW9qaSI6IvCfka3wn4+w4pig77iP8J+NrPCfkIjigI3irJsiLCJ0aXRsZSI6IldlIEhhdmUgQWx3YXlzIExpdmVkIGluIHRoZSBDYXN0bGUiLCJhdXRob3IiOiJTaGlybGV5IEphY2tzb24iLCJhY2NlcHQiOlsid2UgaGF2ZSBhbHdheXMgbGl2ZWQgaW4gdGhlIGNhc3RsZSJdfQ==","eyJlbW9qaSI6IvCfj4fwn46D8J+YtPCflbPvuI8iLCJ0aXRsZSI6IlRoZSBMZWdlbmQgb2YgU2xlZXB5IEhvbGxvdyIsImF1dGhvciI6Ildhc2hpbmd0b24gSXJ2aW5nIiwiYWNjZXB0IjpbInRoZSBsZWdlbmQgb2Ygc2xlZXB5IGhvbGxvdyIsImxlZ2VuZCBvZiBzbGVlcHkgaG9sbG93Iiwic2xlZXB5IGhvbGxvdyJdfQ==","eyJlbW9qaSI6IvCfjKrvuI/wn5Gn8J+QtvCfkaDwn5+h8J+bo++4jyIsInRpdGxlIjoiVGhlIFdvbmRlcmZ1bCBXaXphcmQgb2YgT3oiLCJhdXRob3IiOiJMLiBGcmFuayBCYXVtIiwiYWNjZXB0IjpbInRoZSB3b25kZXJmdWwgd2l6YXJkIG9mIG96IiwidGhlIHdpemFyZCBvZiBveiIsIndpemFyZCBvZiBveiIsIndvbmRlcmZ1bCB3aXphcmQgb2Ygb3oiXX0="],"board":true};
 (function () {
   var g = HG.start(HG_GAME);
   if (!g) return;
