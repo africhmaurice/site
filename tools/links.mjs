@@ -41,7 +41,7 @@ const edCard = (e) => {
     + `<span class="lk-edin"><img class="lk-edimg${e.frame ? ' lk-edframe' : ''}" src="${asset(e.img)}" alt=""><b>${esc(e.label)}</b><small>${esc(e.note)}</small>`
     + `<span class="lk-edcta">${e.soldOut ? 'Sold Out!' : 'Pre-Order'}</span></span>`
     + (e.soldOut ? '<span class="lk-edstamp" aria-hidden="true">Sold Out</span>' : '');
-  const attrs = `class="lk-ed${e.soldOut ? ' lk-ed-out' : ''}" data-link="${e.id}" data-section="editions" aria-label="${esc(e.label)}${e.soldOut ? ' (Sold Out)' : ''}"`;
+  const attrs = `class="lk-ed${e.soldOut ? ' lk-ed-out' : ''}" data-link="${e.id}" data-section="editions"${e.soldOut ? ' data-soldout="1"' : ''} aria-label="${esc(e.label)}${e.soldOut ? ' (Sold Out)' : ''}"`;
   return e.open ? `<button type="button" ${attrs} data-open="${e.open}">${body}</button>` : `<a href="${esc(e.url)}"${ext(e.url)} ${attrs}>${body}</a>`;
 };
 const editions = E ? `<section class="lk-eds" id="lk-editions"><h2 class="lk-h">${esc(E.title)}</h2><div class="lk-edgrid">${E.items.map(edCard).join('')}</div></section>` : '';
@@ -270,7 +270,11 @@ ${sections}
       // A tap on a store (the editions row, the Pre-Order grid, or the Amazon icon) is the pre-order signal ads
       // optimize for: the sale itself happens on the store's site, where the Pixel can't see it. PreOrderTap is the
       // same tap as a custom event, which an Engagement campaign can optimize for (Maurice, 10/14).
-      if (/^(preorder|editions)$/.test(a.getAttribute('data-section')) || a.getAttribute('data-link') === 'amazon') {
+      // Not pre-orders (Maurice, 10/20): a sold-out edition (the Signed Broken Binding, until it's back in stock) and
+      // All Retailers (it only opens the /preorder page, where the store tap counts) get their own events instead.
+      if (a.hasAttribute('data-soldout')) px('trackCustom', 'BrokenBindingTap', { link: a.getAttribute('data-link'), section: a.getAttribute('data-section'), campaign: CMP });
+      else if (a.getAttribute('data-link') === 'all-retailers') px('trackCustom', 'AllRetailersTap', { section: a.getAttribute('data-section'), campaign: CMP });
+      else if (/^(preorder|editions)$/.test(a.getAttribute('data-section')) || a.getAttribute('data-link') === 'amazon') {
         px('track', 'InitiateCheckout', { content_name: "Cello's Gate", content_category: a.getAttribute('data-link'), campaign: CMP });
         px('trackCustom', 'PreOrderTap', { link: a.getAttribute('data-link'), section: a.getAttribute('data-section'), campaign: CMP });
       }

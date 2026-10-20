@@ -140,6 +140,9 @@
     var a = e.target && e.target.closest && e.target.closest('a[href]');
     if (!a || a.hasAttribute('data-link')) return;
     var store = storeOf(a);
+    // The Signed Broken Binding edition is sold out (Maurice, 10/20): its taps get their own event, not a pre-order.
+    // When it's back in stock, delete this line so it counts as a pre-order again.
+    if (store === 'thebrokenbindingsub.com') { px('trackCustom', 'BrokenBindingTap', { page: location.pathname }); return; }
     if (store) {
       px('track', 'InitiateCheckout', { content_name: "Cello's Gate", store: store, page: location.pathname });
       px('trackCustom', 'PreOrderTap', { store: store, page: location.pathname });
