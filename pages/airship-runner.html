@@ -15,6 +15,10 @@
      the lootbox.gs patch is deployed. ?runner-mock=1 forces the mock on a live page.
      The player is the hunt's usual thLoot:me (shared with the loot box page and the daily games).
      Runs pause when the tab is hidden; prefers-reduced-motion gets a calm mode (no shake, flashes, or debris).
+     PAUSE (Maurice 10/19): a Pause button under the score row; P or Esc pauses and resumes (Esc on the loot box panel
+     closes it to the Paused screen); the level banner and pickup toast stop while paused. Save progress was tried and
+     dropped (Maurice 10/19); a leftover 'ma-save-airship-runner' entry in localStorage is cleared on load.
+     DRAFT copy (Maurice 10/19): "Pause", "Resume" (the Paused screen button, was KEEP FLYING).
      DRAFT copy (all mine, none of it Maurice's yet): "Sky Pirate high-score race", "Five lanes, one airship, and
      a whole sky trying to knock you out of it. Dodge left, dodge right, and fly as far as you can.", "Top score at
      11:59 PM ET every Friday wins 500 points.", "Ready to fly?", "Swipe or tap left and right to change lanes.",
@@ -43,6 +47,9 @@
 #ma-runner .ar-cell{background:#132219;border:2px solid rgba(243,234,217,.18);padding:8px 6px;text-align:center;display:flex;flex-direction:column;gap:4px;min-width:0}
 #ma-runner .ar-cell span{font-weight:800;font-size:11px;line-height:1.3;letter-spacing:.12em;color:#89fbcb}
 #ma-runner .ar-cell b{font-weight:800;font-size:clamp(16px,2.4vw,20px);line-height:1.2;color:#fffffe;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* the Pause button row (Maurice 10/19) */
+#ma-runner .ar-ctrls{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+#ma-runner .ar-btn.ar-sm{font-size:13px;padding:10px 16px}
 #ma-runner .ar-stage{position:relative;width:100%;height:min(68vh,700px);min-height:420px;border:2px solid rgba(243,234,217,.25);background:#1a1236;overflow:hidden;
   touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 #ma-runner canvas{display:block;width:100%;height:100%;touch-action:pan-y;cursor:pointer}
@@ -169,6 +176,9 @@
         <div class="ar-cell"><span>TIME</span><b data-hud="time">0:00</b></div>
         <div class="ar-cell"><span>PRIZES</span><b data-hud="prizes">0/4</b></div>
       </div>
+      <div class="ar-ctrls">
+        <button type="button" class="ar-btn ghost ar-sm ar-pausebtn" disabled>Pause</button>
+      </div>
       <div class="ar-stage">
         <canvas aria-label="Airship Runner game. Use the left and right arrow keys, or swipe, to change lanes."></canvas>
         <p class="ar-banner" aria-live="polite"></p>
@@ -184,7 +194,7 @@
         <div class="ar-ov clear ar-pause" hidden>
           <div class="ar-in">
             <p class="ar-big">Paused</p>
-            <button type="button" class="ar-btn big ar-resume">KEEP FLYING</button>
+            <button type="button" class="ar-btn big ar-resume">Resume</button>
           </div>
         </div>
         <div class="ar-ov ar-loot" hidden>
@@ -769,6 +779,10 @@ var ArcadeCard = (function () {
   /* ---- controls ---- */
   function move(d){if(mode!=='run')return;var n=Math.max(0,Math.min(4,S.lane+d));if(n!==S.lane){S.lane=n;S.lanes++;}}
   document.addEventListener('keydown',function(e){
+    var tg=e.target;if(tg&&/^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName))return;
+    // paused: P or Esc resumes; the loot box panel: Esc closes it to the Paused screen
+    if(mode==='paused'&&(e.key==='Escape'||e.key==='p'||e.key==='P')){e.preventDefault();resume();return;}
+    if(mode==='box'&&e.key==='Escape'){e.preventDefault();lootOv.hidden=true;pauseOv.hidden=false;mode='paused';ctl();return;}
     if(mode==='run'){
       var k=e.key;
       if(k==='ArrowLeft'||k==='a'||k==='A'){e.preventDefault();move(-1);}
@@ -778,7 +792,7 @@ var ArcadeCard = (function () {
     }
   });
   var tx0=0,ty0=0,tUsed=false;
-  setInterval(function(){stage.classList.toggle('ar-live',mode==='run');},120);
+  setInterval(function(){stage.classList.toggle('ar-live',mode==='run');ctl();},120);
   cv.addEventListener('touchstart',function(e){if(mode!=='run')return;e.preventDefault();var t=e.changedTouches[0];tx0=t.clientX;ty0=t.clientY;tUsed=false;},{passive:false});
   cv.addEventListener('touchmove',function(e){
     if(mode!=='run')return;e.preventDefault();var t=e.changedTouches[0],dx=t.clientX-tx0;
@@ -794,19 +808,26 @@ var ArcadeCard = (function () {
   /* ---- start, pause, loot box, crash, game over ---- */
   function start(){
     cover.hidden=overOv.hidden=true;
-    S=newRun();mode='run';paintHud();
+    S=newRun();mode='run';paintHud();ctl();
     var r=stage.getBoundingClientRect();if(r.top<0||r.bottom>window.innerHeight){try{stage.scrollIntoView({block:'center',behavior:calm?'auto':'smooth'});}catch(e){}}
     var run=S;
     api('runstart',{},function(res){run.ticket=res&&res.ok?res.ticket:'';var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});
     go();
   }
-  function pause(){if(mode!=='run')return;mode='paused';pauseOv.hidden=false;paintHud();}
-  function resume(){if(mode!=='paused'&&mode!=='box')return;pauseOv.hidden=lootOv.hidden=true;mode='run';go();}
+  function pause(){if(mode!=='run')return;mode='paused';pauseOv.hidden=false;paintHud();
+    // the level banner and pickup toast stop too
+    clearTimeout(bannerT);clearTimeout(toastT);banner.classList.remove('on');toastEl.className='ar-toast';ctl();}
+  function resume(){if(mode!=='paused'&&mode!=='box')return;pauseOv.hidden=lootOv.hidden=true;mode='run';go();ctl();}
+  // the Pause button (Maurice 10/19): live only during a run; reads Resume while paused
+  var pauseBtn=$('.ar-pausebtn');
+  function ctl(){var live=mode==='run'||mode==='paused';pauseBtn.disabled=!live;var t=mode==='paused'?'Resume':'Pause';if(pauseBtn.textContent!==t)pauseBtn.textContent=t;}
+  pauseBtn.addEventListener('click',function(){if(mode==='paused')resume();else pause();});
+  try{localStorage.removeItem('ma-save-airship-runner');}catch(e){}   // left over from the dropped Save progress test (10/19)
   document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});
   window.addEventListener('blur',function(){pause();});
-  function openBox(){mode='box';lootOv.hidden=false;paintHud();draw();}
+  function openBox(){mode='box';lootOv.hidden=false;paintHud();draw();ctl();}
   function crash(){
-    mode='crash';S.dead=0;S.shake=calm?0:1;
+    mode='crash';S.dead=0;S.shake=calm?0:1;ctl();
     if(!calm)for(var i=0;i<18;i++){var a=Math.random()*6.3,v=60+Math.random()*160;S.fx.push({x:S.x,y:shipY,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.6+Math.random()*.5,c:i%2?'rgba(255,76,15,':'rgba(243,234,217,'});}
     paintHud();
   }
@@ -917,7 +938,7 @@ var ArcadeCard = (function () {
   var rT=0;window.addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(resize,120);});
   resize();paintHud();
   // Preview only (local file, localhost, or github.io with ?runner-test=1): lets the preview script read the run.
-  if(PREVIEW_HOST.test(location.hostname)&&/[?&]runner-test=1\b/.test(location.search))window.__arTest={run:function(){return S;},lanes:function(){return laneX;},shipY:function(){return shipY;},mode:function(){return mode;}};
+  if(PREVIEW_HOST.test(location.hostname)&&/[?&]runner-test=1\b/.test(location.search))window.__arTest={run:function(){return S;},lanes:function(){return laneX;},shipY:function(){return shipY;},mode:function(){return mode;},crash:function(){crash();},box:function(){openBox();}};
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){build();draw();});
 })();
 </script>

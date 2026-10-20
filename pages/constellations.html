@@ -23,6 +23,14 @@
      (its shape and name in a panel; Close, Esc, or a click outside shuts it). The secret opens once it is revealed.
      Constellation names are Maurice's (from his file names): Sky Pirate Salute, Torches, Brass Point, Mark of the Crest,
      Goma, Trench, Drake, Axe, Dragon, and Trench Logo. Stars are picked from the dots he drew on each outline.
+     SAVE PROGRESS (Maurice 10/19): a "Save progress" button (under the Charted count, in the page flow, not in the tools bar pinned on phones) keeps the drawing in progress (the stars tapped, in order)
+     on this device in localStorage ma-save-constellations ({v:1,savedAt,layout,path}). Charted constellations stay in
+     ma-stars-charted as before. On load a saved drawing offers Continue or Start over; it only opens on the same kind
+     of screen (portrait or landscape sky), and star ids are checked against the sky. The save is deleted when a
+     drawing charts a constellation (the secret one too) and on Start over. No clock here, so no Pause.
+     DRAFT copy (10/19): "Save progress", "Saved on this device.", "Couldn't save on this device.", "You have a saved
+     game from <time>.", "You have a saved game from <time>, but it was made on a different screen size, so it can't
+     open here.", "Continue", and "Start over".
      ============================================================ -->
 
 <style>
@@ -76,7 +84,13 @@
 #ma-stars .st-box{display:block;margin:0;padding:0;border:0;background:none;cursor:pointer;transition:transform .15s ease}
 #ma-stars .st-box:hover,#ma-stars .st-box:focus-visible{transform:scale(1.05)}
 #ma-stars .st-box img{display:block;width:clamp(160px,30vw,220px);height:auto}
+#ma-stars .st-keep{width:100%;max-width:1200px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
+#ma-stars .st-saved{font-weight:700;font-size:14px;line-height:1.4;color:#89fbcb}
+#ma-stars .st-resume{width:100%;max-width:1200px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 20px;padding:20px 24px;border:2px solid #c3a6ff;background:#120f22}
+#ma-stars .st-resume p{margin:0;font-weight:700;font-size:15px;line-height:1.5;color:#f3ead9}
+#ma-stars .st-rbtns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
 @media (max-width:760px){
+  #ma-stars .st-keep{justify-content:center}
   #ma-stars .st-row{grid-template-columns:repeat(2,minmax(0,1fr))}
   #ma-stars .st-slot{min-height:64px;padding:10px 12px}
   #ma-stars .st-slot span{font-size:13px}
@@ -93,12 +107,14 @@
     <h1 class="st-h1">Find the Constellations</h1>
     <p class="st-how">Find each constellation in the list below and draw it yourself: tap its stars to connect them, then press Check. Get at least 90% of its stars and it's charted.</p>
   </div>
+  <div class="st-resume" hidden role="region" aria-label="Saved game"><p class="st-rtext"></p><div class="st-rbtns"><button class="st-btn st-rgo solid" type="button">Continue</button><button class="st-btn st-rnew" type="button">Start over</button></div></div>
   <div class="st-sky" role="application" aria-label="Night sky. Tap stars to connect them, then press Check."><canvas></canvas></div>
   <div class="st-tools"><button class="st-btn st-undo" type="button" disabled>Undo</button><button class="st-btn st-clear" type="button" disabled>Clear</button><button class="st-btn st-check solid" type="button" disabled>Check</button><span class="st-sel"></span></div>
   <div class="st-bar">
     <p class="st-count">Charted 0 of 0</p>
     <p class="st-msg" aria-live="polite"></p>
   </div>
+  <div class="st-keep"><button class="st-btn st-save" type="button" disabled>Save progress</button><span class="st-saved" aria-live="polite"></span></div>
   <ol class="st-row" aria-label="Constellations"></ol>
   <div class="st-view" hidden role="dialog" aria-modal="true" aria-label="Constellation"><div class="st-card"><h2 class="st-vname"></h2><div class="st-vart"></div><p class="st-vstate"></p><button class="st-btn st-vclose" type="button">Close</button></div></div>
   <div class="st-win" hidden>
@@ -275,7 +291,7 @@
     if(best.extra>allowed){say(MSG.extra);return;}
     if(charted[best.s.id]){say(MSG.again);clearPath();return;}
     if(best.s.secret&&!secretOpen()){say(MSG.locked);return;}
-    charted[best.s.id]=1;chartedAt[best.s.id]=performance.now();save();clearPath();
+    charted[best.s.id]=1;chartedAt[best.s.id]=performance.now();save();clearPath();dropSave();
     var won=renderRow();
     if(won){say(MSG.all);setTimeout(function(){try{winEl.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});}catch(e){}},reduce?0:900);}
     else if(secretOpen()&&!charted[SECRET.id]&&best.s.id!==SECRET.id)say(MSG.charted+best.s.name+'. '+MSG.secret);
@@ -284,8 +300,8 @@
   }
 
   // ---------- tapping stars ----------
-  var undoB=root.querySelector('.st-undo'),clearB=root.querySelector('.st-clear'),checkB=root.querySelector('.st-check'),selEl=root.querySelector('.st-sel');
-  function tools(){undoB.disabled=clearB.disabled=!path.length;checkB.disabled=path.length<2;selEl.textContent=path.length?path.length+' star'+(path.length===1?'':'s')+' connected':'';kick();}
+  var undoB=root.querySelector('.st-undo'),clearB=root.querySelector('.st-clear'),checkB=root.querySelector('.st-check'),saveB=root.querySelector('.st-save'),selEl=root.querySelector('.st-sel');
+  function tools(){undoB.disabled=clearB.disabled=saveB.disabled=!path.length;checkB.disabled=path.length<2;selEl.textContent=path.length?path.length+' star'+(path.length===1?'':'s')+' connected':'';kick();}
   function clearPath(){path=[];tools();}
   function toWorld(cx,cy){var r=cv.getBoundingClientRect();return{x:(cx-r.left)/S,y:(cy-r.top)/S};}
   /* the nearest star to a tap, constellation star or not, within a finger's reach */
@@ -310,13 +326,47 @@
 
   boxBtn.addEventListener('click',function(){location.href=atob(K).split('').reverse().join('');});
 
+  // ---------- save progress (Maurice 10/19): the drawing in progress, kept on this device ----------
+  var SAVE='ma-save-constellations',resEl=root.querySelector('.st-resume'),savedEl=root.querySelector('.st-saved'),savedT=0;
+  function lay(){return L&&L.portrait?'portrait':'landscape';}
+  /* a star by its id, only if that star is in this sky (c<constellation>_<star> or b<background star>) */
+  function star(id){
+    if(typeof id!=='string'||!L)return null;var m=/^c(\d{1,3})_(\d{1,4})$/.exec(id);
+    if(m){var p=L.pl[+m[1]],st=p&&p.stars[+m[2]];return st?{x:st[0],y:st[1],id:'c'+(+m[1])+'_'+(+m[2])}:null;}
+    m=/^b(\d{1,6})$/.exec(id);if(m){var b=L.bg[+m[1]];return b?{x:b[0],y:b[1],id:'b'+(+m[1])}:null;}
+    return null;
+  }
+  function readSave(){try{var o=JSON.parse(localStorage.getItem(SAVE)||'null');return o&&typeof o==='object'&&o.v===1?o:null;}catch(e){return null;}}
+  function dropSave(){try{localStorage.removeItem(SAVE);}catch(e){}resEl.hidden=true;}
+  function saveNow(){
+    var ok=true;
+    try{localStorage.setItem(SAVE,JSON.stringify({v:1,savedAt:Date.now(),layout:lay(),path:path.map(function(q){return q.id;})}));}catch(e){ok=false;}
+    savedEl.textContent=ok?'Saved on this device.':'Couldn’t save on this device.';clearTimeout(savedT);savedT=setTimeout(function(){savedEl.textContent='';},2500);
+    if(ok)resEl.hidden=true;
+  }
+  function restore(o){
+    var out=[];(Array.isArray(o.path)?o.path.slice(0,5000):[]).forEach(function(id){var q=star(id);if(q&&!(out.length&&out[out.length-1].id===q.id))out.push(q);});
+    path=out;tools();
+  }
+  function ago(t){var s=Math.max(0,(Date.now()-t)/1000),n;if(s<60)return'a moment ago';if(s<3600){n=Math.round(s/60);return n+' minute'+(n===1?'':'s')+' ago';}
+    if(s<86400){n=Math.round(s/3600);return n+' hour'+(n===1?'':'s')+' ago';}n=Math.round(s/86400);return n+' day'+(n===1?'':'s')+' ago';}
+  function offer(){
+    var o=readSave();if(!o){resEl.hidden=true;return;}var t=+o.savedAt,same=o.layout===lay();if(!isFinite(t)||t<=0)t=Date.now();
+    resEl.querySelector('.st-rtext').textContent='You have a saved game from '+ago(t)+(same?'.':', but it was made on a different screen size, so it can’t open here.');
+    resEl.querySelector('.st-rgo').hidden=!same;resEl.hidden=false;
+  }
+  saveB.addEventListener('click',saveNow);
+  resEl.querySelector('.st-rgo').addEventListener('click',function(){var o=readSave();if(!o){resEl.hidden=true;return;}if(o.layout!==lay()){offer();return;}restore(o);resEl.hidden=true;});
+  resEl.querySelector('.st-rnew').addEventListener('click',function(){dropSave();clearPath();});
+
   // ---------- go ----------
   renderRow();
   layout();
-  var rz=0;window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(layout,120);});
+  offer();
+  var rz=0;window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(function(){layout();if(!resEl.hidden)offer();},120);});
   if(!reduce)raf=requestAnimationFrame(loop);
-  root.__stars={shapes:ALL,layout:function(){return L;},scale:function(){return S;},charted:charted,path:function(){return path;},check:check,clear:clearPath,
-    tap:function(id){var m=/^c(\d+)_(\d+)$/.exec(id),q;if(m){var st=L.pl[+m[1]].stars[+m[2]];q={x:st[0],y:st[1],id:id};}else{var b=L.bg[+id.slice(1)];q={x:b[0],y:b[1],id:id};}path.push(q);tools();}}; // test hook
+  root.__stars={shapes:ALL,layout:function(){return L;},scale:function(){return S;},charted:charted,path:function(){return path;},check:check,clear:clearPath,saveKey:SAVE,save:saveNow,
+    tap:function(id){var q=star(id);if(q){path.push(q);tools();}}}; // test hook
 })();
 </script>
 <script>/* PARALLAX v2 (Maurice, 2026-10-16): a library picture the size of the screen behind the game, moving at 30% of the scroll */(function(){

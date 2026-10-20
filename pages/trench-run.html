@@ -26,6 +26,9 @@
      "Ready", "The gate is open", "Spotted", "Boost", "Checkpoint", "Cloaked", "Board clear", "Loot box 77",
      "You found it. Click the box to claim it.", "Keep flying", "Shot down", "Play again", "Paused", "Resume",
      HUD labels Score / Board / Gate / Lives / Pause.
+     PAUSE (Maurice 10/19): Pause, P, or Esc (and a hidden tab) freezes every clock, ship, beam, cannon, door, and timer;
+     no key, swipe, or pad press steers until Resume, and the frame clock restarts on Resume so nothing jumps. The HUD may
+     wrap to a second line so a big score never pushes Pause off the board. No Save progress here (Maurice 10/19).
      ============================================================ -->
 
 <style>
@@ -46,6 +49,7 @@
 #ma-chase .ch-pausebtn{margin:0;padding:8px 12px;border:1px solid rgba(243,234,217,.45);background:none;color:#f3ead9;font:700 12px/1.2 'Almarai',sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
 #ma-chase .ch-pausebtn:hover{border-color:#89fbcb;color:#89fbcb}
 #ma-chase .ch-pausebtn[disabled]{opacity:.35;cursor:default;border-color:rgba(243,234,217,.45);color:#f3ead9}
+#ma-chase .ch-hud{flex-wrap:wrap;row-gap:12px}
 #ma-chase .ch-board{position:relative;border:2px solid rgba(243,234,217,.55);background:#0b170f center/cover no-repeat;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 #ma-chase .ch-cv{display:block;touch-action:none}
 #ma-chase .ch-ov{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px 20px;background:rgba(11,23,15,.88);overflow:auto}
@@ -193,6 +197,8 @@
   var root=document.getElementById('ma-chase');
   if(!root||root.getAttribute('data-ready'))return;
   root.setAttribute('data-ready','1');
+  /* Save progress was tried in preview and dropped (Maurice 10/19): clear any save left behind by that preview */
+  try{localStorage.removeItem('ma-save-trench-run');}catch(e){}
   var k='WlJETk0zRVk9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
   function claim(){location.href=atob(k).split('').reverse().join('');}
 
@@ -797,7 +803,7 @@
   }
 
   /* ---- input ---- */
-  function steer(i){if(!player)return;player.next=DIRS[i].slice();if(state==='play'&&!player.dir[0]&&!player.dir[1]&&center(player.x)&&center(player.y))playerDecide(player);}
+  function steer(i){if(!player||paused||!active())return;player.next=DIRS[i].slice();if(state==='play'&&!player.dir[0]&&!player.dir[1]&&center(player.x)&&center(player.y))playerDecide(player);}
   var KEYS={ArrowUp:0,KeyW:0,ArrowLeft:1,KeyA:1,ArrowDown:2,KeyS:2,ArrowRight:3,KeyD:3};
   window.addEventListener('keydown',function(e){
     if(!document.body.contains(root))return;

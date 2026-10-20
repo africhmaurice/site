@@ -34,6 +34,11 @@
      "Paused" / "Keep flying"; the box hint "Fly into the loot box!"; the win heading "You caught it!" and
      "Loot box 76 is yours. Tap the box to claim it."; the bar labels "Best:" and "Goal: 100 gaps";
      the calm note "Calm skies on".
+     Pause (Maurice, 10/19): a control row under the sky with "Pause" (P or Escape too; it reads "Resume" while paused).
+     Pause freezes the sky, towers, chests, the ship, and the flying time; Resume puts the ship back on hold and the next
+     tap flies on (no time jump). Save progress was tried and dropped the same day; the page clears any leftover
+     localStorage['ma-save-thread-the-needle'] on load.
+     DRAFT copy (10/19): "Pause", "Resume" (the paused panel's button, was "Keep flying").
      ============================================================ -->
 
 <style>
@@ -95,6 +100,8 @@
 #ma-flappy .fl-board li.me span,#ma-flappy .fl-board li.me b{color:#a2f590}
 #ma-flappy .fl-board .fl-empty{display:block;grid-column:1/-1;white-space:normal;overflow:visible;color:#f3ead9;font-weight:700}
 @media (max-width:760px){#ma-flappy .fl-panel{padding:20px}}
+#ma-flappy .fl-ctl{width:min(100%,920px);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px}
+#ma-flappy .fl-btn.ghost:disabled,#ma-flappy .fl-btn.ghost:disabled:hover{opacity:.4;cursor:not-allowed;background:transparent;color:#fffffe;transform:none}
 #ma-flappy .fl-weekly{margin:0;max-width:560px;padding:12px 20px;border:2px solid #ff4c0f;font-weight:800;font-size:clamp(13px,1.4vw,15px);line-height:1.5;letter-spacing:.08em;text-transform:uppercase;color:#fffffe}
 </style>
 <section id="ma-flappy" aria-label="Thread the Needle airship game">
@@ -125,11 +132,12 @@
     <canvas></canvas>
     <div class="fl-ov fl-start"><h2>Thread the Needle</h2><p>One tap, one puff of lift. Don&rsquo;t touch the rocks.</p><button class="fl-btn fl-go" type="button">Cast off</button></div>
     <div class="fl-ov dead fl-dead" hidden><h2>Crashed!</h2><p class="fl-dline"></p><p class="fl-dscore"></p><p class="fl-dmsg" role="status"></p><button class="fl-box fl-box2" type="button" aria-label="Open loot box 76" hidden><img src="https://africhmaurice.github.io/leaderboard/loot/76.png" alt="Loot box 76"></button><button class="fl-btn fl-re" type="button">Fly again</button><button class="fl-btn ghost fl-cardbtn" type="button" hidden>Export my card</button></div>
-    <div class="fl-ov fl-pause" hidden><h2>Paused</h2><button class="fl-btn fl-res" type="button">Keep flying</button></div>
+    <div class="fl-ov fl-pause" hidden><h2>Paused</h2><button class="fl-btn fl-res" type="button">Resume</button></div>
     <div class="fl-ov win fl-win" hidden><h2>You caught it!</h2><p>Loot box 76 is yours. Tap the box to claim it.</p>
       <button class="fl-box" type="button" aria-label="Open loot box 76"><img loading="lazy" decoding="async" src="https://africhmaurice.github.io/leaderboard/loot/76.png" alt="Loot box 76"></button>
       <button class="fl-btn ghost fl-re2" type="button">Keep flying</button></div>
   </div>
+  <div class="fl-ctl"><button class="fl-btn ghost fl-pz" type="button" disabled>Pause</button></div>
   <div class="fl-bar"><span class="fl-best">Best: 0</span><span class="fl-calm" hidden>Calm skies on</span><span>Goal: 100 gaps</span></div>
   <div class="fl-post" hidden><p class="fl-msg" role="status"></p><div class="fl-who" hidden></div></div>
   <div class="fl-panel">
@@ -352,7 +360,7 @@ var ArcadeCard = (function () {
     var run=S;run.ticket=null;run.ticketWait=[];postEl.hidden=true;whoEl.hidden=true;whoEl.innerHTML='';
     api('needlestart',{},function(res){run.ticket=res&&res.ok?res.ticket:'';var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});}
   function liveRun(){return S&&(S.state==='play'||S.state==='ready'||S.state==='resume');}
-  setInterval(function(){stage.classList.toggle('fl-live',!!liveRun());},120);
+  setInterval(function(){stage.classList.toggle('fl-live',!!liveRun());ctlSync();},120);
   cv.addEventListener('touchstart',function(e){if(liveRun())e.preventDefault();},{passive:false});
   cv.addEventListener('touchmove',function(e){if(liveRun())e.preventDefault();},{passive:false});
   cv.addEventListener('pointerdown',function(e){if(e.button>0)return;e.preventDefault();tap();});
@@ -360,7 +368,7 @@ var ArcadeCard = (function () {
   d.querySelector('.fl-re').addEventListener('click',begin);
   d.querySelector('.fl-cardbtn').addEventListener('click',function(){if(window.ArcadeCard)ArcadeCard.scrollTo();});
   d.querySelector('.fl-re2').addEventListener('click',function(){ovWin.hidden=true;S.state='resume';try{stage.focus({preventScroll:true});}catch(e){}});
-  d.querySelector('.fl-res').addEventListener('click',function(){ovPause.hidden=true;S.state='resume';});
+  d.querySelector('.fl-res').addEventListener('click',unpause);
   function claim(){location.href=atob(K).split('').reverse().join('');}
   d.querySelector('.fl-win .fl-box').addEventListener('click',claim);d.querySelector('.fl-box2').addEventListener('click',claim);
   document.addEventListener('keydown',function(e){
@@ -368,18 +376,22 @@ var ArcadeCard = (function () {
     var t=e.target;if(t&&t!==stage&&/^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(t.tagName)&&t.getClientRects().length)return;
     var r=stage.getBoundingClientRect();if(r.bottom<0||r.top>window.innerHeight)return;
     if(S.state==='title'||(S.state==='dead'&&!ovDead.hidden)){e.preventDefault();begin();return;}
-    if(S.state==='paused'){e.preventDefault();ovPause.hidden=true;S.state='resume';return;}
+    if(S.state==='paused'){e.preventDefault();unpause();return;}
     if(tap())e.preventDefault();
   });
   // Bring the whole stage on screen when a run starts.
   function view(){var r=stage.getBoundingClientRect();if(r.top<60||r.bottom>window.innerHeight)stage.scrollIntoView({block:'center',behavior:calm?'auto':'smooth'});}
-  function pause(){if(S.state==='play'){S.state='paused';ovPause.hidden=false;}}
+  // Pause (Maurice 10/19): from a run in flight, on hold, or waiting for its first tap. Everything freezes; Resume puts
+  // the ship back on hold (or back to waiting) and resets the frame clock, so no time passes while paused.
+  function pause(){if(S.state==='play'||S.state==='resume'||S.state==='ready'){S.was=S.state==='ready'?'ready':'resume';S.state='paused';ovPause.hidden=false;ctlSync();}}
+  function unpause(){if(S.state!=='paused')return;ovPause.hidden=true;S.state=S.was==='ready'?'ready':'resume';last=0;acc=0;ctlSync();try{stage.focus({preventScroll:true});}catch(e){}}
   document.addEventListener('visibilitychange',function(){if(document.hidden)pause();last=0;acc=0;});
-  if('IntersectionObserver' in window)new IntersectionObserver(function(es){es.forEach(function(en){if(en.intersectionRatio<.35)pause();});},{threshold:[0,.35,1]}).observe(stage);
+  if('IntersectionObserver' in window)new IntersectionObserver(function(es){es.forEach(function(en){if(en.intersectionRatio<.35&&S.state==='play')pause();});},{threshold:[0,.35,1]}).observe(stage);
 
   // ---- simulation ----
   function hitRect(cx,cy,r,x,y,w,h){var nx=Math.max(x,Math.min(cx,x+w)),ny=Math.max(y,Math.min(cy,y+h));var dx=cx-nx,dy=cy-ny;return dx*dx+dy*dy<r*r;}
   function step(dt){
+    if(S.state==='paused')return;
     S.t+=dt;S.prop+=dt*(S.state==='play'?40:18);
     if(S.shake>0)S.shake=Math.max(0,S.shake-dt*3);
     for(var i=S.sparks.length-1;i>=0;i--){var p=S.sparks[i];p.vy+=700*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;if(p.life<=0)S.sparks.splice(i,1);}
@@ -436,7 +448,7 @@ var ArcadeCard = (function () {
   function showWin(){ovWin.hidden=false;}
 
   // ---- drawing ----
-  function moved(){return S.state==='play'||S.state==='dead'?1:.35;}
+  function moved(){return S.state==='paused'?0:S.state==='play'||S.state==='dead'?1:.35;}
   var scroll=0;
   // one mist cloud at a time drifts past behind the towers, every few seconds, a little slower than the towers
   var MIST=[],mistT=1.5;
@@ -615,6 +627,19 @@ var ArcadeCard = (function () {
     dev.innerHTML='<span>PREVIEW: START AT GAP</span>'+[1,40,100,200,300,500].map(function(g){return '<button type="button" class="fl-btn ghost" data-g="'+g+'" style="padding:8px 14px;font-size:12px">'+g+'</button>';}).join('');
     stage.parentNode.insertBefore(dev,stage);
     dev.addEventListener('click',function(e){var g=e.target.getAttribute&&e.target.getAttribute('data-g');if(!g)return;begin();S.score=+g-1;S.n=+g-1;S.lastGy=H/2;});}
+
+  // ---- the Pause button (Maurice, 10/19) ----
+  var pzBtn=d.querySelector('.fl-pz');
+  try{localStorage.removeItem('ma-save-thread-the-needle');}catch(e){} /* a save left from the dropped Save progress test */
+  function ctlSync(){var p=S.state==='paused';pzBtn.disabled=!(p||liveRun());var lb=p?'Resume':'Pause';if(pzBtn.textContent!==lb)pzBtn.textContent=lb;}
+  pzBtn.addEventListener('click',function(){if(S.state==='paused')unpause();else{pause();try{stage.focus({preventScroll:true});}catch(e){}}});
+  document.addEventListener('keydown',function(e){
+    if((e.key!=='p'&&e.key!=='P'&&e.key!=='Escape')||e.ctrlKey||e.metaKey||e.altKey)return;
+    var t=e.target;if(t&&/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))return;
+    if(S.state==='paused'){e.preventDefault();unpause();}else if(liveRun()){e.preventDefault();pause();}
+  });
+  ctlSync();
+  if(window.__flapTest&&window.__flap){window.__flap.pause=pause;window.__flap.unpause=unpause;}
 
   // ---- loop ----
   var last=0,acc=0;

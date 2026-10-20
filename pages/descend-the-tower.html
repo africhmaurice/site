@@ -24,6 +24,11 @@
      with on-screen buttons on phones. Reduced motion: no shake and no sparks.
      DRAFT copy (not Maurice's words yet): the heading, the how-to line, every floor's one-line instruction in FLOORS,
      the fail lines in FAIL, "Floor N of 10", "Best: floor N", "Back to floor 1", the win heading and line.
+     PAUSE (Maurice 10/19): a "Pause" button above the tower (or P, or Escape, or hiding the tab) freezes the floor clock,
+     the claw, the physics, and the floor-change animations, blocks all input, and shows "Paused" with Resume over the
+     tower; Resume carries on with no time jump. Pausing mid-pull on the catapult lets go of the pull. There is no save
+     (Maurice 10/19); a leftover ma-save-descend-the-tower from testing is deleted on load.
+     DRAFT copy (10/19): "Pause", "Paused", "Resume".
      ============================================================ -->
 
 <style>
@@ -59,6 +64,9 @@
 #ma-tower .tw-win p{margin:0;font-size:clamp(16px,1.7vw,19px);line-height:1.5;color:#fffffe;max-width:440px}
 #ma-tower .tw-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(56vw,240px)}
 #ma-tower .tw-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 30px rgba(162,245,144,.4))}
+#ma-tower .tw-ctl{width:min(100%,600px);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px}
+#ma-tower .tw-ctl .tw-btn{font-size:13px;padding:10px 18px}
+#ma-tower .tw-btn:disabled{opacity:.45;cursor:default;background:#c53200}
 @media (max-width:520px){#ma-tower .tw-hud{font-size:11px;letter-spacing:.08em}}
 </style>
 <section id="ma-tower" aria-label="Descend the Tower">
@@ -66,8 +74,10 @@
   <h1 class="tw-h1">Descend the Tower</h1>
   <p class="tw-how">Get the loot box down ten floors, a different challenge on each one. Fail a floor and it's back to the top.</p>
   <div class="tw-hud"><span class="tw-floor">Floor 1 of 10</span><span class="tw-best">Best: floor 1</span></div>
+  <div class="tw-ctl"><button class="tw-btn tw-pause" type="button" disabled>Pause</button></div>
   <div class="tw-stage" tabindex="0" role="application" aria-label="Descend the Tower game"><canvas></canvas>
     <div class="tw-ov tw-start"><h2>Ten floors down</h2><p>Each floor tells you what to do. Fail one and the box goes back to floor 1.</p><button class="tw-btn tw-go" type="button">Start</button></div>
+    <div class="tw-ov tw-paused" hidden><h2>Paused</h2><button class="tw-btn tw-resume-btn" type="button">Resume</button></div>
   </div>
   <p class="tw-msg" aria-live="polite"></p>
   <div class="tw-pad" aria-label="Controls"><button type="button" data-k="l">Left</button><button type="button" data-k="j">Jump</button><button type="button" data-k="r">Right</button></div>
@@ -394,11 +404,24 @@
   function drawClock(){if(!timed()||(state!=='intro'&&state!=='play'))return;var sec=Math.max(0,Math.ceil(tl)),red=sec<=5&&state==='play';
     ctx.fillStyle='rgba(11,23,15,.85)';ctx.fillRect(W-80,8,68,40);ctx.strokeStyle=red?'#ff4c0f':'#89fbcb';ctx.lineWidth=2;ctx.strokeRect(W-79,9,66,38);
     if(red&&!still&&(tl%1)<.4)return;ctx.fillStyle=red?'#ff4c0f':'#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font="400 30px 'Cracked Imperia',Impact,sans-serif";ctx.fillText(String(sec),W-46,29);ctx.textBaseline='alphabetic';}
-  function enter(k){n=k;cur=F[n];cur.init();tl=clockFor(k);state='intro';phase=1.3;if(n>best){best=n;lsSet('ma-tower-best',String(best));}hud();say(cur.how);}
-  function clear(){if(state!=='play')return;state='drop';phase=.8;if(n===10){state='won';setTimeout(showWin,still?100:600);}}
-  function fail(line){if(state!=='play')return;state='fail';phase=1.8;shake=still?0:1;say(line||FAIL[missI++%FAIL.length],true);}
-  function showWin(){lsSet('ma-tower-won','1');winEl.hidden=false;pad.classList.remove('on');say('Ten floors down!');try{winEl.scrollIntoView({block:'center',behavior:still?'auto':'smooth'});}catch(e){}}
+  function enter(k){n=k;cur=F[n];cur.init();tl=clockFor(k);state='intro';phase=1.3;if(n>best){best=n;lsSet('ma-tower-best',String(best));}hud();say(cur.how);ctl();}
+  function clear(){if(state!=='play')return;state='drop';phase=.8;if(n===10){state='won';setTimeout(showWin,still?100:600);}ctl();}
+  function fail(line){if(state!=='play')return;state='fail';phase=1.8;shake=still?0:1;say(line||FAIL[missI++%FAIL.length],true);ctl();}
+  function showWin(){lsSet('ma-tower-won','1');winEl.hidden=false;pad.classList.remove('on');ctl();say('Ten floors down!');try{winEl.scrollIntoView({block:'center',behavior:still?'auto':'smooth'});}catch(e){}}
   d.querySelector('.tw-go').addEventListener('click',function(){startOv.hidden=true;enter(1);try{stage.focus({preventScroll:true});}catch(e){}});
+
+  /* ---- pause (Maurice 10/19) ---- */
+  try{localStorage.removeItem('ma-save-descend-the-tower');}catch(e){}/* no saves: clear any left from testing */
+  var paused=false,pauseBtn=d.querySelector('.tw-pause'),pauseOv=d.querySelector('.tw-paused');
+  function live(){return state==='intro'||state==='play'||state==='drop'||state==='fail';}
+  function ctl(){pauseBtn.disabled=!live();pauseBtn.textContent=paused?'Resume':'Pause';}
+  function pause(){if(paused||!live())return;paused=true;down=null;
+    if(cur&&cur.keys){cur.keys.l=cur.keys.r=cur.keys.j=0;}Array.prototype.forEach.call(pad.querySelectorAll('button'),function(b){b.classList.remove('down');});
+    if(n===3&&cur.hold&&!cur.b){cur.hold=false;cur.p=0;cur.pt=0;}/* a half-pulled catapult lets go of its pull */
+    pauseOv.hidden=false;ctl();try{pauseOv.querySelector('button').focus({preventScroll:true});}catch(e){}}
+  function resume(){if(!paused)return;paused=false;last=0;acc=0;pauseOv.hidden=true;ctl();try{stage.focus({preventScroll:true});}catch(e){}}
+  function toggle(){if(paused)resume();else pause();}
+  pauseBtn.addEventListener('click',toggle);pauseOv.querySelector('button').addEventListener('click',resume);
   d.querySelector('.tw-box').addEventListener('click',function(){location.href=atob(K).split('').reverse().join('');});
   /* preview hub only (window.__pv): jump to any floor so Maurice can see them all; never on the live site */
   if(window.__pv){
@@ -430,25 +453,28 @@
   function world(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H};}
   var down=null;
   cv.addEventListener('touchstart',function(e){e.preventDefault();},{passive:false});cv.addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
-  stage.addEventListener('pointercancel',function(){if(cur&&cur.release)cur.release();});stage.addEventListener('pointerleave',function(){if(cur&&cur.release)cur.release();});
-  stage.addEventListener('pointerdown',function(e){if(e.button>0||state!=='play')return;e.preventDefault();var w=world(e);down=w;if(cur.move)cur.move(w.x,w.y);if(cur.tap&&n!==9)cur.tap(w.x,w.y);});
-  stage.addEventListener('pointermove',function(e){if(state!=='play')return;var w=world(e);if(cur.move)cur.move(w.x,w.y);});
-  stage.addEventListener('pointerup',function(e){if(cur&&cur.release)cur.release();if(!down||state!=='play'){down=null;return;}var w=world(e);if(n===9){if(Math.hypot(w.x-down.x,w.y-down.y)>10)cur.swipe(down.x,down.y,w.x,w.y);else cur.tap(w.x,w.y);}down=null;});
-  function keyset(k,v){if(n===10&&cur&&cur.keys)cur.keys[k]=v;}
+  stage.addEventListener('pointercancel',function(){if(!paused&&cur&&cur.release)cur.release();});stage.addEventListener('pointerleave',function(){if(!paused&&cur&&cur.release)cur.release();});
+  stage.addEventListener('pointerdown',function(e){if(e.button>0||state!=='play'||paused)return;e.preventDefault();var w=world(e);down=w;if(cur.move)cur.move(w.x,w.y);if(cur.tap&&n!==9)cur.tap(w.x,w.y);});
+  stage.addEventListener('pointermove',function(e){if(state!=='play'||paused)return;var w=world(e);if(cur.move)cur.move(w.x,w.y);});
+  stage.addEventListener('pointerup',function(e){if(paused){down=null;return;}if(cur&&cur.release)cur.release();if(!down||state!=='play'){down=null;return;}var w=world(e);if(n===9){if(Math.hypot(w.x-down.x,w.y-down.y)>10)cur.swipe(down.x,down.y,w.x,w.y);else cur.tap(w.x,w.y);}down=null;});
+  function keyset(k,v){if(paused&&v)return;if(n===10&&cur&&cur.keys)cur.keys[k]=v;}
   document.addEventListener('keydown',function(e){var t2=e.target;if(t2&&/^(INPUT|TEXTAREA|SELECT)$/.test(t2.tagName))return;if(state==='title'||!winEl.hidden)return;
+    if((e.key==='p'||e.key==='P'||e.key==='Escape')&&!e.altKey&&!e.ctrlKey&&!e.metaKey){if(live()||paused){e.preventDefault();toggle();}return;}
+    if(paused)return;
     var r=stage.getBoundingClientRect();if(r.bottom<0||r.top>window.innerHeight)return;
     if(n===10){if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')keyset('l',1);else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')keyset('r',1);else if(e.key===' '||e.key==='ArrowUp'||e.key==='w'||e.key==='W')keyset('j',1);else return;e.preventDefault();return;}
     if((e.key===' '||e.code==='Space')&&state==='play'&&cur.tap&&[1,3,4,6,8].indexOf(n)>=0){e.preventDefault();if(!e.repeat||n===3)cur.tap(0,0);}});
-  document.addEventListener('keyup',function(e){if((e.key===' '||e.code==='Space')&&cur&&cur.release)cur.release();if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')keyset('l',0);if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')keyset('r',0);if(e.key===' '||e.key==='ArrowUp'||e.key==='w'||e.key==='W')keyset('j',0);});
+  document.addEventListener('keyup',function(e){if((e.key===' '||e.code==='Space')&&cur&&cur.release&&!paused)cur.release();if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')keyset('l',0);if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')keyset('r',0);if(e.key===' '||e.key==='ArrowUp'||e.key==='w'||e.key==='W')keyset('j',0);});
   Array.prototype.forEach.call(pad.querySelectorAll('button'),function(b){var k=b.getAttribute('data-k');
-    b.addEventListener('pointerdown',function(e){e.preventDefault();keyset(k,1);b.classList.add('down');try{b.setPointerCapture(e.pointerId);}catch(er){}});
+    b.addEventListener('pointerdown',function(e){e.preventDefault();if(paused)return;keyset(k,1);b.classList.add('down');try{b.setPointerCapture(e.pointerId);}catch(er){}});
     ['pointerup','pointercancel','pointerleave'].forEach(function(ev){b.addEventListener(ev,function(){keyset(k,0);b.classList.remove('down');});});});
 
-  var last=0,acc=0;function frame(now){if(!last)last=now;var dt=Math.min(.1,(now-last)/1000);last=now;acc+=dt;while(acc>=1/120){step(1/120);acc-=1/120;}draw();requestAnimationFrame(frame);}
-  document.addEventListener('visibilitychange',function(){last=0;acc=0;});requestAnimationFrame(frame);hud();
+  var last=0,acc=0;function frame(now){if(!last)last=now;var dt=Math.min(.1,(now-last)/1000);last=now;if(paused){acc=0;}else{acc+=dt;while(acc>=1/120){step(1/120);acc-=1/120;}}draw();requestAnimationFrame(frame);}
+  document.addEventListener('visibilitychange',function(){last=0;acc=0;if(document.hidden)pause();});requestAnimationFrame(frame);hud();
 
   /* test hooks, only with ?preview=1 and window.__towerTest set before load */
-  if(window.__towerTest&&/[?&]preview=1\b/.test(location.search))window.__tower={go:function(k){startOv.hidden=true;enter(k);state='play';},floor:function(){return n;},state:function(){return state;},cur:function(){return cur;},clear:clear};
+  if(window.__towerTest&&/[?&]preview=1\b/.test(location.search))window.__tower={go:function(k){startOv.hidden=true;enter(k);state='play';ctl();},floor:function(){return n;},state:function(){return state;},cur:function(){return cur;},clear:clear,fail:fail,
+    paused:function(){return paused;},pause:pause,resume:resume,clock:function(){return tl;},best:function(){return best;}};
 })();
 </script>
 <script>/* PARALLAX v2 (Maurice, 2026-10-16): a library picture the size of the screen behind the game, moving at 30% of the scroll */(function(){

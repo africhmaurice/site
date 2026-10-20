@@ -10,6 +10,11 @@
      No progress bar. The title and controls line show at the start and fade once you begin climbing.
      Art: the climber is Little Izzy (86-izzy.png, Maurice 10/16). Island, ground, cloud, sun, and moon are his 86-*.png (10/16). Not his yet: the stars, clouds, sun, and moon are drawn in code until Maurice draws them.
      DRAFT copy (mine): the controls lines and "The top!".
+     PAUSE (Maurice 10/19): a "Pause" button in the top-right corner (or P, or Escape, or hiding the tab) freezes Izzy,
+     the drifting islands, the twinkling stars, and the climb's day-to-night sky, blocks the controls, and shows "Paused"
+     with Resume; Resume carries on with no time jump. There is no save (Maurice 10/19); a leftover
+     ma-save-the-long-climb from testing is deleted on load.
+     DRAFT copy (10/19): "Pause", "Paused", "Resume".
      ============================================================ -->
 
 <style>
@@ -34,11 +39,22 @@
 #ma-climb .lc-box{display:block;width:clamp(150px,22vh,230px);padding:0;margin:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 #ma-climb .lc-box img{display:block;width:100%;height:auto;filter:drop-shadow(0 0 30px rgba(255,214,120,.55))}
 #ma-climb .lc-box:focus-visible{outline:3px solid #89fbcb;outline-offset:8px}
+#ma-climb .lc-ctl{position:absolute;top:calc(16px + env(safe-area-inset-top,0px));right:16px;z-index:7;display:flex;flex-direction:column;align-items:flex-end;gap:12px;max-width:calc(100% - 32px)}
+#ma-climb .lc-row{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:12px}
+#ma-climb .lc-btn{min-height:44px;margin:0;padding:10px 18px;font-family:'Almarai',sans-serif;font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#fffffe;cursor:pointer;
+  background:rgba(11,23,15,.72);border:2px solid rgba(243,234,217,.7);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#ma-climb .lc-btn:hover,#ma-climb .lc-btn:focus-visible{background:#1a5e41;border-color:#89fbcb;outline:none}
+#ma-climb .lc-btn.go{background:#c53200;border-color:#fffffe}
+#ma-climb .lc-btn.go:hover,#ma-climb .lc-btn.go:focus-visible{background:#ff4c0f}
+#ma-climb .lc-ov{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px 16px;background:rgba(11,23,15,.72);text-align:center}
+#ma-climb .lc-ov h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(36px,6vw,64px);line-height:1.2;letter-spacing:.04em;color:#fffffe}
 </style>
 <section id="ma-climb" aria-label="The Long Climb" tabindex="0">
   <canvas aria-hidden="true"></canvas>
   <div class="lc-title"><h1>The Long Climb</h1><p class="lc-tip"></p></div>
   <div class="lc-pad" aria-label="Controls"><button type="button" data-k="l">Left</button><button type="button" class="j" data-k="j">Jump</button><button type="button" data-k="r">Right</button></div>
+  <div class="lc-ctl"><div class="lc-row"><button class="lc-btn lc-pause" type="button">Pause</button></div></div>
+  <div class="lc-ov lc-paused" hidden><h2>Paused</h2><button class="lc-btn go lc-resume" type="button">Resume</button></div>
   <div class="lc-win" hidden><h2>The top!</h2><button class="lc-box" type="button" aria-label="Open loot box 86"><img src="https://africhmaurice.github.io/leaderboard/loot/86.png" alt="Loot box 86" draggable="false"></button></div>
 </section>
 <script>
@@ -93,7 +109,7 @@
   function skyAt(t){for(var j=1;j<SKY.length&&SKY[j][0]<t;j++);var a=SKY[j-1],b=SKY[Math.min(j,SKY.length-1)],u=b[0]>a[0]?Math.max(0,Math.min(1,(t-a[0])/(b[0]-a[0]))):0;return [mix(a[1],b[1],u),mix(a[2],b[2],u)];}
 
   /* ---- the climber ---- */
-  var me={x:300,h:0,vx:0,vh:0,on:P[0],face:1,coy:0,buf:0},keys={l:0,r:0,j:0},cam=0,t=0,done=false;
+  var me={x:300,h:0,vx:0,vh:0,on:P[0],face:1,coy:0,buf:0},keys={l:0,r:0,j:0},cam=0,t=0,done=false,paused=false;
 
   var dpr=1,vw=0,vh=0,s=1,ox=0;
   function size(){vw=d.clientWidth;vh=d.clientHeight;dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(vw*dpr);cv.height=Math.round(vh*dpr);
@@ -102,6 +118,7 @@
   function sy(hh){return vh*.62-(hh-cam)*s;}  /* screen y of a height */
 
   function step(dt){
+    if(paused)return;
     t+=dt;
     P.forEach(function(p){if(p.amp){var nx=p.x0+p.amp*Math.sin(t*6.283/p.per+p.ph);p.dx=nx-p.x;p.x=nx;}});
     if(done)return;
@@ -119,7 +136,7 @@
     /* camera follows up and down, a little ahead when climbing */
     var want=Math.max(0,me.h+(me.vh>0?40:0));cam+=(want-cam)*Math.min(1,dt*5);
     if(me.h>260)title.classList.add('gone');else title.classList.remove('gone');
-    if(me.on===TOPP&&Math.abs(me.x-BOX.x)<46){done=true;keys.l=keys.r=keys.j=0;win.hidden=false;try{win.querySelector('.lc-box').focus({preventScroll:true});}catch(e){}}
+    if(me.on===TOPP&&Math.abs(me.x-BOX.x)<46){done=true;ctl();keys.l=keys.r=keys.j=0;win.hidden=false;try{win.querySelector('.lc-box').focus({preventScroll:true});}catch(e){}}
   }
 
   /* his art (Maurice 10/16): floating island, ground strip, cloud, sun, and moon */
@@ -159,30 +176,47 @@
   }
 
   /* ---- input ---- */
-  function press(k2,v){if(done)return;if(k2==='j'){if(v&&!keys.j)me.buf=.12;}keys[k2]=v;}
+  function press(k2,v){if(done||paused)return;if(k2==='j'){if(v&&!keys.j)me.buf=.12;}keys[k2]=v;}
   var KM={ArrowLeft:'l',a:'l',A:'l',ArrowRight:'r',d:'r',D:'r',ArrowUp:'j',w:'j',W:'j',' ':'j'};
   window.addEventListener('keydown',function(e){if(!document.body.contains(d))return;var tg=e.target&&e.target.tagName;if(tg==='INPUT'||tg==='TEXTAREA'||tg==='SELECT')return;
-    var k2=KM[e.key];if(!k2||e.altKey||e.ctrlKey||e.metaKey)return;if(e.repeat&&k2==='j'){e.preventDefault();return;}press(k2,1);e.preventDefault();});
+    if((e.key==='p'||e.key==='P'||e.key==='Escape')&&!e.altKey&&!e.ctrlKey&&!e.metaKey){if(!done){e.preventDefault();toggle();}return;}
+    var k2=KM[e.key];if(!k2||e.altKey||e.ctrlKey||e.metaKey)return;if(paused){if(k2==='j'&&e.target&&e.target.tagName==='BUTTON')return;e.preventDefault();return;}if(e.repeat&&k2==='j'){e.preventDefault();return;}press(k2,1);e.preventDefault();});
   window.addEventListener('keyup',function(e){var k2=KM[e.key];if(k2)keys[k2]=0;});
   window.addEventListener('blur',function(){keys.l=keys.r=keys.j=0;});
   Array.prototype.forEach.call(d.querySelectorAll('.lc-pad button'),function(b){var k2=b.getAttribute('data-k');
-    b.addEventListener('pointerdown',function(e){e.preventDefault();press(k2,1);b.classList.add('down');try{b.setPointerCapture(e.pointerId);}catch(er){}});
+    b.addEventListener('pointerdown',function(e){e.preventDefault();if(paused)return;press(k2,1);b.classList.add('down');try{b.setPointerCapture(e.pointerId);}catch(er){}});
     ['pointerup','pointercancel','lostpointercapture'].forEach(function(ev){b.addEventListener(ev,function(){keys[k2]=0;b.classList.remove('down');});});
     b.addEventListener('contextmenu',function(e){e.preventDefault();});});
   win.querySelector('.lc-box').addEventListener('click',function(){location.href=atob(k).split('').reverse().join('');});
 
   var last=0;
-  function frame(ts){requestAnimationFrame(frame);var dt=last?Math.min(.05,(ts-last)/1000):0;last=ts;var n=Math.max(1,Math.ceil(dt/.008));for(var i=0;i<n;i++)step(dt/n);draw();}
+  function frame(ts){requestAnimationFrame(frame);var dt=last&&!paused?Math.min(.05,(ts-last)/1000):0;last=ts;var n=Math.max(1,Math.ceil(dt/.008));for(var i=0;i<n;i++)step(dt/n);draw();}
   size();window.addEventListener('resize',size);requestAnimationFrame(frame);
   try{d.focus({preventScroll:true});}catch(e){}
   /* the game is one full window: line it up with the top of the screen so the controls are never cut off */
   function fit(){var r=d.getBoundingClientRect();if(Math.abs(r.top)>2){try{window.scrollTo(0,r.top+(window.pageYOffset||0));}catch(e){}}}
   window.addEventListener('load',fit);setTimeout(fit,300);
 
+  /* ---- pause (Maurice 10/19) ---- */
+  try{localStorage.removeItem('ma-save-the-long-climb');}catch(e){}/* no saves: clear any left from testing */
+  var ctlEl=d.querySelector('.lc-ctl'),pauseBtn=d.querySelector('.lc-pause'),pauseOv=d.querySelector('.lc-paused');
+  function ctl(){ctlEl.hidden=done;pauseBtn.textContent=paused?'Resume':'Pause';}
+  function freeze(){paused=true;keys.l=keys.r=keys.j=0;me.buf=0;Array.prototype.forEach.call(d.querySelectorAll('.lc-pad button'),function(b){b.classList.remove('down');});}
+  function pause(){if(paused||done)return;freeze();pauseOv.hidden=false;ctl();try{pauseOv.querySelector('button').focus({preventScroll:true});}catch(e){}}
+  function resume(){if(!paused||done)return;paused=false;last=0;pauseOv.hidden=true;ctl();try{d.focus({preventScroll:true});}catch(e){}}
+  function toggle(){if(paused)resume();else pause();}
+  pauseBtn.addEventListener('click',toggle);pauseOv.querySelector('button').addEventListener('click',resume);
+  /* the buttons and the pause panel are not part of the play area: taps on them never reach the game */
+  [ctlEl,pauseOv].forEach(function(el){el.addEventListener('pointerdown',function(e){e.stopPropagation();});});
+  document.addEventListener('visibilitychange',function(){last=0;if(document.hidden)pause();});
+
   /* test hooks, only with ?preview=1 and window.__climbTest set before load */
   if(window.__climbTest&&/[?&]preview=1\b/.test(location.search))window.__climb={state:function(){return {h:me.h,x:me.x,on:me.on?P.indexOf(me.on):-1,n:P.length,done:done,cam:cam};},
     plats:function(){return P.map(function(p){return [p.x,p.w,p.h,!!p.amp];});},keys:keys,press:press,
-    put:function(i){var p=P[i];me.on=p;me.h=p.h;me.x=p.x+p.w/2;me.vh=0;cam=me.h;}};
+    put:function(i){var p=P[i];me.on=p;me.h=p.h;me.x=p.x+p.w/2;me.vh=0;cam=me.h;},
+    full:function(){return {x:me.x,h:me.h,vx:me.vx,vh:me.vh,on:me.on?P.indexOf(me.on):-1,face:me.face,cam:cam,t:t,done:done,paused:paused};},
+    islands:function(){return P.filter(function(p){return p.amp;}).slice(0,3).map(function(p){return p.x;});},
+    paused:function(){return paused;},pause:pause,resume:resume,jump:function(){me.on=null;me.vh=JUMP;}};
 })();
 </script>
 <script>/* PARALLAX v2 (Maurice, 2026-10-16): a library picture the size of the screen behind the game, moving at 30% of the scroll */(function(){

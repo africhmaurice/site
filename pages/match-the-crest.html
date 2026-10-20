@@ -70,6 +70,7 @@
 <script>
 (function(){
   var d=document.getElementById('ma-memory');if(!d)return;
+  try{localStorage.removeItem('ma-save-match-the-crest');}catch(e){} /* clears a save left from the dropped Save progress test (Maurice, 10/19) */
   var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
   var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
   document.documentElement.style.background=document.body.style.background='#0b170f';
