@@ -61,7 +61,7 @@
     });
     q('.mn-ovgroup a[href$="/the-hunt#rewards"]').forEach(function (a) {
       var p = a.parentNode;
-      [sub('REWARDS', 'all'), link(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), link(SITE + '/act-one-winners', 'ACT ONE WINNERS'), link(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), link(SITE + '/the-hunt#rewards-act-three', 'ACT THREE')].forEach(function (n) { p.insertBefore(n, a); });
+      [sub('REWARDS', 'all'), link(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), link(SITE + '/act-one-winners', 'ACT ONE WINNERS'), link(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), link(SITE + '/act-two-winners', 'ACT TWO WINNERS'), link(SITE + '/the-hunt#rewards-act-three', 'ACT THREE')].forEach(function (n) { p.insertBefore(n, a); });
       p.removeChild(a);
     });
     var gs = {};

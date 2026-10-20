@@ -1,0 +1,65 @@
+<!-- ============================================================
+     ACT TWO WINNERS - replays Maurice's recorded Act Two draws. Each wheel lives on GitHub Pages
+     (treasure-hunt-leaderboard/public/wheels/, built from the saved draw) and only ever replays it:
+     every click of Spin shows the next of his five spins, the same layout and the same landing.
+     Act Two is green (Maurice, 2026-10-19).
+     ============================================================ -->
+<style>
+#ma-w2{width:100vw;position:relative;left:50%;margin-left:-50vw;background:#0f3a27;font-family:'Almarai',sans-serif;color:#fffffe;box-sizing:border-box;padding:48px 16px 64px}
+#ma-w2 *{box-sizing:border-box;border-radius:0}
+#ma-w2 .w-head{max-width:1100px;margin:0 auto;display:grid;gap:14px;text-align:center}
+#ma-w2 .w-eyebrow{margin:0;font-weight:800;font-size:13px;line-height:1.3;letter-spacing:.2em;text-transform:uppercase;color:#a2f590}
+#ma-w2 .w-title{margin:0;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(38px,6vw,72px);line-height:1.2;letter-spacing:.03em;color:#fffffe}
+#ma-w2 .w-lede{margin:0 auto;max-width:62ch;font-size:17px;line-height:1.55;color:#f3ead9}
+#ma-w2 .w-tabs{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:28px auto 20px}
+#ma-w2 .w-tabs button{font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#fffffe;background:#1a5e41;border:2px solid #f3ead9;box-shadow:4px 5px 0 rgba(0,0,0,.35);padding:14px 28px;cursor:pointer;transition:transform .15s ease,background .15s ease}
+#ma-w2 .w-tabs button:hover{transform:scale(1.04)}
+#ma-w2 .w-tabs button[aria-selected="true"]{background:#fffffe;color:#0f3a27}
+#ma-w2 .w-frame{max-width:1400px;margin:0 auto;border:2px solid #f3ead9;box-shadow:6px 7px 0 rgba(0,0,0,.4);background:#0b170f}
+#ma-w2 iframe{display:block;width:100%;height:860px;border:0;background:#0b170f}
+#ma-w2 .w-prize{max-width:900px;margin:0 auto 20px;padding:0 16px;text-align:center;font-weight:700;font-size:clamp(16px,1.6vw,19px);line-height:1.45;color:#fff}
+.w-rewards{max-width:900px;margin:28px auto 0;text-align:center;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(24px,3.4vw,38px);line-height:1.2;letter-spacing:.03em;color:#a2f590}
+#ma-w2 .w-note{max-width:900px;margin:22px auto 0;text-align:center;font-size:14px;line-height:1.55;color:#89fbcb}
+#ma-w2 .w-note a{color:#fffffe}
+@media (max-width:560px){#ma-w2{padding:36px 16px 48px}#ma-w2 .w-tabs button{flex:1 1 100%}}
+</style>
+<div id="ma-w2">
+  <div class="w-head">
+    <p class="w-eyebrow">The Cello’s Gate Treasure Hunt</p>
+    <h1 class="w-title">Act Two Winners</h1>
+    <p class="w-lede">Every Act Two entry got its own slice of the wheel. Press Spin to watch each draw exactly as it happened, one winner at a time.</p>
+  </div>
+  <div class="w-tabs" role="tablist" aria-label="Choose a draw">
+    <button type="button" role="tab" aria-selected="true" data-wheel="act-two-us">United States</button>
+    <button type="button" role="tab" aria-selected="false" data-wheel="act-two-uk">United Kingdom</button>
+  </div>
+  <p class="w-prize" id="ma-w2-prize"></p>
+  <div class="w-frame"><iframe id="ma-w2-frame" title="Act Two draw" src="https://africhmaurice.github.io/leaderboard/wheels/act-two-us.html"></iframe></div>
+  <p class="w-rewards">Rewards will be sent after the conclusion of the hunt!</p>
+  <p class="w-note">Winners were drawn under the <a href="https://www.mauriceafrich.com/rules">Official Rules</a>. Each winner will be contacted by email.</p>
+</div>
+<script>
+(function () {
+  var root = document.getElementById('ma-w2'), f = document.getElementById('ma-w2-frame');
+  // The Squarespace section around the block takes the page's green, so no red shows above or below.
+  var sec = root.closest('section');
+  if (sec) { sec.style.setProperty('background', '#0f3a27', 'important'); var bg = sec.querySelector('.section-background'); if (bg) bg.style.setProperty('background', '#0f3a27', 'important'); }
+  var BASE = 'https://africhmaurice.github.io/leaderboard/wheels/', V = '?v=4';
+  function pick(name) {
+    root.querySelectorAll('.w-tabs button').forEach(function (b) { b.setAttribute('aria-selected', b.dataset.wheel === name ? 'true' : 'false'); });
+    f.src = BASE + name + '.html' + V;
+    // What each winner in this draw receives (UK prizes announced 2026-10-17).
+    var prize = { 'act-two-us': 'Each of the five U.S. winners receives a Signed Deluxe Edition of Cello’s Gate, a Signed Walmart Exclusive Special Edition, and 3 Kickstarter foil bookmarks.', 'act-two-uk': 'Each of the five UK winners receives a UK hardcover of Cello’s Gate, Chibi crew stickers, skull stickers, temporary tattoos, a Sky Pirates cap, and bookmarks.' }[name] || '';
+    document.getElementById('ma-w2-prize').textContent = prize;
+    f.style.height = '';
+  }
+  root.querySelectorAll('.w-tabs button').forEach(function (b) { b.addEventListener('click', function () { pick(b.dataset.wheel); }); });
+  // ?wheel=uk opens the UK draw first
+  var start = (location.search.match(/[?&]wheel=(uk)\b/i) || [])[1];
+  pick(start ? 'act-two-' + start.toLowerCase() : 'act-two-us');
+  // On phones the wheel stacks above the winners, so it reports its full height.
+  window.addEventListener('message', function (e) {
+    if (e.source === f.contentWindow && e.data && e.data.wheelHeight && innerWidth <= 820) f.style.height = e.data.wheelHeight + 'px';
+  });
+})();
+</script>
