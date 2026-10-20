@@ -142,6 +142,9 @@
     var store = storeOf(a);
     // The Signed Broken Binding edition is sold out (Maurice, 10/20): its taps get their own event, not a pre-order.
     // When it's back in stock, delete this line so it counts as a pre-order again.
+    // Chapter One on Simon & Schuster (the #excerpt links in the slider and menus) is a read, not a pre-order: its own
+    // event, for the CHAPTER1 campaign (Maurice, 10/20).
+    if (store === 'simonandschuster.com' && a.hash === '#excerpt') { px('trackCustom', 'ReadExcerptTap', { page: location.pathname }); return; }
     if (store === 'thebrokenbindingsub.com') { px('trackCustom', 'BrokenBindingTap', { page: location.pathname }); return; }
     if (store) {
       px('track', 'InitiateCheckout', { content_name: "Cello's Gate", store: store, page: location.pathname });

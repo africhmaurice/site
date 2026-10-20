@@ -200,7 +200,9 @@
       // same tap as a custom event, which an Engagement campaign can optimize for (Maurice, 10/14).
       // Not pre-orders (Maurice, 10/20): a sold-out edition (the Signed Broken Binding, until it's back in stock) and
       // All Retailers (it only opens the /preorder page, where the store tap counts) get their own events instead.
-      if (a.hasAttribute('data-soldout')) px('trackCustom', 'BrokenBindingTap', { link: a.getAttribute('data-link'), section: a.getAttribute('data-section'), campaign: CMP });
+      // Read Excerpt (Chapter One on Simon & Schuster) has its own event, for the CHAPTER1 campaign (Maurice, 10/20).
+      if (a.getAttribute('data-link') === 'read-excerpt') px('trackCustom', 'ReadExcerptTap', { section: a.getAttribute('data-section'), campaign: CMP });
+      else if (a.hasAttribute('data-soldout')) px('trackCustom', 'BrokenBindingTap', { link: a.getAttribute('data-link'), section: a.getAttribute('data-section'), campaign: CMP });
       else if (a.getAttribute('data-link') === 'all-retailers') px('trackCustom', 'AllRetailersTap', { section: a.getAttribute('data-section'), campaign: CMP });
       else if (/^(preorder|editions)$/.test(a.getAttribute('data-section')) || a.getAttribute('data-link') === 'amazon') {
         px('track', 'InitiateCheckout', { content_name: "Cello's Gate", content_category: a.getAttribute('data-link'), campaign: CMP });
