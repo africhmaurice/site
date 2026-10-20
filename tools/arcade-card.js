@@ -48,7 +48,7 @@ var ArcadeCard = (function () {
     if (panel && panel.parentNode) panel.parentNode.removeChild(panel);
     var d = document.createElement('div');
     d.innerHTML = '<div class="ac-card" id="ac-card"><p class="ac-h">Export your card</p>' +
-      '<img class="ac-img" alt="My ' + esc(o.game) + ' card: ' + esc(o.label.toLowerCase()) + ' ' + esc(o.stat) + '">' +
+      '<img loading="lazy" decoding="async" class="ac-img" alt="My ' + esc(o.game) + ' card: ' + esc(o.label.toLowerCase()) + ' ' + esc(o.stat) + '">' +
       '<fieldset class="ac-sw"><legend>PICK YOUR COLOR</legend>' + Object.keys(THEMES).map(function (k) {
         return '<button type="button" class="ac-swatch" data-theme="' + k + '" aria-pressed="' + (k === o.theme) + '" aria-label="' + NAMES[k] + '" title="' + NAMES[k] + '" style="background:' + THEMES[k].bg + '"></button>';
       }).join('') + '</fieldset>' +
