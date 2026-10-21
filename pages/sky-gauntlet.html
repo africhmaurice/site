@@ -17,7 +17,7 @@
      BOSSROW in the code): every Nth kill of each ship type drops set upgrades (each type counts its own kills for the
      run; a freighter always bursts into 4 rubies), and each upgrade also falls on its own clock of flying seconds
      (ruby every 28 s, crest 90 s, +1 life 180 s ... red atomic 187 s; tuned 10/21), each in its own lane. The Destroyer drops a row of 10 across the
-     sky that falls 4x as fast. Specials can fall from the start. Every wave has 10% more ships (10/21).
+     sky that falls 4x as fast. Specials can fall from the start. Every wave has 25% more ships (10/21).
        Mark of the Crest   weapon upgrade, for good: 2 crests reach missile level 2, 4 level 3, 8 level 4, 16 level 5.
        Twin Torches        10 s: two small white slashes fly out to the sides every half second and bounce off the walls.
        Bolt of Lightning   10 s: faster firing and faster flying. (Icon drawn in code until Maurice draws one.)
@@ -151,7 +151,7 @@
 #ma-gauntlet .sg-weekly{margin:0;max-width:560px;padding:12px 20px;border:2px solid #ff4c0f;font-weight:800;font-size:clamp(13px,1.4vw,15px);line-height:1.5;letter-spacing:.08em;text-transform:uppercase;color:#fffffe}
 </style>
 
-<section id="ma-gauntlet" aria-label="The Sky Gauntlet">
+<section id="ma-gauntlet" class="maint" aria-label="The Sky Gauntlet">
 <!-- ARCADE-TABS:BEGIN (pasted by tools/arcade.mjs from treasure-hunt-leaderboard/games/_tabs.html; do not edit here) -->
 <div class="ma-arcade" style="width:min(100%,760px);margin:0 auto;position:relative;z-index:2">
 <style>.hg-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;max-width:760px;margin:0 auto 38px;position:relative;z-index:2}.hg-tabs a{grid-column:span 2}.hg-tabs a:last-child:nth-child(3n+1){grid-column:1/-1}.hg-tabs a:last-child:nth-child(3n+2),.hg-tabs a:nth-last-child(2):nth-child(3n+1){grid-column:span 3}.hg-tabs a{display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.25}.hg-tabs a{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(13px,1.2vw,16px);letter-spacing:.08em;text-decoration:none;border:2px solid #fffffe;padding:11px 24px;color:#fffffe;background:rgba(11,23,15,.4);transition:background .15s ease,color .15s ease}.hg-tabs a:hover{background:rgba(255,255,255,.14);color:#fffffe}.hg-tabs a[hidden]{display:none!important}.hg-tabs a.on,.hg-tabs a.on:hover{background:#fffffe;color:#111}@media (max-width:560px){.hg-tabs{gap:6px}.hg-tabs a{padding:9px 6px;font-size:11px;letter-spacing:.03em}}</style>
@@ -439,10 +439,10 @@
     function q(kind,count){for(var j=0;j<count;j++)S.queue.push({kind:kind,at:t0+Math.random()*span});}
     if(n%5===0){q('dart',2+Math.floor(n/2));S.queue.push({kind:'flagship',at:1});}
     else{q('gunboat',Math.min(4,1+Math.floor(n/2)));if(n>=2)q('dart',Math.min(9,1+n));if(n>=3)q('layer',Math.min(3,Math.floor((n)/3)));if(n>=4&&n%2===0)q('freighter',1);}
-    /* 10% more ships every wave (Maurice, 2026-10-21): round(10% of the whole wave, rivals included, at least 1),
+    /* 25% more ships every wave (Maurice, 2026-10-21; was 10% earlier that day): round(25% of the whole wave, rivals included, at least 1),
        added as extra side ships, taking turns through this wave's own kinds (darts on Destroyer waves) */
     var kinds=S.queue.map(function(x){return x.kind;}).filter(function(k,i,a){return k!=='flagship'&&a.indexOf(k)===i;}),
-      extra=Math.max(1,Math.round((S.foes.length+S.queue.filter(function(x){return x.kind!=='flagship';}).length)*.1));
+      extra=Math.max(1,Math.round((S.foes.length+S.queue.filter(function(x){return x.kind!=='flagship';}).length)*EXTRASHIPS));
     for(var ex=0;ex<extra;ex++)q(kinds.length?kinds[ex%kinds.length]:'dart',1);
     S.queue.sort(function(a,b){return a.at-b.at;});S.qt=0;
     S.diveT=2.2;S.shootT=1.6;
@@ -543,7 +543,7 @@
   };
   var TIMED={ruby:28,crest:90,brass:42,torch:44,bolt:55,crate:60,life:180,shield:66,pierce:67,scythe:83,recharge:86,trench:156,atomic:187};
   var BOSSROW=['life','crest','crate','ruby','bolt','ruby','bolt','shield','crest','torch'];   /* 10/21 tune: 2 crests, 1 life */
-  var DROPV=120;   /* how fast a drop falls, in px a second */
+  var DROPV=120,EXTRASHIPS=.25;   /* share of extra side ships added to every wave */   /* how fast a drop falls, in px a second */
   /* each timed upgrade falls in its own fixed lane, so two that land on the same second don't overlap */
   function lane(k){var ks=Object.keys(TIMED),i=ks.indexOf(k);return W*(.1+.8*i/(ks.length-1));}
   /* catching something */
