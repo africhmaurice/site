@@ -445,7 +445,7 @@
     /* 25% more ships every wave (Maurice, 2026-10-21; was 10% earlier that day): round(25% of the whole wave, rivals included, at least 1),
        added as extra side ships, taking turns through this wave's own kinds (darts on Destroyer waves) */
     var kinds=S.queue.map(function(x){return x.kind;}).filter(function(k,i,a){return k!=='flagship'&&a.indexOf(k)===i;}),
-      extra=Math.max(1,Math.round((S.foes.length+S.queue.filter(function(x){return x.kind!=='flagship';}).length)*EXTRASHIPS));
+      extra=Math.max(1,Math.round((S.foes.length+S.queue.filter(function(x){return x.kind!=='flagship';}).length)*(S.wave>10?EXTRASHIPS_LATE:EXTRASHIPS)));
     for(var ex=0;ex<extra;ex++)q(kinds.length?kinds[ex%kinds.length]:'dart',1);
     S.queue.sort(function(a,b){return a.at-b.at;});S.qt=0;
     S.diveT=2.2;S.shootT=1.6;
@@ -547,10 +547,12 @@
   };
   var TIMED={ruby:28,crest:90,brass:42,torch:44,bolt:55,crate:60,life:180,shield:66,pierce:67,scythe:83,recharge:86,trench:156,atomic:187};
   var BOSSROW=['life','crest','crate','ruby','bolt','ruby','bolt','shield','crest','torch'];   /* 10/21 tune: 2 crests, 1 life */
-  var DROPV=120,EXTRASHIPS=.25;
-  /* every wave's ships are 10% harder than the wave before (Maurice, 2026-10-21): faster, attacking more often, firing
-     faster shots, and taking more hits. Wave 1 = 1, wave 2 = 1.1, wave 10 = 1.9, wave 25 = 3.4 (it adds up, it doesn't compound). */
-  var HARDER=.1;function hard(){return 1+HARDER*Math.max(0,S.wave-1);}   /* share of extra side ships added to every wave */   /* how fast a drop falls, in px a second */
+  var DROPV=120,EXTRASHIPS=.25,EXTRASHIPS_LATE=.15;   /* extra side ships: 25% of the wave to wave 10, then 15% */
+  /* every wave's ships are harder than the wave before (Maurice, 2026-10-21): faster, attacking more often, firing faster
+     shots, and taking more hits. +10% a wave to wave 10, then +5% a wave (it adds up, it doesn't compound):
+     wave 1 = 1, wave 10 = 1.9, wave 15 = 2.15, wave 25 = 2.65. */
+  var HARDER=.1,HARDER_LATE=.05,LATE=10;
+  function hard(){var w=S.wave;return w<=LATE?1+HARDER*(w-1):1+HARDER*(LATE-1)+HARDER_LATE*(w-LATE);}   /* share of extra side ships added to every wave */   /* how fast a drop falls, in px a second */
   /* each timed upgrade falls in its own fixed lane, so two that land on the same second don't overlap */
   function lane(k){var ks=Object.keys(TIMED),i=ks.indexOf(k);return W*(.1+.8*i/(ks.length-1));}
   /* catching something */
