@@ -12,10 +12,13 @@
      Scarlet glow). Storms: lightning lanes from wave 6 (a flashing warning stripe, then his 76-lightning), wind gusts from
      wave 8 that push your ship. Twin Torch and scythe slashes are his 78-torch-slash and 78-scythe-slash.
      Not built yet, waiting on art: the escort mission (merchant ship). The grappler was dropped (Maurice 10/16).
-     Drops (Maurice, 10/12): there are no upgrade cards; every upgrade falls from a ship you shoot down (5% of ships on
-     wave 1, up 10% a wave to 7% at wave 5, then +25% at wave 10 and +25% again at wave 20), glowing and slowly pulsing. Fly into one to catch it.
+     Drops (Maurice, 10/12; FIXED RULES 10/21, no random drops): there are no upgrade cards; upgrades fall, glowing and
+     slowly pulsing, and you fly into one to catch it. They come two ways, the same in every game (see KILLDROPS, TIMED,
+     BOSSROW in the code): every Nth kill of each ship type drops set upgrades (each type counts its own kills for the
+     run; a freighter always bursts into 4 rubies), and each upgrade also falls on its own clock of flying seconds
+     (ruby every 28 s, crest 33 ... red atomic 187 s), each in its own lane. The Destroyer drops a row of 10 across the
+     sky that falls twice as fast. Specials can fall from the start.
        Mark of the Crest   weapon upgrade, for good: 2 crests reach missile level 2, 4 level 3, 8 level 4, 16 level 5.
-                           Rare; the last ship of each wave also has a 30% chance to drop one.
        Twin Torches        10 s: two small white slashes fly out to the sides every half second and bounce off the walls.
        Bolt of Lightning   10 s: faster firing and faster flying. (Icon drawn in code until Maurice draws one.)
        Brass Point         10 s: one more missile in every volley.
@@ -27,7 +30,7 @@
                            ship on screen, and every cannonball is gone.
        Trench emblem       a white wave of energy rings out from your ship in every direction: 2 hits to every ship
                            it passes, and it clears the cannonballs it touches.
-     Specials (scythe, red atomic, Trench emblem) drop from wave 3 on.
+     +2 lives            two more lives at once (every 3rd freighter), up to 6.
      Waves get harder: more rows, faster swoops, more cannonballs, faster cannonballs, and tougher colored rivals (see TIERS).
      LOOT BOX: after wave 25 is cleared (Maurice, 10/12), loot box 78 floats down; fly into it to open the claim panel (claim link
      scrambled in K). If it is missed it floats down again after every later wave. Once caught it also shows on
@@ -297,7 +300,7 @@
                   <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-dart.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Dart</b>Dives straight at you from above, and from below too. 150 points.</span></li>
                   <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-mine-layer.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Mine-layer</b>Crosses the top, dropping mines. Shoot the mines too. 400 points, 25 a mine.</span></li>
                   <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-freighter.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Freighter</b>Slow and tough, 8 hits, and it bursts into 4 rubies. 800 points.</span></li>
-                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-flagship.png" alt="" loading="lazy" style="transform:rotate(180deg)"></span><span class="sgk-t"><b>Destroyer</b>Every 5th wave. A boss with a hull bar that fires fans of darts. 5,000 points, and it drops a crest.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-flagship.png" alt="" loading="lazy" style="transform:rotate(180deg)"></span><span class="sgk-t"><b>Destroyer</b>Every 5th wave. A boss with a hull bar that fires fans of darts. 5,000 points, and it drops a row of 10 upgrades that fall fast.</span></li>
                   <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-lightning.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Lightning and wind</b>From wave 6, a flashing stripe warns where lightning will strike. From wave 8, gusts of wind push your ship.</span></li>
                 </ul>
                 <p>Tough ships get angry at half hull: faster, with a Scarlet glow.</p>
@@ -373,6 +376,7 @@
     shield:{w:10,glow:'137,251,203',name:'Shield'},
     recharge:{w:4,glow:'137,251,203',name:'Recharging shield'},   /* Maurice 10/20: blocks a hit, comes back 12 s later, for this life */
     life:{w:3,glow:'255,76,15',name:'+1 life'},                    /* Maurice 10/20: a glowing red airship with +1 */
+    life2:{w:0,glow:'255,76,15',name:'+2 lives'},                  /* Maurice 10/21: from every 3rd freighter */
     crest:{w:10,glow:'255,255,254',name:'Mark of the Crest'},
     scythe:{w:3,glow:'255,76,15',name:'Scythe!',special:1},
     trench:{w:3,glow:'255,255,254',name:'Wave of energy!',special:1},
@@ -401,7 +405,7 @@
   var S=null,state='title',paused=false,boxTaken=lsGet('ma-gauntlet-box')==='1',scale=1,dpr=1,skyY=0;
   function newRun(){
     return {score:0,wave:0,lives:3,hull:1,rs:null,t:0,x:W/2,y:H-74,ty:null,queue:[],arrows:[],storm:null,stormT:8,wind:0,windT:12,windV:0,boss:null,target:null,keys:0,inv:0,fireT:0,shots:[],balls:[],foes:[],drops:[],fx:[],pops:[],
-      temp:{torch:0,bolt:0,brass:0,pierce:0},crests:0,shields:0,crates:0,slashes:[],side:[],sideT:0,waves:[],nuke:null,boxOut:null,banner:'',bannerT:0,diveT:2,shootT:1.5,dead:0,kills:0};
+      temp:{torch:0,bolt:0,brass:0,pierce:0},crests:0,shields:0,crates:0,slashes:[],side:[],sideT:0,waves:[],nuke:null,boxOut:null,banner:'',bannerT:0,diveT:2,shootT:1.5,dead:0,kills:0,cnt:{},flyT:0};
   }
 
   /* ---- waves: harder every time ---- */
@@ -499,22 +503,33 @@
   function boom(x,y,size){S.fx.push({x:x,y:y,s:size,t:0});}
   function kill(f){
     var pts=f.kind?KIND[f.kind].pts:(f.mode==='dive'?200:100)*f.max;S.score+=pts;S.kills++;hud();
-    if(f.kind==='freighter'){for(var fz=0;fz<4;fz++)S.drops.push({x:f.x+(fz-1.5)*18,y:f.y,kind:'ruby'});}
-    if(f.kind==='flagship'){S.boss=null;boom(f.x,f.y,260);S.drops.push({x:f.x-40,y:f.y,kind:'crest'},{x:f.x,y:f.y,kind:pickDrop()},{x:f.x+40,y:f.y,kind:pickDrop()});S.banner='Destroyer down!';S.bannerT=1.6;}
+    if(f.kind==='flagship'){S.boss=null;boom(f.x,f.y,260);
+      /* the Destroyer's row of 10, spread across the sky, falling twice as fast (Maurice, 2026-10-21) */
+      BOSSROW.forEach(function(k,i){S.drops.push({x:W*(i+.5)/BOSSROW.length,y:f.y,kind:k,v:DROPV*2});});
+      S.banner='Destroyer down!';S.bannerT=1.6;}
+    /* fixed kill drops: each ship type keeps its own count for the run (Maurice, 2026-10-21) */
+    var key=f.kind||(f.tier&&f.tier!=='purple'?'rivalColor':'rival'),n=S.cnt[key]=(S.cnt[key]||0)+1,give=[];
+    (KILLDROPS[key]||[]).forEach(function(r){if(n%r[0]===0)give=give.concat(r.slice(1));});
+    give.forEach(function(k,i){S.drops.push({x:Math.max(20,Math.min(W-20,f.x+(i-(give.length-1)/2)*26)),y:f.y,kind:k});});
     if(f.kind==='mine')return;
     S.pops.push({x:f.x,y:f.y,txt:'+'+pts,t:.8});boom(f.x,f.y,64);
-    var last=S.foes.length<=1;
-    if(last&&Math.random()<.375){S.drops.push({x:f.x,y:f.y,kind:'crest'});return;}   /* 30% x1.25 (Maurice, 2026-10-20) */
-    if(Math.random()<dropRate(S.wave))S.drops.push({x:f.x,y:f.y,kind:pickDrop()});
   }
-  /* how often a ship drops something (Maurice, 10/12): 5% on wave 1, up 10% each wave to wave 5 (7%), held there,
-     then up 25% at wave 10 (8.75%) and another 25% at wave 20 (about 10.9%) */
-  function dropRate(w){var r=.05*(1+.1*(Math.min(w,5)-1));if(w>=10)r*=1.25;if(w>=20)r*=1.25;return r*1.25;}   /* x1.25: upgrades 25% more often (Maurice, 2026-10-20) */
-  function pickDrop(){
-    var tot=0,k;for(k in DROPS)if(!DROPS[k].special||S.wave>=3)tot+=DROPS[k].w;
-    var r=Math.random()*tot;for(k in DROPS){if(DROPS[k].special&&S.wave<3)continue;r-=DROPS[k].w;if(r<=0)return k;}
-    return 'ruby';
-  }
+  /* Drop rules (Maurice, 2026-10-21): no random drops. Every Nth kill of a ship type drops these (everything that
+     lands on the same kill falls together), and each upgrade also falls on its own clock of flying seconds. */
+  var KILLDROPS={
+    rival:[[10,'ruby'],[25,'crate'],[38,'life'],[46,'shield','shield']],
+    rivalColor:[[6,'shield'],[8,'ruby'],[17,'brass']],
+    gunboat:[[5,'bolt'],[8,'ruby'],[10,'pierce'],[17,'torch'],[20,'atomic']],
+    dart:[[5,'shield'],[8,'ruby'],[17,'recharge']],
+    layer:[[5,'scythe'],[8,'ruby'],[11,'trench'],[17,'atomic'],[20,'life']],
+    mine:[[19,'torch']],
+    freighter:[[1,'ruby','ruby','ruby','ruby'],[3,'life2'],[5,'recharge']]
+  };
+  var TIMED={ruby:28,crest:33,brass:42,torch:44,bolt:55,crate:60,life:60,shield:66,pierce:67,scythe:83,recharge:86,trench:156,atomic:187};
+  var BOSSROW=['life','crest','crate','ruby','bolt','crest','life','shield','crest','torch'];
+  var DROPV=120;   /* how fast a drop falls, in px a second */
+  /* each timed upgrade falls in its own fixed lane, so two that land on the same second don't overlap */
+  function lane(k){var ks=Object.keys(TIMED),i=ks.indexOf(k);return W*(.1+.8*i/(ks.length-1));}
   /* catching something */
   function collect(k,x,y){
     var D=DROPS[k];S.pops.push({x:x,y:y-20,txt:D.name,t:1.1});
@@ -526,6 +541,7 @@
       if(hullMax()>hb){S.hull++;S.banner=(level()>before?S.banner+'  ·  ':'')+'Hull '+hullMax();S.bannerT=1.6;say('Hull takes '+hullMax()+' hits');}}
     else if(k==='recharge'){S.rs={up:true,t:0};}
     else if(k==='life'){S.lives=Math.min(MAXLIVES,S.lives+1);hud();}
+    else if(k==='life2'){S.lives=Math.min(MAXLIVES,S.lives+2);hud();}
     else if(k==='scythe')S.slashes.push({x:S.x,y:PY-40,w:W*.25});
     else if(k==='atomic'){var ty=S.foes.length?S.foes.reduce(function(m,f){return m+f.y;},0)/S.foes.length:H*.3;S.nuke={t:0,x:W/2,y:Math.max(80,Math.min(H*.5,ty))};}
     else if(k==='trench')S.waves.push({x:S.x,y:PY,r:20,hit:[]});
@@ -533,6 +549,8 @@
   function update(dt){
     S.t+=dt;if(S.bannerT>0)S.bannerT-=dt;if(S.inv>0)S.inv-=dt;
     for(var k in S.temp)if(S.temp[k]>0)S.temp[k]=Math.max(0,S.temp[k]-dt);
+    /* timed drops: each upgrade falls every TIMED[k] seconds of flying, in its own lane (the loop stops while paused) */
+    if(state==='play'){var f0=S.flyT;S.flyT+=dt;for(var tk in TIMED)if(Math.floor(S.flyT/TIMED[tk])>Math.floor(f0/TIMED[tk]))S.drops.push({x:lane(tk),y:-20,kind:tk});}
     if(S.rs&&!S.rs.up){S.rs.t-=dt;if(S.rs.t<=0){S.rs.up=true;S.rs.t=0;S.pops.push({x:S.x,y:PY-46,txt:'Shield back',t:.9});}}
     if(!RM())skyY=(skyY+dt*40)%100000;
     /* the ship flies anywhere in the lower two thirds (Maurice 10/16) */
@@ -630,7 +648,7 @@
     S.foes.forEach(function(f){if(!f.kind&&f.mode==='dive'&&Math.abs(f.x-S.x)<30&&Math.abs(f.y-PY)<28){f.hp=0;f.rammed=1;}});
     for(var z=S.foes.length-1;z>=0;z--)if(S.foes[z].hp<=0&&S.foes[z].rammed){var rf=S.foes[z];S.foes.splice(z,1);boom(rf.x,rf.y,64);hitPlayer();}
     /* pickups */
-    for(var u=S.drops.length-1;u>=0;u--){var dr=S.drops[u];dr.y+=120*dt;
+    for(var u=S.drops.length-1;u>=0;u--){var dr=S.drops[u];dr.y+=(dr.v||DROPV)*dt;
       if(dr.y>H+20){S.drops.splice(u,1);continue;}
       if(Math.abs(dr.x-S.x)<30&&Math.abs(dr.y-PY)<30){collect(dr.kind,dr.x,dr.y);S.drops.splice(u,1);}}
     /* the loot box */
@@ -834,7 +852,7 @@
     else if(k==='pierce')sprite(IMG.miss[3],x,y,22);
     else if(k==='recharge'){sprite(IMG.shield,x,y,38);ctx.save();ctx.strokeStyle='#89fbcb';ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();ctx.arc(x,y,22,-Math.PI*.15,Math.PI*1.35);ctx.stroke();
       var ax=x+22*Math.cos(Math.PI*1.35),ay=y+22*Math.sin(Math.PI*1.35);ctx.beginPath();ctx.moveTo(ax-6,ay-2);ctx.lineTo(ax,ay);ctx.lineTo(ax+1,ay-7);ctx.stroke();ctx.restore();}
-    else if(k==='life'){sprite(IMG.ship,x,y,40);ctx.save();ctx.font="800 15px 'Almarai',sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3;ctx.strokeStyle='#0b170f';ctx.strokeText('+1',x,y+2);ctx.fillStyle='#fffffe';ctx.fillText('+1',x,y+2);ctx.restore();}
+    else if(k==='life'||k==='life2'){var lt=k==='life'?'+1':'+2';sprite(IMG.ship,x,y,40);ctx.save();ctx.font="800 15px 'Almarai',sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3;ctx.strokeStyle='#0b170f';ctx.strokeText(lt,x,y+2);ctx.fillStyle='#fffffe';ctx.fillText(lt,x,y+2);ctx.restore();}
   }
   function draw(){
     ctx.setTransform(dpr*scale,0,0,dpr*scale,0,0);
@@ -937,7 +955,11 @@
   if(window.__siegeTest){
     window.__siege={launch:function(k){launch(k);},kinds:function(){return S.foes.map(function(f){return f.kind||'rival';});},queue:function(){return S.queue.length;},storm:function(){S.wave=Math.max(S.wave,8);S.stormT=0;S.windT=0;},fpos:function(){return S.foes.map(function(f){return [Math.round(f.x),Math.round(f.y),f.mode];});},snap:function(){return S&&{state:state,score:S.score,wave:S.wave,lives:S.lives,foes:S.foes.length,crests:S.crests,level:level(),shields:S.shields,crates:S.crates,temp:S.temp,drops:S.drops.length,boxOut:!!S.boxOut,x:S.x};},
       tiers:function(){return S.foes.map(function(f){return f.tier+':'+f.max;});},mix:function(w){return mixFor(w);},clearWave:function(){S.foes=[];},toWave:function(n){S.wave=n-1;S.foes=[];S.queue=[];S.boss=null;},god:function(){S.inv=1e9;},hit:function(){S.inv=0;hitPlayer();},strike:function(x){S.storm={x:x||W*.6,w:64,t:1.12,hit:1};S.stormT=99;},tick:function(sec){S.rs&&!S.rs.up&&(S.rs.t-=sec);},hull:function(){return {hull:S.hull,max:hullMax(),rs:S.rs&&{up:S.rs.up,t:Math.round(S.rs.t*10)/10},lives:S.lives};},give:function(k){collect(k,S.x,PY);},crests:function(n){S.crests=n;},
-      level:function(n){S.crests=CRESTS[n];},special:function(k){S.drops.push({x:S.x,y:PY-40,kind:k});},rate:function(w){return dropRate(w);},drops:function(){var ks=Object.keys(DROPS);ks.forEach(function(k,i){S.drops.push({x:50+(i%5)*95,y:200+Math.floor(i/5)*110,kind:k});});},boxOut:function(){return !!S.boxOut;},paused:function(){return paused;},full:function(){return {t:S.t,x:S.x,y:S.y,qt:S.qt,sky:skyY,foes:S.foes.map(function(f){return [f.x,f.y];})};},grabBox:function(){if(S.boxOut){S.boxOut.y=PY;S.x=S.boxOut.x;S.target=S.boxOut.x;}}};
+      level:function(n){S.crests=CRESTS[n];},special:function(k){S.drops.push({x:S.x,y:PY-40,kind:k});},drops:function(){var ks=Object.keys(DROPS);ks.forEach(function(k,i){S.drops.push({x:50+(i%5)*95,y:200+Math.floor(i/5)*110,kind:k});});},boxOut:function(){return !!S.boxOut;},paused:function(){return paused;},full:function(){return {t:S.t,x:S.x,y:S.y,qt:S.qt,sky:skyY,foes:S.foes.map(function(f){return [f.x,f.y];})};},grabBox:function(){if(S.boxOut){S.boxOut.y=PY;S.x=S.boxOut.x;S.target=S.boxOut.x;}},
+      /* drop-rule tests: kill a made-up ship of a kind (tier for rivals), read the counts and the falling drops */
+      fakeKill:function(kind,tier){var f={kind:kind||undefined,tier:tier||'purple',x:W/2,y:200,mode:'form',max:1,hp:0};if(kind)f.max=1;kill(f);},
+      counts:function(){return {cnt:S.cnt,flyT:Math.round(S.flyT*10)/10,drops:S.drops.map(function(d){return d.kind+(d.v?'@'+d.v:'');})};},
+      fly:function(sec){var f0=S.flyT;S.flyT+=sec;for(var tk in TIMED){if(Math.floor(S.flyT/TIMED[tk])>Math.floor(f0/TIMED[tk]))S.drops.push({x:lane(tk),y:-20,kind:tk});}},clearDrops:function(){S.drops=[];}};
   }
 })();
 </script>
