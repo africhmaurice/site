@@ -6,7 +6,7 @@
      NEW FLEET (Maurice 10/16, his drawings): your ship flies anywhere in the lower two thirds (arrows/WASD, or follow the
      mouse or a finger). Besides the looping rivals, ships arrive from every side during each wave: gunboats (78-gunboat)
      cross from the sides firing his dart arrows (78-dart-shot) at you; darts (78-dart) dive straight at you from above, and
-     from below from wave 3; mine-layers (78-mine-layer) cross the top and drop his mines (78-mine), which you can shoot;
+     (no longer from below, 10/21); mine-layers (78-mine-layer) cross the top and drop his mines (78-mine), which you can shoot;
      freighters (78-freighter) are slow and tough and burst into 4 rubies. Every 5th wave is the flagship (78-flagship):
      a boss with a hull bar that fires fans of 5 darts and launches darts. Tough ships get angry at half hull (faster,
      Scarlet glow). Storms: lightning lanes from wave 6 (a flashing warning stripe, then his 76-lightning), wind gusts from
@@ -16,7 +16,7 @@
      slowly pulsing, and you fly into one to catch it. They come two ways, the same in every game (see KILLDROPS, TIMED,
      BOSSROW in the code): every Nth kill of each ship type drops set upgrades (each type counts its own kills for the
      run; a freighter always bursts into 4 rubies), and each upgrade also falls on its own clock of flying seconds
-     (ruby every 28 s, crest 90 s, +1 life 180 s ... red atomic 187 s; tuned 10/21), each in its own lane. The Destroyer drops a row of 10 across the
+     (ruby every 28 s, crest 60 s, +1 life 120 s ... red atomic 187 s; tuned 10/21), each in its own lane. The Destroyer drops a row of 10 across the
      sky that falls 4x as fast. Specials can fall from the start. Every wave has 25% more ships (10/21).
        Mark of the Crest   weapon upgrade, for good: 2 crests reach missile level 2, 4 level 3, 8 level 4, 16 level 5.
        Twin Torches        10 s: two small white slashes fly out to the sides every half second and bounce off the walls.
@@ -316,7 +316,7 @@
                 </ul>
                 <ul>
                   <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-gunboat.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Gunboat</b>Crosses from the side, firing darts at you. 300 points. Drops speed boosts, rubies, piercing shots, Twin Torches, and red atomics.</span></li>
-                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-dart.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Dart</b>Dives straight at you from above, and from below too. 150 points. Drops shields, rubies, and recharging shields.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-dart.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Dart</b>Dives straight at you from above. 150 points. Drops shields, rubies, and recharging shields.</span></li>
                   <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-mine-layer.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Mine-layer</b>Crosses the top, dropping mines. Shoot the mines too. 400 points, 25 a mine. Drops scythes, rubies, waves of energy, red atomics, and lives. Every 19th mine you shoot drops Twin Torches.</span></li>
                   <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-freighter.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Freighter</b>Slow and tough, 8 hits, and it bursts into 4 rubies. Every 5th one also drops a life and a recharging shield. 800 points.</span></li>
                   <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-flagship.png" alt="" loading="lazy" style="transform:rotate(180deg)"></span><span class="sgk-t"><b>Destroyer</b>Every 5th wave. A boss with a hull bar that fires fans of darts. 5,000 points, and it drops a row of 10 upgrades that fall fast.</span></li>
@@ -468,7 +468,7 @@
   function launch(kind){
     var n=S.wave,side=Math.random()<.5?-1:1,f;
     if(kind==='gunboat'){/* comes in from a side and strafes across, firing darts at you */f=spawn(kind,side<0?-40:W+40,60+Math.random()*(H*.45));f.vx=-side*(70+n*4);f.hp=f.max=2+Math.floor(n/6);}
-    else if(kind==='dart'){/* dives straight at where you are, from above or from behind */var below=n>=3&&Math.random()<.35;f=spawn(kind,30+Math.random()*(W-60),below?H+30:-30);
+    else if(kind==='dart'){/* dives straight at where you are, from above or from behind */var below=false;   /* no more darts from behind (Maurice, 2026-10-21) */f=spawn(kind,30+Math.random()*(W-60),below?H+30:-30);
       var dx=S.x-f.x,dy=S.y-f.y,l=Math.sqrt(dx*dx+dy*dy)||1,v=230+n*10;f.vx=dx/l*v;f.vy=dy/l*v;}
     else if(kind==='layer'){/* drifts across the top third and drops mines */f=spawn(kind,side<0?-40:W+40,70+Math.random()*120);f.vx=-side*(45+n*2);f.hp=f.max=3+Math.floor(n/8);f.mineT=1;}
     else if(kind==='freighter'){/* slow and tough; bursts into rubies */f=spawn(kind,60+Math.random()*(W-120),-50);f.vy=40;f.vx=(Math.random()-.5)*40;f.hp=f.max=8+n;}
@@ -552,11 +552,11 @@
     dart:[[5,'shield'],[8,'ruby'],[17,'recharge']],
     layer:[[5,'scythe'],[8,'ruby'],[11,'trench'],[17,'atomic'],[20,'life']],
     mine:[[19,'torch']],
-    freighter:[[1,'ruby','ruby','ruby','ruby'],[5,'life','recharge']]
+    freighter:[[1,'ruby','ruby','ruby','ruby'],[3,'life'],[5,'recharge']]
   };
-  var TIMED={ruby:28,crest:90,brass:42,torch:44,bolt:55,crate:60,life:180,shield:66,pierce:67,scythe:83,recharge:86,trench:156,atomic:187};
+  var TIMED={ruby:28,crest:60,brass:42,torch:44,bolt:55,crate:60,life:120,shield:66,pierce:67,scythe:83,recharge:86,trench:156,atomic:187};
   var BOSSROW=['life','crest','crate','ruby','bolt','ruby','bolt','shield','crest','torch'];   /* 10/21 tune: 2 crests, 1 life */
-  var DROPV=120,EXTRASHIPS=.25,EXTRASHIPS_LATE=.15;   /* extra side ships: 25% of the wave to wave 10, then 15% */
+  var DROPV=120,EXTRASHIPS=.2,EXTRASHIPS_LATE=.1;   /* extra side ships: 20% of the wave to wave 10, then 10% (10/21 tune) */
   /* every wave's ships are harder than the wave before (Maurice, 2026-10-21): faster, attacking more often, firing faster
      shots, and taking more hits. +10% a wave to wave 10, then +5% a wave (it adds up, it doesn't compound):
      wave 1 = 1, wave 10 = 1.9, wave 15 = 2.15, wave 25 = 2.65. */
