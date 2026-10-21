@@ -255,7 +255,7 @@
                 <li><b>Level 2</b>2 crests. Chevrons, faster.</li>
                 <li><b>Level 3</b>4 crests. Fire darts, twice the damage.</li>
                 <li><b>Level 4</b>8 crests. Spinners, twice the damage, and they go through a ship.</li>
-                <li><b>Level 5</b>16 crests. A wide beam that burns every ship above you, hotter with the Speed boost.</li>
+                <li><b>Level 5</b>16 crests. A wide beam that burns the first ship above you, hotter with the Speed boost.</li>
               </ul>
               <p><b>Hull durability.</b> Crests toughen your hull too, at twice the count: with 4 crests each life takes 2 hits, with 8 it takes 3, with 16 it takes 4, and it keeps doubling from there. Each hit costs one point of hull, the last one costs a life, and your hull refills for the next life.</p>
             </div>
@@ -268,7 +268,8 @@
                   <li><span class="sgk-i g" style="--g:255,230,90"><img src="https://africhmaurice.github.io/site/assets/games/78-bolt.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Speed boost</b>Faster firing and faster flying for 10 seconds.</span></li>
                   <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/brass-point.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Brass Point</b>One more missile in every volley for 10 seconds.</span></li>
                   <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/swords.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Twin Torches</b>Slashes fly out to both sides and bounce off the walls for 10 seconds.</span></li>
-                  <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/78-shield.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Shield</b>Blocks one hit. You can hold two.</span></li>
+                  <li><span class="sgk-i g" style="--g:195,166,255"><img src="https://africhmaurice.github.io/site/assets/games/78-missile-4.png" alt="" loading="lazy" style="max-width:44%"></span><span class="sgk-t"><b>Piercing shots</b>For 10 seconds, every missile goes through every ship in its path.</span></li>
+        <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/78-shield.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Shield</b>Blocks one hit. You can hold two.</span></li>
                   <li><span class="sgk-i g ring" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/78-shield.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Recharging shield</b>Blocks a hit, then comes back 12 seconds later, for the rest of that life.</span></li>
                   <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"><span class="plus">+1</span></span><span class="sgk-t"><b>+1 life</b>One more life, up to 6.</span></li>
                 </ul>
@@ -367,6 +368,7 @@
     crate:{w:12,glow:'255,214,120',name:'+25 hunt points'},
     bolt:{w:12,glow:'255,230,90',name:'Speed boost',secs:10},
     brass:{w:12,glow:'255,214,120',name:'Extra missile',secs:10},
+    pierce:{w:8,glow:'195,166,255',name:'Piercing shots',secs:10},   /* Maurice 10/20: every missile goes through every ship for 10 s */
     torch:{w:10,glow:'137,251,203',name:'Twin Torches',secs:10},
     shield:{w:10,glow:'137,251,203',name:'Shield'},
     recharge:{w:4,glow:'137,251,203',name:'Recharging shield'},   /* Maurice 10/20: blocks a hit, comes back 12 s later, for this life */
@@ -399,7 +401,7 @@
   var S=null,state='title',paused=false,boxTaken=lsGet('ma-gauntlet-box')==='1',scale=1,dpr=1,skyY=0;
   function newRun(){
     return {score:0,wave:0,lives:3,hull:1,rs:null,t:0,x:W/2,y:H-74,ty:null,queue:[],arrows:[],storm:null,stormT:8,wind:0,windT:12,windV:0,boss:null,target:null,keys:0,inv:0,fireT:0,shots:[],balls:[],foes:[],drops:[],fx:[],pops:[],
-      temp:{torch:0,bolt:0,brass:0},crests:0,shields:0,crates:0,slashes:[],side:[],sideT:0,waves:[],nuke:null,boxOut:null,banner:'',bannerT:0,diveT:2,shootT:1.5,dead:0,kills:0};
+      temp:{torch:0,bolt:0,brass:0,pierce:0},crests:0,shields:0,crates:0,slashes:[],side:[],sideT:0,waves:[],nuke:null,boxOut:null,banner:'',bannerT:0,diveT:2,shootT:1.5,dead:0,kills:0};
   }
 
   /* ---- waves: harder every time ---- */
@@ -479,11 +481,11 @@
   function streamXs(){return (streams()===1?[0]:[-12,12]).map(function(o){return S.x+o;});}
   /* the beam (Maurice 10/20: it felt like a downgrade): every ship in its column, not just the first */
   function beamHits(x){var hw=MISS[5][3]/2;return S.foes.filter(function(f){return !(f.mode==='enter'&&f.t<0)&&Math.abs(f.x-x)<(f.hw||14)+hw&&f.y<PY-20;});}
-  function beamTarget(x){var best=null;S.foes.forEach(function(f){if(f.mode==='enter'&&f.t<0)return;if(Math.abs(f.x-x)<(f.hw||14)+6&&f.y<PY-20&&(!best||f.y>best.y))best=f;});return best;}
+  function beamTarget(x){var best=null;S.foes.forEach(function(f){if(f.mode==='enter'&&f.t<0)return;if(Math.abs(f.x-x)<(f.hw||14)+MISS[5][3]/2&&f.y<PY-20&&(!best||f.y>best.y))best=f;});return best;}
   function fire(){
     if(level()===5)return;
     var M=MISS[level()],dmg=M[0],v=-M[1],x=S.x,y=PY-30,list=streams()===1?[[0,0]]:[[-12,0],[12,0]];
-    list.forEach(function(s){S.shots.push({x:x+s[0],y:y,vx:s[1],vy:v,dmg:dmg,lv:level(),pierce:level()===4?1:0,hw:M[2],spin:0});});
+    list.forEach(function(s){S.shots.push({x:x+s[0],y:y,vx:s[1],vy:v,dmg:dmg,lv:level(),pierce:S.temp.pierce>0?99:(level()===4?1:0),hw:M[2],spin:0});});
   }
   function hitPlayer(){
     if(S.inv>0||state!=='play')return;
@@ -607,7 +609,7 @@
         if(Math.abs(sh.x-f2.x)<(f2.hw||14)+sh.hw&&Math.abs(sh.y-f2.y)<(f2.hh||18)){hurt(f2,sh.dmg);if(f2.hp<=0){kill(f2);S.foes.splice(q,1);}
           if(sh.pierce>0){sh.pierce--;sh.hit=f2;}else S.shots.splice(a,1);break;}}}
     if(level()===5&&state==='play'){var dps=20*(S.temp.brass>0?2:1)*(S.temp.bolt>0?1.75:1);   /* 20 a second, 1.75x with the Speed boost (Maurice 10/20) */
-      streamXs().forEach(function(x){beamHits(x).forEach(function(f3){f3.hp-=dps*dt;if(f3.flash<=0)f3.flash=.05;
+      streamXs().forEach(function(x){[beamTarget(x)].filter(Boolean).forEach(function(f3){f3.hp-=dps*dt;if(f3.flash<=0)f3.flash=.05;
         if(f3.hp<=0){var qi=S.foes.indexOf(f3);if(qi>=0){S.foes.splice(qi,1);kill(f3);}}});});}
     /* specials */
     for(var sc=S.slashes.length-1;sc>=0;sc--){var sl=S.slashes[sc];sl.y-=900*dt;
@@ -829,6 +831,7 @@
     else if(k==='trench')sprite(IMG.trench,x,y,40);
     else if(k==='bolt')sprite(IMG.bolt,x,y,34);
     else if(k==='shield')sprite(IMG.shield,x,y,38);
+    else if(k==='pierce')sprite(IMG.miss[3],x,y,22);
     else if(k==='recharge'){sprite(IMG.shield,x,y,38);ctx.save();ctx.strokeStyle='#89fbcb';ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();ctx.arc(x,y,22,-Math.PI*.15,Math.PI*1.35);ctx.stroke();
       var ax=x+22*Math.cos(Math.PI*1.35),ay=y+22*Math.sin(Math.PI*1.35);ctx.beginPath();ctx.moveTo(ax-6,ay-2);ctx.lineTo(ax,ay);ctx.lineTo(ax+1,ay-7);ctx.stroke();ctx.restore();}
     else if(k==='life'){sprite(IMG.ship,x,y,40);ctx.save();ctx.font="800 15px 'Almarai',sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3;ctx.strokeStyle='#0b170f';ctx.strokeText('+1',x,y+2);ctx.fillStyle='#fffffe';ctx.fillText('+1',x,y+2);ctx.restore();}
@@ -876,7 +879,7 @@
       if(!ok(img)){ctx.fillStyle='#ff4c0f';ctx.fillRect(s.x-2,s.y-10,4,14);return;}
       ctx.save();ctx.translate(s.x,s.y);ctx.rotate(s.lv===4?(RM()?0:s.spin):ang);ctx.drawImage(img,-M[3]/2,-M[4]/2,M[3],M[4]);ctx.restore();});
     if(S&&level()===5&&state==='play'&&ok(IMG.miss[4])){var bi=IMG.miss[4],bw=MISS[5][3],seg=bw*bi.naturalHeight/bi.naturalWidth,off=RM()?0:(S.t*900)%seg;
-      streamXs().forEach(function(x){var top=0;ctx.save();ctx.beginPath();ctx.rect(x-bw/2,top,bw,PY-30-top);ctx.clip();
+      streamXs().forEach(function(x){var f4=beamTarget(x),top=f4?f4.y:0;ctx.save();ctx.beginPath();ctx.rect(x-bw/2,top,bw,PY-30-top);ctx.clip();
         for(var y=PY-30+off;y>top-seg;y-=seg)ctx.drawImage(bi,x-bw/2,y-seg,bw,seg);ctx.restore();});}
     /* Twin Torches slashes: small white crescents */
     S.side.forEach(function(sd){ctx.save();ctx.translate(sd.x,sd.y);ctx.rotate(Math.atan2(sd.vy,sd.vx)+Math.PI/2);ctx.shadowColor='rgba(255,255,254,.8)';ctx.shadowBlur=8;
@@ -910,7 +913,7 @@
     S.pops.forEach(function(p){ctx.fillStyle='#89fbcb';ctx.fillText(p.txt.toUpperCase(),p.x,p.y-(RM()?0:(1-p.t)*24));});
     /* timers for temporary upgrades, bottom left */
     var row=0;
-    ['torch','bolt','brass'].forEach(function(k){if(S.temp[k]<=0)return;var y=H-16-row*20;row++;
+    ['torch','bolt','brass','pierce'].forEach(function(k){if(S.temp[k]<=0)return;var y=H-16-row*20;row++;
       ctx.fillStyle='rgba(11,23,15,.75)';ctx.fillRect(10,y-12,150,18);
       ctx.fillStyle='rgb('+DROPS[k].glow+')';ctx.fillRect(10,y-12,150*S.temp[k]/DROPS[k].secs,4);
       ctx.fillStyle='#fffffe';ctx.textAlign='left';ctx.font="800 11px 'Almarai',sans-serif";ctx.fillText(DROPS[k].name.toUpperCase(),16,y);});
