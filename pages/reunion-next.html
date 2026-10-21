@@ -498,6 +498,16 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cr-res-kit .cr-verdict{margin-top:10px;font-weight:800;font-size:15px;letter-spacing:.14em}
 #rc .cr-res-kit .cr-verdict.pass{color:#3adb97}
 #rc .cr-res-kit .cr-verdict.fail{color:#fd7547}
+/* advantage: two dice in one box; the lower one greys out */
+#rc .cr-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;width:100%}
+#rc .cr-pair .rc-dice,#rc .cr-pair-res{transition:opacity .3s ease,filter .3s ease}
+#rc .cr-pair .cr-low,#rc .cr-pair-res.cr-low{opacity:.35;filter:grayscale(1)}
+#rc .cr-pair-note{margin:14px 0 0;font-size:14px;letter-spacing:.04em;text-align:center}
+#rc .cr-pair-card .cr-pair-note{text-align:left}
+#rc .cr-pair-res{display:flex;align-items:center;gap:12px}
+#rc .cr-pair-card{display:block}
+#rc .cr-pair-card .cr-pair{margin-top:12px}
+@media (max-width:600px){#rc .cr-pair-res{flex-direction:column;align-items:flex-start}}
 </style>
 
 <div id="rc" class="cr rn">
@@ -1230,12 +1240,26 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       } else if (q.kind === 'rolls') {
         // one die per item (the kits), each averaged with every other fren's roll for it
         var grid = document.createElement('div'); grid.className = 'cr-kits';
+        var pairs = q.pairs || {}, second = {};
+        for (var pk in pairs) second[pairs[pk]] = pk;
         q.items.forEach(function (it) {
+          if (second[it[0]]) return;   // the advantage die sits in its partner's box
           var c = document.createElement('div'); c.className = 'cr-kit';
           // 'Name · Job' shows the job on its own line under the name
           var nj = String(it[1]).split(' · ');
           c.innerHTML = '<h3>' + esc(nj[0]) + (nj[1] ? '<small>' + esc(nj[1]) + '</small>' : '') + '</h3>';
-          c.appendChild(diceBlock(it[0], ''));
+          if (pairs[it[0]]) {
+            c.className = 'cr-kit cr-pair-kit';
+            var a = it[0], b = pairs[it[0]], ra = S.rolls[a], rb = S.rolls[b], two = document.createElement('div');
+            two.className = 'cr-pair';
+            var da = diceBlock(a, 'Roll 1'), db = diceBlock(b, 'Roll 2');
+            // both rolled: the lower one greys out (a tie keeps both)
+            if (ra && rb && ra !== rb) (ra < rb ? da : db).classList.add('cr-low');
+            two.appendChild(da); two.appendChild(db); c.appendChild(two);
+            var note = document.createElement('p'); note.className = 'cr-pair-note';
+            note.textContent = ra && rb ? 'Advantage: ' + Math.max(ra, rb) + ' counts.' : 'Advantage: roll both, and the higher one counts.';
+            c.appendChild(note);
+          } else c.appendChild(diceBlock(it[0], ''));
           grid.appendChild(c);
         });
         sec.appendChild(grid);
@@ -1273,7 +1297,9 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   function renderOrders() {
     $('rc-olist').innerHTML = '<ul>' + DATA.questions.map(function (q) {
       var v = q.kind === 'roll' ? (S.rolls[q.id] ? 'Rolled ' + S.rolls[q.id] : null)
-        : q.kind === 'rolls' ? (q.items.every(function (it) { return S.rolls[it[0]]; }) ? q.items.map(function (it) { return it[1].replace(/ Kit$/, '') + ' ' + S.rolls[it[0]]; }).join(' · ') : null)
+        : q.kind === 'rolls' ? (q.items.every(function (it) { return S.rolls[it[0]]; }) ? q.items.filter(function (it) { var p = q.pairs || {}; for (var k in p) if (p[k] === it[0]) return false; return true; }).map(function (it) {
+            var p = q.pairs && q.pairs[it[0]];
+            return it[1].split(' · ')[0].replace(/ Kit$/, '') + ' ' + (p ? S.rolls[it[0]] + ' / ' + S.rolls[p] + ' (advantage: ' + Math.max(S.rolls[it[0]], S.rolls[p]) + ')' : S.rolls[it[0]]); }).join(' · ') : null)
         : q.kind === 'pickroll' ? (S.picks[q.id] && S.rolls[q.id] ? S.picks[q.id] + ' · rolled ' + S.rolls[q.id] : null)
         : q.kind === 'pick2' ? (S.picks[q.id + '_1'] && S.picks[q.id + '_2'] ? S.picks[q.id + '_1'] + ' + ' + S.picks[q.id + '_2'] : S.picks[q.id + '_1'] ? S.picks[q.id + '_1'] + ' + (pick one more)' : null)
         : q.kind === 'grid' ? (q.items.every(function (it) { return S.picks[it[0]]; }) ? q.items.map(function (it) { return it[1].split(' ')[0] + ': ' + S.picks[it[0]]; }).join(' · ') : null)
@@ -1546,6 +1572,15 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         html += '<section class="rc-step"><header><p class="rc-kick">' + esc(q.kicker || '') + '</p><h2>' + esc(q.title) + '</h2>' +
           '<p>' + esc(q.resultText || 'One roll drawn for each crew member, and the top priority the frens picked for them.') + '</p></header><div class="cr-res-kits' + (q.wide ? ' cr-wide' : '') + '">' +
           q.items.map(function (it, i) {
+            var pp = q.pairs || {}, isSecond = false;
+            for (var k2 in pp) if (pp[k2] === it[0]) isSecond = true;
+            if (isSecond) return '';
+            if (pp[it[0]]) {
+              var A = draw[it[0]], B = draw[pp[it[0]]], hi = Math.max(A.roll, B.roll);
+              var one = function (d, lo) { return '<div class="cr-pair-res' + (lo ? ' cr-low' : '') + '">' + d20badge(d.roll, n++) + '<p class="by">Rolled by <b>' + esc(d.by) + '</b></p></div>'; };
+              return '<article class="cr-res-kit cr-pair-card"><div><p class="q">' + esc(it[1].toUpperCase()) + '</p><div class="cr-pair">' + one(A, A.roll < B.roll) + one(B, B.roll < A.roll) + '</div>' +
+                '<p class="cr-pair-note">Advantage: the higher roll counts. <b>' + hi + '</b></p>' + outcome(it[0]) + '</div></article>';
+            }
             var g = grid && pick[grid.items[i][0]], top = g && g.winner ? g.winner : g && g.tie ? g.tie.join(' / ') : '';
             return card(it[0], it[1], top ? '<p class="prio">PRIORITY <b>' + esc(top) + '</b> · ' + g.counts[(g.winner || g.tie[0])] + ' votes</p>' : '', n++);
           }).join('') + '</div></section>';
