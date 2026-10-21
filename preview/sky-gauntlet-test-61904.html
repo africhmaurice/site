@@ -232,6 +232,7 @@
           #ma-gauntlet .sgk li{display:flex;align-items:center;gap:14px;min-width:0}
           #ma-gauntlet .sgk-i{position:relative;flex:0 0 52px;width:52px;height:48px;display:flex;align-items:center;justify-content:center}
           #ma-gauntlet .sgk-i img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+          #ma-gauntlet .sgk-note{margin:0 0 12px;font-size:14px;line-height:1.5;color:#f3ead9}
           #ma-gauntlet .sgk-i.g img{filter:drop-shadow(0 0 7px rgba(var(--g),.85))}
           #ma-gauntlet .sgk-i.ring::after{content:'';position:absolute;inset:3px;border:3px solid #89fbcb;border-radius:50%;border-right-color:transparent}
           #ma-gauntlet .sgk-i .plus{position:absolute;font-weight:800;font-size:15px;color:#fffffe;-webkit-text-stroke:3px #0b170f;paint-order:stroke fill}
@@ -273,6 +274,7 @@
             <div class="sgk-cols">
               <div class="sgk-sec">
                 <p class="sgk-h">Grab these</p>
+                <p class="sgk-note">Ships drop upgrades when you shoot them down, and more fall from the sky on their own timers while you fly.</p>
                 <ul>
                   <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Ruby</b>+250 points.</span></li>
                   <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/golden-chest.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Golden chest</b>+25 hunt points on the leaderboard, up to 4 a day.</span></li>
@@ -284,7 +286,7 @@
                   <li><span class="sgk-i g ring" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/78-shield.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Recharging shield</b>Blocks a hit, then comes back 12 seconds later, for the rest of that life.</span></li>
                   <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"><span class="plus">+1</span></span><span class="sgk-t"><b>+1 life</b>One more life, up to 6.</span></li>
                 </ul>
-                <p class="sgk-h">Specials, from wave 3</p>
+                <p class="sgk-h">Specials</p>
                 <ul>
                   <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/78-scythe.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Scythe</b>A red slash sweeps up the sky and cuts down what it touches.</span></li>
                   <li><span class="sgk-i g" style="--g:255,255,254"><img src="https://africhmaurice.github.io/site/assets/games/trench-emblem.webp" alt="" loading="lazy"></span><span class="sgk-t"><b>Wave of energy</b>A ring of energy rings out from your ship: 2 hits to every ship it passes, and it clears the cannonballs it touches.</span></li>
@@ -294,7 +296,7 @@
               <div class="sgk-sec">
                 <p class="sgk-h">Dodge these</p>
                 <ul>
-                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-rival.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Rival ships</b>They loop around, swoop down at you, and drop cannonballs. 100 points a hit to sink one, 200 if it is diving.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-rival.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Rival ships</b>They loop around, swoop down at you, and drop cannonballs. 100 points a hit to sink one, 200 if it is diving. They drop rubies, golden chests, shields, and lives. The colored ones take more hits and drop shields, rubies, and extra missiles.</span></li>
                 </ul>
                 <ul class="sgk-tiers" aria-label="Rival colors">
                   <li><i style="background:#3adb97"></i>Teal: 2 hits, wave 3+</li>
@@ -304,10 +306,10 @@
                   <li><i style="background:#f1d48a"></i>Gold: 10 hits, wave 25+</li>
                 </ul>
                 <ul>
-                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-gunboat.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Gunboat</b>Crosses from the side, firing darts at you. 300 points.</span></li>
-                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-dart.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Dart</b>Dives straight at you from above, and from below too. 150 points.</span></li>
-                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-mine-layer.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Mine-layer</b>Crosses the top, dropping mines. Shoot the mines too. 400 points, 25 a mine.</span></li>
-                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-freighter.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Freighter</b>Slow and tough, 8 hits, and it bursts into 4 rubies. 800 points.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-gunboat.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Gunboat</b>Crosses from the side, firing darts at you. 300 points. Drops speed boosts, rubies, piercing shots, Twin Torches, and red atomics.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-dart.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Dart</b>Dives straight at you from above, and from below too. 150 points. Drops shields, rubies, and recharging shields.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-mine-layer.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Mine-layer</b>Crosses the top, dropping mines. Shoot the mines too. 400 points, 25 a mine. Drops scythes, rubies, waves of energy, red atomics, and lives. Every 19th mine you shoot drops Twin Torches.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-freighter.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Freighter</b>Slow and tough, 8 hits, and it bursts into 4 rubies. Every 5th one also drops a life and a recharging shield. 800 points.</span></li>
                   <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-flagship.png" alt="" loading="lazy" style="transform:rotate(180deg)"></span><span class="sgk-t"><b>Destroyer</b>Every 5th wave. A boss with a hull bar that fires fans of darts. 5,000 points, and it drops a row of 10 upgrades that fall fast.</span></li>
                   <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-lightning.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Lightning and wind</b>From wave 6, a flashing stripe warns where lightning will strike. From wave 8, gusts of wind push your ship.</span></li>
                 </ul>
