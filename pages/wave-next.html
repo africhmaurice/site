@@ -1,6 +1,6 @@
 <!-- Generated copy of squarespace-wave.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
 <!-- ============================================================
-     THE WHITE WAVE - the vote after the EMP: roll for Rune's dampener, for Hale and Sparrow, and two secret rolls.
+     THE ENERGY WAVE - the vote after the EMP: roll for Rune's dampener, for Hale (with advantage) and Sparrow, and two secret rolls.
      Built by scripts/build-crash.mjs from config/wave-vote.json and games/crash.*; the dice come
      from games/redcity.template.html. Edit those and rebuild, never this file.
      ============================================================ -->
@@ -549,6 +549,10 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .rc-lede + .rc-lede{margin-top:14px}
 /* pick two: the seven choices are short, so they sit in a tighter grid */
 #rc.cr.rn #cr-next .rc-opts{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+/* PASSED / FAILED on a drawn roll */
+#rc .cr-res-kit .cr-verdict{margin-top:10px;font-weight:800;font-size:15px;letter-spacing:.14em}
+#rc .cr-res-kit .cr-verdict.pass{color:#3adb97}
+#rc .cr-res-kit .cr-verdict.fail{color:#fd7547}
 </style>
 
 <div id="rc" class="cr rv">
@@ -591,7 +595,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 <script>
 (function () {
-  var DATA = {"_help":"Chapter 11 vote: the white wave (Maurice's outline, 2026-10-21). Bone in the adventure color rotation. Roll for Rune's EMP dampener, for Hale and Sparrow getting their gear off, and two secret rolls; one roll per die is drawn at random from the sealed votes. Built by node scripts/build-crash.mjs wave. Open and close times are placeholders until Maurice sets them.","key":"wave_vote","points":100,"opens":"2026-10-21T20:00:00Z","closes":"2026-10-22T20:00:00Z","title":["The White","Wave"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"The crew starts to send a transmission to the Captain, but as soon as they do, a white wave of energy passes through them, and all of their tech starts to overload. It’s all about to explode.\n\nRoll for Rune’s dampener, roll for Hale and Sparrow, and roll the two secret rolls. When voting closes, one roll for each die is drawn at random from everyone’s rolls, and I’ll name whose roll it was.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY ROLLS","questions":[{"id":"dampener","kind":"rolls","kicker":"RUNE","title":"How well does Rune’s EMP dampener work?","text":"Rune has a personal EMP dampener/shield that he activates. It only covers his personal items. Roll for how well it works.","items":[["dampener","Rune’s Dampener"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"gear","kind":"rolls","kicker":"HALE AND SPARROW","title":"Do they get their gear off in time?","text":"Hale and Sparrow both have to get all of their equipment off of them. Roll for success.","items":[["gear_hale","Hale · Crest Knight"],["gear_sparrow","Sparrow Zipmeister · Intangible"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each of them."},{"id":"hidden","kind":"rolls","kicker":"SECRET ROLLS","title":"Roll the secret rolls","text":"Roll both. The purpose of each roll stays a secret until the results are in. One roll per die is drawn at random from everyone’s rolls.","items":[["hidden_1","Secret Roll 1"],["hidden_2","Secret Roll 2"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each secret roll."}],"draw":true,"onAdventure":false,"badge":["#268e62","#1a5e41","#89fbcb"]};
+  var DATA = {"_help":"Chapter 11 vote: the white wave (Maurice's outline, 2026-10-21). Bone in the adventure color rotation. Roll for Rune's EMP dampener, for Hale's and Sparrow's reflex speed (Hale has advantage: two dice, gear_hale and gear_hale_2, the higher drawn roll counts), and two secret rolls; one roll per die is drawn at random from the sealed votes. Built by node scripts/build-crash.mjs wave. Open and close times are placeholders until Maurice sets them.","key":"wave_vote","points":100,"opens":"2026-10-21T20:00:00Z","closes":"2026-10-22T20:00:00Z","title":["The Energy","Wave"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"The crew starts to send a transmission to the Captain, but as soon as they do, a white wave of energy passes through them, and all of their tech starts to overload. Everything is seconds from exploding.\n\nRoll for Rune’s EMP Dampener, Hale and Sparrow’s Reflex Speed (w/Advantage for Hale--roll 2, take the higher of the 2), and two secret things that might could happen.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY ROLLS","questions":[{"id":"dampener","kind":"rolls","kicker":"RUNE","title":"How well does Rune’s EMP dampener work?","text":"Rune has a personal EMP dampener/shield that he activates. It only covers his personal items. Roll for how well it works.","items":[["dampener","Rune’s Dampener"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"gear","kind":"rolls","kicker":"HALE AND SPARROW","title":"How fast are their reflexes?","text":"Hale and Sparrow both have to get all of their equipment off of them. Roll for their reflex speed. Hale has advantage: roll twice for him, and the higher of the 2 counts.","items":[["gear_hale","Hale · Roll 1"],["gear_hale_2","Hale · Roll 2 (Advantage)"],["gear_sparrow","Sparrow Zipmeister · Intangible"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each die. Hale gets the higher of his two."},{"id":"hidden","kind":"rolls","kicker":"SECRET ROLLS","title":"Roll the secret rolls","text":"Roll both. The purpose of each roll stays a secret until the results are in. One roll per die is drawn at random from everyone’s rolls.","items":[["hidden_1","Secret Roll 1"],["hidden_2","Secret Roll 2"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each secret roll."}],"draw":true,"onAdventure":false,"badge":["#268e62","#1a5e41","#89fbcb"]};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
@@ -1531,7 +1535,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     function card(id, label, extra, i) {
       var d = draw[id];
       return '<article class="cr-res-kit">' + d20badge(d.roll, i) + '<div><p class="q">' + esc(label.toUpperCase()) + '</p>' +
-        '<p class="by">Rolled by <b>' + esc(d.by) + '</b></p>' + (extra || '') + outcome(id) + '</div></article>';
+        '<p class="by">Rolled by <b>' + esc(d.by) + '</b></p>' + (RES.verdicts && RES.verdicts[id] ? '<p class="cr-verdict ' + (/pass/i.test(RES.verdicts[id]) ? 'pass' : 'fail') + '">' + esc(RES.verdicts[id]) + '</p>' : '') + (extra || '') + outcome(id) + '</div></article>';
     }
     function bars(p, q) {
       var total = 0, desc = {};
