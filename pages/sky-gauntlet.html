@@ -21,7 +21,7 @@
        Mark of the Crest   weapon upgrade, for good: 2 crests reach missile level 2, 4 level 3, 8 level 4, 16 level 5.
        Twin Torches        10 s: two small white slashes fly out to the sides every half second and bounce off the walls.
        Bolt of Lightning   10 s: faster firing and faster flying. (Icon drawn in code until Maurice draws one.)
-       Brass Point         10 s: one more missile in every volley.
+       Brass Point         10 s: one more missile lane; each one caught while running adds another, up to 5 (10/21).
        Golden chest        +25 hunt points, at most 4 a day per person (paid by the weekly board backend, like Airship Runner's prize chests).
        Ruby                +250 points.
        Shield              blocks one hit; you can hold two. (Bubble icon drawn in code until Maurice draws one.)
@@ -276,7 +276,7 @@
                   <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Ruby</b>+250 points.</span></li>
                   <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/golden-chest.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Golden chest</b>+25 hunt points on the leaderboard, up to 4 a day.</span></li>
                   <li><span class="sgk-i g" style="--g:255,230,90"><img src="https://africhmaurice.github.io/site/assets/games/78-bolt.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Speed boost</b>Faster firing and faster flying for 10 seconds.</span></li>
-                  <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/brass-point.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Brass Point</b>One more missile in every volley for 10 seconds.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/brass-point.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Brass Point</b>One more missile lane for 10 seconds. Catch more while it lasts to stack up to 5 lanes.</span></li>
                   <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/swords.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Twin Torches</b>Slashes fly out to both sides and bounce off the walls for 10 seconds.</span></li>
                   <li><span class="sgk-i g" style="--g:195,166,255"><img src="https://africhmaurice.github.io/site/assets/games/78-missile-4.png" alt="" loading="lazy" style="max-width:44%"></span><span class="sgk-t"><b>Piercing shots</b>For 10 seconds, every missile goes through every ship in its path.</span></li>
         <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/78-shield.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Shield</b>Blocks one hit. You can hold two.</span></li>
@@ -412,7 +412,7 @@
   var S=null,state='title',paused=false,boxTaken=lsGet('ma-gauntlet-box')==='1',scale=1,dpr=1,skyY=0;
   function newRun(){
     return {score:0,wave:0,lives:3,hull:1,rs:null,t:0,x:W/2,y:H-74,ty:null,queue:[],arrows:[],storm:null,stormT:8,wind:0,windT:12,windV:0,boss:null,target:null,keys:0,inv:0,fireT:0,shots:[],balls:[],foes:[],drops:[],fx:[],pops:[],
-      temp:{torch:0,bolt:0,brass:0,pierce:0},crests:0,shields:0,crates:0,slashes:[],side:[],sideT:0,waves:[],nuke:null,boxOut:null,banner:'',bannerT:0,diveT:2,shootT:1.5,dead:0,kills:0,cnt:{},flyT:0};
+      temp:{torch:0,bolt:0,brass:0,pierce:0},crests:0,shields:0,crates:0,slashes:[],side:[],sideT:0,waves:[],nuke:null,boxOut:null,banner:'',bannerT:0,diveT:2,shootT:1.5,dead:0,kills:0,cnt:{},flyT:0,lanes:1};
   }
 
   /* ---- waves: harder every time ---- */
@@ -492,15 +492,19 @@
   function reload(){return S.temp.bolt>0?.17:.3;}
   var MISS=[null,[1,760,6,5,26],[1,920,12,22,30],[2,760,10,16,56],[2,700,16,30,36],[0,0,0,24,0]];   /* the beam is twice as wide (Maurice 10/20) */
   function level(){for(var l=5;l>1;l--)if(S.crests>=CRESTS[l])return l;return 1;}
-  function streams(){return 1+(S.temp.brass>0?1:0);}
+  /* missile lanes (Maurice, 2026-10-21): every Extra missile caught while one is running adds a lane, up to 5;
+     each catch restarts its timer, and the lanes drop back to 1 when it runs out */
+  var MAXLANES=5,LANEGAP=20;
+  function streams(){return S.temp.brass>0?S.lanes:1;}
+  function laneOffs(){var n=streams(),o=[];for(var i=0;i<n;i++)o.push((i-(n-1)/2)*LANEGAP);return o;}
   /* the beam (level 5): every stream burns the first ship above it */
-  function streamXs(){return (streams()===1?[0]:[-12,12]).map(function(o){return S.x+o;});}
+  function streamXs(){return laneOffs().map(function(o){return S.x+o;});}
   /* the beam (Maurice 10/20: it felt like a downgrade): every ship in its column, not just the first */
   function beamHits(x){var hw=MISS[5][3]/2;return S.foes.filter(function(f){return !(f.mode==='enter'&&f.t<0)&&Math.abs(f.x-x)<(f.hw||14)+hw&&f.y<PY-20;});}
   function beamTarget(x){var best=null;S.foes.forEach(function(f){if(f.mode==='enter'&&f.t<0)return;if(Math.abs(f.x-x)<(f.hw||14)+MISS[5][3]/2&&f.y<PY-20&&(!best||f.y>best.y))best=f;});return best;}
   function fire(){
     if(level()===5)return;
-    var M=MISS[level()],dmg=M[0],v=-M[1],x=S.x,y=PY-30,list=streams()===1?[[0,0]]:[[-12,0],[12,0]];
+    var M=MISS[level()],dmg=M[0],v=-M[1],x=S.x,y=PY-30,list=laneOffs().map(function(o){return [o,0];});
     list.forEach(function(s){S.shots.push({x:x+s[0],y:y,vx:s[1],vy:v,dmg:dmg,lv:level(),pierce:S.temp.pierce>0?99:(level()===4?1:0),hw:M[2],spin:0});});
   }
   function hitPlayer(){
@@ -544,7 +548,9 @@
   function lane(k){var ks=Object.keys(TIMED),i=ks.indexOf(k);return W*(.1+.8*i/(ks.length-1));}
   /* catching something */
   function collect(k,x,y){
-    var D=DROPS[k];S.pops.push({x:x,y:y-20,txt:D.name,t:1.1});
+    var D=DROPS[k];
+    if(k==='brass')S.lanes=Math.min(MAXLANES,(S.temp.brass>0?S.lanes:1)+1);
+    S.pops.push({x:x,y:y-20,txt:k==='brass'?S.lanes+' missile lanes':D.name,t:1.1});
     if(D.secs)S.temp[k]=D.secs;
     else if(k==='ruby'){S.score+=250;hud();}
     else if(k==='crate'){S.crates++;}
@@ -946,7 +952,7 @@
     ['torch','bolt','brass','pierce'].forEach(function(k){if(S.temp[k]<=0)return;var y=H-16-row*20;row++;
       ctx.fillStyle='rgba(11,23,15,.75)';ctx.fillRect(10,y-12,150,18);
       ctx.fillStyle='rgb('+DROPS[k].glow+')';ctx.fillRect(10,y-12,150*S.temp[k]/DROPS[k].secs,4);
-      ctx.fillStyle='#fffffe';ctx.textAlign='left';ctx.font="800 11px 'Almarai',sans-serif";ctx.fillText(DROPS[k].name.toUpperCase(),16,y);});
+      ctx.fillStyle='#fffffe';ctx.textAlign='left';ctx.font="800 11px 'Almarai',sans-serif";ctx.fillText((k==='brass'?S.lanes+' MISSILE LANES':DROPS[k].name.toUpperCase()),16,y);});
     /* weapon level and crests toward the next one, top left */
     var lv=level(),nxt=CRESTS[lv+1];ctx.textAlign='left';ctx.font="800 11px 'Almarai',sans-serif";ctx.fillStyle='rgba(11,23,15,.75)';ctx.fillRect(10,10,170,22);
     ctx.fillStyle='#fffffe';ctx.fillText(('Weapon level '+lv+(nxt?'  ·  crests '+S.crests+'/'+nxt:'  ·  max')).toUpperCase(),16,22);
