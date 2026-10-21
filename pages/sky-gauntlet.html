@@ -255,7 +255,7 @@
                 <li><b>Level 2</b>2 crests. Chevrons, faster.</li>
                 <li><b>Level 3</b>4 crests. Fire darts, twice the damage.</li>
                 <li><b>Level 4</b>8 crests. Spinners, twice the damage, and they go through a ship.</li>
-                <li><b>Level 5</b>16 crests. A beam that burns whatever is above you.</li>
+                <li><b>Level 5</b>16 crests. A wide beam that burns every ship above you, hotter with the Speed boost.</li>
               </ul>
               <p><b>Hull durability.</b> Crests toughen your hull too, at twice the count: with 4 crests each life takes 2 hits, with 8 it takes 3, with 16 it takes 4, and it keeps doubling from there. Each hit costs one point of hull, the last one costs a life, and your hull refills for the next life.</p>
             </div>
@@ -472,11 +472,13 @@
   /* ---- the game ---- */
   function speed(){return 330*(S.temp.bolt>0?1.5:1);}
   function reload(){return S.temp.bolt>0?.17:.3;}
-  var MISS=[null,[1,760,6,5,26],[1,920,12,22,30],[2,760,10,16,56],[2,700,16,30,36],[0,0,0,12,0]];
+  var MISS=[null,[1,760,6,5,26],[1,920,12,22,30],[2,760,10,16,56],[2,700,16,30,36],[0,0,0,24,0]];   /* the beam is twice as wide (Maurice 10/20) */
   function level(){for(var l=5;l>1;l--)if(S.crests>=CRESTS[l])return l;return 1;}
   function streams(){return 1+(S.temp.brass>0?1:0);}
   /* the beam (level 5): every stream burns the first ship above it */
   function streamXs(){return (streams()===1?[0]:[-12,12]).map(function(o){return S.x+o;});}
+  /* the beam (Maurice 10/20: it felt like a downgrade): every ship in its column, not just the first */
+  function beamHits(x){var hw=MISS[5][3]/2;return S.foes.filter(function(f){return !(f.mode==='enter'&&f.t<0)&&Math.abs(f.x-x)<(f.hw||14)+hw&&f.y<PY-20;});}
   function beamTarget(x){var best=null;S.foes.forEach(function(f){if(f.mode==='enter'&&f.t<0)return;if(Math.abs(f.x-x)<(f.hw||14)+6&&f.y<PY-20&&(!best||f.y>best.y))best=f;});return best;}
   function fire(){
     if(level()===5)return;
@@ -604,9 +606,9 @@
       for(var q=0;q<S.foes.length;q++){var f2=S.foes[q];if(f2.mode==='enter'&&f2.t<0)continue;if(sh.hit===f2)continue;
         if(Math.abs(sh.x-f2.x)<(f2.hw||14)+sh.hw&&Math.abs(sh.y-f2.y)<(f2.hh||18)){hurt(f2,sh.dmg);if(f2.hp<=0){kill(f2);S.foes.splice(q,1);}
           if(sh.pierce>0){sh.pierce--;sh.hit=f2;}else S.shots.splice(a,1);break;}}}
-    if(level()===5&&state==='play'){var dps=7*(S.temp.brass>0?2:1);
-      streamXs().forEach(function(x){var f3=beamTarget(x);if(!f3)return;f3.hp-=dps*dt;if(f3.flash<=0)f3.flash=.05;
-        if(f3.hp<=0){var qi=S.foes.indexOf(f3);if(qi>=0){S.foes.splice(qi,1);kill(f3);}}});}
+    if(level()===5&&state==='play'){var dps=20*(S.temp.brass>0?2:1)*(S.temp.bolt>0?1.75:1);   /* 20 a second, 1.75x with the Speed boost (Maurice 10/20) */
+      streamXs().forEach(function(x){beamHits(x).forEach(function(f3){f3.hp-=dps*dt;if(f3.flash<=0)f3.flash=.05;
+        if(f3.hp<=0){var qi=S.foes.indexOf(f3);if(qi>=0){S.foes.splice(qi,1);kill(f3);}}});});}
     /* specials */
     for(var sc=S.slashes.length-1;sc>=0;sc--){var sl=S.slashes[sc];sl.y-=900*dt;
       for(var sq=S.foes.length-1;sq>=0;sq--){var fs2=S.foes[sq];if(fs2.mode==='enter'&&fs2.t<0)continue;if(Math.abs(fs2.x-sl.x)<sl.w/2+(fs2.hw||14)&&fs2.y>sl.y-80&&fs2.y<sl.y+80){if(fs2.kind==='flagship'){if(!fs2.sc){fs2.sc=1;hurt(fs2,10);}continue;}S.foes.splice(sq,1);kill(fs2);}}
@@ -874,7 +876,7 @@
       if(!ok(img)){ctx.fillStyle='#ff4c0f';ctx.fillRect(s.x-2,s.y-10,4,14);return;}
       ctx.save();ctx.translate(s.x,s.y);ctx.rotate(s.lv===4?(RM()?0:s.spin):ang);ctx.drawImage(img,-M[3]/2,-M[4]/2,M[3],M[4]);ctx.restore();});
     if(S&&level()===5&&state==='play'&&ok(IMG.miss[4])){var bi=IMG.miss[4],bw=MISS[5][3],seg=bw*bi.naturalHeight/bi.naturalWidth,off=RM()?0:(S.t*900)%seg;
-      streamXs().forEach(function(x){var f4=beamTarget(x),top=f4?f4.y:0;ctx.save();ctx.beginPath();ctx.rect(x-bw/2,top,bw,PY-30-top);ctx.clip();
+      streamXs().forEach(function(x){var top=0;ctx.save();ctx.beginPath();ctx.rect(x-bw/2,top,bw,PY-30-top);ctx.clip();
         for(var y=PY-30+off;y>top-seg;y-=seg)ctx.drawImage(bi,x-bw/2,y-seg,bw,seg);ctx.restore();});}
     /* Twin Torches slashes: small white crescents */
     S.side.forEach(function(sd){ctx.save();ctx.translate(sd.x,sd.y);ctx.rotate(Math.atan2(sd.vy,sd.vx)+Math.PI/2);ctx.shadowColor='rgba(255,255,254,.8)';ctx.shadowBlur=8;
