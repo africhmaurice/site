@@ -14,6 +14,11 @@
      crossings); each constellation's first 3 stars along its lines (5 at first, 3 from 10/19) (SHAPES start) are ringed and numbered in the sky with
      its name by star 1 (Violet), and in the open view. Charting needs 80% of its stars and 80% of its lines (was 90%/85%).
      Saves are v2; a v1 save from before the halving is ignored. DRAFT: the added how-to sentences.
+     10/21 (Maurice): Ctrl+Z / Cmd+Z undoes (undo also takes back a star move or Clear); every Check says
+     "N of M stars right." ("Keep going, that's only part of a constellation." under half) for the closest constellation; a tapped star can be dragged onto another star to move it
+     (dragging anywhere else still moves the sky). Each Check result also pops up over a darkened screen: the
+     count big (Cracked Imperia), the result under it, a "Keep going" button; a tap anywhere or Escape closes it.
+     DRAFT: those sentences and "Keep going".
      Charting all ten opens a secret eleventh constellation (a loot box drawn in stars) appears in the list; charting it reveals loot box 82, and claiming box 82 also
      scores puzzle riddle #32 for 500 points (rules.json puzzleRiddles, Maurice 10/19 "push it live"; no password).
      (Maurice 10/19: "add an unclaimed loot box"; box 82's old game was cut). Clue: "Star gazer (level: expert)".
@@ -99,6 +104,12 @@
 #ma-stars .st-sky canvas{width:100%;height:100%;touch-action:none}
 #ma-stars .st-pic{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px}
 #ma-stars .st-pic em{font-style:normal;font-weight:700;font-size:11px;line-height:1.2;letter-spacing:.06em;color:#c3a6ff;white-space:nowrap;font-variant-numeric:tabular-nums}
+#ma-stars .st-pop{position:fixed;inset:0;z-index:2147483001;display:grid;place-items:center;padding:24px 20px;background:rgba(11,23,15,.88);cursor:pointer}
+#ma-stars .st-popin{width:100%;max-width:900px;display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center}
+#ma-stars .st-popbig{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(40px,9vw,112px);line-height:1.2;letter-spacing:.03em;text-transform:uppercase;color:#fffffe;text-wrap:balance}
+#ma-stars .st-pop.good .st-popbig{color:#89fbcb}
+#ma-stars .st-popsmall{margin:0;font-weight:700;font-size:clamp(18px,2.6vw,26px);line-height:1.45;color:#f3ead9;max-width:720px;text-wrap:balance}
+#ma-stars .st-popsmall:empty{display:none}
 #ma-stars .st-zoom{margin-left:auto;display:flex;align-items:center;gap:8px}
 #ma-stars .st-zoom .st-btn{min-width:44px;padding:10px 12px}
 #ma-stars .st-zv{min-width:40px;font-weight:800;font-size:13px;letter-spacing:.08em;color:#c3a6ff;text-align:center;font-variant-numeric:tabular-nums}
@@ -121,7 +132,7 @@
   <div class="st-head">
     <p class="st-eye">Puzzle &middot; 500 points</p>
     <h1 class="st-h1">The Deep Sky</h1>
-    <p class="st-how">Ten constellations hide in this sky, and their stars look like every other star. Open one in the list to study its shape, then trace it: tap its stars in order to draw its lines, and tap Lift to start a new line. Drag to move around the sky, and zoom in to tell close stars apart. Chart all ten to find the secret one, and the loot box inside it is worth 500 points. Each constellation’s first three stars are marked and numbered in the sky, with its name beside star 1. Trace at least 80% of its stars and 80% of its lines to chart it.</p>
+    <p class="st-how">Ten constellations hide in this sky, and their stars look like every other star. Open one in the list to study its shape, then trace it: tap its stars in order to draw its lines, and tap Lift to start a new line. Drag a star you tapped onto another star to move it, and press Ctrl+Z to undo. Drag to move around the sky, and zoom in to tell close stars apart. Chart all ten to find the secret one, and the loot box inside it is worth 500 points. Each constellation’s first three stars are marked and numbered in the sky, with its name beside star 1. Trace at least 80% of its stars and 80% of its lines to chart it.</p>
   </div>
   <div class="st-resume" hidden role="region" aria-label="Saved game"><p class="st-rtext"></p><div class="st-rbtns"><button class="st-btn st-rgo solid" type="button">Continue</button><button class="st-btn st-rnew" type="button">Start over</button></div></div>
   <div class="st-sky" tabindex="0" role="application" aria-label="Night sky. Drag to move, tap stars to connect them, then press Check."><canvas></canvas></div>
@@ -133,6 +144,7 @@
   </div>
   <div class="st-keep"><button class="st-btn st-save" type="button" disabled>Save progress</button><span class="st-saved" aria-live="polite"></span></div>
   <ol class="st-row" aria-label="Constellations"></ol>
+  <div class="st-pop" hidden role="alertdialog" aria-modal="true" aria-live="assertive" aria-label="Check result"><div class="st-popin"><p class="st-popbig"></p><p class="st-popsmall"></p><button class="st-btn st-popclose solid" type="button">Keep going</button></div></div>
   <div class="st-view" hidden role="dialog" aria-modal="true" aria-label="Constellation"><div class="st-card"><h2 class="st-vname"></h2><div class="st-vart"></div><p class="st-vstate"></p><button class="st-btn st-vclose" type="button">Close</button></div></div>
   <div class="st-win" hidden>
     <h2>The deep sky is charted!</h2>
@@ -155,7 +167,7 @@
   var SECRET={id:'secret-loot',name:'The Loot Box',secret:true,points:[[0.08,0.95],[0.36,0.95],[0.64,0.95],[0.92,0.95],[0.92,0.74],[0.92,0.52],[0.86,0.3],[0.7,0.14],[0.5,0.09],[0.3,0.14],[0.14,0.3],[0.08,0.52],[0.08,0.74],[0.5,0.52],[0.5,0.66]],
     links:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,0],[11,13],[13,5],[13,14]]};
   var ALL=SHAPES.concat([SECRET]),SLOTS=SHAPES.length;
-  var MSG={charted:'Charted: ',again:'You already charted that one.',few:'Connect a few more stars first.',none:'That isn’t one of the constellations. Try again.',
+  var MSG={charted:'Charted: ',again:'You already charted that one.',few:'Connect a few more stars first.',none:'That isn’t one of the constellations. Try again.',part:'Keep going, that’s only part of a constellation.',
     close:'So close. Some of its stars are still missing.',extra:'Close, but some of those stars aren’t part of it.',
     lines:'Those are the right stars, but the lines don’t follow its shape yet.',wrong:'Those are the right stars, but some lines run where the shape has none. Tap Lift to jump to a new line.',
     secret:'All ten charted. One more constellation is hiding in the sky.',locked:'That one stays hidden until the other ten are charted.',all:'Every constellation is charted!'};
@@ -252,9 +264,10 @@
         if(n===0){ctx.fillStyle='#f3ead9';ctx.fillText(sh.name,q[0]+10*px,q[1]+10*px);}});
       ctx.globalAlpha=1;});
     /* the player's drawing: Parchment lines, Scarlet rings on the tapped stars (the last one a little bigger) */
+    var dp=moving?path.map(function(q){return q.id===moving.id?{x:moving.wx,y:moving.wy,id:q.id,lift:q.lift}:q;}):path;
     if(path.length){ctx.strokeStyle='rgba(243,234,217,.85)';ctx.lineWidth=1.6*px;ctx.beginPath();
-      path.forEach(function(q,i){(i&&!q.lift)?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);});ctx.stroke();
-      ctx.strokeStyle='#ff4c0f';ctx.lineWidth=1.8*px;path.forEach(function(q,i){ctx.beginPath();ctx.arc(q.x,q.y,(i===path.length-1?8:6)*px,0,6.283);ctx.stroke();});}
+      dp.forEach(function(q,i){(i&&!q.lift)?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);});ctx.stroke();
+      ctx.strokeStyle='#ff4c0f';ctx.lineWidth=1.8*px;dp.forEach(function(q,i){ctx.beginPath();ctx.arc(q.x,q.y,(moving&&q.id===moving.id?10:i===dp.length-1?8:6)*px,0,6.283);ctx.stroke();});}
   }
   var raf=0;
   function loop(t){draw(t);raf=requestAnimationFrame(loop);}
@@ -291,19 +304,33 @@
   rowEl.addEventListener('keydown',function(e){if(e.key!=='Enter'&&e.key!==' ')return;var li=e.target.closest&&e.target.closest('.st-slot[data-i]');if(li){e.preventDefault();openSlot(li);}});
   viewEl.querySelector('.st-vclose').addEventListener('click',closeView);
   viewEl.addEventListener('click',function(e){if(e.target===viewEl)closeView();});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeView();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(!popEl.hidden){unpop();return;}closeView();}
+    /* Ctrl+Z (Cmd+Z on a Mac) undoes like the Undo button, unless someone is typing in a field */
+    if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&!e.altKey&&(e.key==='z'||e.key==='Z')){var tg=e.target,typing=tg&&(/^(input|textarea|select)$/i.test(tg.tagName)||tg.isContentEditable);
+      if(!typing&&(path.length||hist.length)&&viewEl.hidden){e.preventDefault();undo();}}});
 
   // ---------- checking a drawing: its stars AND its lines ----------
   var msgT=0;
   function say(t){msgEl.textContent=t;clearTimeout(msgT);msgT=setTimeout(function(){if(msgEl.textContent===t)msgEl.textContent='';},6000);}
+  /* every Check result also shows big over a darkened screen (Maurice 10/21): the star count across it, the result under it */
+  var popEl=root.querySelector('.st-pop'),popBack=null;
+  function pop(big,small,good){popEl.querySelector('.st-popbig').textContent=big;popEl.querySelector('.st-popsmall').textContent=small||'';popEl.className='st-pop'+(good?' good':'');
+    popBack=document.activeElement;popEl.hidden=false;try{popEl.querySelector('.st-popclose').focus({preventScroll:true});}catch(e){}}
+  function unpop(){if(popEl.hidden)return;popEl.hidden=true;if(popBack&&popBack.focus&&document.body.contains(popBack)){try{popBack.focus({preventScroll:true});}catch(e){}}}
+  popEl.addEventListener('click',unpop);
+  /* a result: the small message line keeps it too; the popup puts the count big when there is one */
+  function tell(main,count,good){say(main+(count||''));var c=(count||'').trim().replace(/.$/,'');pop(c||main,c?main:'',good);}
   function check(){
     var ids={};path.forEach(function(q){ids[q.id]=1;});var picked=Object.keys(ids).length;
-    if(picked<4){say(MSG.few);return;}
+    if(picked<4){tell(MSG.few);return;}
     var best=null;
     L.pl.forEach(function(p,i){var n=p.stars.length,hit=0;for(var j=0;j<n;j++)if(ids['c'+i+'_'+j])hit++;var f=hit/n;if(!best||f>best.f)best={i:i,s:ALL[i],f:f,n:n,hit:hit};});
-    if(!best||best.f<0.5){say(MSG.none);return;}
-    if(best.f<NEED){say(MSG.close);return;}
-    if(picked-best.hit>Math.max(2,Math.floor(best.n*EXTRA))){say(MSG.extra);return;}
+    /* every Check says how many of the closest constellation's stars are in the drawing (Maurice 10/21) */
+    var right=best?' '+best.hit+' of '+best.n+' stars right.':'';
+    if(!best||!best.hit){tell(MSG.none);return;}
+    if(best.f<0.5){tell(MSG.part,right);return;}
+    if(best.f<NEED){tell(MSG.close,right);return;}
+    if(picked-best.hit>Math.max(2,Math.floor(best.n*EXTRA))){tell(MSG.extra,right);return;}
     var want={},drawn={},good=0,bad=0,pre='c'+best.i+'_';
     best.s.links.forEach(function(l){want[Math.min(l[0],l[1])+','+Math.max(l[0],l[1])]=1;});
     for(var k=1;k<path.length;k++){var a=path[k-1],b=path[k];if(b.lift||a.id===b.id)continue;
@@ -311,27 +338,30 @@
       var key=(ka<0||kb<0)?[a.id,b.id].sort().join('|'):Math.min(ka,kb)+','+Math.max(ka,kb);
       if(drawn[key])continue;drawn[key]=1;if(want[key])good++;else bad++;}
     var nl=best.s.links.length;
-    if(good<nl*LINES){say(MSG.lines);return;}
-    if(bad>Math.max(3,Math.floor(nl*WRONG))){say(MSG.wrong);return;}
-    if(charted[best.s.id]){say(MSG.again);clearPath();return;}
-    if(best.s.secret&&!tenDone()){say(MSG.locked);return;}
+    if(good<nl*LINES){tell(MSG.lines,right);return;}
+    if(bad>Math.max(3,Math.floor(nl*WRONG))){tell(MSG.wrong,right);return;}
+    if(charted[best.s.id]){tell(MSG.again);clearPath();return;}
+    if(best.s.secret&&!tenDone()){tell(MSG.locked);return;}
     charted[best.s.id]=1;chartedAt[best.s.id]=performance.now();save();clearPath();dropSave();renderRow();
-    if(best.s.secret){say(MSG.all);setTimeout(function(){try{winEl.querySelector('.st-boxwrap').scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});}catch(e){}},reduce?0:900);}
-    else if(tenDone()){say(MSG.charted+best.s.name+'. '+MSG.secret);setTimeout(function(){try{winEl.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});}catch(e){}},reduce?0:1400);}
-    else say(MSG.charted+best.s.name);
+    if(best.s.secret){tell(MSG.all,right,true);setTimeout(function(){try{winEl.querySelector('.st-boxwrap').scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});}catch(e){}},reduce?0:900);}
+    else if(tenDone()){tell(MSG.charted+best.s.name+'. '+MSG.secret,right,true);setTimeout(function(){try{winEl.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});}catch(e){}},reduce?0:1400);}
+    else tell(MSG.charted+best.s.name+'.',right,true);
     kick();
   }
 
   // ---------- tools ----------
   var undoB=root.querySelector('.st-undo'),liftB=root.querySelector('.st-lift'),clearB=root.querySelector('.st-clear'),checkB=root.querySelector('.st-check'),saveB=root.querySelector('.st-save'),selEl=root.querySelector('.st-sel');
-  var lifting=false;
-  function tools(){undoB.disabled=clearB.disabled=saveB.disabled=!path.length;liftB.disabled=!path.length||lifting;checkB.disabled=path.length<2;
+  var lifting=false,hist=[];
+  /* undo history: a copy of the drawing before each tap, star move, or Clear (Maurice 10/21: Ctrl+Z undoes) */
+  function snap(){hist.push({p:path.map(function(q){return{x:q.x,y:q.y,id:q.id,lift:q.lift};}),l:lifting});if(hist.length>300)hist.shift();}
+  function undo(){if(hist.length){var h=hist.pop();path=h.p;lifting=h.l;}else{path.pop();lifting=false;}tools();}
+  function tools(){undoB.disabled=!path.length&&!hist.length;clearB.disabled=saveB.disabled=!path.length;liftB.disabled=!path.length||lifting;checkB.disabled=path.length<2;
     selEl.textContent=path.length?(path.length+' star'+(path.length===1?'':'s')+(lifting?' · next tap starts a new line':'')):'';kick();}
-  function clearPath(){path=[];lifting=false;tools();}
-  function pick(st){var last=path[path.length-1];if(last&&last.id===st.id&&!lifting)return;st.lift=lifting||!path.length;lifting=false;path.push(st);tools();}
-  undoB.addEventListener('click',function(){path.pop();lifting=false;tools();});
+  function clearPath(){path=[];lifting=false;hist=[];tools();}
+  function pick(st){var last=path[path.length-1];if(last&&last.id===st.id&&!lifting)return;st.lift=lifting||!path.length;snap();lifting=false;path.push(st);tools();}
+  undoB.addEventListener('click',undo);
   liftB.addEventListener('click',function(){lifting=true;tools();});
-  clearB.addEventListener('click',clearPath);
+  clearB.addEventListener('click',function(){if(!path.length)return;snap();var h=hist;clearPath();hist=h;tools();});
   checkB.addEventListener('click',check);
   root.querySelector('.st-zin').addEventListener('click',function(){setZoom(zoom*1.5,cssW/2,cssH/2);});
   root.querySelector('.st-zout').addEventListener('click',function(){setZoom(zoom/1.5,cssW/2,cssH/2);});
@@ -345,16 +375,26 @@
     L.pl.forEach(function(p,i){p.stars.forEach(function(q,j){if(Math.abs(q[0]-wx)>bd||Math.abs(q[1]-wy)>bd)return;var d=Math.hypot(q[0]-wx,q[1]-wy);if(d<=bd){bd=d;best={x:q[0],y:q[1],id:'c'+i+'_'+j};}});});
     return best;
   }
-  var ptrs={},pinch=null;
-  sky.addEventListener('pointerdown',function(e){var p=local(e);ptrs[e.pointerId]={x:p.x,y:p.y,sx:p.x,sy:p.y,touch:e.pointerType!=='mouse',moved:false};try{sky.setPointerCapture(e.pointerId);}catch(er){}
+  var ptrs={},pinch=null,moving=null;   /* moving: a tapped star being dragged {id, wx, wy} */
+  /* the tapped star (ringed in Scarlet) under a press, if any */
+  function pathStarAt(px,py,reach){var s=S(),wx=vx+px/s,wy=vy+py/s,bd=reach/s,hit=null;path.forEach(function(q){var d=Math.hypot(q.x-wx,q.y-wy);if(d<=bd){bd=d;hit=q;}});return hit;}
+  sky.addEventListener('pointerdown',function(e){var p=local(e);ptrs[e.pointerId]={x:p.x,y:p.y,sx:p.x,sy:p.y,touch:e.pointerType!=='mouse',moved:false};
+    if(Object.keys(ptrs).length===1){var hs=pathStarAt(p.x,p.y,e.pointerType!=='mouse'?22:14);ptrs[e.pointerId].grab=hs?hs.id:null;}try{sky.setPointerCapture(e.pointerId);}catch(er){}
     var ks=Object.keys(ptrs);if(ks.length===2){var a=ptrs[ks[0]],b=ptrs[ks[1]];pinch={d:Math.hypot(a.x-b.x,a.y-b.y)||1,z:zoom};a.moved=b.moved=true;}
     if(e.pointerType==='mouse')e.preventDefault();});
   sky.addEventListener('pointermove',function(e){var q=ptrs[e.pointerId];if(!q)return;var p=local(e),dx=p.x-q.x,dy=p.y-q.y;q.x=p.x;q.y=p.y;
     var ks=Object.keys(ptrs);
     if(ks.length>=2&&pinch){var a=ptrs[ks[0]],b=ptrs[ks[1]],d=Math.hypot(a.x-b.x,a.y-b.y)||1;setZoom(pinch.z*d/pinch.d,(a.x+b.x)/2,(a.y+b.y)/2);return;}
     if(!q.moved&&Math.hypot(p.x-q.sx,p.y-q.sy)>8){q.moved=true;sky.classList.add('drag');}
+    /* dragging from one of your tapped stars carries it; dragging anywhere else moves the sky */
+    if(q.moved&&q.grab){var s0=S();moving={id:q.grab,wx:vx+p.x/s0,wy:vy+p.y/s0};kick();return;}
     if(q.moved){var s=S();vx-=dx/s;vy-=dy/s;clampView();kick();}});
   function up(e){var q=ptrs[e.pointerId];if(!q)return;delete ptrs[e.pointerId];if(!Object.keys(ptrs).length){pinch=null;sky.classList.remove('drag');}
+    if(q.grab&&q.moved){var src=q.grab;moving=null;
+      /* dropped on another star: every place the drawing used the dragged star now uses that one */
+      if(e.type==='pointerup'){var to=nearest(q.x,q.y,q.touch?22:14);if(to&&to.id!==src){snap();path=path.map(function(r){return r.id===src?{x:to.x,y:to.y,id:to.id,lift:r.lift}:r;});
+        path=path.filter(function(r,i){return !(i&&!r.lift&&path[i-1].id===r.id);});}}
+      tools();return;}
     if(e.type==='pointerup'&&!q.moved){var st=nearest(q.x,q.y,q.touch?22:14);if(st)pick(st);}}
   sky.addEventListener('pointerup',up);sky.addEventListener('pointercancel',up);
   sky.addEventListener('wheel',function(e){var p=local(e);
@@ -409,7 +449,7 @@
   if(!reduce)raf=requestAnimationFrame(loop);
   root.__deep={shapes:ALL,world:function(){return L;},charted:charted,path:function(){return path;},check:check,clear:clearPath,lift:function(){lifting=true;tools();},
     view:function(){return{zoom:zoom,vx:vx,vy:vy,s:S(),w:cssW,h:cssH};},setZoom:setZoom,msg:function(){return msgEl.textContent;},saveKey:SAVE,save:saveNow,lifting:function(){return lifting;},
-    tap:function(id){var q=star(id);if(q)pick(q);}}; // test hook
+    tap:function(id){var q=star(id);if(q)pick(q);},undo:undo,popup:function(){return popEl.hidden?null:{big:popEl.querySelector('.st-popbig').textContent,small:popEl.querySelector('.st-popsmall').textContent,good:popEl.classList.contains('good')};},unpop:unpop}; // test hook
 })();
 </script>
 <script>/* PARALLAX v2 (Maurice, 2026-10-16): a library picture the size of the screen behind the game, moving at 30% of the scroll */(function(){
