@@ -737,6 +737,7 @@
     if (rGift) rGift.style.display = 'none';   // in The Treasure Hunt panel now
     if (rGift && gPanel) {
       var tmRow = rGift.cloneNode(true), ta = tmRow.querySelector('a'); ta.setAttribute('data-folder-id', TM); ta.setAttribute('href', TM);
+      tmRow.style.display = '';   // the Oracle's Gift row it copies is hidden
       tmRow.querySelector('.header-nav-folder-title-text').textContent = 'Trench Market';
       var tmPanel = gPanel.cloneNode(true); tmPanel.setAttribute('data-folder', TM);
       var pRows = tmPanel.querySelectorAll('.header-menu-nav-item:not(.header-menu-controls)'), pTpl = pRows[0], pList = pTpl.parentNode;
