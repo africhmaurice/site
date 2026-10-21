@@ -91,6 +91,14 @@
 #ma-gauntlet .sg-cv{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}
 #ma-gauntlet .sg-ov{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px 20px;background:rgba(11,23,15,.9);overflow:auto}
 #ma-gauntlet .sg-ov.on{display:flex}
+/* checkpoints (Maurice, 2026-10-21): optional starts after each Destroyer, with the group's average stats */
+#ma-gauntlet .sg-cps{display:grid;gap:10px;width:100%;max-width:400px;margin-top:6px;padding-top:14px;border-top:1px solid rgba(243,234,217,.25)}
+#ma-gauntlet .sg-cps-h{margin:0;font-weight:800;font-size:12px;line-height:1.4;letter-spacing:.16em;text-transform:uppercase;color:#89fbcb}
+#ma-gauntlet .sg-cp{display:grid;gap:4px;width:100%;margin:0;padding:10px 14px;border:1px solid rgba(243,234,217,.5);background:rgba(11,23,15,.6);color:#f3ead9;font:inherit;text-align:left;cursor:pointer}
+#ma-gauntlet .sg-cp:hover,#ma-gauntlet .sg-cp:focus-visible{border-color:#89fbcb}
+#ma-gauntlet .sg-cp b{font-weight:800;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:#fffffe}
+#ma-gauntlet .sg-cp span{font-size:13px;line-height:1.4;color:#f3ead9}
+#ma-gauntlet .sg-cp[disabled]{opacity:.5;cursor:wait}
 #ma-gauntlet .sg-ov h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(30px,4.6vw,44px);line-height:1.2;letter-spacing:.04em;color:#fffffe}
 #ma-gauntlet .sg-ov p{margin:0;max-width:400px;font-size:clamp(14px,1.7vw,17px);line-height:1.5;color:#f3ead9}
 #ma-gauntlet .sg-btn{margin:0;padding:12px 24px;border:2px solid #0b170f;background:#c53200;color:#fffffe;font:700 15px/1.2 'Almarai',sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .15s ease,transform .15s ease}
@@ -174,7 +182,7 @@
 <!-- ARCADE-TABS:END -->
   <div class="sg-wrap">
     <h1>The Sky Gauntlet</h1>
-    <p class="sg-sub" style="color:#ff4c0f;font-weight:800;letter-spacing:.08em">TEST COPY · scores are not saved</p>
+    <p class="sg-sub" style="color:#ff4c0f;font-weight:800;letter-spacing:.08em">TEST COPY · scores are not saved, and the checkpoint numbers are made up</p>
     <div class="sg-maint" role="status"><b>Under maintenance</b><p>I’m tuning the Sky Gauntlet. It’ll be back soon!</p></div>
     <p class="sg-sub">Your cannons never stop firing. Slide left and right, shoot down the rival fleet, and catch what the rival ships drop. Survive 25 waves, and something drops in.</p>
     <p class="sg-weekly">Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week.</p>
@@ -195,6 +203,7 @@
               <p class="sg-tip-touch">Slide your finger to move. Your cannons fire on their own.</p>
               <p>Catch what falls. The Mark of the Crest upgrades your missiles for good. Everything else is a short boost or a special attack.</p>
               <button class="sg-btn sg-go" type="button">Launch</button>
+              <div class="sg-cps" hidden></div>
             </div>
             <div class="sg-ov sg-pause">
               <h2>Paused</h2>
@@ -206,6 +215,7 @@
               <p class="sgb-dmsg" role="status"></p>
               <button class="sg-box sg-box-over" type="button" hidden aria-label="Open loot box 78"><img src="https://africhmaurice.github.io/leaderboard/loot/78.png" alt="Loot box 78"></button>
               <button class="sg-btn sg-again" type="button">Play again</button>
+              <div class="sg-cps" hidden></div>
               <a class="sg-btn sg-next" href="https://www.mauriceafrich.com/games">NEXT GAME: SKYWORD</a>
             </div>
             <div class="sg-ov sg-found">
@@ -415,7 +425,7 @@
   var S=null,state='title',paused=false,boxTaken=lsGet('ma-gauntlet-box')==='1',scale=1,dpr=1,skyY=0;
   function newRun(){
     return {score:0,wave:0,lives:3,hull:1,rs:null,t:0,x:W/2,y:H-74,ty:null,queue:[],arrows:[],storm:null,stormT:8,wind:0,windT:12,windV:0,boss:null,target:null,keys:0,inv:0,fireT:0,shots:[],balls:[],foes:[],drops:[],fx:[],pops:[],
-      temp:{torch:0,bolt:0,brass:0,pierce:0},crests:0,shields:0,crates:0,slashes:[],side:[],sideT:0,waves:[],nuke:null,boxOut:null,banner:'',bannerT:0,diveT:2,shootT:1.5,dead:0,kills:0,cnt:{},flyT:0,lanes:1};
+      temp:{torch:0,bolt:0,brass:0,pierce:0},crests:0,shields:0,crates:0,slashes:[],side:[],sideT:0,waves:[],nuke:null,boxOut:null,banner:'',bannerT:0,diveT:2,shootT:1.5,dead:0,kills:0,cnt:{},flyT:0,lanes:1,cps:[],from:0};
   }
 
   /* ---- waves: harder every time ---- */
@@ -688,7 +698,9 @@
     /* wave cleared */
     if(state==='play'&&!S.foes.length&&!S.queue.length&&!S.boxOut){
       if(S.wave>=BOXWAVE&&!boxTaken&&!S.boxDropped){S.boxDropped=true;S.boxOut={x:W/2,y:-60};S.banner='A loot box!';S.bannerT=2;say('A loot box is falling. Fly into it.');return;}
-      S.boxDropped=false;S.score+=S.wave*250;hud();startWave();
+      S.boxDropped=false;S.score+=S.wave*250;hud();
+      if(S.wave%5===0)S.cps.push({cp:S.wave+1,score:S.score,crests:S.crests,lives:S.lives,shields:S.shields});   /* a checkpoint: the Destroyer is down */
+      startWave();
     }
   }
   function shootAt(f,v){v*=hard();var dx=S.x-f.x,dy=PY-f.y,l=Math.sqrt(dx*dx+dy*dy)||1;S.balls.push({x:f.x,y:f.y+16,vx:dx/l*v*.45,vy:Math.max(.6,dy/l)*v});}
@@ -703,7 +715,11 @@
   function sgbStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   var sgbMe=sgbLoad(SGB_ME,{})||{};
   function sgbMsg(t,err){sgbDmsgEl.textContent=t;sgbDmsgEl.className='sgb-dmsg'+(err?' err':'');sgbMsgEl.textContent=t;sgbMsgEl.className='sgb-msg'+(err?' err':'');}
-  function sgbApi(action,payload,done){if(action==='gauntletscore'||action==='gauntletstart'){if(done)done({ok:false});return;}   /* TEST COPY: never sends a run or a score */payload=payload||{};payload.action=action;sgbSend(payload,done,1);}
+  var SAMPLE_CPS=[{cp:6,n:4,score:30000,crests:3,lives:3,shields:1},{cp:11,n:3,score:100000,crests:7,lives:3,shields:1},{cp:16,n:2,score:200000,crests:11,lives:2,shields:1},{cp:21,n:1,score:330000,crests:15,lives:2,shields:0},{cp:26,n:1,score:500000,crests:20,lives:2,shields:1}];
+  function sgbApi(action,payload,done){   /* TEST COPY: never sends a run or a score; checkpoints use made-up numbers */
+    if(action==='gauntletcheckpoints'){done({ok:true,cps:SAMPLE_CPS.map(function(c){var o={};for(var k in c)o[k]=c[k];o.mine=true;return o;})});return;}
+    if(action==='gauntletstart'){var c=SAMPLE_CPS.filter(function(x){return x.cp===payload.from;})[0];done(c?{ok:true,ticket:'',cp:c}:{ok:false});return;}
+    if(action==='gauntletscore'){if(done)done({ok:false});return;}payload=payload||{};payload.action=action;sgbSend(payload,done,1);}
   function sgbSend(payload,done,attempt){
     var settled=false;
     var finish=function(res){if(settled)return;settled=true;
@@ -732,15 +748,46 @@
   }
   function sgbRefresh(){sgbApi('gauntlettop',{},function(res){if(res&&res.ok)sgbPaint(res.top);else sgbBoardEl.innerHTML='<li><span class="sgb-empty">The board is resting. Try again soon.</span></li>';});}
   function sgbTick(){var t=sgbWeekLeft(),dd=Math.floor(t/86400),hh=Math.floor(t%86400/3600),mm=Math.floor(t%3600/60);sgbLeftEl.textContent=(dd?dd+'d ':'')+hh+'h '+('0'+mm).slice(-2)+'m';}
-  sgbTick();setInterval(sgbTick,20000);sgbRefresh();
+  sgbTick();setInterval(sgbTick,20000);sgbRefresh();setTimeout(cpFetch,0);
   function sgbStart(){
     var r={ticket:null,wait:[],logged:false};sgbRun=r;sgbPostEl.hidden=true;sgbWhoEl.hidden=true;sgbWhoEl.innerHTML='';sgbMsg('');
     sgbApi('gauntletstart',{},function(res){r.ticket=res&&res.ok?res.ticket:'';var w=r.wait;r.wait=[];w.forEach(function(f){f();});});
   }
+  /* ---- checkpoints (Maurice, 2026-10-21): every Destroyer you destroy opens a checkpoint at the next wave (6, 11, 16, 21,
+     26) for you this week. Starting there is optional and gives the group average, from the board, of everyone who got
+     there this week: score, crests, lives, and shields. The board hands over those numbers with the run ticket, so the
+     run is checked against them. ---- */
+  var cpList=[];
+  function cpLevel(c){var l=1;for(var i=1;i<CRESTS.length;i++)if(c>=CRESTS[i])l=i;return l;}
+  function cpFetch(){
+    sgbApi('gauntletcheckpoints',{email:sgbMe.email},function(res){cpList=res&&res.ok&&res.cps?res.cps.filter(function(c){return c.mine;}):[];cpRender();});
+  }
+  function cpRender(msg){
+    [].forEach.call(root.querySelectorAll('.sg-cps'),function(box){
+      if(!cpList.length&&!msg){box.hidden=true;box.innerHTML='';return;}
+      box.hidden=false;
+      box.innerHTML='<p class="sg-cps-h">Or start after a Destroyer</p>'+cpList.map(function(c){
+        return '<button type="button" class="sg-cp" data-cp="'+c.cp+'"><b>Start at wave '+c.cp+'</b><span>'+sgbFmt(c.score)+' points · weapon level '+cpLevel(c.crests)+' · '+
+          c.lives+' '+(c.lives===1?'life':'lives')+' · '+c.shields+' '+(c.shields===1?'shield':'shields')+'</span><span>The average of '+c.n+' '+(c.n===1?'player':'players')+' this week</span></button>';
+      }).join('')+(msg?'<p class="sg-cps-h" role="status">'+sgbEsc(msg)+'</p>':'');
+      [].forEach.call(box.querySelectorAll('.sg-cp'),function(b){b.onclick=function(){newGame(+b.getAttribute('data-cp'));};});
+    });
+  }
+  function cpStart(cp){
+    [].forEach.call(root.querySelectorAll('.sg-cp'),function(b){b.disabled=true;});
+    sgbApi('gauntletstart',{email:sgbMe.email,from:cp},function(res){
+      if(!res||!res.ok||!res.cp){cpRender(res&&res.error==='locked'?'That checkpoint isn’t open for you yet.':'The board couldn’t load that checkpoint. Try again in a moment.');return;}
+      var c=res.cp;
+      S=newRun();S.score=c.score;S.crests=c.crests;S.lives=Math.max(1,Math.min(MAXLIVES,c.lives));S.shields=Math.min(2,c.shields);S.hull=hullMax();S.wave=cp-1;S.from=cp;
+      state='play';paused=false;showOv(null);pauseBtn.disabled=false;pauseBtn.textContent='Pause';
+      startWave();hud();bringIntoView();run();
+      var r={ticket:res.ticket,wait:[],logged:false};sgbRun=r;sgbPostEl.hidden=true;sgbWhoEl.hidden=true;sgbWhoEl.innerHTML='';sgbMsg('');
+    });
+  }
   /* the run as the game counted it: S.t only runs while the game is being played (pauses and the loot box panel stop it) */
   function sgbEnd(){
     var r=sgbRun;if(!r||r.logged||!S)return;r.logged=true;
-    r.score=S.score;r.wave=Math.max(1,S.wave);r.secs=Math.round(S.t*10)/10;r.kills=S.kills;r.chests=S.crates;
+    r.score=S.score;r.wave=Math.max(1,S.wave);r.secs=Math.round(S.t*10)/10;r.kills=S.kills;r.chests=S.crates;r.cps=JSON.stringify(S.cps);r.from=S.from;
     if(r.score<=0){sgbMsg('');return;}if(sgbMe.email)sgbSubmit(r);else sgbWho(r);
   }
   function sgbWho(r){
@@ -774,13 +821,13 @@
     if(!r.ticket){sgbMsg('The ship could not check in when this run started, so it cannot go on the board. Fly again!',1);return;}
     sgbMsg('Logging your run...');
     sgbApi('gauntletscore',{ticket:r.ticket,email:sgbMe.email,first_name:sgbMe.first_name,handle:sgbMe.handle,platform:sgbMe.platform,country:sgbMe.country,
-      score:r.score,wave:r.wave,secs:r.secs,kills:r.kills,chests:r.chests},function(res){
+      score:r.score,wave:r.wave,secs:r.secs,kills:r.kills,chests:r.chests,cps:r.cps,from:r.from},function(res){
       if(res&&res.ok){
         if(res.status==='host'){sgbMsg('Practice run. Your runs stay off the board.');return;}
         sgbMsg((res.rank?'Logged! You are #'+res.rank+' this week.':'Logged!')+' Best this week: '+sgbFmt(res.best)+'.'+sgbChests(r,res));
         sgbPostEl.hidden=false;sgbWhoEl.hidden=false;sgbWhoEl.innerHTML='<p class="sgb-quiet">Playing as '+sgbEsc(sgbMe.first_name||sgbMe.email)+'. <a class="sgb-notme">Not you?</a></p>';
         sgbWhoEl.querySelector('.sgb-notme').onclick=function(){try{localStorage.removeItem(SGB_ME);}catch(e){}sgbMe={};sgbWho(r);};
-        if(res.top)sgbPaint(res.top);return;
+        if(res.top)sgbPaint(res.top);cpFetch();return;
       }
       var e=res&&res.error;
       if(e==='slow'){sgbMsg('Easy, captain. Logging it in a few seconds...');return setTimeout(function(){sgbSubmit(r);},6000);}
@@ -798,7 +845,8 @@
   }
   function say(t){live.textContent=t;}
   function showOv(el){[ovStart,ovPause,ovOver,ovFound].forEach(function(o){o.classList.toggle('on',o===el);});}
-  function newGame(){
+  function newGame(cp){
+    if(cp)return cpStart(cp);
     S=newRun();state='play';paused=false;showOv(null);pauseBtn.disabled=false;pauseBtn.textContent='Pause';
     startWave();hud();bringIntoView();run();
     sgbStart();
@@ -825,8 +873,8 @@
     var r=root.querySelector('.sg-hud').getBoundingClientRect();
     if(r.top<60||r.top>140){try{window.scrollTo({top:Math.max(0,r.top+(window.pageYOffset||0)-88),behavior:RM()?'auto':'smooth'});}catch(e){}}
   }
-  $('.sg-go').addEventListener('click',newGame);
-  $('.sg-again').addEventListener('click',newGame);
+  $('.sg-go').addEventListener('click',function(){newGame();});
+  $('.sg-again').addEventListener('click',function(){newGame();});
   $('.sg-resume').addEventListener('click',resume);
   $('.sg-keep').addEventListener('click',keepFlying);
   $('.sg-box-found').addEventListener('click',claim);
