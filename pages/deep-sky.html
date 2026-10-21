@@ -1,5 +1,5 @@
 <!-- ============================================================
-     THE DEEP SKY (LIVE 10/19 at /the-deep-sky-48217, hidden from search) - the HARD constellations puzzle, worth 500 points (Maurice, 10/19: "keep this version and add a newer
+     THE DEEP SKY (LIVE 10/19 at /the-deep-sky-48217, hidden from search) - the HARD constellations puzzle, worth 1,000 points (500 until 10/21) (Maurice, 10/19: "keep this version and add a newer
      WAY MORE DIFFICULT version ... a 500 point puzzle with the new shapes"). Find the Constellations (loot box 79) stays as is.
      What makes it hard:
        - Every dot Maurice drew is a star (40 to 124 per constellation), joined exactly where his lines join them.
@@ -20,7 +20,7 @@
      count big (Cracked Imperia), the result under it, a "Keep going" button; a tap anywhere or Escape closes it.
      DRAFT: those sentences and "Keep going".
      Charting all ten opens a secret eleventh constellation (a loot box drawn in stars) appears in the list; charting it reveals loot box 82, and claiming box 82 also
-     scores puzzle riddle #32 for 500 points (rules.json puzzleRiddles, Maurice 10/19 "push it live"; no password).
+     scores puzzle riddle #32 for 1,000 points (was 500) (rules.json puzzleRiddles, Maurice 10/19 "push it live"; no password).
      (Maurice 10/19: "add an unclaimed loot box"; box 82's old game was cut). Clue: "Star gazer (level: expert)".
      Its claim link goes in K, scrambled like the other games.
      Seeded, so everyone on the same kind of screen sees the same sky. Progress is kept in localStorage (ma-deepsky-charted).
@@ -130,9 +130,9 @@
 
 <div id="ma-stars">
   <div class="st-head">
-    <p class="st-eye">Puzzle &middot; 500 points</p>
+    <p class="st-eye">Puzzle &middot; 1,000 points</p>
     <h1 class="st-h1">The Deep Sky</h1>
-    <p class="st-how">Ten constellations hide in this sky, and their stars look like every other star. Open one in the list to study its shape, then trace it: tap its stars in order to draw its lines, and tap Lift to start a new line. Drag a star you tapped onto another star to move it, and press Ctrl+Z to undo. Drag to move around the sky, and zoom in to tell close stars apart. Chart all ten to find the secret one, and the loot box inside it is worth 500 points. Each constellation’s first three stars are marked and numbered in the sky, with its name beside star 1. Trace at least 80% of its stars and 80% of its lines to chart it.</p>
+    <p class="st-how">Ten constellations hide in this sky, and their stars look like every other star. Open one in the list to study its shape, then trace it: tap its stars in order to draw its lines, and tap Lift to start a new line. Drag a star you tapped onto another star to move it, and press Ctrl+Z to undo. Drag to move around the sky, and zoom in to tell close stars apart. Chart all ten to find the secret one, and the loot box inside it is worth 1,000 points. Each constellation’s first three stars are marked and numbered in the sky, with its name beside star 1. Trace at least 80% of its stars and 80% of its lines to chart it.</p>
   </div>
   <div class="st-resume" hidden role="region" aria-label="Saved game"><p class="st-rtext"></p><div class="st-rbtns"><button class="st-btn st-rgo solid" type="button">Continue</button><button class="st-btn st-rnew" type="button">Start over</button></div></div>
   <div class="st-sky" tabindex="0" role="application" aria-label="Night sky. Drag to move, tap stars to connect them, then press Check."><canvas></canvas></div>
@@ -148,9 +148,9 @@
   <div class="st-view" hidden role="dialog" aria-modal="true" aria-label="Constellation"><div class="st-card"><h2 class="st-vname"></h2><div class="st-vart"></div><p class="st-vstate"></p><button class="st-btn st-vclose" type="button">Close</button></div></div>
   <div class="st-win" hidden>
     <h2>The deep sky is charted!</h2>
-    <p class="st-next">One more constellation is hiding in the sky. Find it in the list and chart it to claim loot box 82 and 500 points.</p>
+    <p class="st-next">One more constellation is hiding in the sky. Find it in the list and chart it to claim loot box 82 and 1,000 points.</p>
     <div class="st-boxwrap" hidden>
-      <p>Loot box 82 was hiding in the stars. Tap it to claim it and your 500 points.</p>
+      <p>Loot box 82 was hiding in the stars. Tap it to claim it and your 1,000 points.</p>
       <button class="st-box" type="button" aria-label="Open loot box 82"><img src="https://africhmaurice.github.io/leaderboard/loot/82.png" alt="Loot box 82"></button>
     </div>
   </div>
@@ -356,8 +356,10 @@
   /* undo history: a copy of the drawing before each tap, star move, or Clear (Maurice 10/21: Ctrl+Z undoes) */
   function snap(){hist.push({p:path.map(function(q){return{x:q.x,y:q.y,id:q.id,lift:q.lift};}),l:lifting});if(hist.length>300)hist.shift();}
   function undo(){if(hist.length){var h=hist.pop();path=h.p;lifting=h.l;}else{path.pop();lifting=false;}tools();}
+  /* the count under the sky counts each star once, however many times a line goes back to it (Heather and Dennis, 10/21) */
+  function uniq(){var o={};path.forEach(function(q){o[q.id]=1;});return Object.keys(o).length;}
   function tools(){undoB.disabled=!path.length&&!hist.length;clearB.disabled=saveB.disabled=!path.length;liftB.disabled=!path.length||lifting;checkB.disabled=path.length<2;
-    selEl.textContent=path.length?(path.length+' star'+(path.length===1?'':'s')+(lifting?' · next tap starts a new line':'')):'';kick();}
+    selEl.textContent=path.length?(uniq()+' star'+(uniq()===1?'':'s')+(lifting?' · next tap starts a new line':'')):'';kick();}
   function clearPath(){path=[];lifting=false;hist=[];tools();}
   function pick(st){var last=path[path.length-1];if(last&&last.id===st.id&&!lifting)return;st.lift=lifting||!path.length;snap();lifting=false;path.push(st);tools();}
   undoB.addEventListener('click',undo);

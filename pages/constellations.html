@@ -308,7 +308,9 @@
 
   // ---------- tapping stars ----------
   var undoB=root.querySelector('.st-undo'),clearB=root.querySelector('.st-clear'),checkB=root.querySelector('.st-check'),saveB=root.querySelector('.st-save'),selEl=root.querySelector('.st-sel');
-  function tools(){undoB.disabled=!(hist.length||path.length);clearB.disabled=saveB.disabled=!path.length;checkB.disabled=path.length<2;selEl.textContent=path.length?path.length+' star'+(path.length===1?'':'s')+' connected':'';kick();}
+  /* the count under the sky counts each star once, however many times a line goes back to it (Heather and Dennis, 10/21) */
+  function uniq(){var o={};path.forEach(function(q){o[q.id]=1;});return Object.keys(o).length;}
+  function tools(){undoB.disabled=!(hist.length||path.length);clearB.disabled=saveB.disabled=!path.length;checkB.disabled=path.length<2;selEl.textContent=path.length?uniq()+' star'+(uniq()===1?'':'s')+' connected':'';kick();}
   function clearPath(){path=[];hist=[];tools();}
   function snap(){hist.push(path.slice());if(hist.length>300)hist.shift();}
   /* one star in place of another everywhere it was used, or taken out; then no star follows itself */
