@@ -233,7 +233,7 @@
             </div>
             <div class="sg-ov sg-found">
               <h2 class="sg-boxname">Loot box 78</h2>
-              <p>You caught it. Click the box to claim it.</p>
+              <p>You caught it. Tap the box to claim it in a new tab, then keep flying.</p>
               <button class="sg-box sg-box-found" type="button" aria-label="Open loot box 78"><img src="https://africhmaurice.github.io/leaderboard/loot/78.png" alt="Loot box 78"></button>
               <button class="sg-btn ghost sg-keep" type="button">Keep flying</button>
             </div>
@@ -378,7 +378,8 @@
   if(!root||root.getAttribute('data-ready'))return;
   root.setAttribute('data-ready','1');
   var K='WVpYVDM1Mzc9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-  function claim(){location.href=atob(easy()?KE:K).split('').reverse().join('');}
+  /* the claim page opens in a new tab so the run keeps going behind it and Keep flying still works (Maurice, 2026-10-21) */
+  function claim(){var u=atob(easy()?KE:K).split('').reverse().join(''),w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;   /* noopener would make window.open return null, so it is cleared by hand */}
   var $=function(s){return root.querySelector(s);};
 
   /* ---- the world: 480 wide, 720 tall; the canvas scales it to fit ---- */
