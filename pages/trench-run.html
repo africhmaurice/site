@@ -286,7 +286,7 @@
   /* Save progress was tried in preview and dropped (Maurice 10/19): clear any save left behind by that preview */
   try{localStorage.removeItem('ma-save-trench-run');}catch(e){}
   var k='WlJETk0zRVk9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-  function claim(){location.href=atob(k).split('').reverse().join('');}
+  function claim(){/* claim opens in a new tab so the game keeps going (2026-10-21) */(function(u){var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;})(atob(k).split('').reverse().join(''));}
 
   /* ---- the trench: a tall maze built fresh for each board from a fixed seed (the same board for everyone) ---- */
   var COLS=15,ROWS=31,MAZE=[];           /* MAZE[r][c]: 1 wall, 0 open */

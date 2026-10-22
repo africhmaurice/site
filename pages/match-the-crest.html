@@ -124,7 +124,7 @@
   function outOfMoves(){lock=true;lose.hidden=false;lose.scrollIntoView({behavior:'smooth',block:'center'});}
   d.querySelector('.mc-shuf').addEventListener('click',deal);
   d.querySelector('.mc-again').addEventListener('click',function(){deal();board.scrollIntoView({behavior:'smooth',block:'center'});});
-  box.addEventListener('click',function(){location.href=atob(k).split('').reverse().join('');});
+  box.addEventListener('click',function(){/* claim opens in a new tab so the game keeps going (2026-10-21) */(function(u){var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;})(atob(k).split('').reverse().join(''));});
   deal();
 })();
 </script>

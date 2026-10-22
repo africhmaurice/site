@@ -168,7 +168,7 @@
   box.addEventListener('click',function(){
     if(!claim)return;
     if(/africhmaurice.github.io/.test(location.host)){alert('Preview: this is where loot box 57 opens.');return;}
-    location.href=claim;
+    /* claim opens in a new tab so the game keeps going (2026-10-21) */(function(u){var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;})(claim);
   });
 })();
 </script>

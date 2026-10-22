@@ -368,7 +368,7 @@
   checkB.addEventListener('click',check);
   root.querySelector('.st-zin').addEventListener('click',function(){setZoom(zoom*1.5,cssW/2,cssH/2);});
   root.querySelector('.st-zout').addEventListener('click',function(){setZoom(zoom/1.5,cssW/2,cssH/2);});
-  root.querySelector('.st-box').addEventListener('click',function(){var u=unscramble(K);if(u)location.href=u;});
+  root.querySelector('.st-box').addEventListener('click',function(){var u=unscramble(K);if(u)/* claim opens in a new tab so the game keeps going (2026-10-21) */(function(u){var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;})(u);});
 
   // ---------- pointer: tap a star, drag to move, pinch or ctrl + wheel to zoom ----------
   function local(e){var r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}

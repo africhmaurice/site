@@ -354,7 +354,7 @@
   clearB.addEventListener('click',function(){if(!path.length)return;snap();path=[];tools();});
   checkB.addEventListener('click',check);
 
-  boxBtn.addEventListener('click',function(){location.href=atob(K).split('').reverse().join('');});
+  boxBtn.addEventListener('click',function(){/* claim opens in a new tab so the game keeps going (2026-10-21) */(function(u){var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;})(atob(K).split('').reverse().join(''));});
 
   // ---------- save progress (Maurice 10/19): the drawing in progress, kept on this device ----------
   var SAVE='ma-save-constellations',resEl=root.querySelector('.st-resume'),savedEl=root.querySelector('.st-saved'),savedT=0;

@@ -422,7 +422,7 @@
   function resume(){if(!paused)return;paused=false;last=0;acc=0;pauseOv.hidden=true;ctl();try{stage.focus({preventScroll:true});}catch(e){}}
   function toggle(){if(paused)resume();else pause();}
   pauseBtn.addEventListener('click',toggle);pauseOv.querySelector('button').addEventListener('click',resume);
-  d.querySelector('.tw-box').addEventListener('click',function(){location.href=atob(K).split('').reverse().join('');});
+  d.querySelector('.tw-box').addEventListener('click',function(){/* claim opens in a new tab so the game keeps going (2026-10-21) */(function(u){var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;})(atob(K).split('').reverse().join(''));});
   /* preview hub only (window.__pv): jump to any floor so Maurice can see them all; never on the live site */
   if(window.__pv){
     var pick=document.createElement('div');pick.style.cssText='display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;margin:0;max-width:640px';

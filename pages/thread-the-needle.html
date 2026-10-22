@@ -370,7 +370,7 @@ var ArcadeCard = (function () {
   d.querySelector('.fl-cardbtn').addEventListener('click',function(){if(window.ArcadeCard)ArcadeCard.scrollTo();});
   d.querySelector('.fl-re2').addEventListener('click',function(){ovWin.hidden=true;S.state='resume';try{stage.focus({preventScroll:true});}catch(e){}});
   d.querySelector('.fl-res').addEventListener('click',unpause);
-  function claim(){location.href=atob(K).split('').reverse().join('');}
+  function claim(){/* claim opens in a new tab so the game keeps going (2026-10-21) */(function(u){var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;})(atob(K).split('').reverse().join(''));}
   d.querySelector('.fl-win .fl-box').addEventListener('click',claim);d.querySelector('.fl-box2').addEventListener('click',claim);
   document.addEventListener('keydown',function(e){
     if(e.code!=='Space'&&e.key!==' ')return;
