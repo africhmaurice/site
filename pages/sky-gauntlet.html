@@ -924,6 +924,17 @@
   $('.sg-box-over').addEventListener('click',claim);
   pauseBtn.addEventListener('click',function(){paused?resume():pause();});
   document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});
+  /* leaving mid-run (Maurice 10/22: a mouse Back button cost a 1.5M run): the browser asks first, and if they leave anyway the
+     run so far goes on the board (sendBeacon reaches the board even as the page closes). Back again from the browser's
+     page cache: that run is over, and the page says it was logged. */
+  function midRun(){return !!S&&(state==='play'||state==='dying'||state==='found');}
+  window.addEventListener('beforeunload',function(e){if(midRun()&&S.score>0){e.preventDefault();e.returnValue='';}});
+  window.addEventListener('pagehide',function(){var r=sgbRun;if(!midRun()||!r||r.logged||!r.ticket||!S.score||!sgbMe.email||!navigator.sendBeacon)return;
+    r.logged=true;r.beaconed=true;
+    try{navigator.sendBeacon(SGB_ENDPOINT,JSON.stringify({action:act('gauntletscore'),ticket:r.ticket,email:sgbMe.email,first_name:sgbMe.first_name,handle:sgbMe.handle,platform:sgbMe.platform,country:sgbMe.country,
+      score:S.score,wave:Math.max(1,S.wave),secs:Math.round(S.t*10)/10,kills:S.kills,chests:S.crates,cps:JSON.stringify(S.cps),from:S.from}));}catch(err){}
+  });
+  window.addEventListener('pageshow',function(e){if(e.persisted&&sgbRun&&sgbRun.beaconed&&midRun()){gameOver();sgbMsg('You left the page mid-run, so this run was logged as it stood.');}});
   window.addEventListener('blur',pause);
 
   /* ---- loop ---- */
