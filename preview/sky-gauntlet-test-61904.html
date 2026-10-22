@@ -559,9 +559,9 @@
   var BOSSROW=['life','crest','crate','ruby','bolt','ruby','bolt','shield','crest','torch'];   /* 10/21 tune: 2 crests, 1 life */
   var DROPV=120,EXTRASHIPS=.2,EXTRASHIPS_LATE=.1;   /* extra side ships: 20% of the wave to wave 10, then 10% (10/21 tune) */
   /* every wave's ships are harder than the wave before (Maurice, 2026-10-21): faster, attacking more often, firing faster
-     shots, and taking more hits. +10% a wave to wave 10, then +5% a wave (it adds up, it doesn't compound):
-     wave 1 = 1, wave 10 = 1.9, wave 15 = 2.15, wave 25 = 2.65. */
-  var HARDER=.1,HARDER_LATE=.05,LATE=10;
+     shots, and taking more hits. +5% a wave the whole way (10/21 tune; it adds up, it doesn't compound):
+     wave 1 = 1, wave 10 = 1.45, wave 15 = 1.7, wave 25 = 2.2. */
+  var HARDER=.05,HARDER_LATE=.05,LATE=10;
   function hard(){var w=S.wave;return w<=LATE?1+HARDER*(w-1):1+HARDER*(LATE-1)+HARDER_LATE*(w-LATE);}   /* share of extra side ships added to every wave */   /* how fast a drop falls, in px a second */
   /* each timed upgrade falls in its own fixed lane, so two that land on the same second don't overlap */
   function lane(k){var ks=Object.keys(TIMED),i=ks.indexOf(k);return W*(.1+.8*i/(ks.length-1));}
