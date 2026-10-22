@@ -91,6 +91,14 @@
 #ma-gauntlet .sg-cv{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}
 #ma-gauntlet .sg-ov{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px 20px;background:rgba(11,23,15,.9);overflow:auto}
 #ma-gauntlet .sg-ov.on{display:flex}
+/* Normal / Easy tabs (Maurice, 2026-10-21) */
+#ma-gauntlet .sg-modes{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:0}
+#ma-gauntlet .sg-mode{margin:0;min-width:140px;padding:12px 24px;border:2px solid #f3ead9;background:rgba(11,23,15,.7);color:#fffffe;font:800 14px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+#ma-gauntlet .sg-mode[aria-selected="true"]{background:#fffffe;color:#0b170f}
+#ma-gauntlet .sg-mode:disabled{opacity:.45;cursor:not-allowed}
+#ma-gauntlet .sg-mode:focus-visible{outline:2px solid #89fbcb;outline-offset:2px}
+#ma-gauntlet .sgk-easy{margin:0 0 16px;padding:14px 16px;border:1px solid #89fbcb;font-size:14px;line-height:1.55;color:#f3ead9}
+#ma-gauntlet .sgk-easy b{color:#89fbcb}
 /* checkpoints (Maurice, 2026-10-21): optional starts after each Destroyer, with the group's average stats */
 #ma-gauntlet .sg-cps{display:grid;gap:10px;width:100%;max-width:400px;margin-top:6px;padding-top:14px;border-top:1px solid rgba(243,234,217,.25)}
 #ma-gauntlet .sg-cps-h{margin:0;font-weight:800;font-size:12px;line-height:1.4;letter-spacing:.16em;text-transform:uppercase;color:#89fbcb}
@@ -183,8 +191,14 @@
   <div class="sg-wrap">
     <h1>The Sky Gauntlet</h1>
     <div class="sg-maint" role="status"><b>Under maintenance</b><p>I’m tuning the Sky Gauntlet. It’ll be back soon!</p></div>
-    <p class="sg-sub">Your cannons never stop firing. Slide left and right, shoot down the rival fleet, and catch what the rival ships drop. Survive 25 waves, and something drops in.</p>
-    <p class="sg-weekly">Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week.</p>
+    <p class="sg-sub" data-normal>Your cannons never stop firing. Slide left and right, shoot down the rival fleet, and catch what the rival ships drop. Survive 25 waves, and something drops in.</p>
+    <p class="sg-sub" data-easy hidden>Easy Mode: no extra ships, the fleet never gets tougher, and more Crests and lives fall. Survive 50 waves, and something drops in.</p>
+    <p class="sg-weekly" data-normal>Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week.</p>
+    <p class="sg-weekly" data-easy hidden>Easy Mode leaderboard: the top score at 11:59 PM ET every Friday wins 250 points. Then the board resets for a new week.</p>
+    <div class="sg-modes" role="tablist" aria-label="Game mode">
+      <button type="button" role="tab" class="sg-mode" data-mode="normal" aria-selected="true">Normal</button>
+      <button type="button" role="tab" class="sg-mode" data-mode="easy" aria-selected="false">Easy</button>
+    </div>
     <div class="sg-game">
       <div class="sg-cols">
         <div class="sg-main">
@@ -218,7 +232,7 @@
               <a class="sg-btn sg-next" href="https://www.mauriceafrich.com/games">NEXT GAME: SKYWORD</a>
             </div>
             <div class="sg-ov sg-found">
-              <h2>Loot box 78</h2>
+              <h2 class="sg-boxname">Loot box 78</h2>
               <p>You caught it. Click the box to claim it.</p>
               <button class="sg-box sg-box-found" type="button" aria-label="Open loot box 78"><img src="https://africhmaurice.github.io/leaderboard/loot/78.png" alt="Loot box 78"></button>
               <button class="sg-btn ghost sg-keep" type="button">Keep flying</button>
@@ -260,6 +274,7 @@
           <section class="sgk" aria-label="Key">
             <h2>Key</h2>
             <div class="sgk-sec">
+              <p class="sgk-easy" data-easy hidden><b>Easy Mode.</b> Ships don’t get tougher each wave and there are no extra ships, but darts can come from below. A Mark of the Crest falls every 33 seconds and a life every minute, every 3rd freighter gives 2 lives, and the Destroyer’s row has 3 Crests and 2 lives. Loot box 81 floats down after wave 50. Easy Mode has its own board, checkpoints, and loot box.</p>
               <p class="sgk-h">Your airship</p>
               <ul>
                 <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Your cannons never stop firing.</b>Fly anywhere in the lower part of the sky: arrows or WASD, or follow with the mouse or your finger. P or Esc pauses. You start with 3 lives.</span></li>
@@ -334,7 +349,7 @@
         </div>
         <aside class="sg-side">
           <div class="sgb-panel">
-            <h2 class="sgb-ph">This week’s top sky pirates</h2>
+            <h2 class="sgb-ph">This week’s top sky pirates<span class="sgb-mode" data-easy hidden> · Easy Mode</span></h2>
             <p class="sgb-count">Board closes in <span class="sgb-left">...</span></p>
             <ol class="sgb-board"><li><span class="sgb-empty">Loading the board...</span></li></ol>
           </div>
@@ -363,18 +378,30 @@
   if(!root||root.getAttribute('data-ready'))return;
   root.setAttribute('data-ready','1');
   var K='WVpYVDM1Mzc9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-  function claim(){location.href=atob(K).split('').reverse().join('');}
+  function claim(){location.href=atob(easy()?KE:K).split('').reverse().join('');}
   var $=function(s){return root.querySelector(s);};
 
   /* ---- the world: 480 wide, 720 tall; the canvas scales it to fit ---- */
   var W=480,H=720,PY=H-74,BOXWAVE=25;
+  /* EASY MODE (Maurice, 2026-10-21): the rules from the afternoon of 10/21, its own board and checkpoints, and loot box 81 at
+     wave 50 (was 100, then 60, on 10/21). MODE is 'normal' or 'easy'; it can't change during a run. */
+  var MODE='normal',KE='UVVYSkdFVlY9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  var EASY={box:81,boxWave:50,bossV:2,timed:{ruby:28,crest:33,brass:42,torch:44,bolt:55,crate:60,life:60,shield:66,pierce:67,scythe:83,recharge:86,trench:156,atomic:187},
+    bossRow:['life','crest','crate','ruby','bolt','crest','life','shield','crest','torch'],freighter:[[1,'ruby','ruby','ruby','ruby'],[3,'life2'],[5,'recharge']]};
+  function easy(){return MODE==='easy';}
+  function boxWave(){return easy()?EASY.boxWave:BOXWAVE;}
+  function boxKey(){return easy()?'ma-gauntlet-box-easy':'ma-gauntlet-box';}
+  function bestKey(){return easy()?'ma-gauntlet-best-easy':'ma-gauntlet-best';}
+  function act(a){return easy()?a.replace('gauntlet','gauntlete'):a;}   /* the Easy board's actions: gauntletestart, gauntletescore ... */
   var ART='https://africhmaurice.github.io/site/assets/games/';
   function pic(f){var i=new Image();i.src=ART+f;return i;}
   function ok(i){return i&&i.complete&&i.naturalWidth>0;}
   var IMG={bolt:pic('78-bolt.png'),shield:pic('78-shield.png'),ship:pic('74-ship.png'),rival:pic('74-rival.png'),ball:pic('74-cannonball.png'),ruby:pic('74-ruby.png'),crate:pic('golden-chest.png'),crest:pic('80-crest.webp'),trench:pic('trench-emblem.webp'),scythe:pic('78-scythe.png'),atomic:pic('78-atomic.png'),miss:[1,2,3,4,5].map(function(n){return pic('78-missile-'+n+'.png');}),brass:pic('brass-point.png'),torch:pic('swords.png'),sky:pic('74-sky.webp'),
     /* Maurice's new fleet (10/16) */gunboat:pic('78-gunboat.png'),dart:pic('78-dart.png'),layer:pic('78-mine-layer.png'),mine:pic('78-mine.png'),freighter:pic('78-freighter.png'),flagship:pic('78-flagship.png'),arrow:pic('78-dart-shot.png'),torchSlash:pic('78-torch-slash.png'),scytheSlash:pic('78-scythe-slash.png'),lightning:pic('78-lightning.png'),
     boom:[pic('74-boom-1.png'),pic('74-boom-2.png'),pic('74-boom-3.png'),pic('74-boom-4.png')]};
-  var boxImg=new Image();boxImg.src='https://africhmaurice.github.io/leaderboard/loot/78.png';
+  var boxImg78=new Image();boxImg78.src='https://africhmaurice.github.io/leaderboard/loot/78.png';
+  var boxImg81=new Image();boxImg81.src='https://africhmaurice.github.io/leaderboard/loot/81.png';
+  var boxImg=boxImg78;
   var tinted={};
   /* the rival art recolored once per color (the colored rival tiers, and the white hit flash) */
   function tint(col,a){var key=col+a;if(tinted[key])return tinted[key];if(!ok(IMG.rival))return null;
@@ -418,7 +445,7 @@
   function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
   function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
   try{localStorage.removeItem('ma-save-sky-gauntlet');}catch(e){}   /* left over from the dropped Save progress test (10/19) */
-  var best=parseInt(lsGet('ma-gauntlet-best')||'0',10)||0;
+  var best=parseInt(lsGet('ma-gauntlet-best')||'0',10)||0;   /* reloaded per mode by setMode */
   function fmt(n){return Math.round(n).toLocaleString('en-US');}
 
   var S=null,state='title',paused=false,boxTaken=lsGet('ma-gauntlet-box')==='1',scale=1,dpr=1,skyY=0;
@@ -454,7 +481,7 @@
     /* 25% more ships every wave (Maurice, 2026-10-21; was 10% earlier that day): round(25% of the whole wave, rivals included, at least 1),
        added as extra side ships, taking turns through this wave's own kinds (darts on Destroyer waves) */
     var kinds=S.queue.map(function(x){return x.kind;}).filter(function(k,i,a){return k!=='flagship'&&a.indexOf(k)===i;}),
-      extra=Math.max(1,Math.round((S.foes.length+S.queue.filter(function(x){return x.kind!=='flagship';}).length)*(S.wave>10?EXTRASHIPS_LATE:EXTRASHIPS)));
+      extra=easy()?0:Math.max(1,Math.round((S.foes.length+S.queue.filter(function(x){return x.kind!=='flagship';}).length)*(S.wave>10?EXTRASHIPS_LATE:EXTRASHIPS)));
     for(var ex=0;ex<extra;ex++)q(kinds.length?kinds[ex%kinds.length]:'dart',1);
     S.queue.sort(function(a,b){return a.at-b.at;});S.qt=0;
     S.diveT=2.2;S.shootT=1.6;
@@ -468,7 +495,7 @@
   function launch(kind){
     var n=S.wave,side=Math.random()<.5?-1:1,f;
     if(kind==='gunboat'){/* comes in from a side and strafes across, firing darts at you */f=spawn(kind,side<0?-40:W+40,60+Math.random()*(H*.45));f.vx=-side*(70+n*4);f.hp=f.max=2+Math.floor(n/6);}
-    else if(kind==='dart'){/* dives straight at where you are, from above or from behind */var below=false;   /* no more darts from behind (Maurice, 2026-10-21) */f=spawn(kind,30+Math.random()*(W-60),below?H+30:-30);
+    else if(kind==='dart'){/* dives straight at where you are, from above or from behind */var below=easy()&&n>=3&&Math.random()<.35;   /* darts from behind: Easy Mode only (Normal dropped them 10/21) */f=spawn(kind,30+Math.random()*(W-60),below?H+30:-30);
       var dx=S.x-f.x,dy=S.y-f.y,l=Math.sqrt(dx*dx+dy*dy)||1,v=230+n*10;f.vx=dx/l*v;f.vy=dy/l*v;}
     else if(kind==='layer'){/* drifts across the top third and drops mines */f=spawn(kind,side<0?-40:W+40,70+Math.random()*120);f.vx=-side*(45+n*2);f.hp=f.max=3+Math.floor(n/8);f.mineT=1;}
     else if(kind==='freighter'){/* slow and tough; bursts into rubies */f=spawn(kind,60+Math.random()*(W-120),-50);f.vy=40;f.vx=(Math.random()-.5)*40;f.hp=f.max=8+n;}
@@ -534,11 +561,11 @@
     var pts=f.kind?KIND[f.kind].pts:(f.mode==='dive'?200:100)*f.max;S.score+=pts;S.kills++;hud();
     if(f.kind==='flagship'){S.boss=null;boom(f.x,f.y,260);
       /* the Destroyer's row of 10, spread across the sky, falling 4x as fast as other drops (Maurice, 2026-10-21: twice as fast, then twice again) */
-      BOSSROW.forEach(function(k,i){S.drops.push({x:W*(i+.5)/BOSSROW.length,y:f.y,kind:k,v:DROPV*4});});
+      var row=easy()?EASY.bossRow:BOSSROW;row.forEach(function(k,i){S.drops.push({x:W*(i+.5)/row.length,y:f.y,kind:k,v:DROPV*(easy()?EASY.bossV:4)});});
       S.banner='Destroyer down!';S.bannerT=1.6;}
     /* fixed kill drops: each ship type keeps its own count for the run (Maurice, 2026-10-21) */
     var key=f.kind||(f.tier&&f.tier!=='purple'?'rivalColor':'rival'),n=S.cnt[key]=(S.cnt[key]||0)+1,give=[];
-    (KILLDROPS[key]||[]).forEach(function(r){if(n%r[0]===0)give=give.concat(r.slice(1));});
+    ((easy()&&key==='freighter')?EASY.freighter:(KILLDROPS[key]||[])).forEach(function(r){if(n%r[0]===0)give=give.concat(r.slice(1));});
     give.forEach(function(k,i){S.drops.push({x:Math.max(20,Math.min(W-20,f.x+(i-(give.length-1)/2)*26)),y:f.y,kind:k});});
     if(f.kind==='mine')return;
     S.pops.push({x:f.x,y:f.y,txt:'+'+pts,t:.8});boom(f.x,f.y,64);
@@ -561,7 +588,7 @@
      shots, and taking more hits. +5% a wave the whole way (10/21 tune; it adds up, it doesn't compound):
      wave 1 = 1, wave 10 = 1.45, wave 15 = 1.7, wave 25 = 2.2. */
   var HARDER=.05,HARDER_LATE=.05,LATE=10;
-  function hard(){var w=S.wave;return w<=LATE?1+HARDER*(w-1):1+HARDER*(LATE-1)+HARDER_LATE*(w-LATE);}   /* share of extra side ships added to every wave */   /* how fast a drop falls, in px a second */
+  function hard(){if(easy())return 1;var w=S.wave;return w<=LATE?1+HARDER*(w-1):1+HARDER*(LATE-1)+HARDER_LATE*(w-LATE);}   /* share of extra side ships added to every wave */   /* how fast a drop falls, in px a second */
   /* each timed upgrade falls in its own fixed lane, so two that land on the same second don't overlap */
   function lane(k){var ks=Object.keys(TIMED),i=ks.indexOf(k);return W*(.1+.8*i/(ks.length-1));}
   /* catching something */
@@ -586,7 +613,7 @@
     S.t+=dt;if(S.bannerT>0)S.bannerT-=dt;if(S.inv>0)S.inv-=dt;
     for(var k in S.temp)if(S.temp[k]>0)S.temp[k]=Math.max(0,S.temp[k]-dt);
     /* timed drops: each upgrade falls every TIMED[k] seconds of flying, in its own lane (the loop stops while paused) */
-    if(state==='play'){var f0=S.flyT;S.flyT+=dt;for(var tk in TIMED)if(Math.floor(S.flyT/TIMED[tk])>Math.floor(f0/TIMED[tk]))S.drops.push({x:lane(tk),y:-20,kind:tk});}
+    if(state==='play'){var f0=S.flyT,TM=easy()?EASY.timed:TIMED;S.flyT+=dt;for(var tk in TM)if(Math.floor(S.flyT/TM[tk])>Math.floor(f0/TM[tk]))S.drops.push({x:lane(tk),y:-20,kind:tk});}
     if(S.rs&&!S.rs.up){S.rs.t-=dt;if(S.rs.t<=0){S.rs.up=true;S.rs.t=0;S.pops.push({x:S.x,y:PY-46,txt:'Shield back',t:.9});}}
     if(!RM())skyY=(skyY+dt*40)%100000;
     /* the ship flies anywhere in the lower two thirds (Maurice 10/16) */
@@ -696,7 +723,7 @@
     if(state==='dying'){S.dead-=dt;if(S.dead<=0)gameOver();return;}
     /* wave cleared */
     if(state==='play'&&!S.foes.length&&!S.queue.length&&!S.boxOut){
-      if(S.wave>=BOXWAVE&&!boxTaken&&!S.boxDropped){S.boxDropped=true;S.boxOut={x:W/2,y:-60};S.banner='A loot box!';S.bannerT=2;say('A loot box is falling. Fly into it.');return;}
+      if(S.wave>=boxWave()&&!boxTaken&&!S.boxDropped){S.boxDropped=true;S.boxOut={x:W/2,y:-60};S.banner='A loot box!';S.bannerT=2;say('A loot box is falling. Fly into it.');return;}
       S.boxDropped=false;S.score+=S.wave*250;hud();
       if(S.wave%5===0)S.cps.push({cp:S.wave+1,score:S.score,crests:S.crests,lives:S.lives,shields:S.shields});   /* a checkpoint: the Destroyer is down */
       startWave();
@@ -741,12 +768,12 @@
     var mine=sgbMyName();
     sgbBoardEl.innerHTML=list.map(function(r,i){return '<li'+((r.me||(mine&&r.name===mine))?' class="me"':'')+'><i>'+(i+1)+'</i><span>'+sgbEsc(r.name)+'</span><b>'+sgbFmt(r.score)+'</b></li>';}).join('');
   }
-  function sgbRefresh(){sgbApi('gauntlettop',{},function(res){if(res&&res.ok)sgbPaint(res.top);else sgbBoardEl.innerHTML='<li><span class="sgb-empty">The board is resting. Try again soon.</span></li>';});}
+  function sgbRefresh(){sgbApi(act('gauntlettop'),{},function(res){if(res&&res.ok)sgbPaint(res.top);else sgbBoardEl.innerHTML='<li><span class="sgb-empty">The board is resting. Try again soon.</span></li>';});}
   function sgbTick(){var t=sgbWeekLeft(),dd=Math.floor(t/86400),hh=Math.floor(t%86400/3600),mm=Math.floor(t%3600/60);sgbLeftEl.textContent=(dd?dd+'d ':'')+hh+'h '+('0'+mm).slice(-2)+'m';}
   sgbTick();setInterval(sgbTick,20000);sgbRefresh();setTimeout(cpFetch,0);
   function sgbStart(){
     var r={ticket:null,wait:[],logged:false};sgbRun=r;sgbPostEl.hidden=true;sgbWhoEl.hidden=true;sgbWhoEl.innerHTML='';sgbMsg('');
-    sgbApi('gauntletstart',{},function(res){r.ticket=res&&res.ok?res.ticket:'';var w=r.wait;r.wait=[];w.forEach(function(f){f();});});
+    sgbApi(act('gauntletstart'),{},function(res){r.ticket=res&&res.ok?res.ticket:'';var w=r.wait;r.wait=[];w.forEach(function(f){f();});});
   }
   /* ---- checkpoints (Maurice, 2026-10-21): every Destroyer you destroy opens a checkpoint at the next wave (6, 11, 16, 21,
      26) for you this week. Starting there is optional and gives the group average, from the board, of everyone who got
@@ -756,7 +783,7 @@
   function cpLevel(c){var l=1;for(var i=1;i<CRESTS.length;i++)if(c>=CRESTS[i])l=i;return l;}
   function cpFetch(){
     if(!sgbMe.email){cpList=[];cpRender();return;}
-    sgbApi('gauntletcheckpoints',{email:sgbMe.email},function(res){cpList=res&&res.ok&&res.cps?res.cps.filter(function(c){return c.mine;}):[];cpRender();});
+    sgbApi(act('gauntletcheckpoints'),{email:sgbMe.email},function(res){cpList=res&&res.ok&&res.cps?res.cps.filter(function(c){return c.mine;}):[];cpRender();});
   }
   function cpRender(msg){
     [].forEach.call(root.querySelectorAll('.sg-cps'),function(box){
@@ -771,7 +798,7 @@
   }
   function cpStart(cp){
     [].forEach.call(root.querySelectorAll('.sg-cp'),function(b){b.disabled=true;});
-    sgbApi('gauntletstart',{email:sgbMe.email,from:cp},function(res){
+    sgbApi(act('gauntletstart'),{email:sgbMe.email,from:cp},function(res){
       if(!res||!res.ok||!res.cp){cpRender(res&&res.error==='locked'?'That checkpoint isn’t open for you yet.':'The board couldn’t load that checkpoint. Try again in a moment.');return;}
       var c=res.cp;
       S=newRun();S.score=c.score;S.crests=c.crests;S.lives=Math.max(1,Math.min(MAXLIVES,c.lives));S.shields=Math.min(2,c.shields);S.hull=hullMax();S.wave=cp-1;S.from=cp;
@@ -780,6 +807,25 @@
       var r={ticket:res.ticket,wait:[],logged:false};sgbRun=r;sgbPostEl.hidden=true;sgbWhoEl.hidden=true;sgbWhoEl.innerHTML='';sgbMsg('');
     });
   }
+  /* the Normal / Easy tabs: they swap the rules, the board, the checkpoints, the best score, and the loot box; not mid-run */
+  var modeTabs=[].slice.call(root.querySelectorAll('.sg-mode'));
+  function modeLock(){var busy=state==='play'||state==='dying'||state==='found';modeTabs.forEach(function(t){t.disabled=busy;t.title=busy?'Finish this run to switch modes':'';});}
+  function setMode(m){
+    MODE=m==='easy'?'easy':'normal';lsSet('ma-gauntlet-mode',MODE);
+    modeTabs.forEach(function(t){t.setAttribute('aria-selected',t.getAttribute('data-mode')===MODE?'true':'false');});
+    [].forEach.call(root.querySelectorAll('[data-easy]'),function(el){el.hidden=!easy();});
+    [].forEach.call(root.querySelectorAll('[data-normal]'),function(el){el.hidden=easy();});
+    var n=easy()?EASY.box:78,src='https://africhmaurice.github.io/leaderboard/loot/'+n+'.png';boxImg=easy()?boxImg81:boxImg78;
+    [].forEach.call(root.querySelectorAll('.sg-box'),function(bx){bx.setAttribute('aria-label','Open loot box '+n);var im=bx.querySelector('img');if(im){im.src=src;im.alt='Loot box '+n;}});
+    [].forEach.call(root.querySelectorAll('.sg-boxname'),function(h){h.textContent='Loot box '+n;});
+    boxTaken=lsGet(boxKey())==='1';best=parseInt(lsGet(bestKey())||'0',10)||0;
+    if(state==='over'||state==='title'){S=null;showOv(ovStart);draw();}
+    $('.sg-box-over').hidden=true;
+    sgbBoardEl.innerHTML='<li><span class="sgb-empty">Loading the board...</span></li>';sgbRefresh();cpList=[];cpRender();cpFetch();
+  }
+  modeTabs.forEach(function(t){t.addEventListener('click',function(){if(t.disabled||t.getAttribute('data-mode')===MODE)return;setMode(t.getAttribute('data-mode'));});});
+  setTimeout(function(){var want=/(^|#)easy$/.test(location.hash)?'easy':(lsGet('ma-gauntlet-mode')||'normal');if(want!==MODE)setMode(want);modeLock();},0);
+  setInterval(modeLock,500);
   /* the run as the game counted it: S.t only runs while the game is being played (pauses and the loot box panel stop it) */
   function sgbEnd(){
     var r=sgbRun;if(!r||r.logged||!S)return;r.logged=true;
@@ -816,7 +862,7 @@
     if(r.ticket===null){sgbMsg('Logging your run...');r.wait.push(function(){sgbSubmit(r);});return;}
     if(!r.ticket){sgbMsg('The ship could not check in when this run started, so it cannot go on the board. Fly again!',1);return;}
     sgbMsg('Logging your run...');
-    sgbApi('gauntletscore',{ticket:r.ticket,email:sgbMe.email,first_name:sgbMe.first_name,handle:sgbMe.handle,platform:sgbMe.platform,country:sgbMe.country,
+    sgbApi(act('gauntletscore'),{ticket:r.ticket,email:sgbMe.email,first_name:sgbMe.first_name,handle:sgbMe.handle,platform:sgbMe.platform,country:sgbMe.country,
       score:r.score,wave:r.wave,secs:r.secs,kills:r.kills,chests:r.chests,cps:r.cps,from:r.from},function(res){
       if(res&&res.ok){
         if(res.status==='host'){sgbMsg('Practice run. Your runs stay off the board.');return;}
@@ -850,7 +896,7 @@
   }
   function gameOver(){
     state='over';stop();pauseBtn.disabled=true;
-    if(S.score>best){best=S.score;lsSet('ma-gauntlet-best',String(best));}
+    if(S.score>best){best=S.score;lsSet(bestKey(),String(best));}
     $('.sg-final').textContent='Score '+fmt(S.score)+' on wave '+S.wave+'. Best '+fmt(best)+'.';
     $('.sg-box-over').hidden=!boxTaken;
     showOv(ovOver);draw();
@@ -859,7 +905,7 @@
     if(window.__siegeHooks&&window.__siegeHooks.end)window.__siegeHooks.end({score:S.score,secs:Math.round(S.t*10)/10,wave:S.wave,kills:S.kills,crates:S.crates});
   }
   function found(){
-    boxTaken=true;lsSet('ma-gauntlet-box','1');state='found';stop();pauseBtn.disabled=true;say('You caught loot box 78');showOv(ovFound);draw();
+    boxTaken=true;lsSet(boxKey(),'1');state='found';stop();pauseBtn.disabled=true;say('You caught loot box '+(easy()?EASY.box:78));showOv(ovFound);draw();
     try{$('.sg-box-found').focus({preventScroll:true});}catch(e){}
   }
   function keepFlying(){showOv(null);state='play';pauseBtn.disabled=false;S.inv=1;run();}
