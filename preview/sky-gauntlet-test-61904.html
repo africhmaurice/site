@@ -193,7 +193,7 @@
     <p class="sg-sub" style="color:#ff4c0f;font-weight:800;letter-spacing:.08em">TEST COPY · scores are not saved, and the checkpoint numbers are made up</p>
     <div class="sg-maint" role="status"><b>Under maintenance</b><p>I’m tuning the Sky Gauntlet. It’ll be back soon!</p></div>
     <p class="sg-sub" data-normal>Your cannons never stop firing. Slide left and right, shoot down the rival fleet, and catch what the rival ships drop. Survive 25 waves, and something drops in.</p>
-    <p class="sg-sub" data-easy hidden>Easy Mode: no extra ships, the fleet never gets tougher, and more Crests and lives fall. Survive 60 waves, and something drops in.</p>
+    <p class="sg-sub" data-easy hidden>Easy Mode: no extra ships, the fleet never gets tougher, and more Crests and lives fall. Survive 50 waves, and something drops in.</p>
     <p class="sg-weekly" data-normal>Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week.</p>
     <p class="sg-weekly" data-easy hidden>Easy Mode leaderboard: the top score at 11:59 PM ET every Friday wins 250 points. Then the board resets for a new week.</p>
     <div class="sg-modes" role="tablist" aria-label="Game mode">
@@ -275,7 +275,7 @@
           <section class="sgk" aria-label="Key">
             <h2>Key</h2>
             <div class="sgk-sec">
-              <p class="sgk-easy" data-easy hidden><b>Easy Mode.</b> Ships don’t get tougher each wave and there are no extra ships, but darts can come from below. A Mark of the Crest falls every 33 seconds and a life every minute, every 3rd freighter gives 2 lives, and the Destroyer’s row has 3 Crests and 2 lives. Loot box 81 floats down after wave 60. Easy Mode has its own board, checkpoints, and loot box.</p>
+              <p class="sgk-easy" data-easy hidden><b>Easy Mode.</b> Ships don’t get tougher each wave and there are no extra ships, but darts can come from below. A Mark of the Crest falls every 33 seconds and a life every minute, every 3rd freighter gives 2 lives, and the Destroyer’s row has 3 Crests and 2 lives. Loot box 81 floats down after wave 50. Easy Mode has its own board, checkpoints, and loot box.</p>
               <p class="sgk-h">Your airship</p>
               <ul>
                 <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Your cannons never stop firing.</b>Fly anywhere in the lower part of the sky: arrows or WASD, or follow with the mouse or your finger. P or Esc pauses. You start with 3 lives.</span></li>
@@ -385,9 +385,9 @@
   /* ---- the world: 480 wide, 720 tall; the canvas scales it to fit ---- */
   var W=480,H=720,PY=H-74,BOXWAVE=25;
   /* EASY MODE (Maurice, 2026-10-21): the rules from the afternoon of 10/21, its own board and checkpoints, and loot box 81 at
-     wave 60 (was 100 until later on 10/21). MODE is 'normal' or 'easy'; it can't change during a run. */
+     wave 50 (was 100, then 60, on 10/21). MODE is 'normal' or 'easy'; it can't change during a run. */
   var MODE='normal',KE='UVVYSkdFVlY9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-  var EASY={box:81,boxWave:60,bossV:2,timed:{ruby:28,crest:33,brass:42,torch:44,bolt:55,crate:60,life:60,shield:66,pierce:67,scythe:83,recharge:86,trench:156,atomic:187},
+  var EASY={box:81,boxWave:50,bossV:2,timed:{ruby:28,crest:33,brass:42,torch:44,bolt:55,crate:60,life:60,shield:66,pierce:67,scythe:83,recharge:86,trench:156,atomic:187},
     bossRow:['life','crest','crate','ruby','bolt','crest','life','shield','crest','torch'],freighter:[[1,'ruby','ruby','ruby','ruby'],[3,'life2'],[5,'recharge']]};
   function easy(){return MODE==='easy';}
   function boxWave(){return easy()?EASY.boxWave:BOXWAVE;}
