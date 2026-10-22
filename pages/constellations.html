@@ -5,8 +5,8 @@
      DRAW-IT-YOURSELF (Maurice, 10/12): a night sky full of stars, no spyglass and no magnification. Hidden among them
      are constellations traced from Maurice's outline drawings; their stars are only a touch brighter than the rest.
      The list under the sky shows each constellation's shape and name. Players tap stars to connect them (a line runs
-     from each tapped star to the next), then press Check. A drawing charts a constellation when it holds at least 90%
-     of that constellation's stars and no more than a few extras (20% of its stars, at least 2). Undo and Clear fix
+     from each tapped star to the next), then press Check. A drawing charts a constellation when it holds at least 80%
+     of that constellation's stars and at least 80% of the stars chosen are part of it (80% on every check, 10/22). Undo and Clear fix
      mistakes. Ten constellations (Maurice's drawings, 10/12), then an eleventh, the loot box
      constellation, appears in the list. It was in the sky the whole time, but it only charts once the other ten are
      done. Charting it reveals loot box 79; clicking it opens the claim link (scrambled in K).
@@ -105,7 +105,7 @@
   <div class="st-head">
     <p class="st-eye">Loot Box 79</p>
     <h1 class="st-h1">Find the Constellations</h1>
-    <p class="st-how">Find each constellation in the list below and draw it yourself: tap its stars to connect them, then press Check. Get at least 90% of its stars and it's charted. Wrong star? Drag it onto the right one, or into empty sky to take it out.</p>
+    <p class="st-how">Find each constellation in the list below and draw it yourself: tap its stars to connect them, then press Check. Get at least 80% of its stars and it's charted. Wrong star? Drag it onto the right one, or into empty sky to take it out.</p>
   </div>
   <div class="st-resume" hidden role="region" aria-label="Saved game"><p class="st-rtext"></p><div class="st-rbtns"><button class="st-btn st-rgo solid" type="button">Continue</button><button class="st-btn st-rnew" type="button">Start over</button></div></div>
   <div class="st-sky" role="application" aria-label="Night sky. Tap stars to connect them, then press Check."><canvas></canvas></div>
@@ -130,7 +130,7 @@
   var root=document.getElementById('ma-stars');if(!root)return;
   /*CONSTELLATIONS:START*/var SHAPES=[{"id":"c01-sky-pirate-salute","name":"Sky Pirate Salute","points":[[0.013,0.984],[0.028,0.897],[0.076,0.772],[0.304,0.532],[0.33,0.432],[0.221,0.031],[0.351,0.292],[0.403,0.348],[0.489,0.125],[0.563,0.114],[0.601,0.19],[0.684,0.233],[0.756,0.304],[0.983,0.231],[0.907,0.321],[0.48,0.578],[0.371,0.678],[0.136,0.994]],"links":[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,0]]},{"id":"c02-torches","name":"Torches","points":[[0.987,0],[0.518,0.497],[0.744,0.704],[0.832,0.63],[0.795,0.745],[0.983,0.986],[0.742,0.797],[0.635,0.82],[0.287,0.749],[0.346,0.831],[0.009,0.965],[0.198,0.733],[0.15,0.641],[0,0.008]],"links":[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,0]]},{"id":"c03-brass-point","name":"Brass Point","points":[[0.014,0.298],[0.122,0.31],[0.387,0.298],[0.605,0.295],[0.848,0.365],[0.873,0.461],[0.937,0.515],[0.999,0.632],[0.784,0.593],[0.61,0.546],[0.512,0.497],[0.161,0.468],[0.052,0.465],[0.004,0.377]],"links":[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,0]]},{"id":"c04-mark-of-the-crest","name":"Mark of the Crest","points":[[1,0.54],[0.664,0.558],[0.618,0.632],[0.549,0.707],[0.426,0.737],[0.324,0.707],[0.257,0.657],[0.198,0.55],[0,0.538],[0.056,0.482],[0.194,0.47],[0.231,0.364],[0.573,0.435],[0.475,0.263],[0.603,0.32],[0.665,0.446],[0.959,0.482]],"links":[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,0]]},{"id":"c05-goma","name":"Goma","points":[[0.266,0.042],[0.824,0.094],[0.814,0.413],[0.943,0.506],[0.963,0.927],[0.733,0.844],[0.797,0.564],[0.615,0.664],[0.541,0.775],[0.313,0.825],[0.371,0.64],[0.197,0.56],[0.125,0.951],[0.011,0.893],[0.063,0.501],[0.184,0.409]],"links":[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,0]]},{"id":"c06-trench","name":"Trench","points":[[0,0.916],[0.079,0.759],[0.05,0.525],[0.053,0.424],[0.13,0.257],[0.435,0.36],[0.658,0.204],[0.683,0.069],[0.757,0.168],[0.949,0.192],[0.893,0.289],[0.993,0.36],[0.8,0.32],[0.68,0.48],[0.971,0.737],[0.894,0.824],[0.723,0.805],[0.534,0.855]],"links":[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,0]]},{"id":"c07-drake","name":"Drake","points":[[1,0.672],[0.943,0.758],[0.582,0.729],[0.457,0.776],[0.594,0.662],[0.548,0.562],[0.464,0.566],[0.501,0.648],[0.352,0.698],[0.424,0.635],[0.332,0.573],[0.148,0.692],[0.03,0.6],[0.015,0.343],[0.047,0.471],[0.093,0.294],[0.116,0.376],[0.297,0.226],[0.439,0.343],[0.855,0.451]],"links":[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,0]]},{"id":"c08-axe","name":"Axe","points":[[0.34,1],[0.292,0.93],[0.433,0.268],[0.342,0.309],[0.372,0.189],[0.421,0.124],[0.458,0.19],[0.568,0.196],[0.632,0.113],[0.611,0],[0.67,0.047],[0.704,0.242],[0.564,0.481],[0.548,0.312],[0.48,0.326]],"links":[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,0]]},{"id":"c09-dragon","name":"Dragon","points":[[1,0.337],[0.909,0.537],[0.805,0.636],[0.749,0.513],[0.566,0.481],[0.503,0.518],[0.423,0.752],[0.367,0.575],[0.217,0.419],[0.135,0.484],[0.189,0.635],[0,0.433],[0.001,0.305],[0.188,0.219],[0.263,0.232],[0.386,0.346],[0.428,0.249],[0.559,0.346],[0.623,0.287],[0.883,0.219]],"links":[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,0]]},{"id":"c10-trench-logo","name":"Trench Logo","points":[[0.012,0.836],[0.212,0.583],[0.284,0.535],[0.314,0.337],[0.168,0.115],[0.412,0.266],[0.619,0.253],[0.823,0.115],[0.81,0.19],[0.692,0.328],[0.754,0.554],[0.789,0.612],[1,0.837],[0.949,0.885],[0.628,0.648],[0.392,0.631],[0.316,0.692],[0.068,0.877]],"links":[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,0]]}];/*CONSTELLATIONS:END*/
   var K='OTNTUVlHRzU9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-  var SLOTS=10, KEY='ma-stars-charted', NEED=0.9, EXTRA=0.2;
+  var SLOTS=10, KEY='ma-stars-charted', NEED=0.8, EXTRA=0.8;
   /* the secret tenth constellation: loot box 79 in stars (a chest with a domed lid and a lock) */
   var SECRET={id:'secret-loot',name:'The Loot Box',secret:true,points:[[0.08,0.95],[0.92,0.95],[0.92,0.52],[0.86,0.3],[0.7,0.14],[0.5,0.09],[0.3,0.14],[0.14,0.3],[0.08,0.52],[0.5,0.62]],
     links:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,0],[8,2],[5,9]]};
@@ -293,9 +293,9 @@
       if(f>bestF){bestF=f;best={i:i,s:s,f:f,extra:extra,n:n};}
     });
     if(!best||best.f<0.5){say(MSG.none);return;}
-    var allowed=Math.max(2,Math.floor(best.n*EXTRA));
     if(best.f<NEED){say(MSG.close);return;}
-    if(best.extra>allowed){say(MSG.extra);return;}
+    /* 80% on every check (Maurice, 2026-10-22): 80% of its stars, and 80% of the stars you chose must be part of it (was 90%, and extras up to 20% of its size) */
+    if(picked-best.extra<picked*EXTRA){say(MSG.extra);return;}
     if(charted[best.s.id]){say(MSG.again);clearPath();return;}
     if(best.s.secret&&!secretOpen()){say(MSG.locked);return;}
     charted[best.s.id]=1;chartedAt[best.s.id]=performance.now();save();clearPath();dropSave();
