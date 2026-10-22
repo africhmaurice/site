@@ -1,0 +1,1114 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Sky Gauntlet test</title></head><body style="margin:0;background:#0b170f;padding:16px 0"><!-- ============================================================
+     THE SKY GAUNTLET (named by Maurice 10/12) - loot box 78 (batch 2; replaces The Captain's Cabin, Maurice 10/12).
+     An arcade shooter. Maurice's red airship slides along the bottom and its cannons fire on their own,
+     on every device (Maurice: "even on desktop, the gun is always firing"). Purple rival ships fly in and never sit still: each one
+     keeps looping around its own spot (Maurice 10/16), swoop down at you, and drop cannonballs.
+     NEW FLEET (Maurice 10/16, his drawings): your ship flies anywhere in the lower two thirds (arrows/WASD, or follow the
+     mouse or a finger). Besides the looping rivals, ships arrive from every side during each wave: gunboats (78-gunboat)
+     cross from the sides firing his dart arrows (78-dart-shot) at you; darts (78-dart) dive straight at you from above, and
+     (no longer from below, 10/21); mine-layers (78-mine-layer) cross the top and drop his mines (78-mine), which you can shoot;
+     freighters (78-freighter) are slow and tough and burst into 4 rubies. Every 5th wave is the flagship (78-flagship):
+     a boss with a hull bar that fires fans of 5 darts and launches darts. Tough ships get angry at half hull (faster,
+     Scarlet glow). Storms: lightning lanes from wave 6 (a flashing warning stripe, then his 76-lightning), wind gusts from
+     wave 8 that push your ship. Twin Torch and scythe slashes are his 78-torch-slash and 78-scythe-slash.
+     Not built yet, waiting on art: the escort mission (merchant ship). The grappler was dropped (Maurice 10/16).
+     Drops (Maurice, 10/12; FIXED RULES 10/21, no random drops): there are no upgrade cards; upgrades fall, glowing and
+     slowly pulsing, and you fly into one to catch it. They come two ways, the same in every game (see KILLDROPS, TIMED,
+     BOSSROW in the code): every Nth kill of each ship type drops set upgrades (each type counts its own kills for the
+     run; a freighter always bursts into 4 rubies), and each upgrade also falls on its own clock of flying seconds
+     (ruby every 28 s, crest 60 s, +1 life 120 s ... red atomic 187 s; tuned 10/21), each in its own lane. The Destroyer drops a row of 10 across the
+     sky that falls 4x as fast. Specials can fall from the start. Every wave has 10% more ships (10/21).
+       Mark of the Crest   weapon upgrade, for good: 2 crests reach missile level 2, 4 level 3, 8 level 4, 16 level 5.
+       Twin Torches        10 s: two small white slashes fly out to the sides every half second and bounce off the walls.
+       Bolt of Lightning   10 s: faster firing and faster flying. (Icon drawn in code until Maurice draws one.)
+       Brass Point         10 s: one more missile lane; each one caught while running adds another, up to 5 (10/21).
+       Golden chest        +25 hunt points, at most 4 a day per person (paid by the weekly board backend, like Airship Runner's prize chests).
+       Ruby                +250 points.
+       Shield              blocks one hit; you can hold two. (Bubble icon drawn in code until Maurice draws one.)
+       Scythe              a jagged red slash flies up the screen, a quarter of its width, cutting down what it touches.
+       Red Atomic          a huge explosion (his explosion art without the ship parts) over the fleet: 3 hits to every
+                           ship on screen, and every cannonball is gone.
+       Trench emblem       a white wave of energy rings out from your ship in every direction: 2 hits to every ship
+                           it passes, and it clears the cannonballs it touches.
+     (+2 lives, life2, is defined but no ship drops it since the 10/21 tune.)
+     Waves get harder: more rows, faster swoops, more cannonballs, faster cannonballs, and tougher colored rivals (see TIERS).
+     LOOT BOX: after wave 25 is cleared (Maurice, 10/12), loot box 78 floats down; fly into it to open the claim panel (claim link
+     scrambled in K). If it is missed it floats down again after every later wave. Once caught it also shows on
+     the game over panel. Three lives.
+     Controls: arrows or A/D, or move the mouse / slide a finger over the sky. P or Esc pauses. Pauses itself when
+     the tab is hidden or the window loses focus. Reduced motion: still sky, no flashing.
+     Art (site/assets/games): 74-ship.png, 74-rival.png, 74-cannonball.png, 74-ruby.png, golden-chest.png (replaced the wooden crate, 10/13), 80-crest.webp, brass-point.png, swords.png (the Twin Torches), trench-emblem.webp,
+     74-boom-1..4.png, 74-sky.webp, and Maurice's missiles 78-missile-1..5.png plus specials 78-scythe.png, 78-atomic.png.
+     Missiles: everyone starts on level 1 (the thin bolt). Crests move it up, to 5: 2 chevrons (faster), 3 fire dart (hits twice as hard), 4 spinner (hits twice as hard and goes
+     through one ship), 5 a continuous beam that burns whatever is above it.
+     DRAFT (all copy is mine except the name, Maurice to approve): the intro line, the tips, "Launch", "Wave",
+     Weekly line (DRAFT wording, Maurice 10/12: top score every Friday wins 500, board resets Fridays): "Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week."
+     the upgrade names and lines, "Shot down", "Play again", "Paused", "Resume", the loot box lines.
+     WEEKLY BOARD (Maurice, 2026-10-20): same web app and flow as the Trench Run board. A run ticket is asked for at Launch
+     (action=gauntletstart); at game over the run goes in (action=gauntletscore: score, wave, flying seconds, kills, golden chests),
+     the page shows the rank, the week's best, and what the chests paid, and the board below the game shows this week's top 10
+     (handle or first name and score, never emails) with the "Board closes in" countdown to Friday 11:59 PM ET. The hunt
+     identity is the shared 'thLoot:me' entry in localStorage, the same one the other boards use. Everything on the board has an
+     sgb prefix so it can never clash with the game's own names. Board copy is DRAFT (Maurice to approve).
+     PAUSE (Maurice 10/19): the Pause button, P, and Esc pause and resume; while paused nothing moves, and the mouse,
+     a finger, and the arrow keys do nothing until Resume. Save progress was tried and dropped (Maurice 10/19); a
+     leftover 'ma-save-sky-gauntlet' entry in localStorage is cleared on load.
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+#ma-gauntlet{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;padding:clamp(120px,14vh,160px) 20px 72px;
+  background:radial-gradient(ellipse at 50% 0%,#2d1c53 0%,#0b170f 70%);font-family:'Almarai',sans-serif;color:#f3ead9;text-align:center;overflow-x:hidden}
+#ma-gauntlet *{box-sizing:border-box;border-radius:0}
+#ma-gauntlet .sg-cols{width:100%;display:grid;grid-template-columns:minmax(0,560px) minmax(0,340px);gap:32px;justify-content:center;align-items:start}
+#ma-gauntlet .sg-main{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0}
+#ma-gauntlet .sg-side{display:flex;flex-direction:column;gap:20px;min-width:0}
+#ma-gauntlet .sg-side .sgb-panel{width:100%;margin:0}
+#ma-gauntlet .sg-main .sgk{width:100%;margin-top:12px}
+#ma-gauntlet .sg-how{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+#ma-gauntlet .sg-how li{position:relative;padding-left:20px;font-weight:700;font-size:15px;line-height:1.5;color:#f3ead9}
+#ma-gauntlet .sg-how li:before{content:'';position:absolute;left:0;top:.5em;width:8px;height:8px;background:#ff4c0f}
+@media (max-width:940px){#ma-gauntlet .sg-cols{display:flex;flex-direction:column;align-items:center;gap:20px;max-width:560px;margin:0 auto}#ma-gauntlet .sg-main,#ma-gauntlet .sg-side{display:contents}#ma-gauntlet .sg-side .sgb-panel{order:2}#ma-gauntlet .sg-main .sgk{order:3;margin-top:0}}   /* phones: the game, the board, how it works, then the key */
+/* MAINTENANCE (Maurice, 2026-10-21): while the section has class "maint", the game and board are hidden and the notice shows. Remove "maint" to bring it back. */
+#ma-gauntlet .sg-maint{display:none}
+#ma-gauntlet.maint .sg-maint{display:grid;gap:12px;max-width:560px;margin:0;padding:24px;border:2px solid #ff4c0f;background:rgba(11,23,15,.85);text-align:center}
+#ma-gauntlet.maint .sg-maint b{font-weight:800;font-size:18px;letter-spacing:.08em;text-transform:uppercase;color:#ff4c0f}
+#ma-gauntlet.maint .sg-maint p{margin:0;font-size:16px;line-height:1.55;color:#f3ead9}
+#ma-gauntlet.maint .sg-sub,#ma-gauntlet.maint .sg-weekly,#ma-gauntlet.maint .sg-game{display:none}
+#ma-gauntlet .sg-wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
+#ma-gauntlet h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(40px,6.4vw,72px);line-height:1.2;letter-spacing:.04em;color:#fffffe;padding:0 4px}
+#ma-gauntlet .sg-sub{margin:0;max-width:560px;font-size:clamp(15px,1.8vw,18px);line-height:1.55;color:#f3ead9}
+#ma-gauntlet .sg-game{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
+#ma-gauntlet .sg-hud{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:700;font-size:13px;line-height:1.2;letter-spacing:.12em;text-transform:uppercase;color:#f3ead9;max-width:100%}
+#ma-gauntlet .sg-hud b{font-weight:800;color:#fffffe;letter-spacing:.06em;margin-left:6px;font-variant-numeric:tabular-nums}
+#ma-gauntlet .sg-stat{white-space:nowrap;display:flex;align-items:center}
+#ma-gauntlet .sg-lives{display:inline-flex;gap:6px;margin-left:8px}
+#ma-gauntlet .sg-lives i{display:block;width:10px;height:10px;border-radius:50%;background:#ff4c0f}
+#ma-gauntlet .sg-pausebtn{margin:0;padding:8px 12px;border:1px solid rgba(243,234,217,.45);background:none;color:#f3ead9;font:700 12px/1.2 'Almarai',sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+#ma-gauntlet .sg-pausebtn:hover{border-color:#89fbcb;color:#89fbcb}
+#ma-gauntlet .sg-pausebtn[disabled]{opacity:.35;cursor:default;border-color:rgba(243,234,217,.45);color:#f3ead9}
+#ma-gauntlet .sg-stage{position:relative;border:2px solid rgba(243,234,217,.55);background:#0b170f;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;max-width:100%}
+#ma-gauntlet .sg-cv{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}
+#ma-gauntlet .sg-ov{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px 20px;background:rgba(11,23,15,.9);overflow:auto}
+#ma-gauntlet .sg-ov.on{display:flex}
+/* Normal / Easy tabs (Maurice, 2026-10-21) */
+#ma-gauntlet .sg-modes{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:0}
+#ma-gauntlet .sg-mode{margin:0;min-width:140px;padding:12px 24px;border:2px solid #f3ead9;background:rgba(11,23,15,.7);color:#fffffe;font:800 14px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+#ma-gauntlet .sg-mode[aria-selected="true"]{background:#fffffe;color:#0b170f}
+#ma-gauntlet .sg-mode:disabled{opacity:.45;cursor:not-allowed}
+#ma-gauntlet .sg-mode:focus-visible{outline:2px solid #89fbcb;outline-offset:2px}
+#ma-gauntlet .sgk-easy{margin:0 0 16px;padding:14px 16px;border:1px solid #89fbcb;font-size:14px;line-height:1.55;color:#f3ead9}
+#ma-gauntlet .sgk-easy b{color:#89fbcb}
+/* checkpoints (Maurice, 2026-10-21): optional starts after each Destroyer, with the group's average stats */
+#ma-gauntlet .sg-cps{display:grid;gap:10px;width:100%;max-width:400px;margin-top:6px;padding-top:14px;border-top:1px solid rgba(243,234,217,.25)}
+#ma-gauntlet .sg-cps-h{margin:0;font-weight:800;font-size:12px;line-height:1.4;letter-spacing:.16em;text-transform:uppercase;color:#89fbcb}
+#ma-gauntlet .sg-cp{display:grid;gap:4px;width:100%;margin:0;padding:10px 14px;border:1px solid rgba(243,234,217,.5);background:rgba(11,23,15,.6);color:#f3ead9;font:inherit;text-align:left;cursor:pointer}
+#ma-gauntlet .sg-cp:hover,#ma-gauntlet .sg-cp:focus-visible{border-color:#89fbcb}
+#ma-gauntlet .sg-cp b{font-weight:800;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:#fffffe}
+#ma-gauntlet .sg-cp span{font-size:13px;line-height:1.4;color:#f3ead9}
+#ma-gauntlet .sg-cp[disabled]{opacity:.5;cursor:wait}
+#ma-gauntlet .sg-ov h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(30px,4.6vw,44px);line-height:1.2;letter-spacing:.04em;color:#fffffe}
+#ma-gauntlet .sg-ov p{margin:0;max-width:400px;font-size:clamp(14px,1.7vw,17px);line-height:1.5;color:#f3ead9}
+#ma-gauntlet .sg-btn{margin:0;padding:12px 24px;border:2px solid #0b170f;background:#c53200;color:#fffffe;font:700 15px/1.2 'Almarai',sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .15s ease,transform .15s ease}
+#ma-gauntlet .sg-btn:hover{background:#ff4c0f;transform:scale(1.04)}
+#ma-gauntlet a.sg-next{display:inline-block;text-decoration:none!important;color:#fffffe!important}
+#ma-gauntlet .sg-btn.ghost{background:none;border:1px solid rgba(243,234,217,.5);color:#f3ead9}
+#ma-gauntlet .sg-btn.ghost:hover{border-color:#89fbcb;color:#89fbcb;background:none}
+#ma-gauntlet .sg-cards{display:flex;flex-direction:column;gap:12px;width:100%;max-width:340px}
+#ma-gauntlet .sg-card{margin:0;padding:14px 16px;border:1px solid rgba(243,234,217,.45);background:#2d1c53;color:#f3ead9;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px;font-family:'Almarai',sans-serif;transition:border-color .15s ease,background .15s ease}
+#ma-gauntlet .sg-card:hover,#ma-gauntlet .sg-card:focus-visible{border-color:#89fbcb;background:#482d85}
+#ma-gauntlet .sg-card b{font-weight:800;font-size:15px;line-height:1.2;letter-spacing:.1em;text-transform:uppercase;color:#fffffe}
+#ma-gauntlet .sg-card span{font-size:14px;line-height:1.4}
+#ma-gauntlet .sg-have{font-size:13px!important;color:#89fbcb!important}
+#ma-gauntlet .sg-btn:focus-visible,#ma-gauntlet .sg-pausebtn:focus-visible,#ma-gauntlet .sg-box:focus-visible,#ma-gauntlet .sg-card:focus-visible{outline:2px solid #89fbcb;outline-offset:3px}
+#ma-gauntlet .sg-box{display:block;margin:0;padding:0;border:0;background:none;cursor:pointer;width:clamp(110px,24vw,160px);filter:drop-shadow(0 0 24px rgba(255,76,15,.45));animation:sg-rise .8s cubic-bezier(.2,.9,.3,1.2) both}
+#ma-gauntlet .sg-box img{display:block;width:100%;height:auto}
+#ma-gauntlet .sg-box[hidden]{display:none}
+@keyframes sg-rise{0%{transform:translateY(30px) scale(.7);opacity:0}100%{transform:none;opacity:1}}
+#ma-gauntlet .sg-tip-touch{display:none}
+#ma-gauntlet.touch .sg-tip-touch{display:block}
+#ma-gauntlet.touch .sg-tip-keys{display:none}
+#ma-gauntlet .sg-live{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:640px){
+  #ma-gauntlet{padding-left:16px;padding-right:16px}
+  #ma-gauntlet .sg-hud{font-size:11px;letter-spacing:.08em}
+  #ma-gauntlet .sg-ov{padding:20px 16px;gap:12px}
+}
+@media (prefers-reduced-motion:reduce){
+  #ma-gauntlet .sg-box{animation:none}
+  #ma-gauntlet .sg-btn,#ma-gauntlet .sg-btn:hover{transition:none;transform:none}
+}
+#ma-gauntlet .sgb-post{width:min(100%,560px);margin:12px auto 0;display:flex;flex-direction:column;gap:12px;text-align:left}
+#ma-gauntlet .sgb-msg{margin:0;min-height:22px;font-weight:700;font-size:15px;line-height:1.5;color:#89fbcb;text-align:center}
+#ma-gauntlet .sgb-msg.err{color:#ff8a5c}
+#ma-gauntlet .sgb-quiet{margin:0;font-weight:700;font-size:13px;line-height:1.5;letter-spacing:.06em;color:#c3a6ff;text-align:center}
+#ma-gauntlet .sgb-quiet a{color:#89fbcb;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+#ma-gauntlet .sgb-form{display:flex;flex-direction:column;gap:8px;padding:20px;background:#132219;border:2px solid rgba(243,234,217,.18)}
+#ma-gauntlet .sgb-form label{font-weight:800;font-size:12px;line-height:1.3;letter-spacing:.1em;text-transform:uppercase;color:#89fbcb;margin-top:4px}
+#ma-gauntlet .sgb-form input,#ma-gauntlet .sgb-form select{width:100%;box-sizing:border-box;margin:0;font-family:'Almarai',sans-serif;font-weight:700;font-size:16px;color:#0b170f;background:#fffffe;border:2px solid #fffffe;border-radius:0;padding:10px 12px;outline:none}
+#ma-gauntlet .sgb-form input[hidden]{display:none}
+#ma-gauntlet .sgb-form input:focus,#ma-gauntlet .sgb-form select:focus{border-color:#7b4ee1}
+#ma-gauntlet .sgb-form .sg-btn{margin-top:10px;width:100%}
+#ma-gauntlet .sgb-dmsg{margin:0;font-weight:700;font-size:15px;line-height:1.5;color:#89fbcb}
+#ma-gauntlet .sgb-dmsg:empty{display:none}
+#ma-gauntlet .sgb-dmsg.err{color:#ff8a5c}
+#ma-gauntlet .sgb-panel{width:min(100%,560px);box-sizing:border-box;margin:16px auto 0;background:#132219;border:2px solid rgba(243,234,217,.18);padding:24px;display:flex;flex-direction:column;gap:14px;text-align:left}
+#ma-gauntlet .sgb-ph{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(24px,2.4vw,30px);line-height:1.25;letter-spacing:.03em;color:#89fbcb}
+#ma-gauntlet .sgb-count{margin:0;font-weight:800;font-size:13px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase;color:#c3a6ff}
+#ma-gauntlet .sgb-board{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+#ma-gauntlet .sgb-board li{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid rgba(243,234,217,.1);font-weight:700;font-size:15px;line-height:1.4}
+#ma-gauntlet .sgb-board li:last-child{border-bottom:0}
+#ma-gauntlet .sgb-board i{font-style:normal;font-weight:800;color:#ff4c0f}
+#ma-gauntlet .sgb-board span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fffffe}
+#ma-gauntlet .sgb-board b{font-weight:800;color:#fffffe;font-variant-numeric:tabular-nums}
+#ma-gauntlet .sgb-board li.me span,#ma-gauntlet .sgb-board li.me b{color:#89fbcb}
+#ma-gauntlet .sgb-board .sgb-empty{display:block;grid-column:1/-1;white-space:normal;overflow:visible;color:#f3ead9;font-weight:700}
+@media (max-width:760px){#ma-gauntlet .sgb-panel{padding:20px}}
+#ma-gauntlet .sg-weekly{margin:0;max-width:560px;padding:12px 20px;border:2px solid #ff4c0f;font-weight:800;font-size:clamp(13px,1.4vw,15px);line-height:1.5;letter-spacing:.08em;text-transform:uppercase;color:#fffffe}
+</style>
+
+<section id="ma-gauntlet" aria-label="The Sky Gauntlet">
+<!-- ARCADE-TABS:BEGIN (pasted by tools/arcade.mjs from treasure-hunt-leaderboard/games/_tabs.html; do not edit here) -->
+<div class="ma-arcade" style="width:min(100%,760px);margin:0 auto;position:relative;z-index:2">
+<style>.hg-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;max-width:760px;margin:0 auto 38px;position:relative;z-index:2}.hg-tabs a{grid-column:span 2}.hg-tabs a:last-child:nth-child(3n+1){grid-column:1/-1}.hg-tabs a:last-child:nth-child(3n+2),.hg-tabs a:nth-last-child(2):nth-child(3n+1){grid-column:span 3}.hg-tabs a{display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.25}.hg-tabs a{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(13px,1.2vw,16px);letter-spacing:.08em;text-decoration:none;border:2px solid #fffffe;padding:11px 24px;color:#fffffe;background:rgba(11,23,15,.4);transition:background .15s ease,color .15s ease}.hg-tabs a:hover{background:rgba(255,255,255,.14);color:#fffffe}.hg-tabs a[hidden]{display:none!important}.hg-tabs a.on,.hg-tabs a.on:hover{background:#fffffe;color:#111}@media (max-width:560px){.hg-tabs{gap:6px}.hg-tabs a{padding:9px 6px;font-size:11px;letter-spacing:.03em}}</style>
+    <h2 class="hg-arcade" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.2;letter-spacing:.03em;color:#fffffe;text-align:center;margin:0 auto 16px;position:relative;z-index:2">THE ARCADE</h2>
+    <nav class="hg-tabs" data-on="sky_gauntlet" aria-label="Daily games">
+      <a href="https://www.mauriceafrich.com/games" data-k="skyword">SKYWORD</a>
+      <a href="https://www.mauriceafrich.com/sort-the-shelf" data-k="shelf_sort">SORT THE SHELF</a>
+      <a href="https://www.mauriceafrich.com/book-icons" data-k="emoji_reads">BOOK ICONS</a>
+      <a href="https://www.mauriceafrich.com/crossword" data-k="crossword">CROSSWORD</a>
+      <a href="https://www.mauriceafrich.com/blades-and-brass" data-k="blades_brass" data-unlock="50000" data-act="two" hidden>BLADES &amp; BRASS</a>
+      <a href="https://www.mauriceafrich.com/matching-auras" data-k="matching_auras" data-unlock="100000" data-act="two" hidden>MATCHING AURAS</a>
+      <a href="https://www.mauriceafrich.com/crest-quest" data-k="crest_quest" data-unlock="150000" data-act="two" hidden>CREST QUEST</a>
+      <a href="https://www.mauriceafrich.com/airship-runner" data-k="airship_runner">AIRSHIP RUNNER</a>
+      <a href="https://www.mauriceafrich.com/thread-the-needle" data-k="thread_needle">THREAD THE NEEDLE</a>
+      <a href="https://www.mauriceafrich.com/trench-run" data-k="trench_run">TRENCH RUN</a>
+      <a href="https://www.mauriceafrich.com/sky-gauntlet" data-k="sky_gauntlet">SKY GAUNTLET</a>
+    </nav>
+    <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++){var act=lk[j].getAttribute('data-act'),n=act?+((d.acts||{})[act])||0:+d.crewTotal||0;if(n>=+lk[j].getAttribute('data-unlock'))lk[j].hidden=false;}}).catch(function(){});})();</script>
+</div>
+<!-- ARCADE-TABS:END -->
+  <div class="sg-wrap">
+    <h1>The Sky Gauntlet</h1>
+    <p class="sg-sub" style="color:#ff4c0f;font-weight:800;letter-spacing:.08em">TEST COPY · scores are not saved, and the checkpoint numbers are made up</p>
+    <div class="sg-maint" role="status"><b>Under maintenance</b><p>I’m tuning the Sky Gauntlet. It’ll be back soon!</p></div>
+    <p class="sg-sub" data-normal>Your cannons never stop firing. Slide left and right, shoot down the rival fleet, and catch what the rival ships drop. Survive 25 waves, and something drops in.</p>
+    <p class="sg-sub" data-easy hidden>Easy Mode: no extra ships, the fleet never gets tougher, and more Crests and lives fall. Survive 100 waves, and something drops in.</p>
+    <p class="sg-weekly" data-normal>Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week.</p>
+    <p class="sg-weekly" data-easy hidden>Easy Mode leaderboard: the top score at 11:59 PM ET every Friday wins 250 points. Then the board resets for a new week.</p>
+    <div class="sg-modes" role="tablist" aria-label="Game mode">
+      <button type="button" role="tab" class="sg-mode" data-mode="normal" aria-selected="true">Normal</button>
+      <button type="button" role="tab" class="sg-mode" data-mode="easy" aria-selected="false">Easy</button>
+    </div>
+    <div class="sg-game">
+      <div class="sg-cols">
+        <div class="sg-main">
+          <div class="sg-hud">
+            <span class="sg-stat">Score<b class="sg-score">0</b></span>
+            <span class="sg-stat">Wave<b class="sg-wave">1</b></span>
+            <span class="sg-stat">Lives<span class="sg-lives"></span></span>
+            <button class="sg-pausebtn" type="button" disabled>Pause</button>
+          </div>
+          <div class="sg-stage">
+            <canvas class="sg-cv" role="img" aria-label="The Sky Gauntlet game"></canvas>
+            <div class="sg-ov sg-start on">
+              <h2>Ready for battle?</h2>
+              <p class="sg-tip-keys">Arrows, A and D, or the mouse to move. Your cannons fire on their own. P pauses.</p>
+              <p class="sg-tip-touch">Slide your finger to move. Your cannons fire on their own.</p>
+              <p>Catch what falls. The Mark of the Crest upgrades your missiles for good. Everything else is a short boost or a special attack.</p>
+              <button class="sg-btn sg-go" type="button">Launch</button>
+              <div class="sg-cps" hidden></div>
+            </div>
+            <div class="sg-ov sg-pause">
+              <h2>Paused</h2>
+              <button class="sg-btn sg-resume" type="button">Resume</button>
+            </div>
+            <div class="sg-ov sg-over">
+              <h2>Shot down</h2>
+              <p class="sg-final"></p>
+              <p class="sgb-dmsg" role="status"></p>
+              <button class="sg-box sg-box-over" type="button" hidden aria-label="Open loot box 78"><img src="https://africhmaurice.github.io/leaderboard/loot/78.png" alt="Loot box 78"></button>
+              <button class="sg-btn sg-again" type="button">Play again</button>
+              <div class="sg-cps" hidden></div>
+              <a class="sg-btn sg-next" href="https://www.mauriceafrich.com/games">NEXT GAME: SKYWORD</a>
+            </div>
+            <div class="sg-ov sg-found">
+              <h2 class="sg-boxname">Loot box 78</h2>
+              <p>You caught it. Click the box to claim it.</p>
+              <button class="sg-box sg-box-found" type="button" aria-label="Open loot box 78"><img src="https://africhmaurice.github.io/leaderboard/loot/78.png" alt="Loot box 78"></button>
+              <button class="sg-btn ghost sg-keep" type="button">Keep flying</button>
+            </div>
+          </div>
+          <div class="sg-live" aria-live="polite"></div>
+          <div class="sgb-post" hidden><p class="sgb-msg" role="status"></p><div class="sgb-who" hidden></div></div>
+          <!-- SKY GAUNTLET GUIDE (Maurice 2026-10-20: "a guide that explains what everything is, including the weapon level and hull
+               durability"). DRAFT copy. Every number here comes from the game code: KIND, TIERS, MISS, DROPS, HULL, waveCfg. -->
+          <style>
+          #ma-gauntlet .sgk{width:min(100%,760px);box-sizing:border-box;margin:24px auto 0;background:#132219;border:2px solid rgba(243,234,217,.18);padding:24px;display:flex;flex-direction:column;gap:20px;text-align:left}
+          #ma-gauntlet .sgk h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(24px,2.4vw,30px);line-height:1.2;letter-spacing:.03em;color:#89fbcb}
+          #ma-gauntlet .sgk-sec{display:flex;flex-direction:column;gap:12px;min-width:0}
+          #ma-gauntlet .sgk-sec+.sgk-sec,#ma-gauntlet .sgk-cols,#ma-gauntlet .sgk-cols+.sgk-sec{padding-top:20px;border-top:1px solid rgba(243,234,217,.18)}
+    #ma-gauntlet .sgk-cols .sgk-sec{padding-top:0;border-top:0}
+    #ma-gauntlet .sgk-cols .sgk-sec .sgk-h+ul{margin-top:0}#ma-gauntlet .sgk-cols ul+.sgk-h{margin-top:12px}
+          #ma-gauntlet .sgk-h{margin:0;font-weight:800;font-size:13px;line-height:1.3;letter-spacing:.12em;text-transform:uppercase;color:#c3a6ff}
+          #ma-gauntlet .sgk-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+          #ma-gauntlet .sgk ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+          #ma-gauntlet .sgk li{display:flex;align-items:center;gap:14px;min-width:0}
+          #ma-gauntlet .sgk-i{position:relative;flex:0 0 52px;width:52px;height:48px;display:flex;align-items:center;justify-content:center}
+          #ma-gauntlet .sgk-i img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+          #ma-gauntlet .sgk-note{margin:0 0 12px;font-size:14px;line-height:1.5;color:#f3ead9}
+          #ma-gauntlet .sgk-i.g img{filter:drop-shadow(0 0 7px rgba(var(--g),.85))}
+          #ma-gauntlet .sgk-i.ring::after{content:'';position:absolute;inset:3px;border:3px solid #89fbcb;border-radius:50%;border-right-color:transparent}
+          #ma-gauntlet .sgk-i .plus{position:absolute;font-weight:800;font-size:15px;color:#fffffe;-webkit-text-stroke:3px #0b170f;paint-order:stroke fill}
+          #ma-gauntlet .sgk-t{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:14px;line-height:1.45;color:#f3ead9}
+          #ma-gauntlet .sgk-t b{font-weight:800;font-size:15px;color:#fffffe}
+          #ma-gauntlet .sgk p{margin:0;font-size:14px;line-height:1.55;color:#f3ead9}
+          #ma-gauntlet .sgk p b{color:#fffffe}
+          #ma-gauntlet .sgk ul.sgk-lv{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+          #ma-gauntlet .sgk ul.sgk-lv li{flex-direction:column;align-items:flex-start;gap:4px;padding:10px;border:1px solid rgba(243,234,217,.18);font-size:13px;line-height:1.4;color:#f3ead9}
+          #ma-gauntlet .sgk-lv b{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#89fbcb}
+          #ma-gauntlet .sgk ul.sgk-tiers{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0;padding:0;list-style:none}
+          #ma-gauntlet .sgk ul.sgk-tiers li{gap:8px;font-size:13px;line-height:1.4;color:#f3ead9}
+          #ma-gauntlet .sgk-tiers i{flex:none;width:14px;height:14px;border:1px solid rgba(243,234,217,.6)}
+          @media (max-width:640px){#ma-gauntlet .sgk-cols{grid-template-columns:minmax(0,1fr)}#ma-gauntlet .sgk ul.sgk-lv{grid-template-columns:repeat(2,minmax(0,1fr))}#ma-gauntlet .sgk{padding:20px}}
+          </style>
+          <section class="sgk" aria-label="Key">
+            <h2>Key</h2>
+            <div class="sgk-sec">
+              <p class="sgk-easy" data-easy hidden><b>Easy Mode.</b> Ships don’t get tougher each wave and there are no extra ships, but darts can come from below. A Mark of the Crest falls every 33 seconds and a life every minute, every 3rd freighter gives 2 lives, and the Destroyer’s row has 3 Crests and 2 lives. Loot box 81 floats down after wave 100. Easy Mode has its own board, checkpoints, and loot box.</p>
+              <p class="sgk-h">Your airship</p>
+              <ul>
+                <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Your cannons never stop firing.</b>Fly anywhere in the lower part of the sky: arrows or WASD, or follow with the mouse or your finger. P or Esc pauses. You start with 3 lives.</span></li>
+              </ul>
+            </div>
+            <div class="sgk-sec">
+              <p class="sgk-h">Weapon level and hull</p>
+              <ul>
+                <li><span class="sgk-i g" style="--g:255,255,254"><img src="https://africhmaurice.github.io/site/assets/games/80-crest.webp" alt="" loading="lazy"></span><span class="sgk-t"><b>Mark of the Crest</b>Every crest you catch counts toward two upgrades that last the whole run. The top-left corner shows both, and how many crests you need for the next one.</span></li>
+              </ul>
+              <p><b>Weapon level.</b> More crests, better missiles:</p>
+              <ul class="sgk-lv">
+                <li><b>Level 1</b>Start. A thin bolt.</li>
+                <li><b>Level 2</b>2 crests. Chevrons, faster.</li>
+                <li><b>Level 3</b>4 crests. Fire darts, twice the damage.</li>
+                <li><b>Level 4</b>8 crests. Spinners, twice the damage, and they go through a ship.</li>
+                <li><b>Level 5</b>16 crests. A wide beam that burns the first ship above you, hotter with the Speed boost.</li>
+              </ul>
+              <p><b>Hull durability.</b> Crests toughen your hull too, at twice the count: with 4 crests each life takes 2 hits, with 8 it takes 3, with 16 it takes 4, and it keeps doubling from there. Each hit costs one point of hull, the last one costs a life, and your hull refills for the next life.</p>
+            </div>
+            <div class="sgk-cols">
+              <div class="sgk-sec">
+                <p class="sgk-h">Grab these</p>
+                <p class="sgk-note">Ships drop upgrades when you shoot them down, and more fall from the sky on their own timers while you fly.</p>
+                <ul>
+                  <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Ruby</b>+250 points.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/golden-chest.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Golden chest</b>+25 hunt points on the leaderboard, up to 4 a day.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,230,90"><img src="https://africhmaurice.github.io/site/assets/games/78-bolt.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Speed boost</b>Faster firing and faster flying for 10 seconds.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/brass-point.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Brass Point</b>One more missile lane for 10 seconds. Catch more while it lasts to stack up to 5 lanes.</span></li>
+                  <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/swords.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Twin Torches</b>Slashes fly out to both sides and bounce off the walls for 10 seconds.</span></li>
+                  <li><span class="sgk-i g" style="--g:195,166,255"><img src="https://africhmaurice.github.io/site/assets/games/78-missile-4.png" alt="" loading="lazy" style="max-width:44%"></span><span class="sgk-t"><b>Piercing shots</b>For 10 seconds, every missile goes through every ship in its path.</span></li>
+        <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/78-shield.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Shield</b>Blocks one hit. You can hold two.</span></li>
+                  <li><span class="sgk-i g ring" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/78-shield.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Recharging shield</b>Blocks a hit, then comes back 12 seconds later, for the rest of that life.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ship.png" alt="" loading="lazy"><span class="plus">+1</span></span><span class="sgk-t"><b>+1 life</b>One more life, up to 6.</span></li>
+                </ul>
+                <p class="sgk-h">Specials</p>
+                <ul>
+                  <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/78-scythe.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Scythe</b>A red slash sweeps up the sky and cuts down what it touches.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,255,254"><img src="https://africhmaurice.github.io/site/assets/games/trench-emblem.webp" alt="" loading="lazy"></span><span class="sgk-t"><b>Wave of energy</b>A ring of energy rings out from your ship: 2 hits to every ship it passes, and it clears the cannonballs it touches.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/78-atomic.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Red atomic</b>3 hits to every ship on screen, and every cannonball is gone.</span></li>
+                </ul>
+              </div>
+              <div class="sgk-sec">
+                <p class="sgk-h">Dodge these</p>
+                <ul>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-rival.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Rival ships</b>They loop around, swoop down at you, and drop cannonballs. 100 points a hit to sink one, 200 if it is diving. They drop rubies, golden chests, shields, and lives. The colored ones take more hits and drop shields, rubies, and extra missiles.</span></li>
+                </ul>
+                <ul class="sgk-tiers" aria-label="Rival colors">
+                  <li><i style="background:#3adb97"></i>Teal: 2 hits, wave 3+</li>
+                  <li><i style="background:#57bb41"></i>Green: 3 hits, wave 10+</li>
+                  <li><i style="background:#f3ead9"></i>Parchment: 4 hits, wave 15+</li>
+                  <li><i style="background:#0b170f"></i>Ink: 5 hits, wave 20+</li>
+                  <li><i style="background:#f1d48a"></i>Gold: 10 hits, wave 25+</li>
+                </ul>
+                <ul>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-gunboat.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Gunboat</b>Crosses from the side, firing darts at you. 300 points. Drops speed boosts, rubies, piercing shots, Twin Torches, and red atomics.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-dart.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Dart</b>Dives straight at you from above. 150 points. Drops shields, rubies, and recharging shields.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-mine-layer.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Mine-layer</b>Crosses the top, dropping mines. Shoot the mines too. 400 points, 25 a mine. Drops scythes, rubies, waves of energy, red atomics, and lives. Every 19th mine you shoot drops Twin Torches.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-freighter.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Freighter</b>Slow and tough, 8 hits, and it bursts into 4 rubies. Every 5th one also drops a life and a recharging shield. 800 points.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-flagship.png" alt="" loading="lazy" style="transform:rotate(180deg)"></span><span class="sgk-t"><b>Destroyer</b>Every 5th wave. A boss with a hull bar that fires fans of darts. 5,000 points, and it drops a row of 10 upgrades that fall fast.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-lightning.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Lightning and wind</b>From wave 6, a flashing stripe warns where lightning will strike. From wave 8, gusts of wind push your ship.</span></li>
+                </ul>
+                <p>Tough ships get angry at half hull: faster, with a Scarlet glow.</p>
+              </div>
+            </div>
+            <div class="sgk-sec">
+              <p class="sgk-h">Scoring and the loot box</p>
+              <p>Every ship you sink adds its points, and clearing a wave adds 250 times the wave number. Survive 25 waves and loot box 78 floats down. Fly into it to claim it. The top score at 11:59 PM ET every Friday wins 500 hunt points.</p>
+            </div>
+          </section>
+          <!-- /SKY GAUNTLET GUIDE -->
+        </div>
+        <aside class="sg-side">
+          <div class="sgb-panel">
+            <h2 class="sgb-ph">This week’s top sky pirates<span class="sgb-mode" data-easy hidden> · Easy Mode</span></h2>
+            <p class="sgb-count">Board closes in <span class="sgb-left">...</span></p>
+            <ol class="sgb-board"><li><span class="sgb-empty">Loading the board...</span></li></ol>
+          </div>
+          <div class="sgb-panel sg-howp">
+            <h2 class="sgb-ph">How it works</h2>
+            <ul class="sg-how">
+              <li>Your cannons fire on their own. Fly anywhere in the lower part of the sky.</li>
+              <li>Shoot down the rival fleet and catch what the ships drop.</li>
+              <li>Crests raise your weapon level and toughen your hull.</li>
+              <li>Golden chests are worth 25 hunt points each, up to 4 a day.</li>
+              <li>Every 5th wave is a Destroyer.</li>
+              <li>Survive 25 waves, and loot box 78 floats down.</li>
+              <li>Check the key for everything else!</li>
+              <li>Top score on the board at 11:59 PM ET Friday wins 500 points. Then a new week starts.</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var root=document.getElementById('ma-gauntlet');
+  if(!root||root.getAttribute('data-ready'))return;
+  root.setAttribute('data-ready','1');
+  var K='WVpYVDM1Mzc9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){location.href=atob(easy()?KE:K).split('').reverse().join('');}
+  var $=function(s){return root.querySelector(s);};
+
+  /* ---- the world: 480 wide, 720 tall; the canvas scales it to fit ---- */
+  var W=480,H=720,PY=H-74,BOXWAVE=25;
+  /* EASY MODE (Maurice, 2026-10-21): the rules from the afternoon of 10/21, its own board and checkpoints, and loot box 81 at
+     wave 100. MODE is 'normal' or 'easy'; it can't change during a run. */
+  var MODE='normal',KE='UVVYSkdFVlY9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  var EASY={box:81,boxWave:100,bossV:2,timed:{ruby:28,crest:33,brass:42,torch:44,bolt:55,crate:60,life:60,shield:66,pierce:67,scythe:83,recharge:86,trench:156,atomic:187},
+    bossRow:['life','crest','crate','ruby','bolt','crest','life','shield','crest','torch'],freighter:[[1,'ruby','ruby','ruby','ruby'],[3,'life2'],[5,'recharge']]};
+  function easy(){return MODE==='easy';}
+  function boxWave(){return easy()?EASY.boxWave:BOXWAVE;}
+  function boxKey(){return easy()?'ma-gauntlet-box-easy':'ma-gauntlet-box';}
+  function bestKey(){return easy()?'ma-gauntlet-best-easy':'ma-gauntlet-best';}
+  function act(a){return easy()?a.replace('gauntlet','gauntlete'):a;}   /* the Easy board's actions: gauntletestart, gauntletescore ... */
+  var ART='https://africhmaurice.github.io/site/assets/games/';
+  function pic(f){var i=new Image();i.src=ART+f;return i;}
+  function ok(i){return i&&i.complete&&i.naturalWidth>0;}
+  var IMG={bolt:pic('78-bolt.png'),shield:pic('78-shield.png'),ship:pic('74-ship.png'),rival:pic('74-rival.png'),ball:pic('74-cannonball.png'),ruby:pic('74-ruby.png'),crate:pic('golden-chest.png'),crest:pic('80-crest.webp'),trench:pic('trench-emblem.webp'),scythe:pic('78-scythe.png'),atomic:pic('78-atomic.png'),miss:[1,2,3,4,5].map(function(n){return pic('78-missile-'+n+'.png');}),brass:pic('brass-point.png'),torch:pic('swords.png'),sky:pic('74-sky.webp'),
+    /* Maurice's new fleet (10/16) */gunboat:pic('78-gunboat.png'),dart:pic('78-dart.png'),layer:pic('78-mine-layer.png'),mine:pic('78-mine.png'),freighter:pic('78-freighter.png'),flagship:pic('78-flagship.png'),arrow:pic('78-dart-shot.png'),torchSlash:pic('78-torch-slash.png'),scytheSlash:pic('78-scythe-slash.png'),lightning:pic('78-lightning.png'),
+    boom:[pic('74-boom-1.png'),pic('74-boom-2.png'),pic('74-boom-3.png'),pic('74-boom-4.png')]};
+  var boxImg78=new Image();boxImg78.src='https://africhmaurice.github.io/leaderboard/loot/78.png';
+  var boxImg81=new Image();boxImg81.src='https://africhmaurice.github.io/leaderboard/loot/81.png';
+  var boxImg=boxImg78;
+  var tinted={};
+  /* the rival art recolored once per color (the colored rival tiers, and the white hit flash) */
+  function tint(col,a){var key=col+a;if(tinted[key])return tinted[key];if(!ok(IMG.rival))return null;
+    var c=document.createElement('canvas');c.width=IMG.rival.naturalWidth;c.height=IMG.rival.naturalHeight;var g=c.getContext('2d');
+    g.drawImage(IMG.rival,0,0);g.globalCompositeOperation='source-atop';g.globalAlpha=a;g.fillStyle=col;g.fillRect(0,0,c.width,c.height);return (tinted[key]=c);}
+
+  /* any of his images in one solid color (used to light up his black dart arrows on the night sky) */
+  var solid={};function solidOf(img,col){var key=img.src+col;if(solid[key])return solid[key];if(!ok(img))return null;var c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;var g=c.getContext('2d');g.drawImage(img,0,0);g.globalCompositeOperation='source-in';g.fillStyle=col;g.fillRect(0,0,c.width,c.height);return (solid[key]=c);}
+
+  /* what falls: weight (how often), glow color, short label; specials only from wave 3 */
+  var DROPS={
+    ruby:{w:26,glow:'255,76,15',name:'+250 points'},
+    crate:{w:12,glow:'255,214,120',name:'+25 hunt points'},
+    bolt:{w:12,glow:'255,230,90',name:'Speed boost',secs:10},
+    brass:{w:12,glow:'255,214,120',name:'Extra missile',secs:10},
+    pierce:{w:8,glow:'195,166,255',name:'Piercing shots',secs:10},   /* Maurice 10/20: every missile goes through every ship for 10 s */
+    torch:{w:10,glow:'137,251,203',name:'Twin Torches',secs:10},
+    shield:{w:10,glow:'137,251,203',name:'Shield'},
+    recharge:{w:4,glow:'137,251,203',name:'Recharging shield'},   /* Maurice 10/20: blocks a hit, comes back 12 s later, for this life */
+    life:{w:3,glow:'255,76,15',name:'+1 life'},                    /* Maurice 10/20: a glowing red airship with +1 */
+    life2:{w:0,glow:'255,76,15',name:'+2 lives'},                  /* Maurice 10/21: from every 3rd freighter */
+    crest:{w:10,glow:'255,255,254',name:'Mark of the Crest'},
+    scythe:{w:3,glow:'255,76,15',name:'Scythe!',special:1},
+    trench:{w:3,glow:'255,255,254',name:'Wave of energy!',special:1},
+    atomic:{w:2,glow:'255,76,15',name:'Red atomic!',special:1}
+  };
+  var CRESTS=[0,0,2,4,8,16];   /* crests needed for missile levels 1-5 */
+  /* Maurice 10/20: crests also toughen the hull, at twice the count: 4 crests = 2 hits a life, 8 = 3, 16 = 4, 32 = 5, and on
+     with no top (Maurice: "unlimited"); hullNext(h) is the crests for h+1 hits */
+  var RECHARGE=12,MAXLIVES=6;
+  function hullMax(){return S.crests>=4?1+Math.floor(Math.log2(S.crests/2)+1e-9):1;}
+  function hullNext(h){return Math.pow(2,h+1);}
+
+  var cv=$('.sg-cv'),ctx=cv.getContext('2d'),stage=$('.sg-stage');
+  var ovStart=$('.sg-start'),ovPause=$('.sg-pause'),ovOver=$('.sg-over'),ovFound=$('.sg-found');
+  var hudScore=$('.sg-score'),hudWave=$('.sg-wave'),hudLives=$('.sg-lives'),pauseBtn=$('.sg-pausebtn'),live=$('.sg-live');
+  var mqRM=window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):null;
+  function RM(){return !!(mqRM&&mqRM.matches);}
+  var touchy=(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window&&window.innerWidth<900);
+  if(touchy)root.classList.add('touch');
+  function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  try{localStorage.removeItem('ma-save-sky-gauntlet');}catch(e){}   /* left over from the dropped Save progress test (10/19) */
+  var best=parseInt(lsGet('ma-gauntlet-best')||'0',10)||0;   /* reloaded per mode by setMode */
+  function fmt(n){return Math.round(n).toLocaleString('en-US');}
+
+  var S=null,state='title',paused=false,boxTaken=lsGet('ma-gauntlet-box')==='1',scale=1,dpr=1,skyY=0;
+  function newRun(){
+    return {score:0,wave:0,lives:3,hull:1,rs:null,t:0,x:W/2,y:H-74,ty:null,queue:[],arrows:[],storm:null,stormT:8,wind:0,windT:12,windV:0,boss:null,target:null,keys:0,inv:0,fireT:0,shots:[],balls:[],foes:[],drops:[],fx:[],pops:[],
+      temp:{torch:0,bolt:0,brass:0,pierce:0},crests:0,shields:0,crates:0,slashes:[],side:[],sideT:0,waves:[],nuke:null,boxOut:null,banner:'',bannerT:0,diveT:2,shootT:1.5,dead:0,kills:0,cnt:{},flyT:0,lanes:1,cps:[],from:0};
+  }
+
+  /* ---- waves: harder every time ---- */
+  function waveCfg(n){
+    return {rows:n%5===0?1:Math.min(4,1+Math.ceil(n/3)),cols:n<3?5:6,dive:Math.max(.55,3-n*.28),divers:n<4?1:n<7?2:3,
+      shoot:Math.max(.35,1.6-n*.13),ballV:200+n*16,diveV:1+n*.08};
+  }
+  /* rival colors (Maurice, 10/12): purple takes 1 hit; teal 2 from wave 3 (10%, 20% at 4, 30% from 5); green 3 from wave 10;
+     parchment 4 from wave 15; ink 5 from wave 20; gold 10 from wave 25. The new colors are 10% each when they arrive. */
+  var TIERS=[['purple',1,null],['teal',2,'#3adb97'],['green',3,'#57bb41'],['parchment',4,'#f3ead9'],['ink',5,'#0b170f'],['gold',10,'#f1d48a']];
+  function mixFor(w){var m={teal:w>=5?.3:w>=4?.2:w>=3?.1:0,green:w>=10?.1:0,parchment:w>=15?.1:0,ink:w>=20?.1:0,gold:w>=25?.1:0};return m;}
+  function pickTier(w){var m=mixFor(w),r=Math.random();for(var i=TIERS.length-1;i>=1;i--){var k=TIERS[i][0];if(r<m[k])return TIERS[i];r-=m[k];}return TIERS[0];}
+  function startWave(){
+    S.wave++;var c=waveCfg(S.wave);S.foes=[];
+    var gapX=W/(c.cols+1),i=0;
+    for(var r=0;r<c.rows;r++)for(var k=0;k<c.cols;k++){
+      var hx=gapX*(k+1),hy=70+r*48,from=(i%2?1:-1);
+      S.foes.push({hx:hx,hy:hy,x:W/2+from*(W*.7),y:-40-r*30,hp:0,max:0,mode:'enter',t:-(i*.07),sx:W/2+from*(W*.7),sy:-40-r*30,ang:Math.PI,flash:0,row:r,rx:40+Math.random()*110,ry:18+Math.random()*40,wx:.5+Math.random()*.7,wy:.7+Math.random()*.9,ph:Math.random()*6.283});
+      var tr=pickTier(S.wave),fo=S.foes[S.foes.length-1];fo.tier=tr[0];fo.hp=fo.max=Math.round(tr[1]*hard());fo.col=tr[2];
+      i++;
+    }
+    /* the new fleet (Maurice 10/16): besides the looping rivals, ships come in from every side during the wave */
+    S.queue=[];var n=S.wave,t0=1.8,span=6+n*.6;
+    function q(kind,count){for(var j=0;j<count;j++)S.queue.push({kind:kind,at:t0+Math.random()*span});}
+    if(n%5===0){q('dart',2+Math.floor(n/2));S.queue.push({kind:'flagship',at:1});}
+    else{q('gunboat',Math.min(4,1+Math.floor(n/2)));if(n>=2)q('dart',Math.min(9,1+n));if(n>=3)q('layer',Math.min(3,Math.floor((n)/3)));if(n>=4&&n%2===0)q('freighter',1);}
+    /* 25% more ships every wave (Maurice, 2026-10-21; was 10% earlier that day): round(25% of the whole wave, rivals included, at least 1),
+       added as extra side ships, taking turns through this wave's own kinds (darts on Destroyer waves) */
+    var kinds=S.queue.map(function(x){return x.kind;}).filter(function(k,i,a){return k!=='flagship'&&a.indexOf(k)===i;}),
+      extra=easy()?0:Math.max(1,Math.round((S.foes.length+S.queue.filter(function(x){return x.kind!=='flagship';}).length)*(S.wave>10?EXTRASHIPS_LATE:EXTRASHIPS)));
+    for(var ex=0;ex<extra;ex++)q(kinds.length?kinds[ex%kinds.length]:'dart',1);
+    S.queue.sort(function(a,b){return a.at-b.at;});S.qt=0;
+    S.diveT=2.2;S.shootT=1.6;
+    S.banner=n%5===0?'Destroyer!':'Wave '+S.wave;S.bannerT=1.6;hud();say('Wave '+S.wave);
+  }
+
+  /* ---- the new fleet: sizes, toughness, points ---- */
+  var KIND={gunboat:{w:60,hw:24,hh:18,hp:2,pts:300},dart:{w:38,hw:14,hh:14,hp:1,pts:150},layer:{w:48,hw:18,hh:24,hp:3,pts:400},
+    mine:{w:24,hw:10,hh:10,hp:1,pts:25},freighter:{w:84,hw:34,hh:24,hp:8,pts:800},flagship:{w:300,hw:128,hh:62,hp:60,pts:5000}};
+  function spawn(kind,x,y){var K2=KIND[kind],f={kind:kind,x:x,y:y,vx:0,vy:0,hp:K2.hp,max:K2.hp,hw:K2.hw,hh:K2.hh,w:K2.w,flash:0,mode:'free',ang:0,t:0,fireT:1+Math.random()*1.5};S.foes.push(f);return f;}
+  function launch(kind){
+    var n=S.wave,side=Math.random()<.5?-1:1,f;
+    if(kind==='gunboat'){/* comes in from a side and strafes across, firing darts at you */f=spawn(kind,side<0?-40:W+40,60+Math.random()*(H*.45));f.vx=-side*(70+n*4);f.hp=f.max=2+Math.floor(n/6);}
+    else if(kind==='dart'){/* dives straight at where you are, from above or from behind */var below=easy()&&n>=3&&Math.random()<.35;   /* darts from behind: Easy Mode only (Normal dropped them 10/21) */f=spawn(kind,30+Math.random()*(W-60),below?H+30:-30);
+      var dx=S.x-f.x,dy=S.y-f.y,l=Math.sqrt(dx*dx+dy*dy)||1,v=230+n*10;f.vx=dx/l*v;f.vy=dy/l*v;}
+    else if(kind==='layer'){/* drifts across the top third and drops mines */f=spawn(kind,side<0?-40:W+40,70+Math.random()*120);f.vx=-side*(45+n*2);f.hp=f.max=3+Math.floor(n/8);f.mineT=1;}
+    else if(kind==='freighter'){/* slow and tough; bursts into rubies */f=spawn(kind,60+Math.random()*(W-120),-50);f.vy=40;f.vx=(Math.random()-.5)*40;f.hp=f.max=8+n;}
+    else if(kind==='flagship'){/* the boss every 5th wave */f=spawn(kind,W/2,-90);f.vy=60;f.hp=f.max=60+n*8;S.boss=f;}
+    if(f){f.hp=f.max=Math.round(f.max*hard());}   /* 10% tougher every wave */
+  }
+  /* angry: a tough ship that has lost half its hull goes faster and fires more (Maurice: enemies that change as you fight) */
+  function hurt(f,d){f.hp-=d;f.flash=.08;if(f.kind&&f.max>1&&!f.angry&&f.hp<=f.max/2&&f.hp>0){f.angry=true;f.vx*=1.4;f.vy*=1.3;}}
+  function arrowAt(f,v,spread){v*=hard();var dx=S.x-f.x,dy=S.y-f.y,a=Math.atan2(dy,dx)+(spread||0);S.arrows.push({x:f.x,y:f.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v});}
+
+  /* ---- input ---- */
+  var keyL=false,keyR=false,keyU=false,keyD=false;
+  document.addEventListener('keydown',function(e){
+    if(state!=='play'&&state!=='pause')return;
+    var t=e.target;if(t&&/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))return;
+    var k=e.key;
+    /* while paused only P and Esc do anything */
+    if(paused&&k!=='p'&&k!=='P'&&k!=='Escape')return;
+    if(k==='ArrowLeft'||k==='a'||k==='A'){keyL=true;S.target=null;e.preventDefault();}
+    else if(k==='ArrowRight'||k==='d'||k==='D'){keyR=true;S.target=null;e.preventDefault();}
+    else if(k==='ArrowUp'||k==='w'||k==='W'){keyU=true;S.ty=null;S.target=null;e.preventDefault();}
+    else if(k==='ArrowDown'||k==='s'||k==='S'){keyD=true;S.ty=null;S.target=null;e.preventDefault();}
+    else if(k==='p'||k==='P'||k==='Escape'){paused?resume():pause();e.preventDefault();}
+  });
+  document.addEventListener('keyup',function(e){var k=e.key;if(k==='ArrowLeft'||k==='a'||k==='A')keyL=false;if(k==='ArrowRight'||k==='d'||k==='D')keyR=false;if(k==='ArrowUp'||k==='w'||k==='W')keyU=false;if(k==='ArrowDown'||k==='s'||k==='S')keyD=false;});
+  function aim(e){if(!S||state!=='play'||paused)return;var r=cv.getBoundingClientRect();if(!r.width)return;S.target=(e.clientX-r.left)/r.width*W;S.ty=(e.clientY-r.top)/r.height*H-(e.pointerType==='touch'?70:0);}
+  cv.addEventListener('pointermove',aim);
+  cv.addEventListener('pointerdown',function(e){aim(e);try{cv.setPointerCapture(e.pointerId);}catch(er){}});
+  cv.addEventListener('touchstart',function(e){e.preventDefault();},{passive:false});
+  cv.addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
+
+  /* ---- the game ---- */
+  function speed(){return 330*(S.temp.bolt>0?1.5:1);}
+  function reload(){return S.temp.bolt>0?.17:.3;}
+  var MISS=[null,[1,760,6,5,26],[1,920,12,22,30],[2,760,10,16,56],[2,700,16,30,36],[0,0,0,24,0]];   /* the beam is twice as wide (Maurice 10/20) */
+  function level(){for(var l=5;l>1;l--)if(S.crests>=CRESTS[l])return l;return 1;}
+  /* missile lanes (Maurice, 2026-10-21): every Extra missile caught while one is running adds a lane, up to 5;
+     each catch restarts its timer, and the lanes drop back to 1 when it runs out */
+  var MAXLANES=5,LANEGAP=20;
+  function streams(){return S.temp.brass>0?S.lanes:1;}
+  function laneOffs(){var n=streams(),o=[];for(var i=0;i<n;i++)o.push((i-(n-1)/2)*LANEGAP);return o;}
+  /* the beam (level 5): every stream burns the first ship above it */
+  function streamXs(){return laneOffs().map(function(o){return S.x+o;});}
+  /* the beam (Maurice 10/20: it felt like a downgrade): every ship in its column, not just the first */
+  function beamHits(x){var hw=MISS[5][3]/2;return S.foes.filter(function(f){return !(f.mode==='enter'&&f.t<0)&&Math.abs(f.x-x)<(f.hw||14)+hw&&f.y<PY-20;});}
+  function beamTarget(x){var best=null;S.foes.forEach(function(f){if(f.mode==='enter'&&f.t<0)return;if(Math.abs(f.x-x)<(f.hw||14)+MISS[5][3]/2&&f.y<PY-20&&(!best||f.y>best.y))best=f;});return best;}
+  function fire(){
+    if(level()===5)return;
+    var M=MISS[level()],dmg=M[0],v=-M[1],x=S.x,y=PY-30,list=laneOffs().map(function(o){return [o,0];});
+    list.forEach(function(s){S.shots.push({x:x+s[0],y:y,vx:s[1],vy:v,dmg:dmg,lv:level(),pierce:S.temp.pierce>0?99:(level()===4?1:0),hw:M[2],spin:0});});
+  }
+  function hitPlayer(){
+    if(S.inv>0||state!=='play')return;
+    if(S.rs&&S.rs.up){S.rs.up=false;S.rs.t=RECHARGE;S.inv=1;boom(S.x,PY,70);return;}   /* the recharging shield goes first */
+    if(S.shields>0){S.shields--;S.inv=1;boom(S.x,PY,70);return;}
+    if(S.hull>1){S.hull--;S.inv=1.2;boom(S.x,PY,90);S.pops.push({x:S.x,y:PY-46,txt:'Hull '+S.hull+'/'+hullMax(),t:.9});hud();return;}
+    S.lives--;boom(S.x,PY,130);S.rs=null;S.hull=hullMax();hud();
+    if(S.lives<=0){S.dead=1.2;state='dying';say('Shot down');return;}
+    S.inv=2.2;S.balls=[];S.arrows=[];
+  }
+  function boom(x,y,size){S.fx.push({x:x,y:y,s:size,t:0});}
+  function kill(f){
+    var pts=f.kind?KIND[f.kind].pts:(f.mode==='dive'?200:100)*f.max;S.score+=pts;S.kills++;hud();
+    if(f.kind==='flagship'){S.boss=null;boom(f.x,f.y,260);
+      /* the Destroyer's row of 10, spread across the sky, falling 4x as fast as other drops (Maurice, 2026-10-21: twice as fast, then twice again) */
+      var row=easy()?EASY.bossRow:BOSSROW;row.forEach(function(k,i){S.drops.push({x:W*(i+.5)/row.length,y:f.y,kind:k,v:DROPV*(easy()?EASY.bossV:4)});});
+      S.banner='Destroyer down!';S.bannerT=1.6;}
+    /* fixed kill drops: each ship type keeps its own count for the run (Maurice, 2026-10-21) */
+    var key=f.kind||(f.tier&&f.tier!=='purple'?'rivalColor':'rival'),n=S.cnt[key]=(S.cnt[key]||0)+1,give=[];
+    ((easy()&&key==='freighter')?EASY.freighter:(KILLDROPS[key]||[])).forEach(function(r){if(n%r[0]===0)give=give.concat(r.slice(1));});
+    give.forEach(function(k,i){S.drops.push({x:Math.max(20,Math.min(W-20,f.x+(i-(give.length-1)/2)*26)),y:f.y,kind:k});});
+    if(f.kind==='mine')return;
+    S.pops.push({x:f.x,y:f.y,txt:'+'+pts,t:.8});boom(f.x,f.y,64);
+  }
+  /* Drop rules (Maurice, 2026-10-21): no random drops. Every Nth kill of a ship type drops these (everything that
+     lands on the same kill falls together), and each upgrade also falls on its own clock of flying seconds. */
+  var KILLDROPS={
+    rival:[[10,'ruby'],[25,'crate'],[38,'life'],[46,'shield','shield']],
+    rivalColor:[[6,'shield'],[8,'ruby'],[17,'brass']],
+    gunboat:[[5,'bolt'],[8,'ruby'],[10,'pierce'],[17,'torch'],[20,'atomic']],
+    dart:[[5,'shield'],[8,'ruby'],[17,'recharge']],
+    layer:[[5,'scythe'],[8,'ruby'],[11,'trench'],[17,'atomic'],[20,'life']],
+    mine:[[19,'torch']],
+    freighter:[[1,'ruby','ruby','ruby','ruby'],[3,'life'],[5,'recharge']]
+  };
+  var TIMED={ruby:28,crest:60,brass:42,torch:44,bolt:55,crate:60,life:120,shield:66,pierce:67,scythe:83,recharge:86,trench:156,atomic:187};
+  var BOSSROW=['life','crest','crate','ruby','bolt','ruby','bolt','shield','crest','torch'];   /* 10/21 tune: 2 crests, 1 life */
+  var DROPV=120,EXTRASHIPS=.1,EXTRASHIPS_LATE=.1;   /* extra side ships: 10% of the wave, every wave (10/21 tune) */
+  /* every wave's ships are harder than the wave before (Maurice, 2026-10-21): faster, attacking more often, firing faster
+     shots, and taking more hits. +5% a wave the whole way (10/21 tune; it adds up, it doesn't compound):
+     wave 1 = 1, wave 10 = 1.45, wave 15 = 1.7, wave 25 = 2.2. */
+  var HARDER=.05,HARDER_LATE=.05,LATE=10;
+  function hard(){if(easy())return 1;var w=S.wave;return w<=LATE?1+HARDER*(w-1):1+HARDER*(LATE-1)+HARDER_LATE*(w-LATE);}   /* share of extra side ships added to every wave */   /* how fast a drop falls, in px a second */
+  /* each timed upgrade falls in its own fixed lane, so two that land on the same second don't overlap */
+  function lane(k){var ks=Object.keys(TIMED),i=ks.indexOf(k);return W*(.1+.8*i/(ks.length-1));}
+  /* catching something */
+  function collect(k,x,y){
+    var D=DROPS[k];
+    if(k==='brass')S.lanes=Math.min(MAXLANES,(S.temp.brass>0?S.lanes:1)+1);
+    S.pops.push({x:x,y:y-20,txt:k==='brass'?S.lanes+' missile lanes':D.name,t:1.1});
+    if(D.secs)S.temp[k]=D.secs;
+    else if(k==='ruby'){S.score+=250;hud();}
+    else if(k==='crate'){S.crates++;}
+    else if(k==='shield'){S.shields=Math.min(2,S.shields+1);}
+    else if(k==='crest'){var before=level(),hb=hullMax();S.crests++;if(level()>before){S.banner='Weapon level '+level();S.bannerT=1.6;say('Weapon level '+level());}
+      if(hullMax()>hb){S.hull++;S.banner=(level()>before?S.banner+'  ·  ':'')+'Hull '+hullMax();S.bannerT=1.6;say('Hull takes '+hullMax()+' hits');}}
+    else if(k==='recharge'){S.rs={up:true,t:0};}
+    else if(k==='life'){S.lives=Math.min(MAXLIVES,S.lives+1);hud();}
+    else if(k==='life2'){S.lives=Math.min(MAXLIVES,S.lives+2);hud();}
+    else if(k==='scythe')S.slashes.push({x:S.x,y:PY-40,w:W*.25});
+    else if(k==='atomic'){var ty=S.foes.length?S.foes.reduce(function(m,f){return m+f.y;},0)/S.foes.length:H*.3;S.nuke={t:0,x:W/2,y:Math.max(80,Math.min(H*.5,ty))};}
+    else if(k==='trench')S.waves.push({x:S.x,y:PY,r:20,hit:[]});
+  }
+  function update(dt){
+    S.t+=dt;if(S.bannerT>0)S.bannerT-=dt;if(S.inv>0)S.inv-=dt;
+    for(var k in S.temp)if(S.temp[k]>0)S.temp[k]=Math.max(0,S.temp[k]-dt);
+    /* timed drops: each upgrade falls every TIMED[k] seconds of flying, in its own lane (the loop stops while paused) */
+    if(state==='play'){var f0=S.flyT,TM=easy()?EASY.timed:TIMED;S.flyT+=dt;for(var tk in TM)if(Math.floor(S.flyT/TM[tk])>Math.floor(f0/TM[tk]))S.drops.push({x:lane(tk),y:-20,kind:tk});}
+    if(S.rs&&!S.rs.up){S.rs.t-=dt;if(S.rs.t<=0){S.rs.up=true;S.rs.t=0;S.pops.push({x:S.x,y:PY-46,txt:'Shield back',t:.9});}}
+    if(!RM())skyY=(skyY+dt*40)%100000;
+    /* the ship flies anywhere in the lower two thirds (Maurice 10/16) */
+    var sp=speed();
+    if(keyL||keyR||keyU||keyD){S.x+=((keyR?1:0)-(keyL?1:0))*sp*dt;S.y+=((keyD?1:0)-(keyU?1:0))*sp*dt;}
+    else if(S.target!==null){var d=S.target-S.x;S.x+=Math.max(-sp*1.6*dt,Math.min(sp*1.6*dt,d));if(S.ty!==null){var dy2=S.ty-S.y;S.y+=Math.max(-sp*1.6*dt,Math.min(sp*1.6*dt,dy2));}}
+    if(S.wind)S.x+=S.windV*dt;
+    S.x=Math.max(28,Math.min(W-28,S.x));S.y=Math.max(H*.32,Math.min(H-36,S.y));PY=S.y;
+    /* Twin Torches: two small white slashes fly out to the sides every half second */
+    if(S.temp.torch>0&&state==='play'){S.sideT-=dt;if(S.sideT<=0){S.sideT=.5;S.side.push({x:S.x,y:PY-20,vx:-300,vy:-380},{x:S.x,y:PY-20,vx:300,vy:-380});}}
+    for(var si=S.side.length-1;si>=0;si--){var sd=S.side[si];sd.x+=sd.vx*dt;sd.y+=sd.vy*dt;
+      /* they bounce off the sides and keep climbing until they hit a ship or leave the top (Maurice, 10/13) */
+      if(sd.x<10){sd.x=10;sd.vx=Math.abs(sd.vx);}else if(sd.x>W-10){sd.x=W-10;sd.vx=-Math.abs(sd.vx);}
+      var gone=sd.y<-30;
+      for(var sq2=0;sq2<S.foes.length&&!gone;sq2++){var fo=S.foes[sq2];if(fo.mode==='enter'&&fo.t<0)continue;if(Math.abs(fo.x-sd.x)<(fo.hw||14)+10&&Math.abs(fo.y-sd.y)<(fo.hh||18)+2){hurt(fo,1);if(fo.hp<=0){S.foes.splice(sq2,1);kill(fo);}gone=true;}}
+      if(gone)S.side.splice(si,1);}
+    /* always firing */
+    S.fireT-=dt;if(S.fireT<=0&&state==='play'){fire();S.fireT=reload();}
+    for(var i=S.shots.length-1;i>=0;i--){var s=S.shots[i];s.x+=s.vx*dt;s.y+=s.vy*dt;if(s.y<-20||s.x<-20||s.x>W+20)S.shots.splice(i,1);}
+    /* the new fleet arrives on its schedule */
+    if(state==='play'){S.qt+=dt;while(S.queue.length&&S.queue[0].at<=S.qt)launch(S.queue.shift().kind);}
+    for(var nf=S.foes.length-1;nf>=0;nf--){var g=S.foes[nf];if(!g.kind)continue;g.t+=dt;if(g.flash>0)g.flash-=dt;var spd=(g.angry?1.35:1)*hard();
+      if(g.kind==='flagship'){var ty3=110;if(g.y<ty3)g.y+=g.vy*dt;else{g.x=W/2+Math.sin(g.t*.5)*(W*.22);}
+        g.fireT-=dt*spd;if(g.fireT<=0&&state==='play'){g.fireT=Math.max(.9,2.2-S.wave*.04);for(var sp5=-2;sp5<=2;sp5++)arrowAt(g,170+S.wave*5,sp5*.22);}
+        if(g.t>4&&Math.random()<dt*.25&&state==='play'){var dd2=spawn('dart',g.x+(Math.random()-.5)*200,g.y+40);var ddx=S.x-dd2.x,ddy=S.y-dd2.y,dl=Math.sqrt(ddx*ddx+ddy*ddy)||1;dd2.vx=ddx/dl*260;dd2.vy=ddy/dl*260;}
+        continue;}
+      g.x+=g.vx*dt*spd;g.y+=g.vy*dt*spd;
+      if(g.kind==='dart')g.ang=Math.atan2(g.vy,g.vx)-Math.PI/2;
+      if(g.kind==='gunboat'){g.ang=g.vx>0?-.25:.25;g.fireT-=dt*spd;if(g.fireT<=0&&state==='play'&&g.x>20&&g.x<W-20){g.fireT=Math.max(.8,1.9-S.wave*.05);arrowAt(g,190+S.wave*6);}}
+      if(g.kind==='layer'){g.mineT-=dt*spd;if(g.mineT<=0&&state==='play'&&g.x>20&&g.x<W-20){g.mineT=1.3+Math.random();var mn=spawn('mine',g.x,g.y+24);mn.vy=55+S.wave*2;mn.wob=Math.random()*6;}}
+      if(g.kind==='mine'){g.x+=Math.sin(g.t*2+g.wob)*20*dt;}
+      if(g.kind==='freighter'&&g.y>H*.55)g.vy=-Math.abs(g.vy)*.2;
+      /* gone off an edge: no points */
+      if(g.x<-80||g.x>W+80||g.y>H+60||g.y<-140){S.foes.splice(nf,1);continue;}
+      /* touching you */
+      if(Math.abs(g.x-S.x)<g.hw+16&&Math.abs(g.y-S.y)<g.hh+16){if(g.kind==='dart'||g.kind==='mine'){S.foes.splice(nf,1);boom(g.x,g.y,60);}hitPlayer();}
+    }
+    for(var ar=S.arrows.length-1;ar>=0;ar--){var aw=S.arrows[ar];aw.x+=aw.vx*dt;aw.y+=aw.vy*dt;if(aw.y>H+30||aw.y<-30||aw.x<-30||aw.x>W+30){S.arrows.splice(ar,1);continue;}
+      if(Math.abs(aw.x-S.x)<16&&Math.abs(aw.y-S.y)<20){S.arrows.splice(ar,1);hitPlayer();break;}}   /* a hit clears every arrow, so stop here (2026-10-20) */
+    /* storms (Maurice: weather is an enemy): lightning lanes from wave 6, wind gusts from wave 8 */
+    if(state==='play'&&S.wave>=6){S.stormT-=dt;if(S.stormT<=0&&!S.storm){S.stormT=Math.max(3.5,9-S.wave*.15);S.storm={x:40+Math.random()*(W-80),w:64,t:0};}}
+    if(S.storm){S.storm.t+=dt;if(S.storm.t>1.1&&S.storm.t<1.4&&!S.storm.hit&&Math.abs(S.x-S.storm.x)<S.storm.w/2+10){S.storm.hit=1;hitPlayer();}if(S.storm.t>1.5)S.storm=null;}
+    if(state==='play'&&S.wave>=8){if(S.wind>0){S.wind-=dt;if(S.wind<=0)S.windV=0;}else{S.windT-=dt;if(S.windT<=0){S.windT=7+Math.random()*6;S.wind=2.4;S.windV=(Math.random()<.5?-1:1)*(110+S.wave*2);}}}
+    /* the looping rivals */
+    var c=waveCfg(S.wave),inForm=0;
+    S.foes.forEach(function(f){
+      if(f.kind)return;
+      if(f.flash>0)f.flash-=dt;
+      /* no standing formation (Maurice 10/16: stationary ships felt too much like other games): every ship keeps flying its own looping path around its spot, at its own speed */
+      var tx=Math.max(30,Math.min(W-30,f.hx+Math.sin(S.t*f.wx+f.ph)*f.rx)),ty=Math.max(40,f.hy+Math.sin(S.t*f.wy+f.ph*1.3)*f.ry);
+      if(f.mode==='enter'){f.t+=dt;if(f.t<0)return;var p=Math.min(1,f.t/1.3),e=1-Math.pow(1-p,3);
+        var mx=(f.sx+tx)/2+(f.sx<W/2?120:-120),my=(f.sy+ty)/2+120;
+        var nx=(1-e)*(1-e)*f.sx+2*(1-e)*e*mx+e*e*tx,ny=(1-e)*(1-e)*f.sy+2*(1-e)*e*my+e*e*ty;
+        f.ang=Math.atan2(ny-f.y,nx-f.x)-Math.PI/2;f.x=nx;f.y=ny;if(p>=1){f.mode='form';f.ang=0;}}
+      else if(f.mode==='form'){var vx=dt?(tx-f.x)/dt:0;f.x=tx;f.y=ty;f.ang+=(Math.max(-.5,Math.min(.5,-vx*.004))-f.ang)*Math.min(1,dt*6);inForm++;}
+      else if(f.mode==='dive'){f.t+=dt;var v=170*c.diveV*hard();
+        f.y+=v*dt;f.x+=Math.sin(f.t*2.4+f.phase)*120*dt+(S.x-f.x)*.9*dt;f.ang=Math.atan2(v,Math.sin(f.t*2.4+f.phase)*120)-Math.PI/2;
+        if(f.shots>0&&f.y>120&&f.y<PY-120&&Math.random()<dt*1.2){f.shots--;shootAt(f,c.ballV*1.1);}
+        if(f.y>H+40){f.mode='return';f.y=-40;f.x=tx;}}
+      else if(f.mode==='return'){f.y+=160*dt;f.x+=(tx-f.x)*3*dt;f.ang=0;if(f.y>=ty){f.mode='form';}}
+    });
+    if(state==='play'){
+      S.diveT-=dt;if(S.diveT<=0){S.diveT=c.dive*(.7+Math.random()*.6)/hard();
+        var pool=S.foes.filter(function(f){return !f.kind&&f.mode==='form';});
+        for(var n=0;n<c.divers&&pool.length;n++){var f=pool.splice(Math.floor(Math.random()*pool.length),1)[0];f.mode='dive';f.t=0;f.phase=Math.random()*6;f.shots=1+Math.floor(S.wave/3);}}
+      S.shootT-=dt;if(S.shootT<=0){S.shootT=c.shoot*(.6+Math.random()*.8)/hard();
+        var shooters=S.foes.filter(function(f){return !f.kind&&f.mode==='form';});if(shooters.length)shootAt(shooters[Math.floor(Math.random()*shooters.length)],c.ballV);}
+    }
+    for(var j=S.balls.length-1;j>=0;j--){var b=S.balls[j];b.x+=b.vx*dt;b.y+=b.vy*dt;if(b.y>H+20){S.balls.splice(j,1);continue;}
+      if(Math.abs(b.x-S.x)<20&&Math.abs(b.y-PY)<22){S.balls.splice(j,1);hitPlayer();break;}}   /* a hit clears every cannonball, so stop here (2026-10-20) */
+    /* shots hit ships */
+    for(var a=S.shots.length-1;a>=0;a--){var sh=S.shots[a];sh.spin+=dt*14;
+      for(var q=0;q<S.foes.length;q++){var f2=S.foes[q];if(f2.mode==='enter'&&f2.t<0)continue;if(sh.hit===f2)continue;
+        if(Math.abs(sh.x-f2.x)<(f2.hw||14)+sh.hw&&Math.abs(sh.y-f2.y)<(f2.hh||18)){hurt(f2,sh.dmg);if(f2.hp<=0){kill(f2);S.foes.splice(q,1);}
+          if(sh.pierce>0){sh.pierce--;sh.hit=f2;}else S.shots.splice(a,1);break;}}}
+    if(level()===5&&state==='play'){var dps=20*(S.temp.brass>0?2:1)*(S.temp.bolt>0?1.75:1);   /* 20 a second, 1.75x with the Speed boost (Maurice 10/20) */
+      streamXs().forEach(function(x){[beamTarget(x)].filter(Boolean).forEach(function(f3){f3.hp-=dps*dt;if(f3.flash<=0)f3.flash=.05;
+        if(f3.hp<=0){var qi=S.foes.indexOf(f3);if(qi>=0){S.foes.splice(qi,1);kill(f3);}}});});}
+    /* specials */
+    for(var sc=S.slashes.length-1;sc>=0;sc--){var sl=S.slashes[sc];sl.y-=900*dt;
+      for(var sq=S.foes.length-1;sq>=0;sq--){var fs2=S.foes[sq];if(fs2.mode==='enter'&&fs2.t<0)continue;if(Math.abs(fs2.x-sl.x)<sl.w/2+(fs2.hw||14)&&fs2.y>sl.y-80&&fs2.y<sl.y+80){if(fs2.kind==='flagship'){if(!fs2.sc){fs2.sc=1;hurt(fs2,10);}continue;}S.foes.splice(sq,1);kill(fs2);}}
+      for(var bq=S.balls.length-1;bq>=0;bq--){var bb=S.balls[bq];if(Math.abs(bb.x-sl.x)<sl.w/2&&Math.abs(bb.y-sl.y)<80)S.balls.splice(bq,1);}
+      if(sl.y<-160)S.slashes.splice(sc,1);}
+    for(var wq=S.waves.length-1;wq>=0;wq--){var wv=S.waves[wq];wv.r+=700*dt;
+      for(var fq=S.foes.length-1;fq>=0;fq--){var fw=S.foes[fq];if(fw.mode==='enter'&&fw.t<0)continue;if(wv.hit.indexOf(fw)>=0)continue;var dd=Math.sqrt((fw.x-wv.x)*(fw.x-wv.x)+(fw.y-wv.y)*(fw.y-wv.y));
+        if(Math.abs(dd-wv.r)<22){wv.hit.push(fw);fw.hp-=2;fw.flash=.1;if(fw.hp<=0){S.foes.splice(fq,1);kill(fw);}}}
+      for(var cq2=S.arrows.length-1;cq2>=0;cq2--){var ca=S.arrows[cq2];if(Math.sqrt((ca.x-wv.x)*(ca.x-wv.x)+(ca.y-wv.y)*(ca.y-wv.y))<wv.r)S.arrows.splice(cq2,1);}
+      for(var cq=S.balls.length-1;cq>=0;cq--){var cb=S.balls[cq],db=Math.sqrt((cb.x-wv.x)*(cb.x-wv.x)+(cb.y-wv.y)*(cb.y-wv.y));if(db<wv.r)S.balls.splice(cq,1);}
+      if(wv.r>Math.max(W,H)*1.3)S.waves.splice(wq,1);}
+    if(S.nuke){S.nuke.t+=dt;
+      if(!S.nuke.blown&&S.nuke.t>=.15){S.nuke.blown=true;S.balls=[];S.arrows=[];
+        for(var nq=S.foes.length-1;nq>=0;nq--){var fn=S.foes[nq];if(fn.mode==='enter'&&fn.t<0)continue;fn.hp-=3;fn.flash=.1;if(fn.hp<=0){S.foes.splice(nq,1);kill(fn);}}}
+      if(S.nuke.t>1)S.nuke=null;}
+    /* ships ram you */
+    S.foes.forEach(function(f){if(!f.kind&&f.mode==='dive'&&Math.abs(f.x-S.x)<30&&Math.abs(f.y-PY)<28){f.hp=0;f.rammed=1;}});
+    for(var z=S.foes.length-1;z>=0;z--)if(S.foes[z].hp<=0&&S.foes[z].rammed){var rf=S.foes[z];S.foes.splice(z,1);boom(rf.x,rf.y,64);hitPlayer();}
+    /* pickups */
+    for(var u=S.drops.length-1;u>=0;u--){var dr=S.drops[u];dr.y+=(dr.v||DROPV)*dt;
+      if(dr.y>H+20){S.drops.splice(u,1);continue;}
+      if(Math.abs(dr.x-S.x)<30&&Math.abs(dr.y-PY)<30){collect(dr.kind,dr.x,dr.y);S.drops.splice(u,1);}}
+    /* the loot box */
+    if(S.boxOut){S.boxOut.y+=70*dt;S.boxOut.x=W/2+Math.sin(S.t*1.4)*90;
+      if(Math.abs(S.boxOut.x-S.x)<44&&Math.abs(S.boxOut.y-PY)<44){S.boxOut=null;found();return;}
+      if(S.boxOut.y>H+60)S.boxOut=null;}
+    for(var m=S.fx.length-1;m>=0;m--){S.fx[m].t+=dt;if(S.fx[m].t>.32)S.fx.splice(m,1);}
+    for(var o=S.pops.length-1;o>=0;o--){S.pops[o].t-=dt;if(S.pops[o].t<=0)S.pops.splice(o,1);}
+    if(state==='dying'){S.dead-=dt;if(S.dead<=0)gameOver();return;}
+    /* wave cleared */
+    if(state==='play'&&!S.foes.length&&!S.queue.length&&!S.boxOut){
+      if(S.wave>=boxWave()&&!boxTaken&&!S.boxDropped){S.boxDropped=true;S.boxOut={x:W/2,y:-60};S.banner='A loot box!';S.bannerT=2;say('A loot box is falling. Fly into it.');return;}
+      S.boxDropped=false;S.score+=S.wave*250;hud();
+      if(S.wave%5===0)S.cps.push({cp:S.wave+1,score:S.score,crests:S.crests,lives:S.lives,shields:S.shields});   /* a checkpoint: the Destroyer is down */
+      startWave();
+    }
+  }
+  function shootAt(f,v){v*=hard();var dx=S.x-f.x,dy=PY-f.y,l=Math.sqrt(dx*dx+dy*dy)||1;S.balls.push({x:f.x,y:f.y+16,vx:dx/l*v*.45,vy:Math.max(.6,dy/l)*v});}
+
+  /* ---- the weekly board (same web app and flow as the Trench Run board; Maurice, 2026-10-20) ---- */
+  var SGB_ENDPOINT='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var SGB_ME='thLoot:me',SGB_TZ='America/New_York',sgbRun=null;
+  var sgbPostEl=$('.sgb-post'),sgbMsgEl=$('.sgb-msg'),sgbWhoEl=$('.sgb-who'),sgbDmsgEl=$('.sgb-dmsg'),sgbBoardEl=$('.sgb-board'),sgbLeftEl=$('.sgb-left');
+  function sgbEsc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function sgbFmt(n){return Math.floor(n).toLocaleString('en-US');}
+  function sgbLoad(k,dflt){try{var v=JSON.parse(localStorage.getItem(k)||'null');return v==null?dflt:v;}catch(e){return dflt;}}
+  function sgbStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+  var sgbMe=sgbLoad(SGB_ME,{})||{};
+  function sgbMsg(t,err){sgbDmsgEl.textContent=t;sgbDmsgEl.className='sgb-dmsg'+(err?' err':'');sgbMsgEl.textContent=t;sgbMsgEl.className='sgb-msg'+(err?' err':'');}
+  var SAMPLE_CPS=[{cp:6,n:4,score:30000,crests:3,lives:3,shields:1},{cp:11,n:3,score:100000,crests:7,lives:3,shields:1},{cp:16,n:2,score:200000,crests:11,lives:2,shields:1},{cp:21,n:1,score:330000,crests:15,lives:2,shields:0},{cp:26,n:1,score:500000,crests:20,lives:2,shields:1}];
+  function sgbApi(action,payload,done){   /* TEST COPY: never sends a run or a score; checkpoints use made-up numbers */
+    if(/^gauntlete/.test(action)&&action!=='gauntletetop'){action=action.replace('gauntlete','gauntlet');}
+    if(action==='gauntletetop'){done({ok:true,top:[]});return;}
+    if(action==='gauntletcheckpoints'){done({ok:true,cps:SAMPLE_CPS.map(function(c){var o={};for(var k in c)o[k]=c[k];o.mine=true;return o;})});return;}
+    if(action==='gauntletstart'){var c=SAMPLE_CPS.filter(function(x){return x.cp===payload.from;})[0];done(c?{ok:true,ticket:'',cp:c}:{ok:false});return;}
+    if(action==='gauntletscore'){if(done)done({ok:false});return;}payload=payload||{};payload.action=action;sgbSend(payload,done,1);}
+  function sgbSend(payload,done,attempt){
+    var settled=false;
+    var finish=function(res){if(settled)return;settled=true;
+      var flaky=!res||(!res.ok&&(res.error==='network'||res.error==='server'||res.error==='empty'));
+      if(flaky&&attempt<2)return setTimeout(function(){sgbSend(payload,done,attempt+1);},1500);
+      done(res||{ok:false,error:'network'});};
+    try{fetch(SGB_ENDPOINT,{method:'POST',body:JSON.stringify(payload)}).then(function(r){return r.json();}).then(finish).catch(function(){sgbJsonp(payload,finish);});}
+    catch(e){sgbJsonp(payload,finish);}
+  }
+  function sgbJsonp(payload,done){
+    var name='sgbcb'+Math.random().toString(36).slice(2),q=['callback='+name];
+    for(var k in payload)if(payload[k]!=null&&payload[k]!=='')q.push(encodeURIComponent(k)+'='+encodeURIComponent(payload[k]));
+    var sc=document.createElement('script');var timer=setTimeout(function(){cleanup();done({ok:false,error:'network'});},30000);
+    function cleanup(){clearTimeout(timer);delete window[name];if(sc.parentNode)sc.parentNode.removeChild(sc);}
+    window[name]=function(res){cleanup();done(res);};sc.onerror=function(){cleanup();done({ok:false,error:'network'});};
+    sc.src=SGB_ENDPOINT+'?'+q.join('&');document.body.appendChild(sc);
+  }
+  function sgbNy(){var f=new Intl.DateTimeFormat('en-US',{timeZone:SGB_TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',weekday:'short',hour12:false}).formatToParts(new Date());
+    var o={};for(var i=0;i<f.length;i++)o[f[i].type]=f[i].value;if(o.hour==='24')o.hour='00';o.wd=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(o.weekday);return o;}
+  function sgbWeekLeft(){var p=sgbNy(),add=(5-p.wd+7)%7;return add*86400+86400-(+p.hour*3600+ +p.minute*60+ +p.second);}
+  function sgbMyName(){return sgbMe.handle?'@'+String(sgbMe.handle).replace(/^@+/,''):(sgbMe.first_name||'');}
+  function sgbPaint(list){
+    if(!list||!list.length){sgbBoardEl.innerHTML='<li><span class="sgb-empty">No scores yet this week. Be the first.</span></li>';return;}
+    var mine=sgbMyName();
+    sgbBoardEl.innerHTML=list.map(function(r,i){return '<li'+((r.me||(mine&&r.name===mine))?' class="me"':'')+'><i>'+(i+1)+'</i><span>'+sgbEsc(r.name)+'</span><b>'+sgbFmt(r.score)+'</b></li>';}).join('');
+  }
+  function sgbRefresh(){sgbApi(act('gauntlettop'),{},function(res){if(res&&res.ok)sgbPaint(res.top);else sgbBoardEl.innerHTML='<li><span class="sgb-empty">The board is resting. Try again soon.</span></li>';});}
+  function sgbTick(){var t=sgbWeekLeft(),dd=Math.floor(t/86400),hh=Math.floor(t%86400/3600),mm=Math.floor(t%3600/60);sgbLeftEl.textContent=(dd?dd+'d ':'')+hh+'h '+('0'+mm).slice(-2)+'m';}
+  sgbTick();setInterval(sgbTick,20000);sgbRefresh();setTimeout(cpFetch,0);
+  function sgbStart(){
+    var r={ticket:null,wait:[],logged:false};sgbRun=r;sgbPostEl.hidden=true;sgbWhoEl.hidden=true;sgbWhoEl.innerHTML='';sgbMsg('');
+    sgbApi(act('gauntletstart'),{},function(res){r.ticket=res&&res.ok?res.ticket:'';var w=r.wait;r.wait=[];w.forEach(function(f){f();});});
+  }
+  /* ---- checkpoints (Maurice, 2026-10-21): every Destroyer you destroy opens a checkpoint at the next wave (6, 11, 16, 21,
+     26) for you this week. Starting there is optional and gives the group average, from the board, of everyone who got
+     there this week: score, crests, lives, and shields. The board hands over those numbers with the run ticket, so the
+     run is checked against them. ---- */
+  var cpList=[];
+  function cpLevel(c){var l=1;for(var i=1;i<CRESTS.length;i++)if(c>=CRESTS[i])l=i;return l;}
+  function cpFetch(){
+    sgbApi(act('gauntletcheckpoints'),{email:sgbMe.email},function(res){cpList=res&&res.ok&&res.cps?res.cps.filter(function(c){return c.mine;}):[];cpRender();});
+  }
+  function cpRender(msg){
+    [].forEach.call(root.querySelectorAll('.sg-cps'),function(box){
+      if(!cpList.length&&!msg){box.hidden=true;box.innerHTML='';return;}
+      box.hidden=false;
+      box.innerHTML='<p class="sg-cps-h">Or start after a Destroyer</p>'+cpList.map(function(c){
+        return '<button type="button" class="sg-cp" data-cp="'+c.cp+'"><b>Start at wave '+c.cp+'</b><span>'+sgbFmt(c.score)+' points · weapon level '+cpLevel(c.crests)+' · '+
+          c.lives+' '+(c.lives===1?'life':'lives')+' · '+c.shields+' '+(c.shields===1?'shield':'shields')+'</span><span>The average of '+c.n+' '+(c.n===1?'player':'players')+' this week</span></button>';
+      }).join('')+(msg?'<p class="sg-cps-h" role="status">'+sgbEsc(msg)+'</p>':'');
+      [].forEach.call(box.querySelectorAll('.sg-cp'),function(b){b.onclick=function(){newGame(+b.getAttribute('data-cp'));};});
+    });
+  }
+  function cpStart(cp){
+    [].forEach.call(root.querySelectorAll('.sg-cp'),function(b){b.disabled=true;});
+    sgbApi(act('gauntletstart'),{email:sgbMe.email,from:cp},function(res){
+      if(!res||!res.ok||!res.cp){cpRender(res&&res.error==='locked'?'That checkpoint isn’t open for you yet.':'The board couldn’t load that checkpoint. Try again in a moment.');return;}
+      var c=res.cp;
+      S=newRun();S.score=c.score;S.crests=c.crests;S.lives=Math.max(1,Math.min(MAXLIVES,c.lives));S.shields=Math.min(2,c.shields);S.hull=hullMax();S.wave=cp-1;S.from=cp;
+      state='play';paused=false;showOv(null);pauseBtn.disabled=false;pauseBtn.textContent='Pause';
+      startWave();hud();bringIntoView();run();
+      var r={ticket:res.ticket,wait:[],logged:false};sgbRun=r;sgbPostEl.hidden=true;sgbWhoEl.hidden=true;sgbWhoEl.innerHTML='';sgbMsg('');
+    });
+  }
+  /* the Normal / Easy tabs: they swap the rules, the board, the checkpoints, the best score, and the loot box; not mid-run */
+  var modeTabs=[].slice.call(root.querySelectorAll('.sg-mode'));
+  function modeLock(){var busy=state==='play'||state==='dying'||state==='found';modeTabs.forEach(function(t){t.disabled=busy;t.title=busy?'Finish this run to switch modes':'';});}
+  function setMode(m){
+    MODE=m==='easy'?'easy':'normal';lsSet('ma-gauntlet-mode',MODE);
+    modeTabs.forEach(function(t){t.setAttribute('aria-selected',t.getAttribute('data-mode')===MODE?'true':'false');});
+    [].forEach.call(root.querySelectorAll('[data-easy]'),function(el){el.hidden=!easy();});
+    [].forEach.call(root.querySelectorAll('[data-normal]'),function(el){el.hidden=easy();});
+    var n=easy()?EASY.box:78,src='https://africhmaurice.github.io/leaderboard/loot/'+n+'.png';boxImg=easy()?boxImg81:boxImg78;
+    [].forEach.call(root.querySelectorAll('.sg-box'),function(bx){bx.setAttribute('aria-label','Open loot box '+n);var im=bx.querySelector('img');if(im){im.src=src;im.alt='Loot box '+n;}});
+    [].forEach.call(root.querySelectorAll('.sg-boxname'),function(h){h.textContent='Loot box '+n;});
+    boxTaken=lsGet(boxKey())==='1';best=parseInt(lsGet(bestKey())||'0',10)||0;
+    if(state==='over'||state==='title'){S=null;showOv(ovStart);draw();}
+    $('.sg-box-over').hidden=true;
+    sgbBoardEl.innerHTML='<li><span class="sgb-empty">Loading the board...</span></li>';sgbRefresh();cpList=[];cpRender();cpFetch();
+  }
+  modeTabs.forEach(function(t){t.addEventListener('click',function(){if(t.disabled||t.getAttribute('data-mode')===MODE)return;setMode(t.getAttribute('data-mode'));});});
+  setTimeout(function(){var want=/(^|#)easy$/.test(location.hash)?'easy':(lsGet('ma-gauntlet-mode')||'normal');if(want!==MODE)setMode(want);modeLock();},0);
+  setInterval(modeLock,500);
+  /* the run as the game counted it: S.t only runs while the game is being played (pauses and the loot box panel stop it) */
+  function sgbEnd(){
+    var r=sgbRun;if(!r||r.logged||!S)return;r.logged=true;
+    r.score=S.score;r.wave=Math.max(1,S.wave);r.secs=Math.round(S.t*10)/10;r.kills=S.kills;r.chests=S.crates;r.cps=JSON.stringify(S.cps);r.from=S.from;
+    if(r.score<=0){sgbMsg('');return;}if(sgbMe.email)sgbSubmit(r);else sgbWho(r);
+  }
+  function sgbWho(r){
+    sgbMsg('Put your score on the board below.');sgbPostEl.hidden=false;sgbWhoEl.hidden=false;
+    sgbWhoEl.innerHTML='<div class="sgb-form"><label for="sgb-first">First name</label><input id="sgb-first" autocomplete="given-name">'+
+      '<label for="sgb-email">Email you use for the hunt</label><input id="sgb-email" type="email" autocomplete="email" inputmode="email">'+
+      '<label for="sgb-handle">Social handle (shown on the board)</label><input id="sgb-handle" placeholder="@yourname" autocomplete="off">'+
+      '<label for="sgb-platform">Where that handle lives</label><select id="sgb-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select>'+
+      '<label for="sgb-country">Country</label><select id="sgb-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select>'+
+      '<input id="sgb-other" placeholder="Which country?" hidden>'+
+      '<button type="button" class="sg-btn" id="sgb-saveme">SAVE MY SCORE</button></div>';
+    var c=sgbWhoEl.querySelector('#sgb-country'),other=sgbWhoEl.querySelector('#sgb-other');
+    c.onchange=function(){other.hidden=c.value!=='__other';};
+    sgbWhoEl.querySelector('#sgb-saveme').onclick=function(){
+      var p={first_name:sgbWhoEl.querySelector('#sgb-first').value.trim(),email:sgbWhoEl.querySelector('#sgb-email').value.trim(),handle:sgbWhoEl.querySelector('#sgb-handle').value.trim(),
+        platform:sgbWhoEl.querySelector('#sgb-platform').value,country:c.value==='__other'?other.value.trim():c.value};
+      if(!p.first_name)return sgbMsg('A first name, please.',1);
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email))return sgbMsg('That email does not look right.',1);
+      if(!p.country)return sgbMsg('Which country are you hunting from?',1);
+      sgbMe=p;sgbStore(SGB_ME,sgbMe);sgbWhoEl.hidden=true;sgbWhoEl.innerHTML='';sgbSubmit(r);
+    };
+  }
+  /* what the golden chests paid: 25 hunt points each, up to 4 a day */
+  function sgbChests(r,res){
+    if(!r.chests)return '';
+    if(res.paid>0)return ' Golden chests: +'+(res.paid*25)+' hunt points ('+res.chestsToday+' of '+res.cap+' today).';
+    return ' You already have today’s '+res.cap+' golden chests. More tomorrow!';
+  }
+  function sgbSubmit(r){
+    if(r.ticket===null){sgbMsg('Logging your run...');r.wait.push(function(){sgbSubmit(r);});return;}
+    if(!r.ticket){sgbMsg('The ship could not check in when this run started, so it cannot go on the board. Fly again!',1);return;}
+    sgbMsg('Logging your run...');
+    sgbApi(act('gauntletscore'),{ticket:r.ticket,email:sgbMe.email,first_name:sgbMe.first_name,handle:sgbMe.handle,platform:sgbMe.platform,country:sgbMe.country,
+      score:r.score,wave:r.wave,secs:r.secs,kills:r.kills,chests:r.chests,cps:r.cps,from:r.from},function(res){
+      if(res&&res.ok){
+        if(res.status==='host'){sgbMsg('Practice run. Your runs stay off the board.');return;}
+        sgbMsg((res.rank?'Logged! You are #'+res.rank+' this week.':'Logged!')+' Best this week: '+sgbFmt(res.best)+'.'+sgbChests(r,res));
+        sgbPostEl.hidden=false;sgbWhoEl.hidden=false;sgbWhoEl.innerHTML='<p class="sgb-quiet">Playing as '+sgbEsc(sgbMe.first_name||sgbMe.email)+'. <a class="sgb-notme">Not you?</a></p>';
+        sgbWhoEl.querySelector('.sgb-notme').onclick=function(){try{localStorage.removeItem(SGB_ME);}catch(e){}sgbMe={};sgbWho(r);};
+        if(res.top)sgbPaint(res.top);cpFetch();return;
+      }
+      var e=res&&res.error;
+      if(e==='slow'){sgbMsg('Easy, captain. Logging it in a few seconds...');return setTimeout(function(){sgbSubmit(r);},6000);}
+      sgbMsg(({email:'That email does not look right.',closed:'The hunt is over, so runs no longer go on the board.',ticket:'This run took too long to check in, so it cannot go on the board.',
+        check:'The Captain could not verify this run.',limit:'That is a lot of flying for one day. Come back tomorrow!'})[e]||'The ship is slow today. Give it another go in a moment.',1);
+      if(!e||e==='network'||e==='server'||e==='empty'){sgbPostEl.hidden=false;sgbWhoEl.hidden=false;sgbWhoEl.innerHTML='<button type="button" class="sg-btn ghost">TRY AGAIN</button>';sgbWhoEl.querySelector('button').onclick=function(){sgbWhoEl.hidden=true;sgbSubmit(r);};}
+    });
+  }
+
+  /* ---- states ---- */
+  function hud(){
+    if(!S)return;
+    hudScore.textContent=fmt(S.score);hudWave.textContent=Math.max(1,S.wave);
+    var h='';for(var i=0;i<Math.max(3,S.lives);i++)h+='<i style="'+(i<S.lives?'':'background:none;border:1px solid rgba(243,234,217,.35)')+'"></i>';hudLives.innerHTML=h;
+  }
+  function say(t){live.textContent=t;}
+  function showOv(el){[ovStart,ovPause,ovOver,ovFound].forEach(function(o){o.classList.toggle('on',o===el);});}
+  function newGame(cp){
+    if(cp)return cpStart(cp);
+    S=newRun();state='play';paused=false;showOv(null);pauseBtn.disabled=false;pauseBtn.textContent='Pause';
+    startWave();hud();bringIntoView();run();
+    sgbStart();
+    if(window.__siegeHooks&&window.__siegeHooks.start)window.__siegeHooks.start();
+  }
+  function gameOver(){
+    state='over';stop();pauseBtn.disabled=true;
+    if(S.score>best){best=S.score;lsSet(bestKey(),String(best));}
+    $('.sg-final').textContent='Score '+fmt(S.score)+' on wave '+S.wave+'. Best '+fmt(best)+'.';
+    $('.sg-box-over').hidden=!boxTaken;
+    showOv(ovOver);draw();
+    try{$('.sg-again').focus({preventScroll:true});}catch(e){}
+    sgbEnd();
+    if(window.__siegeHooks&&window.__siegeHooks.end)window.__siegeHooks.end({score:S.score,secs:Math.round(S.t*10)/10,wave:S.wave,kills:S.kills,crates:S.crates});
+  }
+  function found(){
+    boxTaken=true;lsSet(boxKey(),'1');state='found';stop();pauseBtn.disabled=true;say('You caught loot box '+(easy()?EASY.box:78));showOv(ovFound);draw();
+    try{$('.sg-box-found').focus({preventScroll:true});}catch(e){}
+  }
+  function keepFlying(){showOv(null);state='play';pauseBtn.disabled=false;S.inv=1;run();}
+  function pause(){if(state!=='play'||paused)return;paused=true;stop();showOv(ovPause);pauseBtn.textContent='Resume';draw();}
+  function resume(){if(!paused)return;paused=false;showOv(null);pauseBtn.textContent='Pause';run();}
+  function bringIntoView(){
+    var r=root.querySelector('.sg-hud').getBoundingClientRect();
+    if(r.top<60||r.top>140){try{window.scrollTo({top:Math.max(0,r.top+(window.pageYOffset||0)-88),behavior:RM()?'auto':'smooth'});}catch(e){}}
+  }
+  $('.sg-go').addEventListener('click',function(){newGame();});
+  $('.sg-again').addEventListener('click',function(){newGame();});
+  $('.sg-resume').addEventListener('click',resume);
+  $('.sg-keep').addEventListener('click',keepFlying);
+  $('.sg-box-found').addEventListener('click',claim);
+  $('.sg-box-over').addEventListener('click',claim);
+  pauseBtn.addEventListener('click',function(){paused?resume():pause();});
+  document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});
+  window.addEventListener('blur',pause);
+
+  /* ---- loop ---- */
+  var raf=0,last=0;
+  function run(){if(raf)return;last=0;raf=requestAnimationFrame(frame);}
+  function stop(){if(raf)cancelAnimationFrame(raf);raf=0;}
+  function frame(ts){
+    raf=requestAnimationFrame(frame);
+    var dt=last?Math.min(.05,(ts-last)/1000):0;last=ts;
+    var n=Math.max(1,Math.ceil(dt/.008));
+    for(var i=0;i<n;i++){update(dt/n);if(state!=='play'&&state!=='dying')break;}
+    draw();
+  }
+
+  /* ---- drawing ---- */
+  function size(){
+    var wrapW=Math.min(root.querySelector('.sg-game').clientWidth,560)-4;
+    var availH=(window.innerHeight||800)-88-40-24;
+    var h=Math.min(availH,wrapW*H/W,780),w=h*W/H;
+    if(w>wrapW){w=wrapW;h=w*H/W;}
+    w=Math.floor(w);h=Math.floor(h);
+    dpr=Math.min(2,window.devicePixelRatio||1);scale=w/W;
+    stage.style.width=w+4+'px';stage.style.height=h+4+'px';
+    cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);
+    root.querySelector('.sg-hud').style.width=w+4+'px';
+    draw();
+  }
+  function sprite(img,x,y,w,ang,alpha){
+    if(!img)return;var iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height;if(!iw)return;
+    var h=w*ih/iw;ctx.save();ctx.translate(x,y);if(ang)ctx.rotate(ang);if(alpha!==undefined)ctx.globalAlpha=alpha;ctx.drawImage(img,-w/2,-h/2,w,h);ctx.restore();
+  }
+  /* one drop's picture, centered on x,y */
+  function icon(k,x,y){
+    if(k==='ruby')sprite(IMG.ruby,x,y,40);
+    else if(k==='crate')sprite(IMG.crate,x,y,42);
+    else if(k==='brass')sprite(IMG.brass,x,y,44,-.35);
+    else if(k==='torch')sprite(IMG.torch,x,y,40);
+    else if(k==='crest')sprite(IMG.crest,x,y,46);
+    else if(k==='scythe')sprite(IMG.scythe,x,y,26,.5);
+    else if(k==='atomic')sprite(IMG.atomic,x,y,18);
+    else if(k==='trench')sprite(IMG.trench,x,y,40);
+    else if(k==='bolt')sprite(IMG.bolt,x,y,34);
+    else if(k==='shield')sprite(IMG.shield,x,y,38);
+    else if(k==='pierce')sprite(IMG.miss[3],x,y,22);
+    else if(k==='recharge'){sprite(IMG.shield,x,y,38);ctx.save();ctx.strokeStyle='#89fbcb';ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();ctx.arc(x,y,22,-Math.PI*.15,Math.PI*1.35);ctx.stroke();
+      var ax=x+22*Math.cos(Math.PI*1.35),ay=y+22*Math.sin(Math.PI*1.35);ctx.beginPath();ctx.moveTo(ax-6,ay-2);ctx.lineTo(ax,ay);ctx.lineTo(ax+1,ay-7);ctx.stroke();ctx.restore();}
+    else if(k==='life'||k==='life2'){var lt=k==='life'?'+1':'+2';sprite(IMG.ship,x,y,40);ctx.save();ctx.font="800 15px 'Almarai',sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3;ctx.strokeStyle='#0b170f';ctx.strokeText(lt,x,y+2);ctx.fillStyle='#fffffe';ctx.fillText(lt,x,y+2);ctx.restore();}
+  }
+  function draw(){
+    ctx.setTransform(dpr*scale,0,0,dpr*scale,0,0);
+    /* the starry sky scrolls down */
+    ctx.fillStyle='#0b170f';ctx.fillRect(0,0,W,H);
+    if(ok(IMG.sky)){var sw=W,sh=sw*IMG.sky.naturalHeight/IMG.sky.naturalWidth,y0=(skyY%sh)-sh;for(var y=y0;y<H;y+=sh)ctx.drawImage(IMG.sky,0,y,sw,sh+1);}
+    if(!S){return;}PY=S.y;
+    /* pickups */
+    /* pickups glow and pulse slowly (a 2.4 second breath); steady glow with reduced motion */
+    S.drops.forEach(function(d){
+      var b=RM()?.5:.5+.5*Math.sin(S.t*2.6+d.x*.01),sz=(RM()?1.03:1+.07*b),glow=DROPS[d.kind].glow;
+      ctx.save();ctx.translate(d.x,d.y);ctx.scale(sz,sz);
+      ctx.fillStyle='rgba('+glow+','+(.12+.12*b)+')';ctx.beginPath();ctx.arc(0,0,24,0,Math.PI*2);ctx.fill();
+      ctx.shadowColor='rgba('+glow+','+(.55+.4*b)+')';ctx.shadowBlur=12+14*b;
+      icon(d.kind,0,0);
+      ctx.restore();
+    });
+    /* rival fleet: they point down; each color is tinted from his rival art; ink ships get a pale outline glow so they show on the night sky */
+    /* storm lane: a warning stripe, then his lightning */
+    if(S.storm){var st=S.storm;if(st.t<1.1){if(RM()||Math.floor(st.t*8)%2===0){ctx.fillStyle='rgba(255,230,90,.16)';ctx.fillRect(st.x-st.w/2,0,st.w,H);ctx.strokeStyle='rgba(255,230,90,.6)';ctx.lineWidth=2;ctx.strokeRect(st.x-st.w/2,0,st.w,H);}}
+      else if(st.t<1.4){if(ok(IMG.lightning)){var lh=H,lw=lh*IMG.lightning.naturalWidth/IMG.lightning.naturalHeight;ctx.save();ctx.shadowColor='rgba(200,190,255,.9)';ctx.shadowBlur=18;ctx.drawImage(IMG.lightning,st.x-lw*.885,0,lw,lh);ctx.restore();}   /* Maurice 10/20: his white bolt (cut from the Pexels photo); its tip (88% across) lands on the warning stripe */else{ctx.fillStyle='rgba(255,255,220,.85)';ctx.fillRect(st.x-st.w/4,0,st.w/2,H);}}}
+    /* wind: streaks across the sky while a gust blows */
+    if(S.wind>0){ctx.strokeStyle='rgba(243,234,217,.35)';ctx.lineWidth=2;for(var ws=0;ws<18;ws++){var wy=(ws*41+S.t*30)%H,wx=((ws*97)+S.t*S.windV*3)%(W+120);if(wx<0)wx+=W+120;ctx.beginPath();ctx.moveTo(wx-60,wy);ctx.lineTo(wx-60+(S.windV>0?50:-50),wy);ctx.stroke();}}
+    /* the new fleet, his drawings; a hit flashes them white; angry ships glow Scarlet */
+    S.foes.forEach(function(f){if(!f.kind)return;var im={gunboat:IMG.gunboat,dart:IMG.dart,layer:IMG.layer,mine:IMG.mine,freighter:IMG.freighter,flagship:IMG.flagship}[f.kind];
+      ctx.save();if(f.angry&&!RM()){ctx.shadowColor='rgba(255,76,15,.9)';ctx.shadowBlur=14;}if(f.kind==='flagship'){ctx.shadowColor='rgba(195,166,255,.95)';ctx.shadowBlur=18;}
+      if(ok(im))sprite(im,f.x,f.y,f.w,f.kind==='flagship'?f.ang+Math.PI:f.ang,f.flash>0?.55:1);   /* the Destroyer flipped to match his drawing, wide base down (Maurice 10/20) */else{ctx.fillStyle='#7b4ee1';ctx.fillRect(f.x-f.hw,f.y-f.hh,f.hw*2,f.hh*2);}ctx.restore();});
+    /* his dart arrows, pointing the way they fly */
+    S.arrows.forEach(function(a){var ai=solidOf(IMG.arrow,'#f3ead9');if(ai){ctx.save();ctx.translate(a.x,a.y);ctx.rotate(Math.atan2(a.vy,a.vx)-Math.PI/2);var ah=28,aw2=ah*ai.width/ai.height;
+      ctx.shadowColor='rgba(255,76,15,.9)';ctx.shadowBlur=8;ctx.drawImage(ai,-aw2/2,-ah/2,aw2,ah);ctx.restore();}else{ctx.fillStyle='#fffffe';ctx.fillRect(a.x-2,a.y-8,4,16);}});
+    S.foes.forEach(function(f){
+      if(f.kind)return;
+      if(f.mode==='enter'&&f.t<0)return;
+      var img=f.flash>0?tint('#fffffe',.8):(f.col?tint(f.col,f.tier==='ink'?.55:.62):IMG.rival);
+      if(f.tier==='ink'||f.tier==='gold'){ctx.save();ctx.shadowColor=f.tier==='ink'?'rgba(243,234,217,.8)':'rgba(255,214,120,.9)';ctx.shadowBlur=10;sprite(img||IMG.rival,f.x,f.y,42,f.ang);ctx.restore();}
+      else sprite(img||IMG.rival,f.x,f.y,42,f.ang);
+    });
+    /* cannonballs */
+    S.balls.forEach(function(b){sprite(IMG.ball,b.x,b.y,15);});
+    /* Maurice's missiles; level 4 spins, level 5 is a continuous beam */
+    S.shots.forEach(function(s){var M=MISS[s.lv],img=IMG.miss[s.lv-1],ang=s.vx?Math.atan2(s.vx,-s.vy):0;
+      if(!ok(img)){ctx.fillStyle='#ff4c0f';ctx.fillRect(s.x-2,s.y-10,4,14);return;}
+      ctx.save();ctx.translate(s.x,s.y);ctx.rotate(s.lv===4?(RM()?0:s.spin):ang);ctx.drawImage(img,-M[3]/2,-M[4]/2,M[3],M[4]);ctx.restore();});
+    if(S&&level()===5&&state==='play'&&ok(IMG.miss[4])){var bi=IMG.miss[4],bw=MISS[5][3],seg=bw*bi.naturalHeight/bi.naturalWidth,off=RM()?0:(S.t*900)%seg;
+      streamXs().forEach(function(x){var f4=beamTarget(x),top=f4?f4.y:0;ctx.save();ctx.beginPath();ctx.rect(x-bw/2,top,bw,PY-30-top);ctx.clip();
+        for(var y=PY-30+off;y>top-seg;y-=seg)ctx.drawImage(bi,x-bw/2,y-seg,bw,seg);ctx.restore();});}
+    /* Twin Torches slashes: small white crescents */
+    S.side.forEach(function(sd){ctx.save();ctx.translate(sd.x,sd.y);ctx.rotate(Math.atan2(sd.vy,sd.vx)+Math.PI/2);ctx.shadowColor='rgba(255,255,254,.8)';ctx.shadowBlur=8;
+      if(ok(IMG.torchSlash)){var tw2=30,th2=tw2*IMG.torchSlash.naturalHeight/IMG.torchSlash.naturalWidth;ctx.drawImage(IMG.torchSlash,-tw2/2,-th2/2,tw2,th2);}else{ctx.strokeStyle='#fffffe';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,6,12,Math.PI*1.15,Math.PI*1.85);ctx.stroke();}ctx.restore();});
+    /* the scythe's slash: a jagged red band a quarter of the screen wide */
+    S.slashes.forEach(function(sl){if(ok(IMG.scytheSlash)){var sw2=sl.w*1.5,sh2=sw2*IMG.scytheSlash.naturalHeight/IMG.scytheSlash.naturalWidth*2.2;ctx.save();ctx.shadowColor='rgba(255,76,15,.9)';ctx.shadowBlur=18;for(var sk2=0;sk2<3;sk2++)ctx.drawImage(IMG.scytheSlash,sl.x-sw2/2,sl.y-60+sk2*50,sw2,sh2);ctx.restore();return;}
+      var hw=sl.w/2,top=sl.y-80,bot=sl.y+80;ctx.save();ctx.beginPath();ctx.moveTo(sl.x-hw,bot);
+      for(var j=0;j<=8;j++){var yy=bot-(bot-top)*j/8;ctx.lineTo(sl.x-hw+(j%2?14:0),yy);}
+      for(var j2=0;j2<=8;j2++){var y2=top+(bot-top)*j2/8;ctx.lineTo(sl.x+hw-(j2%2?14:0),y2);}
+      ctx.closePath();ctx.fillStyle='rgba(255,42,12,.85)';ctx.shadowColor='rgba(255,76,15,.9)';ctx.shadowBlur=18;ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#0b170f';ctx.stroke();ctx.restore();});
+    /* the Trench wave: a white ring of energy */
+    S.waves.forEach(function(wv){var a=Math.max(0,1-wv.r/(Math.max(W,H)*1.3));ctx.save();ctx.strokeStyle='rgba(255,255,254,'+a+')';ctx.lineWidth=10;ctx.shadowColor='rgba(255,255,254,'+a+')';ctx.shadowBlur=24;
+      ctx.beginPath();ctx.arc(wv.x,wv.y,wv.r,0,Math.PI*2);ctx.stroke();ctx.restore();});
+    /* the red atomic: his explosion art without the ship parts, swelling over the fleet */
+    if(S.nuke&&ok(IMG.boom[3])){var k3=Math.min(1,S.nuke.t/.5),sz2=(RM()?1:.3+.9*k3)*W*1.3;ctx.save();ctx.globalAlpha=S.nuke.t<.6?1:Math.max(0,1-(S.nuke.t-.6)/.4);
+      sprite(IMG.boom[3],S.nuke.x,S.nuke.y,sz2,RM()?0:S.nuke.t*.6);ctx.restore();}
+    /* loot box */
+    if(S.boxOut){if(ok(boxImg))sprite(boxImg,S.boxOut.x,S.boxOut.y,72);else{ctx.fillStyle='#c53200';ctx.fillRect(S.boxOut.x-28,S.boxOut.y-24,56,48);}}
+    /* the player */
+    if(state!=='dying'&&state!=='over'){
+      var blink=S.inv>0&&!RM()&&Math.floor(S.inv*10)%2===0;
+      sprite(IMG.ship,S.x,PY,52,0,blink?.35:(S.inv>0&&RM()?.6:1));
+      if(S.rs){ctx.save();ctx.lineWidth=3;ctx.strokeStyle='rgba(137,251,203,'+(S.rs.up?(RM()?.85:.6+.3*Math.sin(S.t*4)):.5)+')';ctx.beginPath();
+        if(S.rs.up)ctx.arc(S.x,PY,32,0,Math.PI*2);else ctx.arc(S.x,PY,32,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-S.rs.t/RECHARGE));ctx.stroke();ctx.restore();}
+      for(var shi=0;shi<S.shields;shi++){if(IMG.shield.complete&&IMG.shield.naturalWidth){ctx.save();ctx.globalAlpha=shi?.28:.42;ctx.drawImage(IMG.shield,S.x-38-shi*9,PY-38-shi*9,76+shi*18,76+shi*18);ctx.restore();}else{ctx.strokeStyle='rgba(137,251,203,.85)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(S.x,PY,36+shi*8,0,Math.PI*2);ctx.stroke();}}
+    }
+    /* explosions */
+    S.fx.forEach(function(e){var fr=IMG.boom[Math.min(3,Math.floor(e.t/.08))];sprite(fr,e.x,e.y,e.s);});
+    /* score pop-ups */
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.font="800 15px 'Almarai',sans-serif";
+    S.pops.forEach(function(p){ctx.fillStyle='#89fbcb';ctx.fillText(p.txt.toUpperCase(),p.x,p.y-(RM()?0:(1-p.t)*24));});
+    /* timers for temporary upgrades, bottom left */
+    var row=0;
+    ['torch','bolt','brass','pierce'].forEach(function(k){if(S.temp[k]<=0)return;var y=H-16-row*20;row++;
+      ctx.fillStyle='rgba(11,23,15,.75)';ctx.fillRect(10,y-12,150,18);
+      ctx.fillStyle='rgb('+DROPS[k].glow+')';ctx.fillRect(10,y-12,150*S.temp[k]/DROPS[k].secs,4);
+      ctx.fillStyle='#fffffe';ctx.textAlign='left';ctx.font="800 11px 'Almarai',sans-serif";ctx.fillText((k==='brass'?S.lanes+' MISSILE LANES':DROPS[k].name.toUpperCase()),16,y);});
+    /* weapon level and crests toward the next one, top left */
+    var lv=level(),nxt=CRESTS[lv+1];ctx.textAlign='left';ctx.font="800 11px 'Almarai',sans-serif";ctx.fillStyle='rgba(11,23,15,.75)';ctx.fillRect(10,10,170,22);
+    ctx.fillStyle='#fffffe';ctx.fillText(('Weapon level '+lv+(nxt?'  ·  crests '+S.crests+'/'+nxt:'  ·  max')).toUpperCase(),16,22);
+    var hm=hullMax(),hn=hullNext(hm);ctx.fillStyle='rgba(11,23,15,.75)';ctx.fillRect(10,36,170,22);
+    ctx.fillStyle='#fffffe';ctx.fillText(('Hull '+S.hull+'/'+hm+(hn?'  ·  next at '+hn+' crests':'  ·  max')).toUpperCase(),16,48);
+    /* the flagship's hull, across the top */
+    if(S.boss){var bw2=W-200,fr=Math.max(0,S.boss.hp/S.boss.max);ctx.fillStyle='rgba(11,23,15,.8)';ctx.fillRect(190,10,W-200,22);ctx.fillStyle='#ff4c0f';ctx.fillRect(194,14,(bw2-8)*fr,14);ctx.strokeStyle='#fffffe';ctx.lineWidth=1;ctx.strokeRect(190.5,10.5,W-201,21);}
+    /* banner */
+    if(S.bannerT>0&&S.banner){
+      ctx.font="400 40px 'Cracked Imperia',Impact,sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.lineWidth=6;ctx.strokeStyle='#0b170f';ctx.strokeText(S.banner.toUpperCase(),W/2,H*.45);ctx.fillStyle='#fffffe';ctx.fillText(S.banner.toUpperCase(),W/2,H*.45);
+    }
+  }
+  window.addEventListener('resize',size);size();
+  var waitArt=setInterval(function(){draw();if(ok(IMG.sky)&&ok(IMG.ship)){clearInterval(waitArt);}},250);
+
+  /* test hooks, only when the preview harness sets window.__siegeTest before the page loads */
+  if(window.__siegeTest){
+    window.__siege={launch:function(k){launch(k);},kinds:function(){return S.foes.map(function(f){return f.kind||'rival';});},queue:function(){return S.queue.length;},storm:function(){S.wave=Math.max(S.wave,8);S.stormT=0;S.windT=0;},fpos:function(){return S.foes.map(function(f){return [Math.round(f.x),Math.round(f.y),f.mode];});},snap:function(){return S&&{state:state,score:S.score,wave:S.wave,lives:S.lives,foes:S.foes.length,crests:S.crests,level:level(),shields:S.shields,crates:S.crates,temp:S.temp,drops:S.drops.length,boxOut:!!S.boxOut,x:S.x};},
+      tiers:function(){return S.foes.map(function(f){return f.tier+':'+f.max;});},mix:function(w){return mixFor(w);},clearWave:function(){S.foes=[];},toWave:function(n){S.wave=n-1;S.foes=[];S.queue=[];S.boss=null;},god:function(){S.inv=1e9;},hit:function(){S.inv=0;hitPlayer();},strike:function(x){S.storm={x:x||W*.6,w:64,t:1.12,hit:1};S.stormT=99;},tick:function(sec){S.rs&&!S.rs.up&&(S.rs.t-=sec);},hull:function(){return {hull:S.hull,max:hullMax(),rs:S.rs&&{up:S.rs.up,t:Math.round(S.rs.t*10)/10},lives:S.lives};},give:function(k){collect(k,S.x,PY);},crests:function(n){S.crests=n;},
+      level:function(n){S.crests=CRESTS[n];},special:function(k){S.drops.push({x:S.x,y:PY-40,kind:k});},drops:function(){var ks=Object.keys(DROPS);ks.forEach(function(k,i){S.drops.push({x:50+(i%5)*95,y:200+Math.floor(i/5)*110,kind:k});});},boxOut:function(){return !!S.boxOut;},paused:function(){return paused;},full:function(){return {t:S.t,x:S.x,y:S.y,qt:S.qt,sky:skyY,foes:S.foes.map(function(f){return [f.x,f.y];})};},grabBox:function(){if(S.boxOut){S.boxOut.y=PY;S.x=S.boxOut.x;S.target=S.boxOut.x;}},
+      /* drop-rule tests: kill a made-up ship of a kind (tier for rivals), read the counts and the falling drops */
+      fakeKill:function(kind,tier){var f={kind:kind||undefined,tier:tier||'purple',x:W/2,y:200,mode:'form',max:1,hp:0};if(kind)f.max=1;kill(f);},
+      counts:function(){return {cnt:S.cnt,flyT:Math.round(S.flyT*10)/10,drops:S.drops.map(function(d){return d.kind+(d.v?'@'+d.v:'');})};},
+      fly:function(sec){var f0=S.flyT;S.flyT+=sec;for(var tk in TIMED){if(Math.floor(S.flyT/TIMED[tk])>Math.floor(f0/TIMED[tk]))S.drops.push({x:lane(tk),y:-20,kind:tk});}},clearDrops:function(){S.drops=[];}};
+  }
+})();
+</script>
+<script>/* Dark page: hide the Squarespace section color behind the game (same as the other arcade pages). */(function(){var d=document.getElementById('ma-gauntlet');if(!d)return;var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';})();</script>
+<script>/* PARALLAX FIXED (Maurice, 2026-10-16): a library picture pinned to the screen behind the game while the page scrolls over it */(function(){
+  var r=document.getElementById('ma-gauntlet');if(!r||r.querySelector('.ma-plx'))return;
+  var dir=(window.innerWidth||1400)<=900?'m/':'d/';
+  if(getComputedStyle(r).position==='static')r.style.position='relative';r.style.isolation='isolate';/* the picture sits under everything in the game, even parts added later (the export card) */
+  Array.prototype.forEach.call(r.children,function(c){var cs=getComputedStyle(c);if(cs.position==='static'){c.style.position='relative';}if(!cs.zIndex||cs.zIndex==='auto')c.style.zIndex='1';});
+  var w=document.createElement('div');w.className='ma-plx';w.setAttribute('aria-hidden','true');
+  w.style.cssText='position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none';
+  var im=document.createElement('div');im.style.cssText='position:absolute;left:0;right:0;top:0;background:url(https://africhmaurice.github.io/site/assets/bg/'+dir+'floating-blocks-city-as311317794.webp) center/cover no-repeat;will-change:transform';
+  var wash=document.createElement('div');wash.style.cssText='position:absolute;inset:0;background:linear-gradient(rgba(11,23,15,.72),rgba(11,23,15,.84))';
+  w.appendChild(im);w.appendChild(wash);r.insertBefore(w,r.firstChild);
+  // best way: the picture is position:fixed (pinned to the screen by the browser itself, no stutter) and the section's
+  // clip-path keeps it inside the game. That only works when nothing above the game has a transform or filter, so check.
+  var el=r,clean=true;while(el&&el!==document.documentElement){var st=getComputedStyle(el);if(st.transform!=='none'||st.filter!=='none'||st.perspective!=='none'||/transform|filter|perspective/.test(st.willChange)||/paint|layout|strict|content/.test(st.contain||'')){clean=false;break;}el=el.parentElement;}
+  if(clean){w.style.clipPath='inset(0)';w.style.webkitClipPath='inset(0)';w.style.overflow='visible';
+    im.style.cssText+=';position:fixed;top:0;bottom:auto;height:100vh;height:100lvh;will-change:auto';return;}
+  // fallback: the picture is one screen tall (the tallest the phone screen gets, so it never shows a gap when the address bar
+  // hides) and slides down exactly as far as the page scrolls past the game's top, so it holds still on screen
+  var H=0;
+  function size(){H=Math.max(window.innerHeight||800,document.documentElement.clientHeight||0,window.visualViewport?Math.round(visualViewport.height):0);H=Math.min(H,r.offsetHeight||H);im.style.height=H+'px';}
+  function move(){var y=Math.max(0,Math.min((r.offsetHeight||H)-H,-r.getBoundingClientRect().top));im.style.transform='translate3d(0,'+y.toFixed(1)+'px,0)';}
+  window.addEventListener('scroll',move,{passive:true});
+  window.addEventListener('resize',function(){size();move();});
+  size();move();setTimeout(function(){size();move();},800);
+})();</script>
+</body></html>
