@@ -17,7 +17,7 @@
      BOSSROW in the code): every Nth kill of each ship type drops set upgrades (each type counts its own kills for the
      run; a freighter always bursts into 4 rubies), and each upgrade also falls on its own clock of flying seconds
      (ruby every 28 s, crest 60 s, +1 life 120 s ... red atomic 187 s; tuned 10/21), each in its own lane. The Destroyer drops a row of 10 across the
-     sky that falls 4x as fast. Specials can fall from the start. Every wave has 25% more ships (10/21).
+     sky that falls 4x as fast. Specials can fall from the start. Every wave has 10% more ships (10/21).
        Mark of the Crest   weapon upgrade, for good: 2 crests reach missile level 2, 4 level 3, 8 level 4, 16 level 5.
        Twin Torches        10 s: two small white slashes fly out to the sides every half second and bounce off the walls.
        Bolt of Lightning   10 s: faster firing and faster flying. (Icon drawn in code until Maurice draws one.)
@@ -557,7 +557,7 @@
   };
   var TIMED={ruby:28,crest:60,brass:42,torch:44,bolt:55,crate:60,life:120,shield:66,pierce:67,scythe:83,recharge:86,trench:156,atomic:187};
   var BOSSROW=['life','crest','crate','ruby','bolt','ruby','bolt','shield','crest','torch'];   /* 10/21 tune: 2 crests, 1 life */
-  var DROPV=120,EXTRASHIPS=.2,EXTRASHIPS_LATE=.1;   /* extra side ships: 20% of the wave to wave 10, then 10% (10/21 tune) */
+  var DROPV=120,EXTRASHIPS=.1,EXTRASHIPS_LATE=.1;   /* extra side ships: 10% of the wave, every wave (10/21 tune) */
   /* every wave's ships are harder than the wave before (Maurice, 2026-10-21): faster, attacking more often, firing faster
      shots, and taking more hits. +5% a wave the whole way (10/21 tune; it adds up, it doesn't compound):
      wave 1 = 1, wave 10 = 1.45, wave 15 = 1.7, wave 25 = 2.2. */
