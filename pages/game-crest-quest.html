@@ -777,7 +777,7 @@ var HGBoard = (function () {
     var panel = null, boardEl = null, leftEl = null, week = friday(o.day), note = '';
     if (o.lineAfter && o.lineAfter.parentNode) {
       var line = document.createElement('p'); line.className = 'dbd-line';
-      line.textContent = 'Weekly leaderboard: most puzzles solved, then the fastest single solve, wins 500 points every Friday at 11:59 PM ET.';
+      line.textContent = 'Weekly leaderboard: the fastest single solve of the week wins 500 points every Friday at 11:59 PM ET.';
       o.lineAfter.parentNode.insertBefore(line, o.lineAfter.nextSibling);
     }
     if (o.card && o.card.parentNode) {
@@ -801,7 +801,7 @@ var HGBoard = (function () {
       var mine = myName().toLowerCase();
       boardEl.innerHTML = list.map(function (r, i) {
         var me = r.me || (mine && String(r.name).toLowerCase() === mine);
-        return '<li' + (me ? ' class="me"' : '') + '><i>' + (i + 1) + '</i><span>' + esc(r.name) + '</span><b>' + r.solved + ' solved · ' + fmt(r.best != null ? r.best : r.secs) + ' fastest</b></li>';   /* most solved, then the fastest single solve (Maurice, 2026-10-22) */
+        return '<li' + (me ? ' class="me"' : '') + '><i>' + (i + 1) + '</i><span>' + esc(r.name) + '</span><b>' + fmt(r.best != null ? r.best : r.secs) + ' fastest</b></li>';   /* the fastest single solve this week; daily play is optional (Maurice, 2026-10-22) */
       }).join('');
     }
     function refresh() {
