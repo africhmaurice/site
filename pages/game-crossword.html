@@ -469,6 +469,12 @@ var HG = (function () {
         }
         function claim() {
           var btn = document.getElementById('hg-claim'), err = document.getElementById('hg-err');
+          // the board's timer ticket first, so a fast solve isn't claimed untimed (Maurice 10/23)
+          if (board && board.waiting && board.waiting()) { btn.disabled = true; btn.textContent = 'SAVING YOUR TIME...'; return board.whenTicket(send2, 20000); }
+          send2();
+        }
+        function send2() {
+          var btn = document.getElementById('hg-claim'), err = document.getElementById('hg-err');
           btn.disabled = true; btn.textContent = 'CLAIMING...';
           var payload = { action: 'game', game: o.key, day: day, solution: solution, detail: detail || '',
             email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country };
@@ -759,7 +765,7 @@ var HGBoard = (function () {
   //      one-line rule goes right after this element), me() (the saved player, to mark their row), onTime(secs) }
   function create(o) {
     css();
-    var KEY = PFX + o.game + ':' + o.day, rec = null, pending = false, solve = null, pinging = false;
+    var KEY = PFX + o.game + ':' + o.day, rec = null, pending = false, solve = null, pinging = false, waiters = [];
     try {
       rec = JSON.parse(localStorage.getItem(KEY) || 'null');
       for (var i = localStorage.length - 1; i >= 0; i--) { var k = localStorage.key(i); if (k && k.indexOf(PFX + o.game + ':') === 0 && k !== KEY) localStorage.removeItem(k); }
@@ -770,10 +776,19 @@ var HGBoard = (function () {
       pending = true;
       o.send({ action: 'dailystart', game: o.game, day: o.day }, function (res) {
         pending = false;
-        if (!res || !res.ok || !res.ticket || rec.ticket) return;
-        rec.ticket = res.ticket; save();
-        if (solve) ping();
+        if (res && res.ok && res.ticket && !rec.ticket) { rec.ticket = res.ticket; save(); if (solve) ping(); }
+        flush();
       });
+    }
+    /* a claim made before the ticket is back waits for it (Maurice 10/23: fast solves were claimed ticketless and never
+       reached the board) */
+    function flush() { var w = waiters; waiters = []; w.forEach(function (f) { f(); }); }
+    function whenTicket(cb, ms) {
+      if (!rec || rec.ticket) return cb();
+      var done = false, once = function () { if (!done) { done = true; cb(); } };
+      waiters.push(function () { if (rec.ticket) once(); else if (!pending) getTicket(); });
+      setTimeout(once, ms || 20000);
+      (function poll() { if (done) return; if (rec.ticket) return once(); if (!pending) getTicket(); setTimeout(poll, 1500); })();
     }
     function ping() {
       if (!rec || !rec.ticket || !solve || rec.pinged || pinging) return;
@@ -841,6 +856,9 @@ var HGBoard = (function () {
         if (!rec.end) { rec.end = Date.now(); save(); }
         solve = payload || {}; ping();
       },
+      // Before the claim: waits (up to 20 s) for the ticket when it isn't back yet.
+      whenTicket: whenTicket,
+      waiting: function () { return !!(rec && !rec.ticket); },
       // Added to the claim.
       extra: function () {
         if (!rec || !rec.ticket) return {};
