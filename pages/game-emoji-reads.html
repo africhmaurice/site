@@ -729,6 +729,7 @@ var HGBoard = (function () {
     '.dbd-board span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fffffe}' +
     '.dbd-board b{font-weight:800;color:#fffffe;font-variant-numeric:tabular-nums;white-space:nowrap}' +
     '.dbd-board li.me span,.dbd-board li.me b{color:#a2f590}' +
+    '.dbd-board li.you{border-top:1px dashed rgba(162,245,144,.45);margin-top:6px;padding-top:12px}' +
     '.dbd-board .dbd-empty{display:block;grid-column:1/-1;white-space:normal;overflow:visible;color:#f3ead9;font-weight:700}' +
     '.hg-locked+.dbd-panel{display:none}' +
     '@media (max-width:420px){.dbd-panel{padding:20px}.dbd-board li{grid-template-columns:26px minmax(0,1fr) auto;gap:10px;font-size:14px}}';
@@ -785,19 +786,22 @@ var HGBoard = (function () {
       refresh();
     }
     function myName() { var me = (o.me && o.me()) || {}; return me.handle ? '@' + String(me.handle).replace(/^@+/, '') : (me.first_name || ''); }
-    function paint(list) {
+    /* you, when you're past the top 10: your best time and place this week (Maurice, 2026-10-23) */
+    function paint(list, you, players) {
       if (!boardEl) return;
       if (!list || !list.length) { boardEl.innerHTML = '<li><span class="dbd-empty">No solves yet this week. Be the first.</span></li>'; return; }
       var mine = myName().toLowerCase();
       boardEl.innerHTML = list.map(function (r, i) {
         var me = r.me || (mine && String(r.name).toLowerCase() === mine);
         return '<li' + (me ? ' class="me"' : '') + '><i>' + (i + 1) + '</i><span>' + esc(r.name) + '</span><b>' + fmt(r.best != null ? r.best : r.secs) + ' fastest</b></li>';   /* the fastest single solve this week; daily play is optional (Maurice, 2026-10-22) */
-      }).join('');
+      }).join('') + (you && you.rank > list.length ? '<li class="me you"><i>' + you.rank + '</i><span>You' + (players ? ' (of ' + players + ')' : '') + '</span><b>' + fmt(you.best) + ' fastest</b></li>' : '');
     }
     function refresh() {
       if (!boardEl) return;
-      o.send({ action: 'dailytop', game: o.game }, function (res) {
-        if (res && res.ok) { if (res.week) week = res.week; paint(res.top); }
+      var em = ((o.me && o.me()) || {}).email, q = { action: 'dailytop', game: o.game };
+      if (em) q.email = em;
+      o.send(q, function (res) {
+        if (res && res.ok) { if (res.week) week = res.week; paint(res.top, res.me, res.players); }
         else boardEl.innerHTML = '<li><span class="dbd-empty">The board is resting. Try again soon.</span></li>';
       });
     }
@@ -826,7 +830,8 @@ var HGBoard = (function () {
       claimed: function (res) {
         var t = res && res.timed;
         if (t && t.ok && t.secs != null && rec) { rec.server = t.secs; save(); if (o.onTime) o.onTime(Math.floor(t.secs)); }
-        if (t && t.ok && t.top) paint(t.top); else refresh();
+        if (t && t.ok && t.top) paint(t.top);
+        refresh();   // brings back your own place too
         note = t && t.ok ? 'Board time: <b>' + fmt(t.secs) + '</b>' + (t.rank ? '. You are #' + t.rank + ' on this week’s board.' : '.')
           : t && t.error === 'partial' ? 'Only fully solved puzzles count on the weekly board.'
           : t && t.error === 'check' ? 'That time was too quick to count on the weekly board.'
