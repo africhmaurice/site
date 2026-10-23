@@ -509,6 +509,9 @@ var HGBoard = (function () {
     '.dbd-board span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fffffe}' +
     '.dbd-board b{font-weight:800;color:#fffffe;font-variant-numeric:tabular-nums;white-space:nowrap}' +
     '.dbd-board li.me span,.dbd-board li.me b{color:#a2f590}' +
+    '.dbd-who{display:flex;flex-direction:column;gap:10px;max-width:320px;width:100%;font-weight:700;font-size:15px;line-height:1.5;color:#fffffe;text-align:center}' +
+    '.dbd-who input{font:inherit;font-weight:400;padding:12px 14px;border:2px solid #f3ead9;background:#0b170f;color:#fffffe;border-radius:0;width:100%;box-sizing:border-box}' +
+    '.dbd-whoerr{margin:0;min-height:1.5em;color:#ff4c0f!important}' +
     '.dbd-board li.you{border-top:1px dashed rgba(162,245,144,.45);margin-top:6px;padding-top:12px}' +
     '.dbd-board .dbd-empty{display:block;grid-column:1/-1;white-space:normal;overflow:visible;color:#f3ead9;font-weight:700}' +
     '.hg-locked+.dbd-panel{display:none}' +
@@ -528,9 +531,14 @@ var HGBoard = (function () {
     function getTicket() {
       if (!rec || rec.ticket || rec.end || pending) return;
       pending = true;
-      o.send({ action: 'dailystart', game: o.game, day: o.day }, function (res) {
+      o.send({ action: 'dailystart', game: o.game, day: o.day, email: myEmail() }, function (res) {
         pending = false;
-        if (res && res.ok && res.ticket && !rec.ticket) { rec.ticket = res.ticket; save(); if (solve) ping(); }
+        if (res && res.ok && res.ticket && !rec.ticket) {
+          rec.ticket = res.ticket;
+          // started earlier today on another device: the clock picks up from that first START
+          if (res.again && res.t0 && res.now && !rec.end) rec.local = Date.now() - Math.max(0, res.now - res.t0);
+          save(); if (solve) ping();
+        }
         flush();
       });
     }
@@ -547,7 +555,7 @@ var HGBoard = (function () {
     function ping() {
       if (!rec || !rec.ticket || !solve || rec.pinged || pinging) return;
       pinging = true;
-      var p = { action: 'dailysolve', game: o.game, day: o.day, ticket: rec.ticket };
+      var p = { action: 'dailysolve', game: o.game, day: o.day, ticket: rec.ticket, email: myEmail() };
       for (var k in solve) p[k] = solve[k];
       o.send(p, function (res) { pinging = false; if (res && res.ok) { rec.pinged = true; save(); } });
     }
@@ -574,6 +582,7 @@ var HGBoard = (function () {
       tickWeek(); setInterval(tickWeek, 20000);
       refresh();
     }
+    function myEmail() { return String(((o.me && o.me()) || {}).email || '').trim(); }
     function myName() { var me = (o.me && o.me()) || {}; return me.handle ? '@' + String(me.handle).replace(/^@+/, '') : (me.first_name || ''); }
     /* you, when you're past the top 10: your best time and place this week (Maurice, 2026-10-23) */
     function paint(list, you, players) {
@@ -627,7 +636,8 @@ var HGBoard = (function () {
         note = t && t.ok ? 'Board time: <b>' + fmt(t.secs) + '</b>' + (t.rank ? '. You are #' + t.rank + ' on this week’s board.' : '.')
           : t && t.error === 'partial' ? 'Only fully solved puzzles count on the weekly board.'
           : t && t.error === 'check' ? 'That time was too quick to count on the weekly board.'
-          : t && t.error === 'host' ? 'Practice play: not on the board.' : '';
+          : t && t.error === 'host' ? 'Practice play: not on the board.'
+          : t && t.error === 'ticket' ? 'Your board time goes with the email you started with.' : '';
         return note;
       },
       // The line for the claimed box on a later visit.
@@ -638,10 +648,18 @@ var HGBoard = (function () {
         el.parentNode.insertBefore(box, el); box.appendChild(el); el.classList.add('dbd-hidden');
         el.setAttribute('aria-hidden', 'true'); el.setAttribute('inert', '');
         var cover = document.createElement('div'); cover.className = 'dbd-cover';
-        cover.innerHTML = '<h2>' + esc(o.label) + '</h2><button type="button">START</button><p>The clock starts the moment you press START and keeps running until you solve it.</p>';
+        // the board needs to know who is playing before the clock starts (Maurice 10/23: first START counts, on any device)
+        var ask = !rec && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(myEmail());
+        cover.innerHTML = '<h2>' + esc(o.label) + '</h2>' + (ask ? '<label class="dbd-who">Who\u2019s playing? Your email puts your time on the weekly board.<input type="email" autocomplete="email" placeholder="you@example.com"></label><p class="dbd-whoerr" aria-live="polite"></p>' : '') +
+          '<button type="button">START</button><p>The clock starts the moment you press START and keeps running until you solve it.</p>';
         box.appendChild(cover);
         var self = this;
         cover.querySelector('button').onclick = function () {
+          if (ask) {
+            var em = cover.querySelector('.dbd-who input').value.trim();
+            if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { cover.querySelector('.dbd-whoerr').textContent = 'That email does not look right.'; return; }
+            if (o.onMe) o.onMe(em);
+          }
           self.begin(); cover.remove(); el.classList.remove('dbd-hidden'); el.removeAttribute('aria-hidden'); el.removeAttribute('inert'); go();
         };
         return box;
@@ -853,7 +871,7 @@ var HGBoard = (function () {
   // ---- the weekly board (Maurice, 2026-10-20; games/dailyboard.js): START asks the web app for a ticket, the
   // clock is wall time from that moment (a reload keeps it), and the board time the claim brings back is the official one
   var board = window.HGBoard ? HGBoard.create({ game: 'daily_word', label: 'Skyword', day: dateStr, send: send,
-    card: document.querySelector('#daily-word main'), lineAfter: nextEl, me: function () { return me; },
+    card: document.querySelector('#daily-word main'), lineAfter: nextEl, me: function () { return me; }, onMe: function (em) { me = me || {}; me.email = em; saveMe(me); },
     onTime: function (s) { secs = s; save(); } }) : null;
   if (board && board.started()) secs = board.elapsed();
 
