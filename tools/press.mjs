@@ -170,7 +170,7 @@ const FACTS = [
   ['UK', 'Hodderscape · Hardback ISBN 9781399763073'],
   ['Audio', 'Simon Maverick · Narrated by Gary Furlong · November 3, 2026'],
   ['Editions', 'Walmart Special Edition (U.S.), Waterstones Exclusive (UK), and a signed Broken Binding edition that sold out in less than 48 hours.'],
-  ['Goodreads', '27,714 want to read · 4.29 average from 1,136 ratings and 439 reviews (October 22, 2026)'],
+  ['Goodreads', '27,714 want to read · 4.29 average from 1,137 ratings and 439 reviews (October 23, 2026)'],
   ['Home', 'Asheville, North Carolina'],
 ];
 
@@ -190,12 +190,12 @@ const HUNT_QUOTE = [
   'That’s why I built this treasure hunt. Because I thought it would be fun (which is a cornerstone of my brand), I thought it would help us sell a lot of books, and I thought, by the end of it, a lot more people would know my name. We’ll see, huh? If nothing else, I know we’re all having a pretty damn good time.',
 ];
 const HUNT_QUOTE_BY = 'Maurice Africh, Author of “Cello’s Gate”';
-const STATS_DATE = 'October 22, 2026';
+const STATS_DATE = 'October 23, 2026';
 // [group title, [[big number, what it means]], wide (spans the full row, two stats per line)]
 // The Headline Numbers are Maurice's own figures and order (2026-10-14).
 const HIGHLIGHTS = [
   ['The Headline Numbers', [
-    ['960', 'Treasure hunters (readers) from 18 countries.'],
+    ['1,016', 'Treasure hunters (readers) from 18 countries.'],
     ['12,052', 'Hunt tasks completed successfully, not counting unsuccessful attempts.'],
     ['924', 'Social posts about the hunt online.'],
     ['20,291', 'Website visitors since the hunt began: +6,929%. About 700 visitors a day.'],
@@ -211,12 +211,12 @@ const HIGHLIGHTS = [
   // Aura Color Search, Matching Auras, desktop background, Crest Quest, Airship Runner, Thread the Needle) x 687
   // hunters, plus 15 Act One sweepstakes winners (U.S., UK, and world wheels, 5 each).
   ['Readers Are Hooked', [
-    ['4,577', 'Loot boxes found.'],
-    ['2,413', 'Riddles solved.'],
-    ['6,355', 'Daily puzzle wins across 7 games.'],
-    ['945,688', 'Points earned by the crew together.'],
-    ['19,157', 'Sweepstakes entries.'],
-    ['18,260', 'Rewards awarded so far: 19 digital rewards unlocked for all 960 hunters, plus 20 sweepstakes winners.'],
+    ['4,721', 'Loot boxes found.'],
+    ['2,474', 'Riddles solved.'],
+    ['6,542', 'Daily puzzle wins across 7 games.'],
+    ['970,733', 'Points earned by the crew together.'],
+    ['19,754', 'Sweepstakes entries.'],
+    ['19,324', 'Rewards awarded so far: 19 digital rewards unlocked for all 1,016 hunters, plus 20 sweepstakes winners.'],
   ], true],
 ];
 // Title case for the stat lines (Maurice, 2026-10-14). Short joining words stay lowercase unless they start a phrase.
@@ -240,11 +240,11 @@ const HUNT_FACTS = [
   ['Dates', 'September 20 to November 1, 2026. It ends two days before “Cello’s Gate” comes out.'],
   ['Where', '<a href="https://www.mauriceafrich.com/the-hunt">mauriceafrich.com/the-hunt</a>'],
   ['Who', 'Free and open to everyone, everywhere. The Treasure is for U.S. and UK residents (three winners each), and the sweepstakes are for U.S. residents, with a UK prize draw coming soon. Prize winners must be 18 or older.'],
-  ['Players', '960 sky pirates from 18 countries: the U.S., the UK, Canada, Australia, India, Estonia, Germany, Ireland, Austria, Japan, Poland, Norway, Portugal, Spain, New Zealand, Indonesia, the Philippines, and Italy.'],
+  ['Players', '1,016 sky pirates from 18 countries: the U.S., the UK, Canada, Australia, India, Estonia, Germany, Ireland, Austria, Japan, Poland, Norway, Portugal, Spain, New Zealand, Indonesia, the Philippines, and Italy.'],
   ['Traffic', '20,291 more website visitors (up 6,929%) and 62,382 more pageviews (up 11,702%) since the hunt started.'],
   ['Play', 'Tasks, riddles, clues, seven daily bookish games (including Skyword, Blades & Brass, and Crest Quest), 101 hidden loot boxes, and a fan art contest.'],
   ['Story', 'Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!'],
-  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 945,688 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two finished at 505,425, more than double its 200,000 goal. Act Three opened October 16 with a 600,000 goal and has already passed 200,000, unlocking a new game, Sky Gauntlet, along the way.'],
+  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 970,733 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two finished at 505,425, more than double its 200,000 goal. Act Three opened October 16 with a 600,000 goal and has already passed 250,000, unlocking a new game, Sky Gauntlet, along the way.'],
   ['Acts', 'Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1). Winners are announced the day after each act ends.'],
   ['Treasure', 'The top three on the U.S. and UK leaderboards win The Treasure: signed editions, art prints, custom bookmarks, enamel pins, an advance audiobook, and more.'],
 ];
