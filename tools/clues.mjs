@@ -123,6 +123,7 @@ Yet again, you might try.`],
   // Box 40 is the 0 in 404 on the site's Page Not Found page (Maurice, 2026-10-11).
   [40, 'Loot Box Not Found!'],
   [41, 'Trapped in the tunnels beneath the ochre landscape.'],
+  [42, '', { img: ART + 'clue-42.png', alt: 'A super tiny picture of a book cover', sticker: true, w: 16 }],   // Amber's Linktree (@amberwithminibooks), live 10/23
   [43, '', { img: ART + 'clue-43.webp', alt: 'A house + a slide' }],   // hidden in the ACT THREE HAS BEGUN home slide (Maurice, 2026-10-16)
   // Box 44 is the link on Maurice's Reddit profile (Maurice, 2026-10-05).
   [44, 'Mods Must Hate to See You Coming'],
@@ -153,6 +154,7 @@ Yet again, you might try.`],
   // Box 58 is in Gary Furlong's Linktree (Maurice, 2026-10-11).
   [58, 'Not American.'],
   // Box 60 is a Pin on Maurice's Sky Pirates of Imperia Pinterest board (Maurice, 2026-10-04).
+  [59, 'GFTT SCROLL AROUND AND FIND OUT'],   // was only on the live page (another chat); added to the list 10/23
   [60, "the picture app & a task of the captain's making"],
   // Box 61, The Puzzled Loot Box: the jigsaw, from Hunt puzzle card #22 (Maurice, 2026-10-09).
   [61, 'some assembly required'],
@@ -184,8 +186,10 @@ Haven't I Seen You Before?`],   // on Bard's Linktree (Maurice, 2026-10-16)
   [75, '10 Floors'],   // Descend the Tower: the box waits past the 10th floor (Maurice, 2026-10-16, Act Three puzzle #23)
   [76, 'The 100th Needle'],
   [77, 'TRLVL5'],   // Trench Run: the box is on board 5 (Maurice, 2026-10-16)
+  [78, 'Survive 25'],   // was only on the live page (another chat); added to the list 10/23
   [79, 'the 11th'],   // Find the Constellations: the secret 11th constellation (Maurice, 2026-10-16, Act Three puzzle #26)   // Thread the Needle: the box floats in the 100th gap (Maurice, 2026-10-13)
   [80, '', { img: ART + 'clue-80.gif', alt: 'I love finding a good set of twins.' }],   // Match the Crest (Maurice, 2026-10-16)
+  [81, 'TSGEMW50'],   // was only on the live page (another chat); added to the list 10/23
   [82, "Star gazer (level: expert)"],   // The Deep Sky, the secret 11th constellation (Maurice 10/19)
   [83, "First and Last Name: rasyselmnayeo"],   // The Grimdark Loot Box, in Esmay Rosalyne's Grimdark Magazine article (Maurice 10/22)
   [86, 'get to the top'],   // The Long Climb (Maurice, 2026-10-16)
@@ -223,7 +227,7 @@ const boards = CLUES.map(([n, text, o = {}]) => {
   let body = text ? `<div class="lc-text">${rich(text)}</div>` : '';
   if (o.href) body = `<a class="lc-text lc-link" href="${esc(o.href)}">${esc(text)}</a>`;
   if (o.button) body += `<a class="lc-btn" href="${esc(o.button[1])}">${esc(o.button[0])}</a>`;
-  if (o.img) body += `<img class="lc-img${o.sticker ? ' lc-sticker' : ''}" src="${esc(o.img)}" alt="${esc(o.alt || '')}" loading="lazy">`;
+  if (o.img) body += `<img class="lc-img${o.sticker ? ' lc-sticker' : ''}" src="${esc(o.img)}" alt="${esc(o.alt || '')}"${o.w ? ` style="width:${o.w}px"` : ''} loading="lazy">`;
   // Answer box: the answer is checked in the browser against its fingerprint (see answerJs), never sent or stored.
   if (o.answer) body += `
     <form class="lc-answer" data-salt="${esc(o.answer.salt)}" data-hash="${esc(o.answer.hash)}" ${o.answer.go ? ` data-go="${esc(o.answer.go)}"` : ''}${o.answer.lock ? ` data-lock="${esc(o.answer.lock)}"` : ''} autocomplete="off">
