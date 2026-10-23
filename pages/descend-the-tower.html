@@ -18,7 +18,8 @@
                             moving platforms, a spring over a wall, then jump, jump, jump up to the trapdoor ledge.
      Clock (Maurice 10/16): 15 seconds a floor (25 on floor 2, Lever order), top-right, blinking red from 5; at zero the floor triggers itself (see CLOCK).
      Spikes on floors 9 and 10 are his spike drawing, 75-spike.png (10/16).
-     Failing any floor sends the box back to floor 1 (Maurice: "They start over at floor 1"). The best floor reached is
+     Failing any floor sends the box back to floor 1 (Maurice: "They start over at floor 1"). Checkpoints mode (10/23):
+     50 floors, the course five times, a checkpoint every 5 floors (best kept in ma-tower-best-cp); n is the floor's game, lvl its number. The best floor reached is
      kept in localStorage (ma-tower-best). Clearing floor 10 reveals loot box 75; clicking it opens the claim link
      (scrambled in K). Controls: tap or click; space drops the claw; floor 10 uses arrows or A/D and space/W/up to jump,
      with on-screen buttons on phones. Reduced motion: no shake and no sparks.
@@ -51,6 +52,7 @@
 #ma-tower .tw-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px 20px;background:rgba(11,23,15,.88)}
 #ma-tower .tw-ov h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(30px,4.6vw,46px);line-height:1.2;letter-spacing:.04em;color:#fffffe}
 #ma-tower .tw-ov p{margin:0;max-width:420px;font-size:clamp(14px,1.7vw,17px);line-height:1.5}
+#ma-tower .tw-modes{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
 #ma-tower .tw-btn{font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;color:#fffffe;background:#c53200;border:2px solid #fffffe;padding:13px 28px;margin:0;touch-action:manipulation}
 #ma-tower .tw-btn:hover,#ma-tower .tw-btn:focus-visible{background:#ff4c0f;outline:none}
 #ma-tower .tw-msg{margin:0;width:min(100%,600px);min-height:3em;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:clamp(15px,1.6vw,18px);line-height:1.45;color:#89fbcb}
@@ -66,17 +68,18 @@
 #ma-tower .tw-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 30px rgba(162,245,144,.4))}
 #ma-tower .tw-ctl{width:min(100%,600px);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px}
 #ma-tower .tw-ctl .tw-btn{font-size:13px;padding:10px 18px}
+#ma-tower .tw-btn.tw-cp{background:#1a5e41}
 #ma-tower .tw-btn:disabled{opacity:.45;cursor:default;background:#c53200}
 @media (max-width:520px){#ma-tower .tw-hud{font-size:11px;letter-spacing:.08em}}
 </style>
 <section id="ma-tower" aria-label="Descend the Tower">
   <p class="tw-eye">Loot Box 75</p>
   <h1 class="tw-h1">Descend the Tower</h1>
-  <p class="tw-how">Get the loot box down ten floors, a different challenge on each one. Fail a floor and it's back to the top.</p>
+  <p class="tw-how">Get the loot box down ten floors, a different challenge on each one. Fail a floor and it's back to the top, or to your last checkpoint.</p>
   <div class="tw-hud"><span class="tw-floor">Floor 1 of 10</span><span class="tw-best">Best: floor 1</span></div>
   <div class="tw-ctl"><button class="tw-btn tw-pause" type="button" disabled>Pause</button></div>
   <div class="tw-stage" tabindex="0" role="application" aria-label="Descend the Tower game"><canvas></canvas>
-    <div class="tw-ov tw-start"><h2>Ten floors down</h2><p>Each floor tells you what to do. Fail one and the box goes back to floor 1.</p><button class="tw-btn tw-go" type="button">Start</button></div>
+    <div class="tw-ov tw-start"><h2>Pick your way down</h2><p>Classic is ten floors, and a fail sends the box back to floor 1. Checkpoints runs the ten floors five times, 50 in all, and saves your spot every 5 floors.</p><div class="tw-modes"><button class="tw-btn tw-go" type="button">Classic: 10 floors</button><button class="tw-btn tw-cp" type="button">Checkpoints: 50 floors</button></div></div>
     <div class="tw-ov tw-paused" hidden><h2>Paused</h2><button class="tw-btn tw-resume-btn" type="button">Resume</button></div>
   </div>
   <p class="tw-msg" aria-live="polite"></p>
@@ -383,8 +386,10 @@
       var pr=Math.min(1,this.p.x/this.end);ctx.fillStyle='rgba(243,234,217,.25)';ctx.fillRect(40,H-16,W-80,4);ctx.fillStyle='#89fbcb';ctx.fillRect(40,H-16,(W-80)*pr,4);}};
 
   /* ================= the tower ================= */
-  var n=1,cur=null,state='title',phase=0,t=0,shake=0,missI=Math.floor(Math.random()*FAIL.length);
-  function hud(){floorEl.textContent='Floor '+n+' of 10'+(cur?' · '+F[n].name:'');bestEl.textContent='Best: floor '+best;pad.classList.toggle('on',n===10&&state!=='title'&&touchy);}
+  var n=1,lvl=1,mode='classic',TOTAL=10,cur=null,state='title',phase=0,t=0,shake=0,missI=Math.floor(Math.random()*FAIL.length);
+  function cpAt(){return mode==='cp'?Math.floor((lvl-1)/5)*5+1:1;}
+  function setMode(m){mode=m;TOTAL=m==='cp'?50:10;best=parseInt(lsGet(m==='cp'?'ma-tower-best-cp':'ma-tower-best')||'1',10)||1;}
+  function hud(){floorEl.textContent='Floor '+lvl+' of '+TOTAL+(cur?' · '+F[n].name:'');bestEl.textContent=mode==='cp'&&state!=='title'?'Checkpoint: floor '+cpAt()+' · Best: '+best:'Best: floor '+best;pad.classList.toggle('on',n===10&&state!=='title'&&touchy);}
   var touchy=(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window&&window.innerWidth<900);
   /* Every floor has a 15-second clock in the top-right corner (Maurice 10/16). It blinks red from 5. At zero the floor
      triggers itself: the claw drops the box (1, 4, 6, 8), the catapult fires at whatever power it has (3), both ropes
@@ -404,24 +409,25 @@
   function drawClock(){if(!timed()||(state!=='intro'&&state!=='play'))return;var sec=Math.max(0,Math.ceil(tl)),red=sec<=5&&state==='play';
     ctx.fillStyle='rgba(11,23,15,.85)';ctx.fillRect(W-80,8,68,40);ctx.strokeStyle=red?'#ff4c0f':'#89fbcb';ctx.lineWidth=2;ctx.strokeRect(W-79,9,66,38);
     if(red&&!still&&(tl%1)<.4)return;ctx.fillStyle=red?'#ff4c0f':'#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font="400 30px 'Cracked Imperia',Impact,sans-serif";ctx.fillText(String(sec),W-46,29);ctx.textBaseline='alphabetic';}
-  function enter(k){n=k;cur=F[n];cur.init();tl=clockFor(k);state='intro';phase=1.3;if(n>best){best=n;lsSet('ma-tower-best',String(best));}hud();say(cur.how);ctl();}
-  function clear(){if(state!=='play')return;state='drop';phase=.8;if(n===10){state='won';setTimeout(showWin,still?100:600);}ctl();}
-  function fail(line){if(state!=='play')return;state='fail';phase=1.8;shake=still?0:1;say(line||FAIL[missI++%FAIL.length],true);ctl();}
-  function showWin(){lsSet('ma-tower-won','1');winEl.hidden=false;pad.classList.remove('on');ctl();say('Ten floors down!');try{winEl.scrollIntoView({block:'center',behavior:still?'auto':'smooth'});}catch(e){}}
+  function enter(L){lvl=L;n=(L-1)%10+1;cur=F[n];cur.init();tl=clockFor(n);state='intro';phase=1.3;if(lvl>best){best=lvl;lsSet(mode==='cp'?'ma-tower-best-cp':'ma-tower-best',String(best));}hud();say(cur.how);ctl();}
+  function clear(){if(state!=='play')return;state='drop';phase=.8;if(lvl===TOTAL){state='won';setTimeout(showWin,still?100:600);}ctl();}
+  function fail(line){if(state!=='play')return;line=line||FAIL[missI++%FAIL.length];if(mode==='cp'){var to='Back to floor '+cpAt()+'.';line=line.replace(/Back to floor 1.|Back to the top.|Floor 1 again.|Up you go again./,to);if(line.indexOf(to)<0)line+=' '+to;}state='fail';phase=1.8;shake=still?0:1;say(line||FAIL[missI++%FAIL.length],true);ctl();}
+  function showWin(){lsSet('ma-tower-won','1');winEl.querySelector('p').textContent=(mode==='cp'?'Fifty':'Ten')+' floors down. Loot box 75 is yours. Tap the box to claim it.';winEl.hidden=false;pad.classList.remove('on');ctl();say(mode==='cp'?'Fifty floors down!':'Ten floors down!');try{winEl.scrollIntoView({block:'center',behavior:still?'auto':'smooth'});}catch(e){}}
   /* one-time start codes (10/23): ?code=... starts one run at a later floor; the web app spends the code on START */
   var goBtn=d.querySelector('.tw-go'),startP=startOv.querySelector('p'),code=(/[?&]code=([A-Za-z0-9-]+)/.exec(location.search)||[])[1]||'';
   var EP='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
-  function go(k){startOv.hidden=true;enter(k);try{stage.focus({preventScroll:true});}catch(e){}}
-  function dropCode(){code='';goBtn.textContent='Start';try{history.replaceState(null,'',location.pathname+location.search.replace(/[?&]code=[^&]*/,'').replace(/^&/,'?')+location.hash);}catch(e){}}
+  function go(k,m){setMode(m||'classic');startOv.hidden=true;winEl.hidden=true;enter(k);try{stage.focus({preventScroll:true});}catch(e){}}
+  function dropCode(){code='';goBtn.textContent='Classic: 10 floors';try{history.replaceState(null,'',location.pathname+location.search.replace(/[?&]code=[^&]*/,'').replace(/^&/,'?')+location.hash);}catch(e){}}
   function spend(cb){var name='twc'+Math.random().toString(36).slice(2),s=document.createElement('script'),done=false;
     function end(r){if(done)return;done=true;try{delete window[name];}catch(e){window[name]=undefined;}s.remove();cb(r||{ok:false,error:'network'});}
     window[name]=end;s.src=EP+'?action=towercode&code='+encodeURIComponent(code)+'&callback='+name;s.onerror=function(){end();};setTimeout(function(){end();},15000);document.head.appendChild(s);}
-  if(code){goBtn.textContent='Start after the pipes';startP.textContent='You have a one-time code. It starts you on floor 6, right after Pipe path. Fail a floor after that and the box goes back to floor 1.';}
+  var cpBtn=d.querySelector('.tw-cp');cpBtn.addEventListener('click',function(){if(goBtn.disabled)return;go(1,'cp');});
+  if(code){cpBtn.hidden=true;goBtn.textContent='Start after the pipes';startP.textContent='You have a one-time code. It starts you on floor 6, right after Pipe path. Fail a floor after that and the box goes back to floor 1.';}
   goBtn.addEventListener('click',function(){if(!code){go(1);return;}if(goBtn.disabled)return;goBtn.disabled=true;goBtn.textContent='Checking code...';
     spend(function(r){goBtn.disabled=false;
       if(r.ok&&r.floor){dropCode();go(r.floor);return;}
       if(r.error==='network'){goBtn.textContent='Start after the pipes';startP.textContent='I couldn’t reach the code check. Tap again to retry.';return;}
-      dropCode();startP.textContent=r.error==='used'?'That code has already been used. You can still play from floor 1.':'That code doesn’t work. You can still play from floor 1.';});});
+      cpBtn.hidden=false;dropCode();startP.textContent=r.error==='used'?'That code has already been used. You can still play from floor 1.':'That code doesn’t work. You can still play from floor 1.';});});
 
   /* ---- pause (Maurice 10/19) ---- */
   try{localStorage.removeItem('ma-save-descend-the-tower');}catch(e){}/* no saves: clear any left from testing */
@@ -449,16 +455,16 @@
   function step(dt){t+=dt;if(shake>0)shake=Math.max(0,shake-dt*3);
     if(state==='intro'){phase-=dt;if(phase<=0)state='play';return;}
     if(state==='play'){if(timed()&&!acted()){tl-=dt;if(tl<=0){tl=0;autoTrigger();}}if(state==='play')cur.step(dt);return;}
-    if(state==='drop'){phase-=dt;if(phase<=0)enter(n+1);return;}
-    if(state==='fail'){phase-=dt;if(phase<=0)enter(1);return;}}
+    if(state==='drop'){phase-=dt;if(phase<=0)enter(lvl+1);return;}
+    if(state==='fail'){phase-=dt;if(phase<=0)enter(cpAt());return;}}
   function draw(){ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);var k=scale*dpr,sx=shake?Math.sin(t*80)*6*shake:0;ctx.setTransform(k,0,0,k,sx*k,0);
     if(!cur){sky(1);rail();claw(300,0);box(300,HOLD);deckWithChute(560,300,BW*1.35);return;}
     cur.draw();drawClock();
     if(state==='drop')rubble(W/2,470,1-phase/.8);
-    if(state==='intro'||state==='drop'){var msg=state==='intro'?'FLOOR '+n:'FLOOR '+n+' CLEAR';ctx.fillStyle='rgba(11,23,15,.82)';ctx.fillRect(0,H/2-60,W,120);
+    if(state==='intro'||state==='drop'){var msg=state==='intro'?'FLOOR '+lvl:'FLOOR '+lvl+' CLEAR';ctx.fillStyle='rgba(11,23,15,.82)';ctx.fillRect(0,H/2-60,W,120);
       ctx.fillStyle='#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font="400 54px 'Cracked Imperia',Impact,sans-serif";ctx.fillText(msg,W/2,H/2-8);
-      ctx.font="800 15px Almarai,sans-serif";ctx.fillStyle='#89fbcb';ctx.fillText((state==='intro'?F[n].name:'Down to floor '+(n+1)).toUpperCase(),W/2,H/2+36);ctx.textBaseline='alphabetic';}
-    if(state==='fail'){ctx.fillStyle='rgba(145,37,1,.55)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fffffe';ctx.textAlign='center';ctx.font="400 46px 'Cracked Imperia',Impact,sans-serif";ctx.fillText('BACK TO FLOOR 1',W/2,H/2);}}
+      ctx.font="800 15px Almarai,sans-serif";ctx.fillStyle='#89fbcb';ctx.fillText((state==='intro'?(mode==='cp'&&lvl>1&&(lvl-1)%5===0?'Checkpoint · ':'')+F[n].name:(mode==='cp'&&lvl%5===0?'Checkpoint saved · ':'')+'Down to floor '+(lvl+1)).toUpperCase(),W/2,H/2+36);ctx.textBaseline='alphabetic';}
+    if(state==='fail'){ctx.fillStyle='rgba(145,37,1,.55)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fffffe';ctx.textAlign='center';ctx.font="400 46px 'Cracked Imperia',Impact,sans-serif";ctx.fillText('BACK TO FLOOR '+cpAt(),W/2,H/2);}}
 
   /* ---- sizing and input ---- */
   var scale=1,dpr=1;function fit(){var r=cv.getBoundingClientRect();if(!r.width)return;dpr=Math.min(window.devicePixelRatio||1,2);cv.width=Math.round(r.width*dpr);cv.height=Math.round(r.height*dpr);scale=r.width/W;}
@@ -486,7 +492,7 @@
   document.addEventListener('visibilitychange',function(){last=0;acc=0;if(document.hidden)pause();});requestAnimationFrame(frame);hud();
 
   /* test hooks, only with ?preview=1 and window.__towerTest set before load */
-  if(window.__towerTest&&/[?&]preview=1\b/.test(location.search))window.__tower={go:function(k){startOv.hidden=true;enter(k);state='play';ctl();},floor:function(){return n;},state:function(){return state;},cur:function(){return cur;},clear:clear,fail:fail,
+  if(window.__towerTest&&/[?&]preview=1\b/.test(location.search))window.__tower={go:function(k,m){if(m)setMode(m);startOv.hidden=true;enter(k);state='play';ctl();},floor:function(){return n;},level:function(){return lvl;},mode:function(){return mode;},state:function(){return state;},cur:function(){return cur;},clear:clear,fail:fail,
     paused:function(){return paused;},pause:pause,resume:resume,clock:function(){return tl;},best:function(){return best;}};
 })();
 </script>
