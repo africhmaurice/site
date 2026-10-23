@@ -197,7 +197,7 @@ const HIGHLIGHTS = [
   ['The Headline Numbers', [
     ['1,016', 'Treasure hunters (readers) from 18 countries.'],
     ['12,052', 'Hunt tasks completed successfully, not counting unsuccessful attempts.'],
-    ['924', 'Social posts about the hunt online.'],
+    ['924', 'Social posts about Cello’s Gate online.'],
     ['20,291', 'Website visitors since the hunt began: +6,929%. About 700 visitors a day.'],
     ['62,382', 'Website page views: +11,702% since the hunt began.'],
     ['27,714', 'Goodreads “want to read” total: +3,489 (+14.4%) since the hunt began.'],
