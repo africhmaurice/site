@@ -416,11 +416,11 @@
   function spend(cb){var name='twc'+Math.random().toString(36).slice(2),s=document.createElement('script'),done=false;
     function end(r){if(done)return;done=true;try{delete window[name];}catch(e){window[name]=undefined;}s.remove();cb(r||{ok:false,error:'network'});}
     window[name]=end;s.src=EP+'?action=towercode&code='+encodeURIComponent(code)+'&callback='+name;s.onerror=function(){end();};setTimeout(function(){end();},15000);document.head.appendChild(s);}
-  if(code){goBtn.textContent='Start at the pipes';startP.textContent='You have a one-time code. It starts you on floor 5, Pipe path. Fail a floor after that and the box goes back to floor 1.';}
+  if(code){goBtn.textContent='Start after the pipes';startP.textContent='You have a one-time code. It starts you on floor 6, right after Pipe path. Fail a floor after that and the box goes back to floor 1.';}
   goBtn.addEventListener('click',function(){if(!code){go(1);return;}if(goBtn.disabled)return;goBtn.disabled=true;goBtn.textContent='Checking code...';
     spend(function(r){goBtn.disabled=false;
       if(r.ok&&r.floor){dropCode();go(r.floor);return;}
-      if(r.error==='network'){goBtn.textContent='Start at the pipes';startP.textContent='I couldn’t reach the code check. Tap again to retry.';return;}
+      if(r.error==='network'){goBtn.textContent='Start after the pipes';startP.textContent='I couldn’t reach the code check. Tap again to retry.';return;}
       dropCode();startP.textContent=r.error==='used'?'That code has already been used. You can still play from floor 1.':'That code doesn’t work. You can still play from floor 1.';});});
 
   /* ---- pause (Maurice 10/19) ---- */
