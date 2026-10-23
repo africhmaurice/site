@@ -398,7 +398,7 @@ var HG = (function () {
     function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
     // The weekly board (Maurice, 2026-10-20): today's puzzle only (never a ?hg-day= preview), on the server's clock.
     var board = (o.board && window.HGBoard && puzzle && !preview) ? HGBoard.create({ game: o.key, label: ((document.querySelector('.hg-h1') || {}).textContent || o.label).trim(), day: day, send: send,
-      card: document.querySelector('.hg-card'), lineAfter: document.getElementById('hg-next'), me: function () { return me; }, onMe: function (em) { me = me || {}; me.email = em; saveMe(me); },
+      card: document.querySelector('.hg-card'), lineAfter: document.getElementById('hg-next'), me: function () { return me; }, onMe: function (em, fn) { me = me || {}; if (me.email && me.email.toLowerCase() !== em.toLowerCase()) me = {}; me.email = em; if (fn) me.first_name = fn; saveMe(me); },
       onTime: function (s) { state.secs = s; save(); if (paintClock) paintClock(); if (api.onTime) api.onTime(s); } }) : null;
     gateBoard = board;
     if (board && board.started()) state.secs = board.elapsed();
@@ -426,7 +426,8 @@ var HG = (function () {
           time: api.share.timed ? '' : (playEl ? clock() : api.share.time) });
         var head = '<div class="hg-bang">' + (message || 'NICE WORK!') + '</div>' + (extra ? '<p style="margin-bottom:10px">' + extra + '</p>' : '');
         if (state.claimed) return claimed(state.claimed);
-        if (me.email) return oneClick();
+        // a known player is claimed at once, no button to press (Maurice 10/23: solving claims your points)
+        if (me.email) { oneClick(); return claim(); }
         return form();
         function oneClick() {
           resultEl.innerHTML = head + '<p>' + (points < o.points ? 'Claim' : 'You solved it. Claim') + ' your ' + points + ' points for today.</p>' +
@@ -745,9 +746,13 @@ var HGBoard = (function () {
     '.dbd-board span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fffffe}' +
     '.dbd-board b{font-weight:800;color:#fffffe;font-variant-numeric:tabular-nums;white-space:nowrap}' +
     '.dbd-board li.me span,.dbd-board li.me b{color:#a2f590}' +
-    '.dbd-who{display:flex;flex-direction:column;gap:10px;max-width:320px;width:100%;font-weight:700;font-size:15px;line-height:1.5;color:#fffffe;text-align:center}' +
-    '.dbd-who input{font:inherit;font-weight:400;padding:12px 14px;border:2px solid #f3ead9;background:#0b170f;color:#fffffe;border-radius:0;width:100%;box-sizing:border-box}' +
+    '.dbd-who{display:flex;flex-direction:column;gap:12px;max-width:320px;width:100%;font-weight:700;font-size:15px;line-height:1.5;color:#fffffe;text-align:center}' +
+    '.dbd-who p{margin:0}' +
+    '.dbd-who label{display:flex;flex-direction:column;gap:6px;text-align:left;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#c3a6ff}' +
+    '.dbd-who input{text-transform:none;letter-spacing:normal;font-size:16px;font:inherit;font-weight:400;padding:12px 14px;border:2px solid #f3ead9;background:#0b170f;color:#fffffe;border-radius:0;width:100%;box-sizing:border-box}' +
     '.dbd-whoerr{margin:0;min-height:1.5em;color:#ff4c0f!important}' +
+    '.dbd-started:empty{display:none}' +
+    '.dbd-board li.dbd-st b{font-weight:700;color:#c3a6ff}' +
     '.dbd-board li.you{border-top:1px dashed rgba(162,245,144,.45);margin-top:6px;padding-top:12px}' +
     '.dbd-board .dbd-empty{display:block;grid-column:1/-1;white-space:normal;overflow:visible;color:#f3ead9;font-weight:700}' +
     '.hg-locked+.dbd-panel{display:none}' +
@@ -767,7 +772,8 @@ var HGBoard = (function () {
     function getTicket() {
       if (!rec || rec.ticket || rec.end || pending) return;
       pending = true;
-      o.send({ action: 'dailystart', game: o.game, day: o.day, email: myEmail() }, function (res) {
+      var who = (o.me && o.me()) || {};
+      o.send({ action: 'dailystart', game: o.game, day: o.day, email: myEmail(), first_name: who.first_name || '', handle: who.handle || '' }, function (res) {
         pending = false;
         if (res && res.ok && res.ticket && !rec.ticket) {
           rec.ticket = res.ticket;
@@ -775,6 +781,7 @@ var HGBoard = (function () {
           if (res.again && res.t0 && res.now && !rec.end) rec.local = Date.now() - Math.max(0, res.now - res.t0);
           save(); if (solve) ping();
         }
+        refresh();   // you show up on the board as Playing
         flush();
       });
     }
@@ -798,7 +805,7 @@ var HGBoard = (function () {
     if (rec && !rec.end) getTicket();   // started, but the ticket never came back (say the page was closed too soon)
 
     // ---- the board panel and the one-line rule ----
-    var panel = null, boardEl = null, leftEl = null, week = friday(o.day), note = '';
+    var panel = null, boardEl = null, leftEl = null, startedEl = null, week = friday(o.day), note = '';
     if (o.lineAfter && o.lineAfter.parentNode) {
       var line = document.createElement('p'); line.className = 'dbd-line';
       line.textContent = 'Weekly leaderboard: the fastest single solve of the week wins 500 points every Friday at 11:59 PM ET.';
@@ -807,10 +814,10 @@ var HGBoard = (function () {
     if (o.card && o.card.parentNode) {
       panel = document.createElement('section'); panel.className = 'dbd-panel'; panel.setAttribute('aria-label', o.label + ' weekly board');
       try { var mw = getComputedStyle(o.card).maxWidth; if (mw && mw !== 'none') panel.style.maxWidth = mw; } catch (e) {}
-      panel.innerHTML = '<h2 class="dbd-ph">This week’s top sky pirates</h2><p class="dbd-count">Board closes in <span class="dbd-left">...</span></p>' +
+      panel.innerHTML = '<h2 class="dbd-ph">This week’s top sky pirates</h2><p class="dbd-count">Board closes in <span class="dbd-left">...</span></p><p class="dbd-count dbd-started"></p>' +
         '<ol class="dbd-board"><li><span class="dbd-empty">Loading the board...</span></li></ol>';
       o.card.parentNode.insertBefore(panel, o.card.nextSibling);
-      boardEl = panel.querySelector('.dbd-board'); leftEl = panel.querySelector('.dbd-left');
+      boardEl = panel.querySelector('.dbd-board'); leftEl = panel.querySelector('.dbd-left'); startedEl = panel.querySelector('.dbd-started');
       var tickWeek = function () {
         var s = Math.max(0, Math.floor((weekEnd(week) - Date.now()) / 1000)), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
         leftEl.textContent = (d ? d + 'd ' : '') + h + 'h ' + ('0' + m).slice(-2) + 'm';
@@ -827,15 +834,18 @@ var HGBoard = (function () {
       var mine = myName().toLowerCase();
       boardEl.innerHTML = list.map(function (r, i) {
         var me = r.me || (mine && String(r.name).toLowerCase() === mine);
+        if (r.status) return '<li class="dbd-st' + (me ? ' me' : '') + '"><i>&ndash;</i><span>' + esc(r.name) + '</span><b>' + (r.status === 'playing' ? 'Playing' : 'Did not finish') + '</b></li>';
         return '<li' + (me ? ' class="me"' : '') + '><i>' + (i + 1) + '</i><span>' + esc(r.name) + '</span><b>' + fmt(r.best != null ? r.best : r.secs) + ' fastest</b></li>';   /* the fastest single solve this week; daily play is optional (Maurice, 2026-10-22) */
-      }).join('') + (you && you.rank > list.length ? '<li class="me you"><i>' + you.rank + '</i><span>You' + (players ? ' (of ' + players + ')' : '') + '</span><b>' + fmt(you.best) + ' fastest</b></li>' : '');
+      }).join('') + (you && you.rank > list.length ? '<li class="me you"><i>' + you.rank + '</i><span>You' + (players ? ' (of ' + players + ')' : '') + '</span><b>' + fmt(you.best) + ' fastest</b></li>'
+        : you && you.status && !list.some(function (r) { return r.status && r.me; }) && !(mine && list.some(function (r) { return r.status && String(r.name).toLowerCase() === mine; })) ? '<li class="me you dbd-st"><i>&ndash;</i><span>You</span><b>' + (you.status === 'playing' ? 'Playing' : 'Did not finish') + '</b></li>' : '');
     }
     function refresh() {
       if (!boardEl) return;
       var em = ((o.me && o.me()) || {}).email, q = { action: 'dailytop', game: o.game };
       if (em) q.email = em;
       o.send(q, function (res) {
-        if (res && res.ok) { if (res.week) week = res.week; paint(res.top, res.me, res.players); }
+        if (res && res.ok) { if (res.week) week = res.week; paint(res.top, res.me, res.players);
+          if (startedEl) startedEl.textContent = res.started ? res.started + ' started, ' + (res.players || 0) + ' finished' : ''; }
         else boardEl.innerHTML = '<li><span class="dbd-empty">The board is resting. Try again soon.</span></li>';
       });
     }
@@ -885,16 +895,21 @@ var HGBoard = (function () {
         el.setAttribute('aria-hidden', 'true'); el.setAttribute('inert', '');
         var cover = document.createElement('div'); cover.className = 'dbd-cover';
         // the board needs to know who is playing before the clock starts (Maurice 10/23: first START counts, on any device)
-        var ask = !rec && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(myEmail());
-        cover.innerHTML = '<h2>' + esc(o.label) + '</h2>' + (ask ? '<label class="dbd-who">Who\u2019s playing? Your email puts your time on the weekly board.<input type="email" autocomplete="email" placeholder="you@example.com"></label><p class="dbd-whoerr" aria-live="polite"></p>' : '') +
+        var who0 = (o.me && o.me()) || {}, ask = !rec && (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(myEmail()) || !String(who0.first_name || '').trim());
+        cover.innerHTML = '<h2>' + esc(o.label) + '</h2>' + (ask ? '<div class="dbd-who"><p>Who\u2019s playing? Pressing START puts you on this week\u2019s board, and solving claims your points.</p>' +
+          '<label>First name<input class="dbd-first" autocomplete="given-name" value="' + esc(who0.first_name || '') + '"></label>' +
+          '<label>Email you use for the hunt<input class="dbd-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" value="' + esc(myEmail()) + '"></label></div><p class="dbd-whoerr" aria-live="polite"></p>' : '') +
           '<button type="button">START</button><p>The clock starts the moment you press START and keeps running until you solve it.</p>';
         box.appendChild(cover);
+        // the questions can be taller than a short puzzle: the box grows to fit them
+        if (ask) { var fit = function () { box.style.minHeight = Math.max(260, cover.scrollHeight) + 'px'; }; fit(); setTimeout(fit, 300); window.addEventListener('resize', fit); }
         var self = this;
         cover.querySelector('button').onclick = function () {
           if (ask) {
-            var em = cover.querySelector('.dbd-who input').value.trim();
+            var fn = cover.querySelector('.dbd-first').value.trim(), em = cover.querySelector('.dbd-email').value.trim();
+            if (!fn) { cover.querySelector('.dbd-whoerr').textContent = 'A first name, please.'; return; }
             if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { cover.querySelector('.dbd-whoerr').textContent = 'That email does not look right.'; return; }
-            if (o.onMe) o.onMe(em);
+            if (o.onMe) o.onMe(em, fn);
           }
           self.begin(); cover.remove(); el.classList.remove('dbd-hidden'); el.removeAttribute('aria-hidden'); el.removeAttribute('inert'); go();
         };
