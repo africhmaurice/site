@@ -203,7 +203,7 @@ const HIGHLIGHTS = [
     ['27,714', 'Goodreads “want to read” total: +3,489 (+14.4%) since the hunt began.'],
     ['+35%', 'Newsletter subscribers.'],
     ['+65%', 'Discord members.'],
-    ['16,241', 'Discord messages posted during the hunt, +558% compared to the 24 days before the hunt.'],
+    ['22,768', 'Discord messages posted during the hunt, +635% compared to the 34 days before the hunt.'],
     ['+655', 'Instagram followers, up 4.3%.'],
   ], true],
   // Rewards awarded (Oct 20) = 19 digital rewards (+ Sky Gauntlet, Act Three 150k) and 20 U.S./UK winners (Act One + Act Two, 5 each). Oct 17 was 18 digital rewards: the 16 below plus Trench Run and the 500K Club (Act Two 500k). Was 16 (Act One: The Blind Duel, Crew Dossier, phone background,
