@@ -197,7 +197,7 @@ const HIGHLIGHTS = [
   ['The Headline Numbers', [
     ['1,016', 'Treasure hunters (readers) from 18 countries.'],
     ['12,052', 'Hunt tasks completed successfully, not counting unsuccessful attempts.'],
-    ['924', 'Social posts about Cello’s Gate online.'],
+    ['1,156', 'Social posts about Cello’s Gate online.'],
     ['20,291', 'Website visitors since the hunt began: +6,929%. About 700 visitors a day.'],
     ['62,382', 'Website page views: +11,702% since the hunt began.'],
     ['27,714', 'Goodreads “want to read” total: +3,489 (+14.4%) since the hunt began.'],
@@ -259,7 +259,7 @@ const ANGLES = [
   'Reading Is Now a Community Hobby—How Social Media Is Changing the Way We Experience Books',
   'A Choose Your Own Adventure Game & Hidden Loot Boxes: How the Author of Cello’s Gate Is Getting Buzz for His Breakout Sci-Fantasy Novel',
   'He Self-Published His Debut in 2025. A Year Later, Simon & Schuster Is Releasing It.',
-  'Readers Wrote 924 Posts About a Book That Isn’t Out Yet',
+  'Readers Wrote 1,156 Posts About a Book That Isn’t Out Yet',
   'A Starred Publishers Weekly Debut for Fans of Dungeon Crawler Carl and Red Rising',
 ];
 // The audiobook announcement reel (Instagram).
