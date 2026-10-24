@@ -1127,14 +1127,14 @@
 <script>
 // Weekly champions (Maurice, 2026-10-24): the reigning champion across the top of the game, Normal or Easy Mode to match
 // the tab that's picked. Data: the leaderboard site's champions.json (each board's latest paid weekly winner).
-(function(){var root=document.getElementById('ma-gauntlet');if(!root)return;var hud=root.querySelector('.sg-hud');if(!hud)return;var data=null,p=null;
+(function(){var root=document.getElementById('ma-gauntlet');if(!root)return;var hud=root.querySelector('.sg-stage');if(!hud)return;   /* sits flush on the game screen, under the score bar (Maurice 10/24) */var data=null,p=null;
 function key(n){return String(n||'').trim().toLowerCase();}
 function show(){if(!data)return;var t=root.querySelector('.sg-mode[aria-selected="true"]'),g=data.games&&data.games[t&&t.getAttribute('data-mode')==='easy'?'gauntlet_easy':'gauntlet'],c=g&&g.champion;
   if(!c){if(p)p.hidden=true;return;}
   if(!p){p=document.createElement('p');p.className='wk-champ ma-rv ma-in';   /* ma-rv ma-in: the site loader's scroll-in fade leaves it alone */hud.parentNode.insertBefore(p,hud);addEventListener('resize',fit);}
   var n=(g.wins||{})[key(c.key)];p.hidden=false;p.innerHTML='';var a=document.createElement('span');a.className='wk-ci';a.textContent='Current Champion: ';var b=document.createElement('span');b.className='wk-ci wk-name';b.textContent=c.name;p.appendChild(a);p.appendChild(b);
   if(n){var s=document.createElement('sup');s.title=n+(n===1?' weekly win':' weekly wins');s.textContent=n;p.appendChild(s);}fit();}
-function fit(){if(!p||p.hidden)return;p.style.width=hud.offsetWidth+'px';p.style.fontSize='';var fs=parseFloat(getComputedStyle(p).fontSize);while(p.scrollWidth>p.clientWidth+1&&fs>12){fs-=1;p.style.fontSize=fs+'px';}}
+function fit(){if(!p||p.hidden)return;p.style.width=hud.offsetWidth+'px';p.style.marginBottom='';var gap=hud.getBoundingClientRect().top-p.getBoundingClientRect().bottom;if(gap)p.style.marginBottom=(-gap)+'px';p.style.fontSize='';var fs=parseFloat(getComputedStyle(p).fontSize);while(p.scrollWidth>p.clientWidth+1&&fs>12){fs-=1;p.style.fontSize=fs+'px';}}
 [].forEach.call(root.querySelectorAll('.sg-mode'),function(b){b.addEventListener('click',function(){setTimeout(show,0);});});
 fetch('https://africhmaurice.github.io/leaderboard/champions.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.ok?r.json():null;}).then(function(d){data=d;show();}).catch(function(){});})();
 </script>
