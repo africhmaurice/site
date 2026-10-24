@@ -12,7 +12,7 @@
   var MEGA = [[['link', 'THE TREASURE HUNT', '/the-hunt'], ['group', 'EARN POINTS']], [['link', 'SUBMIT POINTS', '/points'], ['group', 'CURRENT PROGRESS']], [['group', 'ADVENTURE'], ['gift']]];
   // categories in the order the shop page shows them; any new category follows, A to Z
   var CAT_ORDER = ['stickers', 'apparel', 'hats', 'beanies', 'pins', 'mugs', 'puzzles', 'art-prints'];
-  var ALL = '/collections/merch', AURA = SITE + '/oracles-gift/aura-spectrum';
+  var ALL = '/collections/merch', AURA = SITE + '/oracles-gift/aura-spectrum', QUIZ = SITE + '/sky-pirate-quiz-61748';   // the quiz under Aura Spectrum (Maurice, 2026-10-24)
 
   var css = document.createElement('style'); css.id = 'ma-shop-menu';
   css.textContent =
@@ -92,7 +92,7 @@
       var c = el('div', 'tm-col');
       col.forEach(function (it) {
         if (it[0] === 'link') { c.appendChild(link(SITE + it[2], it[1], 'tm-top')); return; }
-        if (it[0] === 'gift') { var gb = el('div', 'tm-grp'); gb.appendChild(el('span', '', "ORACLE'S GIFT")); gb.appendChild(link(AURA, 'AURA SPECTRUM')); c.appendChild(gb); return; }
+        if (it[0] === 'gift') { var gb = el('div', 'tm-grp'); gb.appendChild(el('span', '', "ORACLE'S GIFT")); gb.appendChild(link(AURA, 'AURA SPECTRUM')); gb.appendChild(link(QUIZ, 'THE SKY PIRATE QUIZ')); c.appendChild(gb); return; }
         if (!gs[it[1]]) return;
         var g = el('div', 'tm-grp'); kids(gs[it[1]], function (k) { g.appendChild(k); }); c.appendChild(g);
       });
@@ -103,7 +103,7 @@
   function phoneHunt(gs, into) {
     MEGA.forEach(function (col) { col.forEach(function (it) {
       if (it[0] === 'link') { into.appendChild(link(SITE + it[2], it[1], 'tm-top')); return; }
-      if (it[0] === 'gift') { var gb = el('div', 'ma-mgrp'); gb.appendChild(el('span', '', "ORACLE'S GIFT")); gb.appendChild(link(AURA, 'AURA SPECTRUM')); into.appendChild(gb); return; }
+      if (it[0] === 'gift') { var gb = el('div', 'ma-mgrp'); gb.appendChild(el('span', '', "ORACLE'S GIFT")); gb.appendChild(link(AURA, 'AURA SPECTRUM')); gb.appendChild(link(QUIZ, 'THE SKY PIRATE QUIZ')); into.appendChild(gb); return; }
       if (!gs[it[1]]) return;
       var g = el('div', 'ma-mgrp'); kids(gs[it[1]], function (k) { g.appendChild(k); }); into.appendChild(g);
     }); });
@@ -226,7 +226,7 @@
     // Trench Market, Oracle's Gift, and Pre-Order: each a box with its title and a line under it, as on the website
     var tm = drop('TRENCH MARKET', '/'), tmIn = boxed(tm, 'TRENCH MARKET');
     cats(tmIn, function (a) { tmIn.appendChild(a); });
-    var gift = drop("ORACLE'S GIFT", SITE + '/oracles-gift/aura-spectrum'); boxed(gift, "ORACLE'S GIFT").appendChild(link(SITE + '/oracles-gift/aura-spectrum', 'AURA SPECTRUM'));
+    var gift = drop("ORACLE'S GIFT", SITE + '/oracles-gift/aura-spectrum'); var giftIn = boxed(gift, "ORACLE'S GIFT"); giftIn.appendChild(link(SITE + '/oracles-gift/aura-spectrum', 'AURA SPECTRUM')); giftIn.appendChild(link(QUIZ, 'THE SKY PIRATE QUIZ'));
     var row = [th, tm, link(SITE + '/links', 'LINKS', 'tm-nav__link'), link(SITE + '/newsletter', 'NEWSLETTER', 'tm-nav__link'), link(DISCORD, 'JOIN THE DISCORD!', 'tm-nav__link')];
     while (nav.firstChild) nav.removeChild(nav.firstChild);
     row.forEach(function (n) { nav.appendChild(n); });
@@ -241,7 +241,7 @@
       var sum = function (d, text) { var s = el('summary', '', text); var c = caret(); if (c) s.appendChild(c); d.appendChild(s); };
       sum(mHunt, 'THE TREASURE HUNT'); sum(mShop, 'TRENCH MARKET'); sum(mGift, "ORACLE'S GIFT");
       cats(mShop, function (a) { mShop.appendChild(a); }, true);
-      mGift.appendChild(link(SITE + '/oracles-gift/aura-spectrum', 'AURA SPECTRUM'));
+      mGift.appendChild(link(SITE + '/oracles-gift/aura-spectrum', 'AURA SPECTRUM')); mGift.appendChild(link(QUIZ, 'THE SKY PIRATE QUIZ'));
       var mrow = [mHunt, mShop, link(SITE + '/links', 'LINKS'), link(SITE + '/newsletter', 'NEWSLETTER'), link(DISCORD, 'JOIN THE DISCORD!')];
       while (list.firstChild) list.removeChild(list.firstChild);
       mrow.forEach(function (n) { list.appendChild(n); });

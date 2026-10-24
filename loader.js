@@ -637,6 +637,7 @@
     var box = document.createElement('div'); box.className = boxCls;
     var h = document.createElement('span'); h.textContent = "ORACLE'S GIFT"; box.appendChild(h);
     var a = document.createElement('a'); a.href = AURA_URL; a.className = linkCls; a.textContent = 'AURA SPECTRUM'; box.appendChild(a);
+    var q = document.createElement('a'); q.href = QUIZ_URL; q.className = linkCls; q.textContent = 'THE SKY PIRATE QUIZ'; box.appendChild(q);
     return box;
   }
   function megaPanel(ov) {
@@ -911,6 +912,8 @@
   // Last in the menu, just before Pre-Order: an Oracle's Gift dropdown with the Aura Spectrum (the Aura Color Search
   // Database) under it (Maurice, 2026-10-03; the Act Two reward at 80k). It is a copy of the Submit dropdown, renamed.
   var AURA_URL = SITE + '/oracles-gift/aura-spectrum', GIFT = '/oracles-gift', GIFT_TEXT = "Oracle's Gift", AURA_TEXT = 'Aura Spectrum';
+  // the Sky Pirate Quiz (the Act Three 300K reward) sits under Aura Spectrum in every Oracle's Gift menu (Maurice, 2026-10-24)
+  var QUIZ_URL = SITE + '/sky-pirate-quiz-61748', QUIZ_TEXT = 'The Sky Pirate Quiz';
   // the Pre-Order menu item in a list of menu items (null puts a new item at the end)
   function preOrder(items) {
     for (var i = 0; i < items.length; i++) if (/^\s*(Folder:\s*)?Pre-Order/i.test(items[i].textContent)) return items[i];
@@ -927,6 +930,8 @@
     for (var i = 1; i < rows.length; i++) rows[i].parentNode.removeChild(rows[i]);
     var a = rows[0].querySelector('a'); a.href = AURA_URL; a.removeAttribute('target');
     a.querySelector('.header-nav-folder-item-content').textContent = AURA_TEXT;
+    var qr = rows[0].cloneNode(true), qa = qr.querySelector('a'); qa.href = QUIZ_URL; qa.querySelector('.header-nav-folder-item-content').textContent = QUIZ_TEXT;
+    rows[0].parentNode.insertBefore(qr, rows[0].nextSibling);
     return item;
   }
   function mainMerch() {
@@ -968,6 +973,8 @@
       var prow = panel.querySelectorAll('.header-menu-nav-item:not(.header-menu-controls)');
       for (var j = 1; j < prow.length; j++) prow[j].parentNode.removeChild(prow[j]);
       var pa = prow[0].querySelector('a'); pa.href = AURA_URL; pa.querySelector('.header-menu-nav-item-content').textContent = AURA_TEXT;
+      var pq = prow[0].cloneNode(true), pqa = pq.querySelector('a'); pqa.href = QUIZ_URL; pqa.querySelector('.header-menu-nav-item-content').textContent = QUIZ_TEXT;
+      prow[0].parentNode.insertBefore(pq, prow[0].nextSibling);
       subPanel.parentNode.insertBefore(panel, subPanel.nextSibling);
     }
   }
@@ -1048,7 +1055,7 @@
       var cta = nav.querySelector('.mn-drop-cta'), links = nav.querySelector('.mn-links');
       if (!links) return;
       var d = document.createElement('div'); d.className = 'mn-drop mn-gift';
-      d.innerHTML = '<a href="javascript:void(0)" class="mn-link" aria-haspopup="true">ORACLE&#39;S GIFT' + caret + '</a><div class="mn-dd"><div class="mn-dd-in"><a href="' + AURA_URL + '">AURA SPECTRUM</a></div></div>';
+      d.innerHTML = '<a href="javascript:void(0)" class="mn-link" aria-haspopup="true">ORACLE&#39;S GIFT' + caret + '</a><div class="mn-dd"><div class="mn-dd-in"><a href="' + AURA_URL + '">AURA SPECTRUM</a><a href="' + QUIZ_URL + '">THE SKY PIRATE QUIZ</a></div></div>';
       // the plain menu items sit in their own box inside .mn-links, with the Pre-Order dropdown after it
       var box = cta && cta.parentNode === links ? cta.previousElementSibling : null;
       if (box && box.tagName === 'DIV' && !box.classList.contains('mn-drop')) box.appendChild(d);
@@ -1057,7 +1064,7 @@
     Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav-ov'), function (ov) {
       if (ov.querySelector('.mn-gift')) return;
       var g = document.createElement('div'); g.className = 'mn-ovgroup mn-gift';
-      g.innerHTML = '<span>ORACLE&#39;S GIFT</span><a href="' + AURA_URL + '">AURA SPECTRUM</a>';
+      g.innerHTML = '<span>ORACLE&#39;S GIFT</span><a href="' + AURA_URL + '">AURA SPECTRUM</a><a href="' + QUIZ_URL + '">THE SKY PIRATE QUIZ</a>';
       ov.insertBefore(g, ov.querySelector(':scope > .mn-cta'));
     });
   }
