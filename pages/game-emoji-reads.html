@@ -828,7 +828,7 @@ var HGBoard = (function () {
         var p = document.createElement('p'); p.className = 'dbd-champ ma-rv ma-in';   // ma-rv ma-in: the site loader's scroll-in fade leaves it alone
         p.innerHTML = '<span class="dbd-ci">Current Champion: </span><span class="dbd-ci dbd-cn">' + esc(c.name) + '</span>' + (n ? '<sup title="' + n + (n === 1 ? ' weekly win' : ' weekly wins') + '">' + n + '</sup>' : '');
         top.parentNode.insertBefore(p, top);
-        var fit = function () { p.style.width = top.offsetWidth + 'px'; p.style.marginBottom = ''; var gap = top.getBoundingClientRect().top - p.getBoundingClientRect().bottom; if (gap) p.style.marginBottom = (-gap) + 'px';   // flush on the game box (Maurice 10/24)
+        var fit = function () { p.style.width = top.offsetWidth + 'px'; p.style.marginBottom = ''; var gap = top.offsetParent === p.offsetParent ? top.offsetTop - (p.offsetTop + p.offsetHeight) : 0;   // layout positions: the loader's scroll-in slide can't throw them off if (gap) p.style.marginBottom = (-gap) + 'px';   // flush on the game box (Maurice 10/24)
            p.style.fontSize = ''; var fs = parseFloat(getComputedStyle(p).fontSize); while (p.scrollWidth > p.clientWidth + 1 && fs > 12) { fs -= 1; p.style.fontSize = fs + 'px'; } };
         fit(); window.addEventListener('resize', fit);
       }).catch(function () {});
