@@ -29,6 +29,9 @@ const socials = D.socials.map((s) => /^mailto:/.test(s.url)
 // the Read Excerpt bar at the very top (Maurice, 2026-10-16)
 const X = D.excerpt;
 const excerptCard = X ? `<a class="lk-copper lk-excerpt" href="${esc(X.url)}"${ext(X.url)} data-link="${X.id}" data-section="top"><img src="${asset(X.img)}" alt="" width="360" height="360"><span><b>${esc(X.label)}</b><small>${esc(X.sub)}</small></span>${arrow}</a>` : '';
+// The Sky Pirate Quiz banner under the launch events, bigger than the Copper Loot Box: the crew art beside the words (Maurice, 2026-10-24)
+const Qz = D.quiz;
+const quizCard = Qz ? `<a class="lk-quiz" href="${esc(Qz.url)}"${ext(Qz.url)} data-link="${Qz.id}" data-section="top"><img src="${asset(Qz.img)}" alt="The crew of the Sky Pirates of Imperia" width="900" height="563"><span><b>${esc(Qz.label)}</b><small>${esc(Qz.sub)}</small><em>Take the quiz ${arrow}</em></span></a>` : '';
 const C = D.copper;
 const copperCard = `<a class="lk-copper" href="${esc(C.url)}" data-link="${C.id}" data-section="top"><img src="${asset(C.img)}" alt="" width="360" height="360"><span><b>${esc(C.label)}</b><small>${esc(C.sub)}</small></span>${arrow}</a>`;
 
@@ -110,6 +113,15 @@ const page = `<!-- ============================================================
 #ma-links .lk-copper small{font-weight:700;font-size:14px;line-height:1.4;opacity:.92}
 #ma-links .lk-copper svg{flex:none;width:20px;height:20px}
 #ma-links .lk-copper:hover{transform:scale(1.03)}
+#ma-links .lk-quiz{display:grid;grid-template-columns:minmax(0,46fr) minmax(0,54fr);align-items:center;gap:20px;padding:20px 24px 20px 16px;border:2px solid #89fbcb;background:linear-gradient(90deg,rgba(8,46,31,.95),rgba(26,94,65,.92));color:var(--parch)!important;text-decoration:none!important;transition:transform .15s ease}
+#ma-links .lk-quiz img{display:block;width:100%;height:auto;filter:drop-shadow(0 8px 14px rgba(0,0,0,.5))}
+#ma-links .lk-quiz span{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+#ma-links .lk-quiz b{font-family:'Atomic Marker',Impact,sans-serif;font-weight:400;font-size:clamp(22px,6vw,32px);line-height:1.2;letter-spacing:.03em}
+#ma-links .lk-quiz small{font-weight:700;font-size:15px;line-height:1.45;opacity:.94}
+#ma-links .lk-quiz em{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;background:#89fbcb;color:#0b170f;font-style:normal;font-weight:800;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
+#ma-links .lk-quiz em svg{width:16px;height:16px}
+#ma-links .lk-quiz:hover{transform:scale(1.02)}
+@media (max-width:520px){#ma-links .lk-quiz{grid-template-columns:minmax(0,1fr);gap:16px;padding:20px}#ma-links .lk-quiz span{align-items:center;text-align:center}}
 #ma-links .lk-feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 #ma-links .lk-secs{display:flex;flex-direction:column;gap:30px;margin-top:8px}
 #ma-links .lk-sec{display:flex;flex-direction:column;gap:12px}
@@ -204,6 +216,7 @@ const page = `<!-- ============================================================
     ${excerptCard}
     ${editions}
     ${topSections}
+    ${quizCard}
     ${copperCard}
     <div class="lk-feats">${feature}</div>
     ${signup}

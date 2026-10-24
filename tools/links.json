@@ -247,7 +247,7 @@
     },
     {
      "id": "aura",
-     "label": "The Oracle's Gift",
+     "label": "Aura Color Spectrum",
      "bg": "pin-03.jpg",
      "url": "https://www.mauriceafrich.com/oracles-gift/aura-spectrum"
     },
@@ -413,5 +413,12 @@
   "img": "../img/cellos-gate-book.webp",
   "url": "https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834#excerpt",
   "_note": "Maurice 2026-10-16 (Navi’s idea): the excerpt bar at the very top, under the title."
+ },
+ "quiz": {
+  "id": "sky-pirate-quiz",
+  "label": "The Sky Pirate Quiz",
+  "sub": "Which character are you most like? Answer 15 questions and find out which member of the crew sums up your personality.",
+  "img": "quiz-crew.webp",
+  "url": "https://www.mauriceafrich.com/sky-pirate-quiz-61748"
  }
 }
