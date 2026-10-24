@@ -9,7 +9,7 @@
 <style>
 @font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
 #ma-quiz{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;padding:140px 20px 80px;
-  background:linear-gradient(rgba(11,23,15,.86),rgba(11,23,15,.86)),url(https://africhmaurice.github.io/site/assets/bg/garden-city-towers.webp) center/cover;background-color:#0b170f;
+  background:linear-gradient(rgba(255,255,254,.84),rgba(255,255,254,.84)),url(https://africhmaurice.github.io/site/assets/bg/garden-city-towers.webp) center/cover;background-color:#0b170f;
   font-family:'Almarai',sans-serif;color:#fffffe;overflow-x:hidden}
 #ma-quiz *{box-sizing:border-box;border-radius:0}
 #ma-quiz .q-head{max-width:860px;margin:0 auto 36px;text-align:center;display:flex;flex-direction:column;gap:14px}
@@ -79,6 +79,27 @@
   #ma-quiz .q-opt.has-box .q-ans{padding-right:56px}
 }
 @media (prefers-reduced-motion:reduce){#ma-quiz .q-fill,#ma-quiz .q-ans,#ma-quiz .q-box,#ma-quiz .r-again{transition:none}}
+#ma-quiz{background-color:#fffffe}
+#ma-quiz .q-eyebrow{color:#0b170f}
+#ma-quiz .q-h1{color:#c53200}
+#ma-quiz .q-sub{color:#0b170f}
+#ma-quiz .q-card{background:rgba(255,255,254,.94);border-color:#c53200}
+#ma-quiz .q-meta,#ma-quiz .q-wait,#ma-quiz .r-eye,#ma-quiz .r-tlabel{color:#c53200}
+#ma-quiz .q-bar{background:#f3ead9;border-color:#c53200}
+#ma-quiz .q-fill{background:#c53200}
+#ma-quiz .q-text,#ma-quiz .r-tag,#ma-quiz .r-desc{color:#0b170f}
+#ma-quiz .q-ans{background:#c53200;border-color:#c53200;color:#fffffe}
+#ma-quiz .q-ans .q-l{background:#fffffe;color:#c53200}
+#ma-quiz .q-ans:hover,#ma-quiz .q-ans:focus-visible{background:#912501;border-color:#0b170f}
+#ma-quiz .q-ans.has-img img{background:#f3ead9}
+#ma-quiz .q-ans.is-color{border-color:#0b170f}
+#ma-quiz .q-ans.is-color:hover,#ma-quiz .q-ans.is-color:focus-visible{border-color:#c53200}
+#ma-quiz .r-traits li{border-color:#0b170f;color:#0b170f}
+#ma-quiz .r-traits li:first-child{background:#0b170f;color:#fffffe}
+#ma-quiz .r-traits li img{background:#f3ead9}
+#ma-quiz .r-make,#ma-quiz .r-again{background:#c53200;border-color:#c53200;color:#fffffe}
+#ma-quiz .r-make:hover,#ma-quiz .r-make:focus-visible,#ma-quiz .r-again:hover,#ma-quiz .r-again:focus-visible{background:#912501;border-color:#912501;color:#fffffe}
+#ma-quiz .r-share{border-color:#c53200;color:#c53200}
 </style>
 <section id="ma-quiz" aria-label="Sky pirate crew quiz">
   <header class="q-head">
