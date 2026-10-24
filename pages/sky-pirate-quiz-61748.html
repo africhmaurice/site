@@ -223,23 +223,15 @@
   start(DATA);
 })();
 </script>
-<script>/* PARALLAX (Maurice, 2026-10-24, the same as the game pages): the night sky behind the quiz moves at 30% of the scroll, under a Parchment wash */(function(){
+<script>/* FIXED BACKGROUND (Maurice, 2026-10-24: "it needs to be fixed"): the night sky stays still while the quiz scrolls over it,
+   under a Parchment wash. A position:fixed layer inside a clipped box, so it also works on iPhones (where background-attachment:fixed does not). */(function(){
   var r=document.getElementById('ma-quiz');if(!r||r.querySelector('.ma-plx'))return;
-  var dir=(window.innerWidth||1400)<=900?'m/':'d/',calm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches,SPEED=.3;
+  var dir=(window.innerWidth||1400)<=900?'m/':'d/';
   if(getComputedStyle(r).position==='static')r.style.position='relative';r.style.isolation='isolate';
   Array.prototype.forEach.call(r.children,function(c){var cs=getComputedStyle(c);if(cs.position==='static'){c.style.position='relative';}if(!cs.zIndex||cs.zIndex==='auto')c.style.zIndex='1';});
   var w=document.createElement('div');w.className='ma-plx';w.setAttribute('aria-hidden','true');
-  w.style.cssText='position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none';
-  var im=document.createElement('div');im.style.cssText='position:absolute;left:0;right:0;top:0;background:url(https://africhmaurice.github.io/site/assets/bg/'+dir+'night-sky-clouds-as184255512.webp) center/cover no-repeat;will-change:transform';
+  w.style.cssText='position:absolute;inset:0;z-index:-1;overflow:hidden;clip-path:inset(0);pointer-events:none';
+  var im=document.createElement('div');im.style.cssText='position:fixed;left:0;top:0;width:100vw;height:100vh;background:url(https://africhmaurice.github.io/site/assets/bg/'+dir+'night-sky-clouds-as184255512.webp) center/cover no-repeat';
   var wash=document.createElement('div');wash.style.cssText='position:absolute;inset:0;background:rgba(255,255,254,.78)';
   w.appendChild(im);w.appendChild(wash);r.insertBefore(w,r.firstChild);
-  var ticking=false;
-  function move(){ticking=false;
-    var vh=window.innerHeight||800,b=r.getBoundingClientRect(),rh=r.offsetHeight,past=-b.top,y;
-    if(rh>vh*1.75){var H=Math.round(vh*1.25);im.style.height=H+'px';y=calm?0:Math.max(0,Math.min(rh-H,past*(1-SPEED)));}
-    else{var ex=Math.round(vh*.5);im.style.height=(rh+ex)+'px';y=calm?-ex/2:Math.max(-ex,Math.min(0,past*(1-SPEED)-ex/2));}
-    im.style.transform='translate3d(0,'+y.toFixed(1)+'px,0)';
-  }
-  function req(){if(!ticking){ticking=true;requestAnimationFrame(move);}}
-  window.addEventListener('scroll',req,{passive:true});window.addEventListener('resize',req);move();setTimeout(move,800);
 })();</script>
