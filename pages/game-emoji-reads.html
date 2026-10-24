@@ -727,6 +727,9 @@ var HGBoard = (function () {
     '.dbd-note{font-size:clamp(14px,1.7vw,16px) !important;line-height:1.5 !important;margin:16px auto 0 !important}' +
     '.dbd-panel{background:#132219;border:2px solid rgba(243,234,217,.18);padding:24px;margin:24px auto 0;display:flex;flex-direction:column;gap:14px;font-family:"Almarai",sans-serif;text-align:left;box-sizing:border-box}' +
     '.dbd-panel *{box-sizing:border-box}' +
+    '.dbd-champ{margin:0 auto 14px;padding:14px 20px;background:#c53200;font-family:"Almarai",sans-serif;font-weight:800;font-size:clamp(17px,2.4vw,26px);line-height:1.2;text-transform:uppercase;color:#fffffe;text-align:center;box-sizing:border-box;white-space:nowrap;overflow:hidden;max-width:100%}' +
+    '.dbd-champ .dbd-ci{font-family:"Cracked Imperia",Impact,sans-serif;font-weight:400;letter-spacing:.03em;line-height:1.2;text-shadow:1px 1.5px 0 #5e1a00,2px 3px 0 #5e1a00,3px 4.5px 0 #5e1a00}' +
+    '.dbd-champ .dbd-cn{color:#ffd9c4}.dbd-champ sup{font-size:.62em;font-weight:800;color:#ffd9c4;margin-left:3px;vertical-align:super;line-height:0}' +
     '.dbd-ph{margin:0;font-family:"Cracked Imperia",Impact,sans-serif;font-weight:400;font-size:clamp(24px,2.4vw,30px);line-height:1.25;letter-spacing:.03em;color:#a2f590}' +
     '.dbd-count{margin:0;font-weight:800;font-size:13px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase;color:#c3a6ff}' +
     '.dbd-board{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}' +
@@ -814,6 +817,20 @@ var HGBoard = (function () {
       };
       tickWeek(); setInterval(tickWeek, 20000);
       refresh();
+      champ();
+    }
+    // the reigning champion across the top of the game (Maurice, 2026-10-24), from the leaderboard site's champions.json,
+    // which lists each board's latest paid weekly winner; no banner until a week has been paid
+    function champ() {
+      fetch('https://africhmaurice.github.io/leaderboard/champions.json?t=' + Math.floor(Date.now() / 300000)).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+        var g = d && d.games && d.games[o.game], c = g && g.champion; if (!c || !o.card || !o.card.parentNode) return;
+        var n = (g.wins || {})[String(c.key || '').toLowerCase()], top = o.card.parentNode.classList.contains('dbd-gate') ? o.card.parentNode : o.card;
+        var p = document.createElement('p'); p.className = 'dbd-champ ma-rv ma-in';   // ma-rv ma-in: the site loader's scroll-in fade leaves it alone
+        p.innerHTML = '<span class="dbd-ci">Current Champion: </span><span class="dbd-ci dbd-cn">' + esc(c.name) + '</span>' + (n ? '<sup title="' + n + (n === 1 ? ' weekly win' : ' weekly wins') + '">' + n + '</sup>' : '');
+        top.parentNode.insertBefore(p, top);
+        var fit = function () { p.style.width = top.offsetWidth + 'px'; p.style.fontSize = ''; var fs = parseFloat(getComputedStyle(p).fontSize); while (p.scrollWidth > p.clientWidth + 1 && fs > 12) { fs -= 1; p.style.fontSize = fs + 'px'; } };
+        fit(); window.addEventListener('resize', fit);
+      }).catch(function () {});
     }
     function myEmail() { return String(((o.me && o.me()) || {}).email || '').trim(); }
     function myName() { var me = (o.me && o.me()) || {}; return me.handle ? '@' + String(me.handle).replace(/^@+/, '') : (me.first_name || ''); }

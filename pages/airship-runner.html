@@ -482,6 +482,9 @@ var ArcadeCard = (function () {
       if(flaky&&attempt<(res&&res.error==='empty'?3:2))return setTimeout(function(){send(payload,done,attempt+1);},1500);
       done(res||{ok:false,error:'network'});
     };
+    /* a reply that never comes (a phone that locks or switches apps mid-request) no longer leaves the run "logging" forever
+       (Theresa, 10/24): after 40 s the page stops waiting; the run itself has usually landed */
+    var wait=setTimeout(function(){finish({ok:false,error:'wait'});},40000),fin=finish;finish=function(res){clearTimeout(wait);fin(res);};
     try{fetch(ENDPOINT,{method:'POST',body:JSON.stringify(payload)}).then(function(r){return r.json();}).then(finish).catch(function(){jsonp(payload,finish);});}
     catch(e){jsonp(payload,finish);}
   }
@@ -887,6 +890,7 @@ var ArcadeCard = (function () {
       }
       var e=res&&res.error;
       if(e==='slow'){msg('Easy, captain. Logging it in a few seconds...');return setTimeout(function(){submit(run);},6000);}
+      if(e==='wait'){msg('The ship’s log is answering slowly. Your run has most likely landed already: check the board below in a minute.');setTimeout(refreshBoard,10000);setTimeout(refreshBoard,40000);return;}
       msg(({email:'That email does not look right.',closed:'The hunt is over, so runs no longer go on the board.',ticket:'This run took too long to check in, so it cannot go on the board.',
         check:'The Captain could not verify this run.',limit:'That is a lot of flying for one day. Come back tomorrow!'})[e]||'The ship is slow today. Give it another go in a moment.',1);
       if(!e||e==='network'||e==='server'||e==='empty'){whoEl.hidden=false;whoEl.innerHTML='<button type="button" class="ar-btn ghost">TRY AGAIN</button>';whoEl.querySelector('button').onclick=function(){whoEl.hidden=true;submit(run);};}
