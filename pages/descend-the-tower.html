@@ -61,6 +61,14 @@
 #ma-tower .tw-pad.on{display:flex}
 #ma-tower .tw-pad button{flex:1;min-height:56px;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#fffffe;background:#132219;border:1px solid rgba(243,234,217,.5);touch-action:none;-webkit-user-select:none;user-select:none}
 #ma-tower .tw-pad button.down{background:#1a5e41;border-color:#89fbcb}
+#ma-tower .tw-help{width:min(100%,600px);box-sizing:border-box;border:1px solid rgba(137,251,203,.45);background:rgba(11,23,15,.6);padding:20px;display:flex;flex-direction:column;gap:12px;text-align:left}
+#ma-tower .tw-help h3{margin:0;font:800 13px/1.3 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#89fbcb}
+#ma-tower .tw-help p{margin:0;font-size:15px;line-height:1.55;color:#f3ead9}
+#ma-tower .tw-hwho{display:flex;flex-wrap:wrap;gap:12px}
+#ma-tower .tw-hwho label{display:flex;flex-direction:column;gap:6px;font:800 12px/1.2 'Almarai',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#89fbcb;flex:1 1 200px;min-width:0}
+#ma-tower .tw-hwho input{box-sizing:border-box;width:100%;padding:10px 12px;border:1px solid rgba(243,234,217,.5);background:#0b170f;color:#fffffe;font:700 15px/1.3 'Almarai',sans-serif;border-radius:0}
+#ma-tower .tw-hmsg{font-weight:700;color:#c3a6ff;min-height:1.3em}
+#ma-tower .tw-hb{align-self:flex-start}
 #ma-tower .tw-win{width:min(100%,600px);display:flex;flex-direction:column;align-items:center;gap:16px;padding:28px 24px 32px;background:#2c6021;border:2px solid #a2f590}
 #ma-tower .tw-win h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(34px,5vw,54px);line-height:1.2;letter-spacing:.03em;color:#a2f590}
 #ma-tower .tw-win p{margin:0;font-size:clamp(16px,1.7vw,19px);line-height:1.5;color:#fffffe;max-width:440px}
@@ -84,6 +92,13 @@
   </div>
   <p class="tw-msg" aria-live="polite"></p>
   <div class="tw-pad" aria-label="Controls"><button type="button" data-k="l">Left</button><button type="button" data-k="j">Jump</button><button type="button" data-k="r">Right</button></div>
+  <div class="tw-help" role="region" aria-label="Help with the tower">
+    <h3>Need a hand?</h3>
+    <p class="tw-htext">For 200 hunt points, Classic gets a checkpoint on every floor: fail a floor and you try that floor again instead of going back to floor 1.</p>
+    <div class="tw-hwho" hidden><label>First name<input class="tw-hfirst" autocomplete="given-name"></label><label>Email you use for the hunt<input class="tw-hemail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com"></label></div>
+    <button class="tw-btn tw-hb" type="button">Add checkpoints · 200 points</button>
+    <p class="tw-hmsg" aria-live="polite"></p>
+  </div>
   <div class="tw-win" hidden>
     <h2>The bottom!</h2>
     <p>Ten floors down. Loot box 75 is yours. Tap the box to claim it.</p>
@@ -387,9 +402,10 @@
 
   /* ================= the tower ================= */
   var n=1,lvl=1,mode='classic',TOTAL=10,cur=null,state='title',phase=0,t=0,shake=0,missI=Math.floor(Math.random()*FAIL.length);
-  function cpAt(){return mode==='cp'?Math.floor((lvl-1)/5)*5+1:1;}
+  var EVERY=false;   /* paid help bought (Maurice 10/25): Classic checks in on every floor */
+  function cpAt(){return mode==='cp'?Math.floor((lvl-1)/5)*5+1:(EVERY?lvl:1);}
   function setMode(m){mode=m;TOTAL=m==='cp'?50:10;best=parseInt(lsGet(m==='cp'?'ma-tower-best-cp':'ma-tower-best')||'1',10)||1;}
-  function hud(){floorEl.textContent='Floor '+lvl+' of '+TOTAL+(cur?' · '+F[n].name:'');bestEl.textContent=mode==='cp'&&state!=='title'?'Checkpoint: floor '+cpAt()+' · Best: '+best:'Best: floor '+best;pad.classList.toggle('on',n===10&&state!=='title'&&touchy);}
+  function hud(){floorEl.textContent='Floor '+lvl+' of '+TOTAL+(cur?' · '+F[n].name:'');bestEl.textContent=mode==='cp'&&state!=='title'?'Checkpoint: floor '+cpAt()+' · Best: '+best:(EVERY&&mode==='classic'&&state!=='title'?'Checkpoint: every floor · Best: '+best:'Best: floor '+best);pad.classList.toggle('on',n===10&&state!=='title'&&touchy);}
   var touchy=(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window&&window.innerWidth<900);
   /* Every floor has a 15-second clock in the top-right corner (Maurice 10/16). It blinks red from 5. At zero the floor
      triggers itself: the claw drops the box (1, 4, 6, 8), the catapult fires at whatever power it has (3), both ropes
@@ -411,8 +427,35 @@
     if(red&&!still&&(tl%1)<.4)return;ctx.fillStyle=red?'#ff4c0f':'#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font="400 30px 'Cracked Imperia',Impact,sans-serif";ctx.fillText(String(sec),W-46,29);ctx.textBaseline='alphabetic';}
   function enter(L){lvl=L;n=(L-1)%10+1;cur=F[n];cur.init();tl=clockFor(n);state='intro';phase=1.3;if(lvl>best){best=lvl;lsSet(mode==='cp'?'ma-tower-best-cp':'ma-tower-best',String(best));}hud();say(cur.how);ctl();}
   function clear(){if(state!=='play')return;state='drop';phase=.8;if(lvl===TOTAL){state='won';setTimeout(showWin,still?100:600);}ctl();}
-  function fail(line){if(state!=='play')return;line=line||FAIL[missI++%FAIL.length];if(mode==='cp'){var to='Back to floor '+cpAt()+'.';line=line.replace(/Back to floor 1.|Back to the top.|Floor 1 again.|Up you go again./,to);if(line.indexOf(to)<0)line+=' '+to;}state='fail';phase=1.8;shake=still?0:1;say(line||FAIL[missI++%FAIL.length],true);ctl();}
+  function fail(line){if(state!=='play')return;line=line||FAIL[missI++%FAIL.length];if(mode==='cp'||cpAt()>1){var to='Back to floor '+cpAt()+'.';line=line.replace(/Back to floor 1.|Back to the top.|Floor 1 again.|Up you go again./,to);if(line.indexOf(to)<0)line+=' '+to;}state='fail';phase=1.8;shake=still?0:1;say(line||FAIL[missI++%FAIL.length],true);ctl();}
   function showWin(){lsSet('ma-tower-won','1');winEl.querySelector('p').textContent=(mode==='cp'?'Fifty':'Ten')+' floors down. Loot box 75 is yours. Tap the box to claim it.';winEl.hidden=false;pad.classList.remove('on');ctl();say(mode==='cp'?'Fifty floors down!':'Ten floors down!');try{winEl.scrollIntoView({block:'center',behavior:still?'auto':'smooth'});}catch(e){}}
+  /* ---- paid help (Maurice 10/25): 200 points adds a checkpoint on every floor of Classic. Bought through the web app's
+     paid hints (clue 75, one step), so the points come off in the twice-daily tally like a clue hint. Kept on this device
+     (ma-tower-every) and checked by email, so it follows the player. ---- */
+  var HEP='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec',helpEl=d.querySelector('.tw-help'),hbtn=helpEl.querySelector('.tw-hb'),hmsg=helpEl.querySelector('.tw-hmsg'),hwho=helpEl.querySelector('.tw-hwho'),harmed=false,hbusy=false;
+  EVERY=lsGet('ma-tower-every')==='1';
+  function hme(){try{return JSON.parse(localStorage.getItem('thLoot:me')||'null')||{};}catch(e){return{};}}
+  function hsend(q,cb){var name='twhb'+Math.random().toString(36).slice(2),s=document.createElement('script'),done=false,parts=['callback='+name];
+    for(var k in q)if(q[k]!=null&&q[k]!=='')parts.push(encodeURIComponent(k)+'='+encodeURIComponent(q[k]));
+    function end(r){if(done)return;done=true;try{delete window[name];}catch(e){window[name]=undefined;}if(s.parentNode)s.parentNode.removeChild(s);cb(r||{ok:false,error:'network'});}
+    window[name]=end;s.onerror=function(){end();};setTimeout(function(){end();},30000);s.src=HEP+'?'+parts.join('&');document.head.appendChild(s);}
+  function hpaint(){hbtn.hidden=EVERY;if(!harmed&&!hbusy)hbtn.textContent='Add checkpoints · 200 points';
+    if(EVERY){hmsg.textContent='Classic has a checkpoint on every floor.';if(!code)startP.textContent='Classic is ten floors, with a checkpoint on every floor: a fail tries that floor again. Checkpoints runs the ten floors five times, 50 in all, and saves your spot every 5 floors.';}
+    hud();}
+  function hset(){if(!EVERY){EVERY=true;lsSet('ma-tower-every','1');}hpaint();}
+  function hwhoami(){var m=hme(),em=String(m.email||'').trim();
+    if(!hwho.hidden){em=helpEl.querySelector('.tw-hemail').value.trim();var fn=helpEl.querySelector('.tw-hfirst').value.trim();
+      if(!fn){hmsg.textContent='A first name, please.';return null;}if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){hmsg.textContent='That email does not look right.';return null;}
+      m.email=em;m.first_name=fn;try{localStorage.setItem('thLoot:me',JSON.stringify(m));}catch(e){}hwho.hidden=true;return m;}
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){hwho.hidden=false;helpEl.querySelector('.tw-hfirst').value=m.first_name||'';hmsg.textContent='Who’s buying? The points come off this hunter’s total.';return null;}
+    return m;}
+  hbtn.addEventListener('click',function(){if(hbusy||EVERY)return;
+    if(!harmed){harmed=true;hbtn.textContent='Tap again to pay 200 points';hmsg.textContent='The checkpoints are for Classic, on this account.';return;}
+    var m=hwhoami();if(!m){harmed=false;hpaint();return;}
+    hbusy=true;hbtn.disabled=true;hbtn.textContent='Paying...';
+    hsend({action:'hint',clue:'75',step:1,email:m.email,first_name:m.first_name||'',handle:m.handle||''},function(r){hbusy=false;harmed=false;hbtn.disabled=false;
+      if(r&&r.ok){hset();hmsg.textContent=(r.status==='already'?'You already bought this. ':'Paid 200 points. ')+'Classic has a checkpoint on every floor.';return;}
+      var e=r&&r.error;hpaint();hmsg.textContent=e==='closed'?'The hunt is over.':e==='email'?'That email does not look right.':'The tower’s log is answering slowly. Try again in a moment.';});});
   /* one-time start codes (10/23): ?code=... starts one run at a later floor; the web app spends the code on START */
   var goBtn=d.querySelector('.tw-go'),startP=startOv.querySelector('p'),code=(/[?&]code=([A-Za-z0-9-]+)/.exec(location.search)||[])[1]||'';
   var EP='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
@@ -422,6 +465,7 @@
     function end(r){if(done)return;done=true;try{delete window[name];}catch(e){window[name]=undefined;}s.remove();cb(r||{ok:false,error:'network'});}
     window[name]=end;s.src=EP+'?action=towercode&code='+encodeURIComponent(code)+'&callback='+name;s.onerror=function(){end();};setTimeout(function(){end();},15000);document.head.appendChild(s);}
   var cpBtn=d.querySelector('.tw-cp');cpBtn.addEventListener('click',function(){if(goBtn.disabled)return;go(1,'cp');});
+  hpaint();(function(){var m=hme();if(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(m.email||'')))hsend({action:'hint',clue:'75',email:m.email,peek:1},function(r){if(r&&r.ok&&r.steps)hset();});})();
   if(code){cpBtn.hidden=true;goBtn.textContent='Start after the pipes';startP.textContent='You have a one-time code. It starts you on floor 6, right after Pipe path. Fail a floor after that and the box goes back to floor 1.';}
   goBtn.addEventListener('click',function(){if(!code){go(1);return;}if(goBtn.disabled)return;goBtn.disabled=true;goBtn.textContent='Checking code...';
     spend(function(r){goBtn.disabled=false;
@@ -492,7 +536,7 @@
   document.addEventListener('visibilitychange',function(){last=0;acc=0;if(document.hidden)pause();});requestAnimationFrame(frame);hud();
 
   /* test hooks, only with ?preview=1 and window.__towerTest set before load */
-  if(window.__towerTest&&/[?&]preview=1\b/.test(location.search))window.__tower={go:function(k,m){if(m)setMode(m);startOv.hidden=true;enter(k);state='play';ctl();},floor:function(){return n;},level:function(){return lvl;},mode:function(){return mode;},state:function(){return state;},cur:function(){return cur;},clear:clear,fail:fail,
+  if(window.__towerTest&&/[?&]preview=1\b/.test(location.search))window.__tower={go:function(k,m){if(m)setMode(m);startOv.hidden=true;enter(k);state='play';ctl();},floor:function(){return n;},level:function(){return lvl;},mode:function(){return mode;},every:function(){return EVERY;},state:function(){return state;},cur:function(){return cur;},clear:clear,fail:fail,
     paused:function(){return paused;},pause:pause,resume:resume,clock:function(){return tl;},best:function(){return best;}};
 })();
 </script>

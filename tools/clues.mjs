@@ -183,7 +183,7 @@ Haven't I Seen You Before?`],   // on Bard's Linktree (Maurice, 2026-10-16)
   [73, 'you already have it'],
   // Batch 2 (Maurice, 2026-10-11). 74: at Level 7 of Airship Runner.
   [74, 'Level 7'],
-  [75, '10 Floors'],   // Descend the Tower: the box waits past the 10th floor (Maurice, 2026-10-16, Act Three puzzle #23)
+  [75, 'Descend the Tower'],   // the box waits past the 10th floor (Maurice, 2026-10-16, Act Three puzzle #23; clue reworded 10/25)
   [76, 'The 100th Needle'],
   [77, 'TRLVL5'],   // Trench Run: the box is on board 5 (Maurice, 2026-10-16)
   [78, 'Survive 25'],   // was only on the live page (another chat); added to the list 10/23
