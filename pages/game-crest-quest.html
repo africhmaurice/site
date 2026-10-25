@@ -766,18 +766,24 @@ var HGBoard = (function () {
   //      one-line rule goes right after this element), me() (the saved player, to mark their row), onTime(secs) }
   function create(o) {
     css();
-    var KEY = PFX + o.game + ':' + o.day, rec = null, pending = false, solve = null, pinging = false, waiters = [];
+    var KEY = PFX + o.game + ':' + o.day, rec = null, pending = false, solve = null, pinging = false, waiters = [], asks = 0, askN = 0;
     try {
       rec = JSON.parse(localStorage.getItem(KEY) || 'null');
       for (var i = localStorage.length - 1; i >= 0; i--) { var k = localStorage.key(i); if (k && k.indexOf(PFX + o.game + ':') === 0 && k !== KEY) localStorage.removeItem(k); }
     } catch (e) {}
     function save() { try { localStorage.setItem(KEY, JSON.stringify(rec)); } catch (e) {} }
+    /* START's reply can get lost (a phone that locks or switches apps; Lysida 10/25 lost her 0:02 that way). A request with
+       no answer in 8 s is given up on and asked again, a few seconds apart, up to 6 times; asking again is safe because the
+       server always answers with the player's first START of the day, so the clock never resets. A late answer still counts. */
     function getTicket() {
-      if (!rec || rec.ticket || rec.end || pending) return;
-      pending = true;
-      var who = (o.me && o.me()) || {};
+      if (!rec || rec.ticket || pending) return;   // also after a solve: a fast solver may finish before START's answer
+      pending = true; asks++;
+      var my = ++askN, who = (o.me && o.me()) || {};
+      var giveUp = setTimeout(function () { if (pending && my === askN) { pending = false; retry(); } }, 8000);
       o.send({ action: 'dailystart', game: o.game, day: o.day, email: myEmail(), first_name: who.first_name || '', handle: who.handle || '' }, function (res) {
-        pending = false;
+        clearTimeout(giveUp);
+        if (my === askN) pending = false;
+        if (!(res && res.ok && res.ticket) && !rec.ticket) retry();
         if (res && res.ok && res.ticket && !rec.ticket) {
           rec.ticket = res.ticket;
           // started earlier today on another device: the clock picks up from that first START
@@ -788,6 +794,7 @@ var HGBoard = (function () {
         flush();
       });
     }
+    function retry() { if (rec && !rec.ticket && asks < 6) setTimeout(getTicket, 3000); }
     /* a claim made before the ticket is back waits for it (Maurice 10/23: fast solves were claimed ticketless and never
        reached the board) */
     function flush() { var w = waiters; waiters = []; w.forEach(function (f) { f(); }); }
