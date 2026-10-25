@@ -487,12 +487,12 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cr-tie-out b{color:#c3a6ff}
 @media (max-width:600px){#rc .cr-res-kit{padding:16px}}
 /* a chart under a die: what each number means, 1 the worst and 20 the best; your roll lights up */
-#rc .cr-chart{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 20px}
+#rc .cr-chart{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(10,auto);grid-auto-flow:column;gap:8px 20px}
 #rc .cr-chart li{display:flex;align-items:center;gap:12px;padding:8px 12px;border:1px solid var(--hair);background:var(--well);font-size:15px;line-height:1.35;min-width:0}
 #rc .cr-chart li b{flex:none;width:2.2em;font-weight:800;font-size:14px;color:var(--lime);font-variant-numeric:tabular-nums}
 #rc .cr-chart li span{min-width:0}
 #rc .cr-chart li.on{border-color:var(--lime);background:rgba(162,245,144,.14);color:#fffffe;font-weight:700}
-@media (max-width:640px){#rc .cr-chart{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){#rc .cr-chart{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-auto-flow:row}}
 /* finding Scarlett (chapter 12), on top of the crash vote's styles: the olive color story (the raft hunt's colors). The cavern
    shore under a deep green veil, ink panels, parchment and slate accents (#0b170f, #213226, #607667, #ede9dc, #a2f590). */
 #rc.cr.sc{--mint:#fffffe;--ember:#a2f590;--red:#607667;--lime:#a2f590;--panel:rgba(11,23,15,.88);--well:rgba(255,255,255,.06);--hair:rgba(243,234,217,.2);--hair2:rgba(243,234,217,.42)}
