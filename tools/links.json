@@ -419,6 +419,7 @@
   "label": "The Sky Pirate Quiz",
   "sub": "Which character are you most like? Answer 15 questions and find out which member of the crew sums up your personality.",
   "img": "quiz-crew.webp",
-  "url": "https://www.mauriceafrich.com/sky-pirate-quiz-61748"
+  "url": "https://www.mauriceafrich.com/sky-pirate-quiz-61748",
+  "bg": "quiz-bg.webp"
  }
 }

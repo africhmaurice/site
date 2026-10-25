@@ -31,7 +31,7 @@ const X = D.excerpt;
 const excerptCard = X ? `<a class="lk-copper lk-excerpt" href="${esc(X.url)}"${ext(X.url)} data-link="${X.id}" data-section="top"><img src="${asset(X.img)}" alt="" width="360" height="360"><span><b>${esc(X.label)}</b><small>${esc(X.sub)}</small></span>${arrow}</a>` : '';
 // The Sky Pirate Quiz banner under the launch events, bigger than the Copper Loot Box: the crew art beside the words (Maurice, 2026-10-24)
 const Qz = D.quiz;
-const quizCard = Qz ? `<a class="lk-quiz" href="${esc(Qz.url)}"${ext(Qz.url)} data-link="${Qz.id}" data-section="top"><img src="${asset(Qz.img)}" alt="The crew of the Sky Pirates of Imperia" width="900" height="563"><span><b>${esc(Qz.label)}</b><small>${esc(Qz.sub)}</small><em>Take the quiz ${arrow}</em></span></a>` : '';
+const quizCard = Qz ? `<a class="lk-quiz" href="${esc(Qz.url)}"${ext(Qz.url)}${Qz.bg ? ` style="--qbg:url('${bgUrl(Qz.bg)}')"` : ''} data-link="${Qz.id}" data-section="top"><img src="${asset(Qz.img)}" alt="The crew of the Sky Pirates of Imperia" width="900" height="563"><span><b>${esc(Qz.label)}</b><small>${esc(Qz.sub)}</small><em>Take the quiz ${arrow}</em></span></a>` : '';
 const C = D.copper;
 const copperCard = `<a class="lk-copper" href="${esc(C.url)}" data-link="${C.id}" data-section="top"><img src="${asset(C.img)}" alt="" width="360" height="360"><span><b>${esc(C.label)}</b><small>${esc(C.sub)}</small></span>${arrow}</a>`;
 
@@ -113,7 +113,7 @@ const page = `<!-- ============================================================
 #ma-links .lk-copper small{font-weight:700;font-size:14px;line-height:1.4;opacity:.92}
 #ma-links .lk-copper svg{flex:none;width:20px;height:20px}
 #ma-links .lk-copper:hover{transform:scale(1.03)}
-#ma-links .lk-quiz{display:grid;grid-template-columns:minmax(0,46fr) minmax(0,54fr);align-items:center;gap:20px;padding:20px 24px 20px 16px;border:4px solid #c53200;background:linear-gradient(180deg,#fbf8f2 0%,#eceeeb 100%);color:#0b170f!important;text-decoration:none!important;transition:transform .15s ease}
+#ma-links .lk-quiz{display:grid;grid-template-columns:minmax(0,46fr) minmax(0,54fr);align-items:center;gap:20px;padding:20px 24px 20px 16px;border:4px solid #c53200;background:linear-gradient(180deg,rgba(251,248,242,.5) 0%,rgba(236,238,235,.62) 100%),var(--qbg,none) center 40%/cover no-repeat,#f3f1ec;color:#0b170f!important;text-decoration:none!important;transition:transform .15s ease}
 #ma-links .lk-quiz img{display:block;width:100%;height:auto;filter:drop-shadow(0 8px 12px rgba(11,23,15,.28))}
 #ma-links .lk-quiz span{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
 #ma-links .lk-quiz b{color:#c53200;font-family:'Atomic Marker',Impact,sans-serif;font-weight:400;font-size:clamp(22px,6vw,32px);line-height:1.2;letter-spacing:.03em}
