@@ -118,6 +118,7 @@ Yet again, you might try.`],
   // Box 35, The "Like and Subscribe!" Box on Zach's Bookshelf (Maurice, 2026-10-05).
   [35, 'el greco, flipped en espanol, 9th fave of the 9th fave'],
   [36, 'Slide & Find'],
+  [37, "The World’s Biggest “7 Husbands of Evelyn Hugo” Fan"],   // Kass's video and Linktree, live 10/26
   [38, 'Lost in a sea of icons, trapped inside of a well.', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'wide', pics: [['', ART + 'clue-38-hint-1.jpg']] }] }],
   [39, 'From ink to parchment, one of us waits. Words are cheap, even free, when the mind never abates.\n\nFree additional clue: check the shop.', { hints: [{ price: 25, button: 'Pay 25 points for a hint.', shape: 'wide', pics: [['', ART + 'clue-39-hint-1.jpg']] }] }],
   // Box 40 is the 0 in 404 on the site's Page Not Found page (Maurice, 2026-10-11).
@@ -135,6 +136,7 @@ Yet again, you might try.`],
     { price: 10, button: 'Sacrifice 10 additional points for another clue.', shape: 'wide', pics: [['', ART + 'clue-46-hint-2.jpg']] }
   ] }],
   // Box 48, The Hodderscape Loot Box (Maurice, 2026-10-05).
+  [47, "SP1 BOTTOM DRAWER"],   // Saga Press Cello’s Gate page, bottom drawer, live 10/26
   [48, 'Hotter Escapes? Never heard of it, bruv.'],
   // Box 49, Grey's Hidden Daddy Issues (Maurice, 2026-10-06).
   [49, 'Amateur Historian, Full-Time Scientist, Reader?'],
@@ -145,6 +147,7 @@ Yet again, you might try.`],
   // Box 54, The Saga Press Loot Box (Maurice, 2026-10-09). Clue pulled for now (Maurice, 2026-10-12); put it back to restore:
   // [54, 'SP HOT NEW SCIFI'],
   // Aaron Hall's clue (Maurice, 2026-10-03).
+  [54, "SP2 HIDDEN"],   // Saga Press Cello’s Gate page, the words HIDDEN TREASURE, live 10/26
   [55, 'Who gave that caveman a microphone!?'],
   // PixelCait's box (Maurice, 2026-10-04; his wording, emoji included).
   [56, 'Stark ⚔️ Library'],
