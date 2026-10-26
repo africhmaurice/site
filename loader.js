@@ -1032,13 +1032,20 @@
         var a = reunion.cloneNode(false); a.href = SITE + '/the-energy-wave'; a.textContent = 'THE ENERGY WAVE';
         box.insertBefore(a, reunion.nextSibling);
       });
+      // Finding Scarlett (chapter 12, 2026-10-25) follows The Energy Wave
+      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/the-energy-wave"]'), function (wave) {
+        var box = wave.parentNode;
+        if (box.querySelector('a[href$="/finding-scarlett"]')) return;
+        var a = wave.cloneNode(false); a.href = SITE + '/finding-scarlett'; a.textContent = 'FINDING SCARLETT';
+        box.insertBefore(a, wave.nextSibling);
+      });
     });
   }
   // The raft hunt (chapter 6, 2026-10-07): raft.js hides the pieces on every page; it checks its own hours.
   // Chapter buttons (2026-10-09): Previous chapter / See the map / Next chapter at the foot of each chapter page.
   function chapterNav() {
     if (window.__chapterNavLoaded) return; window.__chapterNavLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=7'; s.async = true; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=8'; s.async = true; document.head.appendChild(s);
   }
   function raftHunt() {
     if (window.__raftLoaded) return; window.__raftLoaded = true;

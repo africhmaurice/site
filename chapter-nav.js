@@ -15,7 +15,8 @@
     ['/washed-ashore', 'Washed Ashore', ['rgba(26,9,4,.88)', '#fd7547', '#c53200']],
     ['/cerunine-attack', 'Cerunine Attack', ['rgba(7,24,20,.88)', '#89fbcb', '#268e62']],
     ['/the-reunion', 'The Reunion', ['rgba(21,13,40,.78)', '#c3a6ff', '#7b4ee1']],
-    ['/the-energy-wave', 'The Energy Wave', ['rgba(11,23,15,.9)', '#89fbcb', '#1a5e41']]
+    ['/the-energy-wave', 'The Energy Wave', ['rgba(11,23,15,.9)', '#89fbcb', '#1a5e41']],
+    ['/finding-scarlett', 'Finding Scarlett', ['rgba(11,23,15,.88)', '#a2f590', '#607667']]
   ];
   var path = (window.CHAPTER_PATH || location.pathname).replace(/\/+$/, '');
   var at = -1;
