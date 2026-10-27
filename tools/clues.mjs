@@ -195,6 +195,7 @@ Haven't I Seen You Before?`],   // on Bard's Linktree (Maurice, 2026-10-16)
   [81, 'TSGEMW50'],   // was only on the live page (another chat); added to the list 10/23
   [82, "Star gazer (level: expert)"],   // The Deep Sky, the secret 11th constellation (Maurice 10/19)
   [83, "First and Last Name: rasyselmnayeo"],   // The Grimdark Loot Box, in Esmay Rosalyne's Grimdark Magazine article (Maurice 10/22)
+  [84, "Golden Wattles & Aboriginal Folklore"],   // Flowers and Fantasy, Co. book collections page, live 10/27
   [85, 'Found ⏩ 💛'],   // Rachel's Found Forward site, live 10/23
   [86, 'get to the top'],   // The Long Climb (Maurice, 2026-10-16)
   // 87-93 are tricks in loader.js (b2Tricks): type the phrase, drag the Comet out of the header logo, /leaderboard in
