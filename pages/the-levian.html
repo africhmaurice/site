@@ -1,22 +1,22 @@
 <!-- ============================================================
-     THE LEVIAN - hidden page for loot box 145 (clue "100 Segments"). Lives at /the-levian.
+     THE LEVIAN - hidden page for loot box 145 (clue "75 Segments"). Lives at /the-levian.
      A snake game: you are the Levian, a sea serpent swimming through the sea of sky. Eat rubies to grow (each ruby
      adds 2 segments; the Levian starts at 4). The edges wrap (swim off one side, come back on the other), so the only
      danger is the Levian's own body. Speed starts gentle and creeps up a little with each ruby, to a fair cap.
-     Board: 22 by 22 cells, so 100 segments fill about a fifth of it. Once the Levian reaches 100 segments, loot box 145
+     Board: 22 by 22 cells, so 75 segments fill about a sixth of it. Once the Levian reaches 75 segments (Maurice 10/27, was 100), loot box 145
      surfaces on the board (a 2 by 2 chest); swim into it and the chest opens; clicking it opens the claim link.
      ENDLESS (Maurice 10/26: "the Master Stacker and the Levian and Sky Fishing should have leaderboards and have infinite
      replayability"): taking the chest no longer ends the run. The chest screen has "Keep swimming", and the Levian swims on
      and keeps growing (no more chests that run); the run ends only when it tangles itself. Score = segments at the end.
      The speed cap is unchanged (130 ms a cell, 1.1 ms quicker per ruby, never under 88 ms). "Play again" starts a new run
-     right away, as often as you like; the chest surfaces at 100 in every run (the claim itself works once, as always).
+     right away, as often as you like; the chest appears at 75 in every run (the claim itself works once, as always).
      WEEKLY BOARD (same flow as Airship Runner and Thread the Needle, game id "levian"): each run asks the Loot Boxes web
      app (ENDPOINT, the same /exec as the other arcade games) for a one-use signed ticket when it starts (action=levianstart);
      when the Levian tangles, action=levianscore gets ticket, email, first_name, handle, platform, country, score (segments),
      rubies, secs (swim time: the sum of the tick times actually swum, so pauses and the chest screen don't count), and
      chest (1 if taken), with the player saved in this browser (thLoot:me, shared with the loot box page and the other arcade
      games; the same form is asked once). lootbox.gs (BOX150-BOARDS block) checks segments = 4 + 2 per ruby (or one less
-     mid-growth), at most 484, the chest only at 100+, and that the rubies fit the swim time at this page's tick speed.
+     mid-growth), at most 484, the chest only at 75+, and that the rubies fit the swim time at this page's tick speed.
      Runs are logged in the tab "Levian Runs", each person's best of the week in "Levian Best"; action=leviantop is this
      week's top 10. Maurice's own runs are practice runs. The board closes Friday 11:59 PM ET; "Current Champion" banner
      from champions.json (game key "levian"); the weekly top score is paid by hand: npm run levian-winner prints it (only
@@ -35,17 +35,17 @@
        to draw: the background tile (the sea of sky), and an optional corner segment for turns. The chest is box 145's art.
      Test hook: ?test=1 exposes window.__levian (state, setLength, putFood, run) for the test harness.
      WORDS: approved by Maurice 10/27 ("push Levian live!"), including the weekly 500-point line:
-       heading "The Levian"; line "Swim, eat, and grow. Reach 100 segments and the chest surfaces. Then keep growing: the
+       heading "The Levian"; line "Swim, eat, and grow. Reach 75 segments and the chest appears. Eat it to claim it. Then keep growing: the
        longest Levian of the week tops the board."; counters "Segments", "Best"; buttons "Start", "Pause", "Resume",
        "Restart", "Play again", "Keep swimming"; start line "Arrow keys, WASD, or swipe to swim.";
-       chest line "The chest has surfaced. Swim into it."; lose line "The Levian tangled itself."; "Segments: <n>";
+       chest line "The chest has appeared. Eat it!"; lose line "The Levian tangled itself."; "Segments: <n>";
        win line "The Levian found the chest. Box 145 is yours."; board words: weekly line (500 points, approved 10/27) "Weekly leaderboard: the top score at 11:59 PM ET
        every Friday wins 500 points. Then the board resets for a new week."; "Best this week", "Kept on this device.",
        "No runs yet this week.", "This week's longest Levians", "Board closes in", "No scores yet this week. Be the
        first.", "The board is offline right now.", "The board is offline right now, so this run stays on this device.";
        "How it works" list (below); "Current Champion: <name>"; the score form and logging lines (same as Airship Runner's).
        How it works: "Eat rubies to grow. Each ruby adds 2 segments." / "The edges wrap, so the only danger is your own
-       body." / "At 100 segments the loot chest surfaces. Swim into it, then keep swimming." / "Play as often as you
+       body." / "At 75 segments the loot chest appears. Eat it, then keep swimming." / "Play as often as you
        like. Your longest Levian this week goes on the weekly board."
      ============================================================ -->
 
@@ -147,7 +147,7 @@
 <!-- ARCADE-TABS:END -->
   <div class="lv-wrap">
     <h1>The Levian</h1>
-    <p class="lv-lede">Swim, eat, and grow. Reach 100 segments and the chest surfaces. Then keep growing: the longest Levian of the week tops the board.</p>
+    <p class="lv-lede">Swim, eat, and grow. Reach 75 segments and the chest appears. Eat it to claim it. Then keep growing: the longest Levian of the week tops the board.</p>
     <p class="lvb-weekly">Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week.</p>
     <div class="lv-bar"><span>Segments <b class="lv-len">4</b></span><span>Best <b class="lv-best">0</b></span><button class="lv-btn lv-pause" type="button">Pause</button><button class="lv-btn lv-restart" type="button">Restart</button></div>
     <div class="lv-stage">
@@ -183,7 +183,7 @@
         <ul class="lvb-how">
           <li>Eat rubies to grow. Each ruby adds 2 segments.</li>
           <li>The edges wrap, so the only danger is your own body.</li>
-          <li>At 100 segments the loot chest surfaces. Swim into it, then keep swimming.</li>
+          <li>At 75 segments the loot chest appears. Eat it, then keep swimming.</li>
           <li>Play as often as you like. Your longest Levian this week goes on the weekly board.</li>
         </ul>
       </div>
@@ -308,7 +308,7 @@
   function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
     var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
 
-  var G=22,GOAL=100,START=4,GROW=2,SLOW=130,FAST=88;
+  var G=22,GOAL=75,START=4,GROW=2,SLOW=130,FAST=88;
   var DIR={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
   var cv=d.querySelector('.lv-cv'),cx=cv.getContext('2d'),stage=d.querySelector('.lv-stage');
   var lenEl=d.querySelector('.lv-len'),msg=d.querySelector('.lv-msg');
@@ -339,7 +339,7 @@
       if(ok&&Math.abs(x-h[0])+Math.abs(y-h[1])>3)spots.push([x,y]);
     }
     chest=spots.length?spots[Math.floor(Math.random()*spots.length)]:null;
-    if(chest)msg.textContent='The chest has surfaced. Swim into it.';
+    if(chest)msg.textContent='The chest has appeared. Eat it!';
   }
   function reset(){
     clearTimeout(timer);
