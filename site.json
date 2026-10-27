@@ -433,6 +433,12 @@
       "url": "/word-search-champion-75327",
       "title": "Word Search Champion (hidden; loot box 150)",
       "source": "pages/word-search-champion.html"
+    },
+    {
+      "slug": "the-levian",
+      "url": "/the-levian-30527",
+      "title": "The Levian (hidden; loot box 145, weekly high score)",
+      "source": "pages/the-levian.html"
     }
   ],
   "staysInSquarespace": [
