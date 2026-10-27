@@ -261,7 +261,7 @@ maStart();
      107 One-Eyed Man: Grey on the Sky Pirate Quiz slide (and any slider image with data-ma-eye="x%,y%" (one or more eyes, separated by ;) gets a small invisible hot
          spot over that eye); tapping his eye makes Grey wink (a glint) and a chest pops out of his eye.
      129 Konami Code: up, up, down, down, left, right, left, right, B, A on a keyboard; on a phone, swipe up, up, down, down,
-         left, right, left, right, then tap twice (B, A). Each step within 3 seconds of the last. A chest drops in.
+         left, right, left, right, then tap twice anywhere (B, A). Keys: each within 3 seconds of the last; phone: within 8 seconds. A chest drops in.
      The chests drop into a dark panel with a close button; clicking a chest opens its claim link in a new tab.
      DRAFT words (for Maurice): aria labels only, "Open loot box 101" (and 102, 107, 129), "Close", "Grey's eye". -->
 <style>
@@ -383,7 +383,8 @@ maStart();
     var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
   if(window.__maKonami)return;window.__maKonami=1;
   var CODE='UUDDLRLRBA',seq='',lastAt=0;
-  function step(c){var now=Date.now();if(now-lastAt>3000)seq='';lastAt=now;
+  // keys get 3 seconds between presses; a phone gets 8 (a swipe takes time, and people pause to count)
+  function step(c,win){var now=Date.now();if(now-lastAt>(win||3000))seq='';lastAt=now;
     seq=(seq+c).slice(-CODE.length);
     // keep only a run that could still become the code
     while(seq&&CODE.indexOf(seq)!==0)seq=seq.slice(1);
@@ -393,12 +394,19 @@ maStart();
     if(t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))return;
     if(e.ctrlKey||e.metaKey||e.altKey)return;var c=KEYS[e.key];if(c)step(c);else if(e.key&&e.key.length===1)step('x');},true);
   // phone: swipes are up/down/left/right; after the eight swipes, two quick taps stand for B and A
-  var sx=0,sy=0,st=0,taps=0;
+  // A tap that is not the B or A tap is ignored (it no longer wipes the swipes). The B and A taps count wherever they land,
+  // and if one lands on a link or button, that one click is held back so the page does not change under the hunter.
+  var sx=0,sy=0,st=0,eatUntil=0,TOUCH=8000;
   document.addEventListener('touchstart',function(e){if(e.touches.length!==1)return;var p=e.touches[0];sx=p.clientX;sy=p.clientY;st=Date.now();},{passive:true});
   document.addEventListener('touchend',function(e){var p=e.changedTouches&&e.changedTouches[0];if(!p||!st)return;
     var dx=p.clientX-sx,dy=p.clientY-sy,ax=Math.abs(dx),ay=Math.abs(dy);st=0;
-    if(Math.max(ax,ay)>=30){step(ax>ay?(dx>0?'R':'L'):(dy>0?'D':'U'));return;}
-    if(ax<12&&ay<12){var want=seq==='UUDDLRLR'?'B':(seq==='UUDDLRLRB'?'A':'x');step(want);}},{passive:true});
+    if(Math.max(ax,ay)>=30){step(ax>ay?(dx>0?'R':'L'):(dy>0?'D':'U'),TOUCH);return;}
+    if(ax<20&&ay<20&&Date.now()-lastAt<=TOUCH&&(seq==='UUDDLRLR'||seq==='UUDDLRLRB')){
+      if(document.querySelector('.mah-drop'))return;
+      eatUntil=Date.now()+800;step(seq==='UUDDLRLR'?'B':'A',TOUCH);}},{passive:true});
+  document.addEventListener('click',function(e){if(Date.now()>eatUntil)return;eatUntil=0;
+    var t=e.target&&e.target.closest&&e.target.closest('a,button,[role=button],[onclick]');
+    if(t&&!t.closest('.mah-drop')){e.preventDefault();e.stopPropagation();}},true);
 })();
 </script>
 <div id="ma-row">
