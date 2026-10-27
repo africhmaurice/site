@@ -514,6 +514,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc.cr.sc .rc-die .face{fill:#607667;stroke:#ede9dc}
 #rc.cr.sc .cr-kit h3{color:#a2f590}
 #rc.cr.sc .cw-orders b{color:#a2f590}
+#rc.cr.sc .cr-res-kit .q{color:#a2f590}
+#rc.cr.sc .cr-res-kit .c20{color:#a2f590}
 /* the reunion, chapter 10, on top of the crash vote's styles (its violet is the purple color story) */
 #rc .cr-kit h3 small{display:block;margin-top:6px;font-size:11px;letter-spacing:.14em;color:rgba(237,233,220,.72)}
 #rc .cr-kit h3{flex-direction:column;align-items:flex-start;justify-content:flex-end;min-height:4.6em}
@@ -1577,10 +1579,13 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
           '<p class="cr-mark" aria-live="polite"></p>' + (outs['round' + r.n] ? '<div class="cr-pick-out">' + outcome('round' + r.n) + '</div>' : '') + '</section>';
       });
     }
+    // a die with a chart (1 the worst, 20 the best) names what the drawn roll means, and lights it on the chart
+    function chartHit(q) { var d = q.chart && draw[q.items[0][0]]; return d ? '<p class="cr-chart-hit">' + esc(q.chart[d.roll - 1]) + '</p>' : ''; }
+    function chartList(q) { var d = q.chart && draw[q.items[0][0]]; return d ? '<ol class="cr-chart">' + q.chart.map(function (t, k) { return '<li' + (d.roll === k + 1 ? ' class="on"' : '') + '><b>' + (k + 1) + '</b><span>' + esc(t) + '</span></li>'; }).join('') + '</ol>' : ''; }
     if (!rounds) DATA.questions.forEach(function (q) {
       if (q.kind === 'rolls' && q.items.length === 1) {
         html += '<section class="rc-step"><header><p class="rc-kick">' + (lead || n ? esc(q.kicker || '') : 'THE VOTES ARE IN · ' + RES.sealed + ' FRENS VOTED') + '</p><h2>' + esc(q.items[0][1]) + '</h2>' +
-          '<p>One roll was drawn at random from everyone’s rolls.</p></header><div class="cr-res-kits cr-one">' + card(q.items[0][0], q.items[0][1], '', n++) + '</div></section>';
+          '<p>One roll was drawn at random from everyone’s rolls.</p></header><div class="cr-res-kits cr-one">' + card(q.items[0][0], q.items[0][1], chartHit(q), n++) + '</div>' + chartList(q) + '</section>';
       } else if (q.kind === 'pickroll') {
         var p = pick[q.id], desc = {};
         q.options.forEach(function (o) { desc[o[0]] = o[1]; });
