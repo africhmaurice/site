@@ -1746,7 +1746,8 @@
       var host = null;
       var ov = document.getElementById('hunt-nav-ov');
       if (ov && getComputedStyle(ov).display !== 'none') host = ov;
-      if (!host && /header--menu-open/.test(document.body.className)) host = document.querySelector('.header-menu .header-menu-nav-list') || document.querySelector('.header-menu');
+      // Squarespace's own menu stacks its folder panels over the list, so the row goes inside the open panel (a tap on the list itself never lands, Poppa Squatch 10/27)
+      if (!host && /header--menu-open/.test(document.body.className)) host = document.querySelector('.header-menu .header-menu-nav-folder--active .header-menu-nav-folder-content') || document.querySelector('.header-menu .header-menu-nav-list') || document.querySelector('.header-menu');
       if (!host || host.querySelector('.ma-b3-mm')) return;
       b3css();
       var b = document.createElement('button'); b.type = 'button'; b.className = 'ma-b3-mm';

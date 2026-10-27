@@ -244,7 +244,7 @@ Haven't I Seen You Before?`],   // on Bard's Linktree (Maurice, 2026-10-16)
   [126, "20 slices of savory pie"],   // boxes 101-150, card added by clues-patch.cjs
   [127, "[picture of a highlighter]"],   // boxes 101-150, card added by clues-patch.cjs
   [128, "images: yinyang key hole"],   // boxes 101-150, card added by clues-patch.cjs
-  [129, "Home of the Cheat Code"],   // boxes 101-150, card added by clues-patch.cjs
+  [129, "Home of the Cheat Code\n📱Swipe & Tap"],   // boxes 101-150, card added by clues-patch.cjs
   [130, "Bang! Bang! Bang! Bang! Bang!\n\nRight in the Name."],   // boxes 101-150, card added by clues-patch.cjs
   [131, "The Witching Hour"],   // boxes 101-150, card added by clues-patch.cjs
   [132, "[Dot's Torches on the Clue Card blink Morse code. Decode the word and submit it.]"],   // boxes 101-150, card added by clues-patch.cjs
