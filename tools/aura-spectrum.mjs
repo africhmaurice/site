@@ -164,6 +164,36 @@ const page = `<!-- ============================================================
     .catch(function () { locked(0); $('au-left').textContent = 'Check back soon!'; });
 })();
 </script>
+<!-- LOOT BOXES on the Aura Spectrum (staged 2026-10-26). tools/aura-spectrum.mjs generates this page, so it must carry this
+     block too at go-live.
+       123 The Influencer's Box: tapping the word "Influential" (one of the emotions) opens the claim. No hover change.
+       131 The Witching Hour: a small red dot in the middle of the page, shown only from 12:00 to 2:59 AM Eastern
+           (America/New_York, so daylight saving is handled); tapping it opens the claim. -->
+<style>
+#ma-aura .au-131{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#ff4c0f;z-index:5;cursor:pointer;box-shadow:0 0 6px rgba(255,76,15,.6)}
+#ma-aura .au-131::before{content:"";position:absolute;left:-12px;top:-12px;width:34px;height:34px;border-radius:50%}
+#ma-aura .au-131[hidden]{display:none}
+</style>
+<script>(function(){
+  var root=document.getElementById('ma-aura');if(!root)return;
+  function opener(K){return function(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;};}
+  var c123=(function(){var K='RFYyNFU0RTY9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';return opener(K);})();
+  var c131=(function(){var K='VFNYTUo3OVU9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';return opener(K);})();
+  // 123: the word Influential, wherever the grid draws it (searches redraw the grid, so listen on the page).
+  root.addEventListener('click',function(e){
+    var w=e.target&&e.target.closest&&e.target.closest('.au-word');if(!w)return;
+    var t=w.cloneNode(true),d=t.querySelector('.au-dot');if(d)d.parentNode.removeChild(d);
+    if(t.textContent.trim()==='Influential')claim123();
+  });
+  function claim123(){c123();}
+  // 131: the witching hour, midnight to 3 AM Eastern.
+  var dot=document.createElement('span');dot.className='au-131';dot.hidden=true;dot.setAttribute('aria-hidden','true');
+  dot.addEventListener('click',c131);root.appendChild(dot);
+  function hourET(){try{return +new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',hourCycle:'h23'}).format(new Date());}catch(e){return -1;}}
+  function tick(){var h=hourET();dot.hidden=!(h>=0&&h<3);}
+  tick();setInterval(tick,30000);
+})();</script>
 `;
 writeFileSync(join(ROOT, 'pages/aura-spectrum.html'), page);
 console.log(`pages/aura-spectrum.html: ${COLORS.length} colors, ${COLORS.reduce((n, c) => n + c.words.length, 0)} words, ${added} added (${(page.length / 1024).toFixed(0)} KB)`);

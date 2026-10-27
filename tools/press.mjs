@@ -543,6 +543,22 @@ ${cardCss('#press')}
   if (el) setTimeout(function () { el.scrollIntoView({ block: 'start' }); }, 700);
 })();
 </script>
+<!-- LOOT BOX 116 (The Press Kit Loot Box, staged 2026-10-26): a single bright pixel in the bottom-right corner of the
+     hunt overview art (the press room's main graphic), just inside its ember border, is a link to the box. Only the clue
+     points there. tools/press.mjs generates this page, so it must carry this block too at go-live. -->
+<style>
+#press .pp-px{position:absolute;right:1.1%;bottom:1.9%;width:1px;height:1px;background:#fffffe;z-index:2}
+#press .pp-px::before{content:"";position:absolute;left:-9px;top:-9px;width:19px;height:19px}
+</style>
+<script>(function(){
+  var K='RkNDWVM3RFk9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+  var img=document.querySelector('#press .pp-hunt .pp-gfx img'),a=img&&img.parentNode;if(!a)return;
+  if(getComputedStyle(a).position==='static')a.style.position='relative';a.style.display='block';
+  var px=document.createElement('span');px.className='pp-px';px.setAttribute('aria-hidden','true');a.appendChild(px);
+  px.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();claim();});
+})();</script>
 `;
 
 writeFileSync(join(ROOT, 'pages', 'home-press.html'), home);
