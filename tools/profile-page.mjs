@@ -286,7 +286,7 @@ html,body{margin:0 !important;padding:0 !important}
     var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
   function show(){
     if(!ov){ov=document.createElement('div');ov.className='hp130-ov';ov.hidden=true;
-      ov.innerHTML='<button type="button" aria-label="Loot box 130"><img alt="" width="160" height="160" src="https://africhmaurice.github.io/site/assets/loot/130.png"></button>';
+      ov.innerHTML='<button type="button" aria-label="Loot box 130"><img alt="" width="160" height="160" src="https://africhmaurice.github.io/leaderboard/loot/130.png"></button>';
       ov.addEventListener('click',function(e){if(e.target===ov)ov.hidden=true;});
       ov.querySelector('button').addEventListener('click',function(){claim();ov.hidden=true;});
       document.body.appendChild(ov);}
