@@ -26,6 +26,14 @@ html,body{margin:0 !important;padding:0 !important}
 #hp .hp-card[hidden],#hp .hp-find[hidden]{display:none}
 #hp .hp-head{display:flex;align-items:center;gap:22px;margin:0 0 12px}
 #hp .hp-when{margin:0 0 22px;font-size:14px;line-height:1.5;color:rgba(255,255,255,.75)}
+/* loot box 130 on the profile: the hunter's own name, tapped five times */
+.hp130-ov{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(11,23,15,.72)}
+.hp130-ov[hidden]{display:none}
+.hp130-ov button{display:block;width:clamp(120px,30vw,160px);height:clamp(120px,30vw,160px);padding:0;margin:0;border:0;background:none;cursor:pointer;animation:hp130-pop .45s cubic-bezier(.2,1.6,.4,1)}
+.hp130-ov button:focus{outline:none}
+.hp130-ov button:focus-visible{outline:3px solid #89fbcb;outline-offset:4px}
+.hp130-ov img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 14px 22px rgba(0,0,0,.6))}
+@keyframes hp130-pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
 #hp .hp-name{font-family:'Atomic Marker',cursive;font-size:clamp(34px,4vw,54px);line-height:1}
 #hp .hp-sub{margin-top:8px;font-weight:700;font-size:15px;letter-spacing:.08em;color:var(--lav)}
 #hp .hp-sub b{display:inline-block;margin-left:10px;color:#fff;background:var(--hi);padding:3px 9px;font-size:12px;letter-spacing:.12em}
@@ -270,5 +278,24 @@ html,body{margin:0 !important;padding:0 !important}
   if (cw) { cw.style.paddingTop = '0'; cw.style.paddingBottom = '0'; } if (sec) sec.style.minHeight = '0'; if (fe) fe.style.display = 'block';
 })();
 </script>
-`;
+<script>(function(){
+  // Loot box 130 (5 Taps in the Cranium): the leaderboard only shows the top 10, so a hunter can also tap their own
+  // name five times on their profile, which only ever shows their own card (Dennis, 2026-10-27).
+  var K='RFpSWEI4VVI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',n=0,last=0,ov=null;
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+  function show(){
+    if(!ov){ov=document.createElement('div');ov.className='hp130-ov';ov.hidden=true;
+      ov.innerHTML='<button type="button" aria-label="Loot box 130"><img alt="" width="160" height="160" src="https://africhmaurice.github.io/site/assets/loot/130.png"></button>';
+      ov.addEventListener('click',function(e){if(e.target===ov)ov.hidden=true;});
+      ov.querySelector('button').addEventListener('click',function(){claim();ov.hidden=true;});
+      document.body.appendChild(ov);}
+    ov.hidden=false;ov.querySelector('button').focus();
+  }
+  document.addEventListener('click',function(e){
+    if(!e.target.closest||!e.target.closest('#hp .hp-name'))return;
+    var t=Date.now();n=(t-last<2000)?n+1:1;last=t;
+    if(n>=5){n=0;show();}
+  });
+})();</script>`;
 }
