@@ -1,3 +1,11 @@
+<!-- ============================================================
+     QUESTIONS? - the ask-a-question form. Loot boxes staged 2026-10-26 (not live until Maurice approves):
+       108 The Last Question: a one-entry FAQ under the form whose answer is blank; open it a second time and the chest shows.
+       111 The Question Mark: the "?" in the "Questions?" heading is a hidden link to the claim.
+       118 The Right Question: sending exactly "Where is the loot box?" (any capitals, question mark optional) skips the
+           inbox and the thank-you note hands over the chest.
+     DRAFT: "What is the last question?" and "That one I can answer right now: it’s right here."
+     ============================================================ -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&display=swap" rel="stylesheet">
@@ -181,12 +189,21 @@ html,body{margin:0 !important;padding:0 !important}
 #hq .hq-done{text-align:center;padding:8px 0;font-size:17px;line-height:1.5}
 #hq .hq-done b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;text-transform:uppercase;font-size:clamp(28px,4vw,44px);margin-bottom:12px}
 #hq .hq-done a{display:inline-block;margin-top:22px;color:#fafafa;background:var(--acc);padding:16px 28px;font-weight:700;text-transform:uppercase;text-decoration:none}
+#hq .hq-faq{margin-top:clamp(20px,3vw,32px);background:rgba(250,250,250,.86)}
+#hq .hq-faq summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px clamp(24px,4.5vw,45px);font-weight:700;font-size:17px;line-height:1.4;cursor:pointer}
+#hq .hq-faq summary::-webkit-details-marker{display:none}
+#hq .hq-faq summary::after{content:"+";flex:none;font-size:24px;line-height:1;color:var(--acc)}
+#hq .hq-faq details[open] summary::after{content:"\2212"}
+#hq .hq-ans{min-height:24px;padding:0 clamp(24px,4.5vw,45px) 20px}
+#hq .hq-chest{display:block;width:96px;height:96px;margin:4px auto 0;padding:0;border:0;background:none;cursor:pointer}
+#hq .hq-chest img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(0,0,0,.35))}
+#hq .hq-done .hq-chest{margin-top:20px}
 @media (max-width:560px){#hq{padding:96px 14px 56px}}
 </style>
 <section id="hq" data-screen-label="Questions">
   <div class="hq-in">
     <div class="hq-panel hq-head">
-      <h1>Questions?</h1>
+      <h1>Questions<span class="hq-qm">?</span></h1>
       <p class="hq-lede">Stuck on a task, a riddle, a loot box, or your points? Ask me anything about the hunt and I’ll get back to you by email. You might also find the answer in the <a href="https://www.mauriceafrich.com/rules">Official Rules</a>.</p>
     </div>
     <form id="hq-form" class="hq-panel" novalidate>
@@ -201,8 +218,33 @@ html,body{margin:0 !important;padding:0 !important}
       <button type="submit" id="hq-send">Send My Question</button>
       <p class="hq-err" id="hq-err" role="alert"></p>
     </form>
+    <div class="hq-panel hq-faq">
+      <details id="hq-last"><summary>What is the last question?</summary><div class="hq-ans" id="hq-last-ans"></div></details>
+    </div>
   </div>
 </section>
+<script>
+// Loot boxes on the Questions page (staged 2026-10-26): 108 The Last Question, 111 The Question Mark, 118 The Right Question.
+var LOOT = (function () {
+  function opener(K) {
+    return function () { var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+      var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u; };
+  }
+  var c108 = (function () { var K='WTNaMko0QVU9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo'; return opener(K); })();
+  var c111 = (function () { var K='VldHRkZSWEI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo'; return opener(K); })();
+  var c118 = (function () { var K='VDRDS0ZNRTM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo'; return opener(K); })();
+  // 111: the question mark in the header is a hidden link.
+  var qm = document.querySelector('#hq .hq-qm'); if (qm) qm.addEventListener('click', c111);
+  // 108: the last question's answer is blank. Opening it a second time shows the box.
+  var d = document.getElementById('hq-last'), ans = document.getElementById('hq-last-ans'), opens = 0;
+  if (d) d.addEventListener('toggle', function () {
+    if (!d.open || ++opens < 2 || ans.firstChild) return;
+    ans.innerHTML = '<button type="button" class="hq-chest" aria-label="Loot box 108"><img src="https://africhmaurice.github.io/site/assets/loot/108.png" alt="" width="160" height="160"></button>';
+    ans.firstChild.addEventListener('click', c108);
+  });
+  return { c118: c118 };
+})();
+</script>
 <script>
 (function () {
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
@@ -216,6 +258,14 @@ html,body{margin:0 !important;padding:0 !important}
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email)) { err.textContent = 'That email does not look right.'; return; }
     if (p.question.length < 5) { err.textContent = 'What would you like to ask?'; return; }
     err.textContent = ''; btn.disabled = true; btn.textContent = 'Sending...';
+    // Loot box 118: the right question, word for word, gets a thank-you note that hands over a box (and is not sent on).
+    if (/^where is the loot box\??$/i.test(p.question.replace(/\s+/g, ' '))) {
+      form.innerHTML = '<div class="hq-done"><b>Thank you!</b>Thanks, ' + p.name.replace(/[<>&]/g, '') + '. That one I can answer right now: it’s right here.' +
+        '<button type="button" class="hq-chest" id="hq-box118" aria-label="Loot box 118"><img src="https://africhmaurice.github.io/site/assets/loot/118.png" alt="" width="160" height="160"></button>' +
+        '<a href="https://www.mauriceafrich.com/the-hunt#tasks">BACK TO THE HUNT</a></div>';
+      document.getElementById('hq-box118').addEventListener('click', LOOT.c118);
+      return;
+    }
     send(p, function (res) {
       if (res && res.ok) {
         form.innerHTML = '<div class="hq-done"><b>Thank you!</b>Thanks, ' + p.name.replace(/[<>&]/g, '') + '. I’ll reply to ' + p.email.replace(/[<>&]/g, '') + ' as soon as I can.<br><a href="https://www.mauriceafrich.com/the-hunt#tasks">BACK TO THE HUNT</a></div>';

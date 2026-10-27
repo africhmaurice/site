@@ -18,6 +18,11 @@
 
        On /solve (or with #riddle / ?riddle) it opens as the riddle form.
 
+       LOOT BOX 106 (The Imperial Loot Box, staged 2026-10-26): the country picker has one place that is not real,
+       Imperia. Picking it shows the box (its chest opens the claim); Imperia is never sent as a country, so the form
+       asks for a real one. Make the same change in the treasure-hunt-leaderboard source squarespace-submit.html at go-live.
+       DRAFT: the option name "Imperia".
+
      LOOKS
        Matches the Squarespace forms it replaces: /points is green (#1a5e41
        wash, #268e62 lines), /solve is rust (#c53200), each over its own
@@ -98,6 +103,10 @@ html,body{margin:0 !important;padding:0 !important}
   background-position:calc(100% - 22px) 50%,calc(100% - 16px) 50%;background-size:6px 6px,6px 6px;background-repeat:no-repeat}
 .sb-form select:invalid,.sb-form select.empty{color:rgba(11,23,15,.55)}
 .sb-form input:focus,.sb-form select:focus,.sb-form textarea:focus{outline:2px solid var(--acc);outline-offset:2px}
+.sb-imp{display:flex;justify-content:center;margin-top:16px}
+.sb-imp[hidden]{display:none}
+.sb-imp button{display:block;padding:0;margin:0;border:0;background:none;cursor:pointer;width:112px;height:112px}
+.sb-imp img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(0,0,0,.35))}
 .sb-check{display:flex;gap:10px;align-items:flex-start;font-size:15.5px;line-height:1.5;cursor:pointer}
 .sb-check input{width:18px;height:18px;flex:none;margin:3px 0 0;accent-color:var(--acc)}
 .sb-me{border:2px solid var(--acc);background:var(--paper);padding:12px 20px;font-size:16px;line-height:1.5;display:flex;justify-content:space-between;gap:14px;align-items:center}
@@ -397,6 +406,14 @@ h1,h2,h3{text-wrap:balance}
 
   }
 
+  // Loot box 106 (The Imperial Loot Box): the chest that shows when Imperia is picked as the country.
+  var claim106 = (function () {
+    var K='R01XWEhESDk9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+    function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+      var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+    return claim;
+  })();
+
   // ---- who you are --------------------------------------------------------
   function meBlock() {
     if (!editingMe) {
@@ -416,8 +433,9 @@ h1,h2,h3{text-wrap:balance}
         '<select id="sb-country" class="' + (c ? '' : 'empty') + '"><option value="">Select an option</option>' +
         '<option' + (c === 'United States' ? ' selected' : '') + '>United States</option>' +
         '<option' + (c === 'United Kingdom' ? ' selected' : '') + '>United Kingdom</option>' +
-        '<option value="__other"' + (other ? ' selected' : '') + '>Other Country</option></select>' +
-        '<input type="text" id="sb-other" placeholder="Which country?" value="' + esc(other ? c : '') + '" style="' + (other ? '' : 'display:none;') + 'margin-top:10px">', 'sb-country') +
+        '<option value="__other"' + (other ? ' selected' : '') + '>Other Country</option><option value="__imperia">Imperia</option></select>' +
+        '<input type="text" id="sb-other" placeholder="Which country?" value="' + esc(other ? c : '') + '" style="' + (other ? '' : 'display:none;') + 'margin-top:10px">' +
+        '<div class="sb-imp" id="sb-imp" hidden><button type="button" id="sb-imp-box" aria-label="Loot box 106"><img src="https://africhmaurice.github.io/site/assets/loot/106.png" alt="" width="160" height="160"></button></div>', 'sb-country') +
       item('Preferred Social Media Handle', 'Please choose the social media platform you\'d like to be featured on the leaderboard.',
         '<select id="sb-platform" class="' + (plat ? '' : 'empty') + '"><option value="">Choose an option.</option>' +
         platOpts.map(function (p) { return '<option' + (plat === p ? ' selected' : '') + '>' + p + '</option>'; }).join('') + '</select>' +
@@ -429,7 +447,9 @@ h1,h2,h3{text-wrap:balance}
     var e = $('sb-edit');
     if (e) e.onclick = function () { editingMe = true; draw(); };
     var c = $('sb-country'), o = $('sb-other'), p = $('sb-platform'), h = $('sb-handle');
-    if (c) c.onchange = function () { c.className = c.value ? '' : 'empty'; o.style.display = c.value === '__other' ? 'block' : 'none'; if (c.value === '__other') o.focus(); };
+    if (c) c.onchange = function () { c.className = c.value ? '' : 'empty'; o.style.display = c.value === '__other' ? 'block' : 'none'; if (c.value === '__other') o.focus(); $('sb-imp').hidden = c.value !== '__imperia'; };
+    // Loot box 106: Imperia is not a real place. Picking it shows the box, and it is never sent as a country.
+    var ib = $('sb-imp-box'); if (ib) ib.onclick = claim106;
     if (p) p.onchange = function () {
       p.className = p.value ? '' : 'empty';
       h.style.display = p.value && p.value !== 'None' ? 'block' : 'none';
@@ -442,7 +462,7 @@ h1,h2,h3{text-wrap:balance}
     var c = $('sb-country').value, first = $('sb-first').value.trim(), last = $('sb-last').value.trim(), plat = $('sb-platform').value;
     return { first_name: first, last_name: last, name: (first + ' ' + last).trim(), email: $('sb-email').value.trim(),
       platform: plat === 'None' ? '' : plat, handle: plat === 'None' ? '' : $('sb-handle').value.trim(), plat_choice: plat,
-      country: c === '__other' ? $('sb-other').value.trim() : c };
+      country: c === '__imperia' ? '' : c === '__other' ? $('sb-other').value.trim() : c };
   }
 
   // ---- the form -------------------------------------------------------------

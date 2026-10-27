@@ -30,7 +30,7 @@
 #ma-longword .lw-go:hover,#ma-longword .lw-go:focus-visible{background:#f3ead9;color:#0b170f}
 #ma-longword .lw-go[disabled]{opacity:.6;cursor:default}
 #ma-longword .lw-said{display:flex;align-items:center;gap:16px;padding:16px 22px;background:#132219;border:2px solid currentColor;text-align:left;max-width:640px}
-#ma-longword .lw-said svg{flex:none;width:52px;height:50px}
+#ma-longword .lw-said svg{flex:none;width:52px;height:50px}#ma-longword .lw-said img{flex:none;width:52px;height:52px}
 #ma-longword .lw-said b{display:block;font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(21px,2vw,28px);line-height:1.25;letter-spacing:.03em}
 #ma-longword .lw-said.wrong{color:#fd7547}
 #ma-longword .lw-said.right{color:#a2f590}
@@ -112,7 +112,7 @@
     right:'<path fill="#c11212" d="M17.5 27.5l-5.6-5.4a3.4 3.4 0 0 1 5.6-3.8 3.4 3.4 0 0 1 5.6 3.8zM34.5 27.5l-5.6-5.4a3.4 3.4 0 0 1 5.6-3.8 3.4 3.4 0 0 1 5.6 3.8z"/>'
   };
   var SAY={right:'You got it!',wrong:'I’m so sorry, that’s not right.',nopaste:'No pasting allowed!'};
-  function verdict(v){said.className='lw-said '+(v==='right'?'right':'wrong');said.innerHTML='<svg viewBox="0 0 52 50" aria-hidden="true">'+SKULL+(EYES[v]||EYES.wrong)+'</svg><b>'+SAY[v]+'</b>';said.hidden=false;}
+  function verdict(v){said.className='lw-said '+(v==='right'?'right':'wrong');said.innerHTML=(v==='right'?'<img src="https://africhmaurice.github.io/site/assets/img/skull-heart-red.webp" width="52" height="52" alt="" aria-hidden="true">':'<svg viewBox="0 0 52 50" aria-hidden="true">'+SKULL+(EYES[v]||EYES.wrong)+'</svg>')+'<b>'+SAY[v]+'</b>';   /* a right answer gets the red heart-eyes sticker skull (Maurice 10/26) */said.hidden=false;}
   // Typed from memory only: pasting or dropping text into the box is refused.
   ['paste','drop'].forEach(function(ev){input.addEventListener(ev,function(e){e.preventDefault();verdict('nopaste');});});
   input.addEventListener('beforeinput',function(e){if(/^insertFrom(Paste|Drop)/.test(e.inputType||'')){e.preventDefault();verdict('nopaste');}});

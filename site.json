@@ -415,6 +415,24 @@
       "url": "/constellations-33030",
       "title": "Find the Constellations (loot box 79, Act Three puzzle #26)",
       "source": "pages/constellations.html"
+    },
+    {
+      "slug": "sky-mines",
+      "url": "/sky-mines-35095",
+      "title": "Sky Mines (hidden; loot box 144)",
+      "source": "pages/sky-mines.html"
+    },
+    {
+      "slug": "goma-bopper",
+      "url": "/goma-bopper-44893",
+      "title": "Goma Bopper (hidden; loot box 149)",
+      "source": "pages/goma-bopper.html"
+    },
+    {
+      "slug": "word-search-champion",
+      "url": "/word-search-champion-75327",
+      "title": "Word Search Champion (hidden; loot box 150)",
+      "source": "pages/word-search-champion.html"
     }
   ],
   "staysInSquarespace": [

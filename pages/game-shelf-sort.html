@@ -275,6 +275,14 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     <div id="hg-play">
     <div class="ss-board">
       <div class="ss-case" id="ss-case" aria-label="Bookcase"></div>
+      <!-- 133 The Dusty Shelf -->
+      <script>(function(){var K='UUpXVDhEWVA9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',c=document.getElementById('ss-case');if(!c)return;
+      function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+      function put(){if(c.querySelector('.ss-dust'))return;var b=document.createElement('button');b.type='button';b.className='ss-dust';b.setAttribute('aria-label','Dust');
+      b.style.cssText='position:absolute;left:31%;top:49.6%;z-index:5;width:20px;height:20px;margin:-10px 0 0 -10px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;cursor:default;-webkit-tap-highlight-color:transparent';
+      b.innerHTML='<i style="position:absolute;left:8px;top:9px;width:3px;height:3px;border-radius:50%;background:#050505;opacity:.85"></i>';
+      b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();claim();});c.appendChild(b);}
+      put();new MutationObserver(put).observe(c,{childList:true});})();</script>
       <div class="ss-grid" id="ss-grid"></div>
     </div>
     <div class="ss-lives" id="ss-lives"></div>

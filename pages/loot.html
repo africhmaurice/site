@@ -286,7 +286,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   <div style="text-align:center;max-width:1000px;margin:0 auto clamp(30px,4vw,46px)">
     <div style="font-family:'Atomic Marker',cursive;font-size:clamp(24px,3.4vw,44px);color:#ffd9c4;margin-bottom:12px">The Treasure Hunt</div>
     <h1 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(52px,9vw,124px);line-height:1.04;color:#fff;margin:0 0 22px">LOOT BOXES</h1>
-    <p style="font-weight:700;font-size:clamp(15px,1.8vw,19px);letter-spacing:.05em;line-height:1.6;color:#ffd9c4;text-shadow:0 1px 6px rgba(0,0,0,.4);max-width:720px;margin:0 auto">A hundred and one of them are hidden out there on the internet. Spot one, click it, and it is yours. 50 points each.</p>
+    <p style="font-weight:700;font-size:clamp(15px,1.8vw,19px);letter-spacing:.05em;line-height:1.6;color:#ffd9c4;text-shadow:0 1px 6px rgba(0,0,0,.4);max-width:720px;margin:0 auto">A hundred and fifty-one of them are hidden out there on the internet. Spot one, click it, and it is yours. 50 points each.</p>
   </div>
 
   <main style="background:rgba(255,255,255,.94);border:3px solid #111;max-width:780px;margin:0 auto;padding:clamp(26px,4vw,48px) clamp(16px,3.5vw,44px) clamp(28px,4vw,44px)">
@@ -347,7 +347,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
      plain numbered squares. */
   var ART = 'https://africhmaurice.github.io/leaderboard/loot/';
 
-  var TOTAL = 101;
+  var TOTAL = 151;
   var ME = 'thLoot:me';      // who this browser belongs to
   var CARD = 'thLoot:card';  // last scorecard we saw, so the grid paints instantly
 
@@ -533,6 +533,14 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
             (have[n] ? (n === 0 ? '&#9733;' : n) : '&#183;') + '</div>';
     }
     grid.innerHTML = html;
+    // 120 The Ghost Box (boxes 101-150): one more square after the last chest. It looks like an empty gap; it is a button.
+    if (ART) {
+      var ghost = document.createElement('button');
+      ghost.type = 'button'; ghost.className = 'lb-ghost'; ghost.setAttribute('aria-label', 'Empty');
+      ghost.style.cssText = 'display:block;width:100%;aspect-ratio:1;margin:0;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;cursor:default;-webkit-tap-highlight-color:transparent';
+      ghost.onclick = function () { var u = ''; try { u = atob('VEZRQ0hQU1g9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo').split('').reverse().join(''); } catch (e) {} if (u) location.href = u; };
+      grid.appendChild(ghost);
+    }
     // Box 73 sits on top of box 13 on the scorecard.
     var SNEAK73_LIVE = true;
     if (SNEAK73_LIVE && ART && !have[73] && grid.children[13]) {
@@ -624,7 +632,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         '<div class="lb-pts">+' + (res.box.points || 50) + ' POINTS</div>' +
         '<p class="lb-quiet">' + (left > 0
             ? left + ' still out there. Keep your eyes open.'
-            : 'That is all one hundred and one. Nobody has ever looked harder.') + '</p>' +
+            : 'That is all one hundred and fifty-one. Nobody has ever looked harder.') + '</p>' +
         (res.bonus ? bonusHtml(res.bonus) : '') +
         (left > 0 ? cta() : ''));
     drawCard(res.found, n);
@@ -643,7 +651,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     say((ART ? '<img loading="lazy" decoding="async" class="lb-chest" src="' + chestUrl(n) + '" alt="' + title + '">' : '') +
         '<p class="lb-bang miss">ALREADY YOURS</p>' +
         '<p class="lb-say">You found ' + title + ' once already, so no second helping of points.</p>' +
-        '<p class="lb-quiet">' + (res.total - res.count) + ' of the hundred and one are still out there.</p>' +
+        '<p class="lb-quiet">' + (res.total - res.count) + ' of the hundred and fifty-one are still out there.</p>' +
         (res.total - res.count > 0 ? cta() : ''));
     drawCard(res.found, -1);
   }
@@ -655,7 +663,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
           'out on social, in places you would not think to look. Spot one, click it, and it fills in here.</p>');
     } else {
       say('<p class="lb-bang">NOTHING YET</p>' +
-          '<p class="lb-say">A hundred and one loot boxes are hidden out there. Click one when you spot it and this card ' +
+          '<p class="lb-say">A hundred and fifty-one loot boxes are hidden out there. Click one when you spot it and this card ' +
           'starts filling in. 50 points a box.</p>');
     }
     drawCard(res.found || [], -1);
@@ -664,7 +672,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   function showError(err) {
     var lines = {
       notyet: ['NOT YET', 'This one comes to you. Find twenty-five loot boxes and it lands on your scorecard by itself.'],
-      badcode: ['NOT A LOOT BOX', 'That code does not match any of the hundred and one. Check the link you followed &mdash; or someone is having you on.'],
+      badcode: ['NOT A LOOT BOX', 'That code does not match any of the hundred and fifty-one. Check the link you followed &mdash; or someone is having you on.'],
       closed: ['THE HUNT IS OVER', 'Loot boxes stopped counting on November 1st. Thank you for hunting.'],
       email: ['THAT EMAIL LOOKS OFF', 'Have another go &mdash; it has to be the address you use for the hunt.'],
       endpoint: ['NOT WIRED UP YET', 'This page has no sheet behind it. (Paste the web app URL into ENDPOINT.)'],
@@ -825,3 +833,41 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   }
 })();
 </script>
+
+<!-- 128 The Keyhole -->
+<style>
+.lb-z69{position:fixed;inset:0;z-index:2147482000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(11,23,15,.9)}
+.lb-z69[hidden]{display:none}
+.lb-z69 .z-win{position:relative;width:min(88vw,560px);aspect-ratio:1;overflow:hidden;border:2px solid #f3ead9;background:#132219}
+.lb-z69 .z-art{position:absolute;inset:0;transition:transform .45s ease;transform-origin:20.8% 46.7%}
+.lb-z69.z-in .z-art{transform:translate(29.2%,3.3%) scale(8)}
+.lb-z69 .z-art img{display:block;width:100%;height:100%}
+.lb-z69 .z-tiny,.lb-z69 .z-tiny:hover{position:absolute;left:20.8%;top:46.35%;width:1%;aspect-ratio:1;margin:-.5% 0 0 -.5%;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;cursor:pointer}
+.lb-z69 .z-tiny img{display:block;width:100%;height:100%}
+.lb-z69 .z-x,.lb-z69 .z-x:hover{position:absolute;top:max(16px,env(safe-area-inset-top,0px));right:16px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;padding:0;border:2px solid #f3ead9;border-radius:0;background:#0b170f;color:#f3ead9;cursor:pointer}
+.lb-z69 .z-x svg{width:20px;height:20px}
+</style>
+<script>(function(){
+  var grid=document.getElementById('lb-grid');if(!grid)return;
+  var K='VFlVWDRaV1Q9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',ov=null;
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(u)location.href=u;}
+  function open(){
+    if(!ov){ov=document.createElement('div');ov.className='lb-z69';ov.setAttribute('role','dialog');ov.setAttribute('aria-label','Loot box 69');
+      ov.innerHTML='<div class="z-win"><div class="z-art"><img src="https://africhmaurice.github.io/leaderboard/loot/69.png" alt="Loot box 69" draggable="false">'+
+        '<button type="button" class="z-tiny" aria-label="A tiny loot box" tabindex="-1"><img src="https://africhmaurice.github.io/leaderboard/loot/128.png" alt="" draggable="false"></button></div></div>'+
+        '<button type="button" class="z-x" aria-label="Close"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M3 3l14 14M17 3L3 17"/></svg></button>';
+      var win=ov.querySelector('.z-win'),tiny=ov.querySelector('.z-tiny');
+      // a tap on the keyhole zooms in on it (a tap anywhere else zooms back out); zoomed in, the tiny box opens 128
+      win.addEventListener('click',function(e){
+        if(ov.classList.contains('z-in')){if(e.target.closest('.z-tiny'))claim();else ov.classList.remove('z-in');return;}
+        var r=win.getBoundingClientRect(),fx=(e.clientX-r.left)/r.width,fy=(e.clientY-r.top)/r.height;
+        if(Math.abs(fx-.208)<.08&&Math.abs(fy-.467)<.08){ov.classList.add('z-in');tiny.tabIndex=0;}
+      });
+      ov.querySelector('.z-x').addEventListener('click',function(){ov.hidden=true;ov.classList.remove('z-in');});
+      ov.addEventListener('click',function(e){if(e.target===ov){ov.hidden=true;ov.classList.remove('z-in');}});
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov)ov.hidden=true;});
+      document.body.appendChild(ov);}
+    ov.hidden=false;ov.classList.remove('z-in');ov.querySelector('.z-x').focus();
+  }
+  grid.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('.lb-cell');if(!c)return;var i=c.querySelector('img[data-n="69"]');if(i){i.style.cursor='zoom-in';open();}});
+})();</script>

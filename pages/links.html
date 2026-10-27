@@ -323,3 +323,29 @@
   })();
 })();
 </script>
+<!-- LOOT BOX 117 (The Izzy Blob Coin Loot Box, staged 2026-10-26): the spinning coin on "The Treasure Hunt is Live!" tile
+     spins faster with every tap; after 8 quick taps (each within 1.2 seconds of the last) it turns into the box. A tap on
+     the coin no longer opens the hunt page (the rest of the tile still does). Let it rest and it slows back down.
+     tools/links.mjs generates this page, so it must carry this block too at go-live. -->
+<style>
+#ma-links .lk-spin.lk-117{background:none!important;animation:none!important;cursor:pointer}
+#ma-links .lk-spin.lk-117 img{display:block;width:100%;height:100%;object-fit:contain;animation:lk117 .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes lk117{from{transform:scale(.4) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){#ma-links .lk-spin.lk-117 img{animation:none}}
+</style>
+<script>(function(){
+  var K='WFBFQzdOQzM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+  var coin=document.querySelector('#ma-links [data-link="hunt"] .lk-spin');if(!coin)return;
+  var taps=0,last=0,done=false,slow=null,BASE=1.6,NEED=8;
+  function speed(){coin.style.animationDuration=(BASE/(1+taps*.75)).toFixed(3)+'s';}
+  coin.addEventListener('click',function(e){
+    e.preventDefault();e.stopPropagation();
+    if(done){claim();return;}
+    var now=Date.now();taps=now-last<=1200?taps+1:1;last=now;speed();
+    clearTimeout(slow);slow=setTimeout(function(){taps=0;coin.style.animationDuration='';},1400);
+    if(taps>=NEED){done=true;clearTimeout(slow);coin.classList.add('lk-117');coin.setAttribute('aria-label','Loot box 117');coin.removeAttribute('aria-hidden');
+      coin.innerHTML='<img src="https://africhmaurice.github.io/site/assets/loot/117.png" alt="" width="160" height="160">';}
+  });
+})();</script>

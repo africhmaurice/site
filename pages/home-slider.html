@@ -9,10 +9,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
 <style>
 @font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
 html,body{margin:0;padding:0;background:#0b170f}
 a{color:#fff}
 #ma-slider{position:relative;width:100%;aspect-ratio:1366/576;overflow:hidden;background:#111;font-family:'Almarai',sans-serif;container-type:inline-size}
-#ma-track{display:flex;width:900%;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+#ma-track{display:flex;width:1000%;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1)}
 .ma-arrow{position:absolute;top:50%;transform:translateY(-50%);width:2.7cqw;height:2.7cqw;min-width:28px;min-height:28px;opacity:.9;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6))}
 .ma-arrow:hover{opacity:1;transform:translateY(-50%) scale(1.1)}
 .ma-dots{position:absolute;left:50%;bottom:1.6cqw;transform:translateX(-50%);display:flex;gap:.7cqw;z-index:5}
@@ -29,6 +30,12 @@ a{color:#fff}
 
 @media (max-width:760px){
   #ma-slider{aspect-ratio:2/3}
+  /* Sky Pirate Quiz slide: the four crew members in a row on top, the words under them */
+  #ma-track>div[data-screen-label="QZ"]>div{max-width:100% !important}
+  #ma-track>div[data-screen-label="QZ"] .qz-crew{gap:1.5cqw !important}
+  #ma-track>div[data-screen-label="QZ"] .qz-crew img{height:28cqw !important}
+  #ma-track>div[data-screen-label="QZ"] .qz-crew img.qz-izzy{height:16cqw !important}
+  #ma-track>div[data-screen-label="QZ"] .qz-head{font-size:8.6cqw !important}
   /* Special Editions slide: both books side by side on top, the words under them */
   #ma-track>div[data-screen-label="SE"]{display:grid !important;grid-template-columns:1fr 1fr !important;align-content:center;justify-content:center;align-items:center;justify-items:center;gap:5cqw 4cqw !important;padding:8cqw 8cqw !important}
   #ma-track>div[data-screen-label="SE"]>img:first-child{grid-column:1;grid-row:1;justify-self:end;height:52cqw !important;width:auto !important}
@@ -88,7 +95,7 @@ a{color:#fff}
 
 
     <!-- SLIDE SE : SPECIAL EDITIONS (Broken Binding + Waterstones Exclusive, 2026-10-12; copy is DRAFT) -->
-    <div data-screen-label="SE" style="flex:0 0 11.1111%;height:100%;background:linear-gradient(rgba(26,94,65,.80),rgba(15,58,39,.86)),url(https://africhmaurice.github.io/site/assets/img/ef80affe30140e01.jpg) center/cover;position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;justify-items:center;column-gap:2.25cqw;padding:2.25cqw 4cqw;box-sizing:border-box;overflow:hidden">
+    <div data-screen-label="SE" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(26,94,65,.80),rgba(15,58,39,.86)),url(https://africhmaurice.github.io/site/assets/img/ef80affe30140e01.jpg) center/cover;position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;justify-items:center;column-gap:2.25cqw;padding:2.25cqw 4cqw;box-sizing:border-box;overflow:hidden">
       <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/ed-broken-binding.webp" alt="The Broken Binding special edition of Cello's Gate, with foil boards and digital edges" style="height:30cqw;width:auto;max-width:100%;flex:none;filter:drop-shadow(0.75cqw 0.9cqw 1.2cqw rgba(0,0,0,.45))">
       <div style="text-align:center;max-width:40cqw;position:relative">
         <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#a2f590;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.2cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">NEW SPECIAL EDITIONS</div>
@@ -102,8 +109,27 @@ a{color:#fff}
       <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/ed-waterstones.webp" alt="The Waterstones Exclusive Edition of Cello's Gate, with a sprayed edge" style="height:30cqw;width:auto;max-width:100%;flex:none;filter:drop-shadow(0.75cqw 0.9cqw 1.2cqw rgba(0,0,0,.45))">
     </div>
 
+    <!-- SLIDE QZ : THE SKY PIRATE QUIZ (Maurice, 2026-10-26; staged, not live). Grey, Minn, Dot, and Izzy from the quiz's chibi
+         crew art. Loot box 107 hides in Grey's eye (data-ma-eye, see HOME HIDES below).
+         DRAFT words: eyebrow "THE SKY PIRATE QUIZ"; heading "Which Sky Pirate Are You?"; line "Take the quiz and meet your
+         match in the crew."; button "TAKE THE QUIZ"; image alt texts "Grey", "Minn", "Dot", "Izzy". -->
+    <div data-screen-label="QZ" style="flex:0 0 10%;height:100%;position:relative;background:linear-gradient(rgba(72,45,133,.84),rgba(45,28,83,.92)),url(https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3cqw;padding:2.25cqw 6cqw;box-sizing:border-box;overflow:hidden">
+      <div class="qz-crew" style="display:flex;align-items:flex-end;justify-content:center;gap:.9cqw;flex:none;filter:drop-shadow(0.5cqw 0.7cqw 1cqw rgba(0,0,0,.4))">
+        <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/quiz/crew/grey.webp" data-ma-eye="38.6,31.3;58.4,30" alt="Grey" draggable="false" style="height:19cqw;width:auto;flex:none;display:block">
+        <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/quiz/crew/minn.webp" alt="Minn" draggable="false" style="height:19cqw;width:auto;flex:none;display:block">
+        <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/quiz/crew/dot.webp" alt="Dot" draggable="false" style="height:19cqw;width:auto;flex:none;display:block">
+        <img loading="lazy" decoding="async" class="qz-izzy" src="https://africhmaurice.github.io/site/assets/quiz/crew/izzy.webp" alt="Izzy" draggable="false" style="height:11cqw;width:auto;flex:none;display:block">
+      </div>
+      <div style="text-align:center;max-width:34cqw;display:flex;flex-direction:column;align-items:center">
+        <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#c3a6ff;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.2cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">THE SKY PIRATE QUIZ</div>
+        <div class="qz-head" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;color:#fffffe;font-size:4.2cqw;line-height:1.2;letter-spacing:.03em;text-transform:uppercase;text-shadow:0 0.19cqw 0.38cqw rgba(0,0,0,.5)">Which Sky Pirate Are You?</div>
+        <p style="color:#fff;font-weight:800;font-size:1.42cqw;line-height:1.55;margin:1.65cqw 0 0;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">Take the quiz and meet your match in the crew.</p>
+        <a href="https://www.mauriceafrich.com/sky-pirate-quiz-61748" style="display:inline-block;margin-top:2.1cqw;background:#c1330a;border:1px solid #f3ead9;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none" class="hv0">TAKE THE QUIZ</a>
+      </div>
+    </div>
+
     <!-- SLIDE A3 : ACT THREE HAS BEGUN (Maurice, 2026-10-16; red; loot box 43 hides in it) -->
-    <div data-screen-label="A3" style="flex:0 0 11.1111%;height:100%;position:relative;background:linear-gradient(rgba(145,37,1,.86),rgba(74,16,2,.92)),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3cqw 9cqw;box-sizing:border-box">
+    <div data-screen-label="A3" style="flex:0 0 10%;height:100%;position:relative;background:linear-gradient(rgba(145,37,1,.86),rgba(74,16,2,.92)),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3cqw 9cqw;box-sizing:border-box">
       <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#ffb38a;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">THE TREASURE HUNT &bull; OCTOBER 16<sup style="font-size:.6em">TH</sup> &ndash; NOVEMBER 1<sup style="font-size:.6em">ST</sup></div>
       <div style="font-family:'Atomic Marker',cursive;color:#fff;font-size:5.4cqw;line-height:1.2;text-shadow:0 0.22cqw 0.45cqw rgba(0,0,0,.25)">ACT THREE HAS BEGUN!</div>
       <p style="color:#fff;font-weight:800;font-size:1.42cqw;line-height:1.55;margin:1.65cqw 0 0;max-width:42cqw;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">New tasks, four new puzzles, Trench Run in the arcade, and the Act Three Sweepstakes to unlock!</p>
@@ -113,7 +139,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE MG : MORALLY GREY (MAKA of Echo 7 Design Co) -->
-    <div data-screen-label="07" style="flex:0 0 11.1111%;height:100%;background:linear-gradient(rgba(26,94,65,.86),rgba(16,62,41,.92)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3.5cqw;padding:2.25cqw 7cqw;box-sizing:border-box">
+    <div data-screen-label="07" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(26,94,65,.86),rgba(16,62,41,.92)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3.5cqw;padding:2.25cqw 7cqw;box-sizing:border-box">
       <img src="https://africhmaurice.github.io/site/assets/merch/morally-grey-fan.webp" alt="Morally Grey merch: the hoodie, the tee, and the women's tee" style="width:36cqw;height:auto;flex:none;filter:drop-shadow(0.5cqw 0.7cqw 1cqw rgba(0,0,0,.4))">
       <div style="text-align:center;max-width:38cqw;display:flex;flex-direction:column;align-items:center">
         <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#89fbcb;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.4cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">NEW IN THE TRENCH MARKET</div>
@@ -124,7 +150,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE 0 : TRENCH MARKET (the merch shop) -->
-    <div data-screen-label="06" style="flex:0 0 11.1111%;height:100%;background:linear-gradient(rgba(45,28,83,.86),rgba(29,16,58,.9)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3.5cqw;padding:2.25cqw 7cqw;box-sizing:border-box">
+    <div data-screen-label="06" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(45,28,83,.86),rgba(29,16,58,.9)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3.5cqw;padding:2.25cqw 7cqw;box-sizing:border-box">
       <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/merch/trench-market-fan.webp" alt="Trench Market merch: The Crew hoodie, the I Survived Loot Box 13 tee, and the Little Dot hat" style="width:36cqw;height:auto;flex:none;filter:drop-shadow(0.5cqw 0.7cqw 1cqw rgba(0,0,0,.4))">
       <div style="text-align:center;max-width:38cqw">
         <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#9e74fd;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">NEW: THE OFFICIAL MERCH SHOP</div>
@@ -135,7 +161,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE 1 : JOIN THE HUNT -->
-    <div data-screen-label="01" style="flex:0 0 11.1111%;height:100%;background:linear-gradient(rgba(178,52,9,.82),rgba(163,44,7,.88)),url(https://africhmaurice.github.io/site/assets/img/e3346bbd4195fa1c.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3cqw 9cqw;box-sizing:border-box">
+    <div data-screen-label="01" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(178,52,9,.82),rgba(163,44,7,.88)),url(https://africhmaurice.github.io/site/assets/img/e3346bbd4195fa1c.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3cqw 9cqw;box-sizing:border-box">
       <div style="font-family:'Atomic Marker',cursive;color:#fff;font-size:5.4cqw;line-height:1;text-shadow:0 0.22cqw 0.45cqw rgba(0,0,0,.25)">JOIN THE HUNT</div>
       
       <p style="color:#fff;font-weight:800;font-size:1.42cqw;line-height:1.55;margin:1.65cqw 0 0;max-width:40.5cqw;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">Solve riddles, complete tasks, locate hidden secrets, and rack up points between now and the end of the hunt (November 1<sup style="font-size:.55em">st</sup>, 2026, two days before Cello's Gate comes out) and walk away with TREASURE*.</p>
@@ -144,7 +170,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE 2 : ACQUIRED -->
-    <div data-screen-label="02" style="flex:0 0 11.1111%;height:100%;background:linear-gradient(rgba(24,84,56,.74),rgba(16,62,41,.82)),url(https://africhmaurice.github.io/site/assets/img/ef80affe30140e01.jpg) center/cover;display:flex;align-items:center;justify-content:center;gap:3cqw;padding:2.25cqw 5.25cqw;box-sizing:border-box">
+    <div data-screen-label="02" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(24,84,56,.74),rgba(16,62,41,.82)),url(https://africhmaurice.github.io/site/assets/img/ef80affe30140e01.jpg) center/cover;display:flex;align-items:center;justify-content:center;gap:3cqw;padding:2.25cqw 5.25cqw;box-sizing:border-box">
       <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/679b434d86628027.webp" alt="Cello's Gate hardcover" style="width:27cqw;height:auto;flex:none;filter:drop-shadow(0.75cqw 0.9cqw 1.2cqw rgba(0,0,0,.45))">
       <div style="text-align:center;max-width:48cqw">
         <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#e9e4d2;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.2cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">SAGA PRESS &bull; SIMON MAVERICK &bull; HODDERSCAPE</div>
@@ -156,7 +182,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE 3 : WALMART -->
-    <div data-screen-label="03" style="flex:0 0 11.1111%;height:100%;background:linear-gradient(rgba(12,70,135,.78),rgba(12,70,135,.78)),url(https://africhmaurice.github.io/site/assets/img/430c8d3436037392.jpg) center/cover;position:relative;display:flex;align-items:center;justify-content:center;gap:2.25cqw;padding:2.25cqw 6cqw;box-sizing:border-box;overflow:hidden">
+    <div data-screen-label="03" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(12,70,135,.78),rgba(12,70,135,.78)),url(https://africhmaurice.github.io/site/assets/img/430c8d3436037392.jpg) center/cover;position:relative;display:flex;align-items:center;justify-content:center;gap:2.25cqw;padding:2.25cqw 6cqw;box-sizing:border-box;overflow:hidden">
       <div style="position:absolute;right:1.5cqw;bottom:1.13cqw;text-align:left;opacity:.5;pointer-events:none">
         <div style="color:#fff;font-weight:800;font-size:4.5cqw;line-height:1;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">Walmart</div>
         <div style="color:#fff;font-weight:700;font-size:1.95cqw;line-height:1.3;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">Save money. Live better.</div>
@@ -170,7 +196,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE 4 : DISCORD -->
-    <div data-screen-label="04" style="flex:0 0 11.1111%;height:100%;background:linear-gradient(rgba(70,12,0,.42),rgba(50,8,0,.55)),url(https://africhmaurice.github.io/site/assets/img/d1def44814f7b9d2.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.25cqw 9cqw;box-sizing:border-box">
+    <div data-screen-label="04" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(70,12,0,.42),rgba(50,8,0,.55)),url(https://africhmaurice.github.io/site/assets/img/d1def44814f7b9d2.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.25cqw 9cqw;box-sizing:border-box">
       <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/7bf9c98ba157d33f.webp" alt="Trench skull and crossed tanto" style="width:16cqw;height:auto;filter:drop-shadow(0 0.38cqw 0.75cqw rgba(0,0,0,.4))">
       <div style="font-family:'Cinzel',serif;font-weight:900;color:#fff;font-size:3.9cqw;line-height:1.3;margin-top:1.2cqw;text-shadow:0 0.19cqw 0.3cqw rgba(0,0,0,.45)">join the TRENCH Community Discord!</div>
       <p style="color:#fff;font-size:1.35cqw;line-height:1.55;margin:1.2cqw 0 0;max-width:43.5cqw;text-shadow:0 0.11cqw 0.26cqw rgba(0,0,0,.45)">Oh, you're not in the Discord community? Well, guess what? It's totally free to join! We have daily tournament brackets, book discussions, chat sessions, a fan fiction contest with a $100 cash prize, and more!</p>
@@ -178,7 +204,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE 5 : COLLIDER ARTICLES -->
-    <div data-screen-label="05" style="flex:0 0 11.1111%;height:100%;position:relative;display:flex">
+    <div data-screen-label="05" style="flex:0 0 10%;height:100%;position:relative;display:flex">
       <div style="flex:1;background:linear-gradient(rgba(13,26,17,.82),rgba(13,26,17,.82)),url(https://africhmaurice.github.io/site/assets/img/a2a9db140e257c36.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5.25cqw 6cqw 3cqw;box-sizing:border-box">
         <div style="font-family:'Cinzel',serif;font-weight:900;color:#fff;font-size:6cqw;line-height:1;text-shadow:0 0.19cqw 0.3cqw rgba(0,0,0,.5)">10</div>
         <div style="font-family:'Cinzel',serif;font-weight:900;color:#fff;font-size:3.4cqw;line-height:1.35;margin-top:1.2cqw;text-shadow:0 0.19cqw 0.3cqw rgba(0,0,0,.5)">Essential Sci-Fi Books for Beginners</div>
@@ -210,13 +236,14 @@ a{color:#fff}
       <div class="ma-dot" onclick="maGo(6)" role="button" aria-label="Slide 7"></div>
     <div class="ma-dot" onclick="maGo(7)" role="button" aria-label="Slide 8"></div>
       <div class="ma-dot" onclick="maGo(8)" role="button" aria-label="Slide 9"></div>
+    <div class="ma-dot" onclick="maGo(9)" role="button" aria-label="Slide 10"></div>
   </div>
 </div>
 <script>
 var maI=0,maHover=false,maTimer=null;
 function maGo(n){
-  maI=(n+9)%9;
-  document.getElementById('ma-track').style.transform='translateX(-'+(maI*100/9)+'%)';
+  maI=(n+10)%10;
+  document.getElementById('ma-track').style.transform='translateX(-'+(maI*100/10)+'%)';
   var dots=document.querySelectorAll('.ma-dot');
   for(var i=0;i<dots.length;i++)dots[i].className='ma-dot'+(i===maI?' on':'');
   maStart();
@@ -226,6 +253,153 @@ var sl=document.getElementById('ma-slider');
 sl.addEventListener('mouseenter',function(){maHover=true;});
 sl.addEventListener('mouseleave',function(){maHover=false;});
 maStart();
+</script>
+<!-- HOME HIDES (loot boxes 101, 102, 107, 129; staged 2026-10-26, not live until Maurice approves)
+     101 Airship: click the airship on the Broken Binding cover (Special Editions slide) seven times and a chest falls out of it.
+     102 The 11:11: a chest sits in the top-right corner of the slider only from 11:11:00 to 11:11:59 AM and PM Eastern
+         (America/New_York, so daylight saving is handled); it appears and leaves on its own while the page is open.
+     107 One-Eyed Man: Grey on the Sky Pirate Quiz slide (and any slider image with data-ma-eye="x%,y%" (one or more eyes, separated by ;) gets a small invisible hot
+         spot over that eye); tapping his eye makes Grey wink (a glint) and a chest pops out of his eye.
+     129 Konami Code: up, up, down, down, left, right, left, right, B, A on a keyboard; on a phone, swipe up, up, down, down,
+         left, right, left, right, then tap twice (B, A). Each step within 3 seconds of the last. A chest drops in.
+     The chests drop into a dark panel with a close button; clicking a chest opens its claim link in a new tab.
+     DRAFT words (for Maurice): aria labels only, "Open loot box 101" (and 102, 107, 129), "Close", "Grey's eye". -->
+<style>
+.mah-drop{position:fixed;inset:0;z-index:2147482000;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:20px;background:rgba(11,23,15,0);transition:background .35s ease}
+.mah-drop.mah-on{background:rgba(11,23,15,.86)}
+.mah-drop .mah-box,.mah-drop .mah-box:hover{display:block;width:min(58vw,240px);height:auto;min-width:0;min-height:0;padding:0!important;margin:0;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mah-drop.mah-on .mah-box{transform:none!important;transition:transform .95s cubic-bezier(.3,1.3,.5,1)}
+.mah-drop .mah-box img{display:block;width:100%;height:auto;filter:drop-shadow(0 0 30px rgba(137,251,203,.45))}
+.mah-drop .mah-box:focus-visible{outline:3px solid #89fbcb;outline-offset:8px}
+.mah-drop .mah-x{flex:none;width:48px;height:48px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;padding:0!important;margin:0;border:2px solid #f3ead9!important;border-radius:0;background:#0b170f!important;color:#f3ead9!important;box-shadow:none!important;cursor:pointer;opacity:0;transition:opacity .3s ease .5s}
+.mah-drop.mah-on .mah-x{opacity:1}
+.mah-drop .mah-x:hover,.mah-drop .mah-x:focus-visible{background:#f3ead9!important;color:#0b170f!important}
+.mah-drop .mah-x svg{width:20px;height:20px}
+.mah-ship,.mah-ship:hover{position:absolute;z-index:3;display:block;min-width:0;min-height:0;margin:0;padding:0!important;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mah-ship:focus-visible{outline:2px solid #89fbcb;outline-offset:2px}
+.mah-rattle{animation:mahRattle .28s ease}
+@keyframes mahRattle{0%,100%{transform:none}25%{transform:rotate(-1.2deg) translateY(-1px)}75%{transform:rotate(1.2deg) translateY(1px)}}
+.mah-1111,.mah-1111:hover{position:absolute;z-index:6;top:12px;right:12px;width:clamp(52px,5.2cqw,76px);height:auto;min-width:0;min-height:0;margin:0;padding:0!important;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;cursor:pointer;animation:mahWish 2.4s ease-in-out infinite;-webkit-tap-highlight-color:transparent}
+.mah-1111[hidden]{display:none}
+.mah-1111 img{display:block;width:100%;height:auto;filter:drop-shadow(0 0 14px rgba(255,255,254,.75))}
+.mah-1111:focus-visible{outline:3px solid #89fbcb;outline-offset:4px}
+@keyframes mahWish{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.mah-eye,.mah-eye:hover{position:absolute;z-index:3;box-sizing:border-box;min-width:0;min-height:0;margin:0;padding:0!important;border:0!important;border-radius:50%;background:transparent!important;box-shadow:none!important;cursor:pointer;transform:translate(-50%,-50%);-webkit-tap-highlight-color:transparent}
+.mah-eye:focus-visible{outline:2px solid #89fbcb;outline-offset:2px}
+.mah-glint{position:absolute;z-index:4;width:34px;height:34px;margin:-17px 0 0 -17px;pointer-events:none;animation:mahGlint .45s ease-out forwards}
+@keyframes mahGlint{0%{transform:scale(.2) rotate(0);opacity:0}40%{transform:scale(1.15) rotate(30deg);opacity:1}100%{transform:scale(.4) rotate(60deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){.mah-drop,.mah-drop.mah-on .mah-box,.mah-drop .mah-x{transition:none}.mah-1111,.mah-rattle,.mah-glint{animation:none}}
+</style>
+<script>
+/* Shared: a chest drops into a dark panel. Click it to claim; the X, Escape, or a click on the backdrop puts it away.
+   from = {x,y} screen point the chest flies out of (the airship, Grey's eye); without it the chest falls from the top. */
+(function(){if(window.__maHome)return;
+  var H=window.__maHome={};
+  H.art=function(n){return 'https://africhmaurice.github.io/site/assets/loot/'+n+'.png';};
+  H.drop=function(n,open,from){
+    try{if(document.querySelector('.mah-drop'))return;
+      var d=document.createElement('div');d.className='mah-drop';d.setAttribute('role','dialog');d.setAttribute('aria-label','Loot box '+n);
+      d.innerHTML='<button type="button" class="mah-box" aria-label="Open loot box '+n+'"><img src="'+H.art(n)+'" alt="Loot box '+n+'" draggable="false"></button>'+
+        '<button type="button" class="mah-x" aria-label="Close"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M3 3l14 14M17 3L3 17"/></svg></button>';
+      var box=d.querySelector('.mah-box');
+      var shut=function(){document.removeEventListener('keydown',esc,true);if(d.parentNode)d.parentNode.removeChild(d);};
+      var esc=function(e){if(e.key==='Escape')shut();};
+      var downOnBack=false;
+      d.addEventListener('pointerdown',function(e){downOnBack=e.target===d;});
+      d.addEventListener('click',function(e){if(e.target===d&&downOnBack)shut();downOnBack=false;});
+      d.querySelector('.mah-x').addEventListener('click',shut);
+      box.addEventListener('click',function(){open();shut();});
+      document.addEventListener('keydown',esc,true);
+      document.body.appendChild(d);
+      // start the chest at the origin point (small), or above the screen, then let the transition bring it home
+      var r=box.getBoundingClientRect();
+      if(from){box.style.transform='translate('+(from.x-(r.left+r.width/2))+'px,'+(from.y-(r.top+r.height/2))+'px) scale(.12)';}
+      else box.style.transform='translateY(-130vh)';
+      requestAnimationFrame(function(){requestAnimationFrame(function(){d.classList.add('mah-on');setTimeout(function(){try{box.focus({preventScroll:true});}catch(e){}},950);});});
+    }catch(e){}
+  };
+})();
+
+/* 101 Airship: seven clicks on the airship on the Broken Binding cover. */
+(function(){var K='UUhLQ1BBSlc9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+  var img=document.querySelector('#ma-track img[src*="ed-broken-binding"]');if(!img||img.__mah)return;img.__mah=1;
+  // where the airship sits on the 408 x 667 cover photo, as fractions: left, top, width, height
+  var SHIP=[.115,.38,.64,.24];
+  var slide=img.parentNode;if(getComputedStyle(slide).position==='static')slide.style.position='relative';
+  var hot=document.createElement('button');hot.type='button';hot.className='mah-ship';hot.setAttribute('aria-label','The airship');hot.tabIndex=-1;
+  img.parentNode.insertBefore(hot,img.nextSibling);
+  function place(){var w=img.offsetWidth,h=img.offsetHeight;if(!w||!h)return;
+    hot.style.left=(img.offsetLeft+SHIP[0]*w)+'px';hot.style.top=(img.offsetTop+SHIP[1]*h)+'px';hot.style.width=(SHIP[2]*w)+'px';hot.style.height=(SHIP[3]*h)+'px';}
+  place();img.addEventListener('load',place);window.addEventListener('resize',place);
+  try{new ResizeObserver(place).observe(img);}catch(e){}
+  var n=0,last=0;
+  hot.addEventListener('click',function(e){e.preventDefault();var now=Date.now();if(now-last>10000)n=0;last=now;n++;
+    img.classList.remove('mah-rattle');void img.offsetWidth;img.classList.add('mah-rattle');
+    if(n>=7){n=0;var r=hot.getBoundingClientRect();window.__maHome.drop(101,claim,{x:r.left+r.width/2,y:r.top+r.height/2});}});
+})();
+
+/* 102 The 11:11: shown only at 11:11 AM and 11:11 PM Eastern, for that minute. */
+(function(){var K='WUtCUk45RUc9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+  var sl=document.getElementById('ma-slider');if(!sl||sl.querySelector('.mah-1111'))return;
+  var fmt=null;try{fmt=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});}catch(e){return;}
+  function wish(){var h=-1,m=-1;fmt.formatToParts(new Date()).forEach(function(p){if(p.type==='hour')h=+p.value%24;if(p.type==='minute')m=+p.value;});return (h===11||h===23)&&m===11;}
+  var b=document.createElement('button');b.type='button';b.className='mah-1111';b.hidden=true;b.setAttribute('aria-label','Open loot box 102');
+  b.innerHTML='<img src="'+window.__maHome.art(102)+'" alt="Loot box 102" draggable="false">';
+  b.addEventListener('click',function(){if(wish())claim();else b.hidden=true;});
+  sl.appendChild(b);
+  function tick(){var on=wish();if(b.hidden===on)b.hidden=!on;}
+  tick();setInterval(tick,1000);
+  document.addEventListener('visibilitychange',tick);
+})();
+
+/* 107 One-Eyed Man: a hot spot over Grey's eye on any slider image marked data-ma-eye="x%,y%[;x%,y%]". */
+(function(){var K='NlNSS1hIOUM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+  var GLINT='<svg class="mah-glint" viewBox="0 0 34 34" aria-hidden="true"><path fill="#fffffe" d="M17 0l3 14 14 3-14 3-3 14-3-14L0 17l14-3z"/></svg>';
+  Array.prototype.forEach.call(document.querySelectorAll('#ma-track img[data-ma-eye]'),function(img){if(img.__mah)return;img.__mah=1;
+    var slide=img.parentNode;if(getComputedStyle(slide).position==='static')slide.style.position='relative';
+    var eyes=String(img.getAttribute('data-ma-eye')).split(';').map(function(s){var v=s.split(',');return [parseFloat(v[0])/100,parseFloat(v[1])/100];}).filter(function(v){return v[0]>=0&&v[1]>=0;});
+    var spots=eyes.map(function(){var b=document.createElement('button');b.type='button';b.className='mah-eye';b.tabIndex=-1;b.setAttribute('aria-label','Grey’s eye');img.parentNode.insertBefore(b,img.nextSibling);return b;});
+    function place(){var w=img.offsetWidth,h=img.offsetHeight;if(!w||!h)return;
+      var size=Math.max(28,Math.min(48,w*.05));
+      spots.forEach(function(b,k){b.style.left=(img.offsetLeft+eyes[k][0]*w)+'px';b.style.top=(img.offsetTop+eyes[k][1]*h)+'px';b.style.width=size+'px';b.style.height=size+'px';});}
+    place();img.addEventListener('load',place);window.addEventListener('resize',place);
+    try{new ResizeObserver(place).observe(img);}catch(e){}
+    spots.forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();
+      var g=document.createElement('div');g.innerHTML=GLINT;g=g.firstChild;g.style.left=b.style.left;g.style.top=b.style.top;img.parentNode.insertBefore(g,img.nextSibling);
+      setTimeout(function(){if(g.parentNode)g.parentNode.removeChild(g);},500);
+      var r=b.getBoundingClientRect();setTimeout(function(){window.__maHome.drop(107,claim,{x:r.left+r.width/2,y:r.top+r.height/2});},260);});});
+  });
+})();
+
+/* 129 Konami Code: arrows + B, A on a keyboard; on a touch screen, the same as swipes and then two taps. */
+(function(){var K='RVZLTkhSVU49Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+  if(window.__maKonami)return;window.__maKonami=1;
+  var CODE='UUDDLRLRBA',seq='',lastAt=0;
+  function step(c){var now=Date.now();if(now-lastAt>3000)seq='';lastAt=now;
+    seq=(seq+c).slice(-CODE.length);
+    // keep only a run that could still become the code
+    while(seq&&CODE.indexOf(seq)!==0)seq=seq.slice(1);
+    if(seq===CODE){seq='';window.__maHome.drop(129,claim);}}
+  var KEYS={ArrowUp:'U',ArrowDown:'D',ArrowLeft:'L',ArrowRight:'R',b:'B',B:'B',a:'A',A:'A'};
+  document.addEventListener('keydown',function(e){var t=e.target;
+    if(t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))return;
+    if(e.ctrlKey||e.metaKey||e.altKey)return;var c=KEYS[e.key];if(c)step(c);else if(e.key&&e.key.length===1)step('x');},true);
+  // phone: swipes are up/down/left/right; after the eight swipes, two quick taps stand for B and A
+  var sx=0,sy=0,st=0,taps=0;
+  document.addEventListener('touchstart',function(e){if(e.touches.length!==1)return;var p=e.touches[0];sx=p.clientX;sy=p.clientY;st=Date.now();},{passive:true});
+  document.addEventListener('touchend',function(e){var p=e.changedTouches&&e.changedTouches[0];if(!p||!st)return;
+    var dx=p.clientX-sx,dy=p.clientY-sy,ax=Math.abs(dx),ay=Math.abs(dy);st=0;
+    if(Math.max(ax,ay)>=30){step(ax>ay?(dx>0?'R':'L'):(dy>0?'D':'U'));return;}
+    if(ax<12&&ay<12){var want=seq==='UUDDLRLR'?'B':(seq==='UUDDLRLRB'?'A':'x');step(want);}},{passive:true});
+})();
 </script>
 <div id="ma-row">
 

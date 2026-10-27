@@ -7,6 +7,8 @@
      Flip two at a time; a match stays face up. Match all 12 pairs in 25 moves or fewer (Maurice, 10/12; raised from 20 on 10/16) and loot box 80
      drops in; clicking it opens the claim link. Run out of moves and the board shows "Out of moves" with a fresh deal.
      Cards are dealt fresh on every load and on "Shuffle".
+     Box 122, The Odd Skull (boxes 101-150): on every deal one face-down card has its skull's eyes swapped (Maurice 10/26)
+     (assets/games/80-back-odd.webp). Players screenshot it and send it in through Submit Points; the box is emailed.
      DRAFT (all words on this page are new, for Maurice to approve):
        heading "Match the Crest"; line "Flip two cards at a time. Match every pair and the loot box is yours.";
        counters "Moves" and "Pairs"; button "Shuffle"; win line "Every pair found. Box 80 is yours.".
@@ -34,6 +36,7 @@
 #ma-memory .mc-card.up .mc-in{transform:rotateY(180deg)}
 #ma-memory .mc-f{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;-webkit-backface-visibility:hidden;backface-visibility:hidden}
 #ma-memory .mc-back{background:#912501 url('https://africhmaurice.github.io/site/assets/games/80-back.webp') center/cover no-repeat;border:2px solid #0b170f}
+#ma-memory .mc-back.mc-odd{background-image:url('https://africhmaurice.github.io/site/assets/games/80-back-odd.webp')}
 #ma-memory .mc-face{background:#f3ead9;border:2px solid #f3ead9;transform:rotateY(180deg);padding:10%}
 #ma-memory .mc-face img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
 #ma-memory .mc-face svg{width:72%;height:auto;overflow:visible}
@@ -98,9 +101,10 @@
     var pick=shuffle(POOL.slice()).slice(0,TOTAL);   /* fully random: any 12 of the 35 */
     var cards=shuffle(pick.concat(pick));
     board.innerHTML='';open=[];lock=false;moves=0;pairs=0;win.hidden=true;lose.hidden=true;show();
+    var odd=Math.floor(Math.random()*cards.length);   /* box 122: one card back has the skull's eyes swapped */
     cards.forEach(function(n,i){
       var b=document.createElement('button');b.type='button';b.className='mc-card';b.dataset.n=n;b.setAttribute('aria-label','Card '+(i+1)+', face down');
-      b.innerHTML='<span class="mc-in"><span class="mc-f mc-back"></span><span class="mc-f mc-face"><img src="'+ART+ICON[n][0]+'.webp" alt=""></span></span>';
+      b.innerHTML='<span class="mc-in"><span class="mc-f mc-back'+(i===odd?' mc-odd':'')+'"></span><span class="mc-f mc-face"><img src="'+ART+ICON[n][0]+'.webp" alt=""></span></span>';
       b.addEventListener('click',function(){flip(b);});
       board.appendChild(b);
     });

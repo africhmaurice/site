@@ -1552,3 +1552,41 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 })();
 </script>
+<!-- LOOT BOX 114 (The Shore Loot Box, staged 2026-10-26): the drawn 8 for The Shore can be dragged aside, and the chest
+     waits underneath it. No handle, no hint; the die just moves when pulled. build-crash.mjs (treasure-hunt-leaderboard)
+     must carry this block too at go-live, since this file is generated. -->
+<style>
+#rc .lb114{position:relative;flex:none;width:84px;height:84px}
+#rc .lb114 .cr-d20{position:absolute;inset:0;z-index:2;touch-action:none;-webkit-user-select:none;user-select:none;cursor:inherit}
+#rc .lb114 .lb114-box{position:absolute;inset:6px;z-index:1;padding:0;margin:0;border:0;background:none;cursor:pointer}
+#rc .lb114 .lb114-box img{display:block;width:100%;height:100%;object-fit:contain}
+</style>
+<script>(function(){
+  var K='WUc0WlJKQ1I9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+  function setup(){
+    var cards=document.querySelectorAll('#cr-results .cr-res-kit'),card=null;
+    for(var i=0;i<cards.length;i++){var q=cards[i].querySelector('.q'),n=cards[i].querySelector('.cr-d20 span');
+      if(q&&n&&/THE SHORE/.test(q.textContent)&&n.textContent.trim()==='8'){card=cards[i];break;}}
+    if(!card||card.querySelector('.lb114'))return !!card;
+    var die=card.querySelector('.cr-d20'),spot=document.createElement('div'),box=document.createElement('button');
+    spot.className='lb114';box.type='button';box.className='lb114-box';box.setAttribute('aria-label','Loot box 114');box.tabIndex=-1;
+    box.innerHTML='<img src="https://africhmaurice.github.io/site/assets/loot/114.png" alt="" width="160" height="160">';
+    box.addEventListener('click',claim);
+    die.parentNode.insertBefore(spot,die);spot.appendChild(box);spot.appendChild(die);
+    var id=null,x0=0,y0=0,bx=0,by=0,tx=0,ty=0;
+    die.addEventListener('dragstart',function(e){e.preventDefault();});
+    die.addEventListener('pointerdown',function(e){if(id!==null||(e.pointerType==='mouse'&&e.button!==0))return;
+      id=e.pointerId;x0=e.clientX;y0=e.clientY;bx=tx;by=ty;try{die.setPointerCapture(id);}catch(er){}e.preventDefault();});
+    die.addEventListener('pointermove',function(e){if(e.pointerId!==id)return;
+      tx=Math.max(-160,Math.min(160,bx+e.clientX-x0));ty=Math.max(-120,Math.min(120,by+e.clientY-y0));
+      die.style.transform='translate('+tx+'px,'+ty+'px)';
+      // once it is clearly off the chest, the chest can be tapped (and is reachable by keyboard)
+      box.tabIndex=Math.abs(tx)>48||Math.abs(ty)>48?0:-1;});
+    function end(e){if(e.pointerId===id)id=null;}
+    die.addEventListener('pointerup',end);die.addEventListener('pointercancel',end);
+    return true;
+  }
+  if(!setup()){var t=0,iv=setInterval(function(){if(setup()||++t>40)clearInterval(iv);},250);}
+})();</script>

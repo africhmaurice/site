@@ -1,0 +1,170 @@
+<!-- ============================================================
+     GOMA BOPPER - hidden page for loot box 149 ("Goma Bopper Loot Box", clue "The Perfect Bops Game!", hidden as an Act Three riddle).
+     Lives at /goma-bopper. Maurice: "Bop the gomas as they pop up. They must hit all of the gomas to get the loot box. There are 50."
+     The board is Maurice's own drawing ("more like a game board"): a red board in perspective, narrow at the back and
+     wide at the front, with nine black holes in three rows (back row smallest, front row largest). His art
+     (Downloads/Whack a Goma Bowl.png) is trimmed and saved as site/assets/games/149-board.webp (new file, 1200 x 729).
+     The nine hole ellipses were measured from the art by pixel analysis; they live in HOLE below as fractions of the
+     board image ([center x, center y, radius x, radius y]). Each goma is scaled to its hole (so back-row gomas are
+     smaller) and rises up out of it: it is clipped to the area above the hole's middle plus the hole's lower half, so the
+     front rim of the hole covers its feet, and it slips back down behind that rim.
+     Press Start and exactly 50 gomas pop up, one after another; tap (or click) a goma or its hole while it is up to bop
+     it. They start slow and get quicker (up for 1.35 s at first, 0.75 s by the end), and from about the middle two can be
+     up at once. Let one slip back down and the round is over (Try again). Bop all 50 and loot box 149 drops in; clicking
+     it opens the claim link in a new tab. A tap on an empty hole costs nothing.
+     Goma art: Izzy, the blob goma (Maurice 10/26: "let's do the izzy blob instead"), the same art as the Sky Pirate
+     Quiz crew card (site/assets/quiz/crew/izzy.webp). It was the quiz goma (149-goma.png) before.
+     DRAFT (all words on this page are new, for Maurice to approve):
+       heading "Goma Bopper"; line "Bop every goma before it ducks back down. All 50, no misses.";
+       counter "Bopped"; buttons "Start", "Restart", "Try again"; lose line "One got away.";
+       win line "All 50 bopped. Box 149 is yours.".
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+#gb-bop{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;overflow-x:hidden;
+  padding:clamp(120px,14vh,160px) 20px 80px;background-color:#0b170f;background-image:radial-gradient(ellipse at 50% 0%,rgba(90,26,6,.55) 0%,rgba(11,23,15,0) 62%),linear-gradient(rgba(11,23,15,0.76),rgba(11,23,15,0.76)),url(https://africhmaurice.github.io/site/assets/bg/d/red-sun-ruins-as360866146.webp);background-position:center;background-size:cover;background-repeat:no-repeat;background-attachment:scroll;
+  color:#f3ead9;font-family:'Almarai',sans-serif;text-align:center}
+#gb-bop *{box-sizing:border-box;border-radius:0}
+@media (max-width:900px){#gb-bop{background-image:radial-gradient(ellipse at 50% 0%,rgba(90,26,6,.55) 0%,rgba(11,23,15,0) 62%),linear-gradient(rgba(11,23,15,0.76),rgba(11,23,15,0.76)),url(https://africhmaurice.github.io/site/assets/bg/m/red-sun-ruins-as360866146.webp)}}
+#gb-bop [hidden]{display:none!important}
+#gb-bop .gb-wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
+#gb-bop h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(38px,6vw,68px);line-height:1.2;letter-spacing:.04em;color:#fffffe;text-transform:uppercase}
+#gb-bop .gb-lede{margin:0;font-weight:700;font-size:clamp(16px,1.8vw,19px);line-height:1.5;max-width:560px}
+#gb-bop .gb-bar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 24px;font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+#gb-bop .gb-bar b{color:#ff4c0f;font-weight:800}
+#gb-bop .gb-btn{margin:0;padding:10px 18px;border:1px solid rgba(243,234,217,.45);background:none;color:#f3ead9;font:800 13px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#gb-bop .gb-btn:hover,#gb-bop .gb-btn:focus-visible{border-color:#ff4c0f;color:#ff4c0f;outline:none}
+#gb-bop .gb-go{padding:16px 34px;border:2px solid #fffffe;background:#c1330a;color:#fffffe;font-size:16px}
+#gb-bop .gb-go:hover,#gb-bop .gb-go:focus-visible{background:#ff4c0f;color:#fffffe;border-color:#fffffe}
+#gb-bop .gb-field{position:relative;width:100%;max-width:640px;padding:5% 0 0}
+#gb-bop .gb-board{position:relative;width:100%;aspect-ratio:1200/729;touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;cursor:pointer}
+#gb-bop .gb-board>img{position:absolute;left:0;top:0;display:block;width:100%;height:100%;-webkit-user-drag:none;pointer-events:none;filter:drop-shadow(0 18px 24px rgba(0,0,0,.55))}
+/* a slot: from the top of a risen goma down to the bottom of its hole; the rounded bottom (set per hole) is the hole's front rim */
+#gb-bop .gb-hole{position:absolute;overflow:hidden;pointer-events:none}
+#gb-bop .gb-ring{position:absolute;left:0;right:0;bottom:0;border-radius:50%;transition:box-shadow .12s}
+#gb-bop .gb-rim{clip-path:inset(50% 0 0 0)}   /* the front half of the ring again, over the hole shade */
+#gb-bop .gb-goma{position:absolute;left:2.5%;width:95%;transform:translateY(140%);transform-origin:50% 100%;transition:transform .14s ease-out}
+#gb-bop .gb-goma img{display:block;width:100%;height:auto;-webkit-user-drag:none}
+#gb-bop .gb-shade{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.4) 40%,rgba(0,0,0,.9))}
+#gb-bop .gb-hole.up .gb-goma{transform:none}
+#gb-bop .gb-hole.bopped .gb-goma{transform:translateY(22%) scale(1.08,.72);transition:transform .08s ease-out;filter:brightness(1.5) sepia(1) hue-rotate(-30deg) saturate(3)}
+#gb-bop .gb-hole.got .gb-goma{transform:translateY(140%);transition:transform .2s ease-in .1s}
+#gb-bop .gb-hole.flash .gb-ring{box-shadow:inset 0 0 0 4px #c3a6ff}
+#gb-bop .gb-hole.gone .gb-ring{box-shadow:inset 0 0 0 4px #ff4c0f}
+#gb-bop .gb-start{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;padding:20px;background:none}
+#gb-bop .gb-win{display:flex;flex-direction:column;align-items:center;gap:20px;margin-top:8px}
+#gb-bop .gb-win p{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.25;letter-spacing:.04em;color:#a2f590;text-transform:uppercase}
+#gb-bop .gb-lose p{color:#ff4c0f}
+#gb-bop .gb-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(58vw,280px);animation:gbDrop .6s cubic-bezier(.25,1.5,.45,1) both}
+#gb-bop .gb-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 34px rgba(255,76,15,.45))}
+#gb-bop .gb-box:hover img,#gb-bop .gb-box:focus-visible img{filter:drop-shadow(0 0 44px rgba(255,76,15,.7))}
+#gb-bop .gb-box:focus-visible{outline:3px solid #ff4c0f;outline-offset:8px}
+@keyframes gbDrop{from{opacity:0;transform:translateY(-40px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#gb-bop .gb-box{animation:none}}
+</style>
+<section id="gb-bop" aria-label="Goma Bopper">
+  <div class="gb-wrap">
+    <h1>Goma Bopper</h1>
+    <p class="gb-lede">Bop every goma before it ducks back down. All 50, no misses.</p>
+    <div class="gb-bar"><span>Bopped <b class="gb-n">0/50</b></span><button class="gb-btn gb-restart" type="button">Restart</button></div>
+    <div class="gb-field">
+      <div class="gb-board"><img src="https://africhmaurice.github.io/site/assets/games/149-board.webp" alt="" draggable="false"></div>
+      <div class="gb-start"><button class="gb-btn gb-go" type="button">Start</button></div>
+    </div>
+    <div class="gb-win gb-lose" role="status" hidden>
+      <p>One got away.</p>
+      <button class="gb-btn gb-again" type="button">Try again</button>
+    </div>
+    <div class="gb-win gb-won" role="status" hidden>
+      <p>All 50 bopped. Box 149 is yours.</p>
+      <button class="gb-box" type="button" aria-label="Open loot box 149"><img src="https://africhmaurice.github.io/site/assets/loot/149.png" alt="Loot box 149"></button>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var d=document.getElementById('gb-bop');if(!d)return;
+  var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+
+  var K='SEFHTlRXWE09Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+
+  var GOMA='https://africhmaurice.github.io/site/assets/quiz/crew/izzy.webp';   // Izzy, the blob goma (Maurice 10/26)
+  var TOTAL=50;
+  /* timing for goma k of 50 (p goes 0 to 1): how long it stays up, and the wait before the next one pops */
+  function upMs(p){return 1350-600*p;}
+  function gapMs(p){return 950-520*p;}
+  /* Maurice's board: the nine holes as [center x, center y, radius x, radius y], fractions of the board image
+     (1200 x 729), measured from his art. Back row, middle row, front row; left to right in each. */
+  var BW=1200,BH=729;
+  var HOLE=[[.2698,.1465,.0686,.0978],[.4855,.1464,.0686,.0978],[.7009,.1465,.0686,.0978],
+            [.2406,.4341,.0839,.1196],[.4938,.4341,.0839,.1196],[.7470,.4345,.0839,.1194],
+            [.2007,.8087,.0973,.1387],[.4998,.8087,.0973,.1387],[.7988,.8087,.0974,.1387]];
+  /* goma width (share of the hole's width), goma height over width, and how far its base sits below the hole's middle (share of radius y) */
+  var GW=.95,GA=269/296,SINK=.35;
+
+  var field=d.querySelector('.gb-field'),board=d.querySelector('.gb-board'),startEl=d.querySelector('.gb-start'),nEl=d.querySelector('.gb-n'),lose=d.querySelector('.gb-lose'),won=d.querySelector('.gb-won');
+  var holes=[];
+  HOLE.forEach(function(q,i){
+    var gh=2*q[2]*GW*GA*BW/BH,base=q[1]+SINK*q[3],top=base-gh-.012,bot=q[1]+q[3],sh=bot-top,ry=q[3]/sh*100;
+    var h=document.createElement('div');h.className='gb-hole';h.setAttribute('role','button');h.setAttribute('aria-label','Hole '+(i+1));
+    h.style.cssText='left:'+(q[0]-q[2])*100+'%;width:'+2*q[2]*100+'%;top:'+top*100+'%;height:'+sh*100+'%;border-radius:0 0 50% 50% / 0 0 '+ry+'% '+ry+'%';
+    h.innerHTML='<span class="gb-ring" style="height:'+2*ry+'%"></span>'+
+      '<span class="gb-goma" style="bottom:'+(bot-base)/sh*100+'%"><img src="'+GOMA+'" alt="" draggable="false"></span>'+
+      '<span class="gb-shade" style="height:'+ry+'%"></span><span class="gb-ring gb-rim" style="height:'+2*ry+'%"></span>';
+    board.appendChild(h);holes.push({el:h,q:q,on:false,timer:0});
+  });
+  /* which slot a tap lands on: a risen goma (as much of it as shows) first, else the hole itself */
+  function slotAt(x,y){
+    var best=null,bd=1e9,R=board.getBoundingClientRect();
+    holes.forEach(function(o){if(!o.on)return;
+      var g=o.el.querySelector('.gb-goma').getBoundingClientRect(),c=o.el.getBoundingClientRect(),P=6;
+      var l=Math.max(g.left,c.left)-P,r=Math.min(g.right,c.right)+P,t=Math.max(g.top,c.top)-P,b=Math.min(g.bottom,c.bottom)+P;
+      if(x>=l&&x<=r&&y>=t&&y<=b){var dd=Math.abs(x-(l+r)/2)+Math.abs(y-(t+b)/2);if(dd<bd){bd=dd;best=o;}}});
+    if(best)return best;
+    holes.forEach(function(o){var q=o.q,dx=(x-R.left-q[0]*R.width)/(q[2]*R.width*1.15),dy=(y-R.top-q[1]*R.height)/(q[3]*R.height*1.15);
+      if(dx*dx+dy*dy<=1&&(!best||o.on))best=o;});
+    return best;
+  }
+  board.addEventListener('pointerdown',function(e){e.preventDefault();var o=slotAt(e.clientX,e.clientY);if(o)bop(o);});
+  var popped,bopped,lastHole,timers=[],running=false;
+  function show(){nEl.textContent=bopped+'/'+TOTAL;}
+  function later(fn,ms){var t=setTimeout(fn,ms);timers.push(t);return t;}
+  function stopAll(){timers.forEach(clearTimeout);timers=[];running=false;}
+  function reset(){
+    stopAll();popped=0;bopped=0;lastHole=-1;lose.hidden=true;won.hidden=true;startEl.hidden=false;
+    holes.forEach(function(o){o.on=false;o.el.className='gb-hole';});show();
+  }
+  function start(){reset();startEl.hidden=true;running=true;later(pop,600);}
+  function pop(){
+    if(!running||popped>=TOTAL)return;
+    var free=[];holes.forEach(function(o,k){if(!o.on&&k!==lastHole)free.push(k);});
+    if(!free.length){later(pop,60);return;}
+    var k=free[Math.floor(Math.random()*free.length)],o=holes[k],p=popped/(TOTAL-1);lastHole=k;popped++;
+    o.on=true;o.el.className='gb-hole up';
+    o.timer=later(function(){if(o.on)escape(o);},upMs(p));
+    if(popped<TOTAL)later(pop,gapMs(p));
+  }
+  function bop(o){
+    if(!running||!o.on)return;
+    o.on=false;clearTimeout(o.timer);bopped++;show();
+    o.el.className='gb-hole up bopped flash';
+    setTimeout(function(){if(!o.on)o.el.className='gb-hole got';},140);
+    if(bopped===TOTAL){running=false;setTimeout(function(){stopAll();won.hidden=false;won.scrollIntoView({behavior:'smooth',block:'center'});},500);}
+  }
+  function escape(o){
+    o.on=false;o.el.className='gb-hole gone';
+    stopAll();holes.forEach(function(x){if(x.on){x.on=false;x.el.className='gb-hole';}});
+    lose.hidden=false;lose.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  d.querySelector('.gb-go').addEventListener('click',start);
+  d.querySelector('.gb-restart').addEventListener('click',reset);
+  d.querySelector('.gb-again').addEventListener('click',function(){start();field.scrollIntoView({behavior:'smooth',block:'center'});});
+  d.querySelector('.gb-box').addEventListener('click',claim);
+  reset();
+})();
+</script>

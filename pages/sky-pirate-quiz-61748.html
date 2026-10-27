@@ -235,3 +235,21 @@
   var wash=document.createElement('div');wash.style.cssText='position:absolute;inset:0;background:rgba(255,255,254,.78)';
   w.appendChild(im);w.appendChild(wash);r.insertBefore(w,r.firstChild);
 })();</script>
+<!-- LOOT BOX 109 (The Red Loot Box, staged 2026-10-26): an invisible hot spot in the bottom-right corner of the Red answer
+     (question 1). Clicking exactly there opens the claim; anywhere else on the button answers as usual. Nothing shows.
+     Kept out of the DATA block; build.cjs must carry this script too at go-live. -->
+<script>(function(){
+  var root=document.getElementById('ma-quiz');if(!root)return;
+  var K='MkNRNTdKRzQ9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+  function isRed(b){if(!b||!b.classList.contains('is-color'))return false;var s=b.querySelectorAll('span');return s.length&&s[s.length-1].textContent.trim()==='Red';}
+  // The spot: the last 18px of the corner (26px on a touch screen, for a fingertip).
+  function inSpot(b,e){var r=b.getBoundingClientRect(),z=matchMedia('(pointer:coarse)').matches?26:18;
+    return e.clientX>=r.right-z&&e.clientX<=r.right&&e.clientY>=r.bottom-z&&e.clientY<=r.bottom;}
+  root.addEventListener('click',function(e){
+    var b=e.target&&e.target.closest&&e.target.closest('.q-ans');
+    if(!isRed(b)||!e.detail||!inSpot(b,e))return;
+    e.preventDefault();e.stopPropagation();claim();
+  },true);
+})();</script>

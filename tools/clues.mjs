@@ -216,6 +216,48 @@ Haven't I Seen You Before?`],   // on Bard's Linktree (Maurice, 2026-10-16)
   [98, "Unhand me!"],   // click Maurice's hand in the home page headshot (loader.js handBox98, Maurice 2026-10-16)
   [99, 'Art on the Quad for Nerds'],   // Ashton's (Reader's Quadrant Art) Linktree, live 10/23
   [100, 'Not Hidden; Earned'],   // arrives on its own with the 99th find (lootbox.gs BONUSES, Maurice 2026-10-16)
+  [101, "\"Like my papi always said, if you wanna find the goods, you gotta search the ship seven times.\""],   // boxes 101-150, card added by clues-patch.cjs
+  [102, "Home ##:## Make a Wish!"],   // boxes 101-150, card added by clues-patch.cjs
+  [103, "The books are back!*\n\n*oh naur!"],   // boxes 101-150, card added by clues-patch.cjs
+  [104, "You Can See Everything"],   // boxes 101-150, card added by clues-patch.cjs
+  [105, "Copyright © Maurice Arich - 2025-Present - All Rghts Resered - Patent Pnding"],   // boxes 101-150, card added by clues-patch.cjs
+  [106, "Wait, that's not a real place...?"],   // boxes 101-150, card added by clues-patch.cjs
+  [107, "\"After all, a one-eyed man is always winking.\""],   // boxes 101-150, card added by clues-patch.cjs
+  [108, "Ask me again"],   // boxes 101-150, card added by clues-patch.cjs
+  [109, "[A RED SQUARE]"],   // boxes 101-150, card added by clues-patch.cjs
+  [110, "Everybody Else: You've got red on you."],   // boxes 101-150, card added by clues-patch.cjs
+  [111, "?"],   // boxes 101-150, card added by clues-patch.cjs
+  [112, "Mobile Only, Three Times"],   // boxes 101-150, card added by clues-patch.cjs
+  [113, "lootbox@lootbox.com"],   // boxes 101-150, card added by clues-patch.cjs
+  [114, "behind the ate sure"],   // boxes 101-150, card added by clues-patch.cjs
+  [115, "Double Slide (Again)"],   // boxes 101-150, card added by clues-patch.cjs
+  [116, "[an image of a press pass]"],   // boxes 101-150, card added by clues-patch.cjs
+  [117, "Spin me faster!"],   // boxes 101-150, card added by clues-patch.cjs
+  [118, "It knows.\nBLACK SPACE TO ASK THE QUESTION"],   // boxes 101-150, card added by clues-patch.cjs
+  [119, "💻RC\n📱LP"],   // boxes 101-150, card added by clues-patch.cjs
+  [120, "It's there, you just can't see it."],   // boxes 101-150, card added by clues-patch.cjs
+  [121, "Select every word to enter to win a loot box."],   // boxes 101-150, card added by clues-patch.cjs
+  [122, "One of these skulls doesn't belong here.\n[Submit a Screenshot]"],   // boxes 101-150, card added by clues-patch.cjs
+  [123, "The Quality of an Influencer"],   // boxes 101-150, card added by clues-patch.cjs
+  [124, "blades so hot they sizzle and pop"],   // boxes 101-150, card added by clues-patch.cjs
+  [125, "Stop the clock!"],   // boxes 101-150, card added by clues-patch.cjs
+  [126, "20 slices of savory pie"],   // boxes 101-150, card added by clues-patch.cjs
+  [127, "[picture of a highlighter]"],   // boxes 101-150, card added by clues-patch.cjs
+  [128, "images: yinyang key hole"],   // boxes 101-150, card added by clues-patch.cjs
+  [129, "Home of the Cheat Code"],   // boxes 101-150, card added by clues-patch.cjs
+  [130, "Bang! Bang! Bang! Bang! Bang!\n\nRight in the Name."],   // boxes 101-150, card added by clues-patch.cjs
+  [131, "The Witching Hour"],   // boxes 101-150, card added by clues-patch.cjs
+  [132, "[Dot's Torches on the Clue Card blink Morse code. Decode the word and submit it.]"],   // boxes 101-150, card added by clues-patch.cjs
+  [133, "Dust the Shelf"],   // boxes 101-150, card added by clues-patch.cjs
+  [134, "Slide over, Malazan!"],   // boxes 101-150, card added by clues-patch.cjs
+  [135, "4.5k cumulootbindus"],   // boxes 101-150, card added by clues-patch.cjs
+  [136, "Is that a dead end or did Maurice just hide another loot box?"],   // boxes 101-150, card added by clues-patch.cjs
+  [137, "About halfway up"],   // boxes 101-150, card added by clues-patch.cjs
+  [138, "Kill the Pirate"],   // boxes 101-150, card added by clues-patch.cjs
+  [139, "(lvl4)2 Moves Or Less"],   // boxes 101-150, card added by clues-patch.cjs
+  [144, "Sky Mines"],   // boxes 101-150, card added by clues-patch.cjs
+  [149, "The Perfect Bops Game!"],   // boxes 101-150, card added by clues-patch.cjs
+  [150, "Find the Crew"],   // boxes 101-150, card added by clues-patch.cjs
 ];
 
 // The few lines above the cards that say what they are.

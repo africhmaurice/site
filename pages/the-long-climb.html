@@ -15,6 +15,15 @@
      with Resume; Resume carries on with no time jump. There is no save (Maurice 10/19); a leftover
      ma-save-the-long-climb from testing is deleted on load.
      DRAFT copy (10/19): "Pause", "Paused", "Resume".
+     LOOT BOX 137, Halfway Up the Long Climb (clue: "About halfway up"): a small secret island floats off the LEFT edge of the
+     climb in the sunset part of the sky, a little above the "ledge": the fixed island that sits closest to the left edge
+     between 50% and 62% of the way up (today island 126, 58% up, the red sunset sky; same for everyone). Normally the
+     climber can't leave the 600-unit column; standing on the ledge, or jumping off it, the left edge opens: a running
+     jump left off the ledge lands on the secret island (one jump; it's about 90 units across and 50 up). Anywhere else
+     (or falling from the ledge) a breeze pushes you back into the column. While you're on or near the ledge the view
+     slides left so the island shows on phones too. The island has his box 137 art on it; walking into the box pauses the
+     climb and shows it (claim link in a new tab); Keep climbing carries on. The island drawing is his 86-island.png.
+     DRAFT copy: "A hidden island!", "Keep climbing".
      ============================================================ -->
 
 <style>
@@ -47,6 +56,8 @@
 #ma-climb .lc-btn.go{background:#c53200;border-color:#fffffe}
 #ma-climb .lc-btn.go:hover,#ma-climb .lc-btn.go:focus-visible{background:#ff4c0f}
 #ma-climb .lc-ov{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px 16px;background:rgba(11,23,15,.72);text-align:center}
+#ma-climb .lc-find{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px 16px;background:rgba(11,23,15,.72);text-align:center}
+#ma-climb .lc-find h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(36px,6vw,64px);line-height:1.2;letter-spacing:.04em;color:#fffffe}
 #ma-climb .lc-ov h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(36px,6vw,64px);line-height:1.2;letter-spacing:.04em;color:#fffffe}
 </style>
 <section id="ma-climb" aria-label="The Long Climb" tabindex="0">
@@ -55,6 +66,7 @@
   <div class="lc-pad" aria-label="Controls"><button type="button" data-k="l">Left</button><button type="button" class="j" data-k="j">Jump</button><button type="button" data-k="r">Right</button></div>
   <div class="lc-ctl"><div class="lc-row"><button class="lc-btn lc-pause" type="button">Pause</button></div></div>
   <div class="lc-ov lc-paused" hidden><h2>Paused</h2><button class="lc-btn go lc-resume" type="button">Resume</button></div>
+  <div class="lc-find" hidden><h2>A hidden island!</h2><button class="lc-box lc-box137" type="button" aria-label="Open loot box 137"><img src="https://africhmaurice.github.io/site/assets/loot/137.png" alt="Loot box 137" draggable="false"></button><button class="lc-btn go lc-onward" type="button">Keep climbing</button></div>
   <div class="lc-win" hidden><h2>The top!</h2><button class="lc-box" type="button" aria-label="Open loot box 86"><img src="https://africhmaurice.github.io/leaderboard/loot/86.png" alt="Loot box 86" draggable="false"></button></div>
 </section>
 <script>
@@ -97,6 +109,12 @@
   /* the top island sits one easy jump above the last one */
   var TOPP={x:Math.max(12,Math.min(WW-232,cx-110)),w:220,h:Math.round(h+rr(90,120)),top:1};P.push(TOPP);TOP=TOPP.h;
   var BOX={x:TOPP.x+TOPP.w-50,h:TOP};
+  /* loot box 137: the ledge is the fixed island nearest the left edge between 50% and 62% up (sunset); the secret island
+     floats off the left edge, 50 units above it, a running jump away. It is not in P, so the climb itself is unchanged. */
+  var LEDGE=null;P.forEach(function(p){if(!p.ground&&!p.top&&!p.amp&&p.h>=TOP*.5&&p.h<=TOP*.62&&(!LEDGE||p.x<LEDGE.x))LEDGE=p;});
+  var SI={x:LEDGE.x-220,w:120,h:LEDGE.h+50,secret:1},CH={x:LEDGE.x-180},inCH=false,findOpen=false,pan=0;
+  function leftOk(){return me.on===SI||((me.on===LEDGE||me.from===LEDGE||me.from===SI)&&me.h>LEDGE.h-80);}
+  function near(){return me.on===SI||me.on===LEDGE||((me.from===LEDGE||me.from===SI)&&!me.on&&me.h>LEDGE.h-150);}
 
   /* clouds and stars spread up the whole sky (drawn with parallax) */
   var CL=[];for(var i=0;i<220;i++)CL.push({x:rr(-80,WW+80),h:rr(150,TOP+600),w:rr(70,190),v:rr(.45,.8)});
@@ -128,11 +146,16 @@
     if(me.buf>0&&me.coy>0){me.vh=JUMP;me.on=null;me.coy=0;me.buf=0;}
     me.vh-=GRAV*dt;if(!keys.j&&me.vh>280)me.vh-=GRAV*1.4*dt; /* let go early for a short hop */
     me.vh=Math.max(me.vh,-1400);
-    var nh=me.h+me.vh*dt,nx=Math.max(13,Math.min(WW-13,me.x+me.vx*dt));
+    var nh=me.h+me.vh*dt,nx=Math.min(WW-13,me.x+me.vx*dt);
+    /* the left edge only opens at the ledge (loot box 137); anywhere else a breeze pushes you back into the column */
+    if(leftOk())nx=Math.max(SI.x-40,nx);else if(nx<13)nx=Math.min(13,Math.max(nx,me.x+300*dt));
     if(me.on&&(nx<me.on.x-6||nx>me.on.x+me.on.w+6))me.on=null;
     if(me.on){nh=me.on.h;me.vh=0;}
-    else if(me.vh<=0){for(var i=0;i<P.length;i++){var p=P[i];if(p.h>me.h+1||p.h<nh-1)continue;if(nx>=p.x-6&&nx<=p.x+p.w+6){nh=p.h;me.vh=0;me.on=p;break;}}}
-    me.x=nx;me.h=nh;
+    else if(me.vh<=0){for(var i=0;i<P.length;i++){var p=P[i];if(p.h>me.h+1||p.h<nh-1)continue;if(nx>=p.x-6&&nx<=p.x+p.w+6){nh=p.h;me.vh=0;me.on=p;break;}}
+      if(!me.on&&SI.h<=me.h+1&&SI.h>=nh-1&&nx>=SI.x-6&&nx<=SI.x+SI.w+6){nh=SI.h;me.vh=0;me.on=SI;}}
+    me.x=nx;me.h=nh;if(me.on)me.from=me.on;
+    pan+=((near()?Math.max(0,20-SI.x-ox/s):0)-pan)*Math.min(1,dt*4);
+    var inNow=me.on===SI&&Math.abs(me.x-CH.x)<46;if(inNow&&!inCH){inCH=true;showFind();return;}inCH=inNow;
     /* camera follows up and down, a little ahead when climbing */
     var want=Math.max(0,me.h+(me.vh>0?40:0));cam+=(want-cam)*Math.min(1,dt*5);
     if(me.h>260)title.classList.add('gone');else title.classList.remove('gone');
@@ -154,6 +177,7 @@
   }
   var grey=new Image();grey.src='https://africhmaurice.github.io/site/assets/games/86-izzy.png';function ok(i){return i.complete&&i.naturalWidth>0;}
   var boxImg=new Image();boxImg.src='https://africhmaurice.github.io/leaderboard/loot/86.png';
+  var box137=new Image();box137.src='https://africhmaurice.github.io/site/assets/loot/137.png';
   function draw(){
     ctx.setTransform(dpr,0,0,dpr,0,0);
     var tt=Math.max(0,Math.min(1,cam/TOP)),c=skyAt(tt),g=ctx.createLinearGradient(0,0,0,vh);g.addColorStop(0,c[0]);g.addColorStop(1,c[1]);ctx.fillStyle=g;ctx.fillRect(0,0,vw,vh);
@@ -168,11 +192,14 @@
     var ca=tt>.85?.3:tt>.55?.85-(tt-.55)*1.8:.85;
     if(okA(ART.cloud))CL.forEach(function(cl){var y=vh*.62-(cl.h-cam*cl.v)*s;if(y<-140||y>vh+60)return;var x=ox+cl.x*s,w=cl.w*s;ctx.save();ctx.globalAlpha=ca;ctx.drawImage(ART.cloud,x,y-w*.3,w,w*ART.cloud.naturalHeight/ART.cloud.naturalWidth);ctx.restore();});
     /* islands */
+    var ox0=ox;ox+=pan*s;   /* the view slides left near the ledge (loot box 137) */
     for(var pi=P.length-1;pi>=0;pi--){var p=P[pi],y=sy(p.h);if(y<-200||y>vh+60)continue;island(p);}
+    var siy=sy(SI.h);if(siy>-200&&siy<vh+60){island(SI);if(box137.complete&&box137.naturalWidth){var cs=56*s,cb=still?0:Math.sin(t*3+1)*3;ctx.drawImage(box137,ox+CH.x*s-cs/2,siy-cs+cb,cs,cs);}}
     /* loot box 86 on the top island */
     var by=sy(TOP);if(by>-200&&by<vh+50&&boxImg.complete&&boxImg.naturalWidth){var bs=64*s,bob=still?0:Math.sin(t*3)*3;ctx.drawImage(boxImg,ox+BOX.x*s-bs/2,by-bs+bob,bs,bs);}
     /* the climber: Little Izzy, his jumping character drawing (Maurice 10/16), flipped to face the way he runs, tipped a little in the air */
     var x=ox+me.x*s,y=sy(me.h);if(ok(grey)){var gh=46*s,gw=gh*grey.naturalWidth/grey.naturalHeight;ctx.save();ctx.translate(x,y);ctx.scale(me.face,1);if(!me.on&&!still)ctx.rotate(-.08);ctx.drawImage(grey,-gw/2,-gh,gw,gh);ctx.restore();}
+    ox=ox0;
   }
 
   /* ---- input ---- */
@@ -204,7 +231,15 @@
   function freeze(){paused=true;keys.l=keys.r=keys.j=0;me.buf=0;Array.prototype.forEach.call(d.querySelectorAll('.lc-pad button'),function(b){b.classList.remove('down');});}
   function pause(){if(paused||done)return;freeze();pauseOv.hidden=false;ctl();try{pauseOv.querySelector('button').focus({preventScroll:true});}catch(e){}}
   function resume(){if(!paused||done)return;paused=false;last=0;pauseOv.hidden=true;ctl();try{d.focus({preventScroll:true});}catch(e){}}
-  function toggle(){if(paused)resume();else pause();}
+  function toggle(){if(findOpen)return;if(paused)resume();else pause();}
+  /* loot box 137: the climb waits while the box is on screen */
+  var findEl=d.querySelector('.lc-find'),K='OFo0WDhCUFE9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+  function showFind(){findOpen=true;freeze();findEl.hidden=false;ctlEl.hidden=true;try{findEl.querySelector('.lc-box137').focus({preventScroll:true});}catch(e){}}
+  function hideFind(){findOpen=false;paused=false;last=0;findEl.hidden=true;ctl();try{d.focus({preventScroll:true});}catch(e){}}
+  findEl.querySelector('.lc-box137').addEventListener('click',claim);findEl.querySelector('.lc-onward').addEventListener('click',hideFind);
+  findEl.addEventListener('pointerdown',function(e){e.stopPropagation();});
   pauseBtn.addEventListener('click',toggle);pauseOv.querySelector('button').addEventListener('click',resume);
   /* the buttons and the pause panel are not part of the play area: taps on them never reach the game */
   [ctlEl,pauseOv].forEach(function(el){el.addEventListener('pointerdown',function(e){e.stopPropagation();});});
@@ -216,7 +251,8 @@
     put:function(i){var p=P[i];me.on=p;me.h=p.h;me.x=p.x+p.w/2;me.vh=0;cam=me.h;},
     full:function(){return {x:me.x,h:me.h,vx:me.vx,vh:me.vh,on:me.on?P.indexOf(me.on):-1,face:me.face,cam:cam,t:t,done:done,paused:paused};},
     islands:function(){return P.filter(function(p){return p.amp;}).slice(0,3).map(function(p){return p.x;});},
-    paused:function(){return paused;},pause:pause,resume:resume,jump:function(){me.on=null;me.vh=JUMP;}};
+    paused:function(){return paused;},pause:pause,resume:resume,jump:function(){me.on=null;me.vh=JUMP;},
+    secret:function(){return {ledge:P.indexOf(LEDGE),lx:LEDGE.x,lh:LEDGE.h,si:[SI.x,SI.w,SI.h],on:me.on===SI,open:findOpen,pan:pan};}};
 })();
 </script>
 <script>/* PARALLAX v2 (Maurice, 2026-10-16): a library picture the size of the screen behind the game, moving at 30% of the scroll */(function(){

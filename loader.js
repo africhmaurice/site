@@ -1379,7 +1379,13 @@
     90: 'RUZCUFk2V0E9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
     91: 'TTdSNzNDRk49Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
     92: 'MkNORThHUTQ9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
-    93: 'VjJNQkJQNEU9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo'
+    93: 'VjJNQkJQNEU9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
+    // boxes 101-150 (the loader's share of them; see "Boxes 101-150 site tricks" below)
+    105: 'OTg1NVlXNks9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
+    112: 'VDdHVVBNVFM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
+    113: 'WjhXN1Y4R0U9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
+    115: 'N0g4VzUyQ0E9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
+    119: 'N05ZV1FXRkQ9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo'
   };
   var b2url = function (n) { return atob(B2K[n]).split('').reverse().join(''); };
   var b2open = function (n) { location.href = b2url(n); };
@@ -1489,10 +1495,12 @@
       if (getComputedStyle(a).position === 'static') a.style.position = 'relative';
       var under = document.createElement('span'), over = document.createElement('span');
       under.className = 'ma-b2-cm ma-b2-cm-under'; over.className = 'ma-b2-cm ma-b2-cm-over';
-      under.innerHTML = '<img src="' + b2art(88) + '" alt="" draggable="false">';
+      // 115 hides behind 88: box 115 sits under box 88 in the ring, and box 88 can be dragged off it too.
+      under.innerHTML = '<img src="' + b2art(115) + '" alt="" draggable="false"><img src="' + b2art(88) + '" alt="" draggable="false">';
       over.innerHTML = '<span role="img" aria-label="The Comet"><img src="' + CMBASE + 'logo-comet.png" alt="" draggable="false"></span>';
       a.appendChild(under); a.appendChild(over);
-      var loot = under.firstChild, grip = over.firstChild, dx = 0, dy = 0, moved = false, drag = null, ate = 0;
+      var deep = under.firstChild, loot = under.lastChild, grip = over.firstChild, dx = 0, dy = 0, moved = false, drag = null, ate = 0;
+      var lx = 0, ly = 0, lmoved = false, ldrag = null, press = 0;
       // The logo without its Comet stays in place; box 88 sits behind it (showing through the U's hole) and the
       // Comet sits on top, both laid exactly over the logo picture.
       var place = function () {
@@ -1501,7 +1509,10 @@
         var k = r.width / CM.w, L = CM.loot, B = CM.box, pad = 6;   // pad: a few pixels of extra grip around the thin Comet
         // The header's own image rules size every picture in the logo, so these sizes are set as important.
         var set = function (el, prop, v) { el.style.setProperty(prop, v, 'important'); };
-        set(loot, 'width', L[2] * k + 'px'); set(loot, 'height', L[2] * k + 'px'); set(loot, 'max-height', 'none'); set(loot, 'left', (L[0] - L[2] / 2) * k + 'px'); set(loot, 'top', (L[1] - L[2] / 2) * k + 'px');
+        [loot, deep].forEach(function (el) { set(el, 'width', L[2] * k + 'px'); set(el, 'height', L[2] * k + 'px'); set(el, 'max-height', 'none'); set(el, 'left', (L[0] - L[2] / 2) * k + 'px'); set(el, 'top', (L[1] - L[2] / 2) * k + 'px'); });
+        loot.style.transform = 'translate(' + lx * r.width + 'px,' + ly * r.width + 'px)';
+        // 115 only shows once box 88 has been pulled off it
+        set(deep, 'visibility', Math.sqrt(lx * lx + ly * ly) > 0.05 ? 'visible' : 'hidden');
         set(grip, 'left', (B[0] * k - pad) + 'px'); set(grip, 'top', (B[1] * k - pad) + 'px'); set(grip, 'width', B[2] * k + 'px'); set(grip, 'height', B[3] * k + 'px'); set(grip, 'padding', pad + 'px');
         var ci = grip.firstChild; set(ci, 'width', B[2] * k + 'px'); set(ci, 'height', B[3] * k + 'px'); set(ci, 'max-height', 'none'); set(ci, 'max-width', 'none');
         grip.style.transform = 'translate(' + dx * r.width + 'px,' + dy * r.width + 'px)';
@@ -1512,17 +1523,43 @@
       swap(); place();
       img.addEventListener('load', function () { swap(); place(); });
       window.addEventListener('resize', place); setTimeout(place, 600); setTimeout(place, 2500);
+      // the hunt menu's logo can have no size yet when this runs (phones); lay it out again once it gets one
+      try { if (window.ResizeObserver) new ResizeObserver(function () { place(); }).observe(img); } catch (er) {}
       grip.addEventListener('pointerdown', function (e) {
         if (e.button) return; e.preventDefault(); e.stopPropagation();
-        var r = img.getBoundingClientRect(); drag = { x: e.clientX, y: e.clientY, dx: dx, dy: dy, w: r.width };
+        var r = img.getBoundingClientRect(); drag = { x: e.clientX, y: e.clientY, dx: dx, dy: dy, w: r.width, went: false };
         try { grip.setPointerCapture(e.pointerId); } catch (er) {} grip.classList.add('ma-b2-held');
+        // 119: holding the Comet still (a long press on a phone) opens its menu, same as a right-click
+        clearTimeout(press); var px = e.clientX, py = e.clientY;
+        press = setTimeout(function () { if (drag && !drag.went) { drag = null; grip.classList.remove('ma-b2-held'); ate = Date.now(); b3menu(px, py); } }, 650);
       });
+      grip.addEventListener('contextmenu', function (e) { e.preventDefault(); e.stopPropagation(); clearTimeout(press); b3menu(e.clientX, e.clientY); });
       grip.addEventListener('pointermove', function (e) {
         if (!drag) return;
-        var mx = e.clientX - drag.x, my = e.clientY - drag.y; if (Math.abs(mx) + Math.abs(my) > 3) moved = true;
+        var mx = e.clientX - drag.x, my = e.clientY - drag.y; if (Math.abs(mx) + Math.abs(my) > 3) { moved = true; drag.went = true; clearTimeout(press); }
         dx = drag.dx + mx / drag.w; dy = drag.dy + my / drag.w; place();
       });
-      var drop = function () { if (!drag) return; drag = null; grip.classList.remove('ma-b2-held'); if (moved) ate = Date.now(); };
+      var drop = function () { clearTimeout(press); if (!drag) return; drag = null; grip.classList.remove('ma-b2-held'); if (moved) ate = Date.now(); };
+      // 115: once the Comet is out of the ring, box 88 can be dragged too. Picked up, it rides above the logo (moved
+      // into the top layer) so it can be set down anywhere; box 115 is left showing through the ring.
+      var hit = function (el, e) { var q = el.getBoundingClientRect(); return e.clientX >= q.left && e.clientX <= q.right && e.clientY >= q.top && e.clientY <= q.bottom; };
+      a.addEventListener('pointerdown', function (e) {
+        if (e.button || !moved || ldrag || loot.style.visibility === 'hidden' || !hit(loot, e) || hit(grip, e)) return;
+        e.preventDefault(); e.stopPropagation();
+        var r = img.getBoundingClientRect(); ldrag = { x: e.clientX, y: e.clientY, lx: lx, ly: ly, w: r.width };
+        try { a.setPointerCapture(e.pointerId); } catch (er) {}
+      }, true);
+      a.addEventListener('pointermove', function (e) {
+        if (!ldrag) return;
+        var mx = e.clientX - ldrag.x, my = e.clientY - ldrag.y;
+        if (Math.abs(mx) + Math.abs(my) > 3 && !lmoved) { lmoved = true; over.insertBefore(loot, grip); }
+        if (!lmoved) return;
+        lx = ldrag.lx + mx / ldrag.w; ly = ldrag.ly + my / ldrag.w; place();
+      }, true);
+      var ldrop = function () { if (!ldrag) return; var went = lmoved && (lx !== ldrag.lx || ly !== ldrag.ly); ldrag = null; if (went) ate = Date.now(); };
+      a.addEventListener('pointerup', ldrop, true); a.addEventListener('pointercancel', ldrop, true);
+      a.addEventListener('touchstart', function (e) { var t = e.touches[0]; if (t && moved && loot.style.visibility !== 'hidden' && hit(loot, t)) e.preventDefault(); }, { passive: false });
+      a.addEventListener('touchmove', function (e) { if (ldrag) e.preventDefault(); }, { passive: false });
       grip.addEventListener('pointerup', drop); grip.addEventListener('pointercancel', drop);
       grip.addEventListener('touchstart', function (e) { e.preventDefault(); }, { passive: false });
       grip.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
@@ -1534,7 +1571,8 @@
         var lr = loot.getBoundingClientRect(), gr = grip.getBoundingClientRect();
         var inLoot = e.clientX >= lr.left && e.clientX <= lr.right && e.clientY >= lr.top && e.clientY <= lr.bottom;
         var covered = e.clientX >= gr.left && e.clientX <= gr.right && e.clientY >= gr.top && e.clientY <= gr.bottom;
-        if (inLoot && !covered) { e.preventDefault(); e.stopPropagation(); b2drop(88); }
+        if (inLoot && !covered) { e.preventDefault(); e.stopPropagation(); b2drop(88); return; }
+        if (lmoved && deep.style.visibility !== 'hidden' && hit(deep, e) && !covered) { e.preventDefault(); e.stopPropagation(); b2drop(115); }
       }, true);
       a.addEventListener('dragstart', function (e) { e.preventDefault(); });
     });
@@ -1634,8 +1672,123 @@
     b2wait('print', b2print);
     b2wait('copy', b2copy);
     b2wait('typo', b2typo);
+    b3Tricks();
   }
   // ---- end of batch 2 site tricks ----
+
+  // ---- Boxes 101-150 site tricks (the ones that live in the loader; the rest are in their pages) ----------------
+  // 105 Copyright: every page's footer carries a copyright line; tap its (c) five times in a row and box 105 drops in.
+  // 112 Mobile Menu: open the phone menu three times (within half a minute) and, on the third, a hidden LOOT BOX
+  //     row sits at the top of the menu for ten seconds.
+  // 115 Double Slide (Again): in b2comet above. Drag the Comet out, then drag box 88 off; box 115 was under it.
+  // 119 Special Click Comet: right-click the Comet in the logo (or long-press it on a phone) and its own little
+  //     menu opens, with box 119 in it. Wired in b2comet; the menu is b3menu.
+  function b3css() {
+    if (document.getElementById('ma-b3-css')) return;
+    var st = document.createElement('style'); st.id = 'ma-b3-css';
+    st.textContent =
+      '.ma-b3-copy{display:block;box-sizing:border-box;margin:0 auto;padding:12px 20px 20px;text-align:center;font:400 12px/1.6 Almarai,sans-serif;letter-spacing:.04em;color:rgba(243,234,217,.72);-webkit-user-select:none;user-select:none}' +
+      '.ma-b3-copy .ma-b3-c{cursor:text;-webkit-tap-highlight-color:transparent}' +
+      '.ma-b3-menu{position:fixed;z-index:2147482100;box-sizing:border-box;min-width:208px;margin:0;padding:6px;list-style:none;background:#0b170f;border:1px solid rgba(243,234,217,.5);box-shadow:0 10px 30px rgba(0,0,0,.5);font:700 14px/1.3 Almarai,sans-serif;color:#f3ead9}' +
+      '.ma-b3-menu button,.ma-b3-menu button:hover{display:flex;align-items:center;gap:12px;width:100%;box-sizing:border-box;min-height:0;margin:0;padding:10px 12px!important;border:0!important;border-radius:0;background:transparent!important;color:#f3ead9!important;font:inherit;letter-spacing:.06em;text-align:left;cursor:pointer;box-shadow:none!important}' +
+      '.ma-b3-menu button:hover,.ma-b3-menu button:focus-visible{background:#132219!important;outline:none}' +
+      '.ma-b3-menu img{width:32px;height:32px;flex:none}' +
+      '.ma-b3-menu hr{margin:4px 6px;border:0;border-top:1px solid rgba(243,234,217,.2)}' +
+      '.ma-b3-mm,.ma-b3-mm:hover{display:flex!important;align-items:center;justify-content:center;gap:12px;margin:0 auto;padding:8px 16px!important;border:2px solid #ff4c0f!important;border-radius:0;background:transparent!important;color:#f3ead9!important;font:700 17px/1.2 Almarai,sans-serif!important;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;box-shadow:none!important}' +
+      '.ma-b3-mm img{width:40px;height:40px}';
+    document.head.appendChild(st);
+  }
+  // 119
+  function b3menu(x, y) {
+    try {
+      var old = document.querySelector('.ma-b3-menu'); if (old) old.remove();
+      b3css();
+      var m = document.createElement('div'); m.className = 'ma-b3-menu'; m.setAttribute('role', 'menu'); m.setAttribute('aria-label', 'The Comet');
+      m.innerHTML = '<button type="button" role="menuitem" data-go="home">Back to Home</button>' +
+        '<button type="button" role="menuitem" data-go="hunt">The Treasure Hunt</button><hr>' +
+        '<button type="button" role="menuitem" data-go="box"><img src="' + b2art(119) + '" alt="" draggable="false">Loot Box 119</button>';
+      document.body.appendChild(m);
+      var w = m.offsetWidth, h = m.offsetHeight;
+      m.style.left = Math.max(8, Math.min(x, innerWidth - w - 8)) + 'px'; m.style.top = Math.max(8, Math.min(y, innerHeight - h - 8)) + 'px';
+      var shut = function () { document.removeEventListener('pointerdown', away, true); document.removeEventListener('keydown', esc, true); if (m.parentNode) m.remove(); };
+      var away = function (e) { if (!m.contains(e.target)) shut(); };
+      var esc = function (e) { if (e.key === 'Escape') shut(); };
+      m.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b) return; var go = b.getAttribute('data-go'); shut();
+        if (go === 'box') b2open(119); else location.href = go === 'hunt' ? '/the-hunt' : '/';
+      });
+      setTimeout(function () { document.addEventListener('pointerdown', away, true); document.addEventListener('keydown', esc, true); }, 0);
+      m.querySelector('[data-go="box"]').focus();
+    } catch (e) {}
+  }
+  // 105
+  function b3copy() {
+    if (document.querySelector('.ma-b3-copy')) return true;
+    var foot = document.getElementById('footer-sections') || document.querySelector('footer');
+    if (!foot && document.readyState !== 'complete') return false;
+    var shown = foot && foot.offsetHeight > 0 && getComputedStyle(foot).display !== 'none';
+    b3css();
+    var p = document.createElement('p'); p.className = 'ma-b3-copy';
+    p.innerHTML = 'Copyright <span class="ma-b3-c">&copy;</span> Maurice Africh - 2025-Present - All Rights Reserved - Patent Pending';
+    (shown ? foot : document.body).appendChild(p);
+    var taps = [];
+    p.querySelector('.ma-b3-c').addEventListener('click', function () {
+      var t = Date.now(); taps = taps.filter(function (x) { return t - x < 2500; }); taps.push(t);
+      if (taps.length >= 5) { taps = []; b2drop(105); }
+    });
+    return true;
+  }
+  // 112
+  function b3menuBox() {
+    if (B2.mmenu) return; B2.mmenu = 1;
+    var opens = [];
+    var show = function () {
+      var host = null;
+      var ov = document.getElementById('hunt-nav-ov');
+      if (ov && getComputedStyle(ov).display !== 'none') host = ov;
+      if (!host && /header--menu-open/.test(document.body.className)) host = document.querySelector('.header-menu .header-menu-nav-list') || document.querySelector('.header-menu');
+      if (!host || host.querySelector('.ma-b3-mm')) return;
+      b3css();
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'ma-b3-mm';
+      b.innerHTML = '<img src="' + b2art(112) + '" alt="" draggable="false">Loot Box';
+      b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); b2open(112); });
+      if (host === ov) { var x = ov.querySelector('.mn-ovlogo'); ov.insertBefore(b, x && x.nextSibling ? x.nextSibling : ov.firstChild); }
+      else host.insertBefore(b, host.firstChild);
+      setTimeout(function () { if (b.parentNode) b.remove(); }, 10000);
+    };
+    var opened = function () {
+      var t = Date.now(); opens = opens.filter(function (x) { return t - x < 30000; }); opens.push(t);
+      if (opens.length >= 3) { opens = []; setTimeout(show, 120); }
+    };
+    document.addEventListener('click', function (e) {
+      var el = e.target && e.target.closest && e.target.closest('.header-burger-btn, #hunt-nav .mn-burger');
+      if (!el) return;
+      // the Squarespace burger opens and closes the menu: only count the clicks that leave it open
+      if (el.classList.contains('header-burger-btn')) setTimeout(function () { if (/header--menu-open/.test(document.body.className)) opened(); }, 80);
+      else opened();
+    }, true);
+  }
+  // 113 Fake Newsletter: signing up as lootbox@lootbox.com in a newsletter (Kit) form drops box 113 instead.
+  //     The address is never sent to Kit: the submit is stopped before Kit's own script sees it.
+  function b3fakeMail() {
+    if (B2.fakeMail) return; B2.fakeMail = 1;
+    var fake = function (form) {
+      var i = form && form.querySelector && form.querySelector('input[type="email"], input[name="email_address"], input[name="email"]');
+      return i && String(i.value).trim().toLowerCase() === 'lootbox@lootbox.com';
+    };
+    var stop = function (e, form) { e.preventDefault(); e.stopPropagation(); if (e.stopImmediatePropagation) e.stopImmediatePropagation(); b2drop(113); };
+    document.addEventListener('submit', function (e) { var f = e.target; if (f && f.tagName === 'FORM' && fake(f)) stop(e, f); }, true);
+    document.addEventListener('click', function (e) {
+      var b = e.target && e.target.closest && e.target.closest('button, input[type="submit"]'); if (!b) return;
+      var f = b.form || b.closest('form, .newsletter-form'); if (f && fake(f) && (b.type === 'submit' || /submit/.test(b.className + ' ' + (b.getAttribute('data-element') || '')))) stop(e, f);
+    }, true);
+  }
+  function b3Tricks() {
+    b2wait('b3copy', b3copy);
+    try { b3menuBox(); } catch (e) {}
+    try { b3fakeMail(); } catch (e) {}
+  }
+  // ---- end of boxes 101-150 site tricks ----
 
   // The new special editions sit right after Walmart's in every Pre-Order list (Maurice, 2026-10-12): the Waterstones
   // Exclusive Edition and the Broken Binding edition. Added here so the Squarespace, hunt, and shop menus all match.

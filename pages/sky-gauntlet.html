@@ -35,6 +35,16 @@
      LOOT BOX: after wave 25 is cleared (Maurice, 10/12), loot box 78 floats down; fly into it to open the claim panel (claim link
      scrambled in K). If it is missed it floats down again after every later wave. Once caught it also shows on
      the game over panel. Three lives.
+     LOOT BOX 138, The Skull Gauntlet (clue: "Kill the Pirate"; Maurice: "put the trench skull on a black ship"): 4 seconds
+     into wave 13 (Normal and Easy, and from the wave 11 checkpoint too) a black ship (his rival art tinted black, with a
+     pale outline so it shows on the night sky) with the Trench skull painted on its hull (assets/img/7bf9c98ba157d33f.webp,
+     the skull and crossed tanto; no flag, Maurice 10/26) crosses the sky once, left to right, just below the fleet, in about 10 seconds. It never fires and
+     can't hurt you. Flying below the fleet, it is the first thing your missiles (and the level 5 beam) reach; 6 hits sink it. It is not part of the fleet: it gives no
+     points, doesn't count as a kill, drops no upgrades, and the wave can end without it, so the score and the weekly
+     board's checks are unchanged. When it sinks, loot box 138 falls from where it was; fly into it and the run pauses
+     on the box (claim link in a new tab), then Keep flying. Miss the ship or the box and it is gone until the next run.
+     DRAFT copy: "Pirate down!", "Its chest was loot box 138. Tap the box to claim it in a new tab, then keep flying.",
+     "The pirate's chest!" (the falling banner).
      Controls: arrows or A/D, or move the mouse / slide a finger over the sky. P or Esc pauses. Pauses itself when
      the tab is hidden or the window loses focus. Reduced motion: still sky, no flashing.
      Art (site/assets/games): 74-ship.png, 74-rival.png, 74-cannonball.png, 74-ruby.png, golden-chest.png (replaced the wooden crate, 10/13), 80-crest.webp, brass-point.png, swords.png (the Twin Torches), trench-emblem.webp,
@@ -123,6 +133,9 @@
 #ma-gauntlet .sg-btn:focus-visible,#ma-gauntlet .sg-pausebtn:focus-visible,#ma-gauntlet .sg-box:focus-visible,#ma-gauntlet .sg-card:focus-visible{outline:2px solid #89fbcb;outline-offset:3px}
 #ma-gauntlet .sg-box{display:block;margin:0;padding:0;border:0;background:none;cursor:pointer;width:clamp(110px,24vw,160px);filter:drop-shadow(0 0 24px rgba(255,76,15,.45));animation:sg-rise .8s cubic-bezier(.2,.9,.3,1.2) both}
 #ma-gauntlet .sg-box img{display:block;width:100%;height:auto}
+#ma-gauntlet .sg-skullbox{display:block;margin:0;padding:0;border:0;background:none;cursor:pointer;width:clamp(110px,24vw,160px);filter:drop-shadow(0 0 24px rgba(255,76,15,.45))}
+#ma-gauntlet .sg-skullbox img{display:block;width:100%;height:auto}
+#ma-gauntlet .sg-skullbox:focus-visible{outline:2px solid #89fbcb;outline-offset:3px}
 #ma-gauntlet .sg-box[hidden]{display:none}
 @keyframes sg-rise{0%{transform:translateY(30px) scale(.7);opacity:0}100%{transform:none;opacity:1}}
 #ma-gauntlet .sg-tip-touch{display:none}
@@ -236,6 +249,12 @@
               <p>You caught it. Tap the box to claim it in a new tab, then keep flying.</p>
               <button class="sg-box sg-box-found" type="button" aria-label="Open loot box 78"><img src="https://africhmaurice.github.io/leaderboard/loot/78.png" alt="Loot box 78"></button>
               <button class="sg-btn ghost sg-keep" type="button">Keep flying</button>
+            </div>
+            <div class="sg-ov sg-found138">
+              <h2>Pirate down!</h2>
+              <p>Its chest was loot box 138. Tap the box to claim it in a new tab, then keep flying.</p>
+              <button class="sg-skullbox" type="button" aria-label="Open loot box 138"><img src="https://africhmaurice.github.io/site/assets/loot/138.png" alt="Loot box 138"></button>
+              <button class="sg-btn ghost sg-keep138" type="button">Keep flying</button>
             </div>
           </div>
           <div class="sg-live" aria-live="polite"></div>
@@ -403,6 +422,12 @@
   var boxImg78=new Image();boxImg78.src='https://africhmaurice.github.io/leaderboard/loot/78.png';
   var boxImg81=new Image();boxImg81.src='https://africhmaurice.github.io/leaderboard/loot/81.png';
   var boxImg=boxImg78;
+  /* loot box 138: the Trench skull for the pirate ship's hull, and the box art */
+  var skullImg=new Image();skullImg.src='https://africhmaurice.github.io/site/assets/img/7bf9c98ba157d33f.webp';
+  var boxImg138=new Image();boxImg138.src='https://africhmaurice.github.io/site/assets/loot/138.png';
+  var K138=(function(){var K='S1RFNVBBVFY9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';return K;})();
+  function claim138(){var u='';try{u=atob(K138).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
   var tinted={};
   /* the rival art recolored once per color (the colored rival tiers, and the white hit flash) */
   function tint(col,a){var key=col+a;if(tinted[key])return tinted[key];if(!ok(IMG.rival))return null;
@@ -437,7 +462,7 @@
   function hullNext(h){return Math.pow(2,h+1);}
 
   var cv=$('.sg-cv'),ctx=cv.getContext('2d'),stage=$('.sg-stage');
-  var ovStart=$('.sg-start'),ovPause=$('.sg-pause'),ovOver=$('.sg-over'),ovFound=$('.sg-found');
+  var ovStart=$('.sg-start'),ovPause=$('.sg-pause'),ovOver=$('.sg-over'),ovFound=$('.sg-found'),ovFound138=$('.sg-found138');
   var hudScore=$('.sg-score'),hudWave=$('.sg-wave'),hudLives=$('.sg-lives'),pauseBtn=$('.sg-pausebtn'),live=$('.sg-live');
   var mqRM=window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):null;
   function RM(){return !!(mqRM&&mqRM.matches);}
@@ -487,6 +512,8 @@
     S.queue.sort(function(a,b){return a.at-b.at;});S.qt=0;
     S.diveT=2.2;S.shootT=1.6;
     S.banner=n%5===0?'Destroyer!':'Wave '+S.wave;S.bannerT=1.6;hud();say('Wave '+S.wave);
+    /* loot box 138: the pirate ship crosses once on wave 13, 4 seconds in */
+    if(S.wave===13)S.skull={t:-4,x:-70,y:300,hp:6,max:6,flash:0};
   }
 
   /* ---- the new fleet: sizes, toughness, points ---- */
@@ -685,6 +712,16 @@
     }
     for(var j=S.balls.length-1;j>=0;j--){var b=S.balls[j];b.x+=b.vx*dt;b.y+=b.vy*dt;if(b.y>H+20){S.balls.splice(j,1);continue;}
       if(Math.abs(b.x-S.x)<20&&Math.abs(b.y-PY)<22){S.balls.splice(j,1);hitPlayer();break;}}   /* a hit clears every cannonball, so stop here (2026-10-20) */
+    /* loot box 138: the black pirate ship (not part of the fleet: no points, no kill, no drops) and its falling chest; it flies just below the fleet */
+    if(S.skull){var sk=S.skull;sk.t+=dt;if(sk.flash>0)sk.flash-=dt;
+      if(sk.t>=0){sk.x=-70+sk.t*60;sk.y=300+Math.sin(sk.t*1.6)*14;
+        for(var ks=S.shots.length-1;ks>=0;ks--){var kh=S.shots[ks];if(Math.abs(kh.x-sk.x)<34+kh.hw&&Math.abs(kh.y-sk.y)<22){sk.hp-=kh.dmg;sk.flash=.08;S.shots.splice(ks,1);}}
+        if(level()===5&&state==='play'&&sk.y<PY-20&&streamXs().some(function(x){return Math.abs(x-sk.x)<34+MISS[5][3]/2;})){sk.hp-=20*dt;if(sk.flash<=0)sk.flash=.05;}
+        if(sk.hp<=0){boom(sk.x,sk.y,120);S.skullBox={x:sk.x,y:sk.y};S.skull=null;S.banner="The pirate's chest!";S.bannerT=1.6;say('The pirate ship is down. Its chest is falling. Fly into it.');}
+        else if(sk.x>W+70)S.skull=null;}}
+    if(S.skullBox){var kb=S.skullBox;kb.y+=70*dt;
+      if(Math.abs(kb.x-S.x)<44&&Math.abs(kb.y-PY)<44){S.skullBox=null;found138();return;}
+      if(kb.y>H+60)S.skullBox=null;}
     /* shots hit ships */
     for(var a=S.shots.length-1;a>=0;a--){var sh=S.shots[a];sh.spin+=dt*14;
       for(var q=0;q<S.foes.length;q++){var f2=S.foes[q];if(f2.mode==='enter'&&f2.t<0)continue;if(sh.hit===f2)continue;
@@ -891,7 +928,7 @@
     var h='';for(var i=0;i<Math.max(3,S.lives);i++)h+='<i style="'+(i<S.lives?'':'background:none;border:1px solid rgba(243,234,217,.35)')+'"></i>';hudLives.innerHTML=h;
   }
   function say(t){live.textContent=t;}
-  function showOv(el){[ovStart,ovPause,ovOver,ovFound].forEach(function(o){o.classList.toggle('on',o===el);});}
+  function showOv(el){[ovStart,ovPause,ovOver,ovFound,ovFound138].forEach(function(o){o.classList.toggle('on',o===el);});}
   function newGame(cp){
     if(cp)return cpStart(cp);
     S=newRun();state='play';paused=false;showOv(null);pauseBtn.disabled=false;pauseBtn.textContent='Pause';
@@ -913,6 +950,8 @@
     boxTaken=true;lsSet(boxKey(),'1');state='found';stop();pauseBtn.disabled=true;say('You caught loot box '+(easy()?EASY.box:78));showOv(ovFound);draw();
     try{$('.sg-box-found').focus({preventScroll:true});}catch(e){}
   }
+  function found138(){lsSet('ma-gauntlet-box138','1');S.bannerT=0;state='found';stop();pauseBtn.disabled=true;say('You caught loot box 138');showOv(ovFound138);draw();
+    try{$('.sg-skullbox').focus({preventScroll:true});}catch(e){}}
   function keepFlying(){showOv(null);state='play';pauseBtn.disabled=false;S.inv=1;run();}
   function pause(){if(state!=='play'||paused)return;paused=true;stop();showOv(ovPause);pauseBtn.textContent='Resume';draw();}
   function resume(){if(!paused)return;paused=false;showOv(null);pauseBtn.textContent='Pause';run();}
@@ -926,6 +965,8 @@
   $('.sg-keep').addEventListener('click',keepFlying);
   $('.sg-box-found').addEventListener('click',claim);
   $('.sg-box-over').addEventListener('click',claim);
+  $('.sg-skullbox').addEventListener('click',claim138);
+  $('.sg-keep138').addEventListener('click',keepFlying);
   pauseBtn.addEventListener('click',function(){paused?resume():pause();});
   document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});
   /* leaving mid-run (Maurice 10/22: a mouse Back button cost a 1.5M run): the browser asks first, and if they leave anyway the
@@ -1049,6 +1090,12 @@
       sprite(IMG.boom[3],S.nuke.x,S.nuke.y,sz2,RM()?0:S.nuke.t*.6);ctx.restore();}
     /* loot box */
     if(S.boxOut){if(ok(boxImg))sprite(boxImg,S.boxOut.x,S.boxOut.y,72);else{ctx.fillStyle='#c53200';ctx.fillRect(S.boxOut.x-28,S.boxOut.y-24,56,48);}}
+    /* loot box 138: a black rival ship with the Trench skull painted on its hull (Maurice 10/26: no flag), pointing the way it flies, and then its chest */
+    if(S.skull&&S.skull.t>=0){var sk2=S.skull;
+      var shp=sk2.flash>0?tint('#fffffe',.8):tint('#0b170f',.9);ctx.save();ctx.shadowColor='rgba(243,234,217,.85)';ctx.shadowBlur=12;sprite(shp||IMG.rival,sk2.x,sk2.y,58,-Math.PI/2);ctx.restore();
+      if(ok(skullImg)&&!(sk2.flash>0))sprite(skullImg,sk2.x+2,sk2.y,26);
+      var kf=Math.max(0,sk2.hp/sk2.max);ctx.fillStyle='rgba(11,23,15,.8)';ctx.fillRect(sk2.x-26,sk2.y+26,52,6);ctx.fillStyle='#ff4c0f';ctx.fillRect(sk2.x-25,sk2.y+27,50*kf,4);}
+    if(S.skullBox){if(ok(boxImg138))sprite(boxImg138,S.skullBox.x,S.skullBox.y,72);else{ctx.fillStyle='#c53200';ctx.fillRect(S.skullBox.x-28,S.skullBox.y-24,56,48);}}
     /* the player */
     if(state!=='dying'&&state!=='over'){
       var blink=S.inv>0&&!RM()&&Math.floor(S.inv*10)%2===0;
@@ -1090,6 +1137,7 @@
       tiers:function(){return S.foes.map(function(f){return f.tier+':'+f.max;});},mix:function(w){return mixFor(w);},clearWave:function(){S.foes=[];},toWave:function(n){S.wave=n-1;S.foes=[];S.queue=[];S.boss=null;},god:function(){S.inv=1e9;},hit:function(){S.inv=0;hitPlayer();},strike:function(x){S.storm={x:x||W*.6,w:64,t:1.12,hit:1};S.stormT=99;},tick:function(sec){S.rs&&!S.rs.up&&(S.rs.t-=sec);},hull:function(){return {hull:S.hull,max:hullMax(),rs:S.rs&&{up:S.rs.up,t:Math.round(S.rs.t*10)/10},lives:S.lives};},give:function(k){collect(k,S.x,PY);},crests:function(n){S.crests=n;},
       level:function(n){S.crests=CRESTS[n];},special:function(k){S.drops.push({x:S.x,y:PY-40,kind:k});},drops:function(){var ks=Object.keys(DROPS);ks.forEach(function(k,i){S.drops.push({x:50+(i%5)*95,y:200+Math.floor(i/5)*110,kind:k});});},boxOut:function(){return !!S.boxOut;},paused:function(){return paused;},full:function(){return {t:S.t,x:S.x,y:S.y,qt:S.qt,sky:skyY,foes:S.foes.map(function(f){return [f.x,f.y];})};},grabBox:function(){if(S.boxOut){S.boxOut.y=PY;S.x=S.boxOut.x;S.target=S.boxOut.x;}},
       /* drop-rule tests: kill a made-up ship of a kind (tier for rivals), read the counts and the falling drops */
+      skull:function(){return S.skull?{x:S.skull.x,y:S.skull.y,hp:S.skull.hp,t:S.skull.t}:null;},skullBox:function(){return S.skullBox?{x:S.skullBox.x,y:S.skullBox.y}:null;},state:function(){return state;},
       fakeKill:function(kind,tier){var f={kind:kind||undefined,tier:tier||'purple',x:W/2,y:200,mode:'form',max:1,hp:0};if(kind)f.max=1;kill(f);},
       counts:function(){return {cnt:S.cnt,flyT:Math.round(S.flyT*10)/10,drops:S.drops.map(function(d){return d.kind+(d.v?'@'+d.v:'');})};},
       fly:function(sec){var f0=S.flyT;S.flyT+=sec;for(var tk in TIMED){if(Math.floor(S.flyT/TIMED[tk])>Math.floor(f0/TIMED[tk]))S.drops.push({x:lane(tk),y:-20,kind:tk});}},clearDrops:function(){S.drops=[];}};

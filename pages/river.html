@@ -1525,3 +1525,25 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 })();
 </script>
+<!-- LOOT BOX 124 (Hale's Torches Loot Box, staged 2026-10-26): in Hale's part of the recap ("He hits the water, his torches
+     boiling the immediate area. Steam rises..."), the word "torches" is a hidden link: same color, no underline, no pointer.
+     That is the line the clue "blades so hot they sizzle and pop" points to. build-crash.mjs (treasure-hunt-leaderboard)
+     generates this file, so it must carry this block too at go-live. -->
+<style>#rc .lb124{color:inherit;font:inherit;text-decoration:none;cursor:auto}</style>
+<script>(function(){
+  var K='N1lCN0pEM1M9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+  function setup(){
+    var root=document.getElementById('rc');if(!root)return false;
+    if(root.querySelector('.lb124'))return true;
+    var it=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),n,m;
+    while((n=it.nextNode())){m=n.nodeValue.indexOf('torches boiling');if(m>=0)break;}
+    if(!n)return false;
+    var after=n.splitText(m),rest=after.splitText(7),s=document.createElement('span');
+    s.className='lb124';s.textContent=after.nodeValue;after.parentNode.replaceChild(s,after);
+    s.addEventListener('click',claim);
+    return true;
+  }
+  if(!setup()){var t=0,iv=setInterval(function(){if(setup()||++t>40)clearInterval(iv);},250);}
+})();</script>

@@ -1679,6 +1679,16 @@ var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw
 var out=Date.parse('2026-11-03T00:00:00-05:00'),d=Math.ceil((out-Date.now())/864e5);
 var txt=d>1?'Only '+d+' days to go!':d===1?'It comes out tomorrow!':'It’s out now!';
 Array.prototype.forEach.call(document.querySelectorAll('.a3-count'),function(e){e.textContent=txt;});
+// 125 Countdown (boxes 101-150): double-tap the countdown and it freezes into a loot box for a moment.
+(function(){var K='VEJWUVdEWjM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',last=0,busy=false;
+function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+function freeze(c){if(busy)return;busy=true;var keep=c.innerHTML,box=document.createElement('button');box.type='button';box.setAttribute('aria-label','Open loot box 125');
+box.style.cssText='display:inline-block;vertical-align:middle;width:64px;height:64px;margin:0 4px;padding:0;border:0;border-radius:0;background:transparent;cursor:pointer;box-shadow:none';
+box.innerHTML='<img src="https://africhmaurice.github.io/leaderboard/loot/125.png" alt="Loot box 125" style="display:block;width:100%;height:100%">';
+box.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();claim();});
+c.textContent='';c.appendChild(box);setTimeout(function(){c.innerHTML=keep;busy=false;},4000);}
+Array.prototype.forEach.call(document.querySelectorAll('.a3-count'),function(c){c.style.cursor='default';c.style.touchAction='manipulation';c.style.display='inline-block';
+c.addEventListener('click',function(e){if(busy)return;var t=Date.now();if(t-last<500){e.preventDefault();freeze(c);last=0;}else last=t;});});})();
 document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.a3-copy');if(!b)return;var t=b.getAttribute('data-copy'),m=b.parentNode.querySelector('.a3-copied');
 function ok(){if(m)m.textContent='Copied!';}function fail(){if(m)m.textContent=t;}
 if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,fail);else fail();});
@@ -2355,4 +2365,25 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
 <script>document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.mh-dbox');if(b&&!b.closest('.mh-treasure'))location.href=atob(b.dataset.k).split('').reverse().join('');});</script>
 
 
-<!-- END OF FILE — if you cannot find this comment after pasting, the paste was truncated -->
+<!-- END OF FILE — if you cannot find this comment after pasting, the paste was truncated --><!-- 134 Behind the Riddle Card -->
+<script>(function(){var card=document.querySelector('#act-2 .tm-card[data-riddle="20"]');if(!card||card.__b134)return;card.__b134=1;
+var K='WlhYWkJGUVI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+var wrap=document.createElement('div');wrap.style.cssText='position:relative;display:flex;flex-direction:column;min-width:0';card.parentNode.insertBefore(wrap,card);
+var box=document.createElement('button');box.type='button';box.setAttribute('aria-label','Open loot box 134');box.tabIndex=-1;
+box.style.cssText='position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;cursor:pointer;z-index:0';
+box.innerHTML='<img src="https://africhmaurice.github.io/leaderboard/loot/134.png" alt="Loot box 134" style="display:block;width:100%;height:100%">';
+box.addEventListener('click',claim);wrap.appendChild(box);wrap.appendChild(card);
+card.style.position='relative';card.style.zIndex='1';card.style.flex='1';card.style.touchAction='pan-y';card.style.transition='transform .25s ease';
+var x0=null,y0=0,dx=0,moved=false,shown=false;
+function set(v){dx=v;card.style.transform=v?'translateX('+v+'px)':'';}
+card.addEventListener('pointerdown',function(e){if(e.button||(e.target.closest&&e.target.closest('input,textarea,select,button,a')))return;x0=e.clientX;y0=e.clientY;moved=false;card.style.transition='none';});
+card.addEventListener('pointermove',function(e){if(x0===null)return;var mx=e.clientX-x0,my=e.clientY-y0;
+  if(!moved&&Math.abs(mx)>8&&Math.abs(mx)>Math.abs(my)){moved=true;try{card.setPointerCapture(e.pointerId);}catch(er){}}
+  if(moved)set(mx+(card.__base||0));});
+function up(){if(x0===null)return;x0=null;card.style.transition='transform .25s ease';if(!moved)return;
+  var far=Math.abs(dx)>card.offsetWidth*.35;shown=far;card.__base=far?(dx>0?1:-1)*card.offsetWidth*.8:0;set(card.__base);box.tabIndex=far?0:-1;}
+card.addEventListener('pointerup',up);card.addEventListener('pointercancel',up);
+card.addEventListener('click',function(e){if(moved){e.preventDefault();e.stopPropagation();moved=false;}},true);
+card.addEventListener('dragstart',function(e){e.preventDefault();});
+})();</script>

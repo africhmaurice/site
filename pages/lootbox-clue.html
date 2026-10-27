@@ -69,12 +69,22 @@ html,body{margin:0 !important;padding:0 !important}
 #loot-clue .lc-answer-go[disabled]{opacity:.6;cursor:default}
 #loot-clue .lc-said{display:flex;align-items:center;gap:14px;box-sizing:border-box;max-width:100%;padding:14px 20px;background:rgba(11,23,15,.8);border:2px solid currentColor;border-radius:0;text-align:left}
 #loot-clue .lc-said[hidden]{display:none}
-#loot-clue .lc-said svg{flex:none;width:48px;height:46px}
+#loot-clue .lc-said svg{flex:none;width:48px;height:46px}#loot-clue .lc-said img{flex:none;width:48px;height:48px}
 #loot-clue .lc-said b{display:block;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(20px,1.8vw,25px);line-height:1.25;letter-spacing:.03em}
 #loot-clue .lc-said.wrong{color:#fd7547}#loot-clue .lc-said.right{color:#a2f590}
 @media (max-width:480px){#loot-clue .lc-answer-row{flex-direction:column}#loot-clue .lc-answer-go{width:100%}}
 @media (max-width:860px){#loot-clue .lc-grid{grid-template-columns:1fr;gap:24px}#loot-clue .lc-board{padding:44px 26px 40px}#loot-clue .lc-hint-pics{gap:10px}}
 @media (max-width:760px){#loot-clue{padding:130px 20px 70px}#loot-clue .lc-board{padding:48px 26px 44px}}
+</style>
+<style>
+#loot-clue .lc-torches{position:relative;display:block;width:min(220px,100%);aspect-ratio:1;margin:0 0 20px}
+#loot-clue .lc-torches img{position:absolute;inset:0;display:block;width:100%;height:100%;transition:opacity .06s linear}
+#loot-clue .lc-torches .t-lit{opacity:0}
+#loot-clue .lc-torches.lit .t-lit{opacity:1}
+#loot-clue .lc-box132{display:block;width:120px;margin:0;padding:0;border:0;border-radius:0;background:transparent;cursor:pointer}
+#loot-clue .lc-box132[hidden]{display:none}
+#loot-clue .lc-box132 img{display:block;width:100%;height:auto;filter:drop-shadow(0 0 22px rgba(137,251,203,.5))}
+#loot-clue .lc-box132:focus-visible{outline:3px solid #89fbcb;outline-offset:6px}
 </style>
 <style>
 #hunt-nav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(12,35,8,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:18px 16px}
@@ -842,6 +852,234 @@ Haven't I Seen You Before?</div>
     <div class="lc-num">#100</div>
     <div class="lc-text">Not Hidden; Earned</div>
   </div>
+  
+  <div class="lc-board" data-clue="101">
+    <div class="lc-num">#101</div>
+    <div class="lc-text">&quot;Like my papi always said, if you wanna find the goods, you gotta search the ship seven times.&quot;</div>
+  </div>
+  
+  <div class="lc-board" data-clue="102">
+    <div class="lc-num">#102</div>
+    <div class="lc-text">Home ##:## Make a Wish!</div>
+  </div>
+  
+  <div class="lc-board" data-clue="103">
+    <div class="lc-num">#103</div>
+    <div class="lc-text">The books are back!*
+
+*oh naur!</div>
+  </div>
+  
+  <div class="lc-board" data-clue="104">
+    <div class="lc-num">#104</div>
+    <div class="lc-text">You Can See Everything</div>
+  </div>
+  
+  <div class="lc-board" data-clue="105">
+    <div class="lc-num">#105</div>
+    <div class="lc-text">Copyright © Maurice Arich - 2025-Present - All Rghts Resered - Patent Pnding</div>
+  </div>
+  
+  <div class="lc-board" data-clue="106">
+    <div class="lc-num">#106</div>
+    <div class="lc-text">Wait, that's not a real place...?</div>
+  </div>
+  
+  <div class="lc-board" data-clue="107">
+    <div class="lc-num">#107</div>
+    <div class="lc-text">&quot;After all, a one-eyed man is always winking.&quot;</div>
+  </div>
+  
+  <div class="lc-board" data-clue="108">
+    <div class="lc-num">#108</div>
+    <div class="lc-text">Ask me again</div>
+  </div>
+  
+  <div class="lc-board" data-clue="109">
+    <div class="lc-num">#109</div>
+    <div class="lc-text"><span role="img" aria-label="A red square" style="display:inline-block;width:96px;height:96px;background:#c11212;border:3px solid #0b170f;vertical-align:middle"></span></div>
+  </div>
+  
+  <div class="lc-board" data-clue="110">
+    <div class="lc-num">#110</div>
+    <div class="lc-text">Everybody Else: You've got red on you.</div>
+  </div>
+  
+  <div class="lc-board" data-clue="111">
+    <div class="lc-num">#111</div>
+    <div class="lc-text">?</div>
+  </div>
+  
+  <div class="lc-board" data-clue="112">
+    <div class="lc-num">#112</div>
+    <div class="lc-text">Mobile Only, Three Times</div>
+  </div>
+  
+  <div class="lc-board" data-clue="113">
+    <div class="lc-num">#113</div>
+    <div class="lc-text">lootbox@lootbox.com</div>
+  </div>
+  
+  <div class="lc-board" data-clue="114">
+    <div class="lc-num">#114</div>
+    <div class="lc-text">behind the ate sure</div>
+  </div>
+  
+  <div class="lc-board" data-clue="115">
+    <div class="lc-num">#115</div>
+    <div class="lc-text">Double Slide (Again)</div>
+  </div>
+  
+  <div class="lc-board" data-clue="116">
+    <div class="lc-num">#116</div>
+    <img class="lc-img" src="https://africhmaurice.github.io/site/assets/clues/clue-116.webp" alt="A press pass" loading="lazy">
+  </div>
+  
+  <div class="lc-board" data-clue="117">
+    <div class="lc-num">#117</div>
+    <div class="lc-text">Spin me faster!</div>
+  </div>
+  
+  <div class="lc-board" data-clue="118">
+    <div class="lc-num">#118</div>
+    <div class="lc-text">It knows.</div>
+    <form class="lc-answer" data-salt="q118:" data-hash="d09c4661423cb82a7221de5cff0d627ce244a68c438d022a18ef6a49f71ba240" data-lock="VDRDS0ZNRTM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo" autocomplete="off">
+      <div class="lc-answer-row"><input type="text" class="lc-answer-in" style="background:#0b170f;border-color:#0b170f;color:#fffffe" aria-label="Ask the question for clue #118" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><button type="submit" class="lc-answer-go">Ask</button></div>
+      <div class="lc-said" role="status" hidden></div>
+    </form>
+  </div>
+  
+  <div class="lc-board" data-clue="119">
+    <div class="lc-num">#119</div>
+    <div class="lc-text">💻RC
+📱LP</div>
+  </div>
+  
+  <div class="lc-board" data-clue="120">
+    <div class="lc-num">#120</div>
+    <div class="lc-text">It's there, you just can't see it.</div>
+  </div>
+  
+  <div class="lc-board" data-clue="121">
+    <div class="lc-num">#121</div>
+    <div class="lc-text">Select every word to enter to win a loot box.</div>
+  </div>
+  
+  <div class="lc-board" data-clue="122">
+    <div class="lc-num">#122</div>
+    <div class="lc-text">One of these skulls doesn’t belong here.</div>
+    <a class="lc-answer-go" href="https://www.mauriceafrich.com/points" style="display:inline-block;box-sizing:border-box;max-width:100%;margin-top:26px;text-decoration:none;padding:12px 22px">Submit a Screenshot</a>
+  </div>
+  
+  <div class="lc-board" data-clue="123">
+    <div class="lc-num">#123</div>
+    <div class="lc-text">The Quality of an Influencer</div>
+  </div>
+  
+  <div class="lc-board" data-clue="124">
+    <div class="lc-num">#124</div>
+    <div class="lc-text">blades so hot they sizzle and pop</div>
+  </div>
+  
+  <div class="lc-board" data-clue="125">
+    <div class="lc-num">#125</div>
+    <div class="lc-text">Stop the clock!</div>
+  </div>
+  
+  <div class="lc-board" data-clue="126">
+    <div class="lc-num">#126</div>
+    <div class="lc-text">20 slices of savory pie</div>
+  </div>
+  
+  <div class="lc-board" data-clue="127">
+    <div class="lc-num">#127</div>
+    <img class="lc-img" src="https://africhmaurice.github.io/site/assets/clues/clue-127.webp" alt="A highlighter and a treasure chest" loading="lazy">
+  </div>
+  
+  <div class="lc-board" data-clue="128">
+    <div class="lc-num">#128</div>
+    <img class="lc-img" src="https://africhmaurice.github.io/site/assets/clues/clue-128.webp" alt="A yin-yang and a keyhole" loading="lazy">
+  </div>
+  
+  <div class="lc-board" data-clue="129">
+    <div class="lc-num">#129</div>
+    <div class="lc-text">Home of the Cheat Code</div>
+  </div>
+  
+  <div class="lc-board" data-clue="130">
+    <div class="lc-num">#130</div>
+    <div class="lc-text">Bang! Bang! Bang! Bang! Bang!
+
+Right in the Name.</div>
+  </div>
+  
+  <div class="lc-board" data-clue="131">
+    <div class="lc-num">#131</div>
+    <div class="lc-text">The Witching Hour</div>
+  </div>
+  
+  <div class="lc-board" data-clue="132">
+    <div class="lc-num">#132</div>
+    <div class="lc-torches" data-morse="-... ..- .-.. .-.. . - / -... .- .. -" data-unit="280" role="img" aria-label="Dot&rsquo;s torches, blinking a message">
+      <img src="https://africhmaurice.github.io/site/assets/games/132-torches-unlit.webp" alt="" width="512" height="512" draggable="false"><img class="t-lit" src="https://africhmaurice.github.io/site/assets/games/132-torches-lit.webp" alt="" width="512" height="512" draggable="false">
+    </div>
+    <div class="lc-text">Dot is trying to tell you something.</div>
+    <form class="lc-answer" data-box="132" data-salt="tc132:" data-hash="a19fe9a567252997f9d5baf38fbd82203b72e8320d1d79de77b3231fc0cfdccc" autocomplete="off">
+      <div class="lc-answer-row"><input type="text" class="lc-answer-in" aria-label="The word Dot&rsquo;s torches spell for clue #132" placeholder="Enter the word" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><button type="submit" class="lc-answer-go">Check</button></div>
+      <div class="lc-said" role="status" hidden></div>
+      <button type="button" class="lc-box132" aria-label="Open loot box 132" hidden><img src="https://africhmaurice.github.io/site/assets/loot/132.png" alt="Loot box 132" draggable="false"></button>
+    </form>
+  </div>
+  
+  <div class="lc-board" data-clue="133">
+    <div class="lc-num">#133</div>
+    <div class="lc-text">Dust the Shelf</div>
+  </div>
+  
+  <div class="lc-board" data-clue="134">
+    <div class="lc-num">#134</div>
+    <div class="lc-text">Slide over, Malazan!</div>
+  </div>
+  
+  <div class="lc-board" data-clue="135">
+    <div class="lc-num">#135</div>
+    <div class="lc-text">4.5k cumulootbindus</div>
+  </div>
+  
+  <div class="lc-board" data-clue="136">
+    <div class="lc-num">#136</div>
+    <div class="lc-text">Is that a dead end or did Maurice just hide another loot box?</div>
+  </div>
+  
+  <div class="lc-board" data-clue="137">
+    <div class="lc-num">#137</div>
+    <div class="lc-text">About halfway up</div>
+  </div>
+  
+  <div class="lc-board" data-clue="138">
+    <div class="lc-num">#138</div>
+    <div class="lc-text">Kill the Pirate</div>
+  </div>
+  
+  <div class="lc-board" data-clue="139">
+    <div class="lc-num">#139</div>
+    <div class="lc-text">(lvl4)2 Moves Or Less</div>
+  </div>
+  
+  <div class="lc-board" data-clue="144">
+    <div class="lc-num">#144</div>
+    <div class="lc-text">Sky Mines</div>
+  </div>
+  
+  <div class="lc-board" data-clue="149">
+    <div class="lc-num">#149</div>
+    <div class="lc-text">The Perfect Bops Game!</div>
+  </div>
+  
+  <div class="lc-board" data-clue="150">
+    <div class="lc-num">#150</div>
+    <div class="lc-text">Find the Crew</div>
+  </div>
   </div>
   <script>(function(){var s=document.getElementById('loot-clue');if(!s)return;
     Array.prototype.forEach.call(s.querySelectorAll('.lc-flash'),function(b){var src=b.getAttribute('data-flash');new Image().src=src;
@@ -928,6 +1166,57 @@ Haven't I Seen You Before?</div>
       msg.querySelector('.lc-finds-go').onclick=go;i.onkeydown=function(ev){if(ev.key==='Enter')go();};}
     btn.onclick=function(){if(on){on=false;put(ON,null);paint();return;}var e=email();if(e)turnOn(e);else ask();};
     if(get(ON)==='1'&&email())turnOn(email());})();</script>
+  <!-- Loot box 104 (The Nathan Fielder Loot Box, staged 2026-10-26, not live until Maurice approves): after a hunter turns
+       "Hide the clues I've found" on and then clicks "Show all clues", a tiny red dot sits in the gap between clue cards
+       #48 and #49. Clicking it drops box 104 in; clicking the chest opens the claim link in a new tab. Hiding the found
+       clues again (or reloading) takes the dot away. DRAFT words: aria labels "A red dot", "Open loot box 104", "Close". -->
+  <style>
+  #loot-clue .lc-104,#loot-clue .lc-104:hover{position:absolute;z-index:2;width:32px;height:32px;min-width:0;min-height:0;margin:-16px 0 0 -16px;padding:0!important;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  #loot-clue .lc-104::after{content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:#ff4c0f}
+  #loot-clue .lc-104:focus-visible{outline:2px solid #89fbcb;outline-offset:2px}
+  .lc-104-drop{position:fixed;inset:0;z-index:2147482000;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:20px;background:rgba(11,23,15,0);transition:background .35s ease}
+  .lc-104-drop.on{background:rgba(11,23,15,.86)}
+  .lc-104-drop .lc-104-box,.lc-104-drop .lc-104-box:hover{display:block;width:min(58vw,240px);min-width:0;min-height:0;margin:0;padding:0!important;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;cursor:pointer;transform:scale(.03);transition:transform .8s cubic-bezier(.3,1.3,.5,1)}
+  .lc-104-drop.on .lc-104-box{transform:none}
+  .lc-104-drop .lc-104-box img{display:block;width:100%;height:auto;filter:drop-shadow(0 0 30px rgba(255,76,15,.45))}
+  .lc-104-drop .lc-104-x{flex:none;width:48px;height:48px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin:0;padding:0;border:2px solid #f3ead9;border-radius:0;background:#0b170f;color:#f3ead9;cursor:pointer}
+  .lc-104-drop .lc-104-x:hover,.lc-104-drop .lc-104-x:focus-visible{background:#f3ead9;color:#0b170f}
+  .lc-104-drop .lc-104-x svg{width:20px;height:20px}
+  @media (prefers-reduced-motion:reduce){.lc-104-drop,.lc-104-drop .lc-104-box{transition:none}}
+  </style>
+  <script>(function(){var K='SDdZUldITVM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+    function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+      var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+    var s=document.getElementById('loot-clue');if(!s)return;
+    var btn=s.querySelector('.lc-finds-btn'),a=s.querySelector('.lc-board[data-clue="48"]'),c=s.querySelector('.lc-board[data-clue="49"]');if(!btn||!a||!c)return;
+    var dot=null;
+    // the middle of the gap between the two cards, measured without transforms (cards fade up as they scroll in)
+    function place(){if(!dot)return;var ax=a.offsetLeft,ay=a.offsetTop,cx=c.offsetLeft,cy=c.offsetTop,x,y;
+      if(Math.abs(ay-cy)<4){x=(ax+a.offsetWidth+cx)/2-ax;y=a.offsetHeight/2;}
+      else{x=a.offsetWidth/2;y=(ay+a.offsetHeight+cy)/2-ay;}
+      dot.style.left=x+'px';dot.style.top=y+'px';}
+    function show(){if(dot)return;if(getComputedStyle(a).position==='static')a.style.position='relative';
+      dot=document.createElement('button');dot.type='button';dot.className='lc-104';dot.setAttribute('aria-label','A red dot');
+      dot.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();drop();});
+      a.appendChild(dot);place();}
+    function hide(){if(dot&&dot.parentNode)dot.parentNode.removeChild(dot);dot=null;}
+    window.addEventListener('resize',place);
+    // "Show all clues" is the button's label while found clues are hidden; clicking it flips aria-pressed from true to false
+    new MutationObserver(function(ms){ms.forEach(function(m){var now=btn.getAttribute('aria-pressed');
+      if(m.oldValue==='true'&&now==='false')show();else if(now==='true')hide();});}).observe(btn,{attributes:true,attributeFilter:['aria-pressed'],attributeOldValue:true});
+    function drop(){if(document.querySelector('.lc-104-drop'))return;
+      var d=document.createElement('div');d.className='lc-104-drop';d.setAttribute('role','dialog');d.setAttribute('aria-label','Loot box 104');
+      d.innerHTML='<button type="button" class="lc-104-box" aria-label="Open loot box 104"><img src="https://africhmaurice.github.io/site/assets/loot/104.png" alt="Loot box 104" draggable="false"></button>'+
+        '<button type="button" class="lc-104-x" aria-label="Close"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M3 3l14 14M17 3L3 17"/></svg></button>';
+      var shut=function(){document.removeEventListener('keydown',esc,true);if(d.parentNode)d.parentNode.removeChild(d);};
+      var esc=function(e){if(e.key==='Escape')shut();};var back=false;
+      d.addEventListener('pointerdown',function(e){back=e.target===d;});
+      d.addEventListener('click',function(e){if(e.target===d&&back)shut();back=false;});
+      d.querySelector('.lc-104-x').addEventListener('click',shut);
+      d.querySelector('.lc-104-box').addEventListener('click',function(){claim();shut();});
+      document.addEventListener('keydown',esc,true);document.body.appendChild(d);
+      requestAnimationFrame(function(){requestAnimationFrame(function(){d.classList.add('on');});});}
+  })();</script>
   <script>(function(){var s=document.getElementById('loot-clue');if(!s||!window.crypto||!crypto.subtle)return;
     var SKULL='<path fill="currentColor" d="M26 4C14.4 4 6 12 6 22.5c0 6.6 3.3 11.4 7.5 14V42a4 4 0 0 0 4 4h17a4 4 0 0 0 4-4v-5.5c4.2-2.6 7.5-7.4 7.5-14C46 12 37.6 4 26 4z"/><path fill="#2d1c53" d="M26 29.5l-3 5h6z"/><path stroke="#2d1c53" stroke-width="2.4" stroke-linecap="round" d="M21.5 39v5M26 39v5M30.5 39v5"/>';
     var EYES={wrong:'<path stroke="#2d1c53" stroke-width="3.4" stroke-linecap="round" d="M13.5 17.5l8 8M21.5 17.5l-8 8M30.5 17.5l8 8M38.5 17.5l-8 8"/>',
@@ -938,7 +1227,7 @@ Haven't I Seen You Before?</div>
     function b64url(t){return btoa(unescape(encodeURIComponent(t))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
     Array.prototype.forEach.call(s.querySelectorAll('.lc-answer'),function(f){var i=f.querySelector('.lc-answer-in'),btn=f.querySelector('.lc-answer-go'),said=f.querySelector('.lc-said');
       ['click','keydown'].forEach(function(ev){f.addEventListener(ev,function(e){e.stopPropagation();});});
-      function say(v){said.className='lc-said '+(v==='right'?'right':'wrong');said.innerHTML='<svg viewBox="0 0 52 50" aria-hidden="true">'+SKULL+(EYES[v]||EYES.wrong)+'</svg><b>'+SAY[v]+'</b>';said.hidden=false;}
+      function say(v){said.className='lc-said '+(v==='right'?'right':'wrong');said.innerHTML=(v==='right'?'<img src="https://africhmaurice.github.io/site/assets/img/skull-heart-red.webp" width="52" height="52" alt="" aria-hidden="true">':'<svg viewBox="0 0 52 50" aria-hidden="true">'+SKULL+(EYES[v]||EYES.wrong)+'</svg>')+'<b>'+SAY[v]+'</b>';said.hidden=false;}
       ['paste','drop'].forEach(function(ev){i.addEventListener(ev,function(e){e.preventDefault();say('nopaste');});});
       i.addEventListener('beforeinput',function(e){if(/^insertFrom(Paste|Drop)/.test(e.inputType||'')){e.preventDefault();say('nopaste');}});
       f.addEventListener('submit',function(e){e.preventDefault();var a=norm(i.value);if(!a){i.focus();return;}btn.disabled=true;
@@ -947,5 +1236,41 @@ Haven't I Seen You Before?</div>
           say('right');i.blur();btn.disabled=true;var lk=f.getAttribute('data-lock');if(lk){crypto.subtle.digest('SHA-256',new TextEncoder().encode('lock:'+f.getAttribute('data-salt')+a)).then(function(kb){var k=new Uint8Array(kb),c=atob(lk),o='';for(var j=0;j<c.length;j++)o+=String.fromCharCode(c.charCodeAt(j)^k[j%k.length]);setTimeout(function(){location.href=o;},1100);});return;}var go=f.getAttribute('data-go')+'#'+b64url(a);setTimeout(function(){location.href=go;},1100);
         },function(){btn.disabled=false;});});
     });})();</script>
+<script>(function(){var s=document.getElementById('loot-clue');if(!s)return;
+    // Torches: blink each .lc-torches[data-morse] on a loop. Units: dot 1, dash 3, gap in a letter 1, between letters 3,
+    // between words 7, then 21 dark before it starts again.
+    Array.prototype.forEach.call(s.querySelectorAll('.lc-torches[data-morse]'),function(t){if(t.__lcT)return;t.__lcT=1;
+      var unit=+t.getAttribute('data-unit')||280,plan=[];
+      String(t.getAttribute('data-morse')).trim().split(/\s*\/\s*/).forEach(function(word,wi){
+        if(wi)plan.push([0,7]);
+        word.split(/\s+/).forEach(function(letter,li){if(li)plan.push([0,3]);
+          letter.split('').forEach(function(sym,si){if(si)plan.push([0,1]);plan.push([1,sym==='-'?3:1]);});});});
+      plan.push([0,21]);
+      var k=0,timer=null;
+      function run(){var p=plan[k];t.classList.toggle('lit',!!p[0]);k=(k+1)%plan.length;timer=setTimeout(run,p[1]*unit);}
+      function start(){clearTimeout(timer);k=0;t.classList.remove('lit');timer=setTimeout(run,unit*4);}
+      document.addEventListener('visibilitychange',function(){if(document.hidden){clearTimeout(timer);t.classList.remove('lit');}else start();});
+      start();
+    });
+    // Answer: "bullet bait" opens loot box 132. Runs before the page's shared answer script and stops it for this form.
+    var K='R1BIRkJHNjI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+    function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+      var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+    var f=s.querySelector('.lc-answer[data-box="132"]');if(!f||!window.crypto||!crypto.subtle)return;
+    var i=f.querySelector('.lc-answer-in'),btn=f.querySelector('.lc-answer-go'),said=f.querySelector('.lc-said'),chest=f.querySelector('.lc-box132');
+    var SKULL='<path fill="currentColor" d="M26 4C14.4 4 6 12 6 22.5c0 6.6 3.3 11.4 7.5 14V42a4 4 0 0 0 4 4h17a4 4 0 0 0 4-4v-5.5c4.2-2.6 7.5-7.4 7.5-14C46 12 37.6 4 26 4z"/><path fill="#2d1c53" d="M26 29.5l-3 5h6z"/><path stroke="#2d1c53" stroke-width="2.4" stroke-linecap="round" d="M21.5 39v5M26 39v5M30.5 39v5"/>';
+    var EYES={wrong:'<path stroke="#2d1c53" stroke-width="3.4" stroke-linecap="round" d="M13.5 17.5l8 8M21.5 17.5l-8 8M30.5 17.5l8 8M38.5 17.5l-8 8"/>',
+      right:'<path fill="#c11212" d="M17.5 27.5l-5.6-5.4a3.4 3.4 0 0 1 5.6-3.8 3.4 3.4 0 0 1 5.6 3.8zM34.5 27.5l-5.6-5.4a3.4 3.4 0 0 1 5.6-3.8 3.4 3.4 0 0 1 5.6 3.8z"/>'};
+    var SAY={right:'You got it!',wrong:'I’m so sorry, that’s not right.'};
+    function say(v){said.className='lc-said '+(v==='right'?'right':'wrong');said.innerHTML=(v==='right'?'<img src="https://africhmaurice.github.io/site/assets/img/skull-heart-red.webp" width="52" height="52" alt="" aria-hidden="true">':'<svg viewBox="0 0 52 50" aria-hidden="true">'+SKULL+(EYES[v]||EYES.wrong)+'</svg>')+'<b>'+SAY[v]+'</b>';   /* a right answer gets the red heart-eyes sticker skull (Maurice 10/26) */said.hidden=false;}
+    function norm(x){return String(x||'').toLowerCase().replace(/[\s\-‐-―]+/g,'');}
+    function hex(buf){return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('');}
+    chest.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();claim();});
+    f.addEventListener('submit',function(e){e.preventDefault();e.stopImmediatePropagation();var a=norm(i.value);if(!a){i.focus();return;}btn.disabled=true;
+      crypto.subtle.digest('SHA-256',new TextEncoder().encode(f.getAttribute('data-salt')+a)).then(function(h){btn.disabled=false;
+        if(hex(h)!==f.getAttribute('data-hash')){say('wrong');chest.hidden=true;i.focus();i.select();return;}
+        say('right');i.blur();chest.hidden=false;setTimeout(claim,1100);
+      },function(){btn.disabled=false;});},true);
+  })();</script>
 </section>
 <!-- END OF FILE — if you cannot find this comment after pasting, the paste was truncated -->

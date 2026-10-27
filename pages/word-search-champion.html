@@ -1,0 +1,173 @@
+<!-- ============================================================
+     WORD SEARCH CHAMPION - hidden page for loot box 150 ("Word Search Champion Loot Box", clue "Find the Crew", hidden as an Act Three riddle).
+     Lives at /word-search-champion. A 12 x 12 word search hiding twelve crew names, in any of eight directions
+     (across, down, diagonal, and backward). Drag across a name, or tap its first letter and then its last.
+     Find all twelve and loot box 150 drops in; clicking it opens the claim link in a new tab.
+     A fresh grid is built on every load and on "Restart". Separate from the daily Word Search (game-word-search.html);
+     only the selection idea is borrowed from it.
+     WORDS USED (crew names already public on the site: the Match the Crest cards and the Sky Pirate Quiz results):
+       GREY, DOT, MINN, FARLOW, MARS, WILLOW, BONES, DALIA, ROOK, CELLO, EDDIE, IZZY.
+       Left out on purpose: JAAN and SOLOMON (only in the quiz results so far) and SCARLETT. Easy to add to WORDS below.
+     DRAFT (all words on this page are new, for Maurice to approve):
+       heading "Word Search Champion"; line "Find the crew. Twelve names are hiding in the letters. Drag across a name, or tap its first and last letter.";
+       counter "Found"; button "Restart"; notes "[NAME] found" and "Not one of the crew"; win line "The whole crew, found. Box 150 is yours.".
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+#wc-search{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;overflow-x:hidden;
+  padding:clamp(120px,14vh,160px) 20px 80px;background-color:#0b170f;background-image:radial-gradient(ellipse at 50% 0%,rgba(15,92,77,.55) 0%,rgba(11,23,15,0) 62%),linear-gradient(rgba(11,23,15,0.72),rgba(11,23,15,0.72)),url(https://africhmaurice.github.io/site/assets/bg/d/nebula-glow-as332921866.webp);background-position:center;background-size:cover;background-repeat:no-repeat;background-attachment:scroll;
+  color:#f3ead9;font-family:'Almarai',sans-serif;text-align:center}
+#wc-search *{box-sizing:border-box;border-radius:0}
+@media (max-width:900px){#wc-search{background-image:radial-gradient(ellipse at 50% 0%,rgba(15,92,77,.55) 0%,rgba(11,23,15,0) 62%),linear-gradient(rgba(11,23,15,0.72),rgba(11,23,15,0.72)),url(https://africhmaurice.github.io/site/assets/bg/m/nebula-glow-as332921866.webp)}}
+#wc-search [hidden]{display:none!important}
+#wc-search .wc-wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
+#wc-search h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(38px,6vw,68px);line-height:1.2;letter-spacing:.04em;color:#fffffe;text-transform:uppercase}
+#wc-search .wc-lede{margin:0;font-weight:700;font-size:clamp(16px,1.8vw,19px);line-height:1.5;max-width:560px}
+#wc-search .wc-bar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 24px;font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+#wc-search .wc-bar b{color:#89fbcb;font-weight:800}
+#wc-search .wc-btn{margin:0;padding:10px 18px;border:1px solid rgba(243,234,217,.45);background:none;color:#f3ead9;font:800 13px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#wc-search .wc-btn:hover,#wc-search .wc-btn:focus-visible{border-color:#89fbcb;color:#89fbcb;outline:none}
+#wc-search .wc-board{position:relative;width:100%;max-width:540px}
+#wc-search .wc-grid{display:grid;grid-template-columns:repeat(12,1fr);aspect-ratio:1/1;border:3px solid #f3ead9;background:#f3ead9;
+  -webkit-user-select:none;user-select:none;touch-action:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#wc-search .wc-cell{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:var(--fs,18px);color:#0b170f;position:relative;z-index:2;line-height:1}
+#wc-search .wc-cell.start{outline:3px solid #c1330a;outline-offset:-3px}
+#wc-search .wc-svg{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);pointer-events:none;z-index:1}
+#wc-search .wc-svg line{stroke-linecap:square;opacity:.6}
+#wc-search .wc-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:540px}
+#wc-search .wc-list li{padding:8px 12px;border:1px solid rgba(243,234,217,.45);font-weight:800;font-size:14px;letter-spacing:.12em;line-height:1.2}
+#wc-search .wc-list li.found{color:#0b170f;border-color:transparent;text-decoration:line-through}
+#wc-search .wc-say{margin:0;min-height:1.5em;font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:#c3a6ff}
+#wc-search .wc-win{display:flex;flex-direction:column;align-items:center;gap:20px;margin-top:8px}
+#wc-search .wc-win p{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.25;letter-spacing:.04em;color:#89fbcb;text-transform:uppercase}
+#wc-search .wc-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(58vw,280px);animation:wcDrop .6s cubic-bezier(.25,1.5,.45,1) both}
+#wc-search .wc-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 34px rgba(137,251,203,.45))}
+#wc-search .wc-box:hover img,#wc-search .wc-box:focus-visible img{filter:drop-shadow(0 0 44px rgba(137,251,203,.75))}
+#wc-search .wc-box:focus-visible{outline:3px solid #89fbcb;outline-offset:8px}
+@keyframes wcDrop{from{opacity:0;transform:translateY(-40px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#wc-search .wc-box{animation:none}}
+</style>
+<section id="wc-search" aria-label="Word Search Champion">
+  <div class="wc-wrap">
+    <h1>Word Search Champion</h1>
+    <p class="wc-lede">Find the crew. Twelve names are hiding in the letters. Drag across a name, or tap its first and last letter.</p>
+    <div class="wc-bar"><span>Found <b class="wc-n">0/12</b></span><button class="wc-btn wc-restart" type="button">Restart</button></div>
+    <div class="wc-board"><div class="wc-grid" role="grid" aria-label="Word search"></div><svg class="wc-svg" aria-hidden="true"></svg></div>
+    <p class="wc-say" aria-live="polite"></p>
+    <ul class="wc-list" aria-label="Crew to find"></ul>
+    <div class="wc-win" role="status" hidden>
+      <p>The whole crew, found. Box 150 is yours.</p>
+      <button class="wc-box" type="button" aria-label="Open loot box 150"><img src="https://africhmaurice.github.io/site/assets/loot/150.png" alt="Loot box 150"></button>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var d=document.getElementById('wc-search');if(!d)return;
+  var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+
+  var K='UDlZUjZDQ0M9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+
+  var WORDS=['GREY','DOT','MINN','FARLOW','MARS','WILLOW','BONES','DALIA','ROOK','CELLO','EDDIE','IZZY'];
+  var N=12,COLORS=['#89fbcb','#c3a6ff','#ff4c0f','#a2f590','#f0b44c','#7fc8ff'];
+  var DIRS=[[0,1],[1,0],[1,1],[-1,1],[0,-1],[-1,0],[-1,-1],[1,-1]];
+  var gridEl=d.querySelector('.wc-grid'),svg=d.querySelector('.wc-svg'),listEl=d.querySelector('.wc-list'),nEl=d.querySelector('.wc-n'),say=d.querySelector('.wc-say'),win=d.querySelector('.wc-win');
+  var grid,cells,found,lines,live=null,down=-1,moved=false,pending=-1,sayT=0;
+
+  /* place every name (longest first) in a random spot and direction; start over if one will not fit */
+  function build(){
+    for(var tries=0;tries<200;tries++){
+      var g=new Array(N*N).fill(''),ok=true;
+      var order=WORDS.slice().sort(function(a,b){return b.length-a.length;});
+      for(var w=0;w<order.length&&ok;w++){
+        var word=order[w],placed=false;
+        for(var a=0;a<300&&!placed;a++){
+          var dir=DIRS[Math.floor(Math.random()*DIRS.length)],r=Math.floor(Math.random()*N),c=Math.floor(Math.random()*N);
+          var er=r+dir[0]*(word.length-1),ec=c+dir[1]*(word.length-1);if(er<0||er>=N||ec<0||ec>=N)continue;
+          var fits=true;for(var k=0;k<word.length;k++){var ch=g[(r+dir[0]*k)*N+c+dir[1]*k];if(ch&&ch!==word[k]){fits=false;break;}}
+          if(!fits)continue;
+          for(k=0;k<word.length;k++)g[(r+dir[0]*k)*N+c+dir[1]*k]=word[k];placed=true;
+        }
+        if(!placed)ok=false;
+      }
+      if(ok){var AB='ABCDEFGHIKLMNOPRSTUVWY';for(var i=0;i<g.length;i++)if(!g[i])g[i]=AB[Math.floor(Math.random()*AB.length)];return g;}
+    }
+    return null;
+  }
+  function deal(){
+    grid=build();found=[];lines=[];live=null;down=-1;pending=-1;win.hidden=true;say.textContent='';
+    gridEl.innerHTML='';cells=[];
+    for(var i=0;i<N*N;i++){var c=document.createElement('div');c.className='wc-cell';c.textContent=grid[i];gridEl.appendChild(c);cells.push(c);}
+    listEl.innerHTML='';WORDS.forEach(function(w){var li=document.createElement('li');li.textContent=w;li.setAttribute('data-w',w);listEl.appendChild(li);});
+    size();
+  }
+  function size(){var w=gridEl.getBoundingClientRect().width;gridEl.style.setProperty('--fs',Math.max(12,Math.floor(w/N*.5))+'px');draw();}
+  function center(i){var cw=100/N;return [(i%N+.5)*cw,(Math.floor(i/N)+.5)*cw];}
+  function lineEl(a,b,color){var p=center(a),q=center(b);return '<line x1="'+p[0]+'%" y1="'+p[1]+'%" x2="'+q[0]+'%" y2="'+q[1]+'%" stroke="'+color+'" stroke-width="'+(72/N)+'%"/>';}
+  function draw(){
+    var html=lines.map(function(l,k){return lineEl(l[0],l[1],COLORS[k%COLORS.length]);}).join('');
+    if(live)html+=lineEl(live[0],live[1],'#c1330a');
+    svg.innerHTML=html;
+    found.forEach(function(w,k){var li=listEl.querySelector('[data-w="'+w+'"]');if(li){li.className='found';li.style.background=COLORS[k%COLORS.length];}});
+    nEl.textContent=found.length+'/'+WORDS.length;
+    cells.forEach(function(c,k){c.classList.toggle('start',k===pending);});
+  }
+  function tell(t){say.textContent=t;clearTimeout(sayT);sayT=setTimeout(function(){say.textContent='';},1600);}
+  /* the cells from a to b, if they make one straight line (eight directions) */
+  function path(a,b){
+    var ar=Math.floor(a/N),ac=a%N,br=Math.floor(b/N),bc=b%N,dr=br-ar,dc=bc-ac;
+    if(!(dr===0||dc===0||Math.abs(dr)===Math.abs(dc)))return null;
+    var len=Math.max(Math.abs(dr),Math.abs(dc)),sr=Math.sign(dr),sc=Math.sign(dc),out=[];
+    for(var k=0;k<=len;k++)out.push((ar+sr*k)*N+ac+sc*k);return out;
+  }
+  /* the nearest straight line from a toward the pointer */
+  function snap(a,i){
+    var ar=Math.floor(a/N),ac=a%N,r=Math.floor(i/N),c=i%N,dr=r-ar,dc=c-ac;if(!dr&&!dc)return a;
+    var ang=Math.round(Math.atan2(dr,dc)/(Math.PI/4)),len=Math.max(Math.abs(dr),Math.abs(dc));
+    var sr=Math.round(Math.sin(ang*Math.PI/4)),sc=Math.round(Math.cos(ang*Math.PI/4)),rr=ar+sr*len,cc=ac+sc*len;
+    while((rr<0||rr>=N||cc<0||cc>=N)&&len>0){len--;rr=ar+sr*len;cc=ac+sc*len;}
+    return rr*N+cc;
+  }
+  function cellAt(e){
+    var r=gridEl.getBoundingClientRect(),x=e.clientX-r.left-3,y=e.clientY-r.top-3,w=r.width-6;
+    var col=Math.floor(x/(w/N)),row=Math.floor(y/(w/N));if(col<0||row<0||col>=N||row>=N)return -1;return row*N+col;
+  }
+  function tryWord(a,b){
+    var p=path(a,b);if(!p||p.length<3)return false;
+    var s=p.map(function(i){return grid[i];}).join(''),rev=s.split('').reverse().join('');
+    var w=WORDS.filter(function(x){return (x===s||x===rev)&&found.indexOf(x)<0;})[0];if(!w)return false;
+    found.push(w);lines.push([a,b]);draw();
+    if(found.length===WORDS.length){say.textContent='';setTimeout(function(){win.hidden=false;win.scrollIntoView({behavior:'smooth',block:'center'});},400);}
+    else tell(w+' found');
+    return true;
+  }
+  function done(){return found.length===WORDS.length;}
+  gridEl.addEventListener('pointerdown',function(e){
+    if(done())return;var i=cellAt(e);if(i<0)return;
+    e.preventDefault();if(gridEl.setPointerCapture)try{gridEl.setPointerCapture(e.pointerId);}catch(x){}
+    down=i;moved=false;live=[i,i];draw();
+  });
+  gridEl.addEventListener('pointermove',function(e){
+    if(down<0)return;var i=cellAt(e);if(i<0)return;
+    var s=snap(down,i);if(s!==down)moved=true;live=[down,s];draw();
+  });
+  function up(){
+    if(down<0)return;var a=down,b=live?live[1]:down;down=-1;live=null;
+    if(moved){if(!tryWord(a,b))tell('Not one of the crew');pending=-1;}
+    else if(pending>=0&&pending!==a){if(!tryWord(pending,a)&&!tryWord(pending,snap(pending,a)))tell('Not one of the crew');pending=-1;}
+    else pending=pending===a?-1:a;
+    draw();
+  }
+  gridEl.addEventListener('pointerup',up);
+  gridEl.addEventListener('pointercancel',function(){down=-1;live=null;draw();});
+  window.addEventListener('resize',size);
+  d.querySelector('.wc-restart').addEventListener('click',deal);
+  d.querySelector('.wc-box').addEventListener('click',claim);
+  deal();
+})();
+</script>

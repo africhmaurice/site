@@ -277,6 +277,7 @@ section[data-screen-label="Social bar"] a[style*="width:36px"]{width:45px !impor
       <div><a href="javascript:void(0)" onclick="window.__openPrize(this)" style="color:#fff;text-decoration:underline;text-underline-offset:5px" class="hv8">Enamel Pins</a></div>
       <div><a href="javascript:void(0)" onclick="window.__openPrize(this)" style="color:#fff;text-decoration:underline;text-underline-offset:5px" class="hv8">Mark of the Crest Iron-On Patch (x3)</a></div>
     </div>
+    <div class="tr-hl"><p id="tr-hl"><a href="#" tabindex="-1">Highlighted! Here is your loot box.</a><img src="https://africhmaurice.github.io/site/assets/loot/127.png" alt="" width="160" height="160"></p></div>
     <div style="font-size:12px;color:#fff;max-width:720px;margin:0 auto;padding:0 32px">Digital rewards are available to everyone, everywhere. The Act prize draws and The Treasure are open to legal residents of the 50 United States and D.C. (U.S. promotion) and of the United Kingdom (UK promotion), 18 or older. Void where prohibited.</div>
     </div>
     <div id="prize-uk" style="display:none">
@@ -323,3 +324,27 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
 </script>
 <style>#siteWrapper{display:flex !important;flex-direction:column !important}#siteWrapper>*{flex:none}#siteWrapper>#footer-sections{flex:1 0 auto}</style>
 <script>(function(){var p=document.getElementById('grand-prize'),cw=p&&p.closest('.content-wrapper'),sec=p&&p.closest('.page-section');if(cw){cw.style.paddingTop='0';cw.style.paddingBottom='0';}if(sec)sec.style.minHeight='0';var fe=p&&p.closest('.fluid-engine');if(fe)fe.style.display='block';})();</script>
+<!-- LOOT BOX 127 (The Highlight Text Loot Box, staged 2026-10-26): in the empty space between the U.S. prize list and the
+     small print there is a line written in the background color (clear ink, so the art behind never gives it away). Select or highlight that space and the words show
+     up, then stay lit with the chest; the line and the chest open the claim. It takes no room, so nothing moves.
+     DRAFT: "Highlighted! Here is your loot box." -->
+<style>
+#grand-prize .tr-hl{position:relative;height:0}
+#tr-hl{position:absolute;left:0;right:0;top:-28px;height:16px;margin:0;display:flex;justify-content:center;align-items:center;gap:8px;font-family:'Almarai',sans-serif;font-weight:700;font-size:13px;line-height:16px;white-space:nowrap}
+#tr-hl a{color:transparent;text-decoration:none;cursor:text}
+#tr-hl a::selection{background:#fffffe;color:#c53200}
+#tr-hl img{flex:none;width:20px;height:20px;margin:-2px 0;object-fit:contain;opacity:0;pointer-events:none;transition:opacity .3s ease}
+#tr-hl.lit a{color:#fffffe;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+#tr-hl.lit img{opacity:1;pointer-events:auto;cursor:pointer}
+</style>
+<script>(function(){
+  var K='OVZLTkpHUEg9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+  var line=document.getElementById('tr-hl');if(!line)return;var a=line.querySelector('a');
+  function check(){var s=window.getSelection&&window.getSelection();
+    if(s&&s.rangeCount&&!s.isCollapsed&&s.containsNode(a,true)&&!line.classList.contains('lit')){line.classList.add('lit');a.tabIndex=0;}}
+  document.addEventListener('selectionchange',check);
+  a.addEventListener('click',function(e){e.preventDefault();claim();});
+  line.querySelector('img').addEventListener('click',claim);
+})();</script>
