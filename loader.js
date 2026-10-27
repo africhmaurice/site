@@ -1039,13 +1039,20 @@
         var a = wave.cloneNode(false); a.href = SITE + '/finding-scarlett'; a.textContent = 'FINDING SCARLETT';
         box.insertBefore(a, wave.nextSibling);
       });
+      // Light on Her Feet (chapter 13, 2026-10-26) follows Finding Scarlett
+      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/finding-scarlett"]'), function (shore) {
+        var box = shore.parentNode;
+        if (box.querySelector('a[href$="/light-on-her-feet"]')) return;
+        var a = shore.cloneNode(false); a.href = SITE + '/light-on-her-feet'; a.textContent = 'LIGHT ON HER FEET';
+        box.insertBefore(a, shore.nextSibling);
+      });
     });
   }
   // The raft hunt (chapter 6, 2026-10-07): raft.js hides the pieces on every page; it checks its own hours.
   // Chapter buttons (2026-10-09): Previous chapter / See the map / Next chapter at the foot of each chapter page.
   function chapterNav() {
     if (window.__chapterNavLoaded) return; window.__chapterNavLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=8'; s.async = true; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=9'; s.async = true; document.head.appendChild(s);
   }
   function raftHunt() {
     if (window.__raftLoaded) return; window.__raftLoaded = true;
