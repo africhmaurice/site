@@ -43,6 +43,8 @@
      points, doesn't count as a kill, drops no upgrades, and the wave can end without it, so the score and the weekly
      board's checks are unchanged. When it sinks, loot box 138 falls from where it was; fly into it and the run pauses
      on the box (claim link in a new tab), then Keep flying. Miss the ship or the box and it is gone until the next run.
+     Once caught, 138 also waits on the game over panel (every run after, like 78), so a claim that didn't open can be
+     tapped again there; Keep flying ignores taps for the first 0.8 s so a steering thumb can't close the panel (Lisyda, 10/27).
      DRAFT copy: "Pirate down!", "Its chest was loot box 138. Tap the box to claim it in a new tab, then keep flying.",
      "The pirate's chest!" (the falling banner).
      Controls: arrows or A/D, or move the mouse / slide a finger over the sky. P or Esc pauses. Pauses itself when
@@ -136,6 +138,9 @@
 #ma-gauntlet .sg-skullbox{display:block;margin:0;padding:0;border:0;background:none;cursor:pointer;width:clamp(110px,24vw,160px);filter:drop-shadow(0 0 24px rgba(255,76,15,.45))}
 #ma-gauntlet .sg-skullbox img{display:block;width:100%;height:auto}
 #ma-gauntlet .sg-skullbox:focus-visible{outline:2px solid #89fbcb;outline-offset:3px}
+#ma-gauntlet .sg-overboxes{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:20px}
+#ma-gauntlet .sg-overboxes .sg-box,#ma-gauntlet .sg-overboxes .sg-skullbox{width:clamp(96px,22vw,150px)}
+#ma-gauntlet .sg-skullbox[hidden]{display:none}
 #ma-gauntlet .sg-box[hidden]{display:none}
 @keyframes sg-rise{0%{transform:translateY(30px) scale(.7);opacity:0}100%{transform:none;opacity:1}}
 #ma-gauntlet .sg-tip-touch{display:none}
@@ -239,7 +244,7 @@
               <h2>Shot down</h2>
               <p class="sg-final"></p>
               <p class="sgb-dmsg" role="status"></p>
-              <button class="sg-box sg-box-over" type="button" hidden aria-label="Open loot box 78"><img src="https://africhmaurice.github.io/leaderboard/loot/78.png" alt="Loot box 78"></button>
+              <div class="sg-overboxes"><button class="sg-box sg-box-over" type="button" hidden aria-label="Open loot box 78"><img src="https://africhmaurice.github.io/leaderboard/loot/78.png" alt="Loot box 78"></button><button class="sg-skullbox sg-box138-over" type="button" hidden aria-label="Open loot box 138"><img src="https://africhmaurice.github.io/site/assets/loot/138.png" alt="Loot box 138"></button></div>
               <button class="sg-btn sg-again" type="button">Play again</button>
               <div class="sg-cps" hidden></div>
               <a class="sg-btn sg-next" href="https://www.mauriceafrich.com/games">NEXT GAME: SKYWORD</a>
@@ -252,7 +257,7 @@
             </div>
             <div class="sg-ov sg-found138">
               <h2>Pirate down!</h2>
-              <p>Its chest was loot box 138. Tap the box to claim it in a new tab, then keep flying.</p>
+              <p>Its chest was loot box 138. Tap the box to claim it in a new tab, then keep flying. It waits on the game over panel too.</p>
               <button class="sg-skullbox" type="button" aria-label="Open loot box 138"><img src="https://africhmaurice.github.io/site/assets/loot/138.png" alt="Loot box 138"></button>
               <button class="sg-btn ghost sg-keep138" type="button">Keep flying</button>
             </div>
@@ -398,7 +403,8 @@
   root.setAttribute('data-ready','1');
   var K='WVpYVDM1Mzc9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
   /* the claim page opens in a new tab so the run keeps going behind it and Keep flying still works (Maurice, 2026-10-21) */
-  function claim(){var u=atob(easy()?KE:K).split('').reverse().join(''),w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;   /* noopener would make window.open return null, so it is cleared by hand */}
+  var leaving=false;   /* set just before a same-tab claim so the mid-run "Leave site?" prompt can't cancel it */
+  function claim(){var u=atob(easy()?KE:K).split('').reverse().join(''),w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w){leaving=true;location.href=u;}   /* noopener would make window.open return null, so it is cleared by hand */}
   var $=function(s){return root.querySelector(s);};
 
   /* ---- the world: 480 wide, 720 tall; the canvas scales it to fit ---- */
@@ -427,7 +433,7 @@
   var boxImg138=new Image();boxImg138.src='https://africhmaurice.github.io/site/assets/loot/138.png';
   var K138=(function(){var K='S1RFNVBBVFY9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';return K;})();
   function claim138(){var u='';try{u=atob(K138).split('').reverse().join('');}catch(e){}if(!u)return;
-    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w){leaving=true;location.href=u;}}
   var tinted={};
   /* the rival art recolored once per color (the colored rival tiers, and the white hit flash) */
   function tint(col,a){var key=col+a;if(tinted[key])return tinted[key];if(!ok(IMG.rival))return null;
@@ -940,19 +946,19 @@
     state='over';stop();pauseBtn.disabled=true;
     if(S.score>best){best=S.score;lsSet(bestKey(),String(best));}
     $('.sg-final').textContent='Score '+fmt(S.score)+' on wave '+S.wave+'. Best '+fmt(best)+'.';
-    $('.sg-box-over').hidden=!boxTaken;
+    $('.sg-box-over').hidden=!boxTaken;$('.sg-box138-over').hidden=lsGet('ma-gauntlet-box138')!=='1';
     showOv(ovOver);draw();
     try{$('.sg-again').focus({preventScroll:true});}catch(e){}
     sgbEnd();
     if(window.__siegeHooks&&window.__siegeHooks.end)window.__siegeHooks.end({score:S.score,secs:Math.round(S.t*10)/10,wave:S.wave,kills:S.kills,crates:S.crates});
   }
   function found(){
-    boxTaken=true;lsSet(boxKey(),'1');state='found';stop();pauseBtn.disabled=true;say('You caught loot box '+(easy()?EASY.box:78));showOv(ovFound);draw();
+    boxTaken=true;lsSet(boxKey(),'1');state='found';stop();pauseBtn.disabled=true;say('You caught loot box '+(easy()?EASY.box:78));showOv(ovFound);keepAt=Date.now();draw();
     try{$('.sg-box-found').focus({preventScroll:true});}catch(e){}
   }
-  function found138(){lsSet('ma-gauntlet-box138','1');S.bannerT=0;state='found';stop();pauseBtn.disabled=true;say('You caught loot box 138');showOv(ovFound138);draw();
-    try{$('.sg-skullbox').focus({preventScroll:true});}catch(e){}}
-  function keepFlying(){showOv(null);state='play';pauseBtn.disabled=false;S.inv=1;run();}
+  function found138(){lsSet('ma-gauntlet-box138','1');S.bannerT=0;state='found';stop();pauseBtn.disabled=true;say('You caught loot box 138');showOv(ovFound138);keepAt=Date.now();draw();
+    try{$('.sg-found138 .sg-skullbox').focus({preventScroll:true});}catch(e){}}
+  var keepAt=0;function keepFlying(){if(Date.now()-keepAt<800)return;showOv(null);state='play';pauseBtn.disabled=false;S.inv=1;run();}
   function pause(){if(state!=='play'||paused)return;paused=true;stop();showOv(ovPause);pauseBtn.textContent='Resume';draw();}
   function resume(){if(!paused)return;paused=false;showOv(null);pauseBtn.textContent='Pause';run();}
   function bringIntoView(){
@@ -965,7 +971,8 @@
   $('.sg-keep').addEventListener('click',keepFlying);
   $('.sg-box-found').addEventListener('click',claim);
   $('.sg-box-over').addEventListener('click',claim);
-  $('.sg-skullbox').addEventListener('click',claim138);
+  $('.sg-found138 .sg-skullbox').addEventListener('click',claim138);
+  $('.sg-box138-over').addEventListener('click',claim138);
   $('.sg-keep138').addEventListener('click',keepFlying);
   pauseBtn.addEventListener('click',function(){paused?resume():pause();});
   document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});
@@ -973,7 +980,7 @@
      run so far goes on the board (sendBeacon reaches the board even as the page closes). Back again from the browser's
      page cache: that run is over, and the page says it was logged. */
   function midRun(){return !!S&&(state==='play'||state==='dying'||state==='found');}
-  window.addEventListener('beforeunload',function(e){if(midRun()&&S.score>0){e.preventDefault();e.returnValue='';}});
+  window.addEventListener('beforeunload',function(e){if(!leaving&&midRun()&&S.score>0){e.preventDefault();e.returnValue='';}});
   window.addEventListener('pagehide',function(){var r=sgbRun;if(!midRun()||!r||r.logged||!r.ticket||!S.score||!sgbMe.email||!navigator.sendBeacon)return;
     r.logged=true;r.beaconed=true;
     try{navigator.sendBeacon(SGB_ENDPOINT,JSON.stringify({action:act('gauntletscore'),ticket:r.ticket,email:sgbMe.email,first_name:sgbMe.first_name,handle:sgbMe.handle,platform:sgbMe.platform,country:sgbMe.country,
