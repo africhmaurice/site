@@ -107,7 +107,15 @@ html,body{margin:0 !important;padding:0 !important}
 .sm-msg{min-height:28px;text-align:center;font-weight:700;font-size:16px;line-height:1.5;letter-spacing:.03em;color:#213226;margin:14px auto 0;max-width:480px}
 .sm-msg.bad{color:#c53200}
 .sm-timer{text-align:center;font-weight:700;letter-spacing:.08em;font-size:14px;color:#607667;margin:14px 0 0}
-@media (prefers-reduced-motion:reduce){.sm-gust i,.sm-c.fresh{animation:none}}
+.sm-speck{position:absolute;right:-9px;bottom:-9px;z-index:2;width:22px;height:22px;margin:0;padding:0;border:0;border-radius:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sm-speck::after{content:"";position:absolute;left:8px;top:8px;width:4px;height:4px;border-radius:50%;background:#ff4c0f}
+.sm-speck:focus-visible{outline:2px solid #89fbcb;outline-offset:2px}
+.sm-loot{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(11,23,15,.72)}.sm-loot[hidden]{display:none}
+.sm-loot button{display:block;width:clamp(120px,30vw,160px);height:clamp(120px,30vw,160px);padding:0;margin:0;border:0;background:none;cursor:pointer;animation:smPop .45s cubic-bezier(.2,1.6,.4,1)}
+.sm-loot button:focus{outline:none}.sm-loot button:focus-visible{outline:3px solid #89fbcb;outline-offset:4px}
+.sm-loot img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 14px 22px rgba(0,0,0,.6))}
+@keyframes smPop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.sm-gust i,.sm-c.fresh,.sm-loot button{animation:none}}
 
 @media (max-width:900px),(hover:none){.hg-section{background-attachment:scroll}}
 @media (max-width:900px){
@@ -277,6 +285,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     <div class="sm-field" id="sm-field">
       <div class="sm-board" id="sm-board" role="grid" aria-label="Sky Mines field, 10 across and 12 down"></div>
       <div class="sm-gust" id="sm-gust" aria-hidden="true"></div>
+      <button type="button" class="sm-speck" id="sm-speck" aria-label="A speck"></button>
     </div>
     <p class="sm-timer" id="sm-timer"></p>
     <p class="sm-msg" id="sm-msg" role="status" aria-live="polite"></p>
@@ -1127,6 +1136,18 @@ var HG_GAME = {"key":"sky_mines","label":"Sky Mines","points":25,"startDate":"20
     if (!st.started) { st.started = true; g.save(); say('Your start is cleared. Flag the mines: right-click, a long press, or Flag mode.'); }
   });
   if (st.done === 'win') finish();
+  // Loot box 144 (clue "Sky Mines"): the speck on the board's bottom-right corner shows the chest, and the chest opens the claim.
+  var LOOT = 'TUYyRFU5Rzk9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo', lootEl = null;
+  function claimLoot() { var u = ''; try { u = atob(LOOT).split('').reverse().join(''); } catch (e) {} if (!u) return;
+    var w = null; try { w = window.open(u, '_blank'); if (w) w.opener = null; } catch (e) {} if (!w) location.href = u; }
+  document.getElementById('sm-speck').onclick = function () {
+    if (!lootEl) { lootEl = document.createElement('div'); lootEl.className = 'sm-loot'; lootEl.hidden = true;
+      lootEl.innerHTML = '<button type="button" aria-label="Loot box 144"><img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/loot/144.png" alt="" width="160" height="160"></button>';
+      lootEl.addEventListener('click', function (e) { if (e.target === lootEl) lootEl.hidden = true; });
+      lootEl.querySelector('button').addEventListener('click', function () { claimLoot(); lootEl.hidden = true; });
+      document.body.appendChild(lootEl); }
+    lootEl.hidden = false; lootEl.querySelector('button').focus();
+  };
   if (/[?&]test=1(&|$)/.test(location.search)) window.__skyMines = { state: function () { return { W: W, H: H, mine: st.mine.slice(), open: st.open.slice(), spot: st.spot.slice(), flag: st.flag.slice(), moves: st.moves, done: st.done || '', started: !!st.started }; }, act: act, flag: toggleFlag };
 })();
 
