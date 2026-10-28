@@ -33,6 +33,14 @@
        filling the corner cell (no corner piece yet). Pieces that cross a board edge are drawn on both sides of the wrap.
        The food is the ruby (80-ruby.webp, Maurice 10/26: "have the levian eat rubies"). Still a placeholder, for Maurice
        to draw: the background tile (the sea of sky), and an optional corner segment for turns. The chest is box 145's art.
+     SHARE CARD (10/27, copied from Airship Runner's): the tangled screen has "Save my card" and "Copy my score". Save draws a
+       1200x600 PNG (Ink with a Teal band and frame: "THE LEVIAN", rubies and best this week, the week ending date, a small
+       Levian drawn from his head, body, and tail art, and the segments big on the right with the site link under them);
+       phones get the share sheet with the file, everywhere else it downloads as the-levian-<date>.png. Copy puts
+       "The Levian: <n> segments. Beat me at mauriceafrich.com/the-levian-30527" on the clipboard. The card loads its own
+       copies of the art (crossOrigin) so the PNG can be saved; nothing about the game or the board changes.
+       Approved 10/27 (same words as Airship Runner's card): "Save my card", "Copy my score", "Saved!", "Copied!",
+       "RUBIES <n>  ·  BEST THIS WEEK <n>", "WEEK ENDING <date>", "SEGMENTS".
      Test hook: ?test=1 exposes window.__levian (state, setLength, putFood, run) for the test harness.
      WORDS: approved by Maurice 10/27 ("push Levian live!"), including the weekly 500-point line:
        heading "The Levian"; line "Swim, eat, and grow. Reach 75 segments and the chest appears. Eat it to claim it. Then keep growing: the
@@ -121,6 +129,10 @@
 #ma-levian .lv-win .lv-btn{margin-top:4px}
 #ma-levian .lv-win .lv-box{width:min(50vw,240px,calc(var(--bw) - 220px));min-width:96px}
 #ma-levian .lv-win{justify-content:safe center;overflow:auto}
+/* the share card buttons on the tangled screen (same as Airship Runner's) */
+#ma-levian .lv-dead{justify-content:safe center;overflow:auto}
+#ma-levian .lv-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+@media (max-width:560px){#ma-levian .lv-dead{gap:12px;padding:20px}#ma-levian .lv-dead p.big{font-size:22px}#ma-levian .lv-row .lv-btn{padding:10px 12px;font-size:12px;letter-spacing:.1em}}
 @media (prefers-reduced-motion:reduce){#ma-levian .lv-box{animation:none}}
 </style>
 <section id="ma-levian" aria-label="The Levian">
@@ -141,6 +153,7 @@
       <a href="https://www.mauriceafrich.com/trench-run" data-k="trench_run">TRENCH RUN</a>
       <a href="https://www.mauriceafrich.com/sky-gauntlet" data-k="sky_gauntlet">SKY GAUNTLET</a>
       <a href="https://www.mauriceafrich.com/the-levian-30527" data-k="the_levian">THE LEVIAN</a>
+      <a href="https://www.mauriceafrich.com/master-stacker-32368" data-k="master_stacker">MASTER STACKER</a>
     </nav>
     <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++){var act=lk[j].getAttribute('data-act'),n=act?+((d.acts||{})[act])||0:+d.crewTotal||0;if(n>=+lk[j].getAttribute('data-unlock'))lk[j].hidden=false;}}).catch(function(){});})();</script>
 </div>
@@ -154,7 +167,8 @@
       <canvas class="lv-cv" aria-label="The Levian board"></canvas>
       <div class="lv-ov lv-start"><p>Arrow keys, WASD, or swipe to swim.</p><button class="lv-btn go lv-go" type="button">Start</button></div>
       <div class="lv-ov lv-paused" hidden><button class="lv-btn go lv-resume" type="button">Resume</button></div>
-      <div class="lv-ov lv-dead" hidden><p class="big bad">The Levian tangled itself.</p><p class="lv-deadlen"></p><p class="lvb-dmsg" role="status"></p><button class="lv-btn go lv-again" type="button">Play again</button></div>
+      <div class="lv-ov lv-dead" hidden><p class="big bad">The Levian tangled itself.</p><p class="lv-deadlen"></p><p class="lvb-dmsg" role="status"></p><button class="lv-btn go lv-again" type="button">Play again</button>
+        <div class="lv-row"><button class="lv-btn lv-save" type="button">Save my card</button><button class="lv-btn lv-copy" type="button">Copy my score</button></div></div>
       <div class="lv-ov lv-win" role="status" hidden><p class="big">The Levian found the chest. Box 145 is yours.</p>
         <button class="lv-box" type="button" aria-label="Open loot box 145"><img src="https://africhmaurice.github.io/site/assets/loot/145.png" alt="Loot box 145"></button>
         <button class="lv-btn lv-keep" type="button">Keep swimming</button></div>
@@ -471,6 +485,55 @@
   window.addEventListener('resize',size);
   chestImg.onload=draw;
   size();reset();
+
+  /* ---- share card (same as Airship Runner's: a 1200x600 PNG; phones get the share sheet, everywhere else a download) ---- */
+  var SITE='mauriceafrich.com/the-levian-30527';
+  // the card's own copies of his art, loaded crossOrigin so the finished canvas can be saved
+  // (loaded on the first Save, so the game itself never fetches them)
+  var CARDART={},cardArtP=null;
+  function loadCardArt(){if(!cardArtP)cardArtP=Promise.all(['head','body','tail'].map(function(n){return new Promise(function(res){var i=new Image();i.crossOrigin='anonymous';i.onload=i.onerror=res;setTimeout(res,5000);i.src='https://africhmaurice.github.io/site/assets/games/145-'+n+'.webp';CARDART[n]=i;});}));return cardArtP;}
+  // start fetching it as soon as the tangled screen shows, so a phone's share sheet opens straight from the tap
+  new MutationObserver(function(){if(!ov.dead.hidden)loadCardArt();}).observe(ov.dead,{attributes:true,attributeFilter:['hidden']});
+  function today(){var p=nyParts();return p.year+'-'+p.month+'-'+p.day;}
+  function segs(){return body?body.length:0;}
+  function rubies(){return RUN&&RUN.rubies!=null?RUN.rubies:Math.max(0,Math.floor((segs()-START)/GROW));}
+  function fit(x,s,px,py,max){var m=/^(.*?)(\d+)px\s*(.*)$/.exec(x.font),size=+m[2];while(x.measureText(s).width>max&&size>12){size--;x.font=m[1]+size+'px '+m[3];}x.fillText(s,px,py);}
+  function card(art){
+    var c=document.createElement('canvas'),Wc=1200,Hc=600;c.width=Wc;c.height=Hc;var x=c.getContext('2d');
+    x.fillStyle='#0b170f';x.fillRect(0,0,Wc,Hc);x.fillStyle='#1a5e41';x.fillRect(0,0,Wc,14);x.fillRect(0,Hc-14,Wc,14);
+    x.strokeStyle='rgba(137,251,203,.35)';x.lineWidth=2;x.strokeRect(40,54,Wc-80,Hc-108);
+    x.fillStyle='#607667';x.font='800 22px Almarai, sans-serif';x.fillText("CELLO'S GATE TREASURE HUNT",80,122);
+    x.fillStyle='#fffffe';x.font='84px "Cracked Imperia", cursive';fit(x,'THE LEVIAN',80,236,620);
+    x.font='700 26px Almarai, sans-serif';fit(x,'RUBIES '+fmtN(rubies())+'  ·  BEST THIS WEEK '+fmtN(Math.max(weekBest(),segs())),80,300,620);
+    x.fillStyle='#607667';x.fillText('WEEK ENDING '+new Date(weekId()+'T12:00:00Z').toLocaleDateString('en-US',{timeZone:'UTC',month:'long',day:'numeric'}).toUpperCase(),80,342);
+    // a small Levian swimming right: tail, four segments, head (all his pieces are drawn facing up, so each turns a quarter)
+    if(art&&ready(CARDART.head)&&ready(CARDART.body)&&ready(CARDART.tail)){
+      var bw=46,cy=440,put=function(im,cx,w,h){x.save();x.translate(cx,cy);x.rotate(Math.PI/2);x.drawImage(im,-w/2,-h/2,w,h);x.restore();};
+      var tl=TAIL*bw,sl=SEG*bw,hl=HEAD[1]*bw,hw=HEAD[0]*bw,px0=80+tl;
+      put(CARDART.tail,80+tl/2,bw,tl);
+      for(var i=0;i<4;i++)put(CARDART.body,px0+sl*.94*(i+.5),bw,sl);
+      put(CARDART.head,px0+sl*.94*4+hl/2-bw*.35,hw,hl);
+    }
+    x.textAlign='center';x.fillStyle='#fffffe';x.font='800 26px Almarai, sans-serif';x.fillText('SEGMENTS',930,196);
+    x.fillStyle='#3adb97';x.font='800 150px Almarai, sans-serif';fit(x,fmtN(segs()),930,360,380);
+    x.fillStyle='#fffffe';x.font='700 21px Almarai, sans-serif';fit(x,SITE.toUpperCase(),930,470,360);
+    try{return c.toDataURL('image/png');}catch(e){return art?card(false):'';}   // art that could not be read: the card without it
+  }
+  function shareText(){return 'The Levian: '+fmtN(segs())+' segments. Beat me at '+SITE;}
+  function fontsReady(){try{return Promise.all([document.fonts.load('84px "Cracked Imperia"'),document.fonts.load('800 26px Almarai')]).catch(function(){});}catch(e){return Promise.resolve();}}
+  d.querySelector('.lv-save').addEventListener('click',function(){
+    var btn=this;
+    Promise.all([fontsReady(),loadCardArt()]).then(function(){var url=card(true);if(!url)return;return fetch(url);}).then(function(r){return r&&r.blob();}).then(function(b){if(!b)return;
+      var name='the-levian-'+today()+'.png',file=typeof File==='function'?new File([b],name,{type:'image/png'}):null;
+      if(file&&navigator.canShare&&navigator.canShare({files:[file]})&&/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent))return navigator.share({files:[file],text:shareText()}).catch(function(){});
+      var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();
+      setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);btn.textContent='SAVED!';setTimeout(function(){btn.textContent='SAVE MY CARD';},2200);
+    });
+  });
+  d.querySelector('.lv-copy').addEventListener('click',function(){
+    var btn=this,done=function(){btn.textContent='COPIED!';setTimeout(function(){btn.textContent='COPY MY SCORE';},2200);};
+    try{navigator.clipboard.writeText(shareText()).then(done,function(){window.prompt('Copy your score:',shareText());});}catch(e){window.prompt('Copy your score:',shareText());}
+  });
 
   if(/[?&]test=1(&|$)/.test(location.search))window.__levian={
     state:function(){return{len:body.length,head:body[0].slice(),dir:dir,food:food&&food.slice(),chest:chest&&chest.slice(),state:state,body:body.map(function(s){return s.slice();})};},

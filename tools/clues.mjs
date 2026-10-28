@@ -258,6 +258,8 @@ Haven't I Seen You Before?`],   // on Bard's Linktree (Maurice, 2026-10-16)
   [139, "(lvl4)2 Moves Or Less"],   // boxes 101-150, card added by clues-patch.cjs
   [144, "Sky Mines"],   // boxes 101-150, card added by clues-patch.cjs
   [145, "75 Segments"],   // boxes 101-150, card added by clues-patch.cjs
+  [147, "Spot the Differences"],   // boxes 101-150, card added by clues-patch.cjs
+  [148, "Stack the Crates"],   // boxes 101-150, card added by clues-patch.cjs
   [149, "The Perfect Bops Game!"],   // boxes 101-150, card added by clues-patch.cjs
   [150, "Find the Crew"],   // boxes 101-150, card added by clues-patch.cjs
 ];

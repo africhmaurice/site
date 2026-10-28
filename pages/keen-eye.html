@@ -1,0 +1,291 @@
+<!-- ============================================================
+     KEEN EYE - hidden page for loot box 147 ("Keen Eye Loot Box", clue "Spot the Differences", hidden as an Act Three riddle).
+     Lives at /keen-eye. Maurice: "Two pictures of the Crew. Find ten differences." / "they should be able to zoom in and
+     then type their answers in."
+     Two pictures side by side (stacked on phone). Players ZOOM to inspect: scroll wheel, a pinch, or the + and - buttons
+     (1x to 5x), drag to pan, Reset to go back. Both pictures zoom and pan together, so the same spot shows in each.
+     Tapping the pictures finds nothing. Players TYPE what changed and press Check.
+     A right answer circles that spot in both pictures and adds a short label to the Spotted list. An answer that hits two
+     unfound differences at once is turned away ("one at a time"), so listing everything does not work. After 3 misses in a
+     row the Check button rests for 10 seconds. Find all ten and loot box 147 drops in; clicking it opens the claim link
+     in a new tab.
+
+     THE PICTURES: Maurice's own pair of the crew lineup (originals "What are the Differences 1.jpg" and "... 2.jpg",
+     3600 x 2250). Web copies at 1800 x 1125, webp: assets/games/147-left.webp (original) and 147-right.webp (his ten changes).
+     The ten SPOTS were measured by diffing the two originals pixel by pixel. x and y are the center as fractions of the
+     picture's width and height (0 = left/top, 1 = right/bottom); r is the circle radius as a fraction of the width.
+
+     THE ANSWERS are NOT in this page in plain text (this comment ships with the page, so it does not name the ten
+     differences either). Each difference has a few keyword sets; a set matches when the answer has a word from every
+     group in it. The words are salted SHA-256 hashes, and each found-list label stays locked until a right answer unlocks it.
+     The plain list of the ten differences, their keyword sets, and the builder live OFFLINE ONLY in
+     site-batch2/_batch2/box150/tests/keen-eye-2/answers.mjs and build-keys.mjs (node build-keys.mjs rewrites the SPOTS
+     block below). Answers are matched word by word after: lowercase, apostrophes dropped, other punctuation to spaces,
+     simple plural strip, and small words (the, a, on, of ...) skipped.
+
+     WORDS (approved by Maurice 10/27):
+       heading "Keen Eye"; line "Ten things changed between these two pictures. Zoom in, spot them, then fill in the crew member's name and what changed."; blanks "Name" (placeholder "Which crew member?") and "What changed?" (placeholder "What is different?"); reply "Fill in the name too." (10/27: no names on the pictures);
+       zoom help "Scroll, pinch, or use + and - to zoom. Drag to look around. Both pictures move together.";
+       buttons "Zoom in", "Zoom out", "Reset", "Check", "Restart"; answer label "What changed?";
+        counter "Found"; list heading "Spotted";
+       replies "Yes! You spotted it.", "You already found that one.", "Not quite. Try again.",
+       "One difference at a time, please.", "Keep it short: just the one difference.",
+       "Take a closer look. You can check again in 10 seconds.", "Ready when you are.";
+       win line "All ten spotted. Box 147 is yours.".
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+#ke-eye{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;overflow-x:hidden;
+  padding:clamp(120px,14vh,160px) 20px 80px;background-color:#0b170f;background-image:radial-gradient(ellipse at 50% 0%,rgba(15,92,77,.55) 0%,rgba(11,23,15,0) 62%),linear-gradient(rgba(11,23,15,0.78),rgba(11,23,15,0.78)),url(https://africhmaurice.github.io/site/assets/bg/d/scythe-rider-dunes-as1529615713.webp);background-position:center;background-size:cover;background-repeat:no-repeat;background-attachment:scroll;
+  color:#f3ead9;font-family:'Almarai',sans-serif;text-align:center}
+#ke-eye *{box-sizing:border-box;border-radius:0}
+#ke-eye button{-webkit-tap-highlight-color:transparent}
+@media (max-width:900px){#ke-eye{background-image:radial-gradient(ellipse at 50% 0%,rgba(15,92,77,.55) 0%,rgba(11,23,15,0) 62%),linear-gradient(rgba(11,23,15,0.78),rgba(11,23,15,0.78)),url(https://africhmaurice.github.io/site/assets/bg/m/scythe-rider-dunes-as1529615713.webp)}}
+#ke-eye [hidden]{display:none!important}
+#ke-eye .ke-wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
+#ke-eye h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(38px,6vw,68px);line-height:1.2;letter-spacing:.04em;color:#fffffe;text-transform:uppercase}
+#ke-eye .ke-lede{margin:0;font-weight:700;font-size:clamp(16px,1.8vw,19px);line-height:1.5;max-width:600px}
+#ke-eye .ke-btn{margin:0;padding:10px 18px;min-height:44px;border:1px solid rgba(243,234,217,.45);background:none;color:#f3ead9;font:800 13px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ke-eye .ke-btn:focus-visible{border-color:#89fbcb;color:#89fbcb;outline:none}
+@media (hover:hover){#ke-eye .ke-btn:hover{border-color:#89fbcb;color:#89fbcb}#ke-eye .ke-btn:disabled:hover{border-color:rgba(243,234,217,.45);color:#f3ead9}}
+#ke-eye .ke-btn:disabled{opacity:.4;cursor:default;border-color:rgba(243,234,217,.45);color:#f3ead9}
+#ke-eye .ke-zoom{display:flex;flex-direction:column;align-items:center;gap:12px}
+#ke-eye .ke-zbar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px}
+#ke-eye .ke-zbar .ke-btn.sq{width:48px;padding:0;font-size:24px;line-height:42px;letter-spacing:0}
+#ke-eye .ke-zlvl{min-width:56px;font-weight:800;font-size:14px;letter-spacing:.12em;color:#89fbcb}
+#ke-eye .ke-help{margin:0;font-size:14px;line-height:1.5;opacity:.85;max-width:560px}
+#ke-eye .ke-pics{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+#ke-eye .ke-pic{position:relative;line-height:0;border:2px solid #f3ead9;background:#fff;overflow:hidden;cursor:zoom-in;touch-action:pan-y;
+  -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+#ke-eye .ke-pics.zoomed .ke-pic{cursor:grab;touch-action:none}
+#ke-eye .ke-pics.zoomed .ke-pic.drag{cursor:grabbing}
+#ke-eye .ke-stage{position:relative;transform-origin:0 0;will-change:transform;--z:1}
+#ke-eye .ke-stage img{display:block;width:100%;height:auto;pointer-events:none;-webkit-user-drag:none}
+#ke-eye .ke-marks{position:absolute;top:0;left:0;width:100%;aspect-ratio:1800/1125;pointer-events:none}
+#ke-eye .ke-ring{position:absolute;aspect-ratio:1/1;min-width:calc(30px / var(--z));transform:translate(-50%,-50%);border:calc(4px / var(--z)) solid #ff4c0f;border-radius:50%;
+  box-shadow:0 0 0 calc(2px / var(--z)) #0b170f,inset 0 0 0 calc(2px / var(--z)) #0b170f;animation:keRing .35s cubic-bezier(.3,1.5,.5,1) both}
+#ke-eye .ke-panel{width:100%;max-width:760px;display:flex;flex-direction:column;gap:16px;padding:24px;background:rgba(11,23,15,.82);border:1px solid rgba(243,234,217,.25);text-align:left}
+#ke-eye .ke-form{display:flex;flex-direction:column;gap:12px;margin:0}
+#ke-eye .ke-form label{font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+#ke-eye .ke-row{display:flex;gap:12px}
+/* two blanks (Maurice 10/27): the crew member's name and what changed */
+#ke-eye .ke-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:12px}
+#ke-eye .ke-field{display:flex;flex-direction:column;gap:8px;min-width:0}
+#ke-eye .ke-row .ke-go{margin-left:auto}
+#ke-eye .ke-in{flex:1 1 auto;min-width:0;margin:0;padding:12px 14px;min-height:48px;border:2px solid #f3ead9;background:#0b170f;color:#f3ead9;font:400 16px/1.3 'Almarai',sans-serif}
+#ke-eye .ke-in:focus{outline:none;border-color:#89fbcb}
+#ke-eye .ke-in::placeholder{color:rgba(243,234,217,.5)}
+#ke-eye .ke-go{flex:0 0 auto;margin:0;padding:0 24px;min-height:48px;border:2px solid #89fbcb;background:#89fbcb;color:#0b170f;font:800 14px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ke-eye .ke-go:focus-visible{background:#fffffe;border-color:#fffffe;outline:none}
+@media (hover:hover){#ke-eye .ke-go:hover{background:#fffffe;border-color:#fffffe}#ke-eye .ke-go:disabled:hover{background:none;border-color:rgba(243,234,217,.45)}}
+#ke-eye .ke-go:disabled{background:none;color:#f3ead9;border-color:rgba(243,234,217,.45);cursor:default}
+#ke-eye .ke-say{margin:0;min-height:1.5em;font-weight:700;font-size:16px;line-height:1.5}
+#ke-eye .ke-say.right{color:#89fbcb}#ke-eye .ke-say.wrong{color:#ff8a5c}#ke-eye .ke-say.info{color:#f3ead9}
+#ke-eye .ke-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 24px;padding-top:16px;border-top:1px solid rgba(243,234,217,.2);font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+#ke-eye .ke-bar b{color:#89fbcb;font-weight:800}
+#ke-eye .ke-found{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px 20px}
+#ke-eye .ke-found:empty{display:none}
+#ke-eye .ke-found li{display:flex;align-items:center;gap:12px;font-size:15px;line-height:1.4}
+#ke-eye .ke-found li:before{content:'';flex:0 0 auto;width:14px;height:14px;border:3px solid #ff4c0f;border-radius:50%}
+#ke-eye .ke-win{display:flex;flex-direction:column;align-items:center;gap:20px;margin-top:8px}
+#ke-eye .ke-win p{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.25;letter-spacing:.04em;color:#89fbcb;text-transform:uppercase}
+#ke-eye .ke-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(58vw,280px);animation:keDrop .6s cubic-bezier(.25,1.5,.45,1) both}
+#ke-eye .ke-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 34px rgba(137,251,203,.45))}
+#ke-eye .ke-box:hover img,#ke-eye .ke-box:focus-visible img{filter:drop-shadow(0 0 44px rgba(137,251,203,.75))}
+#ke-eye .ke-box:focus-visible{outline:3px solid #89fbcb;outline-offset:8px}
+@keyframes keRing{from{opacity:0;transform:translate(-50%,-50%) scale(1.6)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes keDrop{from{opacity:0;transform:translateY(-40px)}to{opacity:1;transform:none}}
+@media (max-width:760px){#ke-eye .ke-pics{grid-template-columns:1fr;max-width:520px}#ke-eye .ke-found{grid-template-columns:1fr}#ke-eye .ke-panel{padding:20px}}
+@media (max-width:420px){#ke-eye .ke-row{flex-direction:column}#ke-eye .ke-go{width:100%}}
+@media (max-width:560px){#ke-eye .ke-fields{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){#ke-eye .ke-ring,#ke-eye .ke-box{animation:none}}
+</style>
+<section id="ke-eye" aria-label="Keen Eye">
+  <div class="ke-wrap">
+    <h1>Keen Eye</h1>
+    <p class="ke-lede">Ten things changed between these two pictures. Zoom in, spot them, then fill in the crew member's name and what changed.</p>
+    <div class="ke-zoom">
+      <div class="ke-zbar">
+        <button class="ke-btn sq ke-zout" type="button" aria-label="Zoom out">&minus;</button>
+        <span class="ke-zlvl" aria-live="polite">1x</span>
+        <button class="ke-btn sq ke-zin" type="button" aria-label="Zoom in">+</button>
+        <button class="ke-btn ke-zreset" type="button">Reset</button>
+      </div>
+      <p class="ke-help">Scroll, pinch, or use + and &minus; to zoom. Drag to look around. Both pictures move together.</p>
+    </div>
+    <div class="ke-pics">
+      <div class="ke-pic" data-side="0"><div class="ke-stage"><img alt="Picture one" draggable="false"><div class="ke-marks"></div></div></div>
+      <div class="ke-pic" data-side="1"><div class="ke-stage"><img alt="Picture two" draggable="false"><div class="ke-marks"></div></div></div>
+    </div>
+    <div class="ke-panel">
+      <form class="ke-form" autocomplete="off">
+        <div class="ke-fields">
+          <div class="ke-field"><label for="ke-name">Name</label><input class="ke-in ke-name" id="ke-name" type="text" maxlength="30" placeholder="Which crew member?" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="next"></div>
+          <div class="ke-field"><label for="ke-ans">What changed?</label><input class="ke-in ke-what" id="ke-ans" type="text" maxlength="80" placeholder="What is different?" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go"></div>
+        </div>
+        <div class="ke-row">
+          <button class="ke-go" type="submit">Check</button>
+        </div>
+        <p class="ke-say" role="status" aria-live="polite"></p>
+      </form>
+      <div class="ke-bar"><span>Found <b class="ke-n">0/10</b></span><button class="ke-btn ke-restart" type="button">Restart</button></div>
+      <ol class="ke-found" aria-label="Spotted"></ol>
+    </div>
+    <div class="ke-win" role="status" hidden>
+      <p>All ten spotted. Box 147 is yours.</p>
+      <button class="ke-box" type="button" aria-label="Open loot box 147"><img src="https://africhmaurice.github.io/site/assets/loot/147.png" alt="Loot box 147"></button>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var d=document.getElementById('ke-eye');if(!d)return;
+  var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+
+  var K='RDRGTjNHR1A9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+
+  /* The pictures and the ten differences (see the header). x, y = center as fractions of the picture; r = circle radius as a
+     fraction of its width; l = locked label; s = hashed keyword sets. Rebuilt by build-keys.mjs, do not edit by hand. */
+  /*SPOTS:START*/var DATA={
+    left:'https://africhmaurice.github.io/site/assets/games/147-left.webp',
+    right:'https://africhmaurice.github.io/site/assets/games/147-right.webp',
+    spots:[
+      {x:0.156,y:0.514,r:0.03,l:"tpCBi1tqobwzTP2Spl1C7YTMFd/yBaVjdMZNMA==",s:[[[["0d4dac755ebbe809","849cc605b41e47815b585faeb6ca5faf"],["321150d2333e957c","87867e8d41fc822269293ae522e3e806"],["63067cce33ea82b8","69582405a1d90200246c107a92537970"],["6b37839fc22f0e73","6d25fcae715e358def68bdf3b68d780b"],["812a9176edb07daa","dc024f68bc3f0b7dea7d99ce8dbec828"],["b006683d15a57936","fb8ef86482d5e540eb409c4d6f2b0f31"],["b79820fbb956df76","1f25838a5fcf1092fff54834c035f3da"],["bb0f54ef0ddec0ef","a75efec37ac8dfa0c0813e471a648eb8"],["c204e807bcf5f8e9","992c7cc3f0113d25233594a9bf8bb547"],["cd8e388d0c633dc9","3f8e8cfa1f092788f9b23b4ab3fc6493"],["ef97fd861b5c8f42","0cb5f1c5f31c3fa9db8261c9bb20b1c0"],["f6eaac285148150e","8aff6098ce9cf087cba52941a382c41c"]],[["e478ef86abe36043","77d2056cf7086ee12cb8e1d7fdaa73f1"],["fa5a21e3df148443","a4315aaece2605614bb74bdb7083fd61"]]],[[["2a8642aaaf9e18f4","ec94b4c5e4945ec6b23082ed5ad21cd3"],["3447a1968fe069de","a8e375904b350fc90c7b6db0f7e2fa19"],["4c2e2c64c844e8ff","920c65a486c5bb0a04d79627bdeed800"],["4c89d9ce2f8fe423","c069336b09db2d6f6259937ea464456e"],["823674ced3a6a4f8","c7676fbd6ec1f587bd1fda0d18d8a8a3"],["956df9df42279511","2ae3fef901ffae038d8c5a4f031969a3"]],[["0b80586d9cc77dc8","b3cae28e0b24f919af9d0a4db416ec04"],["0d4dac755ebbe809","3ef1e5e3860367885b233f9c7c82810c"],["4c2e2c64c844e8ff","61f881e54e386f5d3dfdd629bdb65378"],["4c89d9ce2f8fe423","cd13d12628261615ec6c3fd0d734a5ca"],["83d4f0d9a999f586","856faad5f9fe6df0d30b31c33d69a4ea"],["848da83cabac18c3","c37a14391b953059c84c5a3448158bdc"],["b006683d15a57936","742d19f7cb0e3e96d67a48c756393ce4"],["b03ec274af7f0fc6","1a11ac03d131aef77f6a3a4295ffe425"],["b79820fbb956df76","06ecedabeb1a0c3f084d9354d640675c"],["d18141fb74d83e56","4f7e6a64fcd9f0acfaf44b3a37e01dfd"],["d42fa893e81adfe9","410252bbb321de138c66130d2f611714"],["ef97fd861b5c8f42","6b8098e09030d0ebd37655b6c1546ef8"]],[["e478ef86abe36043","eaa01e7f5f4404d8aa97466e1c985da2"],["fa5a21e3df148443","4fcc1dfc03974f9dad0b8bb0e0459a29"]]]]},
+      {x:0.289,y:0.324,r:0.03,l:"qJAjgz9yLG5Rv1man0BwXFdRDkJOV5io74P1kW0=",s:[[[["0189fd7f4bc763f1","0aec9b1eb9f4a51211ebc46792639fa5"],["202dcc72b70d79b3","ba81fe4f8983cd42f4cf23b214b476a9"],["294decc8f1e418ef","9d44c5d3f9028e77f4cfe13610897541"],["43ba1415bd63dc9b","2407691fe061b7a467de1a4d5cf3d057"],["5eba83ae30f5c77e","3265626fda531c575cb7d3a3b2c6ea28"],["676171b0b7a28dd1","e8688fad1643128e42aa34b1169391c9"],["6ed34cde07269b58","c1a13c2a17a821c47856e4ac8bd8ff7e"],["7f4fa4c0cad84847","142d1a332357e6c0bd3d3928b0987aea"],["94dbcfe9778f3027","326d2c139b2db22dfc12c404e4b3f2eb"],["959d643b91abf98d","fe7343aa81e9be936745453d5c238597"],["d3440641ef29367e","46b6e5fc3ac945d68fb106d74a8cd51f"],["db2e8119e871dcd9","b17c15625caa6e8cc3c9a818907ab9f8"],["ecbff86326a566ba","26efd8b599cb88ff537517e940d72b6c"]],[["7e0eaba565c710d7","e69a7a0f1dd22aab36faefdd19b5afc8"],["c82d904293314618","2a438ae7e6751db6f3c7e3e750f513b2"]]],[[["4eacac56ecd1e1f2","d82a1c0a84596bf253a16c8e97b8eca0"],["c79d0b7b1976d3cf","e583b6967ae89fe2520b5efcc6466f0f"]],[["1c2be8a0bd3e0169","26737d094ce01eaeff8089b917ca7db4"],["4e7543f426e50d6b","a0c65b1d18f2937e7d992addfe60b8ad"],["5f34025f6ec6362e","1afcc58c0e904950c05c69941d791a79"],["b0390bbf7c76a364","6915a248b231d52281c8980e8da1daea"],["b34375ceff13a72b","1c0e68e8fcadd5a17f6c8d620e390455"],["c2189b4d08cea19e","24057aa704e81cd36c52a0830ed9b59b"],["fed6d8030048e092","927d8e4bb72e993c195b786c44ad1876"]],[["7e0eaba565c710d7","6f10a868d7f1f67ebdb86c18754f7f67"],["c82d904293314618","f3ba40b253f9d16b9b58226f5c7e149a"]]]]},
+      {x:0.314,y:0.377,r:0.036,l:"mLHwK2+weNe7JGs29fdp7EtjwXDxXg==",s:[[[["04031b2a4250ee79","ff6a2f4420e2cd53d1fee5be126b8a0c"],["08a6e26a8cbf0493","71c2a8ca80a08dee3bc7727c28ed0409"],["1624788ffe8cf72b","5c75f867452c6d3ec5733ad17f7913d9"],["21fd3a3382edea33","420149beea351f276d38750f278d410c"],["337eac2858884e10","f3561d59afe39c1e8ac8effbce194cdd"],["37935a38ae49b0bb","aeabfc48522d1f20dfe97a547ff39ecb"],["47213565548f071f","6b24a9186b8201b7eb4eeb0c5c96d9b6"],["4769eeed7d74b94b","8b2a7aeee055273171dd498a00766e1d"],["4b96cfe2f2e71795","678cc0cc5a3cb78c9ac35e44d1830f37"],["5227cb4f82925fe8","39b74507c8e8f29eed556e87bb1026dd"],["64db351dd85aa43b","484a85c5f2b05be2d3422ba3df810a30"],["846fa46a4ca75491","e1b9a6790cd8352bdf2c6680a160b879"],["9609a10a19020681","d32fcb5e4927e0a6a516433374163d8e"],["ae5a7063ee2b3e21","81d9a19530763cc6e34c95b0236b6c48"],["afa3490e05a3083d","d14c0df118f752dc3c43771a9b9c4df2"],["b46fb26a37381667","99f96cf2faa9565daacbe7c067289785"],["b6c029914c0b2d6c","e5bf018d0b1e10f2f38eaa499e2758f5"],["bc3ebe1516292872","3da1ead9c37e1d75f6d83305481f85b5"]],[["cdd39b83c71cad9f","16a7513a6660a29390dc88ba881e5011"]]]]},
+      {x:0.349,y:0.43,r:0.03,l:"SP1Zjjlu2JJnbVVhf1whmfaKB1hRdFHRFzcj",s:[[[["20438ef21adaed52","9e0441b1e81596a29f86a1330cd74af8"],["20ae7ce0cf7178a7","bd769fb489413b68de48d41bf43888ae"],["254cc819cf0d1114","705b2d3746dac2a9075faeda27be9c33"],["38eb21ec1d657282","e65fc50532d2220daf55dd5dc0583340"],["3e281c7020815422","e84d0adf456297325a9e4b7d4690fbfe"],["48479b3d3f9db31c","ea598324547d262aaeaaf06c910f1fe4"],["4cee57833ca7073b","b66f57bf898145acb685dd800e0906ff"],["4e45f907cff295a1","9f9f221cb351f6415b648b2f99057baf"],["58296d4eb34b97a9","7de8135c289e53d32fbe38592e60b7aa"],["674d34eda16c6a31","23debace7d40950dffc0bc4d0d8239f3"],["6ac7f70d60cbf827","dc564b55b62dd1a1de10baad6777710a"],["6df5934afd9acb29","8372f6408755d26648224214ce8b7c50"],["71460661e11d6c10","35e8d8268346f748062f0099b840fc30"],["7a455a879f6217dd","e38caf10f7f8d75abb5d2da837d464ec"],["b5ee4fbbd26041b1","932bdd1be5368c5da7e5f17c7c0e505a"],["b9ac4391a378bf6b","f31e667f3399db748b083bb77e5f6e74"],["bb3f66662bf61647","52f8b20894e36993ebbdf3cbc3ebcefa"],["dac0d29d5b594c36","b8f6235f67b3b3610a13c1e0661de2a8"],["eb5ea3cb7fc48058","1b65aa6a4c5fc5e9141e0619b1a3f76b"]],[["b9b360ca8072fe69","bffe4cc7b7984f856080e9ffede2b3cc"]]]]},
+      {x:0.377,y:0.272,r:0.03,l:"frrOHXAebTsNw0UUvXQ5y23OvQvDMcGosCjqJuI=",s:[[[["06920fa676c0812e","2c600cd9b3a7fca9ce6ab7e07e9477bf"],["1a8d17c214876078","83ae82895d029425693c2f91ba6ed6f5"],["276da868fbc872ef","89ca1e1c31c7acce9a48f6f5214888f0"],["5bed31696f1ab2f5","ab86b8f3883db742d9fce510d8b3ab4c"],["82003531a016532e","54ba5d06cebd0f632bd3e66e0903e9f7"],["973d6894d3fc631b","34c4d7af890a7b973b298deeb2316719"],["994933cc129d58c9","b5bec1adf77c8a8a013898aabb18cbd6"],["b29769876a71ec8b","59dc49d40cab0d38252a2f3a4705e908"]],[["85704f18484a5303","a46b14a3834875f6526dc33c91c1bf5e"],["988bf57cb7aa40c9","292e80d3def2536edc68d210f89e485f"]]]]},
+      {x:0.457,y:0.489,r:0.03,l:"Ab8xcBJBSvXnvdBuUmvnH4ClHIxHCMnA7PE1",s:[[[["00910ec62dd83717","3162bce97422933d7ae5a15b8e13509e"],["0e5610542b63372d","b110da24dec2ffc3b2735039a1b84972"],["4fa35f9817cb8de2","d9e44f25825848f20e33ef8486c50f11"],["6a5a2dc20acbbee4","9d4bfd31e7d0032cc01cb3caf4772e59"],["7805c5ed794f6f44","4fcf3091aac734432c1490132efdd8f7"],["8bbf2deb0ae95449","e715a8aa25f8ad81302166f0657ed84b"],["9ed941bdc010308a","6431eedd84febcda1f1466a0a9218fb0"],["b7759492cfef74ab","64496e677d8ad1282acf5743e2551504"],["c43b52244e5a742d","37cfde8b6e9ff0183c49727268f30c65"],["d9266c7baf95a536","826af828cca808dbbe8f144a1d33c00b"],["db40f33e6728b718","5ae493f25cd7e4919e4e3b204980152b"]],[["80679908c4bdf18f","54d3f04b7e5064856fe383e873856a9a"],["85155c880bbbb812","00641b24ce75d8bef75c8d5bd52249fb"]]]]},
+      {x:0.54,y:0.372,r:0.03,l:"tcJ5QC4YfzQ0GODcRvIiKvp6WfU4",s:[[[["43aa4cd2cc1ff2e5","9e6ae768f6a5c76c33a02a722f45370a"],["65f910cca5f1b315","fd448f11f3bfcbae7dcdd00a6510428b"],["7b272fb70a61f8f5","96569263a3e050cb756fb5b2b864b1a8"],["952ec210a192e19b","01248d23739423c8a6fb44c184464cef"],["9f7d8673f5acde36","97a46b69bf593ca3121595a2e12f5b95"],["a6847cf452d99ac5","ef8d8033516145af5318aec99010d264"],["a6ed1299e6019597","2b2c363b57e666668a48cda15ad31b24"],["f45cd785feb0562d","5d8375bf921859f0e378fce58f854b20"]],[["3362f372144c00ad","8bf76d1d04b52fa2fbb011968f237301"]]],[[["fa8fa8a12b56cc30","2facf0edc12ac524ce7f6f4c82e81ec8"]],[["19ce1b7dfa622f63","3a992474b8a0ab5265d9952ca8a21725"],["3d705fa4b1d66f56","72d9659bc0b66913d3d1b927b54db714"],["3df5bfd99af6d4ab","0b82bfa924ac2476b4341f2a5790f255"],["442e9a918cacf0b4","9db6931a95744ad4ca1abaaa73a82c35"],["b0e034288051b34d","6749673222c7b14dec047af66be24f79"],["c0b507dc8dbd27b3","141df4c055e47f4c996e4cf75324c799"],["d8bbfb7d6fb54486","db987481e2dc20fc853d85adce25678c"],["fcdaa20e3d2f42a3","56111d61c98568c7fc91cb88fbcab071"]],[["3362f372144c00ad","20d57626195cbbe7d067f3b0a866dba8"]]]]},
+      {x:0.556,y:0.827,r:0.03,l:"pDpkAnCatRdlD9Zp3fAONCFkYiavXQ==",s:[[[["4ec666a474e4cfa2","92c7efd48f5e9e3a42d771a6c3271912"],["4f57933722e83ec9","3a104bbbb3eba4cce0b068eda36e74b1"],["7b823e939d916d73","497d03d92f5573591374481b71232662"],["8272618b1c3acabe","1f1b2d05521f56fa565959061f799a50"],["88f442e2db8706c4","f617e9070635b5e38412b447534606f0"],["b4902eb80d9d8544","e4390484820ad2c9a0469fb219f0777c"]],[["b040e126c1d8e34c","7e082ecbe8614660aedd020ef53ab5d1"]]]]},
+      {x:0.664,y:0.5,r:0.099,l:"ICIZstYLXpbjfZCuA/VrgBt+1Osx5rcsljhZORk=",s:[[[["0db500e15d757627","f9cf000ebf4ad0d4e6e75be2961f0a0e"],["1e4fb88361f30618","1ddee126362663d6f622cf2d0bc3041f"],["5fc018c2a9f83521","cdebdeb0dbb61551756c3dc2cb3766c1"],["6bc4ae1ebe96d11e","5c2128eb7962163f8ee22aea098200c0"],["89f9e213c8064e36","cbf3875651c40255563d6ea3df37d94d"],["9e06d6006e19d1bc","7342720b218db3c826af01a7120491b8"],["ae61b8a96694ff94","c9c8f2daf2b39fa30abbade5635644a7"],["b8b19f406811e2c6","b1ccf2f2639fb8edd1771fc2be6b7aa5"],["c9248c921759ec2d","352bafc77e68ebb13070c466f90d5114"],["cd0af817b17a5433","3ab7bcf6629da7f5a190081eb6d70504"],["d86d8c46b4bb44e3","47cff5970ddb3af598f590ba85b068a2"],["e5ed242ea96853d9","67f250048c97f017c7fedfa9535a2cd3"],["ec3faa6c2170fabc","1b78ffe00308ff3f6fe89f903c9e311f"],["fb7cbe2fa7a511f1","15d68be84ac75d91411767e2e5d7c6db"],["fd823e87af6bc04e","793df1554bff509cc041119e19c8e701"]],[["71e784308a205060","bcb283676851bb055563c1db30326ed1"]]]]},
+      {x:0.822,y:0.244,r:0.083,l:"s5qyCCmXtWgVHvUvAq4gNU0FJ0AV5aYYp7OUdNvT",s:[[[["25bf6f0530b47539","eee94093afc08b6073ff44b28f338e1f"],["276c836730d20ade","430432637174cfb060f55b7f2c14fb6c"],["355f9fbbae50e811","7810e6be9d1385a1f6e727ca8b123c1c"],["49ea9c57edc4e090","d81c7cb8005b640772225e9b545c89be"],["4a294f6f05c7061d","ffe08fdd5a82dafe0f1fec72e68a3692"],["586bfc2983989e72","479a7430329ebc88cdda46f36a995188"],["7dde1c50edd3c8aa","2cf184c78a2bc5693f91782c2d963c87"],["926886badf6b57b4","5d78cac0789c1c4620dcf08537ff8796"],["9e056e379bf2758e","9e3d84114675a528ae2740653759368f"],["a95bf3fdb8bb168f","39bae8310f53172655d4b5463943ff5b"],["d26f9c8f2cbc1056","60b41b93b68045cf17e734fc5b826879"],["e04977418b757e4e","e6a728c0a1b9a077910650863ccb88d7"],["feded429fa1de10d","e0279300bbbb935c5d91b0de08437392"],["ffc0c2712b1e645c","f776b2342b76033ada2ceed044302616"]],[["5d883bf8b49259ad","5ba0adaa8fef98093d9baf259ffd0305"],["7c2e0be613018007","6eae0226377843d6338b0ab8979f5298"]]]]}
+    ]};/*SPOTS:END*/
+
+  var TOTAL=DATA.spots.length,pics=d.querySelectorAll('.ke-pic'),stages=d.querySelectorAll('.ke-stage'),picsBox=d.querySelector('.ke-pics'),
+      nEl=d.querySelector('.ke-n'),win=d.querySelector('.ke-win'),list=d.querySelector('.ke-found'),
+      form=d.querySelector('.ke-form'),inp=d.querySelector('.ke-what'),nameIn=d.querySelector('.ke-name'),go=d.querySelector('.ke-go'),say=d.querySelector('.ke-say'),lvl=d.querySelector('.ke-zlvl');
+  stages[0].querySelector('img').src=DATA.left;stages[1].querySelector('img').src=DATA.right;
+
+  /* ---------- zoom and pan, shared by both pictures ---------- */
+  var MAXZ=5,Z={z:1,x:0,y:0}; /* x, y = offset of the picture's top left corner as a fraction of the frame (0 down to 1-z) */
+  function clamp(){Z.z=Math.min(MAXZ,Math.max(1,Z.z));Z.x=Math.min(0,Math.max(1-Z.z,Z.x));Z.y=Math.min(0,Math.max(1-Z.z,Z.y));}
+  function paint(){clamp();
+    Array.prototype.forEach.call(stages,function(s){var w=s.parentNode.clientWidth,h=s.parentNode.clientHeight;
+      s.style.transform='translate('+(Z.x*w)+'px,'+(Z.y*h)+'px) scale('+Z.z+')';s.style.setProperty('--z',Z.z);});
+    picsBox.classList.toggle('zoomed',Z.z>1.001);
+    lvl.textContent=(Math.round(Z.z*10)/10)+'x';
+    d.querySelector('.ke-zout').disabled=Z.z<=1.001;d.querySelector('.ke-zin').disabled=Z.z>=MAXZ-.001;
+  }
+  /* zoom to nz keeping the point at frame fraction (fx, fy) in place */
+  function zoomAt(nz,fx,fy){nz=Math.min(MAXZ,Math.max(1,nz));var ux=(fx-Z.x)/Z.z,uy=(fy-Z.y)/Z.z;Z.z=nz;Z.x=fx-ux*nz;Z.y=fy-uy*nz;paint();}
+  function frac(p,cx,cy){var r=p.getBoundingClientRect();return [(cx-r.left)/r.width,(cy-r.top)/r.height];}
+  d.querySelector('.ke-zin').addEventListener('click',function(){zoomAt(Z.z*1.5,.5,.5);});
+  d.querySelector('.ke-zout').addEventListener('click',function(){zoomAt(Z.z/1.5,.5,.5);});
+  d.querySelector('.ke-zreset').addEventListener('click',function(){Z={z:1,x:0,y:0};paint();});
+  window.addEventListener('resize',paint);
+  Array.prototype.forEach.call(pics,function(p){
+    p.addEventListener('wheel',function(e){
+      if(e.deltaY>0&&Z.z<=1.001)return; /* fully out: let the page scroll */
+      e.preventDefault();var f=frac(p,e.clientX,e.clientY),dy=e.deltaMode?e.deltaY*16:e.deltaY;
+      zoomAt(Z.z*Math.exp(-Math.max(-60,Math.min(60,dy))*0.004),f[0],f[1]);
+    },{passive:false});
+    var pts={},g=null;
+    function start(){var ids=Object.keys(pts);
+      if(ids.length>=2){var a=pts[ids[0]],b=pts[ids[1]],m=frac(p,(a.x+b.x)/2,(a.y+b.y)/2);
+        g={pinch:true,d0:Math.hypot(a.x-b.x,a.y-b.y)||1,z0:Z.z,ux:(m[0]-Z.x)/Z.z,uy:(m[1]-Z.y)/Z.z};}
+      else if(ids.length===1){var c=pts[ids[0]],r=p.getBoundingClientRect();g={pinch:false,sx:c.x,sy:c.y,x0:Z.x,y0:Z.y,w:r.width,h:r.height};}
+      else g=null;}
+    p.addEventListener('pointerdown',function(e){if(e.pointerType==='mouse'&&e.button!==0)return;
+      pts[e.pointerId]={x:e.clientX,y:e.clientY};start();
+      if(e.pointerType==='mouse'||Z.z>1.001||Object.keys(pts).length>=2){try{p.setPointerCapture(e.pointerId);}catch(x){}}
+      if(Z.z>1.001||Object.keys(pts).length>=2)p.classList.add('drag');});
+    p.addEventListener('pointermove',function(e){if(!pts[e.pointerId])return;pts[e.pointerId]={x:e.clientX,y:e.clientY};if(!g)return;
+      if(g.pinch){var ids=Object.keys(pts),a=pts[ids[0]],b=pts[ids[1]],m=frac(p,(a.x+b.x)/2,(a.y+b.y)/2);
+        Z.z=Math.min(MAXZ,Math.max(1,g.z0*Math.hypot(a.x-b.x,a.y-b.y)/g.d0));Z.x=m[0]-g.ux*Z.z;Z.y=m[1]-g.uy*Z.z;paint();e.preventDefault();}
+      else if(Z.z>1.001){Z.x=g.x0+(e.clientX-g.sx)/g.w;Z.y=g.y0+(e.clientY-g.sy)/g.h;paint();e.preventDefault();}});
+    function end(e){if(!pts[e.pointerId])return;delete pts[e.pointerId];start();if(!Object.keys(pts).length)p.classList.remove('drag');}
+    p.addEventListener('pointerup',end);p.addEventListener('pointercancel',end);p.addEventListener('lostpointercapture',end);
+    /* keep Safari's own page zoom from fighting the pinch */
+    p.addEventListener('gesturestart',function(e){e.preventDefault();});
+  });
+
+  /* ---------- typed answers ---------- */
+  var STOP={the:1,a:1,an:1,on:1,of:1,in:1,is:1,to:1,at:1,and:1,or:1,from:1,with:1,his:1,her:1,their:1,its:1,it:1,was:1,now:1,that:1,this:1,by:1,for:1,has:1,have:1,are:1,be:1,they:1,there:1};
+  function stem(w){
+    if(w.length>4&&/ies$/.test(w))return w.slice(0,-3)+'y';
+    if(w.length>4&&/(ss|x|z|ch|sh)es$/.test(w))return w.slice(0,-2);
+    if(w.length>3&&/s$/.test(w)&&!/(ss|us|is)$/.test(w))return w.slice(0,-1);
+    return w;}
+  function words(t){var seen={},out=[];String(t||'').toLowerCase().replace(/['‘’`]/g,'').replace(/[^a-z0-9]+/g,' ').trim().split(' ').forEach(function(w){
+    if(!w||STOP[w])return;w=stem(w);if(!seen[w]){seen[w]=1;out.push(w);}});return out;}
+  var enc=new TextEncoder();
+  function sha(s){return crypto.subtle.digest('SHA-256',enc.encode(s)).then(function(b){return new Uint8Array(b);});}
+  function hex(u){var o='';for(var j=0;j<u.length;j++)o+=('0'+u[j].toString(16)).slice(-2);return o;}
+  function unhex(h){var u=new Uint8Array(h.length/2);for(var j=0;j<u.length;j++)u[j]=parseInt(h.substr(j*2,2),16);return u;}
+  /* For difference i: the first keyword set the words satisfy, and which word met each of its groups. */
+  function match(i,ws){
+    return Promise.all(ws.map(function(w){return sha('ke147:'+i+':'+w).then(function(h){return hex(h).slice(0,16);});})).then(function(hs){
+      var sets=DATA.spots[i].s;
+      for(var s=0;s<sets.length;s++){var pick=[],okAll=true;
+        for(var g=0;g<sets[s].length&&okAll;g++){var hit=null;
+          for(var k=0;k<sets[s][g].length&&!hit;k++){var at=hs.indexOf(sets[s][g][k][0]);if(at>=0)hit={w:ws[at],e:sets[s][g][k][1]};}
+          if(hit)pick.push(hit);else okAll=false;}
+        if(okAll)return {s:s,pick:pick};}
+      return null;});
+  }
+  /* Unlock the label with the words that matched. */
+  function label(i,m){
+    return Promise.all(m.pick.map(function(p,g){return sha('ke147k:'+i+':'+m.s+':'+g+':'+p.w);})).then(function(ks){
+      var key=new Uint8Array(16);m.pick.forEach(function(p,g){var e=unhex(p.e);for(var j=0;j<16;j++)key[j]^=e[j]^ks[g][j];});
+      return sha('ke147l:'+hex(key)).then(function(ls){var b=atob(DATA.spots[i].l),o='';for(var j=0;j<b.length;j++)o+=String.fromCharCode(b.charCodeAt(j)^ls[j]);return o;});});
+  }
+
+  var found=[],misses=0,busy=false,coolT=null;
+  function show(){nEl.textContent=found.length+'/'+TOTAL;}
+  function tell(cls,txt){say.className='ke-say '+cls;say.textContent=txt;}
+  function ring(i){
+    var s=DATA.spots[i];
+    Array.prototype.forEach.call(stages,function(st){
+      var m=document.createElement('span');m.className='ke-ring';m.setAttribute('data-spot',i);
+      m.style.left=(s.x*100)+'%';m.style.top=(s.y*100)+'%';m.style.width=(s.r*200)+'%';
+      st.querySelector('.ke-marks').appendChild(m);
+    });
+  }
+  function cooldown(){var left=10;go.disabled=true;
+    function tick(){if(left<=0){clearInterval(coolT);coolT=null;go.disabled=false;go.textContent='Check';misses=0;tell('info','Ready when you are.');return;}
+      go.textContent='Wait '+left;left--;}
+    tell('wrong','Take a closer look. You can check again in 10 seconds.');tick();coolT=setInterval(tick,1000);}
+  function miss(txt){misses++;if(misses>=3)cooldown();else tell('wrong',txt);}
+  form.addEventListener('submit',function(e){e.preventDefault();
+    if(busy||go.disabled||found.length>=TOTAL)return;
+    var nm=words(nameIn.value),ws=words(inp.value);if(!nm.length){tell('info','Fill in the name too.');nameIn.focus();return;}if(!ws.length){inp.focus();return;}
+    if(ws.length>8||nm.length>2){tell('info','Keep it short: just the one difference.');return;}
+    ws=nm.concat(ws);
+    busy=true;
+    var all=[];for(var i=0;i<TOTAL;i++)all.push(match(i,ws));
+    Promise.all(all).then(function(r){
+      var fresh=[],old=0;r.forEach(function(m,i){if(!m)return;if(found.indexOf(i)>=0)old++;else fresh.push(i);});
+      if(fresh.length>1){busy=false;miss('One difference at a time, please.');return;}
+      if(!fresh.length){busy=false;if(old)tell('info','You already found that one.');else miss('Not quite. Try again.');return;}
+      var i=fresh[0];return label(i,r[i]).then(function(t){busy=false;misses=0;
+        found.push(i);ring(i);show();
+        var li=document.createElement('li');li.textContent=t;list.appendChild(li);
+        tell('right','Yes! You spotted it.');inp.value='';nameIn.value='';
+        if(found.length===TOTAL){inp.disabled=true;nameIn.disabled=true;go.disabled=true;setTimeout(function(){win.hidden=false;win.scrollIntoView({behavior:'smooth',block:'center'});},450);}
+      });
+    }).catch(function(){busy=false;tell('wrong','Something went wrong. Try again.');});
+  });
+
+  function restart(){found=[];misses=0;busy=false;if(coolT){clearInterval(coolT);coolT=null;}go.disabled=false;go.textContent='Check';inp.disabled=false;nameIn.disabled=false;nameIn.value='';inp.value='';
+    tell('info','');win.hidden=true;list.innerHTML='';Array.prototype.forEach.call(stages,function(s){s.querySelector('.ke-marks').innerHTML='';});Z={z:1,x:0,y:0};paint();show();}
+  d.querySelector('.ke-restart').addEventListener('click',restart);
+  d.querySelector('.ke-box').addEventListener('click',claim);
+  show();paint();
+})();
+</script>

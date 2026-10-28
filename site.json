@@ -439,6 +439,18 @@
       "url": "/the-levian-30527",
       "title": "The Levian (hidden; loot box 145, weekly high score)",
       "source": "pages/the-levian.html"
+    },
+    {
+      "slug": "master-stacker",
+      "url": "/master-stacker-32368",
+      "title": "Master Stacker (hidden; loot box 148, weekly high score)",
+      "source": "pages/master-stacker.html"
+    },
+    {
+      "slug": "keen-eye",
+      "url": "/keen-eye-86115",
+      "title": "Keen Eye (hidden; loot box 147, spot the differences)",
+      "source": "pages/keen-eye.html"
     }
   ],
   "staysInSquarespace": [
