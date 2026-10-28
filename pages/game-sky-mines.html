@@ -1033,6 +1033,14 @@ var HG_GAME = {"key":"sky_mines","label":"Sky Mines","points":25,"startDate":"20
     leftEl.textContent = MINES - f; gustInEl.textContent = GUST_EVERY - (st.moves % GUST_EVERY);
     g.save();
   }
+  // every cloud is opened, flagged, or spotted but the field is not clear: a flag sits on a safe cloud
+  function checkFlags() {
+    if (st.done) return;
+    for (var i = 0; i < N; i++) if (!st.open[i] && !st.flag[i] && !st.spot[i]) return;
+    if (cleared()) return;
+    var w = 0; for (i = 0; i < N; i++) if (st.flag[i] && !st.mine[i]) w++;
+    say('Every cloud is covered, but ' + (w > 1 ? w + ' of your flags sit' : 'one of your flags sits') + ' on a safe cloud. Take it off and tap that cloud to clear the field.', true);
+  }
   function say(t, bad) { msg.textContent = t || ''; msg.className = 'sm-msg' + (bad ? ' bad' : ''); }
   // THE WIND: one hidden mine drifts one cell, onto a cloud that is not open and not a mine. The moved mine is
   // shown (spotted), so the player always sees what changed. Seeded by the day and the gust's number, so it is the
@@ -1073,7 +1081,7 @@ var HG_GAME = {"key":"sky_mines","label":"Sky Mines","points":25,"startDate":"20
     st.moves++; say('');
     if (cleared()) return win();
     if (st.moves % GUST_EVERY === 0) gust(); else paint();
-    if (cleared()) win();
+    if (cleared()) win(); else checkFlags();
   }
   // a mine: the field shows it for a moment, then starts over from the same start; the clock never stops
   var resetting = false;
@@ -1084,7 +1092,7 @@ var HG_GAME = {"key":"sky_mines","label":"Sky Mines","points":25,"startDate":"20
   }
   function toggleFlag(i) {
     if (st.done || !st.started || resetting || st.open[i] || st.spot[i]) return;
-    st.flag[i] = st.flag[i] ? 0 : 1; paint();
+    st.flag[i] = st.flag[i] ? 0 : 1; paint(); say(''); checkFlags();
   }
   function fmt(s) { return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
   var timerEl = document.getElementById('sm-timer');
