@@ -476,8 +476,11 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       var who = [me.first_name, me.handle].filter(Boolean).join('  ·  ');
       if (who) t(who, W / 2, 212, '700 30px Almarai', T.text);
       t(lastFound.length + ' OF ' + TOTAL + ' FOUND', W / 2, 268, '800 34px Almarai', T.hi, 6);
-      // The grid: 11 across, found chests in full color, the rest faint.
-      var cols = 11, cell = 80, gx = (W - cols * cell) / 2, gy = 300;
+      // The grid: found chests in full color, the rest faint. The chests shrink as boxes are added, so every box fits
+      // between the count and the footer (Maurice, 2026-10-28: 151 boxes ran off the bottom at 11 across).
+      var cols = 11, cell = 0;
+      for (var cc = 8; cc <= 24; cc++) { var cs = Math.floor(Math.min(1000 / cc, 840 / Math.ceil(TOTAL / cc))); if (cs > cell) { cell = cs; cols = cc; } }
+      var gx = (W - cols * cell) / 2, gy = 300 + Math.floor((840 - Math.ceil(TOTAL / cols) * cell) / 2);
       round(gx - 16, gy - 16, cols * cell + 32, Math.ceil(TOTAL / cols) * cell + 32); x.fillStyle = T.panel; x.fill();
       x.strokeStyle = T.line; x.lineWidth = 3; x.stroke();
       for (var k = 0; k < TOTAL; k++) {
@@ -485,7 +488,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         var p = pics[k];
         if (have[k]) { x.globalAlpha = 1; } else { x.globalAlpha = .16; }
         if (p) x.drawImage(p, cx + 5, cy + 5, cell - 10, cell - 10);
-        else { x.fillStyle = have[k] ? T.hi : 'rgba(255,255,254,.3)'; x.font = '800 22px Almarai'; x.textAlign = 'center'; x.fillText(String(k), cx + cell / 2, cy + cell / 2 + 8); }
+        else { x.fillStyle = have[k] ? T.hi : 'rgba(255,255,254,.3)'; x.font = '800 ' + Math.round(cell * .28) + 'px Almarai'; x.textAlign = 'center'; x.fillText(String(k), cx + cell / 2, cy + cell / 2 + cell * .1); }
         x.globalAlpha = 1;
       }
       t('JOIN ME ON THE HUNT!', W / 2, 1230, fit('JOIN ME ON THE HUNT!', 820, 62, AM), T.hi);
@@ -853,8 +856,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(u)location.href=u;}
   function open(){
     if(!ov){ov=document.createElement('div');ov.className='lb-z69';ov.setAttribute('role','dialog');ov.setAttribute('aria-label','Loot box 69');
-      ov.innerHTML='<div class="z-win"><div class="z-art"><img src="https://africhmaurice.github.io/leaderboard/loot/69.png" alt="Loot box 69" draggable="false">'+
-        '<button type="button" class="z-tiny" aria-label="A tiny loot box" tabindex="-1"><img src="https://africhmaurice.github.io/leaderboard/loot/128.png" alt="" draggable="false"></button></div></div>'+
+      ov.innerHTML='<div class="z-win"><div class="z-art"><img loading="lazy" decoding="async" src="https://africhmaurice.github.io/leaderboard/loot/69.png" alt="Loot box 69" draggable="false">'+
+        '<button type="button" class="z-tiny" aria-label="A tiny loot box" tabindex="-1"><img loading="lazy" decoding="async" src="https://africhmaurice.github.io/leaderboard/loot/128.png" alt="" draggable="false"></button></div></div>'+
         '<button type="button" class="z-x" aria-label="Close"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M3 3l14 14M17 3L3 17"/></svg></button>';
       var win=ov.querySelector('.z-win'),tiny=ov.querySelector('.z-tiny');
       // a tap on the keyhole zooms in on it (a tap anywhere else zooms back out); zoomed in, the tiny box opens 128
