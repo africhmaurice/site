@@ -111,6 +111,12 @@
       "source": "bot:squarespace-game-crest-quest.html"
     },
     {
+      "slug": "game-sky-mines",
+      "url": "/sky-mines",
+      "title": "Game: Sky Mines",
+      "source": "bot:squarespace-game-sky-mines.html"
+    },
+    {
       "slug": "game-matching-auras",
       "url": "/matching-auras",
       "title": "Game: Matching Auras (surprise, unlocks at 100,000 Act Two points)",

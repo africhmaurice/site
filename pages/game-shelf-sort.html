@@ -257,6 +257,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <a href="https://www.mauriceafrich.com/blades-and-brass" data-k="blades_brass" data-unlock="50000" data-act="two" hidden>BLADES &amp; BRASS</a>
       <a href="https://www.mauriceafrich.com/matching-auras" data-k="matching_auras" data-unlock="100000" data-act="two" hidden>MATCHING AURAS</a>
       <a href="https://www.mauriceafrich.com/crest-quest" data-k="crest_quest" data-unlock="150000" data-act="two" hidden>CREST QUEST</a>
+      <a href="https://www.mauriceafrich.com/sky-mines" data-k="sky_mines">SKY MINES</a>
       <a href="https://www.mauriceafrich.com/airship-runner" data-k="airship_runner">AIRSHIP RUNNER</a>
       <a href="https://www.mauriceafrich.com/thread-the-needle" data-k="thread_needle">THREAD THE NEEDLE</a>
       <a href="https://www.mauriceafrich.com/trench-run" data-k="trench_run">TRENCH RUN</a>
@@ -337,8 +338,9 @@ var HG = (function () {
     crossword: ['teal', 'mauriceafrich.com/crossword'], word_search: ['ink', 'mauriceafrich.com/games'],
     first_lines: ['parchment', 'mauriceafrich.com/games'], title_scramble: ['violet', 'mauriceafrich.com/games'],
     blades_brass: ['scarlet', 'mauriceafrich.com/blades-and-brass'], crest_quest: ['parchment', 'mauriceafrich.com/crest-quest'],
-    spyglass: ['ink', 'mauriceafrich.com/spyglass'], matching_auras: ['violet', 'mauriceafrich.com/matching-auras'] };
-  var NEXT_GAME = { shelf_sort: ['CONGRATS! PLAY BOOK ICONS', 'https://www.mauriceafrich.com/book-icons'], emoji_reads: ['CONGRATS! PLAY BOOKISH CROSSWORD', 'https://www.mauriceafrich.com/crossword'], crossword: ['CONGRATS! PLAY BLADES & BRASS', 'https://www.mauriceafrich.com/blades-and-brass'], blades_brass: ['CONGRATS! PLAY MATCHING AURAS', 'https://www.mauriceafrich.com/matching-auras'], matching_auras: ['CONGRATS! PLAY CREST QUEST', 'https://www.mauriceafrich.com/crest-quest'], crest_quest: ['CONGRATS! PLAY AIRSHIP RUNNER', 'https://www.mauriceafrich.com/airship-runner'] };
+    spyglass: ['ink', 'mauriceafrich.com/spyglass'], matching_auras: ['violet', 'mauriceafrich.com/matching-auras'],
+    sky_mines: ['teal', 'mauriceafrich.com/sky-mines'] };
+  var NEXT_GAME = { shelf_sort: ['CONGRATS! PLAY BOOK ICONS', 'https://www.mauriceafrich.com/book-icons'], emoji_reads: ['CONGRATS! PLAY BOOKISH CROSSWORD', 'https://www.mauriceafrich.com/crossword'], crossword: ['CONGRATS! PLAY BLADES & BRASS', 'https://www.mauriceafrich.com/blades-and-brass'], blades_brass: ['CONGRATS! PLAY MATCHING AURAS', 'https://www.mauriceafrich.com/matching-auras'], matching_auras: ['CONGRATS! PLAY CREST QUEST', 'https://www.mauriceafrich.com/crest-quest'], crest_quest: ['CONGRATS! PLAY SKY MINES', 'https://www.mauriceafrich.com/sky-mines'], sky_mines: ['CONGRATS! PLAY AIRSHIP RUNNER', 'https://www.mauriceafrich.com/airship-runner'] };
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
