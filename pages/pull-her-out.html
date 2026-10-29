@@ -1812,6 +1812,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     $('rc-count').closest('.rc-stat').querySelector('.k').textContent = 'STRANDS FOUND';
     $('rc-count').closest('.rc-stat').querySelector('small').textContent = 'Every fren carries 5. It takes a crew.';
     $('rc-close-k').textContent = 'THE ROPE HUNT ENDS';
+    if ($('rc-close-s')) $('rc-close-s').textContent = 'Find your 5 strands before then.';
     $('rc-seal').textContent = DATA.sealLabel || 'SEAL MY PLAN';
     document.querySelector('#rc-orders .rc-kick').textContent = 'THE RESCUE';
     document.querySelector('#rc-orders h2').textContent = 'Seal your rolls';
