@@ -44,22 +44,23 @@
     '<path d="M10 30l4 4M15 27l3 5M20 26l3 4M24 21l3 4M28 17l3 4M32 14l3 4M36 12l2 4" stroke="#7a4e1d" stroke-width="1.6"/>' +
     '<path d="M5 37l-2 3M7 38l0 3M41 12l3-2M41 10l2-3" stroke="#0b170f" stroke-width="1.6"/>';
   // the rope's shape, straight, for the strands on the page (art() is the colored one the popup shows)
-  var MASK = 'https://africhmaurice.github.io/site/assets/rope/strand-mask.png';
+  var EDGE = 'https://africhmaurice.github.io/site/assets/rope/strand-edge.png', FILL = 'https://africhmaurice.github.io/site/assets/rope/strand-fill.png';
   function kindOf(id) { return R.kinds[(id - 1) % R.kinds.length]; }
   function art(id) { return R.art && R.art.length ? '<img src="' + R.art[(id - 1) % R.art.length] + '" alt="" draggable="false">' : '<svg viewBox="0 0 48 48" aria-hidden="true">' + STRAND + '</svg>'; }
 
   var css = document.createElement('style');
   css.textContent =
-    // Each strand is the page behind it, in the rope's shape, a little brighter on a dark spot and a little darker on a
-    // light one
-    // (Maurice, 2026-10-28: match the background, no glow, no movement, no hint). Nothing changes on hover, and the
+    // Each strand is solid (Maurice, 2026-10-28): a black edge, and the middle filled with the exact color of the page
+    // behind it (rope.js reads it there), a straight 3 by 7 strand (smaller and straighter, Maurice, 2026-10-28). No glow, no movement, no hover, and the
     // pointer stays an arrow.
     '#rope-layer{position:absolute;left:0;top:0;width:100%;height:0;z-index:40;pointer-events:none}' +
-    '.rope-piece{position:absolute;width:22px;height:22px;padding:0;margin:0;border:0;border-radius:0;background:none;cursor:default;pointer-events:auto;outline:none;-webkit-tap-highlight-color:transparent}' +
-    '.rope-ink{position:absolute;left:50%;top:50%;width:7px;height:18px;margin:-9px 0 0 -3.5px;background:rgba(255,255,255,.01);-webkit-backdrop-filter:brightness(1.7);backdrop-filter:brightness(1.7);' +
-      '-webkit-mask:url(' + MASK + ') center/contain no-repeat;mask:url(' + MASK + ') center/contain no-repeat}' +
+    '.rope-piece{position:absolute;width:16px;height:16px;padding:0;margin:0;border:0;border-radius:0;background:none;cursor:default;pointer-events:auto;outline:none;-webkit-tap-highlight-color:transparent}' +
+    '.rope-ink{position:absolute;left:50%;top:50%;width:3px;height:7px;margin:-3.5px 0 0 -1.5px}' +
+    '.rope-ink i{position:absolute;inset:0;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}' +
+    '.rope-ink .e{background:#000;--m:url(' + EDGE + ')}' +
+    '.rope-ink .f{background:var(--rope,#0b170f);--m:url(' + FILL + ')}' +
     '.rope-piece.h .rope-ink{transform:rotate(90deg)}' +
-    '.rope-piece.lt .rope-ink{-webkit-backdrop-filter:brightness(.78);backdrop-filter:brightness(.78)}' +
+    '.rope-piece:not(.inked){visibility:hidden}' +
     '.rope-full .rope-piece{pointer-events:none}' +
     '.rope-piece.rope-gone{display:none}' +
     '#rope-pop{position:fixed;left:50%;bottom:24px;z-index:2147483000;box-sizing:border-box;width:min(440px,calc(100vw - 32px));transform:translateX(-50%);background:#0b170f;color:#f3ead9;border:2px solid #89fbcb;border-radius:0;padding:22px 24px;font-family:Almarai,sans-serif;font-size:16px;line-height:1.5;box-shadow:0 18px 40px rgba(0,0,0,.45);display:grid;gap:14px}' +
@@ -119,29 +120,41 @@
         var w = parseFloat(cs['border' + side + 'Width']) || 0, st = cs['border' + side + 'Style'], col = cs['border' + side + 'Color'];
         return w >= 1 && st !== 'none' && st !== 'hidden' && !/rgba\([^)]*,\s*0(\.0*)?\)$/.test(col) && col !== 'transparent';
       };
-      if (seen('Top')) out.push([L, T, Rr, T, 'h']);
-      if (seen('Bottom')) out.push([L, B, Rr, B, 'h']);
-      if (seen('Left') && r.height >= 40) out.push([L, T, L, B, 'v']);
-      if (seen('Right') && r.height >= 40) out.push([Rr, T, Rr, B, 'v']);
-      if (el.matches('section,.page-section') && r.width >= vw * 0.8) out.push([16, T, vw - 16, T, 'h']);
+      // the last two numbers push the strand off the line by a little under half its thickness, to the outside, so it lies flush
+      // against the edge (Maurice, 2026-10-28)
+      if (seen('Top')) out.push([L, T, Rr, T, 'h', 0, -1.2]);
+      if (seen('Bottom')) out.push([L, B, Rr, B, 'h', 0, 1.2]);
+      if (seen('Left') && r.height >= 40) out.push([L, T, L, B, 'v', -1.2, 0]);
+      if (seen('Right') && r.height >= 40) out.push([Rr, T, Rr, B, 'v', 1.2, 0]);
+      if (el.matches('section,.page-section') && r.width >= vw * 0.8) out.push([16, T, vw - 16, T, 'h', 0, -1.2]);
     });
     return out.filter(function (l) { return l[1] >= top0 && l[3] <= bottom0 && l[0] >= 0 && l[2] <= vw; })
       .sort(function (a, b) { return a[1] - b[1] || a[0] - b[0]; });
   }
-  function lightUnder(b) {
+  function rgbOf(str) { var m = String(str).match(/rgba?\(([^)]+)\)/); if (!m) return null; var v = m[1].split(/[ ,\/]+/).map(Number); return { c: 'rgb(' + v[0] + ',' + v[1] + ',' + v[2] + ')', a: v.length > 3 ? v[3] : 1 }; }
+  function colorUnder(b) {
     var r = b.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
-    if (y < 0 || y > innerHeight) return null;
+    if (y < 0 || y > innerHeight || x < 0 || x > innerWidth) return null;
     var els = document.elementsFromPoint(x, y);
     for (var i = 0; i < els.length; i++) {
       var el = els[i]; if (el.closest('#rope-layer,#rope-pop')) continue;
-      var cs = getComputedStyle(el), m = cs.backgroundColor.match(/[d.]+/g);
-      if (cs.backgroundImage !== 'none' && (!m || +m[3] === 0)) return false;
-      if (m && (m[3] === undefined || +m[3] > .5)) return (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) / 255 > .6;
+      var cs = getComputedStyle(el), bg = rgbOf(cs.backgroundColor);
+      if (bg && bg.a * (+cs.opacity) >= 0.5) return bg.c;
+      if (cs.backgroundImage !== 'none') {
+        var g = rgbOf(cs.backgroundImage); if (g) return g.c;          // a gradient wash: its first color
+        var sec = el.closest('section') || el, ov = sec.querySelector('.section-background-overlay');
+        if (ov) { var o = rgbOf(getComputedStyle(ov).backgroundColor); if (o && o.a > 0) return o.c; }
+      }
+      if (el.matches('img,video') ) { var sec2 = el.closest('section'), ov2 = sec2 && sec2.querySelector('.section-background-overlay'); if (ov2) { var o2 = rgbOf(getComputedStyle(ov2).backgroundColor); if (o2 && o2.a > 0) return o2.c; } }
     }
-    return false;
+    return 'rgb(11,23,15)';
   }
-  function shade() { here.forEach(function (id) { var b = buttons[id]; if (!b || b.hidden) return; var l = lightUnder(b); if (l !== null) b.classList.toggle('lt', l); }); }
-  addEventListener('scroll', function () { clearTimeout(shade.t); shade.t = setTimeout(shade, 120); }, { passive: true });
+  // a strand takes its color when it comes on screen (the page can only say what is behind a spot in view), and stays
+  // hidden until then, so it is never seen in the wrong color
+  function inkOne(b) { if (!b || b.hidden) return; var c = colorUnder(b); if (c) { b.style.setProperty('--rope', c); b.classList.add('inked'); } }
+  function shade() { here.forEach(function (id) { inkOne(buttons[id]); }); }
+  var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) inkOne(e.target); }); }) : null;
+  var ticking = false; addEventListener('scroll', function () { if (ticking) return; ticking = true; requestAnimationFrame(function () { ticking = false; shade(); }); }, { passive: true });
   function place() {
     var docH = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight), vw = document.documentElement.clientWidth;
     var head = document.querySelector('#header,header'), top0 = head ? head.getBoundingClientRect().bottom + scrollY + 24 : 120;
@@ -175,6 +188,7 @@
     }
     here.forEach(function (id, k) {
       var b = buttons[id]; if (!b) return;
+      b.classList.remove('inked');   // it may move: it takes its color again where it lands
       // a hand-placed piece (R.spots) sits on the line of a white box: the last five, moved by Maurice on 2026-10-07
       var pin = (R.spots || {})[id], el = pin && document.querySelectorAll(pin.sel)[pin.i || 0];
       if (el) {
@@ -191,15 +205,15 @@
         var start = Math.floor(lines.length * ((k + 0.15 + hash(id, 1) * 0.7) / here.length));
         for (var li = 0; li < lines.length; li++) {
           var ln = lines[(start + li) % lines.length], t = 0.12 + 0.76 * hash(id + li, 3);
-          var cx = ln[0] + (ln[2] - ln[0]) * t, cy = ln[1] + (ln[3] - ln[1]) * t;
+          var cx = ln[0] + (ln[2] - ln[0]) * t + ln[5], cy = ln[1] + (ln[3] - ln[1]) * t + ln[6];
           if (cx < 24 || cx > vw - 24) continue;
           if (!lineFree(cx, cy)) continue;
           b.hidden = false; b.classList.toggle('h', ln[4] === 'h'); placed.push([cx - S / 2, cy - S / 2]);
-          b.style.left = Math.round(cx - 11) + 'px'; b.style.top = Math.round(cy - 11) + 'px';
+          b.style.left = (cx - 8) + 'px'; b.style.top = (cy - 8) + 'px'; b.setAttribute('data-on', 'edge');
           return;
         }
       }
-      b.classList.remove('h');
+      b.classList.remove('h'); b.setAttribute('data-on', 'gap');
       // each piece aims for its own stretch of the page, then looks outward for an empty spot, as far as the whole page
       // (the raft looked 4000px each way; a long phone page left a strand with nowhere to go)
       var aimY = top0 + (bottom0 - top0) * ((k + 0.15 + hash(id, 1) * 0.7) / here.length), aimX = 16 + (vw - 32 - S) * hash(id, 2);
@@ -215,7 +229,7 @@
       }
       if (!spot) { b.hidden = true; return; }
       b.hidden = false; placed.push(spot);
-      b.style.left = Math.round(spot[0] + S / 2 - 11) + 'px'; b.style.top = Math.round(spot[1] + S / 2 - 11) + 'px';
+      b.style.left = Math.round(spot[0] + S / 2 - 8) + 'px'; b.style.top = Math.round(spot[1] + S / 2 - 8) + 'px';
     });
     shade();
   }
@@ -226,9 +240,9 @@
       var b = document.createElement('button');
       b.type = 'button'; b.className = 'rope-piece'; b.hidden = true;
       b.setAttribute('aria-label', 'A strand of rope');
-      b.innerHTML = '<span class="rope-ink"></span>';
+      b.innerHTML = '<span class="rope-ink"><i class="e"></i><i class="f"></i></span>';
       b.onclick = function () { grab(id); };
-      buttons[id] = b; layer.appendChild(b);
+      buttons[id] = b; layer.appendChild(b); if (io) io.observe(b);
     });
   }
   function lockFull() {
