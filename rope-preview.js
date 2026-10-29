@@ -51,11 +51,11 @@
   var css = document.createElement('style');
   css.textContent =
     // Each strand is solid (Maurice, 2026-10-28): a black edge, and the middle filled with the exact color of the page
-    // behind it (rope.js reads it there), a straight 3 by 7 strand (smaller and straighter, Maurice, 2026-10-28). No glow, no movement, no hover, and the
+    // behind it (rope.js reads it there), a straight 6 by 14 strand (smaller and straighter, then doubled, Maurice, 2026-10-28). No glow, no movement, no hover, and the
     // pointer stays an arrow.
     '#rope-layer{position:absolute;left:0;top:0;width:100%;height:0;z-index:40;pointer-events:none}' +
     '.rope-piece{position:absolute;width:16px;height:16px;padding:0;margin:0;border:0;border-radius:0;background:none;cursor:default;pointer-events:auto;outline:none;-webkit-tap-highlight-color:transparent}' +
-    '.rope-ink{position:absolute;left:50%;top:50%;width:3px;height:7px;margin:-3.5px 0 0 -1.5px}' +
+    '.rope-ink{position:absolute;left:50%;top:50%;width:6px;height:14px;margin:-7px 0 0 -3px}' +
     '.rope-ink i{position:absolute;inset:0;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}' +
     '.rope-ink .e{background:#000;--m:url(' + EDGE + ')}' +
     '.rope-ink .f{background:var(--rope,#0b170f);--m:url(' + FILL + ')}' +
@@ -122,11 +122,11 @@
       };
       // the last two numbers push the strand off the line by a little under half its thickness, to the outside, so it lies flush
       // against the edge (Maurice, 2026-10-28)
-      if (seen('Top')) out.push([L, T, Rr, T, 'h', 0, -1.2]);
-      if (seen('Bottom')) out.push([L, B, Rr, B, 'h', 0, 1.2]);
-      if (seen('Left') && r.height >= 40) out.push([L, T, L, B, 'v', -1.2, 0]);
-      if (seen('Right') && r.height >= 40) out.push([Rr, T, Rr, B, 'v', 1.2, 0]);
-      if (el.matches('section,.page-section') && r.width >= vw * 0.8) out.push([16, T, vw - 16, T, 'h', 0, -1.2]);
+      if (seen('Top')) out.push([L, T, Rr, T, 'h', 0, -2.6]);
+      if (seen('Bottom')) out.push([L, B, Rr, B, 'h', 0, 2.6]);
+      if (seen('Left') && r.height >= 40) out.push([L, T, L, B, 'v', -2.6, 0]);
+      if (seen('Right') && r.height >= 40) out.push([Rr, T, Rr, B, 'v', 2.6, 0]);
+      if (el.matches('section,.page-section') && r.width >= vw * 0.8) out.push([16, T, vw - 16, T, 'h', 0, -2.6]);
     });
     return out.filter(function (l) { return l[1] >= top0 && l[3] <= bottom0 && l[0] >= 0 && l[2] <= vw; })
       .sort(function (a, b) { return a[1] - b[1] || a[0] - b[0]; });
