@@ -105,8 +105,8 @@
     return out;
   }
   function hash(n, salt) { var x = Math.sin(n * 12.9898 + salt * 78.233) * 43758.5453; return x - Math.floor(x); }
-  // The lines on the page a strand can lie along: the visible borders of boxes and buttons, and the edges where one
-  // section meets the next. Each one: [x0, y0, x1, y1, 'h' or 'v'] in page pixels.
+  // The lines on the page a strand can lie along: the visible borders of boxes and buttons (not section seams: two
+  // sections the same color leave no line to see). Each one: [x0, y0, x1, y1, 'h' or 'v'] in page pixels.
   function pageLines(top0, bottom0, vw) {
     var out = [], sx = scrollX, sy = scrollY;
     Array.prototype.forEach.call(document.querySelectorAll('body *'), function (el) {
@@ -116,6 +116,12 @@
       if (B < top0 || T > bottom0) return;
       var cs = getComputedStyle(el);
       if (cs.visibility === 'hidden' || cs.display === 'none' || +cs.opacity === 0) return;
+      // only a box you can see: not faded out or clipped away by anything around it (a slideshow's other slides)
+      var mx = r.left + r.width / 2, my = r.top + r.height / 2;
+      for (var an = el.parentElement; an && an !== document.body; an = an.parentElement) {
+        var acs = getComputedStyle(an); if (+acs.opacity < 0.5 || acs.visibility === 'hidden') return;
+        if (acs.overflow !== 'visible' || acs.overflowX !== 'visible') { var ar = an.getBoundingClientRect(); if (mx < ar.left || mx > ar.right || my < ar.top || my > ar.bottom) return; }
+      }
       var seen = function (side) {
         var w = parseFloat(cs['border' + side + 'Width']) || 0, st = cs['border' + side + 'Style'], col = cs['border' + side + 'Color'];
         return w >= 1 && st !== 'none' && st !== 'hidden' && !/rgba\([^)]*,\s*0(\.0*)?\)$/.test(col) && col !== 'transparent';
@@ -126,7 +132,6 @@
       if (seen('Bottom')) out.push([L, B, Rr, B, 'h', 0, 2.6]);
       if (seen('Left') && r.height >= 40) out.push([L, T, L, B, 'v', -2.6, 0]);
       if (seen('Right') && r.height >= 40) out.push([Rr, T, Rr, B, 'v', 2.6, 0]);
-      if (el.matches('section,.page-section') && r.width >= vw * 0.8) out.push([16, T, vw - 16, T, 'h', 0, -2.6]);
     });
     return out.filter(function (l) { return l[1] >= top0 && l[3] <= bottom0 && l[0] >= 0 && l[2] <= vw; })
       .sort(function (a, b) { return a[1] - b[1] || a[0] - b[0]; });
