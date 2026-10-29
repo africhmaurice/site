@@ -231,6 +231,12 @@
       "source": "bot:squarespace-sink.html"
     },
     {
+      "slug": "pull-her-out",
+      "url": "/pull-her-out",
+      "title": "Pull Her Out (Chapter 14, the rope hunt)",
+      "source": "bot:squarespace-rope.html"
+    },
+    {
       "slug": "adventure",
       "url": "/adventure",
       "title": "The Adventure So Far (every Choose Your Own Adventure beat)",

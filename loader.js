@@ -1046,22 +1046,35 @@
         var a = shore.cloneNode(false); a.href = SITE + '/light-on-her-feet'; a.textContent = 'LIGHT ON HER FEET';
         box.insertBefore(a, shore.nextSibling);
       });
+      // Pull Her Out (chapter 14, 2026-10-28) follows Light on Her Feet
+      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/light-on-her-feet"]'), function (feet) {
+        var box = feet.parentNode;
+        if (box.querySelector('a[href$="/pull-her-out"]')) return;
+        var a = feet.cloneNode(false); a.href = SITE + '/pull-her-out'; a.textContent = 'PULL HER OUT';
+        box.insertBefore(a, feet.nextSibling);
+      });
     });
   }
   // The raft hunt (chapter 6, 2026-10-07): raft.js hides the pieces on every page; it checks its own hours.
   // Chapter buttons (2026-10-09): Previous chapter / See the map / Next chapter at the foot of each chapter page.
   function chapterNav() {
     if (window.__chapterNavLoaded) return; window.__chapterNavLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=9'; s.async = true; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=10'; s.async = true; document.head.appendChild(s);
   }
   function raftHunt() {
     if (window.__raftLoaded) return; window.__raftLoaded = true;
     var s = document.createElement('script'); s.src = GH + 'raft.js?v=8'; s.async = true; document.head.appendChild(s);
   }
+  // The rope hunt (chapter 14, 2026-10-29): rope.js hides the strands on every page; it checks its own hours.
+  function ropeHunt() {
+    if (window.__ropeLoaded) return; window.__ropeLoaded = true;
+    var s = document.createElement('script'); s.src = GH + 'rope.js?v=1'; s.async = true; document.head.appendChild(s);
+  }
   function huntGift() {
     huntLinks();
     huntRiver();
     raftHunt();
+    ropeHunt();
     chapterNav();
     var caret = '<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg>';
     Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
