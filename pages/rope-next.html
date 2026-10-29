@@ -589,7 +589,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .rf-hard{margin:0 0 20px;padding:20px;border:2px solid #fd7547;background:rgba(253,117,71,.08);font-weight:800;font-size:18px;line-height:1.45;color:#fffffe}
 #rc .rf-slot img{width:80%;height:80%;object-fit:contain}
 /* a page with no strands left is crossed out (Maurice, 2026-10-28) */
-#rc .rf-where li.done a{text-decoration:line-through;text-decoration-thickness:2px;color:rgba(237,233,220,.5)}
+#rc .rf-where li.done s{text-decoration:line-through;text-decoration-thickness:2px;color:rgba(237,233,220,.5)}
 #rc .rf-where .rf-note{margin-bottom:4px}
 </style>
 
@@ -1772,12 +1772,11 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     for (var i = 1; i <= RAFT.total; i++) cells += '<i class="' + (mineSet[i] ? 'mine' : gone[i] ? 'in' : '') + '"></i>';
     var slots = '';
     for (var k = 0; k < RAFT.perFren; k++) slots += '<div class="rf-slot' + (raftMine[k] ? ' got' : '') + '">' + (raftMine[k] ? raftArt(raftMine[k]) : '<span>' + (k + 1) + '</span>') + '</div>';
-    // every page with strands, from the start, and never how many are left: a page is crossed out once every strand
-    // on it is gone (Maurice, 2026-10-28; the raft only listed the pages at its 12-hour mark)
-    var where = Object.keys(RAFT.pages).map(function (p) {
-      var empty = RAFT.pages[p].every(function (id) { return gone[id]; });
-      return '<li' + (empty ? ' class="done"' : '') + '><a href="https://www.mauriceafrich.com' + p + '">' + esc(RAFT.names[p]) + '</a>' + (empty ? '<span>ALL FOUND</span>' : '') + '</li>';
-    }).join('');
+    // no list of where the strands are; a page shows up here (plain text, crossed out) only once every strand on it is
+    // gone (Maurice, 2026-10-28)
+    var where = Object.keys(RAFT.pages).filter(function (p) {
+      return RAFT.pages[p].every(function (id) { return gone[id]; });
+    }).map(function (p) { return '<li class="done"><s>' + esc(RAFT.names[p]) + '</s><span>ALL FOUND</span></li>'; }).join('');
     sec.innerHTML = '<header><p class="rc-kick">STEP 2 · THE ROPE</p><h2>Find 5 strands</h2>' +
       '<p>Strands of rope are hidden all over mauriceafrich.com. When you spot one, click it to grab it. Each claimed strand pays ' + RAFT.points + ' points, and once a fren grabs a strand, it’s gone for everyone else. You can carry ' + RAFT.perFren + '.</p>' +
       '<p>If the frens don’t find all ' + RAFT.total + ' in time, Scarlett gets whatever rope they braided, and the rope is only as strong as its strands.</p></header>' +
@@ -1786,7 +1785,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       '<div class="rf-bar" role="img" aria-label="' + found + ' of ' + RAFT.total + ' strands of rope found">' + cells + '</div></div>' +
       '<div class="rf-mine"><div class="k">YOUR STRANDS · ' + raftMine.length + ' OF ' + RAFT.perFren + '</div><div class="rf-slots">' + slots + '</div>' +
       '<p class="rf-note">' + (!DATA.needsRope && raftMine.length < RAFT.perFren ? 'The dice are open to everyone. Roll for the rescue below.' : raftMine.length >= RAFT.perFren ? 'You have all ' + RAFT.perFren + '. Roll for the rescue below.' : PREVIEW ? 'Preview: the dice below are unlocked so you can try them.' : 'Find ' + (RAFT.perFren - raftMine.length) + ' more to unlock the dice.') + '</p></div></div>' +
-      '<div class="rf-where"><div class="k">WHERE TO LOOK</div><p class="rf-note">These pages are hiding strands. When every strand on a page has been found, it gets crossed out.</p><ul>' + where + '</ul></div>';
+      '<div class="rf-where"><div class="k">PAGES PICKED CLEAN</div><p class="rf-note">' + (where ? 'Every strand on these pages has been found. Look somewhere else.' : 'When every strand on a page has been found, that page shows up here.') + '</p>' + (where ? '<ul>' + where + '</ul>' : '') + '</div>';
   }
   function raftRefresh() {
     if (PREVIEW) {
