@@ -1068,7 +1068,7 @@
   // The rope hunt (chapter 14, 2026-10-29): rope.js hides the strands on every page; it checks its own hours.
   function ropeHunt() {
     if (window.__ropeLoaded) return; window.__ropeLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'rope.js?v=1'; s.async = true; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = GH + 'rope.js?v=2'; s.async = true; document.head.appendChild(s);
   }
   function huntGift() {
     huntLinks();
