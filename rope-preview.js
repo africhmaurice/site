@@ -43,27 +43,25 @@
     '<path d="M7 35C14 28 20 31 25 24S35 13 41 12" fill="none" stroke="#e2c58f" stroke-width="5.5" stroke-linecap="round"/>' +
     '<path d="M10 30l4 4M15 27l3 5M20 26l3 4M24 21l3 4M28 17l3 4M32 14l3 4M36 12l2 4" stroke="#7a4e1d" stroke-width="1.6"/>' +
     '<path d="M5 37l-2 3M7 38l0 3M41 12l3-2M41 10l2-3" stroke="#0b170f" stroke-width="1.6"/>';
+  // the rope's shape, straight, for the strands on the page (art() is the colored one the popup shows)
+  var MASK = 'https://africhmaurice.github.io/site/assets/rope/strand-mask.png';
   function kindOf(id) { return R.kinds[(id - 1) % R.kinds.length]; }
   function art(id) { return R.art && R.art.length ? '<img src="' + R.art[(id - 1) % R.art.length] + '" alt="" draggable="false">' : '<svg viewBox="0 0 48 48" aria-hidden="true">' + STRAND + '</svg>'; }
 
   var css = document.createElement('style');
   css.textContent =
+    // Each strand is the page behind it, in the rope's shape, a little brighter on a dark spot and a little darker on a
+    // light one
+    // (Maurice, 2026-10-28: match the background, no glow, no movement, no hint). Nothing changes on hover, and the
+    // pointer stays an arrow.
     '#rope-layer{position:absolute;left:0;top:0;width:100%;height:0;z-index:40;pointer-events:none}' +
-    // super tiny (Maurice, 2026-10-28): a 16px strand in a 20px button, centered in the 48px spot the placer keeps clear
-    '.rope-piece{position:absolute;width:20px;height:20px;padding:2px;margin:14px 0 0 14px;border:0;border-radius:0;background:none;cursor:pointer;pointer-events:auto;filter:drop-shadow(0 0 3px rgba(255,214,140,.95)) drop-shadow(0 3px 4px rgba(11,23,15,.45));animation:ropeBob 2.6s ease-in-out infinite;transition:transform .35s ease,opacity .35s ease}' +
-    '.rope-piece svg,.rope-piece img{display:block;width:16px;height:16px;object-fit:contain}' +
-    '.rope-piece:hover,.rope-piece:focus-visible{transform:scale(1.3);outline:none}' +
-    // a fren with all 5 still sees the pieces left, but can't take them (Maurice, 2026-10-07)
-    '.rope-full .rope-piece{cursor:default;pointer-events:none}' +
-    // the more the frens find, the harder the rest are to see (Maurice, 2026-10-07): at 50 found no glow and no bobbing,
-    // with 25 left the pieces fade to 25%, and with the final 10 left, to 10%
-    '.rope-hard .rope-piece{filter:none;animation:none;rotate:0deg;translate:0 0}' +
-    '.rope-faint .rope-piece{opacity:.25}' +
-    '.rope-ghost .rope-piece{opacity:.1}' +
-    '.rope-full .rope-piece:hover{transform:none}' +
-    '.rope-piece.rope-gone{opacity:0;transform:translateY(-40px) scale(.6);pointer-events:none}' +
-    '@keyframes ropeBob{0%,100%{translate:0 0;rotate:-6deg}50%{translate:0 -5px;rotate:6deg}}' +
-    '@media (prefers-reduced-motion:reduce){.rope-piece{animation:none}}' +
+    '.rope-piece{position:absolute;width:22px;height:22px;padding:0;margin:0;border:0;border-radius:0;background:none;cursor:default;pointer-events:auto;outline:none;-webkit-tap-highlight-color:transparent}' +
+    '.rope-ink{position:absolute;left:50%;top:50%;width:7px;height:18px;margin:-9px 0 0 -3.5px;background:rgba(255,255,255,.01);-webkit-backdrop-filter:brightness(1.7);backdrop-filter:brightness(1.7);' +
+      '-webkit-mask:url(' + MASK + ') center/contain no-repeat;mask:url(' + MASK + ') center/contain no-repeat}' +
+    '.rope-piece.h .rope-ink{transform:rotate(90deg)}' +
+    '.rope-piece.lt .rope-ink{-webkit-backdrop-filter:brightness(.78);backdrop-filter:brightness(.78)}' +
+    '.rope-full .rope-piece{pointer-events:none}' +
+    '.rope-piece.rope-gone{display:none}' +
     '#rope-pop{position:fixed;left:50%;bottom:24px;z-index:2147483000;box-sizing:border-box;width:min(440px,calc(100vw - 32px));transform:translateX(-50%);background:#0b170f;color:#f3ead9;border:2px solid #89fbcb;border-radius:0;padding:22px 24px;font-family:Almarai,sans-serif;font-size:16px;line-height:1.5;box-shadow:0 18px 40px rgba(0,0,0,.45);display:grid;gap:14px}' +
     '#rope-pop[hidden]{display:none}' +
     '#rope-pop .rp-k{margin:0;font-weight:800;font-size:12px;letter-spacing:.16em;color:#89fbcb;text-transform:uppercase}' +
@@ -106,6 +104,44 @@
     return out;
   }
   function hash(n, salt) { var x = Math.sin(n * 12.9898 + salt * 78.233) * 43758.5453; return x - Math.floor(x); }
+  // The lines on the page a strand can lie along: the visible borders of boxes and buttons, and the edges where one
+  // section meets the next. Each one: [x0, y0, x1, y1, 'h' or 'v'] in page pixels.
+  function pageLines(top0, bottom0, vw) {
+    var out = [], sx = scrollX, sy = scrollY;
+    Array.prototype.forEach.call(document.querySelectorAll('body *'), function (el) {
+      if (el.closest('#rope-layer,#rope-pop,header,#header,footer,#footer-sections,script,style')) return;
+      var r = el.getBoundingClientRect(); if (r.width < 60 || r.height < 24) return;
+      var L = r.left + sx, T = r.top + sy, Rr = L + r.width, B = T + r.height;
+      if (B < top0 || T > bottom0) return;
+      var cs = getComputedStyle(el);
+      if (cs.visibility === 'hidden' || cs.display === 'none' || +cs.opacity === 0) return;
+      var seen = function (side) {
+        var w = parseFloat(cs['border' + side + 'Width']) || 0, st = cs['border' + side + 'Style'], col = cs['border' + side + 'Color'];
+        return w >= 1 && st !== 'none' && st !== 'hidden' && !/rgba\([^)]*,\s*0(\.0*)?\)$/.test(col) && col !== 'transparent';
+      };
+      if (seen('Top')) out.push([L, T, Rr, T, 'h']);
+      if (seen('Bottom')) out.push([L, B, Rr, B, 'h']);
+      if (seen('Left') && r.height >= 40) out.push([L, T, L, B, 'v']);
+      if (seen('Right') && r.height >= 40) out.push([Rr, T, Rr, B, 'v']);
+      if (el.matches('section,.page-section') && r.width >= vw * 0.8) out.push([16, T, vw - 16, T, 'h']);
+    });
+    return out.filter(function (l) { return l[1] >= top0 && l[3] <= bottom0 && l[0] >= 0 && l[2] <= vw; })
+      .sort(function (a, b) { return a[1] - b[1] || a[0] - b[0]; });
+  }
+  function lightUnder(b) {
+    var r = b.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    if (y < 0 || y > innerHeight) return null;
+    var els = document.elementsFromPoint(x, y);
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i]; if (el.closest('#rope-layer,#rope-pop')) continue;
+      var cs = getComputedStyle(el), m = cs.backgroundColor.match(/[d.]+/g);
+      if (cs.backgroundImage !== 'none' && (!m || +m[3] === 0)) return false;
+      if (m && (m[3] === undefined || +m[3] > .5)) return (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) / 255 > .6;
+    }
+    return false;
+  }
+  function shade() { here.forEach(function (id) { var b = buttons[id]; if (!b || b.hidden) return; var l = lightUnder(b); if (l !== null) b.classList.toggle('lt', l); }); }
+  addEventListener('scroll', function () { clearTimeout(shade.t); shade.t = setTimeout(shade, 120); }, { passive: true });
   function place() {
     var docH = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight), vw = document.documentElement.clientWidth;
     var head = document.querySelector('#header,header'), top0 = head ? head.getBoundingClientRect().bottom + scrollY + 24 : 120;
@@ -129,6 +165,14 @@
       for (var j = 0; j < placed.length; j++) { var c = placed[j]; if (Math.abs(c[0] - x) < 90 && Math.abs(c[1] - y) < 90) return false; }
       return true;
     }
+    var lines = null;
+    function lineFree(cx, cy) {
+      if (!mapped) map();
+      var x0 = Math.max(0, Math.floor((cx - 12) / C)), x1 = Math.min(cols - 1, Math.floor((cx + 12) / C)), y0 = Math.max(0, Math.floor((cy - 12) / C)), y1 = Math.min(rows - 1, Math.floor((cy + 12) / C));
+      for (var gy = y0; gy <= y1; gy++) for (var gx = x0; gx <= x1; gx++) if (grid[gy * cols + gx]) return false;
+      for (var j = 0; j < placed.length; j++) { var c = placed[j]; if (Math.abs(c[0] + S / 2 - cx) < 90 && Math.abs(c[1] + S / 2 - cy) < 90) return false; }
+      return true;
+    }
     here.forEach(function (id, k) {
       var b = buttons[id]; if (!b) return;
       // a hand-placed piece (R.spots) sits on the line of a white box: the last five, moved by Maurice on 2026-10-07
@@ -141,6 +185,21 @@
         b.hidden = false; b.style.left = Math.round(px) + 'px'; b.style.top = Math.round(py) + 'px'; placed.push([px, py]);
         return;
       }
+      // first, a spot on a line in this piece's own stretch of the page, clear of words and pictures
+      if (!lines) lines = pageLines(top0, bottom0, vw);
+      if (lines.length) {
+        var start = Math.floor(lines.length * ((k + 0.15 + hash(id, 1) * 0.7) / here.length));
+        for (var li = 0; li < lines.length; li++) {
+          var ln = lines[(start + li) % lines.length], t = 0.12 + 0.76 * hash(id + li, 3);
+          var cx = ln[0] + (ln[2] - ln[0]) * t, cy = ln[1] + (ln[3] - ln[1]) * t;
+          if (cx < 24 || cx > vw - 24) continue;
+          if (!lineFree(cx, cy)) continue;
+          b.hidden = false; b.classList.toggle('h', ln[4] === 'h'); placed.push([cx - S / 2, cy - S / 2]);
+          b.style.left = Math.round(cx - 11) + 'px'; b.style.top = Math.round(cy - 11) + 'px';
+          return;
+        }
+      }
+      b.classList.remove('h');
       // each piece aims for its own stretch of the page, then looks outward for an empty spot, as far as the whole page
       // (the raft looked 4000px each way; a long phone page left a strand with nowhere to go)
       var aimY = top0 + (bottom0 - top0) * ((k + 0.15 + hash(id, 1) * 0.7) / here.length), aimX = 16 + (vw - 32 - S) * hash(id, 2);
@@ -156,8 +215,9 @@
       }
       if (!spot) { b.hidden = true; return; }
       b.hidden = false; placed.push(spot);
-      b.style.left = Math.round(spot[0]) + 'px'; b.style.top = Math.round(spot[1]) + 'px';
+      b.style.left = Math.round(spot[0] + S / 2 - 11) + 'px'; b.style.top = Math.round(spot[1] + S / 2 - 11) + 'px';
     });
+    shade();
   }
 
   function addPieces() {
@@ -166,13 +226,12 @@
       var b = document.createElement('button');
       b.type = 'button'; b.className = 'rope-piece'; b.hidden = true;
       b.setAttribute('aria-label', 'A strand of rope');
-      b.innerHTML = art(id);
+      b.innerHTML = '<span class="rope-ink"></span>';
       b.onclick = function () { grab(id); };
       buttons[id] = b; layer.appendChild(b);
     });
   }
   function lockFull() {
-    layer.classList.toggle('rope-hard', found >= 50); layer.classList.toggle('rope-faint', found >= R.total - 25); layer.classList.toggle('rope-ghost', found >= R.total - 10);
     layer.classList.toggle('rope-full', mine.length >= R.perFren); Array.prototype.forEach.call(layer.querySelectorAll('.rope-piece'), function (b) { b.tabIndex = mine.length >= R.perFren ? -1 : 0; }); }
   function drop(id) { var b = buttons[id]; if (!b) return; b.classList.add('rope-gone'); setTimeout(function () { if (b.parentNode) b.parentNode.removeChild(b); }, 400); delete buttons[id]; }
 
