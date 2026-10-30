@@ -305,15 +305,16 @@ html body #hunt-nav.mn-burgered .mn-burger{display:flex!important;margin:0}
 .h-btn.h-red:hover{background:#e04a12}
 .h-sweep{max-width:1240px;margin:72px auto 0;text-align:center}
 .h-sweep>p{font-size:21px;line-height:1.55;color:#fff;max-width:1200px;margin:0 auto 32px;text-wrap:balance}
-.h-acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.h-acts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
 .h-act{text-decoration:none !important;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,background .2s ease;background:rgba(8,34,6,.55);border:1px solid rgba(243,234,217,.6);padding:26px 18px 24px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .h-act b{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2vw,30px);color:#fff;line-height:1.15}
-.h-act span{font-family:'Almarai',sans-serif;font-weight:700;font-size:16px;letter-spacing:.08em;color:#a2f590}
+.h-act span{font-family:'Almarai',sans-serif;font-weight:700;font-size:16px;letter-spacing:.08em;color:#a2f590;text-wrap:balance}
 .h-act i{display:none;font-style:normal;font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.14em;color:#fff;background:#c1330a;border:1px solid #f3ead9;padding:5px 10px}
 .h-act.h-now{border-color:#ff4c0f;box-shadow:0 0 0 2px #ff4c0f}
 .h-act.h-now i{display:inline-block}
 .h-act:hover{transform:scale(1.05);background:rgba(8,34,6,.75);box-shadow:0 10px 24px rgba(0,0,0,.35)}
 .h-act.h-now:hover{box-shadow:0 0 0 2px #ff4c0f,0 10px 24px rgba(0,0,0,.35)}
+@media (max-width:1200px){.h-acts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:900px){.h-btns{grid-template-columns:repeat(2,minmax(0,1fr))}.h-btn{font-size:14px;white-space:normal}.h-acts{grid-template-columns:1fr}.h-sweep>p{font-size:19px}}
 @media (max-width:420px){.h-btns{grid-template-columns:1fr}}
 </style>
@@ -326,11 +327,12 @@ html body #hunt-nav.mn-burgered .mn-burger{display:flex!important;margin:0}
       <a href="https://www.mauriceafrich.com/the-hunt#map" class="h-btn h-red">CHOOSE YOUR OWN ADVENTURE</a>
     </div>
     <div class="h-sweep">
-      <p>During the hunt, there will be three different sweepstakes, each with better/more prizes than the last. All you have to do to enter each sweepstakes is complete 1 task during the allotted time period for that sweepstakes.</p>
+      <p>During the hunt, there will be four different sweepstakes, each with better/more prizes than the last. All you have to do to enter each sweepstakes is complete 1 task during the allotted time period for that sweepstakes.</p>
       <div class="h-acts">
         <a class="h-act" href="#rewards" data-from="2026-09-21" data-to="2026-09-30"><b>Sweepstakes (Act One)</b><span>SEPTEMBER 21<sup style="font-size:.6em">ST</sup> – SEPTEMBER 30<sup style="font-size:.6em">TH</sup></span><i>OPEN NOW</i></a>
         <a class="h-act" href="#rewards" data-from="2026-10-01" data-to="2026-10-15"><b>Sweepstakes (Act Two)</b><span>OCTOBER 1<sup style="font-size:.6em">ST</sup> – OCTOBER 15<sup style="font-size:.6em">TH</sup></span><i>OPEN NOW</i></a>
         <a class="h-act" href="#rewards" data-from="2026-10-16" data-to="2026-11-01"><b>Sweepstakes (Act Three)</b><span>OCTOBER 16<sup style="font-size:.6em">TH</sup> – NOVEMBER 1<sup style="font-size:.6em">ST</sup></span><i>OPEN NOW</i></a>
+        <a class="h-act" href="#rewards" data-from="2026-11-02" data-to="2026-11-10"><b>Sweepstakes (Act Four)</b><span>NOVEMBER 2<sup style="font-size:.6em">ND</sup> – NOVEMBER 10<sup style="font-size:.6em">TH</sup></span><i>OPEN NOW</i></a>
       </div>
     </div>
     <script>(function(){
@@ -450,7 +452,7 @@ window.maConfetti = function(from){
   <!-- ============ HOW DOES IT WORK ============ -->
   <section id="how-it-works" data-screen-label="How does it work" style="background:#fff;padding:110px 72px 90px;text-align:center">
     <h2 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(52px,6vw,92px);color:#111;margin:0 0 24px;line-height:1.15">HOW DOES IT WORK?</h2>
-    <div class="m-date" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:30px;letter-spacing:.06em;color:#c53200;margin-bottom:56px">SEPTEMBER 21<sup style="font-size: 0.55em;">ST</sup> - NOVEMBER 1<sup style="font-size: 0.55em;">ST</sup></div>
+    <div class="m-date" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:30px;letter-spacing:.06em;color:#c53200;margin-bottom:56px">SEPTEMBER 21<sup style="font-size: 0.55em;">ST</sup> - NOVEMBER 10<sup style="font-size: 0.55em;">TH</sup></div>
     
     <p style="font-size:26px;line-height:1.6;max-width:1140px;margin:0 auto 56px;color:#111">Join the crew and go on an adventure! There are dozens of ways to earn points. Everyone who enters the hunt is <strong>guaranteed</strong> to win a reward.</p>
     <div style="margin:-8px 0 56px;display:flex;justify-content:center"><a href="javascript:void(0)" onclick="window.__openIntro()" class="hv-intro" aria-label="Introducing the Hunt — watch the video" style="position:relative;display:flex;align-items:center;justify-content:center;width:clamp(200px,22vw,280px);height:clamp(200px,22vw,280px);border-radius:50%;background:url(https://africhmaurice.github.io/site/assets/img/b6669f5c78651755.jpg) center/cover;border:3px solid #f3ead9;box-shadow:4px 6px 0 rgba(0,0,0,.35);text-decoration:none;overflow:hidden;transition:transform .15s ease"><span style="position:absolute;inset:0;background:rgba(193,51,10,.9);border-radius:50%"></span><span style="position:relative;font-family:'Atomic Marker',cursive;font-size:clamp(24px,2.2vw,32px);color:#fff;line-height:1.2;text-align:center;padding:0 24px">INTRODUCING THE&nbsp;HUNT!</span></a></div>
@@ -470,7 +472,7 @@ window.maConfetti = function(from){
     <h3 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(36px,4vw,58px);color:#111;margin:0 0 44px;line-height:1.15">THE MECHANICS</h3>
     <p style="font-size: 24px; line-height: 1.6; max-width: 1020px; margin: 0 auto 56px; color: #111">Every pre-order received, completed task, secret loot box found, riddle solved, and game played will help you unlock rewards, reveal new milestones, and get us one step closer to finding the stone!</p>
     <div class="m-grid3" style="max-width:1460px;margin:0 auto 56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:36px">
-      <div style="border:3px solid #111;padding:44px 32px;font-size:26px;line-height:1.5;color:#111">The hunt runs in three time-locked acts from:<br><span style="font-family:'Almarai',sans-serif;font-weight:700;color:#c53200;font-size:30px;letter-spacing:.03em;display:inline-block;margin-top:18px">SEPTEMBER 21<sup style="font-size: 0.55em;">ST</sup> - NOVEMBER 1<sup style="font-size: 0.55em;">ST</sup></span></div>
+      <div style="border:3px solid #111;padding:44px 32px;font-size:26px;line-height:1.5;color:#111">The hunt runs in four time-locked acts from:<br><span style="font-family:'Almarai',sans-serif;font-weight:700;color:#c53200;font-size:30px;letter-spacing:.03em;display:inline-block;margin-top:18px">SEPTEMBER 21<sup style="font-size: 0.55em;">ST</sup> - NOVEMBER 10<sup style="font-size: 0.55em;">TH</sup></span></div>
       <div style="border:3px solid #111;padding:44px 32px;font-size:26px;line-height:1.5;color:#111;display:flex;align-items:center;justify-content:center">Each act comes with new challenges, new tasks, and new opportunities to earn points.</div>
       <div style="border:3px solid #111;padding:44px 32px;font-size:26px;line-height:1.5;color:#111;display:flex;align-items:center;justify-content:center"><span><strong style="color:#c53200">Complete 1 task and win!</strong><br>It really is that simple.</span></div>
     </div>
