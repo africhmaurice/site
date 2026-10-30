@@ -1,0 +1,183 @@
+<!-- ============================================================
+     THE JIGSAW - hidden page for loot box 143 (Box 150 batch). Lives at /jigsaw.
+     Its own page; linked from an Act Three riddle card (clue "[Link to the puzzle]").
+     How it plays: a 100-piece jigsaw (10 across, 10 down) of Maurice's world map of Imperia, the same public map on
+     /the-hunt (site/assets/img/62e204cf291948bf.jpg). The board keeps the map's 4:3 shape, so pieces are slightly
+     wider than tall. Pieces are cut with real tabs and start scattered around the board. The board is plain black
+     with only a faint outline: no guide image and no preview of the finished picture anywhere, so players work the
+     picture out from the pieces alone. Drag a piece (mouse or finger) near its place and it snaps in and locks
+     (snap range is about half a piece; a finger press near a piece picks it up even off its exact edge).
+     Place all 100 and loot box 143 appears; clicking it opens the claim link.
+     "Restart" scatters the pieces again. On phones the pieces pile below the board.
+     Art: the map only. Piece shapes are cut in code.
+     DRAFT (all words on this page are new, for Maurice to approve):
+       heading "The Jigsaw"; line "100 pieces and no picture to go by. Put it together and the loot box is yours.";
+       label "Pieces" (counter 0/100); button "Restart"; win line "The map is whole. Box 143 is yours.".
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+#ma-jigsaw{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;overflow-x:hidden;
+  padding:clamp(120px,14vh,160px) 20px 80px;background-color:#0b170f;background-image:radial-gradient(ellipse at 50% 0%,rgba(15,92,77,.55) 0%,rgba(11,23,15,0) 60%),linear-gradient(rgba(11,23,15,0.84),rgba(11,23,15,0.84)),url(https://africhmaurice.github.io/site/assets/bg/d/garden-city-towers.webp);background-position:center;background-size:cover;background-repeat:no-repeat;background-attachment:scroll;
+  color:#f3ead9;font-family:'Almarai',sans-serif;text-align:center}
+#ma-jigsaw *{box-sizing:border-box;border-radius:0}
+@media (max-width:900px){#ma-jigsaw{background-image:radial-gradient(ellipse at 50% 0%,rgba(15,92,77,.55) 0%,rgba(11,23,15,0) 60%),linear-gradient(rgba(11,23,15,0.84),rgba(11,23,15,0.84)),url(https://africhmaurice.github.io/site/assets/bg/m/garden-city-towers.webp)}}
+#ma-jigsaw [hidden]{display:none!important}
+#ma-jigsaw .jg-wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
+#ma-jigsaw h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(38px,6vw,68px);line-height:1.2;letter-spacing:.04em;color:#fffffe;text-transform:uppercase}
+#ma-jigsaw .jg-lede{margin:0;font-weight:700;font-size:clamp(16px,1.8vw,19px);line-height:1.5;max-width:600px}
+#ma-jigsaw .jg-bar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 24px;font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+#ma-jigsaw .jg-bar b{color:#89fbcb;font-weight:800}
+#ma-jigsaw .jg-btn{margin:0;padding:10px 18px;border:1px solid rgba(243,234,217,.45);background:none;color:#f3ead9;font:800 13px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-jigsaw .jg-btn:hover,#ma-jigsaw .jg-btn:focus-visible{border-color:#89fbcb;color:#89fbcb;outline:none}
+#ma-jigsaw .jg-play{position:relative;width:100%;-webkit-user-select:none;user-select:none}
+#ma-jigsaw .jg-board{position:absolute;border:2px solid rgba(243,234,217,.28);background:#000}
+#ma-jigsaw .jg-piece{position:absolute;left:0;top:0;display:block;touch-action:none;cursor:grab;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
+#ma-jigsaw .jg-piece.lift{cursor:grabbing;will-change:transform;filter:drop-shadow(0 8px 10px rgba(0,0,0,.65))}
+@media (max-width:640px){#ma-jigsaw{padding-left:8px;padding-right:8px}#ma-jigsaw .jg-lede,#ma-jigsaw h1{padding:0 12px}}
+#ma-jigsaw .jg-piece.done{filter:none;cursor:default;pointer-events:none}
+#ma-jigsaw .jg-win{display:flex;flex-direction:column;align-items:center;gap:20px;margin-top:8px}
+#ma-jigsaw .jg-win p{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.25;letter-spacing:.04em;color:#89fbcb;text-transform:uppercase}
+#ma-jigsaw .jg-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(58vw,280px);animation:jgDrop .6s cubic-bezier(.25,1.5,.45,1) both}
+#ma-jigsaw .jg-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 34px rgba(137,251,203,.45))}
+#ma-jigsaw .jg-box:hover img,#ma-jigsaw .jg-box:focus-visible img{filter:drop-shadow(0 0 44px rgba(137,251,203,.75))}
+#ma-jigsaw .jg-box:focus-visible{outline:3px solid #89fbcb;outline-offset:8px}
+@keyframes jgDrop{from{opacity:0;transform:translateY(-40px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#ma-jigsaw .jg-box{animation:none}}
+</style>
+<section id="ma-jigsaw" aria-label="The Jigsaw">
+  <div class="jg-wrap">
+    <h1>The Jigsaw</h1>
+    <p class="jg-lede">100 pieces and no picture to go by. Put it together and the loot box is yours.</p>
+    <div class="jg-bar"><span>Pieces <b class="jg-count">0/100</b></span><button class="jg-btn jg-restart" type="button">Restart</button></div>
+    <div class="jg-play" aria-label="Puzzle board and loose pieces"><div class="jg-board"></div></div>
+    <div class="jg-win" role="status" hidden>
+      <p>The map is whole. Box 143 is yours.</p>
+      <button class="jg-box" type="button" aria-label="Open loot box 143"><img src="https://africhmaurice.github.io/site/assets/loot/143.png" alt="Loot box 143"></button>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var d=document.getElementById('ma-jigsaw');if(!d)return;
+  var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+
+  var K='RUczWEEyVEE9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+
+  var SRC='https://africhmaurice.github.io/site/assets/img/62e204cf291948bf.jpg';
+  var COLS=10,ROWS=10,TOTAL=COLS*ROWS;
+  var play=d.querySelector('.jg-play'),board=d.querySelector('.jg-board'),countEl=d.querySelector('.jg-count'),win=d.querySelector('.jg-win');
+  var pic=new Image(),edgesH,edgesV,pieces=[],BX,BY,BW,BH,PW,PH,T,M,z=10,placed=0,won=false,lastW=0;
+  var probe=document.createElement('canvas').getContext('2d');
+
+  function cut(){ /* +1 = tab out of the piece above/left, -1 = in; the shared edge is flipped for the neighbor */
+    edgesH=[];edgesV=[];
+    for(var r=0;r<ROWS-1;r++){edgesH[r]=[];for(var c=0;c<COLS;c++)edgesH[r][c]=Math.random()<.5?1:-1;}
+    for(var r2=0;r2<ROWS;r2++){edgesV[r2]=[];for(var c2=0;c2<COLS-1;c2++)edgesV[r2][c2]=Math.random()<.5?1:-1;}
+  }
+  function sides(r,c){return {t:r>0?-edgesH[r-1][c]:0,r:c<COLS-1?edgesV[r][c]:0,b:r<ROWS-1?edgesH[r][c]:0,l:c>0?-edgesV[r][c-1]:0};}
+  function shape(r,c){
+    var s=sides(r,c),p=new Path2D(),x0=M,y0=M,x1=M+PW,y1=M+PH;
+    function edge(ax,ay,bx,by,sg){
+      var dx=bx-ax,dy=by-ay,ux=dx,uy=dy,nx=uy/Math.hypot(dx,dy),ny=-ux/Math.hypot(dx,dy);
+      function pt(f,h){return [ax+dx*f+nx*h*T*sg,ay+dy*f+ny*h*T*sg];}
+      if(!sg){p.lineTo(bx,by);return;}
+      var a=pt(.36,0);p.lineTo(a[0],a[1]);
+      var c1=pt(.42,.15),c2=pt(.28,1),e=pt(.5,1);p.bezierCurveTo(c1[0],c1[1],c2[0],c2[1],e[0],e[1]);
+      c1=pt(.72,1);c2=pt(.58,.15);e=pt(.64,0);p.bezierCurveTo(c1[0],c1[1],c2[0],c2[1],e[0],e[1]);
+      p.lineTo(bx,by);
+    }
+    p.moveTo(x0,y0);edge(x0,y0,x1,y0,s.t);edge(x1,y0,x1,y1,s.r);edge(x1,y1,x0,y1,s.b);edge(x0,y1,x0,y0,s.l);p.closePath();
+    return p;
+  }
+  function measure(){
+    var w=play.clientWidth||960,narrow=w<640;
+    BW=Math.floor(narrow?w-4:Math.min(640,w*.6));BH=Math.round(BW*.75);PW=BW/COLS;PH=BH/ROWS;T=Math.min(PW,PH)*.22;M=Math.ceil(T)+2;
+    BX=Math.round((w-BW)/2);BY=M;
+    board.style.cssText='left:'+(BX-2)+'px;top:'+(BY-2)+'px;width:'+(BW+4)+'px;height:'+(BH+4)+'px';
+    /* loose-piece slots: everywhere outside the board */
+    var sw=PW*(narrow?.88:.95)+M,sh=PH*(narrow?.82:.95)+M,slots=[],y,x,H=BY+BH+M;
+    var need=TOTAL;
+    for(y=M;slots.length<need&&y<4000;y+=sh){
+      for(x=M;x+PW+2*M+3<=w;x+=sw){
+        var inside=!(x+PW+M<BX-M||x>BX+BW+M||y+PH+M<BY-M||y>BY+BH+M);
+        if(!inside)slots.push([x,y]);
+      }
+      H=Math.max(H,y+PH+2*M);
+    }
+    play.style.height=Math.ceil(Math.max(H,BY+BH+M))+'px';
+    return {w:w,slots:slots};
+  }
+  function render(pc){
+    var cvs=pc.el,dpr=Math.min(window.devicePixelRatio||1,2),cw2=PW+2*M,ch2=PH+2*M;
+    cvs.width=Math.ceil(cw2*dpr);cvs.height=Math.ceil(ch2*dpr);cvs.style.width=cw2+'px';cvs.style.height=ch2+'px';
+    var g=cvs.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,cw2,ch2);
+    pc.path=shape(pc.r,pc.c);
+    g.save();g.clip(pc.path);
+    if(pic.complete&&pic.naturalWidth)g.drawImage(pic,M-pc.c*PW,M-pc.r*PH,BW,BH);else{g.fillStyle='#0f5c4d';g.fillRect(0,0,cw2,ch2);}
+    g.restore();g.lineWidth=1.5;g.strokeStyle='rgba(11,23,15,.75)';g.stroke(pc.path);
+  }
+  function place(pc,x,y){pc.x=x;pc.y=y;pc.el.style.transform='translate3d('+(x-M)+'px,'+(y-M)+'px,0)';}
+  function scatter(slots){
+    var order=slots.slice();for(var i=order.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=order[i];order[i]=order[j];order[j]=t;}
+    pieces.forEach(function(pc,k){
+      if(pc.done){place(pc,BX+pc.c*PW,BY+pc.r*PH);return;}
+      var s=order[k%order.length];place(pc,s[0]+M+(Math.random()-.5)*6,s[1]+M+(Math.random()-.5)*6);
+    });
+  }
+  function build(){
+    pieces.forEach(function(pc){pc.el.remove();});pieces=[];placed=0;won=false;win.hidden=true;
+    cut();var m=measure();lastW=m.w;
+    for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++){
+      var el=document.createElement('canvas');el.className='jg-piece';el.dataset.r=r;el.dataset.c=c;el.setAttribute('aria-hidden','true');
+      var pc={r:r,c:c,el:el,done:false};pieces.push(pc);render(pc);el.style.zIndex=String(++z);play.appendChild(el);
+    }
+    scatter(m.slots);score();
+  }
+  function score(){countEl.textContent=placed+'/'+TOTAL;}
+  function shrink(){play.style.height=Math.ceil(BY+BH+M)+'px';} /* solved: no empty pile area left between the board and the box */
+  function relayout(){
+    if(!pieces.length)return;var m=measure();if(won)shrink();if(m.w===lastW)return;lastW=m.w;
+    pieces.forEach(render);scatter(m.slots);
+  }
+
+  /* pick the topmost loose piece whose cut shape is under the pointer */
+  function pick(e){
+    var els=document.elementsFromPoint(e.clientX,e.clientY),loose=null;
+    for(var i=0;i<els.length;i++){var el=els[i];if(!el.classList||!el.classList.contains('jg-piece'))continue;
+      var pc=pieces[(+el.dataset.r)*COLS+(+el.dataset.c)];if(pc.done)continue;
+      var b=el.getBoundingClientRect();if(probe.isPointInPath(pc.path,e.clientX-b.left,e.clientY-b.top))return pc;
+      if(!loose)loose=pc;}
+    return loose; /* forgiving for fingers: the top loose piece under the press, even just off its cut edge */
+  }
+  var drag=null;
+  play.addEventListener('pointerdown',function(e){
+    if(won||e.button>0)return;var pc=pick(e);if(!pc)return;e.preventDefault();
+    var pb=play.getBoundingClientRect();drag={pc:pc,dx:e.clientX-pb.left-pc.x,dy:e.clientY-pb.top-pc.y,id:e.pointerId};
+    pc.el.style.zIndex=String(++z);pc.el.classList.add('lift');try{play.setPointerCapture(e.pointerId);}catch(x){}
+  });
+  play.addEventListener('pointermove',function(e){
+    if(!drag||e.pointerId!==drag.id)return;e.preventDefault();var pb=play.getBoundingClientRect();
+    drag.nx=Math.max(0,Math.min(pb.width-PW,e.clientX-pb.left-drag.dx));drag.ny=Math.max(0,Math.min(play.offsetHeight-PH,e.clientY-pb.top-drag.dy));
+    if(!drag.raf){var dg=drag;dg.raf=requestAnimationFrame(function(){dg.raf=0;if(drag===dg)place(dg.pc,dg.nx,dg.ny);});}
+  });
+  function drop(e){
+    if(!drag||(e&&e.pointerId!==drag.id))return;var pc=drag.pc;if(drag.raf){cancelAnimationFrame(drag.raf);place(pc,drag.nx,drag.ny);}drag=null;pc.el.classList.remove('lift');
+    var tx=BX+pc.c*PW,ty=BY+pc.r*PH;
+    if(Math.hypot(pc.x-tx,pc.y-ty)<Math.max(14,Math.min(PW,PH)*.5)){
+      place(pc,tx,ty);pc.done=true;pc.el.classList.add('done');pc.el.style.zIndex='1';placed++;score();
+      if(placed===TOTAL){won=true;shrink();setTimeout(function(){win.hidden=false;win.scrollIntoView({behavior:'smooth',block:'center'});},500);}
+    }
+  }
+  play.addEventListener('pointerup',drop);play.addEventListener('pointercancel',drop);
+  d.querySelector('.jg-restart').addEventListener('click',build);
+  d.querySelector('.jg-box').addEventListener('click',claim);
+  window.addEventListener('resize',relayout);
+  pic.onload=function(){pieces.forEach(render);};pic.src=SRC;
+  build();
+})();
+</script>

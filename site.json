@@ -457,6 +457,18 @@
       "url": "/keen-eye-86115",
       "title": "Keen Eye (hidden; loot box 147, spot the differences)",
       "source": "pages/keen-eye.html"
+    },
+    {
+      "slug": "jigsaw",
+      "url": "/jigsaw-91788",
+      "title": "The Jigsaw (hidden; loot box 143)",
+      "source": "pages/jigsaw.html"
+    },
+    {
+      "slug": "crew-slide",
+      "url": "/crew-slide-65283",
+      "title": "Crew Slide (hidden; loot box 146)",
+      "source": "pages/crew-slide.html"
     }
   ],
   "staysInSquarespace": [
