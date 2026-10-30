@@ -10,6 +10,9 @@ const HEADSHOT = 'https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52
 
 // Best first. home: true puts it on the home page too. quote: a short pull quote from the piece (keep them short).
 const FEATURES = [
+  { home: true, outlet: 'Screen Rant', type: 'Excerpt', title: 'ScreenRant Presents A Sneak Peek Of Dungeon-Crawler-Carl-Style Fantasy Heist Cello’s Gate', date: 'Oct 2026',
+    quote: 'Blending witty and poetic prose, Africh’s debut is a must-read.',
+    url: 'https://screenrant.com/exclusive-excerpt-preview-cellos-gate-maruice-africh/' },
   { home: true, outlet: 'Kirkus Reviews', type: 'Review', title: 'Cello’s Gate: The Sky Pirates of Imperia', date: 'Aug 2026',
     quote: 'Readers should enjoy this thinly veiled literary love letter to pop-culture SF.',
     url: 'https://www.kirkusreviews.com/book-reviews/maurice-africh/cellos-gate-the-sky-pirates-of-imperia/' },
@@ -83,7 +86,7 @@ ${id} .pr-card{display:flex;flex-direction:column;gap:10px;padding:22px 22px 20p
 ${id} .pr-card:hover{transform:translateY(-4px);border-color:#3adb97;background:rgba(26,94,65,.55)}
 ${id} .pr-meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,254,.6)}
 ${id} .pr-type{font-weight:800;padding:4px 9px;border:1px solid currentColor}
-${id} .pr-review{color:#fd7547}${id} .pr-list{color:#a2f590}${id} .pr-podcast,${id} .pr-interview{color:#9e74fd}${id} .pr-video{color:#89fbcb}
+${id} .pr-review{color:#fd7547}${id} .pr-list{color:#a2f590}${id} .pr-podcast,${id} .pr-interview{color:#9e74fd}${id} .pr-video{color:#89fbcb}${id} .pr-excerpt{color:#fffffe}
 ${id} .pr-outlet{font-weight:800;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#3adb97}
 ${id} .pr-title{font-weight:700;font-size:18px;line-height:1.35}
 ${id} .pr-quote{font-size:15px;line-height:1.55;color:rgba(255,255,254,.82);font-style:italic}
