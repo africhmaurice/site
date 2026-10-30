@@ -12,6 +12,7 @@
      Click or tap a tile next to the gap to slide it in (arrow keys work too). When every tile is home the last tile
      fills in, then loot box 146 drops in below; clicking the chest opens the claim link.
      Test hook: ?test=1 exposes window.__crewSlide.solution() (the scramble played backward) for the test harness.
+     Plain white tiles (0, 1, 2, 23, and the gap 29) count in any white spot. The board saves on the device after every move (localStorage maCrewSlide).
      DRAFT (all words on this page are new, for Maurice to approve):
        heading "The Crew Slide Puzzle"; line "Slide the tiles into the gap. Put the crew back together.";
        counter "Moves"; button "Restart"; thumbnail label "The crew"; win line "The crew is back together. Box 146 is yours.".
@@ -77,26 +78,42 @@
   var tiles=[],pos=[],gap,moves=0,locked=false,trail=[];
   function place(t){tiles[t].style.left=(pos[t]%N)*100/N+'%';tiles[t].style.top=Math.floor(pos[t]/N)*100/ROWS+'%';}
   function nextTo(a,b){return Math.abs(a%N-b%N)+Math.abs(Math.floor(a/N)-Math.floor(b/N))===1;}
-  function inPlace(){for(var t=0;t<LAST;t++)if(pos[t]!==t)return false;return true;}
+  // Tiles 0, 1, 2, 23, and 29 (the gap) are plain white, so any of them counts in any of those spots.
+  var BLANK=[0,1,2,23,LAST];
+  function blank(i){return BLANK.indexOf(i)>=0;}
+  function inPlace(){if(!blank(gap))return false;for(var t=0;t<LAST;t++)if(blank(t)?!blank(pos[t]):pos[t]!==t)return false;return true;}
   function slide(t,counted){
     if(locked||!nextTo(pos[t],gap))return false;
     var c=pos[t];pos[t]=gap;gap=c;place(t);
-    if(counted){moves++;movesEl.textContent=moves;if(inPlace())finish();}
+    if(counted){moves++;movesEl.textContent=moves;store();if(inPlace())finish();}
     return true;
   }
   // Scrambled by legal moves from the finished picture (never undoing the last move), so it can always be solved.
   function deal(){
     locked=false;board.classList.remove('solved','done');win.hidden=true;tiles[LAST].classList.add('cs-last');
+    pos[LAST]=LAST;place(LAST);
     for(var t=0;t<LAST;t++)pos[t]=t;gap=LAST;trail=[];
     var last=-1;
     for(var i=0;i<600||inPlace();i++){
       var opts=[];for(var u=0;u<LAST;u++)if(u!==last&&nextTo(pos[u],gap))opts.push(u);
       var pick=opts[Math.floor(Math.random()*opts.length)];slide(pick,false);trail.push(pick);last=pick;
     }
-    for(t=0;t<LAST;t++)place(t);moves=0;movesEl.textContent='0';
+    for(t=0;t<LAST;t++)place(t);moves=0;movesEl.textContent='0';store();
+  }
+  // Saves the board on this device after every move, so a refresh picks up where it left off.
+  var SAVE='maCrewSlide';
+  function store(){try{localStorage.setItem(SAVE,JSON.stringify({p:pos.slice(0,LAST),g:gap,m:moves}));}catch(e){}}
+  function restore(){
+    var v=null;try{v=JSON.parse(localStorage.getItem(SAVE));}catch(e){}
+    if(!v||!Array.isArray(v.p)||v.p.length!==LAST)return false;
+    var seen={},all=v.p.concat([v.g]);
+    for(var i=0;i<all.length;i++){var c=all[i];if(c!==(c|0)||c<0||c>=CELLS||seen[c])return false;seen[c]=1;}
+    for(var t=0;t<LAST;t++){pos[t]=v.p[t];place(t);}gap=v.g;trail=[];
+    moves=Math.max(0,v.m|0);movesEl.textContent=moves;return true;
   }
   function finish(){
     locked=true;board.classList.add('solved');
+    pos[LAST]=gap;place(LAST);
     setTimeout(function(){tiles[LAST].classList.remove('cs-last');board.classList.add('done');},120);
     setTimeout(function(){win.hidden=false;},800);
   }
@@ -108,7 +125,7 @@
     else b.addEventListener('click',function(){slide(t,true);});
     board.appendChild(b);tiles[t]=b;
   })(t);
-  deal();
+  if(!restore())deal();else if(inPlace())finish();
   d.querySelector('.cs-restart').onclick=deal;
   d.querySelector('.cs-box').onclick=claim;
   // Arrow keys slide the tile on that side of the gap into it.
