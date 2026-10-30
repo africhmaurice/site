@@ -418,9 +418,9 @@ window.maConfetti = function(from){
 })();</script>
   <script>
   (function(){
-    // Hunt: Sep 21 12:00 AM ET (EDT, UTC-4) to Nov 1 11:59 PM ET (EST, UTC-5)
+    // Hunt: Sep 21 12:00 AM ET (EDT, UTC-4) to Nov 10 11:59 PM ET (EST, UTC-5); runs through Act Four (Maurice, 2026-10-29)
     var start = Date.UTC(2026,8,21,4,0,0);
-    var end   = Date.UTC(2026,10,2,4,59,0);
+    var end   = Date.UTC(2026,10,11,4,59,0);
     var fill = document.getElementById('hunt-prog-fill');
     var pct = document.getElementById('hunt-prog-pct');
     if(!fill) return;
@@ -1391,6 +1391,11 @@ if(window.fetch)fetch(BOARD+'?t='+Math.floor(Date.now()/300000)).then(function(r
 var tab=window.__rewardsTab;window.__rewardsTab=function(w){if(tab)tab(w);var sw=document.getElementById('rw3-sweep'),uk=document.getElementById('rw3-uk');if(sw)sw.style.display=w==='us'?'':'none';if(uk)uk.style.display=w==='uk'?'':'none';};
 })();</script>
       </div>
+      <div>
+        <div class="m-acttitle" id="rewards-act-four" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(22px,2.78vw,40px);letter-spacing:.04em;color:#111;text-align:center;margin:20px 0 10px">ACT FOUR</div>
+        <div class="m-actdate" style="font-family:'Almarai',sans-serif;font-weight:700;font-size:17px;letter-spacing:.08em;color:#c53200;text-align:center;margin:0 0 48px">NOVEMBER 2<sup style="font-size:.6em">ND</sup> – NOVEMBER 10<sup style="font-size:.6em">TH</sup></div>
+        <div id="act4-tease" style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,4.6vw,64px);letter-spacing:.04em;line-height:1.2;color:#8e0e0e;text-align:center;padding:0 16px">EVERYTHING CHANGES</div>
+      </div>
     </div>
     <div id="rw-disc" style="font-size:12px;color:#111;max-width:980px;margin:80px auto 0;text-align:center;text-wrap:balance"><b id="rw-disc-text">Digital rewards are available to everyone 18 or older, everywhere. The Act sweepstakes are open only to legal residents of the 50 United States and D.C. who are 18 or older; UK residents 18 or older enter the UK prize draws. The Treasure has six winners: three in the U.S. and three in the UK. Void where prohibited.</b></div>
   </section>
@@ -1730,6 +1735,14 @@ document.addEventListener('click',function(e){var b=e.target.closest&&e.target.c
 function ok(){if(m)m.textContent='Copied!';}function fail(){if(m)m.textContent=t;}
 if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,fail);else fail();});
 })();</script>
+  </section>
+
+  <!-- ============ ACT 4: THE ESCAPE ============ -->
+  <section id="act-4" data-screen-label="Act 4 — The escape" style="background:linear-gradient(rgba(44,96,33,.88),rgba(27,59,21,.92)),url('https://africhmaurice.github.io/site/assets/bg/jungle-planet-lake-as1331428223.webp') center/cover;background-attachment:fixed;padding:110px 72px 100px">
+    <div class="m-acteyebrow" style="text-align:center;margin-bottom:24px;font-family:'Atomic Marker',cursive;font-size:clamp(23px,2.92vw,42px);line-height:1.2;letter-spacing:.03em;color:#a2f590">ACT 4</div>
+    <h2 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(56px,7vw,110px);letter-spacing:.03em;color:#fff;text-align:center;margin:0 0 24px;line-height:1.2">THE ESCAPE</h2>
+    <div class="m-date" style="text-align:center;font-family:'Almarai',sans-serif;font-weight:700;font-size:30px;letter-spacing:.06em;color:#a2f590;margin-bottom:56px">NOVEMBER 2<sup style="font-size:.55em">ND</sup> - NOVEMBER 10<sup style="font-size:.55em">TH</sup></div>
+    <h3 style="font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(34px,4.6vw,64px);letter-spacing:.04em;color:#a2f590;text-align:center;margin:0;line-height:1.2">EVERYTHING CHANGES</h3>
   </section>
 
   <!-- ============ ACT 2: THE ISLAND ============ -->
