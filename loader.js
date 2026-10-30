@@ -1053,13 +1053,20 @@
         var a = feet.cloneNode(false); a.href = SITE + '/pull-her-out'; a.textContent = 'PULL HER OUT';
         box.insertBefore(a, feet.nextSibling);
       });
+      // The Source of the Wave (chapter 15, 2026-10-30) follows Pull Her Out
+      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/pull-her-out"]'), function (rope) {
+        var box = rope.parentNode;
+        if (box.querySelector('a[href$="/the-source"]')) return;
+        var a = rope.cloneNode(false); a.href = SITE + '/the-source'; a.textContent = 'THE SOURCE OF THE WAVE';
+        box.insertBefore(a, rope.nextSibling);
+      });
     });
   }
   // The raft hunt (chapter 6, 2026-10-07): raft.js hides the pieces on every page; it checks its own hours.
   // Chapter buttons (2026-10-09): Previous chapter / See the map / Next chapter at the foot of each chapter page.
   function chapterNav() {
     if (window.__chapterNavLoaded) return; window.__chapterNavLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=10'; s.async = true; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=11'; s.async = true; document.head.appendChild(s);
   }
   function raftHunt() {
     if (window.__raftLoaded) return; window.__raftLoaded = true;
