@@ -13,7 +13,7 @@
 html,body{margin:0;padding:0;background:#0b170f}
 a{color:#fff}
 #ma-slider{position:relative;width:100%;aspect-ratio:1366/576;overflow:hidden;background:#111;font-family:'Almarai',sans-serif;container-type:inline-size}
-#ma-track{display:flex;width:1000%;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+#ma-track{display:flex;width:1100%;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1)}
 .ma-arrow{position:absolute;top:50%;transform:translateY(-50%);width:2.7cqw;height:2.7cqw;min-width:28px;min-height:28px;opacity:.9;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6))}
 .ma-arrow:hover{opacity:1;transform:translateY(-50%) scale(1.1)}
 .ma-dots{position:absolute;left:50%;bottom:1.6cqw;transform:translateX(-50%);display:flex;gap:.7cqw;z-index:5}
@@ -30,6 +30,12 @@ a{color:#fff}
 
 @media (max-width:760px){
   #ma-slider{aspect-ratio:2/3}
+  /* Screen Rant slide: the book on top, the words under it */
+  #ma-track>div[data-screen-label="SR"]>div{max-width:100% !important}
+  #ma-track>div[data-screen-label="SR"] img{width:34cqw !important}
+  #ma-track>div[data-screen-label="SR"] [style*="Cracked Imperia"]{font-size:9.4cqw !important}
+  #ma-track>div[data-screen-label="SR"] div[style*="letter-spacing:.12em"]{font-size:2.6cqw !important;margin-top:3cqw !important}
+  #ma-track>div[data-screen-label="SR"] p[style*="italic"]{font-size:3.6cqw !important}
   /* Sky Pirate Quiz slide: the four crew members in a row on top, the words under them */
   #ma-track>div[data-screen-label="QZ"]>div{max-width:100% !important}
   #ma-track>div[data-screen-label="QZ"] .qz-crew{gap:1.5cqw !important}
@@ -94,8 +100,20 @@ a{color:#fff}
   <div id="ma-track">
 
 
+    <!-- SLIDE SR : SCREEN RANT EXCLUSIVE EXCERPT (Maurice, 2026-10-30; copy is DRAFT) -->
+    <div data-screen-label="SR" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(11,23,15,.84),rgba(11,23,15,.92)),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:4cqw;padding:2.25cqw 6cqw;box-sizing:border-box">
+      <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/679b434d86628027.webp" alt="Cello's Gate hardcover, featured on Screen Rant" style="width:24cqw;height:auto;flex:none;filter:drop-shadow(0.75cqw 0.9cqw 1.2cqw rgba(0,0,0,.45))">
+      <div style="text-align:center;max-width:46cqw">
+        <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#a2f590;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.4cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">SCREEN RANT EXCLUSIVE</div>
+        <div style="font-family:'Cracked Imperia',sans-serif;font-weight:700;text-transform:uppercase;color:#fffffe;font-size:4.6cqw;line-height:1.05;letter-spacing:.03em">Read a Sneak Peek of Cello&rsquo;s Gate!</div>
+        <p style="color:#fff;font-style:italic;font-size:1.42cqw;line-height:1.55;margin:1.65cqw 0 0;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">&ldquo;Blending witty and poetic prose, Africh&rsquo;s debut is a must-read.&rdquo;</p>
+        <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#fff;font-size:1.1cqw;letter-spacing:.12em;margin-top:1.2cqw">&mdash; SCREEN RANT</div>
+        <a href="https://screenrant.com/exclusive-excerpt-preview-cellos-gate-maruice-africh/" target="_blank" rel="noopener" style="display:inline-block;margin-top:2.1cqw;background:#c1330a;border:1px solid #f3ead9;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none" class="hv0">READ THE EXCERPT!</a>
+      </div>
+    </div>
+
     <!-- SLIDE SE : SPECIAL EDITIONS (Broken Binding + Waterstones Exclusive, 2026-10-12; copy is DRAFT) -->
-    <div data-screen-label="SE" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(26,94,65,.80),rgba(15,58,39,.86)),url(https://africhmaurice.github.io/site/assets/img/ef80affe30140e01.jpg) center/cover;position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;justify-items:center;column-gap:2.25cqw;padding:2.25cqw 4cqw;box-sizing:border-box;overflow:hidden">
+    <div data-screen-label="SE" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(26,94,65,.80),rgba(15,58,39,.86)),url(https://africhmaurice.github.io/site/assets/img/ef80affe30140e01.jpg) center/cover;position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;justify-items:center;column-gap:2.25cqw;padding:2.25cqw 4cqw;box-sizing:border-box;overflow:hidden">
       <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/ed-broken-binding.webp" alt="The Broken Binding special edition of Cello's Gate, with foil boards and digital edges" style="height:30cqw;width:auto;max-width:100%;flex:none;filter:drop-shadow(0.75cqw 0.9cqw 1.2cqw rgba(0,0,0,.45))">
       <div style="text-align:center;max-width:40cqw;position:relative">
         <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#a2f590;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.2cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">NEW SPECIAL EDITIONS</div>
@@ -113,7 +131,7 @@ a{color:#fff}
          crew art. Loot box 107 hides in Grey's eye (data-ma-eye, see HOME HIDES below).
          DRAFT words: eyebrow "THE SKY PIRATE QUIZ"; heading "Which Sky Pirate Are You?"; line "Take the quiz and meet your
          match in the crew."; button "TAKE THE QUIZ"; image alt texts "Grey", "Minn", "Dot", "Izzy". -->
-    <div data-screen-label="QZ" style="flex:0 0 10%;height:100%;position:relative;background:linear-gradient(rgba(72,45,133,.84),rgba(45,28,83,.92)),url(https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3cqw;padding:2.25cqw 6cqw;box-sizing:border-box;overflow:hidden">
+    <div data-screen-label="QZ" style="flex:0 0 9.0909%;height:100%;position:relative;background:linear-gradient(rgba(72,45,133,.84),rgba(45,28,83,.92)),url(https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3cqw;padding:2.25cqw 6cqw;box-sizing:border-box;overflow:hidden">
       <div class="qz-crew" style="display:flex;align-items:flex-end;justify-content:center;gap:.9cqw;flex:none;filter:drop-shadow(0.5cqw 0.7cqw 1cqw rgba(0,0,0,.4))">
         <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/quiz/crew/grey.webp" data-ma-eye="38.6,31.3;58.4,30" alt="Grey" draggable="false" style="height:19cqw;width:auto;flex:none;display:block">
         <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/quiz/crew/minn.webp" alt="Minn" draggable="false" style="height:19cqw;width:auto;flex:none;display:block">
@@ -129,7 +147,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE A3 : ACT THREE HAS BEGUN (Maurice, 2026-10-16; red; loot box 43 hides in it) -->
-    <div data-screen-label="A3" style="flex:0 0 10%;height:100%;position:relative;background:linear-gradient(rgba(145,37,1,.86),rgba(74,16,2,.92)),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3cqw 9cqw;box-sizing:border-box">
+    <div data-screen-label="A3" style="flex:0 0 9.0909%;height:100%;position:relative;background:linear-gradient(rgba(145,37,1,.86),rgba(74,16,2,.92)),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3cqw 9cqw;box-sizing:border-box">
       <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#ffb38a;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">THE TREASURE HUNT &bull; OCTOBER 16<sup style="font-size:.6em">TH</sup> &ndash; NOVEMBER 1<sup style="font-size:.6em">ST</sup></div>
       <div style="font-family:'Atomic Marker',cursive;color:#fff;font-size:5.4cqw;line-height:1.2;text-shadow:0 0.22cqw 0.45cqw rgba(0,0,0,.25)">ACT THREE HAS BEGUN!</div>
       <p style="color:#fff;font-weight:800;font-size:1.42cqw;line-height:1.55;margin:1.65cqw 0 0;max-width:42cqw;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">New tasks, four new puzzles, Trench Run in the arcade, and the Act Three Sweepstakes to unlock!</p>
@@ -139,7 +157,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE MG : MORALLY GREY (MAKA of Echo 7 Design Co) -->
-    <div data-screen-label="07" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(26,94,65,.86),rgba(16,62,41,.92)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3.5cqw;padding:2.25cqw 7cqw;box-sizing:border-box">
+    <div data-screen-label="07" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(26,94,65,.86),rgba(16,62,41,.92)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3.5cqw;padding:2.25cqw 7cqw;box-sizing:border-box">
       <img src="https://africhmaurice.github.io/site/assets/merch/morally-grey-fan.webp" alt="Morally Grey merch: the hoodie, the tee, and the women's tee" style="width:36cqw;height:auto;flex:none;filter:drop-shadow(0.5cqw 0.7cqw 1cqw rgba(0,0,0,.4))">
       <div style="text-align:center;max-width:38cqw;display:flex;flex-direction:column;align-items:center">
         <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#89fbcb;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.4cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">NEW IN THE TRENCH MARKET</div>
@@ -150,7 +168,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE 0 : TRENCH MARKET (the merch shop) -->
-    <div data-screen-label="06" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(45,28,83,.86),rgba(29,16,58,.9)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3.5cqw;padding:2.25cqw 7cqw;box-sizing:border-box">
+    <div data-screen-label="06" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(45,28,83,.86),rgba(29,16,58,.9)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3.5cqw;padding:2.25cqw 7cqw;box-sizing:border-box">
       <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/merch/trench-market-fan.webp" alt="Trench Market merch: The Crew hoodie, the I Survived Loot Box 13 tee, and the Little Dot hat" style="width:36cqw;height:auto;flex:none;filter:drop-shadow(0.5cqw 0.7cqw 1cqw rgba(0,0,0,.4))">
       <div style="text-align:center;max-width:38cqw">
         <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#9e74fd;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">NEW: THE OFFICIAL MERCH SHOP</div>
@@ -161,7 +179,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE 1 : JOIN THE HUNT -->
-    <div data-screen-label="01" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(178,52,9,.82),rgba(163,44,7,.88)),url(https://africhmaurice.github.io/site/assets/img/e3346bbd4195fa1c.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3cqw 9cqw;box-sizing:border-box">
+    <div data-screen-label="01" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(178,52,9,.82),rgba(163,44,7,.88)),url(https://africhmaurice.github.io/site/assets/img/e3346bbd4195fa1c.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3cqw 9cqw;box-sizing:border-box">
       <div style="font-family:'Atomic Marker',cursive;color:#fff;font-size:5.4cqw;line-height:1;text-shadow:0 0.22cqw 0.45cqw rgba(0,0,0,.25)">JOIN THE HUNT</div>
       
       <p style="color:#fff;font-weight:800;font-size:1.42cqw;line-height:1.55;margin:1.65cqw 0 0;max-width:40.5cqw;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">Solve riddles, complete tasks, locate hidden secrets, and rack up points between now and the end of the hunt (November 1<sup style="font-size:.55em">st</sup>, 2026, two days before Cello's Gate comes out) and walk away with TREASURE*.</p>
@@ -170,7 +188,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE 2 : ACQUIRED -->
-    <div data-screen-label="02" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(24,84,56,.74),rgba(16,62,41,.82)),url(https://africhmaurice.github.io/site/assets/img/ef80affe30140e01.jpg) center/cover;display:flex;align-items:center;justify-content:center;gap:3cqw;padding:2.25cqw 5.25cqw;box-sizing:border-box">
+    <div data-screen-label="02" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(24,84,56,.74),rgba(16,62,41,.82)),url(https://africhmaurice.github.io/site/assets/img/ef80affe30140e01.jpg) center/cover;display:flex;align-items:center;justify-content:center;gap:3cqw;padding:2.25cqw 5.25cqw;box-sizing:border-box">
       <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/679b434d86628027.webp" alt="Cello's Gate hardcover" style="width:27cqw;height:auto;flex:none;filter:drop-shadow(0.75cqw 0.9cqw 1.2cqw rgba(0,0,0,.45))">
       <div style="text-align:center;max-width:48cqw">
         <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#e9e4d2;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.2cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">SAGA PRESS &bull; SIMON MAVERICK &bull; HODDERSCAPE</div>
@@ -182,7 +200,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE 3 : WALMART -->
-    <div data-screen-label="03" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(12,70,135,.78),rgba(12,70,135,.78)),url(https://africhmaurice.github.io/site/assets/img/430c8d3436037392.jpg) center/cover;position:relative;display:flex;align-items:center;justify-content:center;gap:2.25cqw;padding:2.25cqw 6cqw;box-sizing:border-box;overflow:hidden">
+    <div data-screen-label="03" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(12,70,135,.78),rgba(12,70,135,.78)),url(https://africhmaurice.github.io/site/assets/img/430c8d3436037392.jpg) center/cover;position:relative;display:flex;align-items:center;justify-content:center;gap:2.25cqw;padding:2.25cqw 6cqw;box-sizing:border-box;overflow:hidden">
       <div style="position:absolute;right:1.5cqw;bottom:1.13cqw;text-align:left;opacity:.5;pointer-events:none">
         <div style="color:#fff;font-weight:800;font-size:4.5cqw;line-height:1;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">Walmart</div>
         <div style="color:#fff;font-weight:700;font-size:1.95cqw;line-height:1.3;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">Save money. Live better.</div>
@@ -196,7 +214,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE 4 : DISCORD -->
-    <div data-screen-label="04" style="flex:0 0 10%;height:100%;background:linear-gradient(rgba(70,12,0,.42),rgba(50,8,0,.55)),url(https://africhmaurice.github.io/site/assets/img/d1def44814f7b9d2.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.25cqw 9cqw;box-sizing:border-box">
+    <div data-screen-label="04" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(70,12,0,.42),rgba(50,8,0,.55)),url(https://africhmaurice.github.io/site/assets/img/d1def44814f7b9d2.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.25cqw 9cqw;box-sizing:border-box">
       <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/7bf9c98ba157d33f.webp" alt="Trench skull and crossed tanto" style="width:16cqw;height:auto;filter:drop-shadow(0 0.38cqw 0.75cqw rgba(0,0,0,.4))">
       <div style="font-family:'Cinzel',serif;font-weight:900;color:#fff;font-size:3.9cqw;line-height:1.3;margin-top:1.2cqw;text-shadow:0 0.19cqw 0.3cqw rgba(0,0,0,.45)">join the TRENCH Community Discord!</div>
       <p style="color:#fff;font-size:1.35cqw;line-height:1.55;margin:1.2cqw 0 0;max-width:43.5cqw;text-shadow:0 0.11cqw 0.26cqw rgba(0,0,0,.45)">Oh, you're not in the Discord community? Well, guess what? It's totally free to join! We have daily tournament brackets, book discussions, chat sessions, a fan fiction contest with a $100 cash prize, and more!</p>
@@ -204,7 +222,7 @@ a{color:#fff}
     </div>
 
     <!-- SLIDE 5 : COLLIDER ARTICLES -->
-    <div data-screen-label="05" style="flex:0 0 10%;height:100%;position:relative;display:flex">
+    <div data-screen-label="05" style="flex:0 0 9.0909%;height:100%;position:relative;display:flex">
       <div style="flex:1;background:linear-gradient(rgba(13,26,17,.82),rgba(13,26,17,.82)),url(https://africhmaurice.github.io/site/assets/img/a2a9db140e257c36.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5.25cqw 6cqw 3cqw;box-sizing:border-box">
         <div style="font-family:'Cinzel',serif;font-weight:900;color:#fff;font-size:6cqw;line-height:1;text-shadow:0 0.19cqw 0.3cqw rgba(0,0,0,.5)">10</div>
         <div style="font-family:'Cinzel',serif;font-weight:900;color:#fff;font-size:3.4cqw;line-height:1.35;margin-top:1.2cqw;text-shadow:0 0.19cqw 0.3cqw rgba(0,0,0,.5)">Essential Sci-Fi Books for Beginners</div>
@@ -237,13 +255,14 @@ a{color:#fff}
     <div class="ma-dot" onclick="maGo(7)" role="button" aria-label="Slide 8"></div>
       <div class="ma-dot" onclick="maGo(8)" role="button" aria-label="Slide 9"></div>
     <div class="ma-dot" onclick="maGo(9)" role="button" aria-label="Slide 10"></div>
+    <div class="ma-dot" onclick="maGo(10)" role="button" aria-label="Slide 11"></div>
   </div>
 </div>
 <script>
 var maI=0,maHover=false,maTimer=null;
 function maGo(n){
-  maI=(n+10)%10;
-  document.getElementById('ma-track').style.transform='translateX(-'+(maI*100/10)+'%)';
+  maI=(n+11)%11;
+  document.getElementById('ma-track').style.transform='translateX(-'+(maI*100/11)+'%)';
   var dots=document.querySelectorAll('.ma-dot');
   for(var i=0;i<dots.length;i++)dots[i].className='ma-dot'+(i===maI?' on':'');
   maStart();
