@@ -223,7 +223,7 @@ html,body{margin:0 !important;padding:0 !important}
 #hp .hp-stat>small{font-size:14px;color:rgba(255,255,255,.7)}
 #hp .hp-stat .hp-bar{height:8px;margin-top:4px}
 #hp h2{font-family:'Atomic Marker',cursive;font-weight:400;font-size:clamp(26px,2.6vw,36px);margin:34px 0 14px}
-#hp .hp-days{display:grid;grid-template-columns:repeat(21,minmax(0,1fr));gap:6px}
+#hp .hp-days{display:grid;grid-template-columns:repeat(17,minmax(0,1fr));gap:6px}
 #hp .hp-day{aspect-ratio:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14)}
 #hp .hp-day.on{background:var(--hi);border-color:#fd7547}
 #hp .hp-day.today{outline:2px solid #fff;outline-offset:1px}
@@ -249,7 +249,7 @@ html,body{margin:0 !important;padding:0 !important}
 @media (max-width:560px){#hp .hp-lb{width:11px;height:11px;bottom:-30px}}
 #hp .hp-foot{text-align:center;margin:22px 0 0;font-size:13px;color:rgba(255,255,255,.65)}
 #hp .hp-foot a{color:#fff;cursor:pointer;text-decoration:underline}
-@media (max-width:900px){#hp{background-attachment:scroll}#hp .hp-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}#hp .hp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#hp .hp-days{grid-template-columns:repeat(14,minmax(0,1fr))}}
+@media (max-width:900px){#hp{background-attachment:scroll}#hp .hp-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}#hp .hp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#hp .hp-days{grid-template-columns:repeat(17,minmax(0,1fr))}}
 @media (max-width:560px){#hp{padding:110px 16px 56px}#hp .hp-head{gap:16px}#hp .hp-tile b{font-size:36px}#hp .hp-days{grid-template-columns:repeat(7,minmax(0,1fr))}#hp .hp-recent time{width:74px}}
 </style>
 <style>#siteWrapper{display:flex !important;flex-direction:column !important}#siteWrapper>*{flex:none}#siteWrapper>#footer-sections{flex:1 0 auto}</style>
@@ -286,7 +286,7 @@ html,body{margin:0 !important;padding:0 !important}
   function render(p, crewTotal, board) {
     var today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date());
     var idx = Math.round((Date.parse(today + 'T00:00:00Z') - Date.UTC(2026, 8, 21)) / 86400000);
-    var active = (p.days.match(/1/g) || []).length, sofar = Math.max(1, Math.min(42, idx + 1));
+    var active = (p.days.match(/1/g) || []).length, sofar = Math.max(1, Math.min(51, idx + 1));
     var third = 0, reg = board && board.regions ? board.regions.filter(function (r) { return r.key === p.r; })[0] : null;
     if (reg && reg.top && reg.top[2]) third = reg.top[2].points;
     var race = !p.rank ? 'You’re playing as crew staff, so you’re not ranked on the public board. Every point you earn still counts toward the crew’s rewards!'
@@ -295,7 +295,7 @@ html,body{margin:0 !important;padding:0 !important}
       : '<b>' + fmt(p.next) + ' points</b> to pass #' + (p.rank - 1) + (third ? ', and ' + fmt(third - p.pts + 1) + ' to crack the top 3' : '') + '. The top 3 at the end of the hunt win <a href="' + U + '/the-treasure">The Treasure</a>!';
     var pct = third ? Math.min(100, p.pts / third * 100) : 100;
     var days = '';
-    for (var i = 0; i < 42; i++) days += '<div class="hp-day' + (p.days.charAt(i) === '1' ? ' on' : '') + (i === idx ? ' today' : '') + (i > idx ? ' later' : '') + '" title="' + day(new Date(Date.UTC(2026, 8, 21 + i)).toISOString().slice(0, 10)) + '"></div>';
+    for (var i = 0; i < 51; i++) days += '<div class="hp-day' + (p.days.charAt(i) === '1' ? ' on' : '') + (i === idx ? ' today' : '') + (i > idx ? ' later' : '') + '" title="' + day(new Date(Date.UTC(2026, 8, 21 + i)).toISOString().slice(0, 10)) + '"></div>';
     var acts = ['Act One', 'Act Two', 'Act Three'], actNow = today <= '2026-09-30' ? 0 : today <= '2026-10-15' ? 1 : 2;
     card.innerHTML =
       '<div class="hp-head"><div><div class="hp-name">' + esc(p.n || p.h) + '</div>' +
@@ -321,7 +321,7 @@ html,body{margin:0 !important;padding:0 !important}
         '<div class="hp-stat"><i>PRE-ORDERS</i><b>' + p.pre + '</b><small>2,000 points + 5 entries each</small></div>' +
         '<div class="hp-stat"><i>TASKS COMPLETED</i><b>' + p.tasks + '</b><small>Shares, apps, libraries, and more</small></div>' +
       '</div>' +
-      '<h2>DAYS ON THE HUNT</h2><div class="hp-days">' + days + '</div><div class="hp-daykey"><span>One square for each day of the hunt, Sept 21 to Nov 1. <b>Red</b> means you earned points that day.</span></div>' +
+      '<h2>DAYS ON THE HUNT</h2><div class="hp-days">' + days + '</div><div class="hp-daykey"><span>One square for each day of the hunt, Sept 21 to Nov 10. <b>Red</b> means you earned points that day.</span></div>' +
       '<h2>LATEST LOOT</h2><ul class="hp-recent">' + p.recent.map(function (r) { return '<li><time>' + esc(day(r[0])) + '</time><span>' + esc(r[1]) + '</span><b>+' + fmt(r[2]) + '</b></li>'; }).join('') + '</ul>' +
       '<p class="hp-crew">You’ve earned <b>' + (crewTotal ? (p.pts / crewTotal * 100).toFixed(1) : '0') + '%</b> of the crew’s ' + fmt(crewTotal) + ' points. Every one of them helps unlock rewards for everyone!</p>' +
       '<div class="hp-colors" id="hp-colors" role="radiogroup" aria-label="Card color"><span>CARD COLOR</span></div>' +
