@@ -243,6 +243,12 @@
       "source": "bot:squarespace-source.html"
     },
     {
+      "slug": "the-break-in",
+      "url": "/the-break-in",
+      "title": "The Break-In Gone Wrong Vote (Chapter 16, the fight inside the building)",
+      "source": "bot:squarespace-breakin.html"
+    },
+    {
       "slug": "adventure",
       "url": "/adventure",
       "title": "The Adventure So Far (every Choose Your Own Adventure beat)",

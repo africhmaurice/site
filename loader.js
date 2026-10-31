@@ -1060,13 +1060,20 @@
         var a = rope.cloneNode(false); a.href = SITE + '/the-source'; a.textContent = 'THE SOURCE OF THE WAVE';
         box.insertBefore(a, rope.nextSibling);
       });
+      // The Break-In Gone Wrong (chapter 16, 2026-10-31) follows The Source of the Wave
+      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/the-source"]'), function (src) {
+        var box = src.parentNode;
+        if (box.querySelector('a[href$="/the-break-in"]')) return;
+        var a = src.cloneNode(false); a.href = SITE + '/the-break-in'; a.textContent = 'THE BREAK-IN GONE WRONG';
+        box.insertBefore(a, src.nextSibling);
+      });
     });
   }
   // The raft hunt (chapter 6, 2026-10-07): raft.js hides the pieces on every page; it checks its own hours.
   // Chapter buttons (2026-10-09): Previous chapter / See the map / Next chapter at the foot of each chapter page.
   function chapterNav() {
     if (window.__chapterNavLoaded) return; window.__chapterNavLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=11'; s.async = true; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=12'; s.async = true; document.head.appendChild(s);
   }
   function raftHunt() {
     if (window.__raftLoaded) return; window.__raftLoaded = true;
