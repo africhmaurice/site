@@ -173,16 +173,16 @@ const FACTS = [
   ['UK', 'Hodderscape · Hardback ISBN 9781399763073'],
   ['Audio', 'Simon Maverick · Narrated by Gary Furlong · November 3, 2026'],
   ['Editions', 'Walmart Special Edition (U.S.), Waterstones Exclusive (UK), and a signed Broken Binding edition that sold out in less than 48 hours.'],
-  ['Goodreads', '27,714 want to read · 4.29 average from 1,145 ratings and 444 reviews (October 25, 2026)'],
+  ['Goodreads', '27,979 want to read · 4.29 average from 1,152 ratings and 450 reviews (October 29, 2026)'],
   ['Home', 'Asheville, North Carolina'],
 ];
 
 // The Hunt section. DRAFT copy for Maurice to rewrite. Update STATS (and STATS_DATE) before each round of pitches.
-const HUNT_LEDE = 'From September 20th to November 1st, hundreds of readers from around the world are searching for treasure hidden all over the internet. I’ve partnered with 20+ Bookstagram, BookTok, and BookTube influencers—as well as journalists, friends, and complete strangers—to make this campaign as far-reaching and complex as possible while maintaining the core tenet of my brand:';
+const HUNT_LEDE = 'From September 20th to November 10th, hundreds of readers from around the world are searching for treasure hidden all over the internet. I’ve partnered with 20+ Bookstagram, BookTok, and BookTube influencers—as well as journalists, friends, and complete strangers—to make this campaign as far-reaching and complex as possible while maintaining the core tenet of my brand:';
 const HUNT_MOTTO = 'It’s gotta be fun.';
 const HUNT_HOW = 'The hunt is broken into three acts that follow a fully interactive <b>Choose Your Own Adventure-Style Game &amp; Narrative</b> (hosted on my website). Treasure hunters solve riddles, follow clues, play daily bookish games, hunt down hidden loot boxes (like feral animals, mind you), and vote on where the story goes next. There are three ways to win:';
 const HUNT_WAYS = [
-  ['Opportunity & Chance', 'Each act ends with a Sweepstakes, where U.S. participants are eligible to win awards (a UK prize draw is coming soon). The Act One Sweepstakes awarded five individuals a Signed Deluxe Edition of “Cello’s Gate.” And the sweepstakes rewards just get better as we progress through the hunt.'],
+  ['Opportunity & Chance', 'Each act ends with a Sweepstakes, where U.S. participants are eligible to win awards (UK participants enter a UK prize draw). The Act One Sweepstakes awarded five individuals a Signed Deluxe Edition of “Cello’s Gate.” And the sweepstakes rewards just get better as we progress through the hunt.'],
   ['Effort & Dedication', 'Six treasure hunters (3 in the U.S. & 3 in the UK) with the most points at the end of the hunt will win a Treasure Box filled with bookish prizes.'],
   ['Participation', 'During each act, the hunters will work together to collectively earn points to unlock rewards. There are 20+ rewards available during the hunt, including exclusive short stories, never-before-seen character backstories, new games and opportunities to earn points, and more!'],
 ];
@@ -193,33 +193,34 @@ const HUNT_QUOTE = [
   'That’s why I built this treasure hunt. Because I thought it would be fun (which is a cornerstone of my brand), I thought it would help us sell a lot of books, and I thought, by the end of it, a lot more people would know my name. We’ll see, huh? If nothing else, I know we’re all having a pretty damn good time.',
 ];
 const HUNT_QUOTE_BY = 'Maurice Africh, Author of “Cello’s Gate”';
-const STATS_DATE = 'October 25, 2026';
+const STATS_DATE = 'October 30, 2026';
 // [group title, [[big number, what it means]], wide (spans the full row, two stats per line)]
 // The Headline Numbers are Maurice's own figures and order (2026-10-14).
 const HIGHLIGHTS = [
   ['The Headline Numbers', [
-    ['1,030', 'Treasure hunters (readers) from 18 countries.'],
+    ['1,050', 'Treasure hunters (readers) from 18 countries.'],
     ['12,052', 'Hunt tasks completed successfully, not counting unsuccessful attempts.'],
     ['1,156', 'Social posts about Cello’s Gate online.'],
-    ['20,291', 'Website visitors since the hunt began: +6,929%. About 700 visitors a day.'],
-    ['62,382', 'Website page views: +11,702% since the hunt began.'],
-    ['27,714', 'Goodreads “want to read” total: +3,489 (+14.4%) since the hunt began.'],
-    ['+35%', 'Newsletter subscribers.'],
+    ['31,756', 'Website visitors since the hunt began: +7,875%. About 800 visitors a day.'],
+    ['98,658', 'Website page views: +13,432% since the hunt began.'],
+    ['27,979', 'Goodreads “want to read” total: +3,869 (+16.0%) since the hunt began.'],
+    ['+46%', 'Newsletter subscribers.'],
     ['+67%', 'Discord members.'],
-    ['24,062', 'Discord messages posted during the hunt, +678% compared to the 36 days before the hunt.'],
-    ['+655', 'Instagram followers, up 4.3%.'],
+    ['26,811', 'Discord messages posted during the hunt, +708% compared to the 41 days before the hunt.'],
+    ['+845', 'Instagram followers, up 5.5%.'],
   ], true],
+  // Rewards awarded (Oct 30) = 20 digital rewards (+ The Sky Pirate Quiz, Act Three 300k) x 1,050 hunters + 20 winners.
   // Rewards awarded (Oct 20) = 19 digital rewards (+ Sky Gauntlet, Act Three 150k) and 20 U.S./UK winners (Act One + Act Two, 5 each). Oct 17 was 18 digital rewards: the 16 below plus Trench Run and the 500K Club (Act Two 500k). Was 16 (Act One: The Blind Duel, Crew Dossier, phone background,
   // Sort the Shelf, Book Icons, Crossword, Trench Market, +50 New Loot Boxes, Golden Loot Box; Act Two: Blades & Brass,
   // Aura Color Search, Matching Auras, desktop background, Crest Quest, Airship Runner, Thread the Needle) x 687
   // hunters, plus 15 Act One sweepstakes winners (U.S., UK, and world wheels, 5 each).
   ['Readers Are Hooked', [
-    ['4,845', 'Loot boxes found.'],
-    ['2,536', 'Riddles solved.'],
-    ['7,024', 'Daily puzzle wins across 7 games.'],
-    ['1,039,720', 'Points earned by the crew together.'],
-    ['21,082', 'Sweepstakes entries.'],
-    ['19,590', 'Rewards awarded so far: 19 digital rewards unlocked for all 1,030 hunters, plus 20 sweepstakes winners.'],
+    ['5,746', 'Loot boxes found.'],
+    ['2,683', 'Riddles solved.'],
+    ['8,265', 'Daily puzzle wins across 7 games.'],
+    ['1,485,535', 'Points earned by the crew together.'],
+    ['26,561', 'Sweepstakes entries.'],
+    ['21,020', 'Rewards awarded so far: 20 digital rewards unlocked for all 1,050 hunters, plus 20 sweepstakes winners.'],
   ], true],
 ];
 // Title case for the stat lines (Maurice, 2026-10-14). Short joining words stay lowercase unless they start a phrase.
@@ -240,15 +241,15 @@ const STATS = [
   ['7,101', 'site visits in the first nine days'],
 ];
 const HUNT_FACTS = [
-  ['Dates', 'September 20 to November 1, 2026. It ends two days before “Cello’s Gate” comes out.'],
+  ['Dates', 'September 20 to November 10, 2026, in four acts. It runs through the week “Cello’s Gate” comes out (November 3).'],
   ['Where', '<a href="https://www.mauriceafrich.com/the-hunt">mauriceafrich.com/the-hunt</a>'],
-  ['Who', 'Free and open to everyone, everywhere. The Treasure is for U.S. and UK residents (three winners each), and the sweepstakes are for U.S. residents, with a UK prize draw coming soon. Prize winners must be 18 or older.'],
-  ['Players', '1,030 sky pirates from 18 countries: the U.S., the UK, Canada, Australia, India, Estonia, Germany, Ireland, Austria, Japan, Poland, Norway, Portugal, Spain, New Zealand, Indonesia, the Philippines, and Italy.'],
-  ['Traffic', '20,291 more website visitors (up 6,929%) and 62,382 more pageviews (up 11,702%) since the hunt started.'],
+  ['Who', 'Free and open to everyone, everywhere. The Treasure is for U.S. and UK residents (three winners each), the sweepstakes are for U.S. residents, and UK residents enter the UK prize draws. Prize winners must be 18 or older.'],
+  ['Players', '1,050 sky pirates from 18 countries: the U.S., the UK, Canada, Australia, India, Estonia, Germany, Ireland, Austria, Japan, Poland, Norway, Portugal, Spain, New Zealand, Indonesia, the Philippines, and Italy.'],
+  ['Traffic', '31,756 more website visitors (up 7,875%) and 98,658 more pageviews (up 13,432%) since the hunt started.'],
   ['Play', 'Tasks, riddles, clues, seven daily bookish games (including Skyword, Blades & Brass, and Crest Quest), 101 hidden loot boxes, and a fan art contest.'],
   ['Story', 'Choose-your-own-adventure-style game with a voting and dice rolling system that determines the outcomes. The crew works together to explore the island and find the treasure. With guest appearances by Gary Furlong!'],
-  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 1,039,720 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two finished at 505,425, more than double its 200,000 goal. Act Three opened October 16 with a 600,000 goal and has already passed 300,000, unlocking a new game, Sky Gauntlet, along the way.'],
-  ['Acts', 'Three sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), and Act Three (October 16 to November 1). Winners are announced the day after each act ends.'],
+  ['Crew', 'Every point also counts toward a shared crew total that unlocks rewards for all players. The crew has earned 1,485,535 points so far. Act One blew past its 40,000 goal five times over, unlocking 50 new loot boxes and the Golden Loot Box, and Act Two finished at 505,425, more than double its 200,000 goal. Act Three opened October 16 with a 600,000 goal and has already passed it at 785,535, unlocking a new game (Sky Gauntlet), the Sky Pirate Quiz, and Act Four, with a secret bonus reward waiting at 800,000.'],
+  ['Acts', 'Four sweepstakes: Act One (September 21 to 30), Act Two (October 1 to 15), Act Three (October 16 to November 1), and Act Four (November 2 to 10). Winners are announced the day after each act ends.'],
   ['Treasure', 'The top three on the U.S. and UK leaderboards win The Treasure: signed editions, art prints, custom bookmarks, enamel pins, an advance audiobook, and more.'],
 ];
 // Story angles: Maurice's own headline ideas for editors and hosts (2026-10-14), in his order.
