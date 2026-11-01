@@ -486,6 +486,16 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cr-tie-out{font-size:16px}
 #rc .cr-tie-out b{color:#c3a6ff}
 @media (max-width:600px){#rc .cr-res-kit{padding:16px}}
+/* a chart under a die: what each number means, 1 the worst and 20 the best; your roll lights up */
+#rc .cr-chart{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(10,auto);grid-auto-flow:column;gap:8px 20px}
+#rc .cr-chart li{display:flex;align-items:center;gap:12px;padding:8px 12px;border:1px solid var(--hair);background:var(--well);font-size:15px;line-height:1.35;min-width:0}
+#rc .cr-chart li b{flex:none;width:2.2em;font-weight:800;font-size:14px;color:var(--lime);font-variant-numeric:tabular-nums}
+#rc .cr-chart li span{min-width:0}
+#rc .cr-chart li.on{border-color:var(--lime);background:rgba(162,245,144,.14);color:#fffffe;font-weight:700}
+@media (max-width:640px){#rc .cr-chart{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-auto-flow:row}}
+#rc .cr-res-kit .cr-chart-hit{margin-top:10px;font-weight:800;font-size:17px;line-height:1.35;color:var(--lime)}
+/* the next chapter's button under the closing note (2026-11-01) */
+#rc .cr-after .cr-next{display:inline-block;margin-top:20px;text-decoration:none;max-width:100%;white-space:normal;text-align:center}
 
 /* the river vote (chapter 5), on top of the crash vote's styles: the bone-white color story. The page sits on the
    mist city under a parchment veil with dark ink text; the panels are ink with parchment text and green accents
@@ -607,7 +617,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 <script>
 (function () {
-  var DATA = {"_help":"Chapter 11 vote: the white wave (Maurice's outline, 2026-10-21). Bone in the adventure color rotation. Roll for Rune's EMP dampener, for Hale's and Sparrow's reflex speed (Hale has advantage: two dice, gear_hale and gear_hale_2, the higher drawn roll counts), and two secret rolls; one roll per die is drawn at random from the sealed votes. Built by node scripts/build-crash.mjs wave. Live 2026-10-21T23:31:00Z for 24 hours (Maurice, 2026-10-21).","key":"wave_vote","points":100,"opens":"2026-10-21T23:31:00Z","closes":"2026-10-22T23:31:00Z","title":["The Energy","Wave"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"The crew starts to send a transmission to the Captain, but as soon as they do, a white wave of energy passes through them, and all of their tech starts to overload. Everything is seconds from exploding.\n\nRoll for Rune’s EMP Dampener, Hale and Sparrow’s Reflex Speed (w/Advantage for Hale--roll 2, take the higher of the 2), and two secret things that might could happen.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY ROLLS","questions":[{"id":"dampener","kind":"rolls","kicker":"RUNE","title":"How well does Rune’s EMP dampener work?","text":"Rune has a personal EMP dampener/shield that he activates. It only covers his personal items. Roll for how well it works.","items":[["dampener","Rune’s Dampener"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"gear","kind":"rolls","kicker":"HALE AND SPARROW","title":"How fast are their reflexes?","text":"Hale and Sparrow both have to get all of their equipment off of them. Roll for their reflex speed. Hale has advantage: roll both of his dice, and the higher one counts.","items":[["gear_hale","Hale · Crest Knight"],["gear_hale_2","Hale (Advantage)"],["gear_sparrow","Sparrow Zipmeister · Intangible"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each die. Hale gets the higher of his two.","pairs":{"gear_hale":"gear_hale_2"}},{"id":"hidden","kind":"rolls","kicker":"SECRET ROLLS","title":"The secret rolls","text":"Roll both. The purpose of each roll stays a secret until the results are in. One roll per die is drawn at random from everyone’s rolls.","items":[["hidden_1","Secret Roll 1"],["hidden_2","Secret Roll 2"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each secret roll."}],"draw":true,"onAdventure":true,"badge":["#268e62","#1a5e41","#89fbcb"],"results":{"key":"wave_vote","sealed":24,"draws":[{"id":"dampener","name":"Rune’s Dampener","roll":10,"by":"@Redhead_reader","from":24},{"id":"gear_hale","name":"Hale · Crest Knight","roll":11,"by":"@lovelisyda","from":24},{"id":"gear_hale_2","name":"Hale (Advantage)","roll":13,"by":"@heathers_endless_tbr","from":24},{"id":"gear_sparrow","name":"Sparrow Zipmeister · Intangible","roll":3,"by":"@Tylers_bookshelf","from":24},{"id":"hidden_1","name":"Secret Roll 1","roll":9,"by":"@Katnyp","from":24},{"id":"hidden_2","name":"Secret Roll 2","roll":1,"by":"@dearthedays","from":24}],"picks":[],"outcomes":{},"story":"","storyTitle":"","lede":"The energy wave hits, and all of the crew’s tech is seconds from exploding. Voting is closed! Here are the rolls.","afterNote":"The Captain has to think about this one... Updates soon!","verdicts":{"hidden_1":"FAILED","hidden_2":"FAILED"}},"resultsLive":true};
+  var DATA = {"_help":"Chapter 11 vote: the white wave (Maurice's outline, 2026-10-21). Bone in the adventure color rotation. Roll for Rune's EMP dampener, for Hale's and Sparrow's reflex speed (Hale has advantage: two dice, gear_hale and gear_hale_2, the higher drawn roll counts), and two secret rolls; one roll per die is drawn at random from the sealed votes. Built by node scripts/build-crash.mjs wave. Live 2026-10-21T23:31:00Z for 24 hours (Maurice, 2026-10-21).","key":"wave_vote","points":100,"opens":"2026-10-21T23:31:00Z","closes":"2026-10-22T23:31:00Z","title":["The Energy","Wave"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"The crew starts to send a transmission to the Captain, but as soon as they do, a white wave of energy passes through them, and all of their tech starts to overload. Everything is seconds from exploding.\n\nRoll for Rune’s EMP Dampener, Hale and Sparrow’s Reflex Speed (w/Advantage for Hale--roll 2, take the higher of the 2), and two secret things that might could happen.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY ROLLS","questions":[{"id":"dampener","kind":"rolls","kicker":"RUNE","title":"How well does Rune’s EMP dampener work?","text":"Rune has a personal EMP dampener/shield that he activates. It only covers his personal items. Roll for how well it works.","items":[["dampener","Rune’s Dampener"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"gear","kind":"rolls","kicker":"HALE AND SPARROW","title":"How fast are their reflexes?","text":"Hale and Sparrow both have to get all of their equipment off of them. Roll for their reflex speed. Hale has advantage: roll both of his dice, and the higher one counts.","items":[["gear_hale","Hale · Crest Knight"],["gear_hale_2","Hale (Advantage)"],["gear_sparrow","Sparrow Zipmeister · Intangible"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each die. Hale gets the higher of his two.","pairs":{"gear_hale":"gear_hale_2"}},{"id":"hidden","kind":"rolls","kicker":"SECRET ROLLS","title":"The secret rolls","text":"Roll both. The purpose of each roll stays a secret until the results are in. One roll per die is drawn at random from everyone’s rolls.","items":[["hidden_1","Secret Roll 1"],["hidden_2","Secret Roll 2"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each secret roll."}],"draw":true,"onAdventure":true,"badge":["#268e62","#1a5e41","#89fbcb"],"results":{"key":"wave_vote","sealed":24,"draws":[{"id":"dampener","name":"Rune’s Dampener","roll":10,"by":"@Redhead_reader","from":24},{"id":"gear_hale","name":"Hale · Crest Knight","roll":11,"by":"@lovelisyda","from":24},{"id":"gear_hale_2","name":"Hale (Advantage)","roll":13,"by":"@heathers_endless_tbr","from":24},{"id":"gear_sparrow","name":"Sparrow Zipmeister · Intangible","roll":3,"by":"@Tylers_bookshelf","from":24},{"id":"hidden_1","name":"Secret Roll 1","roll":9,"by":"@Katnyp","from":24},{"id":"hidden_2","name":"Secret Roll 2","roll":1,"by":"@dearthedays","from":24}],"picks":[],"outcomes":{},"story":"","storyTitle":"","lede":"The energy wave hits, and all of the crew’s tech is seconds from exploding. Voting is closed! Here are the rolls.","afterNote":"What happens next?","verdicts":{"hidden_1":"FAILED","hidden_2":"FAILED"},"next":["NEXT: FINDING SCARLETT","https://www.mauriceafrich.com/finding-scarlett"]},"resultsLive":true};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
@@ -1197,7 +1207,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     if (r === 1) return 'NATURAL 1. It counts as two 0s.';
     return 'You rolled ' + r + '.' + (PREVIEW ? ' (Preview roll, not recorded.)' : '');
   }
-  var ERR = { closed: 'Voting has closed.', email: 'That email does not look right.', raft: 'Find your 5 raft pieces first.' };
+  var ERR = { closed: 'Voting has closed.', email: 'That email does not look right.', raft: 'Find your 5 raft pieces first.', rope: 'Find your 5 strands of rope first.' };
   // the raft page (chapter 6) locks its dice until a fren has 5 pieces (games/raft.main.js)
   function gated() { return typeof raftLocked === 'function' && raftLocked(); }
 
@@ -1205,7 +1215,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   function busy() { for (var k in rolling) if (rolling[k]) return true; return false; }
   function rollFor(id) {
     if (rolling[id] || locked || S.rolls[id] || busy()) return;
-    if (gated()) { var g = document.getElementById('rc-rr-' + id); if (g) g.textContent = ERR.raft; return; }
+    if (gated()) { var g = document.getElementById('rc-rr-' + id); if (g) g.textContent = DATA.raft.hunt === 'rope' ? ERR.rope : ERR.raft; return; }
     var who = PREVIEW ? me : readWho();
     if (typeof who === 'string') {
       var o = document.getElementById('rc-rr-' + id);
@@ -1228,6 +1238,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
           rolling[id] = false;
           if (ok) { S.rolls[id] = n; S.sealed = false; store(STORE, S); } else Dice.stop(id);
           render();
+          [].forEach.call(document.querySelectorAll('.cr-chart[data-chart="' + id + '"] li'), function (li, k) { li.classList.toggle('on', S.rolls[id] === k + 1); });
           if (!ok) { var o = document.getElementById('rc-rr-' + id); if (o) o.textContent = ERR[res && res.error] || (res && res.error === 'notopen' ? 'Voting opens ' + when(OPENS) + '.' : 'The die rolled off the table. Give it another go.'); }
         };
         if (ok && Dice.ready(id)) Dice.land(id, n, finish); else finish();
@@ -1320,6 +1331,12 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
           grid.appendChild(c);
         });
         sec.appendChild(grid);
+        // a chart: what each number on the die means (1 the worst, 20 the best); your roll lights up
+        if (q.chart) {
+          var ch = document.createElement('ol'); ch.className = 'cr-chart'; ch.setAttribute('data-chart', q.items[0][0]);
+          ch.innerHTML = q.chart.map(function (t, k) { return '<li' + (S.rolls[q.items[0][0]] === k + 1 ? ' class="on"' : '') + '><b>' + (k + 1) + '</b><span>' + esc(t) + '</span></li>'; }).join('');
+          sec.appendChild(ch);
+        }
         var tl = document.createElement('ol'); tl.className = 'cr-tiers';
         tl.innerHTML = q.tiers.map(function (t, k) { return '<li><b>' + esc(DATA.tiers[k]) + '</b>' + esc(t) + '</li>'; }).join('');
         var note = document.createElement('p'); note.className = 'rc-rollnote'; note.textContent = "What each kit's average means. " + DATA.twist;
@@ -1388,7 +1405,9 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         S.sealed = true; store(STORE, S);
         if (res.count && !DATA.raft) $('rc-count').textContent = fmt(res.count);
         // the raft rolls pay nothing themselves: the pieces already paid 20 each (a fren asked about '0 points', 2026-10-07)
-        if (DATA.raft) $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.bonus ? '+' + res.bonus + ' POINTS · THE RAFT IS BUILT' : res.status === 'new' ? 'ROLLS SEALED' : 'ROLLS UPDATED') + '</b>' + (res.bonus ? 'All ' + DATA.raft.total + ' pieces were found, so sealing your rolls earns you a ' + res.bonus + '-point bonus for finding the raft so fast. ' : '') + 'Your rolls are in. The points come from your raft pieces, ' + DATA.raft.points + ' for each one you claimed' + (DATA.rollBonus ? ', plus a ' + DATA.rollBonus.points + '-point bonus once all ' + DATA.raft.total + ' pieces are found' : '') + '. They land on the leaderboard at the next tally.</p>';
+        // the rope rolls (chapter 14) pay nothing themselves either: the strands paid 20 each
+        if (DATA.raft && DATA.raft.hunt === 'rope') $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.status === 'new' ? 'ROLLS SEALED' : 'ROLLS UPDATED') + '</b>Your rolls are in. The points come from your strands of rope, ' + DATA.raft.points + ' for each one you claimed. They land on the leaderboard at the next tally.</p>';
+        else if (DATA.raft) $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.bonus ? '+' + res.bonus + ' POINTS · THE RAFT IS BUILT' : res.status === 'new' ? 'ROLLS SEALED' : 'ROLLS UPDATED') + '</b>' + (res.bonus ? 'All ' + DATA.raft.total + ' pieces were found, so sealing your rolls earns you a ' + res.bonus + '-point bonus for finding the raft so fast. ' : '') + 'Your rolls are in. The points come from your raft pieces, ' + DATA.raft.points + ' for each one you claimed' + (DATA.rollBonus ? ', plus a ' + DATA.rollBonus.points + '-point bonus once all ' + DATA.raft.total + ' pieces are found' : '') + '. They land on the leaderboard at the next tally.</p>';
         else $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.status === 'new' ? '+' + res.points + ' POINTS' : 'PLAN UPDATED') + '</b>' +
           (res.status === 'new' ? 'Your plan is with the Captain. The points land on the leaderboard at the next tally.' : 'Your new plan replaces your old one.') + ' You can change your vote until it closes.</p>';
         btn.textContent = DATA.sealLabel || 'SEAL MY PLAN'; btn.disabled = false;
@@ -1597,10 +1616,13 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
           '<p class="cr-mark" aria-live="polite"></p>' + (outs['round' + r.n] ? '<div class="cr-pick-out">' + outcome('round' + r.n) + '</div>' : '') + '</section>';
       });
     }
+    // a die with a chart (1 the worst, 20 the best) names what the drawn roll means, and lights it on the chart
+    function chartHit(q) { var d = q.chart && draw[q.items[0][0]]; return d ? '<p class="cr-chart-hit">' + esc(q.chart[d.roll - 1]) + '</p>' : ''; }
+    function chartList(q) { var d = q.chart && draw[q.items[0][0]]; return d ? '<ol class="cr-chart">' + q.chart.map(function (t, k) { return '<li' + (d.roll === k + 1 ? ' class="on"' : '') + '><b>' + (k + 1) + '</b><span>' + esc(t) + '</span></li>'; }).join('') + '</ol>' : ''; }
     if (!rounds) DATA.questions.forEach(function (q) {
       if (q.kind === 'rolls' && q.items.length === 1) {
         html += '<section class="rc-step"><header><p class="rc-kick">' + (lead || n ? esc(q.kicker || '') : 'THE VOTES ARE IN · ' + RES.sealed + ' FRENS VOTED') + '</p><h2>' + esc(q.items[0][1]) + '</h2>' +
-          '<p>One roll was drawn at random from everyone’s rolls.</p></header><div class="cr-res-kits cr-one">' + card(q.items[0][0], q.items[0][1], '', n++) + '</div></section>';
+          '<p>One roll was drawn at random from everyone’s rolls.</p></header><div class="cr-res-kits cr-one">' + card(q.items[0][0], q.items[0][1], chartHit(q), n++) + '</div>' + chartList(q) + '</section>';
       } else if (q.kind === 'pickroll') {
         var p = pick[q.id], desc = {};
         q.options.forEach(function (o) { desc[o[0]] = o[1]; });
@@ -1639,13 +1661,16 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
                 '<p class="cr-pair-note">Advantage: the higher roll counts. <b>' + hi + '</b></p>' + outcome(it[0]) + '</div></article>';
             }
             var g = grid && pick[grid.items[i][0]], top = g && g.winner ? g.winner : g && g.tie ? g.tie.join(' / ') : '';
-            return card(it[0], it[1], top ? '<p class="prio">PRIORITY <b>' + esc(top) + '</b> · ' + g.counts[(g.winner || g.tie[0])] + ' votes</p>' : '', n++);
-          }).join('') + '</div></section>';
+            // a die with a chart names what the drawn roll means
+            var hit = q.chart && draw[it[0]] ? '<p class="cr-chart-hit">' + esc(q.chart[draw[it[0]].roll - 1]) + '</p>' : '';
+            return card(it[0], it[1], (top ? '<p class="prio">PRIORITY <b>' + esc(top) + '</b> · ' + g.counts[(g.winner || g.tie[0])] + ' votes</p>' : '') + hit, n++);
+          }).join('') + '</div>' + (q.chart && draw[q.items[0][0]] ? '<ol class="cr-chart">' + q.chart.map(function (t, k) { return '<li' + (draw[q.items[0][0]].roll === k + 1 ? ' class="on"' : '') + '><b>' + (k + 1) + '</b><span>' + esc(t) + '</span></li>'; }).join('') + '</ol>' : '') + '</section>';
       }
     });
     // a closing note under the rolls while the outcomes are still being written (River Mayhem, 2026-10-10)
     if (storyEnd) html += story;
-    if (RES.afterNote) html += '<section class="rc-step cr-story cr-after">' + paras(RES.afterNote, '') + '</section>';
+    // the next chapter's button under the closing note, once that chapter is out (RES.next = [label, url], 2026-11-01)
+    if (RES.afterNote) html += '<section class="rc-step cr-story cr-after">' + paras(RES.afterNote, '') + (RES.next ? '<a class="rc-cta cr-next" href="' + esc(RES.next[1]) + '">' + esc(RES.next[0]) + '</a>' : '') + '</section>';
     var box = document.createElement('div'); box.id = 'cr-results'; box.innerHTML = html;
     $('rc-orders').insertAdjacentElement('afterend', box);
     if (rounds) rounds.forEach(function (r) { wireRound(document.getElementById('cr-round-' + r.n), r); });

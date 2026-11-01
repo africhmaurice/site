@@ -494,6 +494,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cr-chart li.on{border-color:var(--lime);background:rgba(162,245,144,.14);color:#fffffe;font-weight:700}
 @media (max-width:640px){#rc .cr-chart{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-auto-flow:row}}
 #rc .cr-res-kit .cr-chart-hit{margin-top:10px;font-weight:800;font-size:17px;line-height:1.35;color:var(--lime)}
+/* the next chapter's button under the closing note (2026-11-01) */
+#rc .cr-after .cr-next{display:inline-block;margin-top:20px;text-decoration:none;max-width:100%;white-space:normal;text-align:center}
 /* the fight, chapter 9 (the Cerunine attack), on top of the crash vote's styles: the teal color story. The crystal towers
    under a deep teal veil, ink panels, parchment text, emerald accents (#07181a, #1a5e41, #268e62, #3adb97, #89fbcb, #ede9dc). */
 #rc.cr.ft{--mint:#fffffe;--ember:#89fbcb;--red:#268e62;--lime:#89fbcb;--panel:rgba(7,24,20,.88);--well:rgba(255,255,255,.06);--hair:rgba(243,234,217,.2);--hair2:rgba(243,234,217,.42)}
@@ -618,7 +620,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 <script>
 (function () {
-  var DATA = {"_help":"Chapter 15 vote (DRAFT name and copy): the crew minus Scarlett, at the source of the EMP (Maurice, 2026-10-30). Using Rune's tech they find the building; it is running, and one prism guard is out front. Six rolls, one roll per die drawn at random from the sealed votes. Teal in the adventure color rotation. Built by node scripts/build-crash.mjs source. Live 3 PM ET Fri 10/30 for 24 hours (Maurice: push it live). Map spot: his red dot west of the Sword (668, 814).","key":"source_vote","points":100,"opens":"2026-10-30T19:00:00Z","closes":"2026-10-31T19:00:00Z","title":["The Source","of the Wave"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"While Scarlett digs herself out of the quicksand, the rest of the crew is on the move. Using Rune’s tech, Rune, Sparrow, and Hale track the energy wave back to where it came from: a building, deep in the jungle. It’s up and running, and one prism guard is standing watch.\n\nRoll for how they scout the place, their stealth, the cameras and alarms, whether they spot them, how many prism guards are inside, and how well they get in.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY ROLLS","questions":[{"id":"scout","kind":"rolls","kicker":"THE APPROACH","title":"Is there a better way in?","text":"The crew circles the building, looking for a way inside that’ll give them some advantage. Roll for what they find.","items":[["scout","Scouting"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"stealth","kind":"rolls","kicker":"THE CREW","title":"How stealthy are they?","text":"Rune, Sparrow, and Hale have to get close without being seen or heard. Roll for their stealth.","items":[["stealth","Stealth"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"security","kind":"rolls","kicker":"THE BUILDING","title":"How locked down is it?","text":"Roll for how many cameras and alarms are watching the building. The higher the roll, the fewer there are.","items":[["security","Cameras and Alarms"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"spot","kind":"rolls","kicker":"THE CREW","title":"Do they spot them?","text":"Roll for whether the crew notices the cameras and alarms before they walk into them.","items":[["spot","Spotting the Security"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"guards","kind":"rolls","kicker":"INSIDE","title":"How many prism guards?","text":"There’s one prism guard out front. Roll for how many more are inside. The higher the roll, the fewer there are.","items":[["guards","Prism Guards Inside"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"infiltrate","kind":"rolls","kicker":"THE BREAK-IN","title":"Do they get inside?","text":"Roll for how well the crew gets into the building.","items":[["infiltrate","Getting Inside"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."}],"draw":true,"onAdventure":true,"badge":["#268e62","#1a5e41","#89fbcb"],"results":{"key":"source_vote","sealed":23,"draws":[{"id":"scout","name":"Scouting","roll":11,"by":"@amkarweick","from":23},{"id":"stealth","name":"Stealth","roll":8,"by":"@lauren.e.books","from":23},{"id":"security","name":"Cameras and Alarms","roll":6,"by":"@queen_0f_ink","from":23},{"id":"spot","name":"Spotting the Security","roll":8,"by":"@Spacefoxy9","from":23},{"id":"guards","name":"Prism Guards Inside","roll":12,"by":"@spine.breakerbooks","from":23},{"id":"infiltrate","name":"Getting Inside","roll":4,"by":"@queen_0f_ink","from":23}],"picks":[],"outcomes":{},"story":"","storyTitle":"","lede":"The rolls are in! 23 frens rolled for how Rune, Sparrow, and Hale get into the building. Here’s how it went.","afterNote":"What happens next? Updates soon!"},"resultsLive":true};
+  var DATA = {"_help":"Chapter 15 vote (DRAFT name and copy): the crew minus Scarlett, at the source of the EMP (Maurice, 2026-10-30). Using Rune's tech they find the building; it is running, and one prism guard is out front. Six rolls, one roll per die drawn at random from the sealed votes. Teal in the adventure color rotation. Built by node scripts/build-crash.mjs source. Live 3 PM ET Fri 10/30 for 24 hours (Maurice: push it live). Map spot: his red dot west of the Sword (668, 814).","key":"source_vote","points":100,"opens":"2026-10-30T19:00:00Z","closes":"2026-10-31T19:00:00Z","title":["The Source","of the Wave"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"While Scarlett digs herself out of the quicksand, the rest of the crew is on the move. Using Rune’s tech, Rune, Sparrow, and Hale track the energy wave back to where it came from: a building, deep in the jungle. It’s up and running, and one prism guard is standing watch.\n\nRoll for how they scout the place, their stealth, the cameras and alarms, whether they spot them, how many prism guards are inside, and how well they get in.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY ROLLS","questions":[{"id":"scout","kind":"rolls","kicker":"THE APPROACH","title":"Is there a better way in?","text":"The crew circles the building, looking for a way inside that’ll give them some advantage. Roll for what they find.","items":[["scout","Scouting"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"stealth","kind":"rolls","kicker":"THE CREW","title":"How stealthy are they?","text":"Rune, Sparrow, and Hale have to get close without being seen or heard. Roll for their stealth.","items":[["stealth","Stealth"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"security","kind":"rolls","kicker":"THE BUILDING","title":"How locked down is it?","text":"Roll for how many cameras and alarms are watching the building. The higher the roll, the fewer there are.","items":[["security","Cameras and Alarms"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"spot","kind":"rolls","kicker":"THE CREW","title":"Do they spot them?","text":"Roll for whether the crew notices the cameras and alarms before they walk into them.","items":[["spot","Spotting the Security"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"guards","kind":"rolls","kicker":"INSIDE","title":"How many prism guards?","text":"There’s one prism guard out front. Roll for how many more are inside. The higher the roll, the fewer there are.","items":[["guards","Prism Guards Inside"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"infiltrate","kind":"rolls","kicker":"THE BREAK-IN","title":"Do they get inside?","text":"Roll for how well the crew gets into the building.","items":[["infiltrate","Getting Inside"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."}],"draw":true,"onAdventure":true,"badge":["#268e62","#1a5e41","#89fbcb"],"results":{"key":"source_vote","sealed":23,"draws":[{"id":"scout","name":"Scouting","roll":11,"by":"@amkarweick","from":23},{"id":"stealth","name":"Stealth","roll":8,"by":"@lauren.e.books","from":23},{"id":"security","name":"Cameras and Alarms","roll":6,"by":"@queen_0f_ink","from":23},{"id":"spot","name":"Spotting the Security","roll":8,"by":"@Spacefoxy9","from":23},{"id":"guards","name":"Prism Guards Inside","roll":12,"by":"@spine.breakerbooks","from":23},{"id":"infiltrate","name":"Getting Inside","roll":4,"by":"@queen_0f_ink","from":23}],"picks":[],"outcomes":{},"story":"","storyTitle":"","lede":"The rolls are in! 23 frens rolled for how Rune, Sparrow, and Hale get into the building. Here’s how it went.","afterNote":"What happens next?","next":["NEXT: THE BREAK-IN GONE WRONG","https://www.mauriceafrich.com/the-break-in"]},"resultsLive":true};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
@@ -1670,7 +1672,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     });
     // a closing note under the rolls while the outcomes are still being written (River Mayhem, 2026-10-10)
     if (storyEnd) html += story;
-    if (RES.afterNote) html += '<section class="rc-step cr-story cr-after">' + paras(RES.afterNote, '') + '</section>';
+    // the next chapter's button under the closing note, once that chapter is out (RES.next = [label, url], 2026-11-01)
+    if (RES.afterNote) html += '<section class="rc-step cr-story cr-after">' + paras(RES.afterNote, '') + (RES.next ? '<a class="rc-cta cr-next" href="' + esc(RES.next[1]) + '">' + esc(RES.next[0]) + '</a>' : '') + '</section>';
     var box = document.createElement('div'); box.id = 'cr-results'; box.innerHTML = html;
     $('rc-orders').insertAdjacentElement('afterend', box);
     if (rounds) rounds.forEach(function (r) { wireRound(document.getElementById('cr-round-' + r.n), r); });
@@ -1721,3 +1724,69 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 })();
 </script>
+<!-- THE SOURCE OF THE WAVE, the recording (2026-11-01): Gary's first Guardians scene, "The Source of the Wave", sits
+     under the page's title. The file is assets/audio/guardians-1-source.m4a on the site (trimmed, 1.1x, like De'gaté's
+     and the River's). build-crash.mjs appends this file to squarespace-source.html (theme source, extra). -->
+<style>
+#rc .cr-listen header{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+#rc .cr-listen header h2{margin:0}
+#rc .cr-listen header p{margin:0}
+#rc .cr-player{display:flex;align-items:center;gap:16px;background:rgba(11,23,15,.55);border:1px solid rgba(137,251,203,.35);padding:14px 18px;max-width:620px;color:#fffffe;border-radius:0}
+#rc .cr-pbtn{flex:none;width:52px;height:52px;border-radius:50%;background:#1a5e41;border:0;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
+#rc .cr-pbtn:hover{background:#268e62}
+#rc .cr-pbtn svg{width:22px;height:22px;fill:#89fbcb}
+#rc .cr-pbtn svg.p{margin-left:3px}
+#rc .cr-pmid{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
+#rc .cr-plabel{font:800 12px/1.3 Almarai,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#ede9dc}
+#rc .cr-ptrack{position:relative;height:8px;background:rgba(237,233,220,.18);cursor:pointer}
+#rc .cr-pfill{position:absolute;top:0;bottom:0;left:0;width:0;background:#3adb97}
+#rc .cr-ptime{flex:none;font-weight:700;font-size:15px;color:#89fbcb;font-variant-numeric:tabular-nums}
+#rc .cr-tx{margin-top:16px;max-width:620px}
+#rc .cr-tx summary{cursor:pointer;font:800 13px/1.4 Almarai,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#89fbcb;padding:6px 0}
+#rc .cr-tx>div{display:flex;flex-direction:column;gap:10px;padding:14px 0 4px}
+#rc .cr-tx p{margin:0;font-size:16px;line-height:1.6;color:#ede9dc}
+#rc .cr-tx p b{color:#89fbcb;margin-right:8px;letter-spacing:.06em}
+#rc .cr-tx p i{color:rgba(237,233,220,.72)}
+/* the site's scroll fade-in stays off the transcript, so opening it always shows the lines */
+#rc .cr-tx .ma-rv{opacity:1!important;transform:none!important}
+@media (max-width:600px){#rc .cr-player{gap:12px;padding:12px}#rc .cr-pbtn{width:44px;height:44px}}
+</style>
+<script>(function(){
+  var SRC = 'https://africhmaurice.github.io/site/assets/audio/guardians-1-source.m4a', LABEL = 'THE CREW · THE SOURCE OF THE WAVE';
+  var LINES = [
+    ['', 'Quiet. Smoke drifts. Something small and electrical pops, then dies.'],
+    ['SPARROW', 'Okay. Okay. Is everybody still... everybody?'],
+    ['RUNE', 'That weren’t weather, Sparrow. A wave like that, the whole island at once? That’s a weapon. Somebody built it, and somebody fired it.'],
+    ['HALE', 'So we find whoever pulled that trigger.'],
+    ['SPARROW', 'Agreed.'],
+    ['RUNE', 'Look at the trees. See the scorch lines? All running the same way. And the birds came down facing away from it.'],
+    ['SPARROW', 'Are the birds dead?'],
+    ['', 'Pause. The sound of a dead bird being kicked.'],
+    ['HALE', 'Yep...'],
+    ['SPARROW', 'That’s terrible!'],
+    ['RUNE', 'That’s a compass. It came from... there.']
+  ];
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function clock(s){s=Math.floor(s||0);return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
+  function setup(){
+    var root=document.getElementById('rc'), hero=root&&root.querySelector('.rc-hero');
+    if(!hero)return false;
+    if(root.querySelector('.cr-listen'))return true;
+    var sec=document.createElement('section'); sec.className='rc-step cr-listen';
+    sec.innerHTML='<header><p class="rc-kick">LISTEN</p><h2>The Source of the Wave</h2><p>The wave knocked everyone flat. Rune, Sparrow, and Hale pick themselves up and work out where it came from.</p></header>'+
+      '<div class="cr-player"><button type="button" class="cr-pbtn" aria-label="Play '+LABEL+'"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>'+
+      '<div class="cr-pmid"><div class="cr-plabel">'+LABEL+'</div><div class="cr-ptrack"><div class="cr-pfill"></div></div></div>'+
+      '<div class="cr-ptime">0:00</div><audio preload="metadata" src="'+SRC+'"></audio></div>'+
+      '<details class="cr-tx"><summary>Read the transcript</summary><div>'+LINES.map(function(l){return '<p>'+(l[0]?'<b>'+l[0]+'</b>'+esc(l[1]):'<i>['+esc(l[1])+']</i>')+'</p>';}).join('')+'</div></details>';
+    hero.insertAdjacentElement('afterend',sec);
+    var a=sec.querySelector('audio'),btn=sec.querySelector('.cr-pbtn'),fill=sec.querySelector('.cr-pfill'),t=sec.querySelector('.cr-ptime'),ip=sec.querySelector('svg.p'),is=sec.querySelector('svg.s');
+    function paint(){fill.style.width=(a.duration?a.currentTime/a.duration*100:0)+'%';t.textContent=clock(a.paused&&!a.currentTime?a.duration:a.currentTime);
+      ip.hidden=!a.paused;is.hidden=a.paused;btn.setAttribute('aria-label',(a.paused?'Play ':'Pause ')+LABEL);}
+    ['timeupdate','loadedmetadata','play','pause'].forEach(function(ev){a.addEventListener(ev,paint);});
+    a.addEventListener('ended',function(){a.currentTime=0;paint();});
+    btn.addEventListener('click',function(){if(a.paused)a.play();else a.pause();});
+    sec.querySelector('.cr-ptrack').addEventListener('click',function(e){if(!a.duration)return;var r=this.getBoundingClientRect();a.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*a.duration;});
+    return true;
+  }
+  if(!setup()){var n=0,iv=setInterval(function(){if(setup()||++n>40)clearInterval(iv);},250);}
+})();</script>
