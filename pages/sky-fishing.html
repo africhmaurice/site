@@ -43,7 +43,7 @@
        (and go after your weakest goon from level 4); from level 8 they get a Goma Bomb; +1 of each special every 6 levels.
        YOUR CREW CARRIES OVER: health stays from level to level, but after each win half of what each goon lost comes
        back, and a knocked-out goon returns at a quarter of its health (my call; DRAFT).
-       COINS: 20 + 5 x level for each win, plus 3 for every shot that hits. Spend them between levels in the upgrade
+       COINS (11/2, both modes): +50 at the start of each of your turns, 100 per coin grabbed, +10 a hit, +50 a knockout, 125 for the golden chest, and 100 + 25 x level for each Campaign win; prices are 5x the first list. Spend them between levels in the upgrade
        panel: Bigger blasts (+15% blast size, max 3), Heavier stones (+15% damage, max 3), Ammo pack (+1 Mine, Storm Call,
        and Boulder Drop every level, max 3), Goma Bomb (new weapon, 2 a level), Patch up (+40 health to every goon), and
        Extra goon (up to 5). Prices rise 50% each time you buy the same one.
@@ -122,7 +122,7 @@
 <!-- WEEKLY BOARDS (11/2): goonscampstart/score/top (Campaign, FULL runs only: started at level 1, never a "Retry level N";
      a run continued from the save keeps its ticket) and goonsffastart/score/top (one Free-for-All match). Scores carry
      playing time (paused time and panels don't count), level reached / place and knockouts. Maurice's runs are practice
-     (server side). Pickups are capped at 6 a level (12 a Free-for-All match). DRAFT words: "Best this week", "Campaign:
+     (server side). v8: every third turn one random drop lands on each side (at most 8 waiting); drops include +1 special weapon and a one-shot upgrade. DRAFT words: "Best this week", "Campaign:
      this week's top commanders", "Free-for-All: this week's last goons standing", "Board closes in", "No games yet this
      week.", "Kept on this device.", the player form and its messages (copied from Hold the Wall!).
      GOMA GOONS v7 (Maurice 11/2): goons a little bigger (18 across, was 14); early levels quicker (2 rivals on levels 1-2,
@@ -238,6 +238,39 @@
   #ma-skyduel .sd-ups{grid-template-columns:repeat(2,minmax(0,1fr))}
   #ma-skyduel .sd-mode{padding:12px 16px;font-size:13px}
 }
+/* Free-for-All shop over the battlefield (11/2) */
+#ma-skyduel .sd-stage{position:relative}
+#ma-skyduel .sd-shopov{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px;overflow:auto;background:rgba(11,23,15,.94);line-height:1.3}
+#ma-skyduel .sd-shopin,#ma-skyduel .sd-shopov .sd-shop{width:100%;max-width:none}
+#ma-skyduel .sd-back{margin:0;flex:none;padding:12px 26px;border:2px solid #f3ead9;background:#c1330a;color:#fffffe;font:800 14px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-skyduel .sd-back:hover,#ma-skyduel .sd-back:focus-visible{background:#ff4c0f;outline:none}
+#ma-skyduel .sd-shopov .sd-ups{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+#ma-skyduel .sd-shopov .sd-up{min-height:0;padding:10px 8px;gap:4px}
+@media (max-width:640px){#ma-skyduel .sd-shopov{padding:12px}#ma-skyduel .sd-shopov .sd-ups{grid-template-columns:repeat(2,minmax(0,1fr))}#ma-skyduel .sd-shopov .sd-up{font-size:11px;letter-spacing:.05em}#ma-skyduel .sd-shopov .sd-up small{font-size:10px}}
+#ma-skyduel h3{font-family:'Almarai',sans-serif}
+#ma-skyduel .sd-up .ui{order:-1;display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin:0 auto;background:#9cc3cd;border:1px solid rgba(243,234,217,.35)}
+#ma-skyduel .sd-up .ui img{width:80%;height:80%;object-fit:contain}
+#ma-skyduel .sd-up{align-items:center}
+@media (max-width:640px){#ma-skyduel .sd-up .ui{width:36px;height:36px}}
+/* fit (11/2): the battlefield and every button on one screen */
+#ma-skyduel .sd-wrap{gap:12px}
+#ma-skyduel .sd-wrap>.sd-lede{margin-bottom:8px}
+#ma-skyduel .sd-bar{gap:6px 16px;font-size:12px}
+#ma-skyduel .sd-bar .sd-btn{padding:7px 12px;font-size:11px}
+#ma-skyduel .sd-view{width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:640px}
+#ma-skyduel .sd-view .sd-btn{padding:8px 6px;font-size:11px;letter-spacing:.08em}
+#ma-skyduel .sd-weapons,#ma-skyduel .sd-weapons[class]{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#ma-skyduel .sd-wpn{min-height:44px;padding:6px 8px;gap:3px;font-size:12px;letter-spacing:.06em}
+#ma-skyduel .sd-wpn small{font-size:11px}
+#ma-skyduel .sd-pad,#ma-skyduel .sd-pad[class]{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+#ma-skyduel .sd-pad button,#ma-skyduel .sd-pad .sd-l,#ma-skyduel .sd-pad .sd-j,#ma-skyduel .sd-pad .sd-r,#ma-skyduel .sd-pad .sd-next,#ma-skyduel .sd-pad .sd-fire{grid-column:auto;min-height:46px;padding:6px 4px}
+#ma-skyduel .sd-msg{min-height:20px;font-size:14px;line-height:1.4}
+@media (max-width:640px){
+  #ma-skyduel .sd-wpn{font-size:10px;letter-spacing:.03em;padding:6px 4px}
+  #ma-skyduel .sd-wpn small{font-size:10px;letter-spacing:0}
+  #ma-skyduel .sd-view .sd-btn{font-size:10px;letter-spacing:.03em;padding:8px 2px}
+  #ma-skyduel .sd-pad button{font-size:11px;letter-spacing:.04em}
+}
 </style>
 <section id="ma-skyduel" aria-label="Goma Goons">
 <!-- ARCADE-TABS:BEGIN (pasted by holdwall/port.mjs from treasure-hunt-leaderboard/games/_tabs.html plus the 140-142 buttons; do not edit here) -->
@@ -274,7 +307,7 @@
       <span class="sd-red"><span class="sd-yl">Your crew</span> <b class="sd-hp0">0</b></span><span><span class="sd-rl">Rival</span> <b class="sd-hp1">0</b></span>
       <button class="sd-btn sd-pause" type="button">Pause</button><button class="sd-btn sd-new" type="button">New run</button>
     </div>
-    <div class="sd-stage"><canvas aria-label="The battlefield: your goons, the rival goons, and the ground between them"></canvas></div>
+    <div class="sd-stage"><div class="sd-shopov" hidden><div class="sd-shopin"></div><button class="sd-back" type="button">Back to the fight</button></div><canvas aria-label="The battlefield: your goons, the rival goons, and the ground between them"></canvas></div>
     <div class="sd-view"><button class="sd-btn sd-ov" type="button" aria-pressed="false">Overview</button><button class="sd-btn sd-find" type="button">Find my goon</button><button class="sd-btn sd-zin" type="button">Zoom in</button><button class="sd-btn sd-zout" type="button">Zoom out</button></div>
     <div class="sd-weapons" role="group" aria-label="Weapons"></div>
     <div class="sd-pad">
@@ -297,8 +330,9 @@
       <li>Lightning Strike: lightning strikes the top of the spot you hit.</li>
       <li>Red Atomic: one huge blast.</li>
       <li>Barrage: fire a flare and an airship drops a string of bombs around it.</li>
-      <li>Pickups drop every 3 rounds: walk onto one to grab it.</li>
+      <li>Every third turn, a random drop lands on each side of the map: health, gems, extra turns, extra lives, big boulders, coins, weapons, or upgrades. Walk onto one to grab it.</li>
       <li>Goma Bomb: splits into three stones in the air (unlock it in the upgrades).</li>
+      <li>Coins: +50 at the start of each of your turns, 100 for every coin you grab, 10 for a hit, and 50 for a knockout. Spend them on upgrades: between levels in Campaign, and on your turn in Free-for-All (tap Upgrades).</li>
       <li>Water sinks a goon, and lava burns one up. Either way, it is out.</li>
       <li>Stars: 1 for winning a level, 2 for winning with at least two goons standing, and 3 for winning with every goon standing.</li>
       <li>Your Campaign run saves between levels on this device. A loss ends the run.</li>
@@ -558,7 +592,9 @@ var ArcadeCard = (function () {
   // crossOrigin: the maps are read pixel by pixel, so the drawings must load CORS-clean from GitHub Pages
   function img(f){var i=new Image();i.crossOrigin='anonymous';i.src=ART+f;return i;}
   var IM={atomic:img('140-atomic.png'),nuke:img('140-boom.webp'),ship:img('ship-red.webp'),mine:[img('141-mine-1.webp'),img('141-mine-2.webp'),img('141-mine-3.webp')],bolt:img('141-lightning.webp'),sky:img('141-sky.webp'),
-    rock:img('141-rock.webp'),burst:[img('140-burst-1.webp'),img('140-burst-2.webp'),img('140-burst-3.webp')],coin:[img('141-coin-10.webp'),img('141-coin-15.webp')]};
+    rock:img('141-rock.webp'),burst:[img('140-burst-1.webp'),img('140-burst-2.webp'),img('140-burst-3.webp')],coin:[img('141-coin-10.webp'),img('141-coin-15.webp')],
+    spin:img('77-coin-spin.png'),ruby:img('74-ruby.png'),boost:img('77-boost.png'),skull:img('../img/skull-heart-red.webp'),chest:img('golden-chest.png'),repair:img('140-icon-repair.png'),crate:img('74-crate.png'),
+    bolt2:img('78-bolt.png'),shipR:img('ship-red-right.webp'),flame:img('shared-flame.png'),tri:img('140-icon-triple-barrel.png'),gren:img('140-icon-grenades.png'),bigr:img('140-icon-bigger-rounds.png')};
   var GOMAS=[['yellow','Daisy'],['red','Molt'],['sand','Sandy'],['black','Onyx'],['blue','Bluey'],['green','Vern'],['purple','Po'],['white','Galaxy'],['teal','Pebble'],['gold','Goldie'],['lime','Mossy'],['brown','Dirty Dan']];   // Maurice's names, 11/1
   var GCOL=['#e3c64a','#e8442a','#d9b98f','#45454a','#3a6fc4','#4f9a3a','#b06fd8','#ececec','#2fbf9a','#f0b323','#b5c42a','#7a4a2e'];   // each goon's mortar color
   var NMAPS=17;IM.maps=[];
@@ -586,7 +622,7 @@ var ArcadeCard = (function () {
   /* ---- the numbers (all in one place, to tune with Maurice) ------------------------------------------------- */
   // HUGE BOARDS (11/2): the world is 1920 wide (the maps at full width) with open sky above; goons are 14 across,
   // a quarter of their old size next to the map. A camera shows part of it; Overview shows all of it.
-  var WW=1920,SKY=700,GS=18,MORTAR_L=12;   // v7: goons a little bigger (was 14)
+  var WW=1920,SKY=700,GS=22.5,MORTAR_L=15;   // v8: goons 25% bigger again (14 -> 18 -> 22.5)
   var BOX_LEVEL=3,HP_CREW=100,WIN_BONUS=100,WALK=50,WALK_SPEED=30,STEP=1/120,GC=400,CREW_MAX=5,FFA_N=12;
   var G=360,VMAX=860,WK=5;   // a full-power shot at 45 degrees carries about the width of the map
   function dl(L){return 1+(L-1)*9/5;}   // levels 1-6 cover the old ten steps of difficulty; past 6 it keeps climbing to the floors below
@@ -605,17 +641,23 @@ var ArcadeCard = (function () {
   var SHARD={k:'shard',name:'Goma Bomb',R:10,dmg:24,wind:1,grav:1,pmax:1};
   var BOMBLET={k:'bomblet',name:'Barrage',R:12,dmg:24,wind:0,grav:1,pmax:1},CHUNK={k:'chunk',name:'Shatter',R:7,dmg:12,wind:1,grav:1,pmax:1};
   var UPS=[
-    {k:'blast',name:'Bigger blasts',what:'+15% blast size',cost:40,max:3},
-    {k:'dmg',name:'Heavier stones',what:'+15% damage',cost:40,max:3},
-    {k:'ammo',name:'Ammo pack',what:'+1 Lightning Strike, Red Atomic, and Barrage every level',cost:35,max:3},
-    {k:'spray',name:'Spray Shot',what:'Mortar Stones fly three at a time',cost:50,max:1},
-    {k:'shatter',name:'Shatter',what:'Mortar Stones break into five chunks where they land',cost:55,max:1},
-    {k:'burn',name:'Burning',what:'Mortar Stones burn straight down through the ground',cost:55,max:1},
-    {k:'bomb',name:'Goma Bomb',what:'New weapon: splits into three',cost:60,max:1},
-    {k:'heal',name:'Patch up',what:'+40 health to every goon',cost:25,max:Infinity},
-    {k:'crew',name:'Extra goon',what:'One more crew member, up to 5',cost:80,max:2}
+    {k:'blast',name:'Bigger blasts',what:'+15% blast size',cost:200,max:3},
+    {k:'dmg',name:'Heavier stones',what:'+15% damage',cost:200,max:3},
+    {k:'ammo',name:'Ammo pack',what:'+1 Lightning Strike, Red Atomic, and Barrage every level',cost:175,max:3,camp:1},
+    {k:'double',name:'Double Shot',what:'Mortar Stones fly two at a time',cost:175,max:1},
+    {k:'spray',name:'Triple Shot',what:'Mortar Stones fly three at a time',cost:250,max:1,need:'double'},
+    {k:'twice',name:'Fire Twice',what:'Your next turn, fire two shots in a row',cost:200,max:Infinity,held:1},
+    {k:'turn',name:'Extra Turn',what:'Take another turn right after your next one',cost:225,max:Infinity,held:1},
+    {k:'life',name:'Extra Life',what:'The next goon of yours knocked out comes right back',cost:300,max:Infinity,held:1},
+    {k:'shatter',name:'Shatter',what:'Mortar Stones break into five chunks where they land',cost:275,max:1},
+    {k:'burn',name:'Burning',what:'Mortar Stones burn straight down through the ground',cost:275,max:1},
+    {k:'bomb',name:'Goma Bomb',what:'New weapon: splits into three',cost:300,max:1},
+    {k:'heal',name:'Patch up',what:'+40 health to every goon',cost:125,max:Infinity},
+    {k:'crew',name:'Extra goon',what:'One more crew member, up to 5',cost:400,max:2,camp:1}
   ];
-  var CRATES=['heal','ammo','boost'],PICKS=['heal','gem','turn','life','big','token'];
+  var TURN_COINS=50,COIN_GOLD=100,HIT_COINS=10,KO_COINS=50,CHEST_COINS=125;
+  var CRATES=['heal','ammo','boost'],PICKS=['heal','gem','turn','life','big','token','wpn','up'];
+  var TEMP_UPS=[['spray','SPRAY SHOT'],['shatter','SHATTER'],['burn','BURNING']];
 
   /* ---- state ---------------------------------------------------------------------------------------------------- */
   var cv=d.querySelector('canvas'),cx=cv.getContext('2d'),tc=document.createElement('canvas'),tx=tc.getContext('2d');
@@ -630,7 +672,7 @@ var ArcadeCard = (function () {
   var solid=new Uint8Array(1),crew=[],proj=[],fx=[],ammo=[[],[]],turnIdx=[0,0];
   var phase='panel',paused=false,level=1,score=0,finalScore=null,runFrom=1,wind=0,team=0,active=null,weapon=0,myWeapon=0,walkLeft=WALK,jumped=false,walkDir=0;
   var shotTeam=0,settleT=0,ai=null,aiMul=1,last=0,acc=0,clock=0,boxShown=false,walkAcc=0;
-  var bigNext=[],extraTurn=[],round=0,playT=0,myKos=0,lvDrops=0,gRun=null,mode='campaign',TEAMS=2,coins=0,up={},crewState=null,shots=0,hits=0,streak=0,lvShots=0,lvHits=0,cur=null,pickups=[],boost=[],ffaRound=0,ffaVar=0,place=0,panelKind='start',lastBonus=null,lastPlan=null,variant=null;
+  var bigNext=[],extraTurn=[],tempUp=[],twiceArmed=false,twiceNow=false,round=0,playT=0,myKos=0,lvDrops=0,gRun=null,mode='campaign',TEAMS=2,coins=0,up={},crewState=null,shots=0,hits=0,streak=0,lvShots=0,lvHits=0,cur=null,pickups=[],boost=[],ffaRound=0,ffaVar=0,place=0,panelKind='start',lastBonus=null,lastPlan=null,variant=null;
   var cam={cx:WW/2,cy:WW/2,z:1},camHold=false,overview=false;
   // stars: best per level number, kept on this device; the run save (between levels only, so a level can't be replayed)
   var SAVE_KEY='ma-goons-save',STAR_KEY='ma-goons-stars',starBest={},resumeSave=null,lvStart0=3;
@@ -668,6 +710,18 @@ var ArcadeCard = (function () {
     narrow=(d.querySelector('.sd-stage').clientWidth||960)<640;VW=narrow?560:960;VH=narrow?600:540;FS=narrow?24:16;HFS=narrow?18:12;
     DPR=Math.min(window.devicePixelRatio||1,2);cv.width=VW*DPR;cv.height=VH*DPR;
   }
+  // fit (11/2): how much of the screen the site's pinned header covers, and how tall the canvas can be so the HUD bar,
+  // the battlefield, and every button below it are all on screen together
+  function headerCover(){var h=0;[].forEach.call(document.querySelectorAll('header,#header,.header'),function(e){var st=getComputedStyle(e);if(st.position==='fixed'||st.position==='sticky'){var r=e.getBoundingClientRect();if(r.top<=1&&r.bottom>h)h=r.bottom;}});return Math.min(h,innerHeight*.3);}
+  var fitH=0;
+  function fitView(force){
+    var st=d.querySelector('.sd-stage'),sw=st.clientWidth;if(!sw||!padEl||padEl.hidden)return;
+    var parts=['.sd-bar','.sd-view','.sd-weapons','.sd-pad','.sd-msg'],ctrl=0;parts.forEach(function(q){var e=d.querySelector(q);if(e&&!e.hidden)ctrl+=e.offsetHeight+12;});
+    var room=innerHeight-headerCover()-ctrl-4-16,h0=sw*(narrow?600/560:540/960),h=Math.max(sw*(narrow?.6:.3),Math.min(h0,room));
+    if(!force&&Math.abs(h-fitH)<24)return;fitH=h;
+    VH=Math.round(VW*h/sw);cv.width=VW*DPR;cv.height=VH*DPR;clampCam();
+  }
+  function showGame(){var bar=d.querySelector('.sd-bar'),y=bar.getBoundingClientRect().top+scrollY-headerCover()-8;if(Math.abs(scrollY-y)>4)window.scrollTo(0,Math.max(0,y));}
   function setWorld(v){
     variant=v;var mh=mapSize(v.n);W=WW;H=mh+SKY;MAP={x:0,y:H-mh,w:WW,h:mh};tc.width=W;tc.height=H;
   }
@@ -764,7 +818,10 @@ var ArcadeCard = (function () {
   }
   // a knockout: the shooter's bonus, and in Free-for-All your place when you go down
   function ko(c){
-    if(c.lastBy===0&&c.team!==0){myKos++;var b=mode==='ffa'?100:25;score+=b;fx.push({k:'txt',t:0,x:Math.max(40,Math.min(W-40,c.x)),y:c.y-40,label:'KO +'+b,c:'#ffd166'});}
+    // Extra Life: your goon comes straight back on safe ground
+    if(c.team===0&&(up.life||0)>0){up.life--;var sx=safeX(c.x);c.alive=true;c.hp=Math.min(c.max,60);c.x=sx;c.y=surfaceY(sx);c.vx=c.vy=0;c.ground=true;c.hit=0;
+      fx.push({k:'txt',t:0,x:Math.max(40,Math.min(W-40,c.x)),y:c.y-40,label:'EXTRA LIFE',c:'#89fbcb'});say('Extra life: your goon is back.');hud();return;}
+    if(c.lastBy===0&&c.team!==0){myKos++;var b=mode==='ffa'?100:25;score+=b;coins+=KO_COINS;fx.push({k:'txt',t:0,x:Math.max(40,Math.min(W-40,c.x)),y:c.y-40,label:'KO +'+b,c:'#ffd166'});}
     if(c.team===0&&mode==='ffa'&&!living(0).length&&!place)place=1+crew.reduce(function(a,o){return a+(o.alive&&o.team!==0?1:0);},0);
   }
   function walkStep(c,dir,dist){
@@ -782,21 +839,24 @@ var ArcadeCard = (function () {
   }
 
   /* ---- pickups (Free-for-All): coins and crates on the ground; walk onto one to grab it ------------------------ */
-  function spawnPickup(k){for(var t=0;t<150;t++){var x=Math.round(rand(.03,.97)*W),y=surfaceY(x);if(y>H-8||liqAt(x,y+3)||liqAt(x,y+6))continue;
-      if(crew.some(function(c){return c.alive&&Math.abs(c.x-x)<14;})||pickups.some(function(p){return Math.abs(p.x-x)<16;}))continue;   // never where a goon would grab it at once (reach 8)
-      pickups.push({k:k,x:x,y:y,v:k==='coin'?(Math.random()<.4?15:10):0});return true;}return false;}
+  function safeX(near){for(var t=0;t<200;t++){var x=Math.round(t<100?near+rand(-300,300):rand(.05,.95)*W);if(x<10||x>W-10)continue;var y=surfaceY(x);if(y>H-8||liqAt(x,y+3)||liqAt(x,y+6))continue;return x;}return Math.round(W/2);}
+  function spawnPickup(k,a,b){for(var t=0;t<150;t++){var x=Math.round(rand(a||.03,b||.97)*W),y=surfaceY(x);if(y>H-8||liqAt(x,y+3)||liqAt(x,y+6))continue;
+      if(crew.some(function(c){return c.alive&&Math.abs(c.x-x)<GS;})||pickups.some(function(p){return Math.abs(p.x-x)<GS;}))continue;   // never where a goon would grab it at once (reach GS*.6)
+      pickups.push({k:k,x:x,y:y,v:k==='coin'?(Math.random()<.4?15:10):0,w:k==='wpn'?1+Math.floor(Math.random()*3):0,u:k==='up'?Math.floor(Math.random()*TEMP_UPS.length):-1});return true;}return false;}
   function pickStep(){
     pickups.forEach(function(p){if(!solidAt(p.x,p.y+1)&&!solidAt(p.x-2,p.y+1)&&!solidAt(p.x+2,p.y+1))p.y+=1;if(p.y>H||liqAt(p.x,p.y))p.gone=true;});
     crew.forEach(function(c){if(!c.alive)return;pickups.forEach(function(p){if(!p.gone&&Math.abs(p.x-c.x)<GS*.6&&Math.abs(p.y-c.y)<GS*.8)grab(c,p);});});
     pickups=pickups.filter(function(p){return !p.gone;});
   }
   function grab(c,p){p.gone=true;var me=c.team===0,lab;
-    if(p.k==='coin'){if(me){score+=p.v;coins++;}lab=me?'+'+p.v:'COIN';}
+    if(p.k==='coin'){if(me){score+=p.v;coins+=COIN_GOLD;}lab=me?'+'+COIN_GOLD+' COINS':'COIN';}
     else if(p.k==='gem'){if(me)score+=50;lab='+50 GEM';}
     else if(p.k==='turn'){extraTurn[c.team]=true;lab='EXTRA TURN';}
     else if(p.k==='life'){var down=crew.filter(function(o){return o.team===c.team&&!o.alive;})[0];if(down){down.alive=true;down.hp=40;down.x=c.x+(c.x>W/2?-GS:GS);down.y=surfaceY(down.x);down.vx=0;down.vy=0;down.ground=true;down.hit=0;}else c.hp=Math.min(c.max,c.hp+40);lab='EXTRA LIFE';}
     else if(p.k==='big'){bigNext[c.team]=true;lab='BIG BOULDER';}
-    else if(p.k==='token'){if(me){if(mode==='campaign'){coins+=25;lab='+25 COINS';}else{score+=25;lab='+25';}}else lab='TOKEN';}
+    else if(p.k==='wpn'){var wi=p.w||1+Math.floor(Math.random()*3);ammo[c.team][wi]=(ammo[c.team][wi]||0)+1;lab='+1 '+WEAPONS[wi].name.toUpperCase();if(me)renderWeapons();}
+    else if(p.k==='up'){var tu=TEMP_UPS[p.u>=0?p.u:Math.floor(Math.random()*TEMP_UPS.length)];tempUp[c.team]=tu[0];lab=tu[1]+' NEXT SHOT';}
+    else if(p.k==='token'){if(me){coins+=CHEST_COINS;lab='+'+CHEST_COINS+' COINS';}else lab='TREASURE';}
     else{if(me)score+=10;if(p.k==='heal'){c.hp=Math.min(c.max,c.hp+40);lab='+40 HEALTH';}else if(p.k==='ammo'){[1,2,3].forEach(function(i){ammo[c.team][i]++;});lab='+AMMO';}else{boost[c.team]=true;lab='POWER SHOT';}}
     fx.push({k:'txt',t:0,x:p.x,y:p.y-20,label:lab,c:me?'#ffd166':'#c3a6ff'});hud();if(me)renderWeapons();}
 
@@ -809,10 +869,12 @@ var ArcadeCard = (function () {
   function fire(){
     if(!active||!active.alive)return;var w=WEAPONS[weapon];if(!(ammo[team][weapon]>0))return;
     ammo[team][weapon]--;active.fireT=.32;var m=muzzle(active,active.ang),v=shotVel(active.ang,active.pow,w);
-    var rm=1,dm=1;if(team===0&&mode==='campaign'){rm=1+.15*(up.blast||0);dm=1+.15*(up.dmg||0);}if(boost[team]){dm*=1.5;boost[team]=false;}if(bigNext[team]){rm*=1.5;dm*=1.25;bigNext[team]=false;}
-    var mine=team===0&&mode==='campaign'&&w.k==='ball';
-    proj.push({w:w,x:m.x,y:m.y,vx:v.vx,vy:v.vy,t:0,owner:active,fuse:w.fuse||0,rest:false,rot:0,rm:rm,dm:dm,shat:mine&&!!up.shatter,burn:mine&&!!up.burn});
-    if(mine&&up.spray)[-1,1].forEach(function(k){var a=active.ang+k*.07,v2=shotVel(a,active.pow,w);proj.push({w:w,x:m.x,y:m.y,vx:v2.vx,vy:v2.vy,t:0,owner:active,fuse:0,rest:false,rot:k,rm:rm*.8,dm:dm*.6,shard:true});});
+    var rm=1,dm=1;if(team===0){rm=1+.15*(up.blast||0);dm=1+.15*(up.dmg||0);}if(boost[team]){dm*=1.5;boost[team]=false;}if(bigNext[team]){rm*=1.5;dm*=1.25;bigNext[team]=false;}
+    var mine=team===0&&w.k==='ball',tu=w.k==='ball'?tempUp[team]:null;if(tu)tempUp[team]=null;
+    proj.push({w:w,x:m.x,y:m.y,vx:v.vx,vy:v.vy,t:0,owner:active,fuse:w.fuse||0,rest:false,rot:0,rm:rm,dm:dm,shat:(mine&&!!up.shatter)||tu==='shatter',burn:(mine&&!!up.burn)||tu==='burn'});
+    if(mine&&up.double&&!up.spray&&tu!=='spray'){var a2=active.ang+.05,v3=shotVel(a2,active.pow,w);proj.push({w:w,x:m.x,y:m.y,vx:v3.vx,vy:v3.vy,t:0,owner:active,fuse:0,rest:false,rot:1,rm:rm*.8,dm:dm*.6,shard:true});}
+    if(team===0&&(up.twice||0)>0&&!twiceArmed&&!twiceNow){up.twice--;twiceArmed=true;}
+    if((mine&&up.spray)||tu==='spray')[-1,1].forEach(function(k){var a=active.ang+k*.07,v2=shotVel(a,active.pow,w);proj.push({w:w,x:m.x,y:m.y,vx:v2.vx,vy:v2.vy,t:0,owner:active,fuse:0,rest:false,rot:k,rm:rm*.8,dm:dm*.6,shard:true});});
     if(team===0){shots++;lvShots++;cur={hit:false,direct:false};}else cur=null;
     camHold=false;fx.push({k:'smoke',t:0,x:m.x,y:m.y});shotTeam=team;phase='fly';walkDir=0;renderWeapons();padState();
   }
@@ -866,29 +928,35 @@ var ArcadeCard = (function () {
   /* ---- turns ------------------------------------------------------------------------------------------------- */
   function newWind(){var m=windMax(level);wind=Math.round(rand(-m,m));}
   function nextTurn(first){
+    // Fire Twice: the same goon aims again before anyone else moves
+    if(!first&&twiceArmed&&team===0&&active&&active.alive){twiceArmed=false;twiceNow=true;phase='aim';walkLeft=0;walkDir=0;settleT=0;say('Fire Twice: aim your second shot.');renderWeapons();padState();hud();return;}
+    twiceArmed=false;twiceNow=false;
+    if(!first&&team===0&&(up.turn||0)>0&&!extraTurn[0]&&living(0).length){up.turn--;extraTurn[0]=true;}
     if(first)team=0;
     else if(extraTurn[team]&&living(team).length){extraTurn[team]=false;say('Extra turn!');}
     else for(var k=1;k<=TEAMS;k++){var t=(team+k)%TEAMS;if(living(t).length){if(t<=team&&mode==='ffa')newRound();team=t;break;}}
-    if(!first&&mode==='campaign'&&team===0){round++;if(round%3===0)dropPicks(2);}
+    if(!first&&mode==='campaign'&&team===0){round++;if(round%3===0)dropPicks();}
     var L=crew.filter(function(c){return c.team===team;});
     for(var j=1;j<=L.length;j++){var i=(turnIdx[team]+(first?j-1:j))%L.length;if(L[i].alive){turnIdx[team]=i;active=L[i];break;}}
     newWind();walkLeft=WALK;jumped=false;walkDir=0;walkAcc=0;settleT=0;camHold=false;
-    if(team===0){phase='aim';weapon=ammo[0][myWeapon]>0?myWeapon:0;myWeapon=weapon;say('Your turn. Drag on the sky to aim, then press Fire.');}
+    if(team===0){phase='aim';weapon=ammo[0][myWeapon]>0?myWeapon:0;myWeapon=weapon;say('Your turn. Drag on the sky to aim, then press Fire.');
+      coins+=TURN_COINS;fx.push({k:'txt',t:0,x:Math.max(40,Math.min(W-40,active.x)),y:active.y-46,label:'+'+TURN_COINS+' COINS',c:'#ffd166'});}
     else{phase='ai';ai={t:0,plan:null};say(mode==='ffa'?GOMAS[active.goma][1]+' is aiming.':'The rival crew is aiming.');}
     renderWeapons();padState();hud();
   }
-  // v7: every 3 rounds a few pickups drop in (Free-for-All also keeps its coins)
-  function newRound(){ffaRound++;if(ffaRound%3===0){dropPicks(2);spawnPickup('coin');}}
-  function dropPicks(n){for(var i=0;i<n;i++){if(lvDrops>=(mode==='ffa'?12:6))return;if(spawnPickup(PICKS[Math.floor(Math.random()*PICKS.length)]))lvDrops++;}}   // capped so a stalled level can't farm gems
+  // v8: every third turn one random drop lands on each side of the map (Free-for-All also keeps its coins)
+  function newRound(){ffaRound++;if(ffaRound%3===0){dropPicks();spawnPickup('coin');}}
+  function dropPicks(){[[.03,.47],[.53,.97]].forEach(function(h){if(pickups.filter(function(p){return p.k!=='coin';}).length>=8)return;if(spawnPickup(PICKS[Math.floor(Math.random()*PICKS.length)],h[0],h[1]))lvDrops++;});}   // v8: one on each side; no more than 8 waiting
   // a shot of yours is done: hits build a streak (+10 x streak), a direct hit adds 25, a miss resets it
   function shotDone(){
-    if(cur.hit){hits++;lvHits++;streak++;var b=10*streak+(cur.direct?25:0);score+=b;if(mode==='campaign')coins+=3;
+    if(cur.hit){hits++;lvHits++;streak++;var b=10*streak+(cur.direct?25:0);score+=b;coins+=HIT_COINS;
       var a=active&&active.alive?active:(living(0)[0]||active);
       if(a)fx.push({k:'txt',t:0,x:a.x,y:a.y-44,label:(cur.direct?'DIRECT HIT ':'HIT ')+(streak>1?'x'+streak+' ':'')+'+'+b,c:'#ffd166'});}
     else streak=0;
   }
   function resolve(){
     crew.forEach(function(c){if(c.alive&&c.hp<=0){c.alive=false;fx.push({k:'burst',t:0,x:c.x,y:c.y-6,s:32});ko(c);}});
+    if(twiceArmed&&!(active&&active.alive&&active.team===0))twiceArmed=false;
     if(team===0&&cur)shotDone();cur=null;hud();
     if(mode==='ffa'){if(!living(0).length){ffaOver(false);return;}if(teamsAlive()<=1){ffaOver(true);return;}nextTurn(false);return;}
     if(!living(0).length){runOver();return;}
@@ -936,11 +1004,11 @@ var ArcadeCard = (function () {
     if(t===0){var x=up.ammo||0;a[1]+=x;a[2]+=x;a[3]+=x;a[4]=up.bomb?2:0;return a;}
     var y=Math.floor((level-1)/6);a[1]+=y;a[2]+=y;a[3]+=y;a[4]=level>=8?1:0;return a;}
   function startLevel(){
-    setView();if(mode==='ffa')ffaVar=Math.floor(Math.random()*variants().length);genTerrain();placeCrew();proj=[];fx=[];pickups=[];boost=[];bigNext=[];extraTurn=[];round=0;lvDrops=0;team=0;myWeapon=0;cur=null;
+    setView();if(mode==='ffa')ffaVar=Math.floor(Math.random()*variants().length);genTerrain();placeCrew();proj=[];fx=[];pickups=[];boost=[];bigNext=[];extraTurn=[];tempUp=[];round=0;lvDrops=0;team=0;myWeapon=0;cur=null;
     ammo=[];turnIdx=[];for(var t=0;t<TEAMS;t++){ammo.push(startAmmo(t));turnIdx.push(0);}
     if(mode==='ffa'){ffaRound=0;place=0;CRATES.forEach(function(k){spawnPickup(k);});for(var i=0;i<8;i++)spawnPickup('coin');}
     setOverview(false);camHold=false;lvStart0=living(0).length;starsEl.hidden=true;
-    panel.hidden=true;controls(true);paused=false;pauseBtn.textContent='Pause';finalScore=null;lvShots=lvHits=0;nextTurn(true);snapCam();
+    if(shopOpen)closeShop();panel.hidden=true;controls(true);paused=false;pauseBtn.textContent='Pause';finalScore=null;lvShots=lvHits=0;fitView(true);nextTurn(true);snapCam();showGame();
   }
   function starTotal(){var t=0;for(var k in starBest)t+=starBest[k]||0;return t;}
   function saveRun(){if(mode!=='campaign'||!crewState)return;try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:1,level:level,score:score,coins:coins,up:up,crewState:crewState,runFrom:runFrom,shots:shots,hits:hits,playT:playT,ticket:gRun&&gRun.ticket||'',at:Date.now()}));}catch(e){}}
@@ -949,7 +1017,7 @@ var ArcadeCard = (function () {
   function applySave(o){level=o.level;score=o.score|0;coins=o.coins|0;up=o.up||{};crewState=o.crewState.map(function(m){return {hp:m.hp,max:m.max};});runFrom=o.runFrom||1;shots=o.shots|0;hits=o.hits|0;playT=+o.playT||0;streak=0;finalScore=null;lastBonus=null;place=0;}
   function newRun(){playT=0;myKos=0;level=1;score=0;runFrom=1;finalScore=null;coins=0;up={blast:0,dmg:0,ammo:0,bomb:0,heal:0,crew:0};crewState=freshCrew(3);shots=hits=streak=lvShots=lvHits=0;place=0;lastBonus=null;}
   function levelWon(){
-    var L=level,bonus=WIN_BONUS*L,acc=lvShots?lvHits/lvShots:0,ab=Math.round(acc*200),earn=20+5*L;score+=bonus+ab;coins+=earn;phase='panel';
+    var L=level,bonus=WIN_BONUS*L,acc=lvShots?lvHits/lvShots:0,ab=Math.round(acc*200),earn=100+25*L;score+=bonus+ab;coins+=earn;phase='panel';
     // stars: 1 for the win, 2 with at least two goons standing, 3 with every goon you started with still standing; 100 per star x level
     var alive=living(0).length,stars=alive>=lvStart0?3:alive>=2?2:1,sp=100*stars*L;score+=sp;
     if(stars>(starBest[L]||0)){starBest[L]=stars;try{localStorage.setItem(STAR_KEY,JSON.stringify(starBest));}catch(e){}}
@@ -976,16 +1044,21 @@ var ArcadeCard = (function () {
     starsEl.innerHTML=[0,1,2].map(function(i){return '<svg viewBox="0 0 24 23" width="40" height="38" aria-hidden="true"><polygon points="'+pts+'" fill="'+(i<n?'#ffd166':'none')+'" stroke="#ffd166" stroke-width="1.6" stroke-linejoin="miter"/></svg>';}).join('');
     starsEl.setAttribute('aria-label',n+' of 3 stars');starsEl.hidden=false;}
   function upCost(u){return Math.round(u.cost*(1+.5*(up[u.k]||0))/5)*5;}
-  function upMaxed(u){if(u.k==='crew')return crewState.length>=CREW_MAX;if(u.k==='heal')return crewState.every(function(m){return m.hp>=m.max;});return (up[u.k]||0)>=u.max;}
+  function upMaxed(u){if(u.k==='crew')return crewState.length>=CREW_MAX;if(u.k==='heal')return mode==='ffa'?!(active&&active.alive&&active.hp<active.max):crewState.every(function(m){return m.hp>=m.max;});return (up[u.k]||0)>=u.max;}
+  function upLocked(u){return !!(u.need&&!up[u.need]);}
+  function upShown(u){return !(u.camp&&mode==='ffa');}
   function renderShop(){upsEl.textContent='';coins2El.textContent=coins;
-    UPS.forEach(function(u){var mx=upMaxed(u),c=upCost(u),b=document.createElement('button');b.type='button';b.className='sd-up';b.dataset.k=u.k;
-      b.innerHTML='<span></span><small></small><b></b>';b.children[0].textContent=u.name;b.children[1].textContent=u.what;b.children[2].textContent=mx?'Maxed':c+' coins';
-      b.disabled=mx||coins<c;b.addEventListener('click',function(){buy(u.k);});upsEl.appendChild(b);});}
-  function buy(k){var u=UPS.filter(function(x){return x.k===k;})[0];if(!u||upMaxed(u))return false;var c=upCost(u);if(coins<c)return false;
+    var UPIC={blast:'140-boom.webp',dmg:'141-rock.webp',ammo:'74-crate.png',double:'140-icon-double-barrel.png',spray:'140-icon-triple-barrel.png',twice:'140-icon-faster-firing.png',turn:'77-boost.png',life:'../img/skull-heart-red.webp',
+      shatter:'140-icon-grenades.png',burn:'shared-flame.png',bomb:'78-mine.png',heal:'140-icon-repair.png',crew:'141-goma-gold.webp'};
+    UPS.forEach(function(u){if(!upShown(u))return;var mx=upMaxed(u),lk=upLocked(u),c=upCost(u),b=document.createElement('button');b.type='button';b.className='sd-up';b.dataset.k=u.k;
+      b.innerHTML='<span></span><small></small><b></b>'+(UPIC[u.k]?'<i class="ui"><img src="'+ART+UPIC[u.k]+'" alt=""></i>':'');b.children[0].textContent=u.name+(u.held||u.k==='heal'?' ×1':'')+(u.held&&up[u.k]?' ('+up[u.k]+' held)':'');b.children[1].textContent=lk?'Needs '+UPS.filter(function(x){return x.k===u.need;})[0].name:(u.k==='heal'&&mode==='ffa'?'+40 health to your goon':u.what);b.children[2].textContent=mx?(u.k==='heal'?'Full health':'Maxed'):c+' coins';
+      b.disabled=mx||lk||coins<c;b.addEventListener('click',function(){buy(u.k);});upsEl.appendChild(b);});}
+  function buy(k){var u=UPS.filter(function(x){return x.k===k;})[0];if(!u||!upShown(u)||upMaxed(u)||upLocked(u))return false;var c=upCost(u);if(coins<c)return false;
     coins-=c;up[k]=(up[k]||0)+1;
-    if(k==='heal')crewState.forEach(function(m){m.hp=Math.min(m.max,m.hp+40);});
+    if(k==='heal'){if(mode==='ffa'){if(active&&active.alive)active.hp=Math.min(active.max,active.hp+40);}else crewState.forEach(function(m){m.hp=Math.min(m.max,m.hp+40);});}
+    if(k==='bomb'&&mode==='ffa'&&ammo[0])ammo[0][4]=(ammo[0][4]||0)+2;
     if(k==='crew')crewState.push({hp:HP_CREW,max:HP_CREW});
-    saveRun();hud();renderShop();say(u.name+': done.');return true;}
+    saveRun();hud();renderShop();renderWeapons();say(u.name+': done.');return true;}
   function controls(on){wpnEl.hidden=padEl.hidden=!on;}
   var gomasEl=$('.sd-gomas');
   GOMAS.forEach(function(g,i){var b=document.createElement('button');b.type='button';b.className='sd-goma';b.setAttribute('aria-pressed',i===myGoma?'true':'false');
@@ -1050,7 +1123,7 @@ var ArcadeCard = (function () {
       b.addEventListener('click',function(){if(!canAct()||!(ammo[0][i]>0))return;weapon=myWeapon=i;renderWeapons();});wpnEl.appendChild(b);});
     if(narrow&&shown.length%2&&wpnEl.lastChild)wpnEl.lastChild.style.gridColumn='span 2';
   }
-  function padState(){var a=canAct();bL.disabled=bR.disabled=!a||walkLeft<=0;bJ.disabled=!a||jumped;bN.disabled=!a||living(0).length<2;bF.disabled=!a;}
+  function padState(){var a=canAct();bL.disabled=bR.disabled=!a||walkLeft<=0;bJ.disabled=!a||jumped;bN.disabled=mode==='ffa'?!a:(!a||living(0).length<2);bN.textContent=mode==='ffa'?'Upgrades':'Next crew';bF.disabled=!a;}
   function hold(btn,dir){
     btn.addEventListener('pointerdown',function(e){if(btn.disabled)return;e.preventDefault();walkDir=dir;camHold=false;try{btn.setPointerCapture(e.pointerId);}catch(x){}});
     ['pointerup','pointercancel','lostpointercapture'].forEach(function(ev){btn.addEventListener(ev,function(){if(walkDir===dir)walkDir=0;});});
@@ -1059,13 +1132,18 @@ var ArcadeCard = (function () {
   hold(bL,-1);hold(bR,1);
   function walkFor(dir,px){var moved=0;while(moved<px&&walkLeft>0){if(!walkStep(active,dir,1))break;moved++;walkLeft--;}pickStep();padState();if(walkLeft<=0)say('Out of moves this turn.');}
   function jump(){if(!canAct()||jumped||!active.ground)return;jumped=true;active.vy=-150;active.vx=active.face*60;active.ground=false;padState();}
+  var shopOv=$('.sd-shopov'),shopIn=$('.sd-shopin'),shopOpen=false,shopHome=null;
+  function openShop(){if(mode!=='ffa'||!canAct()||shopOpen)return;shopOpen=true;paused=true;shopHome=shopEl.nextSibling;shopIn.appendChild(shopEl);shopEl.hidden=false;renderShop();shopOv.hidden=false;padState();
+    try{shopOv.querySelector('.sd-up:not([disabled])').focus({preventScroll:true});}catch(e){}}
+  function closeShop(){if(!shopOpen)return;shopOpen=false;paused=false;shopOv.hidden=true;shopEl.hidden=true;panel.insertBefore(shopEl,shopHome&&shopHome.parentNode===panel?shopHome:null);padState();hud();}
+  $('.sd-back').addEventListener('click',closeShop);
   function nextCrew(){if(!canAct())return;var L=crew.filter(function(c){return c.team===0;});
     for(var k=1;k<=L.length;k++){var i=(turnIdx[0]+k)%L.length;if(L[i].alive){turnIdx[0]=i;active=L[i];break;}}camHold=false;setOverview(false);}
-  bJ.addEventListener('click',jump);bN.addEventListener('click',nextCrew);bF.addEventListener('click',function(){if(canAct())fire();});
-  goBtn.addEventListener('click',function(){if(panelKind==='start'){if(mode==='campaign'&&resumeSave){var tk=resumeSave.ticket;applySave(resumeSave);resumeSave=null;gRun=window.GBoard&&runFrom===1?GBoard.resume('campaign',tk):null;}else{newRun();gRun=window.GBoard?GBoard.start(mode):null;}}startLevel();hud();cv.scrollIntoView({behavior:'smooth',block:'center'});});
+  bJ.addEventListener('click',jump);bN.addEventListener('click',function(){if(mode==='ffa')openShop();else nextCrew();});bF.addEventListener('click',function(){if(canAct())fire();});
+  goBtn.addEventListener('click',function(){if(panelKind==='start'){if(mode==='campaign'&&resumeSave){var tk=resumeSave.ticket;applySave(resumeSave);resumeSave=null;gRun=window.GBoard&&runFrom===1?GBoard.resume('campaign',tk):null;}else{newRun();gRun=window.GBoard?GBoard.start(mode):null;}}startLevel();hud();});
   altBtn.addEventListener('click',function(){gRun=null;   // a retry, or a fresh run from the resume panel, is never on the board unless it starts at level 1
-if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun=window.GBoard?GBoard.start('campaign'):null;startLevel();hud();cv.scrollIntoView({behavior:'smooth',block:'center'});return;}
-    score=0;runFrom=level;crewState=freshCrew(Math.min(CREW_MAX,3+(up.crew||0)));streak=0;startLevel();hud();say('Practice from level '+level+': your score starts over.');cv.scrollIntoView({behavior:'smooth',block:'center'});});
+if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun=window.GBoard?GBoard.start('campaign'):null;startLevel();hud();return;}
+    score=0;runFrom=level;crewState=freshCrew(Math.min(CREW_MAX,3+(up.crew||0)));streak=0;startLevel();hud();say('Practice from level '+level+': your score starts over.');});
   function setPause(v){if(phase==='panel')return;paused=v;pauseBtn.textContent=paused?'Resume':'Pause';say(paused?'Paused.':'');walkDir=0;padState();renderWeapons();}
   pauseBtn.addEventListener('click',function(){setPause(!paused);});
   var armNew=false,newBtn=$('.sd-new');
@@ -1180,16 +1258,25 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
     else if(w.k==='rock'){cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);if(ok(IM.rock))cx.drawImage(IM.rock,-6,-6.5,12,13);else{cx.fillStyle='#555';cx.fillRect(-5,-5,10,10);}cx.restore();}
     else{cx.fillStyle='rgba(255,209,102,.35)';cx.beginPath();cx.arc(p.x,p.y,5,0,7);cx.fill();cx.fillStyle='#ffd166';cx.beginPath();cx.arc(p.x,p.y,2,0,7);cx.fill();}
   }
+  function pickImg(p){switch(p.k){case 'gem':return IM.ruby;case 'turn':return IM.boost;case 'life':return IM.skull;case 'big':return IM.rock;case 'token':return IM.chest;
+    case 'heal':return IM.repair;case 'ammo':return IM.crate;case 'boost':return IM.bigr;case 'wpn':return [IM.bolt2,IM.bolt2,IM.atomic,IM.shipR][p.w||1];case 'up':return [IM.tri,IM.gren,IM.flame][p.u>=0?p.u:0];}return null;}
   function drawPickup(p){var x=p.x,y=p.y,b=Math.sin(clock*4+x)*.8;
+    // the spinning Izzy coin: 32 frames of a half-turn, each coin at its own point in the turn
+    if(p.k==='coin'&&ok(IM.spin)){var cd=GS*(p.v===15?.8:.7),fs=cd*220/150,fi=Math.floor(((clock*.75+x*.013)%1+1)%1*32)%32;cx.drawImage(IM.spin,fi*128,0,128,128,x-fs/2,y-cd*.6-fs/2+b,fs,fs);return;}
+    var pim=pickImg(p);
+    if(pim&&ok(pim)){var S=GS*(p.k==='gem'?1.6:p.k==='wpn'&&p.w===3?1.5:1.05),r=pim.naturalWidth/pim.naturalHeight,dw=r>=1?S:S*r,dh=r>=1?S/r:S;
+      cx.save();cx.shadowColor='rgba(255,255,254,.95)';cx.shadowBlur=3;cx.drawImage(pim,x-dw/2,y-dh-1+b,dw,dh);cx.restore();return;}
     if(p.k==='coin'){var im=IM.coin[p.v===15?1:0];if(ok(im))cx.drawImage(im,x-4.5,y-10+b,9,9);else{cx.fillStyle='#ffd166';cx.beginPath();cx.arc(x,y-5.5+b,4.5,0,7);cx.fill();}return;}
-    cx.save();cx.translate(x,y);cx.scale(.6,.6);
-    var col={heal:'#89fbcb',ammo:'#ff4c0f',gem:'#5fd3f3',turn:'#ffd166',life:'#ff4c0f',big:'#b9b9b9',token:'#ffd166'}[p.k]||'#c3a6ff';cx.fillStyle='#6b4423';cx.fillRect(-7,-14,14,14);cx.strokeStyle='#2a1a10';cx.lineWidth=1.5;cx.strokeRect(-7,-14,14,14);
+    cx.save();cx.translate(x,y);cx.scale(GS/30,GS/30);
+    var col={heal:'#89fbcb',ammo:'#ff4c0f',gem:'#5fd3f3',turn:'#ffd166',life:'#ff4c0f',big:'#b9b9b9',token:'#ffd166',wpn:'#ff4c0f',up:'#c3a6ff'}[p.k]||'#c3a6ff';cx.fillStyle='#6b4423';cx.fillRect(-7,-14,14,14);cx.strokeStyle='#2a1a10';cx.lineWidth=1.5;cx.strokeRect(-7,-14,14,14);
     cx.fillStyle=col;if(p.k==='heal'){cx.fillRect(-1.5,-12,3,10);cx.fillRect(-5,-8.5,10,3);}
     else if(p.k==='ammo'){cx.beginPath();cx.arc(0,-7,3.5,0,7);cx.fill();}
     else if(p.k==='gem'){cx.beginPath();cx.moveTo(0,-12.5);cx.lineTo(4.5,-7);cx.lineTo(0,-1.5);cx.lineTo(-4.5,-7);cx.closePath();cx.fill();}
     else if(p.k==='turn'){cx.lineWidth=2;cx.strokeStyle=col;cx.beginPath();cx.arc(0,-7,3.8,-.4,4.6);cx.stroke();cx.beginPath();cx.moveTo(3.2,-11.5);cx.lineTo(5.2,-7.5);cx.lineTo(1.2,-8);cx.closePath();cx.fill();}
     else if(p.k==='life'){cx.beginPath();cx.moveTo(0,-2.5);cx.bezierCurveTo(-7,-7,-4,-13,0,-9.5);cx.bezierCurveTo(4,-13,7,-7,0,-2.5);cx.fill();}
     else if(p.k==='big'){cx.beginPath();cx.arc(0,-7,4.6,0,7);cx.fill();cx.fillStyle='#6b6b6b';cx.beginPath();cx.arc(-1.4,-8.4,1.4,0,7);cx.fill();}
+    else if(p.k==='wpn'){cx.beginPath();cx.arc(0,-6,3.8,0,7);cx.fill();cx.fillRect(-.8,-12.5,1.6,3.5);cx.fillStyle='#ffd166';cx.fillRect(-1.6,-13.5,3.2,1.8);}
+    else if(p.k==='up'){cx.beginPath();cx.moveTo(0,-12.5);cx.lineTo(5,-7);cx.lineTo(2,-7);cx.lineTo(2,-2);cx.lineTo(-2,-2);cx.lineTo(-2,-7);cx.lineTo(-5,-7);cx.closePath();cx.fill();}
     else if(p.k==='token'){cx.beginPath();cx.arc(0,-7,4.6,0,7);cx.fill();cx.fillStyle='#2a1a10';cx.font='800 6px Almarai,sans-serif';cx.textAlign='center';cx.fillText('UP',0,-5);}
     else{cx.beginPath();cx.moveTo(1,-13);cx.lineTo(-4,-6);cx.lineTo(0,-6);cx.lineTo(-1,-1);cx.lineTo(4,-8);cx.lineTo(0,-8);cx.closePath();cx.fill();}cx.restore();}
   function drawFx(f){
@@ -1276,12 +1363,12 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
 
   /* read-only view of the game, for checking it and for the weekly boards later (mode, finalScore, fullRun, levelReached) */
   d.peek=function(){var n=0;for(var i=0;i<solid.length;i++)n+=solid[i];var lq=0;for(i=0;i<liq.length;i++)if(liq[i])lq++;
-    return {W:W,H:H,VW:VW,VH:VH,G:G,narrow:narrow,mode:mode,phase:phase,paused:paused,level:level,levelReached:level,score:score,finalScore:finalScore,runFrom:runFrom,fullRun:runFrom===1,place:place,
+    return {W:W,H:H,VW:VW,VH:VH,G:G,GS:GS,narrow:narrow,mode:mode,phase:phase,paused:paused,level:level,levelReached:level,score:score,finalScore:finalScore,runFrom:runFrom,fullRun:runFrom===1,place:place,
       best:bests[mode],bests:{campaign:bests.campaign,ffa:bests.ffa},wind:wind,team:team,teams:TEAMS,panel:panelKind,variant:variant,variants:variants().length,usingMap:usingMap,liquid:lq,
       cam:{cx:cam.cx,cy:cam.cy,z:cam.z},overview:overview,camHold:camHold,mini:miniRect(),
       weapon:WEAPONS[weapon].k,goma:GOMAS[myGoma][0],rivalGoma:GOMAS[rivalGoma(level)][0],ammo:ammo[0]?ammo[0].slice():[],walkLeft:walkLeft,jumped:jumped,solid:n,boxShown:boxShown,
       coins:coins,up:JSON.parse(JSON.stringify(up)),stars:{best:JSON.parse(JSON.stringify(starBest)),total:starTotal(),last:lastBonus?lastBonus.stars:null},saved:readSave(),resume:!!resumeSave,clock:clock,crewState:crewState?crewState.map(function(m){return {hp:m.hp,max:m.max};}):null,
-      shots:shots,hits:hits,streak:streak,lvShots:lvShots,lvHits:lvHits,lastBonus:lastBonus,lastPlan:lastPlan,v7:{proj:proj.map(function(p){return p.w.k;}),fx:fx.map(function(f){return f.k;}),extraTurn:extraTurn.slice(),bigNext:bigNext.slice(),round:round,pickups:pickups.map(function(p){return p.k;}),zoomMul:zoomMul,fitZ:fitZ(),alive0:living(0).length,alive1:living(1).length,rivalHp:crew.filter(function(c){return c.team===1;}).map(function(c){return c.max;})},
+      shots:shots,hits:hits,streak:streak,lvShots:lvShots,lvHits:lvHits,lastBonus:lastBonus,lastPlan:lastPlan,v7:{shopOpen:shopOpen,twiceArmed:twiceArmed,twiceNow:twiceNow,tempUp:tempUp.slice(),ammo0:ammo[0]?ammo[0].slice():[],proj:proj.map(function(p){return p.w.k;}),fx:fx.map(function(f){return f.k;}),extraTurn:extraTurn.slice(),bigNext:bigNext.slice(),round:round,pickups:pickups.map(function(p){return p.k;}),zoomMul:zoomMul,fitZ:fitZ(),alive0:living(0).length,alive1:living(1).length,rivalHp:crew.filter(function(c){return c.team===1;}).map(function(c){return c.max;})},
       pickups:pickups.map(function(p){return {k:p.k,x:p.x,y:p.y,v:p.v};}),
       fx:fx.map(function(f){return f.k;}),
       active:active?{team:active.team,i:active.i,x:active.x,y:active.y,ang:active.ang,pow:active.pow,goma:active.goma}:null,
@@ -1319,6 +1406,6 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
   genTerrain();placeCrew();hud();controls(false);renderWeapons();padState();openPanel('Ready to fight?',NOTE.campaign,'Start level 1',null,'start');offerResume();setOverview(true);snapCam();requestAnimationFrame(loop);
   // the maps load after the page starts: redraw the preview once they are in
   IM.maps[0].addEventListener('load',function(){if(phase==='panel'&&mode==='campaign'&&level===1)preview();});
-  window.addEventListener('resize',function(){var n=(d.querySelector('.sd-stage').clientWidth||960)<640;if(n!==narrow){setView();clampCam();if(phase==='panel')preview();renderWeapons();}});
+  window.addEventListener('resize',function(){var n=(d.querySelector('.sd-stage').clientWidth||960)<640;if(n!==narrow){setView();clampCam();if(phase==='panel')preview();renderWeapons();fitView(true);}else fitView(false);});
 })();
 </script>
