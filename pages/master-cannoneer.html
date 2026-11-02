@@ -134,6 +134,46 @@
   #ma-holdwall .btns .b .cost{font-size:11px}
   #ma-holdwall .mini{grid-template-columns:1fr;gap:3px}
   #ma-holdwall .mini .tr{padding:3px 2px;font-size:9px}}
+/* v25: one screen. Small titles in Almarai; compact tiles; the field shrinks to the room left */
+#ma-holdwall h3{font-family:Almarai,Arial,sans-serif}
+#ma-holdwall .top{gap:12px}
+#ma-holdwall .hudbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 20px}
+#ma-holdwall .hudbar .row{gap:8px}
+#ma-holdwall .hudbar .sm{padding:6px 12px;font-size:11px;letter-spacing:.1em}
+#ma-holdwall .stage{min-width:0;align-self:center;width:100%}
+#ma-holdwall .ctl{gap:10px;padding:16px 20px}
+#ma-holdwall .ph{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px}
+#ma-holdwall .tabs{display:none;gap:8px}
+#ma-holdwall .acts{display:flex;gap:8px}
+#ma-holdwall .tabs button,#ma-holdwall .acts button{margin:0;padding:7px 12px;border:1px solid rgba(243,234,217,.45);background:none;color:var(--parch);font:800 11px/1.2 Almarai,Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-holdwall .tabs button[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);background:rgba(255,209,102,.12)}
+#ma-holdwall .acts button[data-act="send"][aria-pressed="true"]{border-color:var(--gold);color:var(--gold);background:rgba(255,209,102,.12)}
+#ma-holdwall .acts button[data-act="train"][aria-pressed="true"]{border-color:var(--violet);color:#c3a6ff;background:rgba(158,116,253,.16)}
+#ma-holdwall .acts button[data-act="shield"][aria-pressed="true"]{border-color:var(--mint);color:var(--mint);background:rgba(137,251,203,.12)}
+#ma-holdwall .acts .mi{display:inline-block;width:11px;height:11px;vertical-align:-1px;margin-right:4px}
+#ma-holdwall .mini{display:none}
+#ma-holdwall .btns .b{padding:14px 2px 4px}
+#ma-holdwall .btns .b .ic{width:32px;height:34px}
+#ma-holdwall .btns .b.up .ic{width:28px;height:28px}
+#ma-holdwall .b.up .rank{display:none}
+#ma-holdwall #hw-deploy[data-act="train"] .b .cost{color:#c3a6ff}
+#ma-holdwall #hw-deploy[data-act="shield"] .b .cost{color:var(--mint)}
+#ma-holdwall .actkey{margin:0;display:flex;align-items:center;justify-content:center;gap:8px;min-height:18px;font:700 12px/1.4 Almarai,Arial,sans-serif;color:var(--muted);text-align:center}
+#ma-holdwall .actkey .mi{width:14px;height:14px;flex:none}#ma-holdwall .actkey b{font-weight:800}
+#ma-holdwall .actkey.train{color:#c3a6ff}
+#ma-holdwall .over.end{background:#0b170f}#ma-holdwall .actkey.shield{color:var(--mint)}
+@media (max-width:760px){
+  #ma-holdwall .top{position:static;margin-inline:0;padding:0;border:0;background:none;gap:8px}
+  #ma-holdwall .hudbar{gap:6px 12px}
+  #ma-holdwall .ctl{padding:12px;gap:8px}
+  #ma-holdwall .tabs{display:flex}
+  #ma-holdwall .ph h3{display:none}
+  #ma-holdwall .ctl[data-tab="f"] .tw,#ma-holdwall .ctl[data-tab="t"] .fi{display:none}
+  #ma-holdwall .ph{display:flex;flex-wrap:nowrap;gap:6px}#ma-holdwall .tabs,#ma-holdwall .acts{display:contents}#ma-holdwall .tabs button,#ma-holdwall .acts button{flex:1 1 auto;min-width:0}
+  #ma-holdwall .tabs button,#ma-holdwall .acts button{padding:7px 2px;font-size:10px;letter-spacing:.03em;white-space:nowrap}#ma-holdwall .acts .mi{margin-right:3px;width:10px;height:10px}
+  #ma-holdwall .btns .b{padding:13px 2px 4px}
+  #ma-holdwall .btns .b .ic{width:28px;height:30px}#ma-holdwall .btns .b.up .ic{width:26px;height:26px}
+  #ma-holdwall .actkey{font-size:11px;min-height:30px}}
 
 #ma-holdwall{box-sizing:border-box;width:100vw;position:relative;left:50%;margin-left:-50vw;min-height:100vh;padding:clamp(110px,13vh,150px) 16px 80px;background:var(--ink);overflow-x:clip}
 #ma-holdwall .weekly{margin:0;max-width:640px;font-weight:700;font-size:14px;line-height:1.5;color:var(--gold)}
@@ -183,8 +223,11 @@
     <p class="weekly">Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week.</p>
   </header>
   <div class="top">
+  <div class="hudbar">
   <div class="hud" aria-live="polite">
     <span>Wave <b id="hw-hWave">1</b></span><span>Score <b id="hw-hScore">0</b></span><span class="c">Credits <b id="hw-hCoins">0</b></span><span>Best <b id="hw-hBest">0</b></span><span class="w">Cannon <b id="hw-hCan">150</b></span><span class="w">Tower <b id="hw-hWall">300</b></span><span class="w" id="hw-hShWrap" hidden>Shield <b id="hw-hSh">0</b></span><span id="hw-hLeftWrap" hidden>Enemies left <b id="hw-hLeft">0</b></span>
+  </div>
+  <div class="row"><button class="sm" id="hw-pause" type="button">Pause</button><button class="sm" id="hw-restart" type="button">New game</button></div>
   </div>
   <div class="stage">
     <canvas id="hw-cv" width="1675" height="793" aria-label="Your tower and cannon on the left, the enemy coming out of a portal on the right"></canvas>
@@ -196,11 +239,13 @@
   </div>
   </div>
   <div class="lootwin" id="hw-lootwin" hidden><p>Box 140 is yours.</p><button class="lootbox" id="hw-lootbox" type="button" aria-label="Open loot box 140"><img src="https://africhmaurice.github.io/site/assets/loot/140.png" alt="Loot box 140"></button></div>
-  <section class="panel ctl"><h3>Fighters <span>tap to send out</span></h3><div class="btns" id="hw-deploy"></div>
-  <div class="key"><span class="k-tr"><span class="msk mi" style="--m:url(https://africhmaurice.github.io/site/assets/games/140-icon-train.png)" aria-hidden="true"></span><span><b>Train</b>: levels that fighter up. Every one, on the field and new, gets +25% health, speed, and damage.</span></span>
-    <span class="k-sh"><span class="msk mi" style="--m:url(https://africhmaurice.github.io/site/assets/games/140-icon-fighter-shield.png)" aria-hidden="true"></span><span><b>Shield</b>: every new one of that fighter arrives with a shield worth 25% of its health per level.</span></span></div>
-  <h3>Tower <span>upgrades</span></h3><div class="btns" id="hw-ups"></div></section>
-  <div class="row"><button class="sm" id="hw-pause" type="button">Pause</button><button class="sm" id="hw-restart" type="button">New game</button></div>
+  <section class="panel ctl" id="hw-ctl" data-tab="f">
+    <div class="ph"><div class="tabs" role="group" aria-label="Show"><button type="button" data-tab="f" aria-pressed="true">Fighters</button><button type="button" data-tab="t" aria-pressed="false">Tower</button></div>
+      <h3 class="fi">Fighters</h3>
+      <div class="acts fi" id="hw-acts" role="group" aria-label="What tapping a fighter does"><button type="button" data-act="send" aria-pressed="true">Send</button><button type="button" data-act="train" aria-pressed="false"><span class="msk mi" style="--m:url(https://africhmaurice.github.io/site/assets/games/140-icon-train.png)" aria-hidden="true"></span>Train</button><button type="button" data-act="shield" aria-pressed="false"><span class="msk mi" style="--m:url(https://africhmaurice.github.io/site/assets/games/140-icon-fighter-shield.png)" aria-hidden="true"></span>Shield</button></div></div>
+    <div class="btns fi" id="hw-deploy" data-act="send"></div>
+    <p class="actkey fi send" id="hw-actkey" aria-live="polite"><span>Tap a fighter to send one out. Number keys 1 to 9 work too.</span></p>
+    <h3 class="tw">Tower upgrades</h3><div class="btns tw" id="hw-ups"></div></section>
   <div class="hw-post" id="hw-post" hidden><p class="hw-msg" id="hw-msg" role="status"></p><div id="hw-who" hidden></div></div>
   <div class="hw-boardrow">
     <section class="panel"><h3>Best this week</h3><p class="hw-mybest" id="hw-mybest">0</p><p class="hw-count" id="hw-mynote">No games yet this week.</p></section>
@@ -368,7 +413,7 @@ var GY=748,WALLX=172;                       // feet line, front face of the towe
 var PV={x:109,y:468};                       // the cannon turns around this point (top of its base)
 var PORTAL_X=W-60;                          // where the enemy comes through
 var FIG=.62;                                // drawn size of a fighter (Maurice's drawings, about 95 tall next to the tower)
-var CAN_HP=150,TOWER_HP=300;                // the cannon takes the hits first, then the tower
+var CAN_HP=190,TOWER_HP=375;   // v26: +25% (was 150 and 300)                // the cannon takes the hits first, then the tower
 function $(i){return document.getElementById('hw-'+i);}
 
 /* ---- art: his field and tower scenes (cut into layers), and his fighters, portal, and cannon ---- */
@@ -435,15 +480,16 @@ var FOE={
   immortal:{hp:700,dmg:10,range:420,rate:2.8,speed:45,s:.95,look:'imm',coins:100,pts:350,wave:true,aura:'mint'}
 };
 var SHIELD_HP=CAN_HP+TOWER_HP,HEAL=6,HEAL_R=260;
-var TRICKLE=2,START_COINS=40,PUSH=W/4;
+var TRICKLE=4,START_COINS=40,PUSH=W/4,CREDIT_MUL=2;   // v26: credits twice as fast (trickle, kills, wave bonus)
+var ALLY_MUL=1.25,FOE_HP=1.25,FOE_DMG=.5;   // v26: fighters +25%; enemies +25% health, half the attack
 var UPS=[
   {k:'dmg',name:'Bigger rounds',what:'+25% damage; the rounds grow',base:60,grow:1.8,max:20},
-  {k:'rate',name:'Faster firing',what:'10% quicker shots',base:60,grow:1.8,max:10},
+  {k:'rate',name:'Faster firing',what:'25% quicker shots',base:60,grow:1.8,max:10},
   {k:'pierce',short:'Piercing',name:'Piercing rounds',what:'Each shot hits one more',base:200,grow:2.2,max:4},
   {k:'dbl',name:'Double barrel',what:'Two shots at once',base:400,grow:1,max:1},
   {k:'gren',short:'Grenades',name:'Grenade launcher',what:'Lobs a grenade while you fire',need:'pierce',base:300,grow:2,max:3},
   {k:'tri',name:'Triple barrel',what:'Three shots at once',base:900,grow:1,max:1,need:'dbl'},
-  {k:'air',short:'Airstrike',name:'Call in an airstrike',what:'A red airship drops an atomic bomb',need:'gren',base:500,grow:1.25,max:99,cool:25},
+  {k:'air',short:'Airstrike',name:'Call in an airstrike',what:'A red airship drops an atomic bomb on every enemy on the field',need:'gren',base:500,grow:1.25,max:99,cool:25},
   {k:'shield',name:'Shield',what:'A second life: soaks up hits before the cannon',base:250,grow:1.4,max:99},
   {k:'repair',name:'Repair',what:'Cannon first, then the tower',base:80,grow:1.3,max:99}
 ];
@@ -451,11 +497,11 @@ var GREN_EVERY=[0,2,1.6,1.2],GREN_R=95,AIR_SPEED=900;
 function waveSize(w){return 5+3*w;}
 function waveGap(w){return Math.max(.35,1.6-.07*w);}
 function hpMul(w){return Math.pow(1.25,w-1);}
-function dmgMul(w){return Math.pow(1.14,w-1);}
+function dmgMul(w){return Math.pow(1.25,w-1);}   // v26: attack grows 25% a wave, like health
 function five(n){return Math.max(5,Math.round(n/5)*5);}
 function upCost(u){return five(u.base*Math.pow(u.grow,G.up[u.k]));}
-function gunDmg(){return 5*Math.pow(1.25,G.up.dmg);}
-function gunRate(){return .42*Math.pow(.9,G.up.rate);}
+function gunDmg(){return 6.25*Math.pow(1.25,G.up.dmg);}
+function gunRate(){return .42*Math.pow(.8,G.up.rate);}   // v26: each step fires 25% quicker
 
 /* ---- state ---- */
 var G,best=0;try{best=+localStorage.getItem('ma-stick-siege-best')||0;}catch(e){}
@@ -500,6 +546,7 @@ function canShield(k){return !G.over&&shLvl(k)<SHIELD_MAX&&G.coins>=shCost(k);}
 function shieldUp(k){if(!canShield(k))return;G.coins-=shCost(k);G.shl[k]=shLvl(k)+1;ui();}
 function unit(side,k){
   var T=side===1?ALLY[k]:FOE[k],m=side===1?lvMul(k):hpMul(G.wave),dm=side===1?lvMul(k):dmgMul(G.wave);
+  var hm=side===1?ALLY_MUL:FOE_HP,dk=side===1?ALLY_MUL:FOE_DMG;m*=hm;dm*=dk;
   return {side:side,k:k,T:T,x:side===1?WALLX-10:PORTAL_X,yo:Math.random()*14-7,hp:T.hp*m,max:T.hp*m,dmg:T.dmg*dm,spd:T.speed*(side===1?lvMul(k):1),sh:side===1?T.hp*m*.25*shLvl(k):0,shMax:side===1?T.hp*m*.25*shLvl(k):0,cd:Math.random()*.3,
     phase:Math.random()*6,atk:0,dead:0,hit:0,tele:T.tele?1:0,gone:0};
 }
@@ -521,8 +568,8 @@ function buy(u){
   var r=u.k==='repair'?repairWhat():null;
   G.coins-=upCost(u);G.up[u.k]++;
   if(r==='rebuild'){G.can=G.canMax;G.boom=-1;}
-  else if(r==='cannon')G.can=Math.min(G.canMax,G.can+G.canMax*.5);
-  else if(r==='tower')G.wall=Math.min(G.wallMax,G.wall+G.wallMax*.3);
+  else if(r==='cannon')G.can=Math.min(G.canMax,G.can+G.canMax*.625);
+  else if(r==='tower')G.wall=Math.min(G.wallMax,G.wall+G.wallMax*.375);
   if(u.k==='air')callAirstrike();
   if(u.k==='shield')G.shield=SHIELD_HP;
   ui();
@@ -564,7 +611,7 @@ function box(u){var s=u.T.s*FIG;return {l:u.x-40*s,r:u.x+40*s,t:GY+u.yo-170*s,b:
 function kill(u){if(u.side===-1&&!u.dead)G.kills=(G.kills||0)+1;
   u.dead=.001;
   if(u.side===1&&u.T.wave&&!u.reborn)G.reborn.push({k:u.k,t:1.5});
-  if(u.side===-1){var w=G.wave,c=u.T.coins,p=u.T.pts*w;G.coins+=c;G.score+=p;
+  if(u.side===-1){var w=G.wave,c=u.T.coins*CREDIT_MUL,p=u.T.pts*w;G.coins+=c;G.score+=p;
     G.fx.push({type:'txt',x:u.x,y:GY-140*u.T.s*FIG,t:1.1,s:'+'+c,c:'#ffd166'});}
 }
 function hurt(u,d){if(u.dead||u.gone)return;
@@ -656,13 +703,13 @@ function step(dt){
   G.units=G.units.filter(function(u){return !u.dead||u.dead<1.2;});
   var landed=[];
   G.fx=G.fx.filter(function(f){f.t-=dt;if(f.type==='txt')f.y-=40*dt;
-    if(f.type==='bomb'&&f.t<=0){G.units.forEach(function(o){if(o.side===-1&&!o.dead)hurt(o,o.max*.75+200);});landed.push({type:'nuke',x:f.at,t:1.8});G.shake=.8;}
+    if(f.type==='bomb'&&f.t<=0){G.units.forEach(function(o){if(o.side===-1&&!o.dead)hurt(o,(o.max*.75+200)*4);});landed.push({type:'nuke',x:f.at,t:1.8,big:2});G.shake=.8;}
     return f.t>0;});
   G.fx=G.fx.concat(landed);
   G.shake=Math.max(0,G.shake-dt);
   if(G.wall<=0){G.wall=0;endGame();return;}
   if(!G.queue.length&&!G.units.some(function(u){return u.side===-1&&!u.dead;})){
-    var bonus=100*G.wave,cb=20+5*G.wave;G.score+=bonus;G.coins+=cb;
+    var bonus=100*G.wave,cb=(20+5*G.wave)*CREDIT_MUL;G.score+=bonus;G.coins+=cb;
     G.running=false;G.between=true;
     G.nades=[];G.ship=null;G.units.forEach(function(u){if(u.side===1&&!u.dead){u.x=Math.min(u.x,WALLX+60+Math.random()*120);u.gone=0;u.kb=0;if(u.tele){u.tele=1;u.ts=null;}}});
     showOver('Wave '+G.wave+' held','+'+bonus+' score and +'+cb+' credits. Upgrade the tower, train, or send out fighters, then face wave '+(G.wave+1)+': it’s bigger.','Start wave '+(G.wave+1));
@@ -678,7 +725,7 @@ function endGame(){
   setTimeout(function(){if(G.over)showOver('The tower fell','You held out to wave '+w+' with a score of '+sc+'.','Play again');},2600);
   ui();
 }
-function showOver(h,p,b){$('oH').textContent=h;$('oP').textContent=p;$('oGo').textContent=b;$('over').hidden=false;}
+function showOver(h,p,b){$('oH').textContent=h;$('oP').textContent=p;$('oGo').textContent=b;$('over').classList.toggle('end',!!G.over);$('over').hidden=false;}
 
 /* ---- drawing ---- */
 var AURA={green:'rgba(87,187,65,.95)',mint:'rgba(137,251,203,.95)',purple:'rgba(158,116,253,.95)',black:'rgba(0,0,0,.95)'};
@@ -791,7 +838,7 @@ function draw(){
       if(has(boomArt))cx.drawImage(boomArt,f.x-bz/2,f.y-bz/2,bz,bz*688/700);cx.restore();return;}
     if(f.type==='nuke'){
       // the red atomic, as in Sky Gauntlet: his explosion art swelling over the enemy, turning slowly, then fading
-      var e=1.8-f.t,k3=Math.min(1,e/.5),nz=(.3+.9*k3)*560;
+      var e=1.8-f.t,k3=Math.min(1,e/.5),nz=(.3+.9*k3)*560*(f.big||1);
       cx.fillStyle='rgba(255,76,15,'+Math.max(0,.55-e*1.4)+')';cx.fillRect(0,0,W,H);
       if(has(boomArt)){cx.save();cx.globalAlpha=e<.9?1:Math.max(0,1-(e-.9)/.9);cx.translate(f.x,GY-nz*.42);cx.rotate(e*.6);
         cx.shadowColor='rgba(255,76,15,.9)';cx.shadowBlur=40;cx.drawImage(boomArt,-nz/2,-nz/2*688/700,nz,nz*688/700);cx.restore();}
@@ -815,6 +862,21 @@ function draw(){
 
 /* ---- panels ---- */
 var dEl=$('deploy'),uEl=$('ups'),KEYS=Object.keys(ALLY);
+// v25: Send / Train / Shield switch for the fighter tiles, and the Fighters / Tower switch on phones
+var act='send',ACTKEY={send:'Tap a fighter to send one out. Number keys 1 to 9 work too.',
+  train:'<b>Train</b>: tap a fighter to level it up. Every one, on the field and new, gets +25% health, speed, and damage.',
+  shield:'<b>Shield</b>: tap a fighter. Every new one arrives with a shield worth 25% of its health per level.'};
+function setAct(a){act=a;Array.prototype.forEach.call($('acts').children,function(b){b.setAttribute('aria-pressed',b.dataset.act===a?'true':'false');});
+  dEl.dataset.act=a;var kk=$('actkey');kk.className='actkey fi '+a;kk.innerHTML=(a==='send'?'':ico(a==='train'?'train':'fshield','mi'))+'<span>'+ACTKEY[a]+'</span>';ui();}
+Array.prototype.forEach.call($('acts').children,function(b){b.addEventListener('click',function(){var a=b.dataset.act;setAct(act===a?'send':a);});});
+Array.prototype.forEach.call($('ctl').querySelectorAll('.tabs button'),function(b){b.addEventListener('click',function(){$('ctl').dataset.tab=b.dataset.tab;
+  Array.prototype.forEach.call($('ctl').querySelectorAll('.tabs button'),function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});fitStage();});});
+// the field takes the height left on screen under the site's pinned header, so the field and every button show together
+function hdrCover(){var h=0;Array.prototype.forEach.call(document.querySelectorAll('header,#header,.header'),function(e){var st=getComputedStyle(e);if(st.position==='fixed'||st.position==='sticky'){var r=e.getBoundingClientRect();if(r.top<=1&&r.bottom>h)h=r.bottom;}});return Math.min(h,innerHeight*.3);}
+function fitStage(){var stg=cv.parentNode,top=stg.parentNode,pan=$('ctl'),R=cv.width/cv.height;stg.style.width='100%';var full=stg.clientWidth;if(!full)return;
+  var other=(top.offsetHeight-stg.offsetHeight)+pan.offsetHeight+20,room=innerHeight-hdrCover()-other-16;
+  stg.style.width=Math.round(Math.min(full,Math.max(Math.min(full,innerWidth<=760?240:300),room*R)))+'px';}
+var fitT=0;window.addEventListener('resize',function(){clearTimeout(fitT);fitT=setTimeout(fitStage,120);});setTimeout(fitStage,0);window.addEventListener('load',fitStage);
 // small line icons for the buttons (his art where there is some: missile, burst, atomic bomb, shield bubble)
 var SVG={
   up:'<path d="M2 9 6 4l4 5" fill="none" stroke="currentColor" stroke-width="2.4"/>',
@@ -836,7 +898,7 @@ KEYS.forEach(function(k,i){var T=ALLY[k],c=document.createElement('div'),b=docum
   var sb=document.createElement('button');sb.type='button';sb.className='tr sh';sb.addEventListener('click',function(){shieldUp(k);});
   c.className='cell';c.dataset.k=k;b.type=t.type='button';b.className='b';b.title=T.name+': '+T.what;t.className='tr';
   b.innerHTML='<span class="ic">'+ico(k)+'</span><span class="nm">'+T.name+'</span><span class="cost">'+T.cost+'</span><span class="badge lv"></span><span class="badge sp"></span><span class="cd"></span>';
-  b.addEventListener('click',function(){deploy(k);});t.addEventListener('click',function(){train(k);});
+  b.addEventListener('click',function(){if(act==='train'){train(k);setAct('send');}else if(act==='shield'){shieldUp(k);setAct('send');}else deploy(k);});t.addEventListener('click',function(){train(k);});
   var m=document.createElement('div');m.className='mini';m.appendChild(t);m.appendChild(sb);
   c.appendChild(b);c.appendChild(m);dEl.appendChild(c);});
 UPS.forEach(function(u){var b=document.createElement('button');b.type='button';b.className='b up';b.dataset.k=u.k;b.title=u.name+': '+u.what;
@@ -869,7 +931,9 @@ function ui(){
     b.setAttribute('aria-label','Send out a '+T.name+', '+T.cost+' credits'+(L>1?', level '+L:'')+(S?', shield '+S:''));
     t.innerHTML=ico('train','mi')+(L>=TRAIN_MAX?'Max':kfmt(trainCost(k)));t.disabled=!canTrain(k);
     t.title=L>=TRAIN_MAX?T.name+' is at the top level':'Train '+T.name+' to level '+(L+1)+': +25% health, speed, and damage ('+trainCost(k).toLocaleString('en-US')+' credits)';
-    t.setAttribute('aria-label',t.title);});
+    t.setAttribute('aria-label',t.title);
+    if(act!=='send'){var trn=act==='train',mx=trn?L>=TRAIN_MAX:S>=SHIELD_MAX;b.querySelector('.cost').textContent=mx?'Max':kfmt(trn?trainCost(k):shCost(k));b.disabled=trn?!canTrain(k):!canShield(k);b.setAttribute('aria-label',(trn?t:sb).title);}
+    else b.querySelector('.cost').textContent=T.cost;});
   drawIcons();
   Array.prototype.forEach.call(uEl.children,function(b){var u=UPS.filter(function(x){return x.k===b.dataset.k;})[0],c=upCost(u),maxed=G.up[u.k]>=u.max;
     var rw=u.k==='repair'?repairWhat():null;
@@ -889,7 +953,7 @@ function ui(){
     b.disabled=!canBuy(u);});
 }
 $('oGo').addEventListener('click',function(){if(G.over){newGame();}startWave();
-  if(innerWidth>760){var tp=SEC.querySelector('.top').getBoundingClientRect().top;if(Math.abs(tp-12)>40)scrollBy(0,tp-12);}});
+  fitStage();var tp=SEC.querySelector('.top').getBoundingClientRect().top-hdrCover()-8;if(Math.abs(tp)>4)scrollBy(0,tp);});
 $('pause').addEventListener('click',function(){if(!G.running)return;G.paused=!G.paused;$('pause').textContent=G.paused?'Resume':'Pause';});
 $('restart').addEventListener('click',function(){newGame();$('pause').textContent='Pause';showOver('Hold the Wall!','Tap or drag on the field to fire the cannon. Kills earn credits: spend them on fighters, training, and tower upgrades. The cannon takes hits first, then the tower.','Start wave 1');ui();});
 document.addEventListener('keydown',function(e){var t=e.target&&e.target.tagName;if(t==='INPUT'||t==='SELECT'||t==='TEXTAREA')return;
@@ -966,7 +1030,7 @@ if(/[?&]test=1/.test(location.search))window.__ss={G:function(){return G;},deplo
   function end(run,data){
     run.data=data;noteWeekBest(data.score);
     if(window.ArcadeCard)try{ArcadeCard.show({game:'Hold the Wall!',after:postEl,label:'WAVE',stat:String(data.wave),line:'SCORE '+fmtN(data.score),name:myName(),site:SITE,
-      icon:'https://africhmaurice.github.io/site/assets/games/140-ship-red-right.webp'});}catch(e){}
+      icon:'https://africhmaurice.github.io/site/assets/games/140-card-icons.png'});}catch(e){}
     if(!BOARD||data.score<=0)return;
     if(run.offline){msg('The board is offline right now, so this game stays on this device.');postEl.hidden=false;return;}
     if(me.email)submit(run);else who(run);
