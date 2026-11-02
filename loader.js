@@ -14,6 +14,8 @@
     var ON = Date.UTC(2026, 10, 2, 5, 0, 0);
     try { var q = /[?&]ma-open=([01])/.exec(location.search); if (q) q[1] === '1' ? localStorage.setItem('maOpen', '1') : localStorage.removeItem('maOpen'); if (localStorage.getItem('maOpen') === '1') return; } catch (e) {}
     if (window.top !== window || /squarespace\.com$/.test(location.hostname) || /\/config/.test(location.pathname)) return;
+    // The links page stays open: ads point at it (Maurice, 2026-11-02).
+    if (/^\/links\/?$/.test(location.pathname)) return;
     function show() {
       if (document.getElementById('ma-maint')) return;
       var st = document.createElement('style');
