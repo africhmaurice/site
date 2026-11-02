@@ -402,21 +402,23 @@
     list.appendChild(actSub('ACT FOUR', 'four'));
     list.appendChild(actLink(SITE + '/the-hunt#tasks', 'TASKS'));
     list.appendChild(actLink(SITE + '/the-hunt#act4-riddles', 'RIDDLES & PUZZLES'));
-    list.appendChild(actSub('ACT THREE', 'three'));
-    list.appendChild(actLink(SITE + '/the-hunt#riddles', 'RIDDLES & PUZZLES'));
-    list.appendChild(actSub('ACT TWO', 'two'));
-    list.appendChild(actLink(SITE + '/the-hunt#act2-tasks', 'TASKS'));
-    list.appendChild(actLink(SITE + '/the-hunt#act2-riddles', 'RIDDLES & PUZZLES'));
-    list.appendChild(actSub('ACT ONE', 'one'));
-    list.appendChild(actLink(SITE + '/the-hunt#act1-tasks', 'TASKS'));
-    list.appendChild(actLink(SITE + '/the-hunt#act1-riddles', 'RIDDLES & PUZZLES'));
+    // the locked acts share one Past Acts heading (Maurice, 2026-11-02: "let's even this out")
+    list.appendChild(actSub('PAST ACTS', 'all'));
+    list.appendChild(actLink(SITE + '/the-hunt#riddles', 'ACT THREE RIDDLES'));
+    list.appendChild(actLink(SITE + '/the-hunt#act2-tasks', 'ACT TWO TASKS'));
+    list.appendChild(actLink(SITE + '/the-hunt#act2-riddles', 'ACT TWO RIDDLES'));
+    list.appendChild(actLink(SITE + '/the-hunt#act1-tasks', 'ACT ONE TASKS'));
+    list.appendChild(actLink(SITE + '/the-hunt#act1-riddles', 'ACT ONE RIDDLES'));
   }
+  // the Daily Checklist (Maurice, 2026-11-02): tops the panel's third column
+  var CHECK_URL = 'https://africhmaurice.github.io/leaderboard/daily.html';
   function actCss() {
     if (!ACTMENU || document.getElementById('ma-act-menu')) return;
     var st = document.createElement('style'); st.id = 'ma-act-menu';
     var sel = function (x) { return ['#hunt-nav ', '#hunt-nav-ov ', '#header '].map(function (p) { return p + x; }).join(','); };
     st.textContent = sel('span.ma-sub') + '{display:block!important;align-self:stretch;font-family:Almarai,sans-serif!important;font-weight:800!important;font-size:11px!important;letter-spacing:.16em!important;text-transform:uppercase!important;text-align:center!important;color:#fff!important;margin:10px 0 4px!important;padding:4px 10px!important;white-space:nowrap}' +
-      sel('span.ma-sub-one') + '{background:#482d85!important}' + sel('span.ma-sub-two') + '{background:#1a5e41!important;outline:1px solid #89fbcb}' + sel('span.ma-sub-all') + '{background:rgba(243,234,217,.14)!important}' + sel('span.ma-sub-three') + '{background:#912501!important;outline:1px solid #fd7547}' + sel('span.ma-sub-four') + '{background:#2c6021!important;outline:1px solid #a2f590}';
+      sel('span.ma-sub-one') + '{background:#482d85!important}' + sel('span.ma-sub-two') + '{background:#1a5e41!important;outline:1px solid #89fbcb}' + sel('span.ma-sub-all') + '{background:rgba(243,234,217,.14)!important}' + sel('span.ma-sub-three') + '{background:#912501!important;outline:1px solid #fd7547}' + sel('span.ma-sub-four') + '{background:#2c6021!important;outline:1px solid #a2f590}' +
+      sel('span.ma-sub-past') + '{background:none!important;color:rgba(243,234,217,.6)!important;margin:14px 0 2px!important}';
     document.head.appendChild(st);
   }
   // Act Four (Maurice, 2026-11-02): the Adventure menu is one link, THE ADVENTURE SO FAR; every chapter is reached
@@ -447,28 +449,37 @@
     q('a[href$="/games"]').forEach(function (x) { if (/^\s*games\s*$/i.test(x.textContent)) x.textContent = 'THE ARCADE'; });
     q('.mn-dd-in a[href$="/leaderboard"], .mn-ovgroup a[href$="/leaderboard"]').forEach(function (a) {
       var p = a.parentNode, next = a.nextSibling;
-      // newest act first (Act Four, Maurice 2026-11-02)
+      // Act Four right under the Leaderboard; the locked acts' standings go under Past Standings below (Maurice, 2026-11-02)
       p.insertBefore(actLink(SITE + '/leaderboard?act=four', 'ACT FOUR STANDINGS'), next);
-      p.insertBefore(actLink(SITE + '/leaderboard?act=three', 'ACT THREE STANDINGS'), next);
-      p.insertBefore(actLink(SITE + '/leaderboard?act=two', 'ACT TWO STANDINGS'), next);
-      p.insertBefore(actLink(SITE + '/leaderboard?act=one', 'ACT ONE STANDINGS'), next);
     });
+    // Rewards is its own box in the panel's third column, under Adventure (Maurice, 2026-11-02)
     q('.mn-dd-in a[href$="/the-hunt#rewards"], .mn-ovgroup a[href$="/the-hunt#rewards"]').forEach(function (a) {
       var p = a.parentNode;
-      p.insertBefore(actSub('REWARDS', 'all'), a);
-      p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-four', 'ACT FOUR'), a);   // newest first (Act Four, 2026-11-02)
-      p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-three', 'ACT THREE'), a);
-      p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), a);
-      p.insertBefore(actLink(SITE + '/act-two-winners', 'ACT TWO WINNERS'), a);   // the replayed Act Two draws (Maurice, 2026-10-19)
-      p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), a);
-      p.insertBefore(actLink(SITE + '/act-one-winners', 'ACT ONE WINNERS'), a);   // the replayed draws (Maurice, 2026-10-02)
+      if (p.classList.contains('mn-ovgroup') && p.parentNode) {
+        var g = root.ownerDocument.createElement('div'); g.className = 'mn-ovgroup';
+        g.appendChild(root.ownerDocument.createElement('span')).textContent = 'REWARDS';
+        g.appendChild(actLink(SITE + '/the-hunt#rewards-act-four', 'ACT FOUR'));   // newest first
+        g.appendChild(actLink(SITE + '/the-hunt#rewards-act-three', 'ACT THREE'));
+        g.appendChild(actLink(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'));
+        g.appendChild(actLink(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'));
+        g.appendChild(actLink(SITE + '/act-two-winners', 'ACT TWO WINNERS'));   // the replayed Act Two draws (Maurice, 2026-10-19)
+        g.appendChild(actLink(SITE + '/act-one-winners', 'ACT ONE WINNERS'));   // the replayed draws (Maurice, 2026-10-02)
+        p.parentNode.insertBefore(g, p.nextSibling);
+      }
       p.removeChild(a);
     });
-    // Questions? (Maurice, 2026-10-09): no longer its own menu item; it closes the Current Progress dropdown instead.
+    // Questions? (Maurice, 2026-10-09): no longer its own menu item; it closes the Current Progress dropdown instead,
+    // after the Past Standings.
     var cp = q('.mn-dd-in, .mn-ovgroup, .ma-grp').filter(function (g) { return g.querySelector('a[href*="/leaderboard"]'); });
     if (cp.length) {
-      q('a[href$="/questions"]').forEach(function (a) { if (!cp.some(function (g) { return g.contains(a); })) a.parentNode.removeChild(a); });
-      cp.forEach(function (g) { if (!g.querySelector('a[href$="/questions"]')) g.appendChild(actLink(SITE + '/questions', 'QUESTIONS?')); });
+      q('a[href$="/questions"]').forEach(function (a) { a.parentNode.removeChild(a); });
+      cp.forEach(function (g) {
+        g.appendChild(actSub('PAST STANDINGS', 'past'));
+        g.appendChild(actLink(SITE + '/leaderboard?act=three', 'ACT THREE STANDINGS'));
+        g.appendChild(actLink(SITE + '/leaderboard?act=two', 'ACT TWO STANDINGS'));
+        g.appendChild(actLink(SITE + '/leaderboard?act=one', 'ACT ONE STANDINGS'));
+        g.appendChild(actLink(SITE + '/questions', 'QUESTIONS?'));
+      });
     }
     // the phone menu: Tasks, Riddles, Clues, Games and Contests become one Earn Points group, split by act
     var ov = root.id === 'hunt-nav-ov' ? root : root.querySelector('#hunt-nav-ov');
@@ -593,7 +604,8 @@
       // three columns: The Treasure Hunt over Earn Points, Submit Points over Current Progress, then Adventure
       '#header .header-display-desktop .ma-hunt-dd .ma-mega.ma-mega3{display:grid;grid-template-columns:repeat(3,minmax(250px,auto));gap:12px;padding:16px;align-items:start}' +
       '#header .header-display-desktop .ma-hunt-dd .ma-col{display:flex;flex-direction:column;gap:12px}' +
-      '#header .header-display-desktop .ma-hunt-dd a.ma-hl.ma-top{text-align:center!important;border:1px solid rgba(243,234,217,.3);padding:14px!important;font-weight:800!important;letter-spacing:.12em!important}'
+      '#header .header-display-desktop .ma-hunt-dd a.ma-hl.ma-top{text-align:center!important;border:1px solid rgba(243,234,217,.3);padding:14px!important;font-weight:800!important;letter-spacing:.12em!important}' +
+      '#header .header-display-desktop .ma-hunt-dd a.ma-hl.ma-check{background:#2c6021!important;border:1.5px solid #f3ead9!important}#header .header-display-desktop .ma-hunt-dd a.ma-hl.ma-check:hover{background:#3b7d2c!important;color:#fff!important}'
       ).split('#header .header-display-desktop .ma-hunt-dd').join(P); };
     st.textContent = desk('#header .header-display-desktop .ma-hunt-dd') + desk('#hunt-nav .ma-hunt-dd') +
       '#hunt-nav .mn-dd-in.ma-hunt-dd{display:block}' +
@@ -612,7 +624,7 @@
   // over Earn Points (Games back in it, Maurice 10/10), SUBMIT POINTS over Current Progress, then Adventure with
   // Oracle's Gift under it.
   // The green hunt menu on the hunt pages shows exactly the same menu.
-  var MEGA = [[['link', 'THE TREASURE HUNT', '/the-hunt'], ['group', 'EARN POINTS']], [['link', 'SUBMIT POINTS', '/points'], ['group', 'CURRENT PROGRESS']], [['group', 'ADVENTURE'], ['gift']]];
+  var MEGA = [[['link', 'THE TREASURE HUNT', '/the-hunt'], ['group', 'EARN POINTS']], [['link', 'SUBMIT POINTS', '/points'], ['group', 'CURRENT PROGRESS']], [['check'], ['group', 'ADVENTURE'], ['group', 'REWARDS'], ['gift']]];
   var DISCORD = 'https://discord.gg/d36Xnj4umU', GAP = 25;
   // Trench Market is a dropdown on every menu (Maurice, 2026-10-10): Shop All and every category in the shop. The shop
   // doesn't share its category list with other sites, so it is listed here; the shop's own menu (shopmenu.js) reads it live.
@@ -672,6 +684,7 @@
       col.forEach(function (it) {
         if (it[0] === 'link') { var a = document.createElement('a'); a.href = SITE + it[2]; a.className = 'ma-hl ma-top'; a.textContent = it[1]; c.appendChild(a); return; }
         if (it[0] === 'gift') { c.appendChild(giftBox('ma-grp', 'ma-hl')); return; }
+        if (it[0] === 'check') { var k = document.createElement('a'); k.href = CHECK_URL; k.className = 'ma-hl ma-top ma-check'; k.textContent = 'DAILY CHECKLIST'; c.appendChild(k); return; }
         if (!gs[it[1]]) return;
         var box = document.createElement('div'); box.className = 'ma-grp';
         groupKids(gs[it[1]], 'ma-hl', function (k) { box.appendChild(k); });
@@ -787,7 +800,8 @@
         var st = document.createElement('style'); st.id = 'ma-one-nav';
         st.textContent = '#hunt-nav .mn-right .mn-links{gap:' + GAP + 'px}#hunt-nav .mn-row .mn-right{gap:' + GAP + 'px}' +
           '#hunt-nav.mn-compact .mn-right .mn-links{gap:clamp(10px,.9vw,18px)}#hunt-nav.mn-compact .mn-row .mn-right{gap:16px}' +
-          '#hunt-nav .ma-th>.mn-dd{z-index:3}#hunt-nav-ov .mn-ovgroup a.mn-profile{white-space:nowrap}';
+          '#hunt-nav .ma-th>.mn-dd{z-index:3}#hunt-nav-ov .mn-ovgroup a.mn-profile{white-space:nowrap}' +
+          '#hunt-nav-ov a.mn-check{background:#2c6021;border:1.5px solid #f3ead9;padding:10px 22px;text-align:center}';
         document.head.appendChild(st);
       }
       var caret = nav.querySelector('.mn-caret'), cta = nav.querySelector('.mn-drop-cta'), ctaIn = cta && links.contains(cta);
@@ -824,7 +838,7 @@
       if (href === DISCORD) { a.target = '_blank'; a.rel = 'noopener'; } return a; };
     var tmGroup = document.createElement('div'); tmGroup.className = 'mn-ovgroup mn-merch-group'; tmGroup.appendChild(document.createElement('span')).textContent = 'TRENCH MARKET';
     SHOP_CATS.forEach(function (c) { tmGroup.appendChild(ol(SHOP + c[1], c[0].toUpperCase())); });
-    var order = [ov.querySelector('.mn-x'), ov.querySelector('.mn-ovlogo'), ol(SITE + '/the-hunt', 'THE TREASURE HUNT'), gs['EARN POINTS'], ol(SITE + '/points', 'SUBMIT POINTS'), gs['CURRENT PROGRESS'], gs['ADVENTURE'], ov.querySelector('.mn-gift'),
+    var order = [ov.querySelector('.mn-x'), ov.querySelector('.mn-ovlogo'), ol(SITE + '/the-hunt', 'THE TREASURE HUNT'), gs['EARN POINTS'], ol(SITE + '/points', 'SUBMIT POINTS'), gs['CURRENT PROGRESS'], ol(CHECK_URL, 'DAILY CHECKLIST', 'mn-check'), gs['ADVENTURE'], gs['REWARDS'], ov.querySelector('.mn-gift'),
       tmGroup, ol(SITE + '/links', 'LINKS', 'mn-linkpage'), ol(SITE + '/newsletter', 'NEWSLETTER'), ol(DISCORD, 'JOIN THE DISCORD!'), ov.querySelector(':scope > .mn-cta')];
     while (ov.firstChild) ov.removeChild(ov.firstChild);
     order.forEach(function (el) { if (el) ov.appendChild(el); });
@@ -866,8 +880,8 @@
         var gs = megaModel(ov);
         MEGA.forEach(function (col) { col.forEach(function (it) {
           var row = document.createElement('div'); row.className = 'container header-menu-nav-item';
-          if (it[0] === 'link') {
-            var a = document.createElement('a'); a.href = SITE + it[2]; a.tabIndex = -1;
+          if (it[0] === 'link' || it[0] === 'check') {
+            var a = document.createElement('a'); a.href = it[0] === 'check' ? CHECK_URL : SITE + it[2]; a.tabIndex = -1; if (it[0] === 'check') it = [0, 'DAILY CHECKLIST'];
             a.innerHTML = '<div class="header-menu-nav-item-content"></div>'; a.firstChild.textContent = it[1]; row.appendChild(a);
           } else if (it[0] === 'gift') {
             var gb = giftBox('ma-ovgroup', ''); gb.querySelector('a').tabIndex = -1; row.appendChild(gb);
