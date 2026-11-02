@@ -248,6 +248,14 @@
 #ma-skyduel .sd-shopov .sd-up{min-height:0;padding:10px 8px;gap:4px}
 @media (max-width:640px){#ma-skyduel .sd-shopov{padding:12px}#ma-skyduel .sd-shopov .sd-ups{grid-template-columns:repeat(2,minmax(0,1fr))}#ma-skyduel .sd-shopov .sd-up{font-size:11px;letter-spacing:.05em}#ma-skyduel .sd-shopov .sd-up small{font-size:10px}}
 #ma-skyduel h3{font-family:'Almarai',sans-serif}
+#ma-skyduel .sd-items{position:absolute;left:10px;top:76px;z-index:2;display:flex;gap:8px;line-height:1.2}
+#ma-skyduel .sd-it{position:relative;width:52px;height:52px;margin:0;padding:0;border:2px solid #f3ead9;background:rgba(11,23,15,.8);cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center}
+#ma-skyduel .sd-it img{width:30px;height:30px;object-fit:contain;background:#9cc3cd;padding:2px}
+#ma-skyduel .sd-it .sd-itn{position:absolute;right:3px;bottom:2px;font:800 11px/1 'Almarai',sans-serif;color:#ffd166}
+#ma-skyduel .sd-it.on{border-color:#ffd166;box-shadow:0 0 0 2px #ffd166}
+#ma-skyduel .sd-it:hover:not([disabled]),#ma-skyduel .sd-it:focus-visible{border-color:#89fbcb;outline:none}
+#ma-skyduel .sd-it[disabled]:not(.on){opacity:.55;cursor:default}
+@media (max-width:640px){#ma-skyduel .sd-items{left:6px;top:66px;gap:6px}#ma-skyduel .sd-it{width:40px;height:40px}#ma-skyduel .sd-it img{width:22px;height:22px}#ma-skyduel .sd-it .sd-itn{font-size:10px}}
 #ma-skyduel .sd-up .ui{order:-1;display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin:0 auto;background:#9cc3cd;border:1px solid rgba(243,234,217,.35)}
 #ma-skyduel .sd-up .ui img{width:80%;height:80%;object-fit:contain}
 #ma-skyduel .sd-up{align-items:center}
@@ -307,7 +315,7 @@
       <span class="sd-red"><span class="sd-yl">Your crew</span> <b class="sd-hp0">0</b></span><span><span class="sd-rl">Rival</span> <b class="sd-hp1">0</b></span>
       <button class="sd-btn sd-pause" type="button">Pause</button><button class="sd-btn sd-new" type="button">New run</button>
     </div>
-    <div class="sd-stage"><div class="sd-shopov" hidden><div class="sd-shopin"></div><button class="sd-back" type="button">Back to the fight</button></div><canvas aria-label="The battlefield: your goons, the rival goons, and the ground between them"></canvas></div>
+    <div class="sd-stage"><div class="sd-items" role="group" aria-label="Your items"></div><div class="sd-shopov" hidden><div class="sd-shopin"></div><button class="sd-back" type="button">Back to the fight</button></div><canvas aria-label="The battlefield: your goons, the rival goons, and the ground between them"></canvas></div>
     <div class="sd-view"><button class="sd-btn sd-ov" type="button" aria-pressed="false">Overview</button><button class="sd-btn sd-find" type="button">Find my goon</button><button class="sd-btn sd-zin" type="button">Zoom in</button><button class="sd-btn sd-zout" type="button">Zoom out</button></div>
     <div class="sd-weapons" role="group" aria-label="Weapons"></div>
     <div class="sd-pad">
@@ -646,13 +654,13 @@ var ArcadeCard = (function () {
     {k:'ammo',name:'Ammo pack',what:'+1 Lightning Strike, Red Atomic, and Barrage every level',cost:175,max:3,camp:1},
     {k:'double',name:'Double Shot',what:'Mortar Stones fly two at a time',cost:175,max:1},
     {k:'spray',name:'Triple Shot',what:'Mortar Stones fly three at a time',cost:250,max:1,need:'double'},
-    {k:'twice',name:'Fire Twice',what:'Your next turn, fire two shots in a row',cost:200,max:Infinity,held:1},
-    {k:'turn',name:'Extra Turn',what:'Take another turn right after your next one',cost:225,max:Infinity,held:1},
+    {k:'twice',name:'Fire Twice',what:'Tap it on your turn: fire two shots in a row',cost:200,max:Infinity,held:1},
+    {k:'turn',name:'Extra Turn',what:'Tap it on your turn: take another turn right after',cost:225,max:Infinity,held:1},
     {k:'life',name:'Extra Life',what:'The next goon of yours knocked out comes right back',cost:300,max:Infinity,held:1},
     {k:'shatter',name:'Shatter',what:'Mortar Stones break into five chunks where they land',cost:275,max:1},
     {k:'burn',name:'Burning',what:'Mortar Stones burn straight down through the ground',cost:275,max:1},
     {k:'bomb',name:'Goma Bomb',what:'New weapon: splits into three',cost:300,max:1},
-    {k:'heal',name:'Patch up',what:'+40 health to every goon',cost:125,max:Infinity},
+    {k:'heal',name:'Patch up',what:'Tap it on your turn: +40 health to every goon',cost:125,max:Infinity,held:1},
     {k:'crew',name:'Extra goon',what:'One more crew member, up to 5',cost:400,max:2,camp:1}
   ];
   var TURN_COINS=50,COIN_GOLD=100,HIT_COINS=10,KO_COINS=50,CHEST_COINS=125;
@@ -672,7 +680,7 @@ var ArcadeCard = (function () {
   var solid=new Uint8Array(1),crew=[],proj=[],fx=[],ammo=[[],[]],turnIdx=[0,0];
   var phase='panel',paused=false,level=1,score=0,finalScore=null,runFrom=1,wind=0,team=0,active=null,weapon=0,myWeapon=0,walkLeft=WALK,jumped=false,walkDir=0;
   var shotTeam=0,settleT=0,ai=null,aiMul=1,last=0,acc=0,clock=0,boxShown=false,walkAcc=0;
-  var bigNext=[],extraTurn=[],tempUp=[],twiceArmed=false,twiceNow=false,round=0,playT=0,myKos=0,lvDrops=0,gRun=null,mode='campaign',TEAMS=2,coins=0,up={},crewState=null,shots=0,hits=0,streak=0,lvShots=0,lvHits=0,cur=null,pickups=[],boost=[],ffaRound=0,ffaVar=0,place=0,panelKind='start',lastBonus=null,lastPlan=null,variant=null;
+  var inv={twice:0,turn:0,life:0,heal:0},INV_MAX=9,bigNext=[],extraTurn=[],tempUp=[],twiceArmed=false,twiceNow=false,round=0,playT=0,myKos=0,lvDrops=0,gRun=null,mode='campaign',TEAMS=2,coins=0,up={},crewState=null,shots=0,hits=0,streak=0,lvShots=0,lvHits=0,cur=null,pickups=[],boost=[],ffaRound=0,ffaVar=0,place=0,panelKind='start',lastBonus=null,lastPlan=null,variant=null;
   var cam={cx:WW/2,cy:WW/2,z:1},camHold=false,overview=false;
   // stars: best per level number, kept on this device; the run save (between levels only, so a level can't be replayed)
   var SAVE_KEY='ma-goons-save',STAR_KEY='ma-goons-stars',starBest={},resumeSave=null,lvStart0=3;
@@ -819,7 +827,7 @@ var ArcadeCard = (function () {
   // a knockout: the shooter's bonus, and in Free-for-All your place when you go down
   function ko(c){
     // Extra Life: your goon comes straight back on safe ground
-    if(c.team===0&&(up.life||0)>0){up.life--;var sx=safeX(c.x);c.alive=true;c.hp=Math.min(c.max,60);c.x=sx;c.y=surfaceY(sx);c.vx=c.vy=0;c.ground=true;c.hit=0;
+    if(c.team===0&&inv.life>0){inv.life--;var sx=safeX(c.x);c.alive=true;c.hp=Math.min(c.max,60);c.x=sx;c.y=surfaceY(sx);c.vx=c.vy=0;c.ground=true;c.hit=0;
       fx.push({k:'txt',t:0,x:Math.max(40,Math.min(W-40,c.x)),y:c.y-40,label:'EXTRA LIFE',c:'#89fbcb'});say('Extra life: your goon is back.');hud();return;}
     if(c.lastBy===0&&c.team!==0){myKos++;var b=mode==='ffa'?100:25;score+=b;coins+=KO_COINS;fx.push({k:'txt',t:0,x:Math.max(40,Math.min(W-40,c.x)),y:c.y-40,label:'KO +'+b,c:'#ffd166'});}
     if(c.team===0&&mode==='ffa'&&!living(0).length&&!place)place=1+crew.reduce(function(a,o){return a+(o.alive&&o.team!==0?1:0);},0);
@@ -873,7 +881,6 @@ var ArcadeCard = (function () {
     var mine=team===0&&w.k==='ball',tu=w.k==='ball'?tempUp[team]:null;if(tu)tempUp[team]=null;
     proj.push({w:w,x:m.x,y:m.y,vx:v.vx,vy:v.vy,t:0,owner:active,fuse:w.fuse||0,rest:false,rot:0,rm:rm,dm:dm,shat:(mine&&!!up.shatter)||tu==='shatter',burn:(mine&&!!up.burn)||tu==='burn'});
     if(mine&&up.double&&!up.spray&&tu!=='spray'){var a2=active.ang+.05,v3=shotVel(a2,active.pow,w);proj.push({w:w,x:m.x,y:m.y,vx:v3.vx,vy:v3.vy,t:0,owner:active,fuse:0,rest:false,rot:1,rm:rm*.8,dm:dm*.6,shard:true});}
-    if(team===0&&(up.twice||0)>0&&!twiceArmed&&!twiceNow){up.twice--;twiceArmed=true;}
     if((mine&&up.spray)||tu==='spray')[-1,1].forEach(function(k){var a=active.ang+k*.07,v2=shotVel(a,active.pow,w);proj.push({w:w,x:m.x,y:m.y,vx:v2.vx,vy:v2.vy,t:0,owner:active,fuse:0,rest:false,rot:k,rm:rm*.8,dm:dm*.6,shard:true});});
     if(team===0){shots++;lvShots++;cur={hit:false,direct:false};}else cur=null;
     camHold=false;fx.push({k:'smoke',t:0,x:m.x,y:m.y});shotTeam=team;phase='fly';walkDir=0;renderWeapons();padState();
@@ -931,7 +938,6 @@ var ArcadeCard = (function () {
     // Fire Twice: the same goon aims again before anyone else moves
     if(!first&&twiceArmed&&team===0&&active&&active.alive){twiceArmed=false;twiceNow=true;phase='aim';walkLeft=0;walkDir=0;settleT=0;say('Fire Twice: aim your second shot.');renderWeapons();padState();hud();return;}
     twiceArmed=false;twiceNow=false;
-    if(!first&&team===0&&(up.turn||0)>0&&!extraTurn[0]&&living(0).length){up.turn--;extraTurn[0]=true;}
     if(first)team=0;
     else if(extraTurn[team]&&living(team).length){extraTurn[team]=false;say('Extra turn!');}
     else for(var k=1;k<=TEAMS;k++){var t=(team+k)%TEAMS;if(living(t).length){if(t<=team&&mode==='ffa')newRound();team=t;break;}}
@@ -1011,11 +1017,11 @@ var ArcadeCard = (function () {
     if(shopOpen)closeShop();panel.hidden=true;controls(true);paused=false;pauseBtn.textContent='Pause';finalScore=null;lvShots=lvHits=0;fitView(true);nextTurn(true);snapCam();showGame();
   }
   function starTotal(){var t=0;for(var k in starBest)t+=starBest[k]||0;return t;}
-  function saveRun(){if(mode!=='campaign'||!crewState)return;try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:1,level:level,score:score,coins:coins,up:up,crewState:crewState,runFrom:runFrom,shots:shots,hits:hits,playT:playT,ticket:gRun&&gRun.ticket||'',at:Date.now()}));}catch(e){}}
+  function saveRun(){if(mode!=='campaign'||!crewState)return;try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:1,level:level,score:score,coins:coins,up:up,inv:inv,crewState:crewState,runFrom:runFrom,shots:shots,hits:hits,playT:playT,ticket:gRun&&gRun.ticket||'',at:Date.now()}));}catch(e){}}
   function clearSave(){resumeSave=null;try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
   function readSave(){try{var o=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(o&&o.v===1&&o.level>1&&o.crewState&&o.crewState.length)return o;}catch(e){}return null;}
-  function applySave(o){level=o.level;score=o.score|0;coins=o.coins|0;up=o.up||{};crewState=o.crewState.map(function(m){return {hp:m.hp,max:m.max};});runFrom=o.runFrom||1;shots=o.shots|0;hits=o.hits|0;playT=+o.playT||0;streak=0;finalScore=null;lastBonus=null;place=0;}
-  function newRun(){playT=0;myKos=0;level=1;score=0;runFrom=1;finalScore=null;coins=0;up={blast:0,dmg:0,ammo:0,bomb:0,heal:0,crew:0};crewState=freshCrew(3);shots=hits=streak=lvShots=lvHits=0;place=0;lastBonus=null;}
+  function applySave(o){level=o.level;score=o.score|0;coins=o.coins|0;up=o.up||{};inv=o.inv||{twice:0,turn:0,life:0,heal:0};crewState=o.crewState.map(function(m){return {hp:m.hp,max:m.max};});runFrom=o.runFrom||1;shots=o.shots|0;hits=o.hits|0;playT=+o.playT||0;streak=0;finalScore=null;lastBonus=null;place=0;}
+  function newRun(){playT=0;myKos=0;level=1;score=0;runFrom=1;finalScore=null;coins=0;up={blast:0,dmg:0,ammo:0,bomb:0,heal:0,crew:0};inv={twice:0,turn:0,life:0,heal:0};crewState=freshCrew(3);shots=hits=streak=lvShots=lvHits=0;place=0;lastBonus=null;}
   function levelWon(){
     var L=level,bonus=WIN_BONUS*L,acc=lvShots?lvHits/lvShots:0,ab=Math.round(acc*200),earn=100+25*L;score+=bonus+ab;coins+=earn;phase='panel';
     // stars: 1 for the win, 2 with at least two goons standing, 3 with every goon you started with still standing; 100 per star x level
@@ -1044,18 +1050,18 @@ var ArcadeCard = (function () {
     starsEl.innerHTML=[0,1,2].map(function(i){return '<svg viewBox="0 0 24 23" width="40" height="38" aria-hidden="true"><polygon points="'+pts+'" fill="'+(i<n?'#ffd166':'none')+'" stroke="#ffd166" stroke-width="1.6" stroke-linejoin="miter"/></svg>';}).join('');
     starsEl.setAttribute('aria-label',n+' of 3 stars');starsEl.hidden=false;}
   function upCost(u){return Math.round(u.cost*(1+.5*(up[u.k]||0))/5)*5;}
-  function upMaxed(u){if(u.k==='crew')return crewState.length>=CREW_MAX;if(u.k==='heal')return mode==='ffa'?!(active&&active.alive&&active.hp<active.max):crewState.every(function(m){return m.hp>=m.max;});return (up[u.k]||0)>=u.max;}
+  function upMaxed(u){if(u.k==='crew')return crewState.length>=CREW_MAX;if(u.held)return inv[u.k]>=INV_MAX;return (up[u.k]||0)>=u.max;}
   function upLocked(u){return !!(u.need&&!up[u.need]);}
   function upShown(u){return !(u.camp&&mode==='ffa');}
   function renderShop(){upsEl.textContent='';coins2El.textContent=coins;
     var UPIC={blast:'140-boom.webp',dmg:'141-rock.webp',ammo:'74-crate.png',double:'140-icon-double-barrel.png',spray:'140-icon-triple-barrel.png',twice:'140-icon-faster-firing.png',turn:'77-boost.png',life:'../img/skull-heart-red.webp',
       shatter:'140-icon-grenades.png',burn:'shared-flame.png',bomb:'78-mine.png',heal:'140-icon-repair.png',crew:'141-goma-gold.webp'};
     UPS.forEach(function(u){if(!upShown(u))return;var mx=upMaxed(u),lk=upLocked(u),c=upCost(u),b=document.createElement('button');b.type='button';b.className='sd-up';b.dataset.k=u.k;
-      b.innerHTML='<span></span><small></small><b></b>'+(UPIC[u.k]?'<i class="ui"><img src="'+ART+UPIC[u.k]+'" alt=""></i>':'');b.children[0].textContent=u.name+(u.held||u.k==='heal'?' ×1':'')+(u.held&&up[u.k]?' ('+up[u.k]+' held)':'');b.children[1].textContent=lk?'Needs '+UPS.filter(function(x){return x.k===u.need;})[0].name:(u.k==='heal'&&mode==='ffa'?'+40 health to your goon':u.what);b.children[2].textContent=mx?(u.k==='heal'?'Full health':'Maxed'):c+' coins';
+      b.innerHTML='<span></span><small></small><b></b>'+(UPIC[u.k]?'<i class="ui"><img src="'+ART+UPIC[u.k]+'" alt=""></i>':'');b.children[0].textContent=u.name+(u.held||u.k==='heal'?' ×1':'')+(u.held&&inv[u.k]?' (you have '+inv[u.k]+')':'');b.children[1].textContent=lk?'Needs '+UPS.filter(function(x){return x.k===u.need;})[0].name:(u.k==='heal'&&mode==='ffa'?'+40 health to your goon':u.what);b.children[2].textContent=mx?(u.held?'Full':'Maxed'):c+' coins';
       b.disabled=mx||lk||coins<c;b.addEventListener('click',function(){buy(u.k);});upsEl.appendChild(b);});}
   function buy(k){var u=UPS.filter(function(x){return x.k===k;})[0];if(!u||!upShown(u)||upMaxed(u)||upLocked(u))return false;var c=upCost(u);if(coins<c)return false;
     coins-=c;up[k]=(up[k]||0)+1;
-    if(k==='heal'){if(mode==='ffa'){if(active&&active.alive)active.hp=Math.min(active.max,active.hp+40);}else crewState.forEach(function(m){m.hp=Math.min(m.max,m.hp+40);});}
+    if(u.held)inv[k]++;   // stocked for the item bar
     if(k==='bomb'&&mode==='ffa'&&ammo[0])ammo[0][4]=(ammo[0][4]||0)+2;
     if(k==='crew')crewState.push({hp:HP_CREW,max:HP_CREW});
     saveRun();hud();renderShop();renderWeapons();say(u.name+': done.');return true;}
@@ -1079,7 +1085,7 @@ var ArcadeCard = (function () {
   function preview(){if(phase!=='panel')return;setView();if(mode==='ffa')ffaVar=Math.floor(Math.random()*variants().length);genTerrain();placeCrew();pickups=[];setOverview(true);snapCam();hud();}
   function openPanel(h,note,go,alt,kind){panelKind=kind;controls(false);ph.textContent=h;pnote.textContent=note;goBtn.textContent=go;altBtn.hidden=!alt;if(alt)altBtn.textContent=alt;
     modesEl.hidden=pickEl.hidden=kind!=='start';shopEl.hidden=kind!=='shop';if(kind!=='shop')starsEl.hidden=true;if(kind==='shop')renderShop();panel.hidden=false;padState();renderWeapons();}
-  function hud(){starTotEl.textContent=starTotal();starWrap.hidden=mode==='ffa';lvEl.textContent=level;lvWrap.hidden=mode==='ffa';scoreEl.textContent=score;bestEl.textContent=bests[mode];coinEl.textContent=coins;hp0El.textContent=teamHp(0);
+  function hud(){renderItems();starTotEl.textContent=starTotal();starWrap.hidden=mode==='ffa';lvEl.textContent=level;lvWrap.hidden=mode==='ffa';scoreEl.textContent=score;bestEl.textContent=bests[mode];coinEl.textContent=coins;hp0El.textContent=teamHp(0);
     var o=others();if(mode==='ffa'){ylEl.textContent='You';rlEl.textContent='Goons left';hp1El.textContent=o.length;}
     else{ylEl.textContent='Your crew';rlEl.textContent='Rival';hp1El.textContent=o.reduce(function(a,c){return a+Math.max(0,Math.ceil(c.hp));},0);}}
 
@@ -1123,7 +1129,7 @@ var ArcadeCard = (function () {
       b.addEventListener('click',function(){if(!canAct()||!(ammo[0][i]>0))return;weapon=myWeapon=i;renderWeapons();});wpnEl.appendChild(b);});
     if(narrow&&shown.length%2&&wpnEl.lastChild)wpnEl.lastChild.style.gridColumn='span 2';
   }
-  function padState(){var a=canAct();bL.disabled=bR.disabled=!a||walkLeft<=0;bJ.disabled=!a||jumped;bN.disabled=mode==='ffa'?!a:(!a||living(0).length<2);bN.textContent=mode==='ffa'?'Upgrades':'Next crew';bF.disabled=!a;}
+  function padState(){var a=canAct();bL.disabled=bR.disabled=!a||walkLeft<=0;bJ.disabled=!a||jumped;bN.disabled=mode==='ffa'?!a:(!a||living(0).length<2);bN.textContent=mode==='ffa'?'Upgrades':'Next crew';renderItems();bF.disabled=!a;}
   function hold(btn,dir){
     btn.addEventListener('pointerdown',function(e){if(btn.disabled)return;e.preventDefault();walkDir=dir;camHold=false;try{btn.setPointerCapture(e.pointerId);}catch(x){}});
     ['pointerup','pointercancel','lostpointercapture'].forEach(function(ev){btn.addEventListener(ev,function(){if(walkDir===dir)walkDir=0;});});
@@ -1137,6 +1143,21 @@ var ArcadeCard = (function () {
     try{shopOv.querySelector('.sd-up:not([disabled])').focus({preventScroll:true});}catch(e){}}
   function closeShop(){if(!shopOpen)return;shopOpen=false;paused=false;shopOv.hidden=true;shopEl.hidden=true;panel.insertBefore(shopEl,shopHome&&shopHome.parentNode===panel?shopHome:null);padState();hud();}
   $('.sd-back').addEventListener('click',closeShop);
+  // the item bar: each item you own is a button on the battlefield with how many you have
+  var itemsEl=$('.sd-items'),ITEMS=[['twice','Fire Twice','140-icon-faster-firing.png'],['turn','Extra Turn','77-boost.png'],['heal','Patch up','140-icon-repair.png'],['life','Extra Life','../img/skull-heart-red.webp']];
+  ITEMS.forEach(function(it){var b=document.createElement('button');b.type='button';b.className='sd-it';b.dataset.k=it[0];b.hidden=true;
+    b.innerHTML='<img src="'+ART+it[2]+'" alt=""><span class="sd-itn"></span>';b.addEventListener('click',function(e){e.stopPropagation();useItem(it[0]);});
+    ['pointerdown','touchstart','mousedown'].forEach(function(ev){b.addEventListener(ev,function(e){e.stopPropagation();},{passive:true});});itemsEl.appendChild(b);});
+  function itemReady(k){if(!inv[k]||!canAct())return false;if(k==='twice')return !twiceArmed&&!twiceNow;if(k==='turn')return !extraTurn[0];
+    if(k==='heal')return crew.some(function(c){return c.team===0&&c.alive&&c.hp<c.max;});return false;}
+  function useItem(k){if(!itemReady(k))return;inv[k]--;
+    if(k==='twice'){twiceArmed=true;say('Fire Twice: after this shot, you fire again.');}
+    if(k==='turn'){extraTurn[0]=true;say('Extra Turn: you go again after this one.');}
+    if(k==='heal'){crew.forEach(function(c){if(c.team===0&&c.alive){c.hp=Math.min(c.max,c.hp+40);fx.push({k:'txt',t:0,x:Math.max(40,Math.min(W-40,c.x)),y:c.y-40,label:'+40',c:'#89fbcb'});}});}
+    renderItems();hud();}
+  function renderItems(){if(!itemsEl)return;Array.prototype.forEach.call(itemsEl.children,function(b){var k=b.dataset.k,n=inv[k]||0,it=ITEMS.filter(function(x){return x[0]===k;})[0];
+    b.hidden=!n;b.disabled=k==='life'||!itemReady(k);b.classList.toggle('on',(k==='twice'&&(twiceArmed||twiceNow))||(k==='turn'&&!!extraTurn[0]));
+    b.querySelector('.sd-itn').textContent='×'+n;b.title=it[1]+(k==='life'?': saves your next goon knocked out ('+n+')':': tap on your turn ('+n+' left)');b.setAttribute('aria-label',b.title);});}
   function nextCrew(){if(!canAct())return;var L=crew.filter(function(c){return c.team===0;});
     for(var k=1;k<=L.length;k++){var i=(turnIdx[0]+k)%L.length;if(L[i].alive){turnIdx[0]=i;active=L[i];break;}}camHold=false;setOverview(false);}
   bJ.addEventListener('click',jump);bN.addEventListener('click',function(){if(mode==='ffa')openShop();else nextCrew();});bF.addEventListener('click',function(){if(canAct())fire();});
@@ -1368,7 +1389,7 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
       cam:{cx:cam.cx,cy:cam.cy,z:cam.z},overview:overview,camHold:camHold,mini:miniRect(),
       weapon:WEAPONS[weapon].k,goma:GOMAS[myGoma][0],rivalGoma:GOMAS[rivalGoma(level)][0],ammo:ammo[0]?ammo[0].slice():[],walkLeft:walkLeft,jumped:jumped,solid:n,boxShown:boxShown,
       coins:coins,up:JSON.parse(JSON.stringify(up)),stars:{best:JSON.parse(JSON.stringify(starBest)),total:starTotal(),last:lastBonus?lastBonus.stars:null},saved:readSave(),resume:!!resumeSave,clock:clock,crewState:crewState?crewState.map(function(m){return {hp:m.hp,max:m.max};}):null,
-      shots:shots,hits:hits,streak:streak,lvShots:lvShots,lvHits:lvHits,lastBonus:lastBonus,lastPlan:lastPlan,v7:{shopOpen:shopOpen,twiceArmed:twiceArmed,twiceNow:twiceNow,tempUp:tempUp.slice(),ammo0:ammo[0]?ammo[0].slice():[],proj:proj.map(function(p){return p.w.k;}),fx:fx.map(function(f){return f.k;}),extraTurn:extraTurn.slice(),bigNext:bigNext.slice(),round:round,pickups:pickups.map(function(p){return p.k;}),zoomMul:zoomMul,fitZ:fitZ(),alive0:living(0).length,alive1:living(1).length,rivalHp:crew.filter(function(c){return c.team===1;}).map(function(c){return c.max;})},
+      shots:shots,hits:hits,streak:streak,lvShots:lvShots,lvHits:lvHits,lastBonus:lastBonus,lastPlan:lastPlan,v7:{inv:JSON.parse(JSON.stringify(inv)),shopOpen:shopOpen,twiceArmed:twiceArmed,twiceNow:twiceNow,tempUp:tempUp.slice(),ammo0:ammo[0]?ammo[0].slice():[],proj:proj.map(function(p){return p.w.k;}),fx:fx.map(function(f){return f.k;}),extraTurn:extraTurn.slice(),bigNext:bigNext.slice(),round:round,pickups:pickups.map(function(p){return p.k;}),zoomMul:zoomMul,fitZ:fitZ(),alive0:living(0).length,alive1:living(1).length,rivalHp:crew.filter(function(c){return c.team===1;}).map(function(c){return c.max;})},
       pickups:pickups.map(function(p){return {k:p.k,x:p.x,y:p.y,v:p.v};}),
       fx:fx.map(function(f){return f.k;}),
       active:active?{team:active.team,i:active.i,x:active.x,y:active.y,ang:active.ang,pow:active.pow,goma:active.goma}:null,
@@ -1409,3 +1430,28 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
   window.addEventListener('resize',function(){var n=(d.querySelector('.sd-stage').clientWidth||960)<640;if(n!==narrow){setView();clampCam();if(phase==='panel')preview();renderWeapons();fitView(true);}else fitView(false);});
 })();
 </script>
+
+<script>/* PARALLAX FIXED (Maurice, 2026-10-16; Goma Goons 11/2): a library picture pinned to the screen behind the game while the page scrolls over it */(function(){
+  var r=document.getElementById('ma-skyduel');if(!r||r.querySelector('.ma-plx'))return;
+  var dir=(window.innerWidth||1400)<=900?'m/':'d/';
+  if(getComputedStyle(r).position==='static')r.style.position='relative';r.style.isolation='isolate';/* the picture sits under everything in the game, even parts added later (the export card) */
+  Array.prototype.forEach.call(r.children,function(c){var cs=getComputedStyle(c);if(cs.position==='static'){c.style.position='relative';}if(!cs.zIndex||cs.zIndex==='auto')c.style.zIndex='1';});
+  var w=document.createElement('div');w.className='ma-plx';w.setAttribute('aria-hidden','true');
+  w.style.cssText='position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none';
+  var im=document.createElement('div');im.style.cssText='position:absolute;left:0;right:0;top:0;background:url(https://africhmaurice.github.io/site/assets/bg/'+dir+'jungle-planet-lake-as1331428223.webp) center/cover no-repeat;will-change:transform';
+  var wash=document.createElement('div');wash.style.cssText='position:absolute;inset:0;background:linear-gradient(rgba(11,23,15,.72),rgba(11,23,15,.84))';
+  w.appendChild(im);w.appendChild(wash);r.insertBefore(w,r.firstChild);
+  // best way: the picture is position:fixed (pinned to the screen by the browser itself, no stutter) and the section's
+  // clip-path keeps it inside the game. That only works when nothing above the game has a transform or filter, so check.
+  var el=r,clean=true;while(el&&el!==document.documentElement){var st=getComputedStyle(el);if(st.transform!=='none'||st.filter!=='none'||st.perspective!=='none'||/transform|filter|perspective/.test(st.willChange)||/paint|layout|strict|content/.test(st.contain||'')){clean=false;break;}el=el.parentElement;}
+  if(clean){w.style.clipPath='inset(0)';w.style.webkitClipPath='inset(0)';w.style.overflow='visible';
+    im.style.cssText+=';position:fixed;top:0;bottom:auto;height:100vh;height:100lvh;will-change:auto';return;}
+  // fallback: the picture is one screen tall (the tallest the phone screen gets, so it never shows a gap when the address bar
+  // hides) and slides down exactly as far as the page scrolls past the game's top, so it holds still on screen
+  var H=0;
+  function size(){H=Math.max(window.innerHeight||800,document.documentElement.clientHeight||0,window.visualViewport?Math.round(visualViewport.height):0);H=Math.min(H,r.offsetHeight||H);im.style.height=H+'px';}
+  function move(){var y=Math.max(0,Math.min((r.offsetHeight||H)-H,-r.getBoundingClientRect().top));im.style.transform='translate3d(0,'+y.toFixed(1)+'px,0)';}
+  window.addEventListener('scroll',move,{passive:true});
+  window.addEventListener('resize',function(){size();move();});
+  size();move();setTimeout(function(){size();move();},800);
+})();</script>

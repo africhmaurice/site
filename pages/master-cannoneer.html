@@ -161,7 +161,36 @@
 #ma-holdwall .actkey{margin:0;display:flex;align-items:center;justify-content:center;gap:8px;min-height:18px;font:700 12px/1.4 Almarai,Arial,sans-serif;color:var(--muted);text-align:center}
 #ma-holdwall .actkey .mi{width:14px;height:14px;flex:none}#ma-holdwall .actkey b{font-weight:800}
 #ma-holdwall .actkey.train{color:#c3a6ff}
-#ma-holdwall .over.end{background:#0b170f}#ma-holdwall .actkey.shield{color:var(--mint)}
+#ma-holdwall .over.end{background:#0b170f}
+@media (max-height:700px){#ma-holdwall .actkey{display:none}}
+#ma-holdwall #hw-ups .cell{display:flex;flex-direction:column;gap:4px;min-width:0}#ma-holdwall #hw-ups .cell .b{flex:1}
+#ma-holdwall .auto{display:flex;align-items:center;justify-content:center;gap:5px;padding:2px 0;font:800 10px/1.2 Almarai,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;user-select:none;-webkit-user-select:none}
+#ma-holdwall .auto input{appearance:none;-webkit-appearance:none;width:12px;height:12px;margin:0;border:1px solid rgba(243,234,217,.6);background:none;cursor:pointer;flex:none}
+#ma-holdwall .auto input:checked{background:var(--gold);border-color:var(--gold);box-shadow:inset 0 0 0 2px var(--sunk)}
+#ma-holdwall .auto input:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+#ma-holdwall .auto.on{color:var(--gold)}
+@media (max-width:760px){#ma-holdwall .auto{font-size:9px;gap:4px;letter-spacing:.04em}}
+#ma-holdwall .lootwin{gap:12px;padding-block:0}#ma-holdwall .lootwin p{font-size:clamp(20px,2.6vw,28px)}#ma-holdwall .lootbox{width:min(30vw,130px)}
+#ma-holdwall .ph2{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px}
+#ma-holdwall .tacts{display:flex;gap:8px}
+#ma-holdwall .tacts button{margin:0;padding:7px 12px;border:1px solid rgba(243,234,217,.45);background:none;color:var(--parch);font:800 11px/1.2 Almarai,Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-holdwall .tacts button[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);background:rgba(255,209,102,.12)}
+#ma-holdwall .tacts button[data-tact="up"][aria-pressed="true"]{border-color:var(--violet);color:#c3a6ff;background:rgba(158,116,253,.16)}
+#ma-holdwall .b .use{right:5px;color:var(--gold)}
+#ma-holdwall #hw-ups[data-tact="up"] .b .cost{color:#c3a6ff}
+#ma-holdwall .btns .b.noup{opacity:.3}
+#ma-holdwall .inv{position:absolute;left:10px;top:10px;z-index:2;display:flex;gap:8px;line-height:1.2}
+#ma-holdwall .inv .it{position:relative;width:52px;height:52px;padding:0;margin:0;border:2px solid var(--parch);background:rgba(11,23,15,.78);color:var(--parch);cursor:pointer;touch-action:manipulation;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#ma-holdwall .inv .it .iti{display:block;width:30px;height:30px;color:var(--parch);object-fit:contain}
+#ma-holdwall .inv .it .itn{position:absolute;right:3px;bottom:2px;font:800 11px/1 Almarai,Arial,sans-serif;color:var(--gold)}
+#ma-holdwall .inv .it .itc{position:absolute;left:0;bottom:0;width:100%;height:0;background:rgba(11,23,15,.65);pointer-events:none}
+#ma-holdwall .inv .it:hover:not([disabled]),#ma-holdwall .inv .it:focus-visible{border-color:var(--mint);outline:none}
+#ma-holdwall .inv .it[disabled]{opacity:.5;cursor:default}
+@media (max-width:760px){#ma-holdwall .inv{left:6px;top:6px;gap:6px}#ma-holdwall .inv .it{width:40px;height:40px}#ma-holdwall .inv .it .iti{width:22px;height:22px}#ma-holdwall .inv .it .itn{font-size:10px}}
+#ma-holdwall .btns .b.up img.izzyic{object-fit:contain}
+#ma-holdwall .actkey.up{color:#c3a6ff}
+#ma-holdwall #hw-ups{grid-template-columns:repeat(10,minmax(0,1fr))}
+@media (max-width:760px){#ma-holdwall .ph2 h3{display:none}#ma-holdwall .ph2{justify-content:flex-end}#ma-holdwall .tacts button{padding:7px 10px;font-size:10px;letter-spacing:.05em}#ma-holdwall #hw-ups{grid-template-columns:repeat(5,minmax(0,1fr))}#ma-holdwall .b .use{right:3px}}#ma-holdwall .actkey.shield{color:var(--mint)}
 @media (max-width:760px){
   #ma-holdwall .top{position:static;margin-inline:0;padding:0;border:0;background:none;gap:8px}
   #ma-holdwall .hudbar{gap:6px 12px}
@@ -230,10 +259,11 @@
   <div class="row"><button class="sm" id="hw-pause" type="button">Pause</button><button class="sm" id="hw-restart" type="button">New game</button></div>
   </div>
   <div class="stage">
+    <div class="inv" id="hw-inv" role="group" aria-label="Your items"></div>
     <canvas id="hw-cv" width="1675" height="793" aria-label="Your tower and cannon on the left, the enemy coming out of a portal on the right"></canvas>
     <div class="over" id="hw-over">
       <h2 id="hw-oH">Hold the Wall!</h2>
-      <p id="hw-oP">Tap or drag on the field to fire the cannon. Kills earn credits: spend them on fighters, training, and tower upgrades. The cannon takes hits first, then the tower.</p>
+      <p id="hw-oP">The cannon fires on its own: tap or drag on the field to aim it. Kills earn credits: spend them on fighters, training, and tower upgrades. The cannon takes hits first, then the tower.</p>
       <button class="go" id="hw-oGo" type="button">Start wave 1</button>
     </div>
   </div>
@@ -245,14 +275,16 @@
       <div class="acts fi" id="hw-acts" role="group" aria-label="What tapping a fighter does"><button type="button" data-act="send" aria-pressed="true">Send</button><button type="button" data-act="train" aria-pressed="false"><span class="msk mi" style="--m:url(https://africhmaurice.github.io/site/assets/games/140-icon-train.png)" aria-hidden="true"></span>Train</button><button type="button" data-act="shield" aria-pressed="false"><span class="msk mi" style="--m:url(https://africhmaurice.github.io/site/assets/games/140-icon-fighter-shield.png)" aria-hidden="true"></span>Shield</button></div></div>
     <div class="btns fi" id="hw-deploy" data-act="send"></div>
     <p class="actkey fi send" id="hw-actkey" aria-live="polite"><span>Tap a fighter to send one out. Number keys 1 to 9 work too.</span></p>
-    <h3 class="tw">Tower upgrades</h3><div class="btns tw" id="hw-ups"></div></section>
+    <div class="ph2 tw"><h3>Tower upgrades</h3><div class="tacts" id="hw-tacts" role="group" aria-label="What tapping an upgrade does"><button type="button" data-tact="buy" aria-pressed="true">Buy</button><button type="button" data-tact="up" aria-pressed="false">Upgrade</button></div></div>
+    <div class="btns tw" id="hw-ups" data-tact="buy"></div>
+    <p class="actkey tw buy" id="hw-tkey"><span><b>×1</b> items go to your item bar on the field: buy as many as you like and tap one to use it. Switch to Upgrade to make them stronger.</span></p></section>
   <div class="hw-post" id="hw-post" hidden><p class="hw-msg" id="hw-msg" role="status"></p><div id="hw-who" hidden></div></div>
   <div class="hw-boardrow">
     <section class="panel"><h3>Best this week</h3><p class="hw-mybest" id="hw-mybest">0</p><p class="hw-count" id="hw-mynote">No games yet this week.</p></section>
     <section class="panel"><h3>This week&rsquo;s top defenders</h3><p class="hw-count">Board closes in <span id="hw-left">...</span></p>
       <ol class="hw-board" id="hw-board"><li><span class="hw-empty">Loading the board...</span></li></ol></section>
   </div>
-  <p class="help">Hold on the field to keep firing. Tap a fighter to send one out. The arrow trains that fighter (+25% health, speed, and damage), and the shield gives every new one a shield. Number keys 1 to 9 send fighters.</p>
+  <p class="help">The cannon fires on its own: tap or drag on the field to aim it. Tap a fighter to send one out, or switch to Train or Shield first. Check Auto under a fighter, upgrade, or item to keep buying it whenever you can afford it, one at a time. Number keys 1 to 9 send fighters.</p>
 </div>
 </section>
 <script>/* ARCADE-CARD:BEGIN (pasted from mauriceafrich-site/tools/arcade-card.js; do not edit here) */
@@ -461,12 +493,12 @@ var ALLY={
   brawler:{name:'Brawler',cost:10,hp:45,dmg:7,range:34,rate:.8,speed:60,s:1.08,look:'fist',cool:.8,what:'Tough fists.'},
   prism:{name:'Prism Guard',cost:20,hp:50,dmg:11,range:42,rate:.9,speed:58,s:1,look:'sword',cool:1.1,what:'A steady sword.'},
   intangible:{name:'Intangible',cost:30,hp:60,dmg:22,range:38,rate:.6,speed:70,s:1,look:'intang',cool:2,what:'Two blades. Portals in, strikes, portals back.',tele:true,aura:'black'},
-  gunslinger:{name:'Gunslinger',cost:40,hp:26,dmg:9,range:380,rate:1.2,speed:55,s:1,look:'gun',cool:1.5,what:'Shoots from the back.',ranged:true},
+  gunslinger:{name:'Gunslinger',cost:40,hp:70,dmg:12,range:380,rate:1.2,speed:55,s:1,look:'gun',cool:1.5,what:'Shoots from the back.',ranged:true},
   oracle:{name:'Oracle',cost:40,hp:70,dmg:10,range:50,rate:1,speed:55,s:1.08,look:'ostaff',cool:2,what:'While alive, shows how many enemies are left.',oracle:true,aura:'purple'},
   guardian:{name:'Guardian',cost:50,hp:130,dmg:15,range:46,rate:1.3,speed:42,s:1.1,look:'axe',cool:2.5,what:'Big axe. Holds the line.'},
   imperial:{name:'Imperial',cost:75,hp:160,dmg:24,range:340,rate:1.7,speed:50,s:.95,look:'fist',cool:3,what:'Hurls boulders with its mind and heals fighters near it.',rock:true,heal:true,aura:'green'},
-  crest:{name:'Crest Knight',cost:125,hp:260,dmg:45,range:48,rate:.85,speed:62,s:1.12,look:'glow',cool:5,what:'Hits three times as hard as a Guardian.'},
-  immortal:{name:'Immortal',cost:250,hp:380,dmg:12,range:440,rate:2.5,speed:55,s:.95,look:'imm',cool:8,what:'A telekinetic wave pushes them back. Comes back once.',wave:true,aura:'mint'}
+  crest:{name:'Crest Knight',cost:125,hp:480,dmg:60,range:48,rate:.85,speed:50,s:1.12,look:'glow',cool:5,what:'Hits four times as hard as a Guardian.'},
+  immortal:{name:'Immortal',cost:400,hp:380,dmg:12,range:440,rate:4,speed:55,s:.95,look:'imm',cool:8,what:'A telekinetic wave pushes back up to 3 enemies, one more each training level. Comes back once.',wave:true,aura:'mint'}
 };
 var FOE={
   brawler:{hp:28,dmg:5,range:34,rate:.85,speed:55,s:1.05,look:'fist',coins:4,pts:10},
@@ -489,9 +521,10 @@ var UPS=[
   {k:'dbl',name:'Double barrel',what:'Two shots at once',base:400,grow:1,max:1},
   {k:'gren',short:'Grenades',name:'Grenade launcher',what:'Lobs a grenade while you fire',need:'pierce',base:300,grow:2,max:3},
   {k:'tri',name:'Triple barrel',what:'Three shots at once',base:900,grow:1,max:1,need:'dbl'},
-  {k:'air',short:'Airstrike',name:'Call in an airstrike',what:'A red airship drops an atomic bomb on every enemy on the field',need:'gren',base:500,grow:1.25,max:99,cool:25},
-  {k:'shield',name:'Shield',what:'A second life: soaks up hits before the cannon',base:250,grow:1.4,max:99},
-  {k:'repair',name:'Repair',what:'Cannon first, then the tower',base:80,grow:1.3,max:99}
+  {k:'air',short:'Airstrike',name:'Call in an airstrike',what:'A red airship drops an atomic bomb on every enemy on the field',need:'gren',base:500,grow:1.25,max:99,cool:25,use:1},
+  {k:'izzy',short:'Izzy Pop',name:'Izzy Pop',what:'An Izzy bursts out of the ground under the enemy and leaves a hole they fall into',base:150,grow:1.15,max:99,cool:15,use:1},
+  {k:'shield',name:'Shield',what:'A second life: soaks up hits before the cannon',base:250,grow:1.4,max:99,use:1},
+  {k:'repair',name:'Repair',what:'Cannon first, then the tower',base:80,grow:1.3,max:99,use:1}
 ];
 var GREN_EVERY=[0,2,1.6,1.2],GREN_R=95,AIR_SPEED=900;
 function waveSize(w){return 5+3*w;}
@@ -499,13 +532,17 @@ function waveGap(w){return Math.max(.35,1.6-.07*w);}
 function hpMul(w){return Math.pow(1.25,w-1);}
 function dmgMul(w){return Math.pow(1.25,w-1);}   // v26: attack grows 25% a wave, like health
 function five(n){return Math.max(5,Math.round(n/5)*5);}
-function upCost(u){return five(u.base*Math.pow(u.grow,G.up[u.k]));}
+function upCost(u){return five(u.base*Math.pow(u.grow,G.up[u.k]||0));}
+// v28: one-time items get stronger with Upgrade: +25% a level, up to level 6
+var PW_MAX=5;function pw(k){return (G.pw&&G.pw[k])||0;}function pwMul(k){return Math.pow(1.25,pw(k));}
+function pwCost(u){return five(u.base*1.5*Math.pow(1.7,pw(u.k)));}function canPower(u){return !!u.use&&!G.over&&pw(u.k)<PW_MAX&&G.coins>=pwCost(u)&&!(u.need&&!G.up[u.need]);}
+function powerUp(u){if(!canPower(u))return;G.coins-=pwCost(u);G.pw[u.k]=pw(u.k)+1;ui();}
 function gunDmg(){return 6.25*Math.pow(1.25,G.up.dmg);}
 function gunRate(){return .42*Math.pow(.8,G.up.rate);}   // v26: each step fires 25% quicker
 
 /* ---- state ---- */
 var G,best=0;try{best=+localStorage.getItem('ma-stick-siege-best')||0;}catch(e){}
-function newGame(){G={wave:1,score:0,pts:0,coins:START_COINS,wall:TOWER_HP,wallMax:TOWER_HP,can:CAN_HP,canMax:CAN_HP,boom:-1,up:{dmg:0,rate:0,pierce:0,dbl:0,gren:0,tri:0,air:0,shield:0,repair:0},shield:0,reborn:[],grenT:0,airCool:0,ship:null,nades:[],
+function newGame(){G={wave:1,score:0,pts:0,coins:START_COINS,wall:TOWER_HP,wallMax:TOWER_HP,can:CAN_HP,canMax:CAN_HP,boom:-1,up:{dmg:0,rate:0,pierce:0,dbl:0,gren:0,tri:0,air:0,izzy:0,shield:0,repair:0},pw:{air:0,izzy:0,shield:0,repair:0},inv:{air:0,izzy:0,shield:0,repair:0},holes:[],pops:[],izzyCool:0,shieldMax:SHIELD_HP,shield:0,reborn:[],grenT:0,airCool:0,ship:null,nades:[],
   units:[],shots:[],bolts:[],rocks:[],waves:[],fx:[],queue:[],spawnT:0,running:false,paused:false,over:false,between:true,gunT:0,firedT:9,cool:{},lv:{},shl:{},t:0,shake:0,skyT:1,deadT:-1};}
 newGame();
 
@@ -522,13 +559,15 @@ function buildWave(w){
 }
 // loot box 140: shown once per visit, the moment wave BOX_WAVE is held (the site version swaps in the real claim link)
 var BOX_WAVE=20,boxShown=false,BOX_K='RUgyQlRGOVA9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-function showBox(){if(boxShown)return;boxShown=true;$('lootwin').hidden=false;}
+function showBox(){if(boxShown)return;boxShown=true;$('lootwin').hidden=false;fitStage();}
 $('lootbox').addEventListener('click',function(){var u='';try{u=atob(BOX_K).split('').reverse().join('');}catch(e){}if(!u)return;
-  var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;});
+  var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w){location.href=u;return;}
+  $('lootwin').hidden=true;fitStage();});   // v30: gone once claimed, so the buttons are back in reach
 function startWave(){if(G.wave===1&&!G.run&&window.HWBoard)G.run=HWBoard.start();if(G.wave>1)G.skyT=0;G.queue=buildWave(G.wave);G.spawnT=.5;G.between=false;G.running=true;$('over').hidden=true;ui();}
 
 var TRAIN_MAX=10;
 function lvl(k){return G.lv[k]||1;}
+function fCost(k){return Math.round(ALLY[k].cost*Math.pow(1.25,lvl(k)-1));}   // v33: each training level, 25% dearer to send out
 function lvMul(k){return Math.pow(1.25,lvl(k)-1);}   // each level: +25% health, speed, and damage
 function trainCost(k){return five(ALLY[k].cost*1.5*Math.pow(1.6,lvl(k)-1));}
 function canTrain(k){return !G.over&&lvl(k)<TRAIN_MAX&&G.coins>=trainCost(k);}
@@ -551,35 +590,63 @@ function unit(side,k){
     phase:Math.random()*6,atk:0,dead:0,hit:0,tele:T.tele?1:0,gone:0};
 }
 function deploy(k){
-  var T=ALLY[k];if(!G.running||G.paused||G.over||G.coins<T.cost||(G.cool[k]||0)>0)return;
-  G.coins-=T.cost;G.cool[k]=T.cool;G.units.push(unit(1,k));ui();
+  var T=ALLY[k],fc=fCost(k);if(!G.running||G.paused||G.over||G.coins<fc||(G.cool[k]||0)>0)return;
+  G.coins-=fc;G.cool[k]=T.cool;G.units.push(unit(1,k));ui();
 }
 function repairWhat(){return G.can<=0?'rebuild':G.can<G.canMax?'cannon':G.wall<G.wallMax?'tower':'';}
+var INV_MAX=9;
 function canBuy(u){
   if(G.over||G.coins<upCost(u)||G.up[u.k]>=u.max)return false;
   if(u.need&&!G.up[u.need])return false;
+  if(u.use)return G.inv[u.k]<INV_MAX;
   if(u.k==='repair'&&repairWhat()==='')return false;
   if(u.k==='air'&&(!G.running||G.airCool>0||G.ship))return false;
+  if(u.k==='izzy'&&(!G.running||G.izzyCool>0))return false;
   if(u.k==='shield'&&G.shield>0)return false;
   return true;
 }
 function buy(u){
   if(!canBuy(u))return;
-  var r=u.k==='repair'?repairWhat():null;
+  if(u.use){G.coins-=upCost(u);G.up[u.k]++;G.inv[u.k]++;ui();return;}   // v29: stocked for the item bar
+  var r=null;
   G.coins-=upCost(u);G.up[u.k]++;
-  if(r==='rebuild'){G.can=G.canMax;G.boom=-1;}
-  else if(r==='cannon')G.can=Math.min(G.canMax,G.can+G.canMax*.625);
-  else if(r==='tower')G.wall=Math.min(G.wallMax,G.wall+G.wallMax*.375);
-  if(u.k==='air')callAirstrike();
-  if(u.k==='shield')G.shield=SHIELD_HP;
   ui();
 }
+// v29: the item bar. Each one-time item you own is a button on the field; tap to use one
+function canUse(k){if(G.over||!G.inv[k])return false;
+  if(k==='air')return G.running&&G.airCool<=0&&!G.ship;
+  if(k==='izzy')return G.running&&G.izzyCool<=0;
+  if(k==='shield')return G.shield<=0;
+  if(k==='repair')return repairWhat()!=='';return false;}
+function useItem(k){if(!canUse(k))return;G.inv[k]--;
+  if(k==='repair'){var r=repairWhat();
+    if(r==='rebuild'){G.can=G.canMax;G.boom=-1;}
+    else if(r==='cannon')G.can=Math.min(G.canMax,G.can+G.canMax*Math.min(1,.625*pwMul('repair')));
+    else if(r==='tower')G.wall=Math.min(G.wallMax,G.wall+G.wallMax*Math.min(1,.375*pwMul('repair')));}
+  if(k==='air')callAirstrike();
+  if(k==='shield')G.shield=G.shieldMax=Math.round(SHIELD_HP*pwMul('shield'));
+  if(k==='izzy')izzyPop();
+  ui();}
 // the airstrike: his red airship crosses the sky and drops an atomic bomb on the thick of the enemy
 function callAirstrike(){
   var e=G.units.filter(function(o){return o.side===-1&&!o.dead;}).map(function(o){return o.x;}).sort(function(a,b){return a-b;});
   var at=e.length?e[Math.floor(e.length/2)]:W*.65;G.ship={x:-300,at:Math.max(WALLX+300,Math.min(W-120,at)),dropped:false};G.airCool=25;
 }
+// v28: Izzy Pop. The blob is one of the Goma Goons, a different color each time.
+var IZZY_COLORS=['yellow','red','sand','blue','green','purple','white','teal','gold','lime','brown'],izzyArt={};
+function izzyImg(c){if(!izzyArt[c]){var im=new Image();im.src='https://africhmaurice.github.io/site/assets/games/141-goma-'+c+'.webp';izzyArt[c]=im;}return izzyArt[c];}
+IZZY_COLORS.forEach(izzyImg);
+var BOSS={gladiator:1,crest:1,immortal:1};
+function izzyPop(){
+  var e=G.units.filter(function(o){return o.side===-1&&!o.dead;}).map(function(o){return o.x;}).sort(function(a,b){return a-b;});
+  var x=Math.max(WALLX+300,Math.min(W-120,e.length?e[Math.floor(e.length/2)]:W*.6)),m=pwMul('izzy'),R=130*Math.sqrt(m);
+  G.izzyCool=15;G.pops.push({x:x,t:0,c:IZZY_COLORS[Math.floor(Math.random()*IZZY_COLORS.length)]});
+  G.units.forEach(function(o){if(o.side===-1&&!o.dead&&!o.gone&&Math.abs(o.x-x)<R){hurt(o,(40+o.max*.35)*m);o.kb=PUSH*.35;o.kbDir=1;o.fight=false;}});
+  G.holes.push({x:x,w:Math.min(420,150*Math.sqrt(m)),t:0,dur:2.5*Math.sqrt(m),hit:[]});
+  G.fx.push({type:'dust',x:x,y:GY-20,t:.5});G.shake=Math.max(G.shake,.35);
+}
 // every hit on the base lands on the cannon first; once it explodes, on the tower
+function holeOpen(h){var a=Math.min(1,h.t/.25),z=Math.min(1,Math.max(0,(h.dur-h.t)/.6));return Math.min(a,z);}
 function hitBase(d){
   if(G.shield>0){var a=Math.min(G.shield,d);G.shield-=a;d-=a;G.shake=Math.max(G.shake,.06);if(d<=0)return;}
   if(G.can>0){G.can-=d;if(G.can<=0){G.can=0;G.boom=0;G.shake=.5;}}
@@ -588,7 +655,7 @@ function hitBase(d){
 }
 
 /* ---- aiming the cannon ---- */
-var aim={x:900,y:850,down:false};
+var aim={x:1100,y:GY-70,down:false};   // v32: starts aimed at the middle of the field; the cannon fires on its own
 function pivot(){return PV;}
 function toField(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};}
 cv.addEventListener('pointerdown',function(e){var p=toField(e);aim.x=p.x;aim.y=p.y;aim.down=true;try{cv.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();});
@@ -597,8 +664,8 @@ cv.addEventListener('pointermove',function(e){var p=toField(e);aim.x=p.x;aim.y=p
 function aimAngle(){var p=pivot();return Math.max(-.5,Math.min(.75,Math.atan2(aim.y-p.y,Math.max(30,aim.x-p.x))));}
 function muzzle(a){var p=pivot();return {x:p.x+Math.cos(a)*158+Math.sin(a)*13,y:p.y+Math.sin(a)*158-Math.cos(a)*13};}
 function fire(){
-  var a=aimAngle(),m=muzzle(a),n=G.up.tri?3:G.up.dbl?2:1,spread=n===3?[-.07,0,.07]:n===2?[-.04,.04]:[0];
-  spread.forEach(function(d){G.shots.push({x:m.x,y:m.y,vx:Math.cos(a+d)*1800,vy:Math.sin(a+d)*1800,life:1,left:1+G.up.pierce,hitSet:[]});});
+  var a=aimAngle(),m=muzzle(a),n=G.up.tri?3:G.up.dbl?2:1,spread=n===3?[-1,0,1]:n===2?[-.5,.5]:[0];   // v27: tight, so every round lands
+  spread.forEach(function(d){var off=d*10,da=d*.008;G.shots.push({x:m.x-Math.sin(a)*off,y:m.y+Math.cos(a)*off,vx:Math.cos(a+da)*1800,vy:Math.sin(a+da)*1800,life:1,left:1+G.up.pierce,hitSet:[]});});
   G.fx.push({type:'flash',x:m.x,y:m.y,t:.08});G.firedT=0;
 }
 function lobGrenade(){
@@ -641,11 +708,18 @@ function step(dt){
   G.t+=dt;G.firedT+=dt;if(G.boom>=0)G.boom+=dt;
   if(!G.paused)for(var k in G.cool)if(G.cool[k]>0)G.cool[k]=Math.max(0,G.cool[k]-dt);
   if(!G.running||G.paused)return;G.playT=(G.playT||0)+dt;
-  G.coins+=TRICKLE*dt;
+  G.coins+=TRICKLE*dt;autoStep(dt);
   if(G.queue.length){G.spawnT-=dt;if(G.spawnT<=0){G.units.push(unit(-1,G.queue.shift()));G.spawnT=waveGap(G.wave)*(.6+Math.random()*.8);}}
-  G.gunT-=dt;if(aim.down&&G.can>0&&G.gunT<=0){fire();G.gunT=gunRate();}
-  G.grenT-=dt;if(G.up.gren&&aim.down&&G.can>0&&G.grenT<=0){lobGrenade();G.grenT=GREN_EVERY[G.up.gren];}
+  G.gunT-=dt;if(G.can>0&&G.gunT<=0){fire();G.gunT=gunRate();}
+  G.grenT-=dt;if(G.up.gren&&G.can>0&&G.grenT<=0){lobGrenade();G.grenT=GREN_EVERY[G.up.gren];}
   if(G.airCool>0)G.airCool=Math.max(0,G.airCool-dt);
+  if(G.izzyCool>0)G.izzyCool=Math.max(0,G.izzyCool-dt);
+  G.pops=G.pops.filter(function(p){p.t+=dt;return p.t<1.1;});
+  // an open hole: plain enemies that step in fall in and are out; a boss takes one big hit
+  G.holes=G.holes.filter(function(h){h.t+=dt;var open=h.w*holeOpen(h)/2;
+    G.units.forEach(function(o){if(o.side!==-1||o.dead||o.gone||h.hit.indexOf(o)>=0||Math.abs(o.x-h.x)>open)return;h.hit.push(o);
+      if(BOSS[o.k])hurt(o,o.max*.3*pwMul('izzy'));else{o.fell=0;hurt(o,o.hp+1);}});
+    return h.t<h.dur;});
   G.nades=G.nades.filter(function(n){n.t+=dt;if(n.t<n.dur)return true;
     G.units.forEach(function(o){if(o.side===-1&&!o.dead&&Math.abs(o.x-n.tx)<GREN_R)hurt(o,gunDmg()*3*(1+.5*(G.up.gren-1)));});
     G.fx.push({type:'boom',x:n.tx,y:GY-30,t:.45,r:GREN_R});G.shake=Math.max(G.shake,.15);return false;});
@@ -670,7 +744,7 @@ function step(dt){
     u.cd-=dt;u.atk=Math.max(0,u.atk-dt);
     if(target||wallHit){u.fight=true;
       if(u.cd<=0){u.cd=u.T.rate;u.atk=.4;
-        if(u.T.wave){G.waves.push({x:u.x+u.side*30,dir:u.side,go:0,dmg:u.dmg,hitSet:[]});}
+        if(u.T.wave){G.waves.push({x:u.x+u.side*30,dir:u.side,go:0,dmg:u.dmg,hitSet:[],max:u.side===1?2+lvl(u.k):0});}
         else if(u.T.rock){var rx=wallHit?WALLX-20:target.x,rs=Math.abs(rx-u.x),lx=u.x+u.side*36;G.rocks.push({gx:lx,x:lx,y:GY-150*u.T.s*FIG-40,tx:rx,ty:wallHit?GY-100:GY-20,t:0,lift:.35,dur:.5+rs/900,side:u.side,dmg:u.dmg,wall:wallHit,spin:Math.random()*6});}
         else if(u.T.ranged){G.bolts.push({x:u.x+u.side*30*FIG,y:GY+u.yo-104*u.T.s*FIG,tx:wallHit?WALLX-10:target.x,ty:wallHit?GY-110:GY+target.yo-70*FIG,t:0,dur:.18,dmg:u.dmg,tgt:target,wall:wallHit});}
         else if(wallHit){hitBase(u.dmg);G.fx.push({type:'dust',x:WALLX+4,y:GY-30-Math.random()*90,t:.4});}
@@ -687,7 +761,7 @@ function step(dt){
     G.fx.push({type:'dust',x:a.tx,y:GY-14,t:.4});return false;});
   // the Immortal's telekinetic wave rolls along the ground and shoves everyone in its path back a quarter of the field
   G.waves=G.waves.filter(function(v){var d=620*dt;v.x+=v.dir*d;v.go+=d;
-    G.units.forEach(function(o){if(o.side!==v.dir&&!o.dead&&!o.gone&&v.hitSet.indexOf(o)<0&&Math.abs(o.x-v.x)<30){hurt(o,v.dmg);o.kb=PUSH;o.kbDir=v.dir;o.fight=false;v.hitSet.push(o);}});
+    G.units.forEach(function(o){if(o.side!==v.dir&&!o.dead&&!o.gone&&v.hitSet.indexOf(o)<0&&(!v.max||v.hitSet.length<v.max)&&Math.abs(o.x-v.x)<30){hurt(o,v.dmg);o.kb=PUSH;o.kbDir=v.dir;o.fight=false;v.hitSet.push(o);}});
     if(v.dir===-1&&v.x<=WALLX){hitBase(v.dmg);return false;}
     return v.go<760&&v.x>-40&&v.x<W+40;});
   G.bolts=G.bolts.filter(function(a){a.t+=dt;if(a.t<a.dur)return true;
@@ -703,7 +777,7 @@ function step(dt){
   G.units=G.units.filter(function(u){return !u.dead||u.dead<1.2;});
   var landed=[];
   G.fx=G.fx.filter(function(f){f.t-=dt;if(f.type==='txt')f.y-=40*dt;
-    if(f.type==='bomb'&&f.t<=0){G.units.forEach(function(o){if(o.side===-1&&!o.dead)hurt(o,(o.max*.75+200)*4);});landed.push({type:'nuke',x:f.at,t:1.8,big:2});G.shake=.8;}
+    if(f.type==='bomb'&&f.t<=0){G.units.forEach(function(o){if(o.side===-1&&!o.dead)hurt(o,(o.max*.75+200)*4*pwMul('air'));});landed.push({type:'nuke',x:f.at,t:1.8,big:2});G.shake=.8;}
     return f.t>0;});
   G.fx=G.fx.concat(landed);
   G.shake=Math.max(0,G.shake-dt);
@@ -711,7 +785,7 @@ function step(dt){
   if(!G.queue.length&&!G.units.some(function(u){return u.side===-1&&!u.dead;})){
     var bonus=100*G.wave,cb=(20+5*G.wave)*CREDIT_MUL;G.score+=bonus;G.coins+=cb;
     G.running=false;G.between=true;
-    G.nades=[];G.ship=null;G.units.forEach(function(u){if(u.side===1&&!u.dead){u.x=Math.min(u.x,WALLX+60+Math.random()*120);u.gone=0;u.kb=0;if(u.tele){u.tele=1;u.ts=null;}}});
+    G.nades=[];G.ship=null;G.holes=[];G.pops=[];G.units.forEach(function(u){if(u.side===1&&!u.dead){u.x=Math.min(u.x,WALLX+60+Math.random()*120);u.gone=0;u.kb=0;if(u.tele){u.tele=1;u.ts=null;}}});
     showOver('Wave '+G.wave+' held','+'+bonus+' score and +'+cb+' credits. Upgrade the tower, train, or send out fighters, then face wave '+(G.wave+1)+': it’s bigger.','Start wave '+(G.wave+1));
     if(G.wave===BOX_WAVE)showBox();
     G.wave++;
@@ -791,8 +865,8 @@ function drawTower(){
   cx.fillStyle=f>.35?'#3adb97':'#ff4c0f';cx.fillRect(0,H-11,W*f,11);
   // tower shield: a full circle around the tower and cannon (Maurice 11/1: "make the shield a circle"), cut off at the ground
   if(G.shield>0&&has(shieldArt)){var SR=225,SX=WALLX/2+10,SY=GY-205;cx.save();cx.beginPath();cx.rect(SX-SR-4,SY-SR-4,SR*2+8,GY+4-(SY-SR-4));cx.clip();
-    cx.globalAlpha*=.35+.45*G.shield/SHIELD_HP;cx.drawImage(shieldArt,SX-SR,SY-SR,SR*2,SR*2);cx.restore();}
-  else if(G.shield>0){var sf=G.shield/SHIELD_HP;cx.save();cx.beginPath();cx.ellipse(WALLX/2+10,GY,250,380,0,Math.PI,2*Math.PI);
+    cx.globalAlpha*=.35+.45*G.shield/(G.shieldMax||SHIELD_HP);cx.drawImage(shieldArt,SX-SR,SY-SR,SR*2,SR*2);cx.restore();}
+  else if(G.shield>0){var sf=G.shield/(G.shieldMax||SHIELD_HP);cx.save();cx.beginPath();cx.ellipse(WALLX/2+10,GY,250,380,0,Math.PI,2*Math.PI);
     cx.fillStyle='rgba(137,251,203,'+(.06+.1*sf)+')';cx.fill();cx.lineWidth=4;cx.strokeStyle='rgba(137,251,203,'+(.35+.5*sf)+')';
     cx.shadowColor='rgba(137,251,203,.9)';cx.shadowBlur=18;cx.stroke();cx.restore();}
 }
@@ -805,8 +879,13 @@ function draw(){
   drawPortal(PORTAL_X,G.running?1:.55,.62);
   drawTower();
   G.fx.forEach(function(f){if(f.type==='portal')drawPortal(f.x,Math.min(1,f.t*2.5),.46);});
+  G.holes.forEach(function(h){var k=holeOpen(h),hw=h.w*k/2;if(hw<2)return;
+    cx.fillStyle='#3b2a1a';cx.beginPath();cx.ellipse(h.x,GY+4,hw+10,16*k+4,0,0,7);cx.fill();
+    cx.fillStyle='#0b0907';cx.beginPath();cx.ellipse(h.x,GY+6,hw,13*k,0,0,7);cx.fill();});
   var us=G.units.slice().sort(function(a,b){return a.yo-b.yo;});
   us.forEach(function(u){if(u.dead)fighter(u);});us.forEach(function(u){if(!u.dead)fighter(u);});
+  G.pops.forEach(function(p){var im=izzyImg(p.c);if(!im.complete||!im.naturalWidth)return;var t=p.t,up=t<.3?t/.3:t<.6?1:Math.max(0,1-(t-.6)/.5),sz=150,h=sz*im.naturalHeight/im.naturalWidth;
+    cx.save();cx.beginPath();cx.rect(p.x-sz,0,sz*2,GY+6);cx.clip();cx.drawImage(im,p.x-sz/2,GY+6-up*(h+60),sz,h);cx.restore();});
   cx.strokeStyle='#ffd166';cx.lineWidth=3;
   G.rocks.forEach(function(a){var x,y,p;
     if(a.t<a.lift){p=a.t/a.lift;x=a.gx;y=GY-6+(a.y-GY+6)*(1-Math.pow(1-p,2));}
@@ -862,19 +941,32 @@ function draw(){
 
 /* ---- panels ---- */
 var dEl=$('deploy'),uEl=$('ups'),KEYS=Object.keys(ALLY);
+// v31: Auto. One box at a time: 'f:brawler' for a fighter, 'u:dmg' for an upgrade or item
+var autoPick=null,autoT=0;
+function autoBox(id,label){var l=document.createElement('label');l.className='auto';l.innerHTML='<input type="checkbox"><span>Auto</span>';var i=l.firstChild;i.dataset.id=id;
+  i.setAttribute('aria-label','Auto: '+label+' whenever you can afford it');
+  i.addEventListener('change',function(){autoPick=i.checked?id:null;Array.prototype.forEach.call(document.querySelectorAll('.auto input'),function(x){if(x!==i)x.checked=false;});
+    Array.prototype.forEach.call(document.querySelectorAll('.auto'),function(x){x.classList.toggle('on',x.firstChild.checked);});});
+  return l;}
+function autoStep(dt){autoT-=dt;if(!autoPick||autoT>0)return;autoT=.25;var k=autoPick.slice(2);
+  if(autoPick[0]==='f'){if(G.coins>=fCost(k)&&!(G.cool[k]>0))deploy(k);}
+  else{var u=UPS.filter(function(x){return x.k===k;})[0];if(u&&canBuy(u))buy(u);}}
 // v25: Send / Train / Shield switch for the fighter tiles, and the Fighters / Tower switch on phones
+var tact='buy',TKEY={buy:'<b>×1</b> items go to your item bar on the field: buy as many as you like and tap one to use it. Switch to Upgrade to make them stronger.',up:'<b>Upgrade</b>: tap a ×1 item to make it 25% stronger every time you use it.'};
+function setTact(a){tact=a;Array.prototype.forEach.call($('tacts').children,function(b){b.setAttribute('aria-pressed',b.dataset.tact===a?'true':'false');});uEl.dataset.tact=a;var kk=$('tkey');kk.className='actkey tw '+a;kk.innerHTML='<span>'+TKEY[a]+'</span>';ui();}
 var act='send',ACTKEY={send:'Tap a fighter to send one out. Number keys 1 to 9 work too.',
-  train:'<b>Train</b>: tap a fighter to level it up. Every one, on the field and new, gets +25% health, speed, and damage.',
+  train:'<b>Train</b>: tap a fighter to level it up. Every one, on the field and new, gets +25% health, speed, and damage, and each new one costs 25% more.',
   shield:'<b>Shield</b>: tap a fighter. Every new one arrives with a shield worth 25% of its health per level.'};
 function setAct(a){act=a;Array.prototype.forEach.call($('acts').children,function(b){b.setAttribute('aria-pressed',b.dataset.act===a?'true':'false');});
   dEl.dataset.act=a;var kk=$('actkey');kk.className='actkey fi '+a;kk.innerHTML=(a==='send'?'':ico(a==='train'?'train':'fshield','mi'))+'<span>'+ACTKEY[a]+'</span>';ui();}
 Array.prototype.forEach.call($('acts').children,function(b){b.addEventListener('click',function(){var a=b.dataset.act;setAct(act===a?'send':a);});});
+Array.prototype.forEach.call($('tacts').children,function(b){b.addEventListener('click',function(){var a=b.dataset.tact;setTact(tact===a?'buy':a);});});
 Array.prototype.forEach.call($('ctl').querySelectorAll('.tabs button'),function(b){b.addEventListener('click',function(){$('ctl').dataset.tab=b.dataset.tab;
   Array.prototype.forEach.call($('ctl').querySelectorAll('.tabs button'),function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});fitStage();});});
 // the field takes the height left on screen under the site's pinned header, so the field and every button show together
 function hdrCover(){var h=0;Array.prototype.forEach.call(document.querySelectorAll('header,#header,.header'),function(e){var st=getComputedStyle(e);if(st.position==='fixed'||st.position==='sticky'){var r=e.getBoundingClientRect();if(r.top<=1&&r.bottom>h)h=r.bottom;}});return Math.min(h,innerHeight*.3);}
 function fitStage(){var stg=cv.parentNode,top=stg.parentNode,pan=$('ctl'),R=cv.width/cv.height;stg.style.width='100%';var full=stg.clientWidth;if(!full)return;
-  var other=(top.offsetHeight-stg.offsetHeight)+pan.offsetHeight+20,room=innerHeight-hdrCover()-other-16;
+  var lw=$('lootwin'),other=(top.offsetHeight-stg.offsetHeight)+pan.offsetHeight+20+(lw&&!lw.hidden?lw.offsetHeight+20:0),room=innerHeight-hdrCover()-other-16;
   stg.style.width=Math.round(Math.min(full,Math.max(Math.min(full,innerWidth<=760?240:300),room*R)))+'px';}
 var fitT=0;window.addEventListener('resize',function(){clearTimeout(fitT);fitT=setTimeout(fitStage,120);});setTimeout(fitStage,0);window.addEventListener('load',fitStage);
 // small line icons for the buttons (his art where there is some: missile, burst, atomic bomb, shield bubble)
@@ -900,11 +992,13 @@ KEYS.forEach(function(k,i){var T=ALLY[k],c=document.createElement('div'),b=docum
   b.innerHTML='<span class="ic">'+ico(k)+'</span><span class="nm">'+T.name+'</span><span class="cost">'+T.cost+'</span><span class="badge lv"></span><span class="badge sp"></span><span class="cd"></span>';
   b.addEventListener('click',function(){if(act==='train'){train(k);setAct('send');}else if(act==='shield'){shieldUp(k);setAct('send');}else deploy(k);});t.addEventListener('click',function(){train(k);});
   var m=document.createElement('div');m.className='mini';m.appendChild(t);m.appendChild(sb);
-  c.appendChild(b);c.appendChild(m);dEl.appendChild(c);});
+  c.appendChild(b);c.appendChild(m);c.appendChild(autoBox('f:'+k,'send a '+T.name));dEl.appendChild(c);});
 UPS.forEach(function(u){var b=document.createElement('button');b.type='button';b.className='b up';b.dataset.k=u.k;b.title=u.name+': '+u.what;
-  var ic=ico(u.k,'ic');
+  var ic=u.k==='izzy'?'<img class="ic izzyic" src="https://africhmaurice.github.io/site/assets/games/141-goma-yellow.webp" alt="">':ico(u.k,'ic');
   b.innerHTML=ic+'<strong class="nm">'+(u.short||u.name)+'</strong><span class="rank"></span><span class="cost"></span><span class="badge lv"></span><span class="cd"></span>';
-  b.addEventListener('click',function(){buy(u);});uEl.appendChild(b);});
+  if(u.use)b.insertAdjacentHTML('beforeend','<span class="badge use" title="One-time: goes to your item bar, used up when you tap it">×1</span>');
+  b.addEventListener('click',function(){if(tact==='up'){powerUp(u);setTact('buy');}else buy(u);});
+  var cu=document.createElement('div');cu.className='cell';cu.dataset.k=u.k;cu.appendChild(b);cu.appendChild(autoBox('u:'+u.k,'buy '+(u.short||u.name)));uEl.appendChild(cu);});
 // each fighter's picture on its button, from the same drawings the field uses
 var iconsDone=false;
 function drawIcons(){return;  // fighter buttons now use his icons (ico); the old sprite pictures are kept below, unused
@@ -913,12 +1007,17 @@ function drawIcons(){return;  // fighter buttons now use his icons (ico); the ol
     var sc=Math.min(76/f[3],64/f[2]);g.save();g.translate(40,84);g.scale(-sc,sc);
     if(T.aura){g.shadowColor=AURA[T.aura];g.shadowBlur=14;}
     g.drawImage(art,f[0],f[1],f[2],f[3],-f[2]/2,-f[3],f[2],f[3]);g.restore();});}
+var INV_KEYS=['air','izzy','shield','repair'],INV_NAME={air:'Airstrike',izzy:'Izzy Pop',shield:'Shield',repair:'Repair'};
+(function(){var bar=$('inv');INV_KEYS.forEach(function(k){var b=document.createElement('button');b.type='button';b.className='it';b.dataset.k=k;b.hidden=true;
+  b.innerHTML=(k==='izzy'?'<img class="iti" src="https://africhmaurice.github.io/site/assets/games/141-goma-yellow.webp" alt="">':ico(k,'iti'))+'<span class="itn"></span><span class="itc"></span>';
+  b.addEventListener('click',function(e){e.stopPropagation();useItem(k);});['pointerdown','touchstart','mousedown'].forEach(function(ev){b.addEventListener(ev,function(e){e.stopPropagation();},{passive:true});});
+  bar.appendChild(b);});})();
 function ui(){
   $('hWave').textContent=G.wave;$('hScore').textContent=Math.floor(G.score).toLocaleString('en-US');
   $('hCoins').textContent=Math.floor(G.coins);$('hBest').textContent=best.toLocaleString('en-US');
   var wl=$('hWall');wl.textContent=Math.ceil(G.wall)+' / '+G.wallMax;wl.className=G.wall/G.wallMax>.35?'':'low';
   var cl=$('hCan');cl.textContent=G.can>0?Math.ceil(G.can)+' / '+G.canMax:'Destroyed';cl.className=G.can/G.canMax>.35?'':'low';
-  $('hShWrap').hidden=!(G.shield>0);$('hSh').textContent=Math.ceil(G.shield)+' / '+SHIELD_HP;
+  $('hShWrap').hidden=!(G.shield>0);$('hSh').textContent=Math.ceil(G.shield)+' / '+(G.shieldMax||SHIELD_HP);
   $('hLeftWrap').hidden=!(G.running&&oracleUp());
   $('hLeft').textContent=G.between&&!G.over?waveSize(G.wave)+bossesFor(G.wave).length:G.queue.length+G.units.filter(function(u){return u.side===-1&&!u.dead;}).length;
   Array.prototype.forEach.call(dEl.children,function(c){var k=c.dataset.k,T=ALLY[k],cd=G.cool[k]||0,b=c.children[0],t=c.children[1].children[0],sb=c.children[1].children[1],L=lvl(k),S=shLvl(k);
@@ -926,36 +1025,44 @@ function ui(){
     sb.innerHTML=ico('fshield','mi')+(S>=SHIELD_MAX?'Max':kfmt(shCost(k)));sb.disabled=!canShield(k);
     sb.title=S>=SHIELD_MAX?T.name+' shield is maxed':'Shield '+(S+1)+' for '+T.name+': new ones arrive with a shield of '+(25*(S+1))+'% of their health ('+shCost(k).toLocaleString('en-US')+' credits)';
     sb.setAttribute('aria-label',sb.title);
-    b.disabled=!G.running||G.over||G.coins<T.cost||cd>0;b.querySelector('.cd').style.width=(cd>0?100*cd/T.cool:0)+'%';
+    b.disabled=!G.running||G.over||G.coins<fCost(k)||cd>0;b.querySelector('.cd').style.width=(cd>0?100*cd/T.cool:0)+'%';
     b.querySelector('.lv').textContent=L>1?'L'+L:'';
-    b.setAttribute('aria-label','Send out a '+T.name+', '+T.cost+' credits'+(L>1?', level '+L:'')+(S?', shield '+S:''));
+    b.setAttribute('aria-label','Send out a '+T.name+', '+fCost(k)+' credits'+(L>1?', level '+L:'')+(S?', shield '+S:''));
     t.innerHTML=ico('train','mi')+(L>=TRAIN_MAX?'Max':kfmt(trainCost(k)));t.disabled=!canTrain(k);
-    t.title=L>=TRAIN_MAX?T.name+' is at the top level':'Train '+T.name+' to level '+(L+1)+': +25% health, speed, and damage ('+trainCost(k).toLocaleString('en-US')+' credits)';
+    t.title=L>=TRAIN_MAX?T.name+' is at the top level':'Train '+T.name+' to level '+(L+1)+': +25% health, speed, and damage, and 25% dearer to send out ('+trainCost(k).toLocaleString('en-US')+' credits)';
     t.setAttribute('aria-label',t.title);
     if(act!=='send'){var trn=act==='train',mx=trn?L>=TRAIN_MAX:S>=SHIELD_MAX;b.querySelector('.cost').textContent=mx?'Max':kfmt(trn?trainCost(k):shCost(k));b.disabled=trn?!canTrain(k):!canShield(k);b.setAttribute('aria-label',(trn?t:sb).title);}
-    else b.querySelector('.cost').textContent=T.cost;});
+    else b.querySelector('.cost').textContent=kfmt(fCost(k));});
   drawIcons();
-  Array.prototype.forEach.call(uEl.children,function(b){var u=UPS.filter(function(x){return x.k===b.dataset.k;})[0],c=upCost(u),maxed=G.up[u.k]>=u.max;
+  Array.prototype.forEach.call($('inv').children,function(b){var k=b.dataset.k,n=G.inv?G.inv[k]:0,cd=k==='air'?G.airCool/25:k==='izzy'?G.izzyCool/15:0;
+    b.hidden=!n;b.disabled=!canUse(k);b.querySelector('.itn').textContent='×'+n;b.querySelector('.itc').style.height=(cd>0?100*cd:0)+'%';
+    var why=G.over?'':k==='shield'&&G.shield>0?' (shield is up)':k==='repair'&&repairWhat()===''?' (nothing to repair)':(k==='air'||k==='izzy')&&!G.running?' (during a wave)':cd>0?' (recharging)':'';
+    b.title=INV_NAME[k]+': use one ('+n+' left)'+why;b.setAttribute('aria-label',b.title);});
+  Array.prototype.forEach.call(uEl.querySelectorAll('.b'),function(b){var u=UPS.filter(function(x){return x.k===b.dataset.k;})[0],c=upCost(u),maxed=G.up[u.k]>=u.max;
     var rw=u.k==='repair'?repairWhat():null;
-    b.querySelector('.lv').textContent=u.max>1&&u.max<99&&G.up[u.k]?'L'+G.up[u.k]:'';
-    b.querySelector('.cd').style.width=u.k==='air'&&G.airCool>0?(100*G.airCool/u.cool)+'%':'0';
+    b.querySelector('.lv').textContent=u.use?(pw(u.k)?'L'+(pw(u.k)+1):''):u.max>1&&u.max<99&&G.up[u.k]?'L'+G.up[u.k]:'';
+    b.querySelector('.cd').style.width='0';
     if(u.k==='repair')b.querySelector('strong').textContent=rw==='rebuild'?'Rebuild':'Repair';
-    if(u.k==='air'){b.querySelector('.rank').textContent=G.ship?'Incoming':G.airCool>0?'Ready in '+Math.ceil(G.airCool)+' s':G.running?'Ready':'During a wave';}
+    if(u.use){b.querySelector('.rank').textContent='You have '+G.inv[u.k];}
+    else if(u.k==='air'){b.querySelector('.rank').textContent=G.ship?'Incoming':G.airCool>0?'Ready in '+Math.ceil(G.airCool)+' s':G.running?'Ready':'During a wave';}
     else if(u.k==='dbl'||u.k==='tri'){b.querySelector('.rank').textContent=maxed?'Fitted':u.need&&!G.up[u.need]?'Needs the double barrel':'Not fitted';}
-    else if(u.k==='shield'){b.querySelector('.rank').textContent=G.shield>0?'Up: '+Math.ceil(G.shield)+' of '+SHIELD_HP:'Down';}
+    else if(u.k==='shield'){b.querySelector('.rank').textContent=G.shield>0?'Up: '+Math.ceil(G.shield)+' of '+(G.shieldMax||SHIELD_HP):'Down';}
     else if(u.k==='gren'){b.querySelector('.rank').textContent=G.up.gren?'Level '+G.up.gren+(maxed?' (max)':''):'Not fitted';}
     else b.querySelector('.rank').textContent=u.k==='repair'?(rw==='rebuild'?'The cannon is down':rw==='cannon'?'Cannon '+Math.ceil(G.can)+' of '+G.canMax:'Tower '+Math.ceil(G.wall)+' of '+G.wallMax):'Level '+(G.up[u.k]+1)+(maxed?' (max)':'');
     var locked=u.need&&!G.up[u.need];
     if(locked)b.querySelector('.rank').textContent='Unlocks after '+UPS.filter(function(x){return x.k===u.need;})[0].name.toLowerCase();
     b.querySelector('.lv').innerHTML=locked?svg('lock','',12):b.querySelector('.lv').textContent;b.classList.toggle('locked',!!locked);
-    b.querySelector('.cost').textContent=u.k==='shield'&&G.shield>0?'Up':maxed?(u.max===1?'Fitted':'Max'):kfmt(c);
-    b.setAttribute('aria-label',b.querySelector('strong').textContent+': '+b.querySelector('.cost').textContent+(maxed||u.k==='shield'&&G.shield>0?'':' credits')+'. '+b.querySelector('.rank').textContent);
-    b.disabled=!canBuy(u);});
+    b.querySelector('.cost').textContent=u.use?(G.inv[u.k]>=INV_MAX?'Full':kfmt(c)):maxed?(u.max===1?'Fitted':'Max'):kfmt(c);
+    b.setAttribute('aria-label',b.querySelector('strong').textContent+': '+b.querySelector('.cost').textContent+(u.use?' credits. You have '+G.inv[u.k]:maxed?'':' credits')+'. '+b.querySelector('.rank').textContent);
+    b.disabled=!canBuy(u);
+    if(tact==='up'){b.querySelector('.cost').textContent=!u.use?'':pw(u.k)>=PW_MAX?'Max':kfmt(pwCost(u));b.disabled=!canPower(u);b.classList.toggle('noup',!u.use);
+      b.setAttribute('aria-label','Upgrade '+b.querySelector('strong').textContent+(u.use?' to level '+(pw(u.k)+2)+': 25% stronger, '+kfmt(pwCost(u))+' credits':': not a one-time item'));}
+    else b.classList.remove('noup');});
 }
 $('oGo').addEventListener('click',function(){if(G.over){newGame();}startWave();
   fitStage();var tp=SEC.querySelector('.top').getBoundingClientRect().top-hdrCover()-8;if(Math.abs(tp)>4)scrollBy(0,tp);});
 $('pause').addEventListener('click',function(){if(!G.running)return;G.paused=!G.paused;$('pause').textContent=G.paused?'Resume':'Pause';});
-$('restart').addEventListener('click',function(){newGame();$('pause').textContent='Pause';showOver('Hold the Wall!','Tap or drag on the field to fire the cannon. Kills earn credits: spend them on fighters, training, and tower upgrades. The cannon takes hits first, then the tower.','Start wave 1');ui();});
+$('restart').addEventListener('click',function(){newGame();$('pause').textContent='Pause';showOver('Hold the Wall!','The cannon fires on its own: tap or drag on the field to aim it. Kills earn credits: spend them on fighters, training, and tower upgrades. The cannon takes hits first, then the tower.','Start wave 1');ui();});
 document.addEventListener('keydown',function(e){var t=e.target&&e.target.tagName;if(t==='INPUT'||t==='SELECT'||t==='TEXTAREA')return;
   if(e.key==='p'||e.key==='P'||e.key==='Escape'){if(G.running){G.paused=!G.paused;$('pause').textContent=G.paused?'Resume':'Pause';}return;}
   var n=e.key==='0'?10:+e.key;if(n>=1&&n<=KEYS.length)deploy(KEYS[n-1]);});
@@ -1081,3 +1188,28 @@ if(/[?&]test=1/.test(location.search))window.__ss={G:function(){return G;},deplo
   window.HWBoard={start:start,end:end,refresh:refreshBoard};
 })();
 </script>
+
+<script>/* PARALLAX FIXED (Maurice, 2026-10-16; Hold the Wall! 11/2): a library picture pinned to the screen behind the game while the page scrolls over it */(function(){
+  var r=document.getElementById('ma-holdwall');if(!r||r.querySelector('.ma-plx'))return;
+  var dir=(window.innerWidth||1400)<=900?'m/':'d/';
+  if(getComputedStyle(r).position==='static')r.style.position='relative';r.style.isolation='isolate';/* the picture sits under everything in the game, even parts added later (the export card) */
+  Array.prototype.forEach.call(r.children,function(c){var cs=getComputedStyle(c);if(cs.position==='static'){c.style.position='relative';}if(!cs.zIndex||cs.zIndex==='auto')c.style.zIndex='1';});
+  var w=document.createElement('div');w.className='ma-plx';w.setAttribute('aria-hidden','true');
+  w.style.cssText='position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none';
+  var im=document.createElement('div');im.style.cssText='position:absolute;left:0;right:0;top:0;background:url(https://africhmaurice.github.io/site/assets/bg/'+dir+'red-sun-ruins-as360866146.webp) center/cover no-repeat;will-change:transform';
+  var wash=document.createElement('div');wash.style.cssText='position:absolute;inset:0;background:linear-gradient(rgba(11,23,15,.72),rgba(11,23,15,.84))';
+  w.appendChild(im);w.appendChild(wash);r.insertBefore(w,r.firstChild);
+  // best way: the picture is position:fixed (pinned to the screen by the browser itself, no stutter) and the section's
+  // clip-path keeps it inside the game. That only works when nothing above the game has a transform or filter, so check.
+  var el=r,clean=true;while(el&&el!==document.documentElement){var st=getComputedStyle(el);if(st.transform!=='none'||st.filter!=='none'||st.perspective!=='none'||/transform|filter|perspective/.test(st.willChange)||/paint|layout|strict|content/.test(st.contain||'')){clean=false;break;}el=el.parentElement;}
+  if(clean){w.style.clipPath='inset(0)';w.style.webkitClipPath='inset(0)';w.style.overflow='visible';
+    im.style.cssText+=';position:fixed;top:0;bottom:auto;height:100vh;height:100lvh;will-change:auto';return;}
+  // fallback: the picture is one screen tall (the tallest the phone screen gets, so it never shows a gap when the address bar
+  // hides) and slides down exactly as far as the page scrolls past the game's top, so it holds still on screen
+  var H=0;
+  function size(){H=Math.max(window.innerHeight||800,document.documentElement.clientHeight||0,window.visualViewport?Math.round(visualViewport.height):0);H=Math.min(H,r.offsetHeight||H);im.style.height=H+'px';}
+  function move(){var y=Math.max(0,Math.min((r.offsetHeight||H)-H,-r.getBoundingClientRect().top));im.style.transform='translate3d(0,'+y.toFixed(1)+'px,0)';}
+  window.addEventListener('scroll',move,{passive:true});
+  window.addEventListener('resize',function(){size();move();});
+  size();move();setTimeout(function(){size();move();},800);
+})();</script>
