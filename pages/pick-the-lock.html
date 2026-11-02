@@ -1,0 +1,343 @@
+<!-- ============================================================
+     PICK THE LOCK - hidden page for loot box 142 (Box 150 batch). Lives at /pick-the-lock.
+     Linked from an Act Three riddle card (clue "Pick the Lock").
+     Rebuilt 10/26 as a gear puzzle (Maurice: "I pictured this more like a game where you have to place the gears in the
+     right order to make them spin").
+     How it plays (v2, 11/1: Maurice asked for decoy pegs, gears that fit but don't work, routes that almost work until
+     the last link, and gears half the old size): a chest's lock plate. On the left, the crank gear (ember), which starts
+     turning the moment the player touches the lock and never stops. On the right, the bolt gear (emerald), which drives a
+     toothed bolt up through the chest's hasp. Between them are 25 pegs, and below the plate a tray of 16 loose gears
+     (8 to 20 teeth). Drag a gear onto a peg and it snaps on; drag it off to put it back.
+     Gears whose pitch circles touch mesh and turn, each the opposite way to its neighbor. A gear a little too
+     small to reach its neighbor gives no warning: it simply never turns. A gear too big for its spot (it
+     overlaps a neighbor), or a loop forced to turn the same way, jams: jammed gears shake and go red.
+     The bolt only slides one way, so the bolt gear has to turn the same way as the crank.
+     Only one route works. Many pegs are decoys, several gears fit somewhere but lead nowhere, some routes reach the bolt
+     gear turning the wrong way, and some run out one link short. The layout was built and checked by a solver kept with
+     the drafts (not in this page), which confirms the single route.
+     Win: the bolt slides out of the hasp and loot box 142 drops in; clicking it opens the claim link.
+     POINTS (11/2): opening the lock pays 100 points ONCE (web app picklockstart on the first touch, picklocksolve on the
+       win; one row per hunter in 'Pick Lock Solves'). The player is the hunt's saved player (thLoot:me); if there is
+       none, a small form under the win line asks for a first name and the hunt email. DRAFT words: "+100 points for
+       opening the lock.", "Get your 100 points for opening the lock:", "First name", "Email you use for the hunt",
+       "Get my 100 points", "You already got your 100 points for this lock.", "That email doesn't look right.",
+       "Sending...", "The hunt didn't answer. Tap the button again in a moment.".
+     "Restart" puts every gear back in the tray. Keyboard: Left and Right pick a peg, Up and Down change its gear.
+     On phones the plate turns on its side (crank at the top).
+     Art (v2): his "stuff for the gears puzzle.png" cut to 142-handle (crank handle, tinted parchment), 142-peg (each peg),
+     142-rack (the bolt, teeth toward the bolt gear; parchment, scarlet when it strains), 142-rail (the two rails of the
+     spring housing under the bolt), and 142-spring1..6 (his springs from squeezed to stretched: the spring is drawn at its
+     current length with the nearest drawing). 142-circle2 and 142-circle3 are cut but not used yet.
+     Art: the gears are Maurice's drawings (Downloads/Gears.png, 10/26: three solid black gears with round holes).
+       Each was cut out, trimmed square around its hole, and saved as assets/games/142-gear-large.webp (400 px),
+       142-gear-medium.webp (340 px), and 142-gear-small.webp (256 px). They are one drawing at three sizes (19 teeth each).
+       Every gear on the page is one of them, scaled so the middle of its teeth sits on the gear's pitch circle:
+       20, 18, and 16 teeth use the large one, 14 and 12 (and the crank and bolt gears) the medium one, 10 and 8 the small one.
+       They turn by rotating the drawing. So the black reads on the teal plate, each gear gets a thin rim drawn behind it:
+       parchment for loose gears, ember for the crank gear, emerald for the bolt gear, and scarlet (with the gear tinted
+       scarlet, shaking) for a jammed gear or a bolt gear turning the wrong way. Rims are drawn first and gears second,
+       so meshing teeth merge into one black shape instead of overlapping. If the drawings fail to load, the old
+       canvas-drawn gears stand in. Still drawn on the canvas in brand colors: the lock plate (dark teal backplate with
+       rivets and 4 pegs), the crank handle, the axle caps, the toothed bolt, and the hasp.
+       Gear size rule: pitch radius = teeth / 4 units (one unit is 1/30 of the plate width). The game's tooth counts
+       (8 to 20) set the gear sizes and turning speeds; the drawings all show 19 teeth.
+     DRAFT (all words on this page are new, for Maurice to approve):
+       heading "Pick the Lock"; line "Drag gears onto the pegs to link the crank to the bolt gear. The bolt only slides one way, and
+       not every peg or gear belongs.";
+       label "Pegs"; button "Restart"; status lines "Jammed. That gear crowds its neighbor.",
+       "Jammed. Those gears are fighting each other.", "Wrong way. That turn drives the bolt in deeper.",
+       "The bolt slides back..."; win line "The lock opens. Box 142 is yours.".
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+#ma-lock{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;overflow-x:hidden;
+  padding:clamp(120px,14vh,160px) 20px 80px;background-color:#0b170f;background-image:radial-gradient(ellipse at 50% 0%,rgba(72,45,133,.55) 0%,rgba(11,23,15,0) 60%),linear-gradient(rgba(11,23,15,0.76),rgba(11,23,15,0.76)),url(https://africhmaurice.github.io/site/assets/bg/d/gyroscope-foundry-as401944302.webp);background-position:center;background-size:cover;background-repeat:no-repeat;background-attachment:scroll;
+  color:#f3ead9;font-family:'Almarai',sans-serif;text-align:center}
+#ma-lock *{box-sizing:border-box;border-radius:0}
+@media (max-width:900px){#ma-lock{background-image:radial-gradient(ellipse at 50% 0%,rgba(72,45,133,.55) 0%,rgba(11,23,15,0) 60%),linear-gradient(rgba(11,23,15,0.76),rgba(11,23,15,0.76)),url(https://africhmaurice.github.io/site/assets/bg/m/gyroscope-foundry-as401944302.webp)}}
+#ma-lock [hidden]{display:none!important}
+#ma-lock .pl-wrap{max-width:920px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
+#ma-lock h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(38px,6vw,68px);line-height:1.2;letter-spacing:.04em;color:#fffffe;text-transform:uppercase}
+#ma-lock .pl-lede{margin:0;font-weight:700;font-size:clamp(16px,1.8vw,19px);line-height:1.5;max-width:600px}
+#ma-lock .pl-bar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 24px;font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+#ma-lock .pl-bar b{color:#c3a6ff;font-weight:800}
+#ma-lock .pl-btn{margin:0;padding:10px 18px;border:1px solid rgba(243,234,217,.45);background:none;color:#f3ead9;font:800 13px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-lock .pl-btn:hover,#ma-lock .pl-btn:focus-visible{border-color:#c3a6ff;color:#c3a6ff;outline:none}
+#ma-lock .pl-stage{width:100%;max-width:800px;border:2px solid #f3ead9;background:#0b170f;line-height:0}
+#ma-lock canvas{display:block;width:100%;height:auto;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#ma-lock canvas:focus-visible{outline:3px solid #c3a6ff;outline-offset:3px}
+#ma-lock .pl-msg{margin:0;min-height:24px;font-weight:700;font-size:16px;line-height:1.5;color:#c3a6ff}
+#ma-lock .pl-win{display:flex;flex-direction:column;align-items:center;gap:20px;margin-top:8px}
+#ma-lock .pl-win p{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.25;letter-spacing:.04em;color:#89fbcb;text-transform:uppercase}
+#ma-lock .pl-pts{margin:0;font-weight:800;font-size:15px;line-height:1.5;color:#f3ead9}
+#ma-lock .pl-win p.pl-pts{font:800 15px/1.5 'Almarai',sans-serif;letter-spacing:0;text-transform:none;color:#f3ead9}
+#ma-lock .pl-who{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:420px}
+#ma-lock .pl-who input{width:100%;margin:0;padding:12px 14px;border:1px solid rgba(243,234,217,.45);background:#0b170f;color:#f3ead9;font:700 15px/1.3 'Almarai',sans-serif;border-radius:0}
+#ma-lock .pl-who input:focus-visible{outline:2px solid #89fbcb;outline-offset:2px}
+#ma-lock .pl-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(58vw,280px);animation:plDrop .6s cubic-bezier(.25,1.5,.45,1) both}
+#ma-lock .pl-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 34px rgba(195,166,255,.55))}
+#ma-lock .pl-box:hover img,#ma-lock .pl-box:focus-visible img{filter:drop-shadow(0 0 44px rgba(195,166,255,.8))}
+#ma-lock .pl-box:focus-visible{outline:3px solid #c3a6ff;outline-offset:8px}
+@keyframes plDrop{from{opacity:0;transform:translateY(-40px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#ma-lock .pl-box{animation:none}}
+</style>
+<section id="ma-lock" aria-label="Pick the Lock">
+  <div class="pl-wrap">
+    <h1>Pick the Lock</h1>
+    <p class="pl-lede">Drag gears onto the pegs to link the crank to the bolt gear. The bolt only slides one way, and not every peg or gear belongs.</p>
+    <div class="pl-bar"><span>Pegs <b class="pl-count">0/25</b></span><button class="pl-btn pl-restart" type="button">Restart</button></div>
+    <div class="pl-stage"><canvas tabindex="0" aria-label="The lock plate and a tray of gears. Drag a gear onto a peg, or use Left and Right to pick a peg and Up and Down to change its gear."></canvas></div>
+    <p class="pl-msg" role="status"></p>
+    <div class="pl-win" hidden>
+      <p>The lock opens. Box 142 is yours.</p>
+      <p class="pl-pts" aria-live="polite"></p>
+      <form class="pl-who" hidden><label class="pl-pts" for="pl-first">Get your 100 points for opening the lock:</label><input id="pl-first" autocomplete="given-name" placeholder="First name" aria-label="First name"><input id="pl-email" type="email" autocomplete="email" placeholder="Email you use for the hunt" aria-label="Email you use for the hunt"><button class="pl-btn" type="submit">Get my 100 points</button></form>
+      <button class="pl-box" type="button" aria-label="Open loot box 142"><img src="https://africhmaurice.github.io/site/assets/loot/142.png" alt="Loot box 142"></button>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var d=document.getElementById('ma-lock');if(!d)return;
+  var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+
+  var K='UjU4R0ZRWE49Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+
+  var cv=d.querySelector('canvas'),cx=cv.getContext('2d'),msg=d.querySelector('.pl-msg'),countEl=d.querySelector('.pl-count'),win=d.querySelector('.pl-win');
+  var INK='#0b170f',PARCH='#f3ead9',EMBER='#ff4c0f',SCAR='#c1330a',EM='#89fbcb',TEAL='#0f5c4d',LIL='#c3a6ff',VIO='#482d85';
+  /* the plate, in units (30 x 16). A gear with pitch radius r has 4r teeth; gears mesh when the distance between
+     pegs equals the sum of their pitch radii (within TOL); closer than that, or teeth within CLR, is a jam. */
+  var TOL=.1,CLR=.5,ADD=.21,DED=.25,OMEGA=1.15,TRAVEL=3,TP=Math.PI*2;
+  var DRV={x:3,y:8,r:1.5},OUT={x:26.488,y:6.478,r:1.5};
+  var PEGS=[{"x":5.989,"y":8.256},{"x":8.701,"y":6.465},{"x":11.472,"y":4.766},{"x":14.763,"y":5.957},{"x":17.765,"y":4.713},{"x":19.975,"y":4.288},{"x":22.778,"y":5.932},{"x":19.788,"y":6.182},{"x":22.679,"y":8.377},{"x":18.492,"y":7.405},{"x":20.894,"y":9.593},{"x":24.263,"y":9.784},{"x":19.856,"y":2.562},{"x":23.296,"y":4.056},{"x":17.176,"y":2.766},{"x":21.379,"y":3.393},{"x":25.275,"y":3.136},{"x":17.677,"y":9.386},{"x":22.559,"y":10.465},{"x":26.043,"y":9.511},{"x":10.901,"y":7.2},{"x":4.703,"y":10.768},{"x":6.698,"y":10.913},{"x":11.261,"y":9.857},{"x":15.387,"y":10.161}];
+  var SIZES=[2,1,2.25,1.5,1,2.5,1.25,1.75,2,1.5,1,2.25,1.75,1.25,1.5,2];   /* tray order (16 gears) */
+  var TS=.5,W,H,u,ox,oy,narrow,ROT,trayY,trayH,dpr;
+  var gears=null,thD=0,thO=0,thOw=0,started=false,st='idle',res,boltOff=0,won=false,winT=0,clock=0,last=0,drag=null,hover=-1,sel=0,kbd=false,shown='';
+
+  function layout(){
+    narrow=(d.querySelector('.pl-stage').clientWidth||900)<640;
+    if(!narrow){W=900;u=W/31.2;ox=.6*u;oy=3.6*u;ROT=0;trayY=oy+17.4*u;}
+    else{W=540;u=W/21;ox=17.3*u;oy=.6*u;ROT=Math.PI/2;trayY=oy+31.0*u;}
+    /* tray slots: one row on desktop, two on phones, gears at half size */
+    var s=narrow?.55:.8,gap=(narrow?.35:.5)*u,maxW=W-1.6*u,rows=[[]],rw=0;   /* tray: rows of gears at 80% size (55% on phones, so the whole lock fits on one screen) */
+    SIZES.forEach(function(r,i){var w=(2*r+1)*s*u;if(rw&&rw+gap+w>maxW){rows.push([]);rw=0;}rows[rows.length-1].push(i);rw+=(rw?gap:0)+w;});
+    var rh=6*s*u,y=trayY+.6*u;
+    if(!gears)gears=SIZES.map(function(r,i){return {i:i,r:r,n:Math.round(r*8),peg:-1,th:i*.7,sx:0,sy:0};});
+    rows.forEach(function(row){
+      var tw=row.reduce(function(a,i){return a+(2*SIZES[i]+1)*s*u;},0)+gap*(row.length-1),x=(W-tw)/2;
+      row.forEach(function(i){var w=(2*SIZES[i]+1)*s*u;gears[i].sx=x+w/2;gears[i].sy=y+rh/2;x+=w+gap;});y+=rh+.5*u;
+    });
+    trayH=y-trayY+.1*u;TS=s;H=Math.round(trayY+trayH+.6*u);
+    dpr=Math.min(window.devicePixelRatio||1,2);cv.width=W*dpr;cv.height=H*dpr;
+  }
+  function S(x,y){return ROT?{x:ox-y*u,y:oy+x*u}:{x:ox+x*u,y:oy+y*u};}  /* plate units to canvas px */
+  function say(t){if(shown!==t){shown=t;msg.textContent=t;}}
+
+  /* --- the gear train: who meshes, who jams, which way everything turns --- */
+  function evaluate(){
+    var it=[{x:DRV.x,y:DRV.y,r:DRV.r,g:null},{x:OUT.x,y:OUT.y,r:OUT.r,g:null}],adj=[],bad={},i,j,conflict=false;
+    gears.forEach(function(g){if(g.peg>=0)it.push({x:PEGS[g.peg].x,y:PEGS[g.peg].y,r:g.r,g:g});});
+    var n=it.length;for(i=0;i<n;i++)adj.push([]);
+    for(i=0;i<n;i++)for(j=i+1;j<n;j++){var dd=Math.hypot(it[i].x-it[j].x,it[i].y-it[j].y),s=it[i].r+it[j].r;
+      if(dd<s-TOL){bad[i]=bad[j]=1;}   /* only a gear too big for its spot jams (Maurice 11/2); one too small just never turns */else if(dd<=s+TOL){adj[i].push(j);adj[j].push(i);}}
+    var dir=[];for(i=0;i<n;i++)dir.push(0);dir[0]=1;var q=[0],comp=[0];
+    while(q.length){var a=q.shift();adj[a].forEach(function(b){if(!dir[b]){dir[b]=-dir[a];q.push(b);comp.push(b);}else if(dir[b]===dir[a])conflict=true;});}
+    if(conflict)comp.forEach(function(c){bad[c]=1;});
+    res={it:it,adj:adj,dir:dir,bad:bad,conflict:conflict};
+    st=Object.keys(bad).length?'jam':!dir[1]?'idle':dir[1]===1?'win':'wrong';
+  }
+  function setAngles(t0){
+    /* every connected group lines its teeth up from a root: the crank first, then any loose group */
+    var it=res.it,n=it.length,seen=[],i;
+    it[0].th=t0;it[1].th=thO;it.forEach(function(o){if(o.g)o.th=o.g.th;});
+    for(i=0;i<n;i++){if(seen[i])continue;seen[i]=1;var q=[i];
+      while(q.length){var a=q.shift();res.adj[a].forEach(function(b){if(seen[b])return;seen[b]=1;
+        var A=it[a],B=it[b],phi=Math.atan2(B.y-A.y,B.x-A.x),na=Math.round(A.r*8),nb=Math.round(B.r*8);
+        var fa=(phi-A.th)*na/TP;B.th=phi+Math.PI-(.5-fa)*TP/nb;q.push(b);});}
+    }
+    it.forEach(function(o){if(o.g)o.g.th=o.th;});thO=it[1].th;
+  }
+
+  function restart(){
+    gears=null;layout();thD=0;thO=0;boltOff=0;won=false;winT=0;drag=null;hover=-1;win.hidden=true;evaluate();setAngles(0);say('');count();
+  }
+  function count(){countEl.textContent=gears.filter(function(g){return g.peg>=0;}).length+'/'+PEGS.length;}
+  function changed(){evaluate();count();
+    if(st==='jam')say(res.conflict?'Jammed. Those gears are fighting each other.':'Jammed. That gear crowds its neighbor.');
+    else if(st==='wrong')say('Wrong way. That turn drives the bolt in deeper.');
+    else if(st==='win'){say('The bolt slides back...');won=true;winT=0;started=true;setAngles(thD);thOw=thO;}
+    else say('');
+  }
+
+  function step(dt){
+    clock+=dt;var jig=0;
+    if(won){if(boltOff<TRAVEL)thD+=OMEGA*dt;else winT+=dt;}
+    else if(st==='jam'||st==='wrong'){if(started)jig=Math.sin(clock*38)*.035;}
+    else if(started)thD+=OMEGA*dt;
+    setAngles(thD+jig);
+    if(won&&boltOff<TRAVEL){boltOff=Math.min(TRAVEL,(thO-thOw)*OUT.r);
+      if(boltOff>=TRAVEL)setTimeout(function(){win.hidden=false;plWon();say('');win.scrollIntoView({behavior:'smooth',block:'center'});},900);}
+  }
+
+  /* --- drawing --- */
+  function gearPath(R,n,th){var p=TP/n,tip=R+ADD*u,root=R-DED*u;cx.beginPath();
+    for(var k=0;k<n;k++){var c=th+k*p;
+      cx.arc(0,0,root,c-.5*p,c-.28*p);cx.lineTo(Math.cos(c-.15*p)*tip,Math.sin(c-.15*p)*tip);cx.lineTo(Math.cos(c+.15*p)*tip,Math.sin(c+.15*p)*tip);cx.arc(0,0,root,c+.28*p,c+.5*p);}
+    cx.closePath();}
+  /* Maurice's gear drawings: one black sprite per size, plus rim and jam tints made once they load */
+  var ART='https://africhmaurice.github.io/site/assets/games/142-gear-',PF=.895,SPR={},RIMC={plain:PARCH,crank:EMBER,bolt:EM,bad:SCAR};
+  function tint(im,c){var t=document.createElement('canvas');t.width=im.naturalWidth;t.height=im.naturalHeight;var x=t.getContext('2d');
+    x.drawImage(im,0,0);x.globalCompositeOperation='source-in';x.fillStyle=c;x.fillRect(0,0,t.width,t.height);return t;}
+  ['large','medium','small'].forEach(function(k){var im=new Image();
+    im.onload=function(){var s={ink:im,rim:{}};for(var c in RIMC)s.rim[c]=tint(im,RIMC[c]);s.bad=tint(im,SCAR);SPR[k]=s;};im.src=ART+k+'.webp';});
+  var PC={};['handle','peg','rack','rail','spring1','spring2','spring3','spring4','spring5','spring6'].forEach(function(k){var im=new Image();
+    im.onload=function(){PC[k]=im;if(k==='handle')PC.handleP=tint(im,PARCH);if(k==='rack'){PC.rackP=tint(im,PARCH);PC.rackS=tint(im,SCAR);}};im.src=ART.replace('142-gear-','142-')+k+'.png';});
+  /* draws a piece along the plate: its length runs down the plate (plate y), its top edge faces left (plate x0) */
+  function drawPU(im,x0,y0,w,h){var p=S(x0,y0),vy=S(x0,y0+1),vx=S(x0+1,y0),ky=h/im.width,kx=w/im.height;
+    cx.save();cx.transform((vy.x-p.x)*ky,(vy.y-p.y)*ky,(vx.x-p.x)*kx,(vx.y-p.y)*kx,p.x,p.y);cx.drawImage(im,0,0);cx.restore();}
+  function sprite(r){return SPR[r>=4?'large':r>=3?'medium':'small'];}
+  /* pass 0 draws the rim, pass 1 the gear itself; kind is plain, crank, bolt, or bad (jammed) */
+  function drawGear(x,y,r,th,kind,scale,crank,pass){
+    var sp=sprite(r);
+    if(!sp){if(pass)oldGear(x,y,r,th,RIMC[kind],scale,crank);return;}
+    var a=th+ROT,h=r*u/PF,o=u*.08/scale;
+    cx.save();cx.translate(x,y);if(scale!==1)cx.scale(scale,scale);cx.rotate(a);
+    if(!pass){var rim=sp.rim[kind];for(var k=0;k<12;k++){var b=k*TP/12;cx.drawImage(rim,-h+Math.cos(b)*o,-h+Math.sin(b)*o,2*h,2*h);}cx.restore();return;}
+    cx.drawImage(kind==='bad'?sp.bad:sp.ink,-h,-h,2*h,2*h);
+    cx.beginPath();cx.arc(0,0,u*.25,0,TP);cx.fillStyle=INK;cx.fill();
+    cx.beginPath();cx.arc(0,0,u*.1,0,TP);cx.fillStyle=LIL;cx.fill();
+    if(crank&&PC.handleP){var L=u*1.45,hw=L*PC.handleP.width/PC.handleP.height;cx.rotate(Math.PI/2);cx.drawImage(PC.handleP,-hw/2,-L,hw,L);}
+    else if(crank){cx.lineWidth=2/scale;cx.strokeStyle=INK;cx.fillStyle=VIO;cx.fillRect(-u*.13,-u*.13,u*1.3,u*.26);cx.strokeRect(-u*.13,-u*.13,u*1.3,u*.26);
+      cx.beginPath();cx.arc(u*1.2,0,u*.3,0,TP);cx.fillStyle=PARCH;cx.fill();cx.stroke();}
+    cx.restore();
+  }
+  function gearPair(list){[0,1].forEach(function(p){list.forEach(function(g){drawGear(g[0],g[1],g[2],g[3],g[4],g[5],g[6],p);});});}
+  /* the canvas-drawn stand-in, used only until the drawings load */
+  function oldGear(x,y,r,th,fill,scale,crank){
+    var Rr=r*u,n=Math.round(r*8),a=th+ROT;
+    cx.save();cx.translate(x,y);if(scale!==1)cx.scale(scale,scale);
+    gearPath(Rr,n,a);cx.fillStyle=fill;cx.fill();cx.lineWidth=2/scale;cx.strokeStyle=INK;cx.stroke();
+    /* lightening holes so the turning shows */
+    var holes=r>=3?5:r>=2.5?4:3;cx.fillStyle=INK;
+    for(var h=0;h<holes;h++){var b=a+h*TP/holes;cx.beginPath();cx.arc(Math.cos(b)*Rr*.52,Math.sin(b)*Rr*.52,Rr*.16,0,TP);cx.fill();}
+    cx.beginPath();cx.arc(0,0,u*.25,0,TP);cx.fillStyle=INK;cx.fill();
+    cx.beginPath();cx.arc(0,0,u*.1,0,TP);cx.fillStyle=LIL;cx.fill();
+    if(crank){cx.rotate(a);cx.fillStyle=VIO;cx.fillRect(-u*.13,-u*.13,u*1.3,u*.26);cx.strokeRect(-u*.13,-u*.13,u*1.3,u*.26);
+      cx.beginPath();cx.arc(u*1.2,0,u*.3,0,TP);cx.fillStyle=PARCH;cx.fill();cx.stroke();}
+    cx.restore();
+  }
+  function rect(x,y,w,h,c){var a=S(x,y),b=S(x+w,y+h);cx.fillStyle=c;cx.fillRect(Math.min(a.x,b.x),Math.min(a.y,b.y),Math.abs(b.x-a.x),Math.abs(b.y-a.y));}
+  function draw(){
+    cx.setTransform(dpr,0,0,dpr,0,0);cx.fillStyle=INK;cx.fillRect(0,0,W,H);
+    var shk=function(i){return res.bad[i]&&!drag?Math.sin(clock*55+i)*.09*u:0;};
+    var wrong=st==='wrong'&&!won,open=won&&boltOff>=TRAVEL;
+    /* hasp on the lid, above the plate; it fades once the bolt is out */
+    var lift=0;cx.globalAlpha=open?Math.max(.2,1-winT*1.6):1;
+    rect(27.93,-3.2-lift,1.2,.7,VIO);rect(27.93,-3.2-lift,.28,2.9,SCAR);rect(28.85,-3.2-lift,.28,2.9,SCAR);cx.globalAlpha=1;
+    /* plate */
+    rect(0,0,30,16,TEAL);
+    var p0=S(0,0),p1=S(30,16);cx.lineWidth=2;cx.strokeStyle=PARCH;cx.strokeRect(Math.min(p0.x,p1.x)+1,Math.min(p0.y,p1.y)+1,Math.abs(p1.x-p0.x)-2,Math.abs(p1.y-p0.y)-2);
+    [[1,1],[29,1],[1,15],[26,15]].forEach(function(c){var p=S(c[0],c[1]);cx.beginPath();cx.arc(p.x,p.y,u*.32,0,TP);cx.fillStyle=INK;cx.fill();});
+    /* bolt: a toothed bar on the bolt gear's right; it opens by sliding down, out of the hasp */
+    var by=boltOff+(wrong?Math.sin(clock*40)*.08-.08:0),bx=OUT.x+OUT.r,bc=wrong?SCAR:PARCH,pitch=TP*OUT.r/19;
+    var RX=bx-.45,RW=1.05,HT=8.2,HB=12.8;   /* the bolt (rack) runs from the hasp down to the spring housing, HT..HB */
+    if(PC.rackP&&PC.rail&&PC.spring6){
+      drawPU(PC.rail,RX-.3,HT,.22,HB-HT);drawPU(PC.rail,RX+RW+.08,HT,.22,HB-HT);
+      var SL=HB-HT-Math.max(0,by),fr=Math.max(0,Math.min(5,Math.round((SL-1.6)/3*5))),sp=PC['spring'+(fr+1)];if(sp)drawPU(sp,RX-.02,HT+Math.max(0,by),RW+.04,SL);
+      drawPU(wrong?PC.rackS:PC.rackP,RX,-2.6+by,RW,HT+2.6);
+      var ax=RX+.82,b0=S(ax,2.6+by),b1=S(ax,5.2+by),b2=S(ax-.17,4.6+by),b3=S(ax+.17,4.6+by);
+      cx.strokeStyle=INK;cx.lineWidth=Math.max(1.5,u*.08);cx.beginPath();cx.moveTo(b0.x,b0.y);cx.lineTo(b1.x,b1.y);cx.moveTo(b2.x,b2.y);cx.lineTo(b1.x,b1.y);cx.lineTo(b3.x,b3.y);cx.stroke();
+    }else{
+    rect(bx+.24,-2.6+by,.6,11.8,bc);
+    var fa=(0-thO)*19/TP,t0=OUT.y+(.5-fa)*pitch;t0-=Math.ceil((t0-(-2.4+by))/pitch)*pitch;
+    for(var t=t0+pitch;t<9+by;t+=pitch)rect(bx-.19,t-.1,.45,.2,bc);
+    var a0=S(bx+.54,2.6+by),a1=S(bx+.54,5.2+by),a2=S(bx+.35,4.6+by),a3=S(bx+.73,4.6+by);
+    cx.strokeStyle=INK;cx.lineWidth=Math.max(1.5,u*.08);cx.beginPath();cx.moveTo(a0.x,a0.y);cx.lineTo(a1.x,a1.y);cx.moveTo(a2.x,a2.y);cx.lineTo(a1.x,a1.y);cx.lineTo(a3.x,a3.y);cx.stroke();}
+    /* pegs */
+    PEGS.forEach(function(p,i){var s=S(p.x,p.y);if(PC.peg)cx.drawImage(PC.peg,s.x-u*.3,s.y-u*.3,u*.6,u*.6);else{cx.beginPath();cx.arc(s.x,s.y,u*.3,0,TP);cx.fillStyle=INK;cx.fill();}
+      cx.beginPath();cx.arc(s.x,s.y,u*.3,0,TP);cx.lineWidth=Math.max(1.5,u*.08);cx.strokeStyle=(drag&&hover===i)?EM:LIL;cx.stroke();});
+    /* gears on the plate */
+    var it=res.it,oS=S(OUT.x,OUT.y),dS=S(DRV.x,DRV.y);
+    var onPlate=[[oS.x+shk(1),oS.y,OUT.r,it[1].th,wrong||res.bad[1]?'bad':'bolt',1,0]];
+    for(var i=2;i<it.length;i++){var s=S(it[i].x,it[i].y),sh=shk(i);onPlate.push([s.x+sh,s.y-sh*.5,it[i].r,it[i].th,res.bad[i]?'bad':'plain',1,0]);}
+    onPlate.push([dS.x+shk(0),dS.y,DRV.r,it[0].th,res.bad[0]?'bad':'crank',1,1]);
+    gearPair(onPlate);
+    /* keyboard cursor and drop target */
+    PEGS.forEach(function(p,i){var s=S(p.x,p.y);
+      if(kbd&&document.activeElement===cv&&sel===i){cx.strokeStyle=EM;cx.lineWidth=3;cx.strokeRect(s.x-u*.65,s.y-u*.65,u*1.3,u*1.3);}
+      if(drag&&hover===i){cx.strokeStyle=EM;cx.lineWidth=3;cx.beginPath();cx.arc(s.x,s.y,u*.5,0,TP);cx.stroke();}});
+    /* tray */
+    cx.strokeStyle='rgba(243,234,217,.35)';cx.lineWidth=2;cx.strokeRect(u*.6,trayY,W-u*1.2,trayH);
+    gearPair(gears.filter(function(g){return g.peg<0&&!(drag&&drag.g===g);}).map(function(g){return [g.sx,g.sy,g.r,g.th,'plain',TS,0];}));
+    if(drag)gearPair([[drag.x,drag.y,drag.g.r,drag.g.th,'plain',1,0]]);
+    if(open){cx.fillStyle='rgba(11,23,15,'+Math.min(.55,winT*.5)+')';cx.fillRect(0,0,W,H);}
+  }
+  function loop(ts){var dt=Math.min(.05,(ts-(last||ts))/1000);last=ts;step(dt);draw();requestAnimationFrame(loop);}
+
+  /* --- drag and drop --- */
+  function pt(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};}
+  function hit(p){
+    var best=null,bd=1e9;
+    gears.forEach(function(g){var c,rad;
+      if(g.peg>=0){var q=PEGS[g.peg];c=S(q.x,q.y);rad=(g.r+ADD)*u;}else{c={x:g.sx,y:g.sy};rad=(g.r+.5)*u*TS+6;}
+      var dd=Math.hypot(p.x-c.x,p.y-c.y);if(dd<=rad&&dd<bd){bd=dd;best={g:g,c:c};}});
+    return best;
+  }
+  function nearPeg(x,y){var b=-1,bd=1.2*u;PEGS.forEach(function(q,i){var s=S(q.x,q.y),dd=Math.hypot(x-s.x,y-s.y);if(dd<bd){bd=dd;b=i;}});return b;}
+  /* a touch that lands on a gear drags it; a touch anywhere else still scrolls the page */
+  cv.addEventListener('touchstart',function(e){if(won)return;var t=e.touches[0];if(drag||(t&&hit(pt(t))))e.preventDefault();},{passive:false});
+  cv.addEventListener('touchmove',function(e){if(drag)e.preventDefault();},{passive:false});
+  cv.addEventListener('pointerdown',function(e){
+    if(won)return;started=true;var p=pt(e),h=hit(p);if(!h)return;e.preventDefault();kbd=false;
+    var g=h.g,from=g.peg;drag={g:g,ox:from>=0?h.c.x-p.x:0,oy:from>=0?h.c.y-p.y:0,x:h.c.x,y:h.c.y};
+    if(from>=0){g.peg=-1;changed();}
+    drag.x=p.x+drag.ox;drag.y=p.y+drag.oy;hover=nearPeg(drag.x,drag.y);
+    try{cv.setPointerCapture(e.pointerId);}catch(x){}
+  });
+  cv.addEventListener('pointermove',function(e){if(!drag)return;e.preventDefault();var p=pt(e);drag.x=p.x+drag.ox;drag.y=p.y+drag.oy;hover=nearPeg(drag.x,drag.y);});
+  cv.addEventListener('pointerup',function(){if(!drag)return;var g=drag.g,pi=nearPeg(drag.x,drag.y);
+    if(pi>=0){gears.forEach(function(o){if(o.peg===pi)o.peg=-1;});g.peg=pi;}
+    drag=null;hover=-1;changed();});
+  cv.addEventListener('pointercancel',function(){if(drag){drag=null;hover=-1;changed();}});
+  /* keyboard: Left/Right pick a peg, Up/Down change its gear */
+  cv.addEventListener('keydown',function(e){if(won)return;var k=e.key;
+    if(k==='ArrowLeft'||k==='ArrowRight'){e.preventDefault();kbd=true;started=true;sel=(sel+(k==='ArrowRight'?1:PEGS.length-1))%PEGS.length;}
+    else if(k==='ArrowUp'||k==='ArrowDown'){e.preventDefault();kbd=true;started=true;
+      var cur=gears.filter(function(g){return g.peg===sel;})[0]||null,opts=[null].concat(gears.filter(function(g){return g.peg<0||g===cur;}));
+      opts.sort(function(a,b){return (a?a.r:0)-(b?b.r:0);});var ix=opts.indexOf(cur);ix=(ix+(k==='ArrowUp'?1:opts.length-1))%opts.length;
+      if(cur)cur.peg=-1;if(opts[ix])opts[ix].peg=sel;changed();}
+    else if(k===' '||k==='Enter'){e.preventDefault();started=true;}
+  });
+  d.querySelector('.pl-restart').addEventListener('click',restart);
+  d.querySelector('.pl-box').addEventListener('click',claim);
+  window.addEventListener('resize',function(){if(((d.querySelector('.pl-stage').clientWidth||900)<640)!==narrow){layout();}});
+  /* read-only view of the lock for checking the game */
+  d.peek=function(){var r=cv.getBoundingClientRect(),f=r.width/W,c=function(p){return {x:r.left+p.x*f,y:r.top+p.y*f};};
+    return {st:st,won:won,bolt:boltOff,started:started,bad:Object.keys(res.bad).length,msg:msg.textContent,
+      pegs:PEGS.map(function(q){return c(S(q.x,q.y));}),
+      gears:gears.map(function(g){return {r:g.r,teeth:g.n,peg:g.peg,at:g.peg>=0?c(S(PEGS[g.peg].x,PEGS[g.peg].y)):c({x:g.sx,y:g.sy})};})};};
+  /* --- 100 points once for opening the lock --- */
+  var PL_API='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec',plTicket=null,plAsked=false,plDone=false;
+  var ptsEl=d.querySelector('.pl-win .pl-pts'),whoForm=d.querySelector('.pl-who');
+  function plMe(){try{return JSON.parse(localStorage.getItem('thLoot:me')||'null')||{};}catch(e){return {};}}
+  function plPost(payload,done){var fin=false,end=function(r){if(fin)return;fin=true;done(r||{ok:false,error:'network'});};setTimeout(function(){end(null);},30000);
+    try{fetch(PL_API,{method:'POST',body:JSON.stringify(payload)}).then(function(r){return r.json();}).then(end,function(){end(null);});}catch(e){end(null);}}
+  function plStart(){if(plAsked||/[?&]test=1\b/.test(location.search))return;plAsked=true;plPost({action:'picklockstart'},function(r){if(r&&r.ok)plTicket=r.ticket;});}
+  function plSolve(me){if(plDone)return;if(!plTicket){ptsEl.textContent='The hunt didn\u2019t answer. Tap the button again in a moment.';whoForm.hidden=false;plAsked=false;plStart();return;}
+    ptsEl.textContent='Sending...';plPost({action:'picklocksolve',ticket:plTicket,email:me.email,first_name:me.first_name||me.first||''},function(r){
+      if(r&&r.ok){plDone=true;whoForm.hidden=true;ptsEl.textContent=r.status==='already'?'You already got your 100 points for this lock.':'+100 points for opening the lock.';}
+      else if(r&&r.error==='email'){ptsEl.textContent='That email doesn\u2019t look right.';whoForm.hidden=false;}
+      else{ptsEl.textContent='The hunt didn\u2019t answer. Tap the button again in a moment.';whoForm.hidden=false;}});}
+  function plWon(){if(/[?&]test=1\b/.test(location.search))return;var me=plMe();if(me.email)plSolve(me);else whoForm.hidden=false;}
+  whoForm.addEventListener('submit',function(e){e.preventDefault();var em=d.querySelector('#pl-email').value.trim(),fn=d.querySelector('#pl-first').value.trim();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){ptsEl.textContent='That email doesn\u2019t look right.';return;}
+    var me=plMe();me.email=em.toLowerCase();if(fn)me.first_name=fn;try{localStorage.setItem('thLoot:me',JSON.stringify(me));}catch(x){}plSolve(me);});
+  cv.addEventListener('pointerdown',plStart);cv.addEventListener('keydown',plStart);
+  restart();requestAnimationFrame(loop);
+})();
+</script>

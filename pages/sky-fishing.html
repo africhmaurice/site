@@ -1,0 +1,1324 @@
+<!-- ============================================================
+     GOMA GOONS (was Sky Duel, then Mortar Mayhem / Mortar Madness; renamed 11/2) - a turn-based artillery game that hides
+     loot box 141 (Box 150 batch). Lives at /sky-fishing (page address kept so the Act Three riddle card link still works;
+     clue "Sky Fishing"). The old Sky Fishing arcade run is saved in site-batch2/_batch2/box150/sky-fishing.before-artillery.html.
+     Maurice 10/29: an original game "modeled after" the classic turn-based artillery genre (small crews on destructible
+     ground lobbing shots at each other). Not a copy of any existing game: its own goons, weapons, names, look, and sounds
+     (it has no sounds).
+
+     THE GOONS: Maurice's 12 gomas (141-goma-<color>.webp, cut from Downloads/The Gomas.png 11/1), in sheet order:
+     yellow Daisy, red Molt, sand Sandy, black Onyx, blue Bluey, green Vern, purple Po, white Galaxy, teal Pebble,
+     gold Goldie, lime Mossy, brown Dirty Dan. The player picks one on the start panel (localStorage ma-mortar-goma).
+     Each goon waddles while it walks and has his mortar tube beside it (141-mortar-rest, fire1-3 flame frames when it
+     fires), tinted that goon's color with a dark outline so the bands still read. Every mortar shoots a small grey stone:
+     his boulder drawing (141-rock) desaturated, about 11 px, spinning.
+
+     HUGE BOARDS (11/2): the world is 1920 units wide (each map at full width) with 700 of open sky above the map, and
+     the goons are 14 across, a quarter of their old size next to the map. Everything scales with them (blasts, walking,
+     jumps, knockback, hit boxes), and shots are strong enough to cross the whole map (gravity 360, top speed 860).
+     A camera shows part of the world: it follows the goon whose turn it is and the shot in flight (pulling back a little
+     while a shot is in the air). Two-finger drag or right/middle-button drag pans; the minimap in the bottom-right corner
+     shows the whole map, everyone on it, and the view (tap it to jump there); Overview zooms out to the whole map (tap
+     the map to zoom back in on that spot); Find my goon brings the view back. One finger or the left button on the sky
+     still aims. Labels, numbers, and the HUD are drawn at a fixed screen size (at least about 11 px on a phone); when
+     zoomed out, only health bars show.
+     MAPS: his 17 (141-map-1..6 from "Mortar Madness Level 1..6", 141-map-7..17 from "Goma Goons level 7..17", transparent,
+     1920 wide). Painted pixels are ground by alpha, not color, so white skulls, clouds, and ship stripes are solid. Every
+     version must leave standing room (a top to stand on across at least half the columns); goons always spawn on the
+     topmost ground of a column, never inside or under anything. The endless cycle is maps 1-17, then 1-17 mirrored, then
+     the upside-down versions that still work (no water or lava in the top half, ground across most of the map, and not
+     one flat slab) in plain and mirrored, then around again. Only maps 1, 3, and 12 have water or lava; on the rest, red,
+     orange, and blue paint (ships, blasts) is ground. Behind every level: his painted sky (141-sky.webp from "Sky Background for Goma Goons.png").
+     WATER AND LAVA (his colors: blue is water, red/orange is lava): a goon that touches water sinks out of sight in a
+     splash; one that touches lava flares up in flame and smoke and burns away. Both are knocked out. Shots that land in
+     either are lost. Map 12's deeper blue is caught by the same water test as map 1.
+
+     TWO MODES (switch on the start panel):
+     CAMPAIGN (endless, 11/2): your crew of goons against a rival crew of one of the other 11 colors (a new color every
+       level, cycling). The six maps he painted (141-map-1..6.webp; water on map 1 and lava on map 3 knock a goon out)
+       cycle forever (see MAPS). Turns alternate; walk (Moves meter), jump once, switch crew, drag on the sky to aim, Fire.
+       Rivals get tougher every level: HP 60 at level 1 up to 150 at level 6, then +12 a level; aim error 12 degrees at
+       level 1 falling to a 1.2 degree floor; power error 10% to a 1.2% floor; wind up to 3 at level 1, +1.44 a level, to
+       12. Rival crew: 3 goons, 4 from level 7, 5 from level 13. From level 3 they use Mine, Storm Call, and Boulder Drop
+       (and go after your weakest goon from level 4); from level 8 they get a Goma Bomb; +1 of each special every 6 levels.
+       YOUR CREW CARRIES OVER: health stays from level to level, but after each win half of what each goon lost comes
+       back, and a knocked-out goon returns at a quarter of its health (my call; DRAFT).
+       COINS: 20 + 5 x level for each win, plus 3 for every shot that hits. Spend them between levels in the upgrade
+       panel: Bigger blasts (+15% blast size, max 3), Heavier stones (+15% damage, max 3), Ammo pack (+1 Mine, Storm Call,
+       and Boulder Drop every level, max 3), Goma Bomb (new weapon, 2 a level), Patch up (+40 health to every goon), and
+       Extra goon (up to 5). Prices rise 50% each time you buy the same one.
+       LOOT BOX 141: shows once, the first time you beat level 3 (tap it: the claim link opens in a new tab).
+       A loss ends the run. "Retry level N" practices from that level with a fresh, full-health crew; the score starts
+       over and d.peek().fullRun is false.
+     FREE-FOR-ALL (11/2): all 12 goons on one map (a random one of the six), you and 11 AI goons, every goon for itself.
+       Turns rotate through every goon still standing. Each AI picks its own target (weak, close goons look best), not
+       just you. Coins (his 141-coin-10 / 141-coin-15 drawings) and crates (drawn shapes: Health +40, Ammo +1 of each
+       special, Power Shot +50% damage on the next shot) sit on the ground; walk onto one to grab it. More appear every
+       other round. Points: damage dealt, hit and accuracy bonuses, 100 for each goon you knock out, the coin's face
+       value for coins, 10 for a crate, and 500 for being the last goon standing. It ends when you are knocked out
+       (you get your place, like 4th of 12) or when you are the last goon standing.
+
+     SCORING (both modes): damage your shots deal; a goon knocked out on your shot also counts its remaining health.
+       Every shot that hurts someone else is a hit: +10 x your hit streak (+10, +20, +30 for three hits in a row; a miss
+       resets it), +25 more for a direct hit (the stone itself lands on a goon). Campaign: a 25 point knockout bonus,
+       100 x level for each win, and an accuracy bonus at the end of every level (accuracy % x 2, so 75% = +150).
+       Free-for-All: 100 a knockout and an accuracy bonus at the end (accuracy % x 3).
+       Best scores are kept per mode in this browser (localStorage ma-skyduel-best for Campaign, ma-mortar-ffa-best).
+       LEADERBOARDS (to come: weekly Campaign best full run and weekly Free-for-All best): d.peek() reports mode,
+       finalScore, runFrom, fullRun, levelReached, and place, so a board can be wired to it later.
+
+     WEAPONS (original names, DRAFT): Mortar Stone (unlimited; blast 30, up to 40 damage), Blinking Mine (2 a level;
+     bounces, 3 second fuse; blast 34, up to 45), Storm Call (1 a level; lightning strikes the top of the spot you hit;
+     blast 24, up to 50), Boulder Drop (1 a level; heavy, ignores wind, shorter range; blast 46, up to 55), Goma Bomb
+     (unlocked in the upgrade panel; splits into three stones in the air; blast 22 and 20, up to 26 and 24 each).
+     On phones (narrow world) blasts are 85% of these sizes. Wind pushes everything but the Boulder Drop.
+     The drawings load with crossOrigin so the maps can be read pixel by pixel from GitHub Pages on the live site.
+     Art (Maurice's drawings, site/assets/games): 141-goma-*, 141-mortar-*, 141-rock, 141-coin-10/15, 141-mine-1/2/3,
+     141-lightning, 140-burst-1/2/3, 141-map-1..12, 141-sky. DRAWN SHAPES FOR NOW: crates, the Goma Bomb, the wind arrow, the
+     splash and the flames.
+     Read-only state: d.peek(). Test hooks only with ?test=1 (d.test).
+
+     DRAFT (all words on this page are new, for Maurice to approve):
+       heading "Goma Goons"; line "Pick a goon, grab a mortar, and lob stones across the map. Campaign: knock out rival
+       crews level after level and upgrade as you go. Free-for-All: all twelve goons on one map, and the last one standing
+       wins.";
+       modes "Campaign", "Free-for-All"; picker "Pick your Goon", goon names (Maurice 11/1) Daisy, Molt, Sandy, Onyx,
+       Bluey, Vern, Po, Galaxy, Pebble, Goldie, Mossy, Dirty Dan;
+       view buttons "Overview", "Find my goon";
+       bar "Level", "Score", "Best", "Coins", "Your crew", "You", "Rival", "Goons left", "Pause", "Resume", "New run",
+       "Tap again to start over";
+       weapons "Mortar Stone", "Blinking Mine", "Storm Call", "Boulder Drop", "Goma Bomb", "Unlimited", "<n> left";
+       pad "Left", "Jump", "Right", "Next crew", "Fire";
+       panel "Ready to fight?", campaign note "Drag on the sky to aim, then press Fire. Knock the whole rival crew out of
+       the fight to win the level. Water and lava knock a goon out too. The levels never end, and every one is tougher.",
+       Free-for-All note "All twelve goons, one map, every goon for itself. Grab coins and crates, land hits, knock goons
+       out, and be the last one standing.", "Start level <n>", "Start Free-for-All", "Level <n> won", "+<n> level bonus.
+       Accuracy <n>% (+<n>). +<n> coins. Your score: <n>. Spend coins below, then face level <n>.", "Your crew is down",
+       "Final score: <n>. You reached level <n>. Best: <n>.", "New run", "Retry level <n>", "Last goon standing",
+       "Knocked out", "+500 last-standing bonus.", "You placed <n> of 12.", "Accuracy <n>% (+<n>). Final score: <n>.
+       Best: <n>.", "Play again", "A fresh start: level 1, score 0.";
+       upgrades heading "Upgrades", "Coins: <n>", "Bigger blasts" "+15% blast size", "Heavier stones" "+15% damage",
+       "Ammo pack" "+1 Mine, Storm Call, and Boulder Drop every level", "Goma Bomb" "New weapon: splits into three",
+       "Patch up" "+40 health to every goon", "Extra goon" "One more crew member, up to 5", "<n> coins", "Maxed",
+       "<name>: done.";
+       canvas "LEVEL <n>", "FREE-FOR-ALL", "WIND <n>", "CALM", "MOVES", "YOUR TURN", "RIVAL TURN", "<NAME>'S TURN",
+       "STREAK x<n>", "PAUSED", "READY", HP numbers, "-<n>" damage, "OUT", "HIT +<n>", "HIT x<n> +<n>", "DIRECT HIT +<n>",
+       "KO +<n>", "+<n>" (coin), "COIN", "+40 HEALTH", "+AMMO", "POWER SHOT";
+       messages "Your turn. Drag on the sky to aim, then press Fire.", "The rival crew is aiming.", "<Name> is aiming.",
+       "Off the map.", "Into the water.", "Into the lava.", "Out of moves this turn.", "Paused.", "Practice from level <n>:
+       your score starts over.";
+       help "Drag on the sky to aim: the farther you drag, the harder the shot. The dots show the start of the arc, and the
+       wind does the rest. Walk and jump before you fire. The view follows the action: drag with two fingers (or with the right
+       mouse button) to look around, tap the small map in the corner to jump there, and use Overview to see the whole map.
+       On a keyboard: A and D or the left and right arrows walk, W or J
+       jumps, up and down arrows aim, Q and E set the power, 1 to 5 pick a weapon, N switches crew, and Space fires.";
+       weapon notes "Mortar Stone: unlimited, steady.", "Blinking Mine: bounces, then blows after 3 seconds.", "Storm Call:
+       lightning strikes the top of the spot you hit.", "Boulder Drop: heavy, short range, and the wind cannot push it.",
+       "Goma Bomb: splits into three stones in the air (unlock it in the upgrades).", "Water sinks a goon, and lava burns
+       one up. Either way, it is out.";
+       win "Level 3 won. Box 141 is yours."
+     ============================================================ -->
+
+<!-- WEEKLY BOARDS (11/2): goonscampstart/score/top (Campaign, FULL runs only: started at level 1, never a "Retry level N";
+     a run continued from the save keeps its ticket) and goonsffastart/score/top (one Free-for-All match). Scores carry
+     playing time (paused time and panels don't count), level reached / place and knockouts. Maurice's runs are practice
+     (server side). Pickups are capped at 6 a level (12 a Free-for-All match). DRAFT words: "Best this week", "Campaign:
+     this week's top commanders", "Free-for-All: this week's last goons standing", "Board closes in", "No games yet this
+     week.", "Kept on this device.", the player form and its messages (copied from Hold the Wall!).
+     GOMA GOONS v7 (Maurice 11/2): goons a little bigger (18 across, was 14); early levels quicker (2 rivals on levels 1-2,
+     rival health 40 +20 a level up to level 6, rivals aim faster); Zoom in / Zoom out buttons, the mouse wheel, and a
+     two-finger pinch; pickups drop every 3 rounds in Campaign and Free-for-All (Health +40, Gem +50 points, Extra turn,
+     Extra life (brings back a knocked-out goon, or +40 health), Big boulder (next shot 50% bigger), Upgrade token (+25 coins
+     in Campaign, +25 points in Free-for-All)); weapons now Mortar Stone, Lightning Strike (was Storm Call), Red Atomic (one
+     huge blast, his red atomic art), Barrage (a flare calls his red airship, which drops a string of bombs), Goma Bomb;
+     new upgrades Spray Shot (three stones at once), Shatter (a stone breaks into five chunks where it lands), Burning (a
+     stone burns straight down through the ground for a moment, hurting goons in its path). All new words DRAFT:
+     "Zoom in", "Zoom out", pickup labels "+40 HEALTH", "+50 GEM", "EXTRA TURN", "EXTRA LIFE", "BIG BOULDER", "+25 COINS",
+     "+25", the weapon and upgrade names and notes below, "Red Atomic: one huge blast.", "Barrage: fire a flare and an
+     airship drops a string of bombs around it.", "Pickups drop every 3 rounds: walk onto one to grab it." -->
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+#ma-skyduel{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;overflow-x:hidden;
+  padding:clamp(120px,14vh,160px) 20px 80px;background-color:#0b170f;background-image:radial-gradient(ellipse at 50% 0%,rgba(72,45,133,.5) 0%,rgba(11,23,15,0) 60%);
+  color:#f3ead9;font-family:'Almarai',sans-serif;text-align:center}
+#ma-skyduel *{box-sizing:border-box;border-radius:0}
+#ma-skyduel [hidden]{display:none!important}
+#ma-skyduel .sd-wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
+#ma-skyduel h1{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(38px,6vw,68px);line-height:1.2;letter-spacing:.04em;color:#fffffe;text-transform:uppercase}
+#ma-skyduel .sd-lede{margin:0;font-weight:700;font-size:clamp(16px,1.8vw,19px);line-height:1.5;max-width:640px}
+#ma-skyduel .sd-bar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px 24px;font-weight:800;font-size:14px;line-height:1.3;letter-spacing:.12em;text-transform:uppercase}
+#ma-skyduel .sd-bar b{color:#89fbcb;font-weight:800}
+#ma-skyduel .sd-bar .sd-red b{color:#ff4c0f}
+#ma-skyduel .sd-btn{margin:0;padding:10px 18px;border:1px solid rgba(243,234,217,.45);background:none;color:#f3ead9;font:800 13px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-skyduel .sd-btn:hover,#ma-skyduel .sd-btn:focus-visible{border-color:#89fbcb;color:#89fbcb;outline:none}
+#ma-skyduel .sd-stage{width:100%;border:2px solid #f3ead9;background:#0f5c4d;line-height:0}
+#ma-skyduel canvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair;user-select:none;-webkit-user-select:none}
+#ma-skyduel .sd-weapons{width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+#ma-skyduel .sd-wpn{margin:0;min-height:58px;padding:10px 12px;border:1px solid rgba(243,234,217,.45);background:#122017;color:#f3ead9;display:flex;flex-direction:column;justify-content:center;gap:6px;
+  font:800 13px/1.25 'Almarai',sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-skyduel .sd-wpn small{font-weight:700;font-size:12px;line-height:1.25;letter-spacing:.06em;color:#a3b3a8;text-transform:none}
+#ma-skyduel .sd-wpn[aria-pressed="true"]{border-color:#ff4c0f;box-shadow:inset 0 0 0 1px #ff4c0f;background:#2a1a10}
+#ma-skyduel .sd-wpn[aria-pressed="true"] small{color:#ffb08a}
+#ma-skyduel .sd-wpn:hover:not([disabled]),#ma-skyduel .sd-wpn:focus-visible{border-color:#89fbcb;outline:none}
+#ma-skyduel .sd-wpn[disabled]{opacity:.45;cursor:default}
+#ma-skyduel .sd-pad{width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+#ma-skyduel .sd-pad button{margin:0;min-height:54px;padding:10px 8px;border:1px solid rgba(243,234,217,.45);background:#122017;color:#f3ead9;font:800 14px/1.2 'Almarai',sans-serif;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none}
+#ma-skyduel .sd-pad button:hover:not([disabled]),#ma-skyduel .sd-pad button:focus-visible{border-color:#89fbcb;outline:none}
+#ma-skyduel .sd-pad button[disabled]{opacity:.45;cursor:default}
+#ma-skyduel .sd-pad .sd-fire{border:2px solid #f3ead9;background:#c1330a;color:#fffffe}
+#ma-skyduel .sd-pad .sd-fire:hover:not([disabled]),#ma-skyduel .sd-pad .sd-fire:focus-visible{background:#ff4c0f;border-color:#f3ead9}
+#ma-skyduel .sd-msg{margin:0;min-height:24px;font-weight:700;font-size:16px;line-height:1.5;color:#c3a6ff}
+#ma-skyduel .sd-panel{width:100%;display:flex;flex-direction:column;align-items:center;gap:20px;padding:24px 20px;border:1px solid rgba(243,234,217,.3);background:rgba(11,23,15,.75)}
+#ma-skyduel .sd-panel h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(26px,3.6vw,38px);line-height:1.2;letter-spacing:.04em;color:#89fbcb;text-transform:uppercase}
+#ma-skyduel .sd-note{margin:0;font-weight:700;font-size:15px;line-height:1.5;max-width:620px}
+#ma-skyduel .sd-pick{width:100%;max-width:640px;display:flex;flex-direction:column;align-items:center;gap:12px}
+#ma-skyduel .sd-pick h3{margin:0;font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#f3ead9}
+#ma-skyduel .sd-gomas{width:100%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+#ma-skyduel .sd-goma{margin:0;padding:8px 4px 10px;border:2px solid rgba(243,234,217,.25);background:rgba(11,23,15,.6);color:#f3ead9;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;font:800 12px/1.2 'Almarai',sans-serif;letter-spacing:.08em;text-transform:uppercase;touch-action:manipulation}
+#ma-skyduel .sd-goma img{width:100%;max-width:64px;height:60px;object-fit:contain;object-position:center bottom;display:block}
+#ma-skyduel .sd-goma:hover,#ma-skyduel .sd-goma:focus-visible{border-color:#89fbcb;outline:none}
+#ma-skyduel .sd-goma[aria-pressed="true"]{border-color:#ffd166;background:rgba(255,209,102,.14)}
+#ma-skyduel .sd-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+#ma-skyduel .sd-go{margin:0;padding:16px 34px;border:2px solid #f3ead9;background:#c1330a;color:#fffffe;font:800 17px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-skyduel .sd-go:hover,#ma-skyduel .sd-go:focus-visible{background:#ff4c0f;outline:none}
+#ma-skyduel .sd-alt{margin:0;padding:16px 26px;border:1px solid rgba(243,234,217,.45);background:none;color:#f3ead9;font:800 15px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-skyduel .sd-alt:hover,#ma-skyduel .sd-alt:focus-visible{border-color:#89fbcb;color:#89fbcb;outline:none}
+#ma-skyduel .sd-help{margin:0;max-width:680px;font-size:14px;line-height:1.5;color:#a3b3a8}
+#ma-skyduel .sd-notes{margin:0;padding:0;list-style:none;display:grid;gap:12px;max-width:680px;font-size:14px;line-height:1.5;color:#a3b3a8}
+#ma-skyduel .gb-post{display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;width:100%;max-width:620px}#ma-skyduel .gb-msg{margin:0;font-weight:700;line-height:1.5}#ma-skyduel .gb-msg.err{color:#ff4c0f}
+#ma-skyduel .gb-row{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+@media (max-width:860px){#ma-skyduel .gb-row{grid-template-columns:1fr}}
+#ma-skyduel .gb-card{padding:20px;border:1px solid rgba(243,234,217,.3);background:rgba(11,23,15,.75);text-align:left;display:flex;flex-direction:column;gap:12px;min-width:0}
+#ma-skyduel .gb-card h3{margin:0;font-family:'Almarai',sans-serif;font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#89fbcb;line-height:1.4}
+#ma-skyduel .gb-big{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-size:34px;line-height:1.2;letter-spacing:.04em;color:#ffd166}
+#ma-skyduel .gb-note{margin:0;font-size:13px;line-height:1.5;color:#a3b3a8}
+#ma-skyduel .gb-board{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+#ma-skyduel .gb-board li{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:12px;align-items:baseline;font-weight:700;font-size:14px}
+#ma-skyduel .gb-board li i{font-style:normal;color:#a3b3a8}#ma-skyduel .gb-board li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#ma-skyduel .gb-board li b{color:#ffd166}
+#ma-skyduel .gb-board li.me span,#ma-skyduel .gb-board li.me b{color:#89fbcb}#ma-skyduel .gb-board .gb-empty{grid-column:1/-1;white-space:normal;color:#a3b3a8;font-weight:400}
+#ma-skyduel .gb-form{display:flex;flex-direction:column;gap:8px;width:100%;max-width:420px;text-align:left}#ma-skyduel .gb-form label{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+#ma-skyduel .gb-form input,#ma-skyduel .gb-form select{width:100%;margin:0 0 4px;padding:10px 12px;border:1px solid rgba(243,234,217,.45);background:#0b170f;color:#f3ead9;font:700 15px/1.3 'Almarai',sans-serif;border-radius:0}
+#ma-skyduel .gb-form button,#ma-skyduel .gb-who button{margin-top:8px;align-self:center}#ma-skyduel .gb-quiet{margin:0;font-size:13px;color:#a3b3a8}#ma-skyduel .gb-quiet a{color:#89fbcb;cursor:pointer;text-decoration:underline}
+#ma-skyduel .sd-win{display:flex;flex-direction:column;align-items:center;gap:20px;margin-top:8px}
+#ma-skyduel .sd-win p{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.25;letter-spacing:.04em;color:#89fbcb;text-transform:uppercase}
+#ma-skyduel .sd-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(58vw,260px);animation:sdDrop .6s cubic-bezier(.25,1.5,.45,1) both}
+#ma-skyduel .sd-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 30px rgba(137,251,203,.45))}
+#ma-skyduel .sd-box:hover img,#ma-skyduel .sd-box:focus-visible img{filter:drop-shadow(0 0 44px rgba(137,251,203,.75))}
+#ma-skyduel .sd-box:focus-visible{outline:3px solid #89fbcb;outline-offset:8px}
+@keyframes sdDrop{from{opacity:0;transform:translateY(-40px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#ma-skyduel .sd-box{animation:none}}
+@media (max-width:640px){
+  #ma-skyduel{padding-left:16px;padding-right:16px}
+  #ma-skyduel .sd-weapons{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #ma-skyduel .sd-gomas{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #ma-skyduel .sd-pad{grid-template-columns:repeat(6,minmax(0,1fr))}
+  #ma-skyduel .sd-pad .sd-l,#ma-skyduel .sd-pad .sd-j,#ma-skyduel .sd-pad .sd-r{grid-column:span 2}
+  #ma-skyduel .sd-pad .sd-next,#ma-skyduel .sd-pad .sd-fire{grid-column:span 3}
+}
+#ma-skyduel .sd-stars{display:flex;justify-content:center;gap:12px}
+#ma-skyduel .sd-stars svg{display:block}
+#ma-skyduel .sd-view{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+#ma-skyduel .sd-btn[aria-pressed="true"]{border-color:#ffd166;color:#ffd166}
+#ma-skyduel .sd-modes{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+#ma-skyduel .sd-mode{margin:0;padding:12px 22px;border:2px solid rgba(243,234,217,.35);background:rgba(11,23,15,.6);color:#f3ead9;font:800 14px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-skyduel .sd-mode:hover,#ma-skyduel .sd-mode:focus-visible{border-color:#89fbcb;outline:none}
+#ma-skyduel .sd-mode[aria-pressed="true"]{border-color:#ffd166;background:rgba(255,209,102,.14);color:#ffd166}
+#ma-skyduel .sd-shop{width:100%;max-width:820px;display:flex;flex-direction:column;align-items:center;gap:12px}
+#ma-skyduel .sd-shop h3{margin:0;font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#f3ead9}
+#ma-skyduel .sd-coinline{margin:0;font-weight:800;font-size:14px;letter-spacing:.1em;text-transform:uppercase}
+#ma-skyduel .sd-coinline b{color:#ffd166}
+#ma-skyduel .sd-ups{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#ma-skyduel .sd-up{margin:0;min-height:96px;padding:12px;border:1px solid rgba(243,234,217,.45);background:#122017;color:#f3ead9;display:flex;flex-direction:column;justify-content:center;gap:8px;
+  font:800 13px/1.25 'Almarai',sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-skyduel .sd-up small{font-weight:700;font-size:12px;line-height:1.35;letter-spacing:.04em;color:#a3b3a8;text-transform:none}
+#ma-skyduel .sd-up b{font-weight:800;font-size:13px;color:#ffd166}
+#ma-skyduel .sd-up:hover:not([disabled]),#ma-skyduel .sd-up:focus-visible{border-color:#89fbcb;outline:none}
+#ma-skyduel .sd-up[disabled]{opacity:.45;cursor:default}
+@media (max-width:640px){
+  #ma-skyduel .sd-ups{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #ma-skyduel .sd-mode{padding:12px 16px;font-size:13px}
+}
+</style>
+<section id="ma-skyduel" aria-label="Goma Goons">
+<!-- ARCADE-TABS:BEGIN (pasted by holdwall/port.mjs from treasure-hunt-leaderboard/games/_tabs.html plus the 140-142 buttons; do not edit here) -->
+<div class="ma-arcade" style="width:min(100%,760px);margin:0 auto;position:relative;z-index:2">
+<style>.hg-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;max-width:760px;margin:0 auto 38px;position:relative;z-index:2}.hg-tabs a{grid-column:span 2}.hg-tabs a:last-child:nth-child(3n+1){grid-column:1/-1}.hg-tabs a:last-child:nth-child(3n+2),.hg-tabs a:nth-last-child(2):nth-child(3n+1){grid-column:span 3}.hg-tabs a{display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.25}.hg-tabs a{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(13px,1.2vw,16px);letter-spacing:.08em;text-decoration:none;border:2px solid #fffffe;padding:11px 24px;color:#fffffe;background:rgba(11,23,15,.4);transition:background .15s ease,color .15s ease}.hg-tabs a:hover{background:rgba(255,255,255,.14);color:#fffffe}.hg-tabs a[hidden]{display:none!important}.hg-tabs a.on,.hg-tabs a.on:hover{background:#fffffe;color:#111}@media (max-width:560px){.hg-tabs{gap:6px}.hg-tabs a{padding:9px 6px;font-size:11px;letter-spacing:.03em}}</style>
+    <h2 class="hg-arcade" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.2;letter-spacing:.03em;color:#fffffe;text-align:center;margin:0 auto 16px;position:relative;z-index:2">THE ARCADE</h2>
+    <nav class="hg-tabs" data-on="goma_goons" aria-label="Daily games">
+      <a href="https://www.mauriceafrich.com/games" data-k="skyword">SKYWORD</a>
+      <a href="https://www.mauriceafrich.com/sort-the-shelf" data-k="shelf_sort">SORT THE SHELF</a>
+      <a href="https://www.mauriceafrich.com/book-icons" data-k="emoji_reads">BOOK ICONS</a>
+      <a href="https://www.mauriceafrich.com/crossword" data-k="crossword">CROSSWORD</a>
+      <a href="https://www.mauriceafrich.com/blades-and-brass" data-k="blades_brass" data-unlock="50000" data-act="two" hidden>BLADES &amp; BRASS</a>
+      <a href="https://www.mauriceafrich.com/matching-auras" data-k="matching_auras" data-unlock="100000" data-act="two" hidden>MATCHING AURAS</a>
+      <a href="https://www.mauriceafrich.com/crest-quest" data-k="crest_quest" data-unlock="150000" data-act="two" hidden>CREST QUEST</a>
+      <a href="https://www.mauriceafrich.com/sky-mines" data-k="sky_mines">SKY MINES</a>
+      <a href="https://www.mauriceafrich.com/airship-runner" data-k="airship_runner">AIRSHIP RUNNER</a>
+      <a href="https://www.mauriceafrich.com/thread-the-needle" data-k="thread_needle">THREAD THE NEEDLE</a>
+      <a href="https://www.mauriceafrich.com/trench-run" data-k="trench_run">TRENCH RUN</a>
+      <a href="https://www.mauriceafrich.com/sky-gauntlet" data-k="sky_gauntlet">SKY GAUNTLET</a>
+      <a href="https://www.mauriceafrich.com/the-levian-30527" data-k="the_levian">THE LEVIAN</a>
+      <a href="https://www.mauriceafrich.com/master-stacker-32368" data-k="master_stacker">MASTER STACKER</a>
+      <a href="https://www.mauriceafrich.com/hold-the-wall-13212" data-k="hold_wall">HOLD THE WALL!</a>
+      <a href="https://www.mauriceafrich.com/goma-goons-43216" data-k="goma_goons">GOMA GOONS</a>
+    </nav>
+    <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++){var act=lk[j].getAttribute('data-act'),n=act?+((d.acts||{})[act])||0:+d.crewTotal||0;if(n>=+lk[j].getAttribute('data-unlock'))lk[j].hidden=false;}}).catch(function(){});})();</script>
+</div>
+<!-- ARCADE-TABS:END -->
+
+  <div class="sd-wrap">
+    <h1>Goma Goons</h1>
+    <p class="sd-lede">Pick a goon, grab a mortar, and lob stones across the map. Campaign: knock out rival crews level after level and upgrade as you go. Free-for-All: all twelve goons on one map, and the last one standing wins.</p>
+    <div class="sd-bar">
+      <span class="sd-lvw">Level <b class="sd-lv">1</b></span><span>Score <b class="sd-score">0</b></span><span>Best <b class="sd-best">0</b></span><span>Coins <b class="sd-coin">0</b></span><span class="sd-starw">Stars <b class="sd-startot">0</b></span>
+      <span class="sd-red"><span class="sd-yl">Your crew</span> <b class="sd-hp0">0</b></span><span><span class="sd-rl">Rival</span> <b class="sd-hp1">0</b></span>
+      <button class="sd-btn sd-pause" type="button">Pause</button><button class="sd-btn sd-new" type="button">New run</button>
+    </div>
+    <div class="sd-stage"><canvas aria-label="The battlefield: your goons, the rival goons, and the ground between them"></canvas></div>
+    <div class="sd-view"><button class="sd-btn sd-ov" type="button" aria-pressed="false">Overview</button><button class="sd-btn sd-find" type="button">Find my goon</button><button class="sd-btn sd-zin" type="button">Zoom in</button><button class="sd-btn sd-zout" type="button">Zoom out</button></div>
+    <div class="sd-weapons" role="group" aria-label="Weapons"></div>
+    <div class="sd-pad">
+      <button class="sd-l" type="button">Left</button><button class="sd-j" type="button">Jump</button><button class="sd-r" type="button">Right</button>
+      <button class="sd-next" type="button">Next crew</button><button class="sd-fire" type="button">Fire</button>
+    </div>
+    <p class="sd-msg" role="status"></p>
+    <div class="sd-panel">
+      <h2 class="sd-ph">Ready to fight?</h2>
+      <div class="sd-modes" role="group" aria-label="Mode"><button class="sd-mode" type="button" data-mode="campaign" aria-pressed="true">Campaign</button><button class="sd-mode" type="button" data-mode="ffa" aria-pressed="false">Free-for-All</button></div>
+      <p class="sd-note">Drag on the sky to aim, then press Fire. Knock the whole rival crew out of the fight to win the level. Water and lava knock a goon out too. The levels never end, and every one is tougher.</p>
+      <div class="sd-pick"><h3>Pick your Goon</h3><div class="sd-gomas" role="group" aria-label="Pick your Goon"></div></div>
+      <div class="sd-stars" hidden role="img" aria-label="Stars"></div>
+      <div class="sd-shop" hidden><h3>Upgrades</h3><p class="sd-coinline">Coins: <b class="sd-coins2">0</b></p><div class="sd-ups"></div></div>
+      <div class="sd-btns"><button class="sd-go" type="button">Start level 1</button><button class="sd-alt" type="button" hidden>Retry level 1</button></div>
+    </div>
+    <p class="sd-help">Drag on the sky to aim: the farther you drag, the harder the shot. The dots show the start of the arc, and the wind does the rest. Walk and jump before you fire. The view follows the action: drag with two fingers (or with the right mouse button) to look around, tap the small map in the corner to jump there, and use Overview to see the whole map. On a keyboard: A and D or the left and right arrows walk, W or J jumps, up and down arrows aim, Q and E set the power, 1 to 5 pick a weapon, N switches crew, and Space fires.</p>
+    <ul class="sd-notes">
+      <li>Mortar Stone: unlimited, steady.</li>
+      <li>Lightning Strike: lightning strikes the top of the spot you hit.</li>
+      <li>Red Atomic: one huge blast.</li>
+      <li>Barrage: fire a flare and an airship drops a string of bombs around it.</li>
+      <li>Pickups drop every 3 rounds: walk onto one to grab it.</li>
+      <li>Goma Bomb: splits into three stones in the air (unlock it in the upgrades).</li>
+      <li>Water sinks a goon, and lava burns one up. Either way, it is out.</li>
+      <li>Stars: 1 for winning a level, 2 for winning with at least two goons standing, and 3 for winning with every goon standing.</li>
+      <li>Your Campaign run saves between levels on this device. A loss ends the run.</li>
+    </ul>
+    <div class="gb-post" hidden><p class="gb-msg" role="status"></p><div class="gb-who" hidden></div></div>
+    <div class="gb-row">
+      <section class="gb-card"><h3>Best this week</h3><p class="gb-big gb-mybest">0</p><p class="gb-note gb-mynote">No games yet this week.</p></section>
+      <section class="gb-card"><h3>Campaign: this week&rsquo;s top commanders</h3><p class="gb-note">Board closes in <span class="gb-left">...</span></p><ol class="gb-board gb-camp"><li><span class="gb-empty">Loading the board...</span></li></ol></section>
+      <section class="gb-card"><h3>Free-for-All: this week&rsquo;s last goons standing</h3><p class="gb-note">Board closes in <span class="gb-left">...</span></p><ol class="gb-board gb-ffa"><li><span class="gb-empty">Loading the board...</span></li></ol></section>
+    </div>
+    <div class="sd-win" hidden>
+      <p>Level 3 won. Box 141 is yours.</p>
+      <button class="sd-box" type="button" aria-label="Open loot box 141"><img src="https://africhmaurice.github.io/site/assets/loot/141.png" alt="Loot box 141"></button>
+    </div>
+  </div>
+</section>
+<script>/* ARCADE-CARD:BEGIN (pasted from mauriceafrich-site/tools/arcade-card.js; do not edit here) */
+// ---- the arcade card (Airship Runner, Thread the Needle; Maurice 2026-10-13) ----
+// Built on the daily games' share card (treasure-hunt-leaderboard/games/share.js): a 1200x600 PNG in one of the six brand
+// colors with the run's score, time, and place on this week's board. tools/arcade.mjs pastes this file into each arcade
+// page between ARCADE-CARD markers; edit it here, then run node tools/arcade.mjs.
+//   ArcadeCard.show(o)  after a run: o.game 'Thread the Needle', o.after (element the panel goes under), o.label 'GAPS',
+//                       o.stat '312', o.line 'TIME 4:51' (optional), o.name '@handle', o.site 'mauriceafrich.com/...',
+//                       o.icon (image url of the player's ship)
+//   ArcadeCard.update(o) when the board answers: o.rank (place this week), o.best (best this week)
+var ArcadeCard = (function () {
+  var DISCORD = 'https://discord.gg/TV8SNnSGdb', url = null, opts = null, panel = null;
+  var THEMES = {
+    violet: { bg: '#482d85', band: '#2d1c53', text: '#fffffe', soft: 'rgba(255,255,254,.72)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
+    scarlet: { bg: '#c53200', band: '#912501', text: '#fffffe', soft: 'rgba(255,255,254,.75)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
+    green: { bg: '#2c6021', band: '#1b3b15', text: '#fffffe', soft: 'rgba(255,255,254,.72)', stat: '#a2f590', frame: 'rgba(162,245,144,.4)' },
+    teal: { bg: '#268e62', band: '#1a5e41', text: '#fffffe', soft: 'rgba(255,255,254,.75)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
+    ink: { bg: '#0b170f', band: '#213226', text: '#fffffe', soft: '#607667', stat: '#3adb97', frame: 'rgba(162,245,144,.35)' },
+    parchment: { bg: '#fffffe', band: '#c53200', text: '#0b170f', soft: '#607667', stat: '#c53200', frame: 'rgba(11,23,15,.25)' }
+  };
+  var NAMES = { violet: 'Violet', scarlet: 'Scarlet', green: 'Green', teal: 'Teal', ink: 'Ink', parchment: 'Parchment' };
+  var css = document.createElement('style');
+  css.textContent = '.ac-card{width:min(100%,640px);margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:16px;padding:clamp(22px,4vw,30px) clamp(18px,3vw,28px);background:#132219;border:2px solid rgba(243,234,217,.18);color:#fffffe;text-align:center;box-sizing:border-box}' +
+    '.ac-card *{box-sizing:border-box;border-radius:0}' +
+    '.ac-h{font-family:"Cracked Imperia",Impact,sans-serif;font-weight:400;font-size:clamp(26px,4.4vw,38px);line-height:1.25;letter-spacing:.03em;color:#a2f590;margin:0}' +
+    '.ac-img{display:block;width:100%;max-width:560px;aspect-ratio:2/1;background:#0b170f;border:2px solid rgba(162,245,144,.35)}' +
+    '.ac-sw{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0;padding:0;border:0}' +
+    '.ac-sw legend{width:100%;padding:0;margin:0 0 10px;font-family:"Almarai",sans-serif;font-weight:700;font-size:14px;letter-spacing:.08em;color:#fffffe;text-align:center}' +
+    '.ac-swatch{width:34px;height:34px;margin:0;border:2px solid rgba(255,255,254,.55);padding:0;cursor:pointer;transition:transform .12s ease}' +
+    '.ac-swatch:hover{transform:scale(1.1)}.ac-swatch[aria-pressed="true"]{outline:3px solid #a2f590;outline-offset:3px}' +
+    '.ac-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}' +
+    '.ac-btns button{margin:0;min-width:200px;font-family:"Almarai",sans-serif;font-weight:800;font-size:15px;letter-spacing:.08em;color:#fffffe;background:#c53200;border:2px solid #fffffe;padding:12px 20px;cursor:pointer;transition:background .15s ease,transform .15s ease}' +
+    '.ac-btns button:hover,.ac-btns button:focus-visible{background:#ff4c0f;transform:scale(1.04);outline:none}' +
+    '.ac-how{font-family:"Almarai",sans-serif;font-size:clamp(14px,1.8vw,16px);line-height:1.6;margin:0;max-width:480px;color:#f3ead9}.ac-how a{color:#a2f590}' +
+    '@media (prefers-reduced-motion:reduce){.ac-swatch,.ac-btns button{transition:none}}';
+  document.head.appendChild(css);
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function key() { return 'thArcadeColor:' + opts.game; }
+  function weekLine() {
+    // the Friday that ends this week, New York time (the board's week)
+    var f = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' }).formatToParts(new Date()), o = {};
+    f.forEach(function (p) { o[p.type] = p.value; });
+    var wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(o.weekday), add = (5 - wd + 7) % 7;
+    var d = new Date(Date.UTC(+o.year, +o.month - 1, +o.day + add, 12));
+    return 'WEEK ENDING ' + d.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
+  }
+  function show(o) {
+    opts = o; o.theme = 'ink';
+    try { var saved = localStorage.getItem(key()); if (saved && THEMES[saved]) o.theme = saved; } catch (e) {}
+    if (panel && panel.parentNode) panel.parentNode.removeChild(panel);
+    var d = document.createElement('div');
+    d.innerHTML = '<div class="ac-card" id="ac-card"><p class="ac-h">Export your card</p>' +
+      '<img loading="lazy" decoding="async" class="ac-img" alt="My ' + esc(o.game) + ' card: ' + esc(o.label.toLowerCase()) + ' ' + esc(o.stat) + '">' +
+      '<fieldset class="ac-sw"><legend>PICK YOUR COLOR</legend>' + Object.keys(THEMES).map(function (k) {
+        return '<button type="button" class="ac-swatch" data-theme="' + k + '" aria-pressed="' + (k === o.theme) + '" aria-label="' + NAMES[k] + '" title="' + NAMES[k] + '" style="background:' + THEMES[k].bg + '"></button>';
+      }).join('') + '</fieldset>' +
+      '<div class="ac-btns"><button type="button" class="ac-save">SAVE MY CARD</button><button type="button" class="ac-copy">COPY MY SCORE</button></div>' +
+      '<p class="ac-how">Post your card in <b>#🎯DAILY_GAMES</b> in the <a href="' + DISCORD + '" target="_blank" rel="noopener">Trench Community Discord</a> and see who can beat it.</p></div>';
+    panel = d.firstChild;
+    o.after.parentNode.insertBefore(panel, o.after.nextSibling);
+    panel.querySelector('.ac-sw').addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('.ac-swatch') : null; if (!b) return;
+      opts.theme = b.getAttribute('data-theme');
+      try { localStorage.setItem(key(), opts.theme); } catch (er) {}
+      [].forEach.call(panel.querySelectorAll('.ac-swatch'), function (s) { s.setAttribute('aria-pressed', String(s === b)); });
+      draw();
+    });
+    panel.querySelector('.ac-save').addEventListener('click', function () { save(this); });
+    panel.querySelector('.ac-copy').addEventListener('click', function () { copy(this); });
+    draw();
+    return panel;
+  }
+  function update(o) { if (!opts) return; for (var k in o) if (o[k] != null) opts[k] = o[k]; draw(); }
+  function load(src) { return new Promise(function (ok) { if (!src) return ok(null); var i = new Image(); i.crossOrigin = 'anonymous'; i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
+  function fit(x, s, px, py, max) {
+    var m = /^(.*?)(\d+)px\s*(.*)$/.exec(x.font), size = +m[2];
+    while (x.measureText(s).width > max && size > 12) { size -= 1; x.font = m[1] + size + 'px ' + m[3]; }
+    x.fillText(s, px, py);
+  }
+  function spaced(x, s, px, py, gap, max) {
+    if ('letterSpacing' in x) x.letterSpacing = gap + 'px';
+    if (max) fit(x, s, px, py, max); else x.fillText(s, px, py);
+    if ('letterSpacing' in x) x.letterSpacing = '0px';
+  }
+  function draw() {
+    var o = opts;
+    var fonts = document.fonts ? Promise.all([document.fonts.load('84px "Cracked Imperia"'), document.fonts.load('700 28px Almarai'), document.fonts.load('800 150px Almarai')]).catch(function () {}) : Promise.resolve();
+    return fonts.then(function () { return load(o.icon); }).then(function (icon) {
+      var W = 1200, H = 600, c = document.createElement('canvas'); c.width = W; c.height = H;
+      var x = c.getContext('2d'), T = THEMES[o.theme] || THEMES.ink;
+      x.fillStyle = T.bg; x.fillRect(0, 0, W, H);
+      x.fillStyle = T.band; x.fillRect(0, 0, W, 14); x.fillRect(0, H - 14, W, 14);
+      x.strokeStyle = T.frame; x.lineWidth = 2; x.strokeRect(40, 54, W - 80, H - 108);
+      x.textBaseline = 'alphabetic'; x.textAlign = 'left';
+      // left: whose run, which game, which week, and their ship
+      x.fillStyle = T.soft; x.font = '800 22px Almarai, sans-serif'; spaced(x, "THE ARCADE · CELLO'S GATE TREASURE HUNT", 80, 122, 3, 620);
+      x.fillStyle = T.text; x.font = '84px "Cracked Imperia", Impact, sans-serif'; spaced(x, o.game.toUpperCase(), 80, 230, 2, 600);
+      if (o.name) { x.fillStyle = T.text; x.font = '700 28px Almarai, sans-serif'; spaced(x, String(o.name).toUpperCase(), 80, 292, 2, 600); }
+      x.fillStyle = T.soft; x.font = '700 24px Almarai, sans-serif'; spaced(x, weekLine(), 80, o.name ? 336 : 300, 2, 600);
+      if (icon) {
+        var ih = 120, iw = Math.min(260, ih * icon.naturalWidth / icon.naturalHeight), px = 86, py = 380;
+        var m = document.createElement('canvas'); m.width = Math.ceil(iw); m.height = ih; var mx = m.getContext('2d');
+        mx.drawImage(icon, 0, 0, iw, ih); mx.globalCompositeOperation = 'source-in'; mx.fillStyle = T.text; mx.fillRect(0, 0, iw, ih);
+        for (var a = 0; a < 16; a++) x.drawImage(m, px + Math.cos(a / 8 * Math.PI) * 3, py + Math.sin(a / 8 * Math.PI) * 3);
+        x.drawImage(icon, px, py, iw, ih);
+      }
+      // right: the result, the time, the place on the board
+      x.textAlign = 'center';
+      x.fillStyle = T.text; x.font = '800 26px Almarai, sans-serif'; spaced(x, o.label.toUpperCase(), 930, 178, 4, 380);
+      x.fillStyle = T.stat; x.font = '800 150px Almarai, sans-serif'; fit(x, String(o.stat), 930, 330, 380);
+      var y = 384;
+      if (o.line) { x.fillStyle = T.text; x.font = '800 28px Almarai, sans-serif'; spaced(x, o.line.toUpperCase(), 930, y, 3, 380); y += 44; }
+      var place = o.rank ? '#' + o.rank + ' ON THIS WEEK’S BOARD' : (o.best ? 'BEST THIS WEEK: ' + o.best : '');
+      if (place) { x.fillStyle = T.stat; x.font = '800 26px Almarai, sans-serif'; spaced(x, place, 930, y, 2, 380); }
+      x.fillStyle = T.text; x.font = '700 21px Almarai, sans-serif'; fit(x, o.site.toUpperCase(), 930, 506, 360);
+      x.textAlign = 'left';
+      url = c.toDataURL('image/png');
+      var im = panel && panel.querySelector('.ac-img'); if (im) im.src = url;
+      return url;
+    });
+  }
+  function text() {
+    return opts.game + ': ' + opts.label.toLowerCase() + ' ' + opts.stat + (opts.line ? ' (' + opts.line.toLowerCase() + ')' : '') +
+      (opts.rank ? ', #' + opts.rank + ' on this week’s board' : '') + '. Play at ' + opts.site;
+  }
+  function save(btn) {
+    if (!url) return;
+    fetch(url).then(function (r) { return r.blob(); }).then(function (b) {
+      var name = opts.game.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + opts.stat + '.png';
+      var file = typeof File === 'function' ? new File([b], name, { type: 'image/png' }) : null;
+      // phones: the share sheet, so it can go straight into Discord. Everywhere else: a download.
+      if (file && navigator.canShare && navigator.canShare({ files: [file] }) && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        return navigator.share({ files: [file], text: text() }).catch(function () {});
+      }
+      var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = name;
+      document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+      btn.textContent = 'SAVED!'; setTimeout(function () { btn.textContent = 'SAVE MY CARD'; }, 2200);
+    });
+  }
+  function copy(btn) {
+    var done = function () { btn.textContent = 'COPIED!'; setTimeout(function () { btn.textContent = 'COPY MY SCORE'; }, 2200); };
+    try { navigator.clipboard.writeText(text()).then(done, function () { window.prompt('Copy your score:', text()); }); }
+    catch (e) { window.prompt('Copy your score:', text()); }
+  }
+  return { show: show, update: update, scrollTo: function () { if (panel) try { panel.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} } };
+})();
+/* ARCADE-CARD:END */</script>
+<script>
+/* Goma Goons weekly boards (11/2): lootbox.gs answers goonscampstart/score/top and goonsffastart/score/top. The same
+   shape as Hold the Wall!'s board; the player form is shared with the loot box page and the arcade (thLoot:me). */
+(function(){
+  var SEC=document.getElementById('ma-skyduel');if(!SEC)return;
+  var BOARD=true,ENDPOINT='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var ME='thLoot:me',TZ='America/New_York',WB='thGoons:best',SITE='mauriceafrich.com/goma-goons-43216';
+  function q(c){return SEC.querySelector(c);}
+  var postEl=q('.gb-post'),msgEl=q('.gb-msg'),whoEl=q('.gb-who'),boards={campaign:q('.gb-camp'),ffa:q('.gb-ffa')},lefts=SEC.querySelectorAll('.gb-left');
+  function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function loadJ(k,d){try{var v=JSON.parse(localStorage.getItem(k)||'null');return v==null?d:v;}catch(e){return d;}}
+  function storeJ(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+  var me=loadJ(ME,{})||{},RUN=null;
+  function msg(t,err){msgEl.textContent=t;msgEl.className='gb-msg'+(err?' err':'');}
+  function key(mode){return mode==='ffa'?'goonsffa':'goonscamp';}
+  function api(action,payload,done){payload=payload||{};payload.action=action;if(!BOARD)return done({ok:false,error:'off'});send(payload,done,1);}
+  function send(payload,done,attempt){var settled=false;
+    var finish=function(res){if(settled)return;settled=true;var flaky=!res||(!res.ok&&(res.error==='network'||res.error==='server'||res.error==='empty'));
+      if(flaky&&attempt<2)return setTimeout(function(){send(payload,done,attempt+1);},1500);done(res||{ok:false,error:'network'});};
+    var wait=setTimeout(function(){finish({ok:false,error:'wait'});},40000),fin=finish;finish=function(res){clearTimeout(wait);fin(res);};
+    try{fetch(ENDPOINT,{method:'POST',body:JSON.stringify(payload)}).then(function(r){return r.json();}).then(finish).catch(function(){finish(null);});}catch(e){finish(null);}}
+  function nyParts(){var f=new Intl.DateTimeFormat('en-US',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',weekday:'short',hour12:false}).formatToParts(new Date());
+    var o={};for(var i=0;i<f.length;i++)o[f[i].type]=f[i].value;if(o.hour==='24')o.hour='00';o.wd=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(o.weekday);return o;}
+  function weekId(){var p=nyParts(),add=(5-p.wd+7)%7;return new Date(Date.UTC(+p.year,+p.month-1,+p.day+add)).toISOString().slice(0,10);}
+  function weekLeft(){var p=nyParts(),add=(5-p.wd+7)%7;return add*86400+86400-(+p.hour*3600+ +p.minute*60+ +p.second);}
+  function fmtN(n){return Math.floor(n).toLocaleString('en-US');}
+  function weekBest(){var b=loadJ(WB,null);return b&&b.week===weekId()?+b.score||0:0;}
+  function noteWeekBest(v){if(v>weekBest())storeJ(WB,{week:weekId(),score:v});paintLocal();}
+  function paintLocal(){var b=weekBest();q('.gb-mybest').textContent=fmtN(b);q('.gb-mynote').textContent=b?'Kept on this device.':'No games yet this week.';}
+  function myName(){return me.handle?'@'+String(me.handle).replace(/^@+/,''):(me.first_name||'');}
+  function paintBoard(mode,list){var el=boards[mode];
+    if(!list||!list.length){el.innerHTML='<li><span class="gb-empty">No scores yet this week. Be the first.</span></li>';return;}
+    var mine=myName();el.innerHTML=list.map(function(r,i){return '<li'+((r.me||(mine&&r.name===mine))?' class="me"':'')+'><i>'+(i+1)+'</i><span>'+esc(r.name)+'</span><b>'+fmtN(r.score)+'</b></li>';}).join('');}
+  function refresh(mode){api(key(mode)+'top',{},function(res){if(res&&res.ok)paintBoard(mode,res.top);else boards[mode].innerHTML='<li><span class="gb-empty">'+(res&&res.preview?'The board is offline right now.':'The board is resting. Try again soon.')+'</span></li>';});}
+  function tick(){var t=weekLeft(),dd=Math.floor(t/86400),hh=Math.floor(t%86400/3600),mm=Math.floor(t%3600/60),txt=(dd?dd+'d ':'')+hh+'h '+('0'+mm).slice(-2)+'m';Array.prototype.forEach.call(lefts,function(e){e.textContent=txt;});}
+  paintLocal();tick();setInterval(tick,20000);refresh('campaign');refresh('ffa');
+  function start(mode){var run={mode:mode,ticket:null,ticketWait:[],offline:false};RUN=run;postEl.hidden=true;whoEl.hidden=true;whoEl.innerHTML='';msg('');
+    api(key(mode)+'start',{},function(res){run.ticket=res&&res.ok?res.ticket:'';run.offline=!!(res&&res.preview);var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});return run;}
+  function resume(mode,ticket){var run={mode:mode,ticket:ticket||'',ticketWait:[],offline:false};RUN=run;postEl.hidden=true;return run;}
+  function end(run,data){run.data=data;noteWeekBest(data.score);
+    if(window.ArcadeCard)try{ArcadeCard.show({game:'Goma Goons',after:postEl,label:run.mode==='ffa'?'PLACE':'LEVEL',stat:String(run.mode==='ffa'?data.place:data.level),line:'SCORE '+fmtN(data.score),name:myName(),site:SITE,
+      icon:'https://africhmaurice.github.io/site/assets/games/141-goma-red.webp'});}catch(e){}
+    if(!BOARD||data.score<=0)return;
+    if(run.mode==='campaign'&&!data.fullRun){msg('Practice run (it did not start at level 1), so it stays off the board.');postEl.hidden=false;return;}
+    if(run.offline){msg('The board is offline right now, so this game stays on this device.');postEl.hidden=false;return;}
+    if(me.email)submit(run);else who(run);}
+  function who(run){msg('Put your score on the board below.');postEl.hidden=false;whoEl.hidden=false;
+    whoEl.innerHTML='<div class="gb-form"><label for="gb-first">First name</label><input id="gb-first" autocomplete="given-name">'+
+      '<label for="gb-email">Email you use for the hunt</label><input id="gb-email" type="email" autocomplete="email" inputmode="email">'+
+      '<label for="gb-handle">Social handle (shown on the board)</label><input id="gb-handle" placeholder="@yourname" autocomplete="off">'+
+      '<label for="gb-platform">Where that handle lives</label><select id="gb-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option></select>'+
+      '<label for="gb-country">Country</label><select id="gb-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select>'+
+      '<input id="gb-other" placeholder="Which country?" hidden><button type="button" class="sd-go" id="gb-saveme">SAVE MY SCORE</button></div>';
+    var c=document.getElementById('gb-country'),other=document.getElementById('gb-other');c.onchange=function(){other.hidden=c.value!=='__other';};
+    document.getElementById('gb-saveme').onclick=function(){var g=function(i){return document.getElementById(i).value.trim();};
+      var p={first_name:g('gb-first'),email:g('gb-email'),handle:g('gb-handle'),platform:document.getElementById('gb-platform').value,country:c.value==='__other'?other.value.trim():c.value};
+      if(!p.first_name)return msg('A first name, please.',1);if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email))return msg('That email does not look right.',1);if(!p.country)return msg('Which country are you hunting from?',1);
+      me=p;storeJ(ME,me);whoEl.hidden=true;whoEl.innerHTML='';submit(run);};}
+  function submit(run){
+    if(run.ticket===null){msg('Logging your game...');postEl.hidden=false;run.ticketWait.push(function(){submit(run);});return;}
+    if(run.offline){msg('The board is offline right now, so this game stays on this device.');postEl.hidden=false;return;}
+    if(!run.ticket){msg('The board could not check in when this game started, so it cannot go on the board. Play again!',1);postEl.hidden=false;return;}
+    msg('Logging your game...');postEl.hidden=false;var d=run.data;
+    var payload={ticket:run.ticket,email:me.email,first_name:me.first_name,handle:me.handle,platform:me.platform,country:me.country,score:d.score,secs:d.secs};
+    if(run.mode==='ffa'){payload.place=d.place;payload.kos=d.kos;}else{payload.level=d.level;payload.fullRun=d.fullRun;}
+    api(key(run.mode)+'score',payload,function(res){if(run!==RUN)return;
+      if(res&&res.ok){if(res.status==='host'){msg('Practice game. Your games stay off the board.');return;}
+        msg((res.rank?'Logged! You are #'+res.rank+' this week.':'Logged!')+' Best this week: '+fmtN(res.best)+'.');
+        if(window.ArcadeCard&&ArcadeCard.update)try{ArcadeCard.update({rank:res.rank,best:res.best});}catch(e){}
+        whoEl.hidden=false;whoEl.innerHTML='<p class="gb-quiet">Playing as '+esc(me.first_name||me.email)+'. <a class="gb-notme">Not you?</a></p>';
+        whoEl.querySelector('.gb-notme').onclick=function(){try{localStorage.removeItem(ME);}catch(e){}me={};who(run);};
+        if(res.top)paintBoard(run.mode,res.top);return;}
+      var e=res&&res.error;
+      if(e==='slow'){msg('Easy, commander. Logging it in a few seconds...');return setTimeout(function(){submit(run);},6000);}
+      if(e==='wait'){msg('The ship\u2019s log is answering slowly. Your game has most likely landed already: check the board in a minute.');setTimeout(function(){refresh(run.mode);},10000);return;}
+      msg(({email:'That email does not look right.',closed:'The hunt is over, so games no longer go on the board.',ticket:'This game took too long to check in, so it cannot go on the board.',
+        check:'The Captain could not verify this game.',limit:'That is a lot of goon fighting for one day. Come back tomorrow!'})[e]||'The ship is slow today. Give it another go in a moment.',1);
+      if(!e||e==='network'||e==='server'||e==='empty'){whoEl.hidden=false;whoEl.innerHTML='<button type="button" class="sd-alt">TRY AGAIN</button>';whoEl.querySelector('button').onclick=function(){whoEl.hidden=true;submit(run);};}});}
+  window.GBoard={start:start,resume:resume,end:end,refresh:refresh};
+})();
+</script>
+<script>
+(function(){
+  var d=document.getElementById('ma-skyduel');if(!d)return;
+  var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+
+  /* ---- loot box 141 ---- */
+  var K='RDdXQjlSSkQ9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+
+  var ART='https://africhmaurice.github.io/site/assets/games/';
+  // crossOrigin: the maps are read pixel by pixel, so the drawings must load CORS-clean from GitHub Pages
+  function img(f){var i=new Image();i.crossOrigin='anonymous';i.src=ART+f;return i;}
+  var IM={atomic:img('140-atomic.png'),nuke:img('140-boom.webp'),ship:img('ship-red.webp'),mine:[img('141-mine-1.webp'),img('141-mine-2.webp'),img('141-mine-3.webp')],bolt:img('141-lightning.webp'),sky:img('141-sky.webp'),
+    rock:img('141-rock.webp'),burst:[img('140-burst-1.webp'),img('140-burst-2.webp'),img('140-burst-3.webp')],coin:[img('141-coin-10.webp'),img('141-coin-15.webp')]};
+  var GOMAS=[['yellow','Daisy'],['red','Molt'],['sand','Sandy'],['black','Onyx'],['blue','Bluey'],['green','Vern'],['purple','Po'],['white','Galaxy'],['teal','Pebble'],['gold','Goldie'],['lime','Mossy'],['brown','Dirty Dan']];   // Maurice's names, 11/1
+  var GCOL=['#e3c64a','#e8442a','#d9b98f','#45454a','#3a6fc4','#4f9a3a','#b06fd8','#ececec','#2fbf9a','#f0b323','#b5c42a','#7a4a2e'];   // each goon's mortar color
+  var NMAPS=17;IM.maps=[];
+  // only these maps have water or lava pools (1, 3, and 12); on the others red, orange, and blue paint is just ground (ships, blasts)
+  var LIQ=[1,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0];for(var mi=1;mi<=NMAPS;mi++)IM.maps.push(img('141-map-'+mi+'.webp'));
+  IM.mort={rest:img('141-mortar-rest.png'),fire:[img('141-mortar-fire1.png'),img('141-mortar-fire2.png'),img('141-mortar-fire3.png')]};
+  // pivot (tube bottom) of each mortar drawing, in its pixels; every tube is 120 px long and points right
+  var MP={rest:[4,23],fire:[[4,31],[5,48],[4,32]]};
+  IM.gomas=GOMAS.map(function(g){return img('141-goma-'+g[0]+'.webp');});
+  var myGoma=1;try{var sg=localStorage.getItem('ma-mortar-goma');var gi0=GOMAS.findIndex(function(g){return g[0]===sg;});if(gi0>=0)myGoma=gi0;}catch(e){}
+  function rivalGoma(L){var o=[];for(var i=0;i<GOMAS.length;i++)if(i!==myGoma)o.push(i);return o[(L-1)%o.length];}
+  function ok(i){return i&&i.complete&&i.naturalWidth>0;}
+  // tinted copies, made once each drawing has loaded: a goon's mortar in its color (dark outline keeps the bands), the grey stone
+  var TUBE={},STONE=null;
+  function tube(gi,fi){var key=gi+':'+fi,im=fi<0?IM.mort.rest:IM.mort.fire[fi],pv=fi<0?MP.rest:MP.fire[fi];if(TUBE[key])return TUBE[key];if(!ok(im))return null;
+    var w=im.naturalWidth,h=im.naturalHeight,t=document.createElement('canvas');t.width=w;t.height=h;var tg=t.getContext('2d');tg.drawImage(im,0,0);
+    tg.globalCompositeOperation='source-atop';tg.fillStyle=GCOL[gi];tg.fillRect(0,0,Math.min(w,pv[0]+122),h);
+    var c=document.createElement('canvas');c.width=w+2;c.height=h+2;var g=c.getContext('2d');
+    [[0,1],[2,1],[1,0],[1,2]].forEach(function(o){g.drawImage(im,o[0],o[1]);});g.drawImage(t,1,1);
+    return TUBE[key]={c:c,px:pv[0]+1,py:pv[1]+1};}
+  function stone(){if(STONE)return STONE;if(!ok(IM.rock))return null;var c=document.createElement('canvas');c.width=48;c.height=52;var g=c.getContext('2d');g.drawImage(IM.rock,0,0,48,52);
+    g.globalCompositeOperation='saturation';g.fillStyle='#808080';g.fillRect(0,0,48,52);g.globalCompositeOperation='destination-in';g.drawImage(IM.rock,0,0,48,52);
+    g.globalCompositeOperation='source-atop';g.fillStyle='rgba(170,170,170,.25)';g.fillRect(0,0,48,52);return STONE=c;}
+
+  /* ---- the numbers (all in one place, to tune with Maurice) ------------------------------------------------- */
+  // HUGE BOARDS (11/2): the world is 1920 wide (the maps at full width) with open sky above; goons are 14 across,
+  // a quarter of their old size next to the map. A camera shows part of it; Overview shows all of it.
+  var WW=1920,SKY=700,GS=18,MORTAR_L=12;   // v7: goons a little bigger (was 14)
+  var BOX_LEVEL=3,HP_CREW=100,WIN_BONUS=100,WALK=50,WALK_SPEED=30,STEP=1/120,GC=400,CREW_MAX=5,FFA_N=12;
+  var G=360,VMAX=860,WK=5;   // a full-power shot at 45 degrees carries about the width of the map
+  function dl(L){return 1+(L-1)*9/5;}   // levels 1-6 cover the old ten steps of difficulty; past 6 it keeps climbing to the floors below
+  function rivalHp(L){return L<=6?40+20*(L-1):150+12*(L-6);}   // v7: 40, 60, 80 ... 140, then +12 a level
+  function rivalCount(L){return L>=13?5:L>=7?4:L>=3?3:2;}   // v7: two rivals on levels 1-2 so the start moves quickly
+  function aimErr(L){return mode==='ffa'?5:Math.max(1,12-1.15*(dl(L)-1));}      // degrees, one standard deviation
+  function powErr(L){return mode==='ffa'?4:Math.max(1,10-.95*(dl(L)-1));}       // percent of power
+  function windMax(L){return mode==='ffa'?6:Math.min(12,3+.8*(dl(L)-1));}
+  var WEAPONS=[
+    {k:'ball',name:'Mortar Stone',ammo:Infinity,R:15,dmg:40,wind:1,grav:1,pmax:1},
+    {k:'storm',name:'Lightning Strike',ammo:2,R:12,dmg:50,wind:1,grav:1,pmax:1},
+    {k:'atomic',name:'Red Atomic',ammo:1,R:40,dmg:80,wind:.6,grav:1.1,pmax:.85},
+    {k:'flare',name:'Barrage',ammo:1,R:4,dmg:0,wind:1,grav:1,pmax:.95},
+    {k:'bomb',name:'Goma Bomb',ammo:0,R:11,dmg:26,wind:1,grav:1,pmax:.95,split:.55}
+  ];
+  var SHARD={k:'shard',name:'Goma Bomb',R:10,dmg:24,wind:1,grav:1,pmax:1};
+  var BOMBLET={k:'bomblet',name:'Barrage',R:12,dmg:24,wind:0,grav:1,pmax:1},CHUNK={k:'chunk',name:'Shatter',R:7,dmg:12,wind:1,grav:1,pmax:1};
+  var UPS=[
+    {k:'blast',name:'Bigger blasts',what:'+15% blast size',cost:40,max:3},
+    {k:'dmg',name:'Heavier stones',what:'+15% damage',cost:40,max:3},
+    {k:'ammo',name:'Ammo pack',what:'+1 Lightning Strike, Red Atomic, and Barrage every level',cost:35,max:3},
+    {k:'spray',name:'Spray Shot',what:'Mortar Stones fly three at a time',cost:50,max:1},
+    {k:'shatter',name:'Shatter',what:'Mortar Stones break into five chunks where they land',cost:55,max:1},
+    {k:'burn',name:'Burning',what:'Mortar Stones burn straight down through the ground',cost:55,max:1},
+    {k:'bomb',name:'Goma Bomb',what:'New weapon: splits into three',cost:60,max:1},
+    {k:'heal',name:'Patch up',what:'+40 health to every goon',cost:25,max:Infinity},
+    {k:'crew',name:'Extra goon',what:'One more crew member, up to 5',cost:80,max:2}
+  ];
+  var CRATES=['heal','ammo','boost'],PICKS=['heal','gem','turn','life','big','token'];
+
+  /* ---- state ---------------------------------------------------------------------------------------------------- */
+  var cv=d.querySelector('canvas'),cx=cv.getContext('2d'),tc=document.createElement('canvas'),tx=tc.getContext('2d');
+  var $=function(q){return d.querySelector(q);};
+  var lvEl=$('.sd-lv'),lvWrap=$('.sd-lvw'),scoreEl=$('.sd-score'),bestEl=$('.sd-best'),coinEl=$('.sd-coin'),hp0El=$('.sd-hp0'),hp1El=$('.sd-hp1'),ylEl=$('.sd-yl'),rlEl=$('.sd-rl'),msg=$('.sd-msg'),pauseBtn=$('.sd-pause');
+  var starsEl=$('.sd-stars'),starTotEl=$('.sd-startot'),starWrap=$('.sd-starw');
+  var panel=$('.sd-panel'),ph=$('.sd-ph'),pnote=$('.sd-note'),goBtn=$('.sd-go'),altBtn=$('.sd-alt'),win=$('.sd-win'),wpnEl=$('.sd-weapons');
+  var modesEl=$('.sd-modes'),pickEl=$('.sd-pick'),shopEl=$('.sd-shop'),upsEl=$('.sd-ups'),coins2El=$('.sd-coins2'),ovBtn=$('.sd-ov'),findBtn=$('.sd-find');
+  var padEl=$('.sd-pad'),bL=$('.sd-l'),bR=$('.sd-r'),bJ=$('.sd-j'),bN=$('.sd-next'),bF=$('.sd-fire');
+  var W=WW,H=WW,VW=960,VH=540,DPR=1,narrow=false,FS=16,HFS=12;
+  var MAP=null,usingMap=false,liq=new Uint8Array(1),lc=document.createElement('canvas'),lx=lc.getContext('2d'),mini=document.createElement('canvas'),miniDirty=true,miniT=0;
+  var solid=new Uint8Array(1),crew=[],proj=[],fx=[],ammo=[[],[]],turnIdx=[0,0];
+  var phase='panel',paused=false,level=1,score=0,finalScore=null,runFrom=1,wind=0,team=0,active=null,weapon=0,myWeapon=0,walkLeft=WALK,jumped=false,walkDir=0;
+  var shotTeam=0,settleT=0,ai=null,aiMul=1,last=0,acc=0,clock=0,boxShown=false,walkAcc=0;
+  var bigNext=[],extraTurn=[],round=0,playT=0,myKos=0,lvDrops=0,gRun=null,mode='campaign',TEAMS=2,coins=0,up={},crewState=null,shots=0,hits=0,streak=0,lvShots=0,lvHits=0,cur=null,pickups=[],boost=[],ffaRound=0,ffaVar=0,place=0,panelKind='start',lastBonus=null,lastPlan=null,variant=null;
+  var cam={cx:WW/2,cy:WW/2,z:1},camHold=false,overview=false;
+  // stars: best per level number, kept on this device; the run save (between levels only, so a level can't be replayed)
+  var SAVE_KEY='ma-goons-save',STAR_KEY='ma-goons-stars',starBest={},resumeSave=null,lvStart0=3;
+  try{starBest=JSON.parse(localStorage.getItem(STAR_KEY)||'{}')||{};}catch(e){starBest={};}
+  var bests={campaign:0,ffa:0};try{bests.campaign=+localStorage.getItem('ma-skyduel-best')||0;bests.ffa=+localStorage.getItem('ma-mortar-ffa-best')||0;}catch(e){}
+
+  function rand(a,b){return a+Math.random()*(b-a);}
+  function gauss(){var u=1-Math.random(),v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+  function say(t){msg.textContent=t;}
+
+  /* ---- maps: his 12, plus mirrored and upside-down versions for the endless cycle ------------------------------- */
+  // Upside-down versions are used only when they still make sense: no water or lava in the top half, ground to stand on
+  // across most of the map, and not just one flat slab (a bumpy top, or two or more floors).
+  var VARS=null;
+  function mapSize(n){var im=IM.maps[n];return ok(im)?Math.round(WW*im.naturalHeight/im.naturalWidth):909;}
+  // every version must leave standing room: a top to stand on across most columns (painted pixels count by alpha, so
+  // white skulls, clouds, and ship stripes are ground); upside-down ones also need no water or lava in the top half and
+  // more than one flat slab (a bumpy top, or two or more floors)
+  function mapOk(n,fy){var im=IM.maps[n],w=240,h=Math.round(w*im.naturalHeight/im.naturalWidth),c=document.createElement('canvas');c.width=w;c.height=h;var g=c.getContext('2d');
+    if(fy){g.translate(0,h);g.scale(1,-1);}g.drawImage(im,0,0,w,h);var p=g.getImageData(0,0,w,h).data,stand=0,tops=[],layers=0;
+    for(var x=0;x<w;x++){var top=-1,inS=false,ly=0;for(var y=0;y<h;y++){var o=(y*w+x)*4;if(p[o+3]<128){inS=false;continue;}var r=p[o],gg=p[o+1],b=p[o+2];
+        if(LIQ[n]&&((b>100&&gg>100&&r<90)||(r>110&&gg<90&&b<60&&r>2*gg))){if(fy&&y<h/2)return false;inS=false;continue;}if(!inS){ly++;inS=true;}if(top<0)top=y;}
+      if(top>=0){stand++;tops.push(top);}layers+=ly;}
+    if(stand<w*(fy?.6:.5))return false;if(!fy)return true;var m=tops.reduce(function(a,b){return a+b;},0)/tops.length,sd=Math.sqrt(tops.reduce(function(a,b){return a+(b-m)*(b-m);},0)/tops.length);
+    return sd>=h*.04||layers/w>=1.8;}
+  function variants(){
+    var all=IM.maps.every(ok);if(VARS&&VARS.full)return VARS.list;
+    var list=[],good=[];for(var n=0;n<NMAPS;n++){var g2=true;if(all){try{g2=mapOk(n,false);}catch(e){}}if(g2)good.push(n);}
+    good.forEach(function(n){list.push({n:n,fx:false,fy:false});});good.forEach(function(n){list.push({n:n,fx:true,fy:false});});
+    if(all){try{for(n=0;n<NMAPS;n++)if(mapOk(n,true)){list.push({n:n,fx:false,fy:true});list.push({n:n,fx:true,fy:true});}}catch(e){}}
+    VARS={full:all,list:list};return list;}
+  function levelVariant(L){var v=variants();return v[(L-1)%v.length];}
+
+  function setView(){
+    narrow=(d.querySelector('.sd-stage').clientWidth||960)<640;VW=narrow?560:960;VH=narrow?600:540;FS=narrow?24:16;HFS=narrow?18:12;
+    DPR=Math.min(window.devicePixelRatio||1,2);cv.width=VW*DPR;cv.height=VH*DPR;
+  }
+  function setWorld(v){
+    variant=v;var mh=mapSize(v.n);W=WW;H=mh+SKY;MAP={x:0,y:H-mh,w:WW,h:mh};tc.width=W;tc.height=H;
+  }
+
+  /* ---- the ground: a pixel mask (solid) and a painted copy (tc) that blasts carve ----------------------------- */
+  function solidAt(x,y){x=Math.round(x);y=Math.round(y);if(x<0||x>=W||y<0||y>=H)return 0;return solid[y*W+x];}
+  function liqAt(x,y){x=Math.round(x);y=Math.round(y);if(x<0||x>=W||y<0||y>=H||!usingMap)return 0;return liq[y*W+x];}
+  function mapTerrain(im,v){
+    solid=new Uint8Array(W*H);liq=new Uint8Array(W*H);var c=document.createElement('canvas');c.width=W;c.height=H;var g=c.getContext('2d');
+    g.save();g.translate(v.fx?MAP.x+MAP.w:MAP.x,v.fy?MAP.y+MAP.h:MAP.y);g.scale(v.fx?-1:1,v.fy?-1:1);g.drawImage(im,0,0,MAP.w,MAP.h);g.restore();
+    var id=g.getImageData(0,0,W,H),p=id.data,L=g.createImageData(W,H),q=L.data;
+    for(var i=0;i<W*H;i++){var o=i*4,a=p[o+3];if(a<128){p[o+3]=0;continue;}var r=p[o],gg=p[o+1],b=p[o+2];
+      var wet=!LIQ[v.n]?0:(b>100&&gg>100&&r<90)?1:(r>110&&gg<90&&b<60&&r>2*gg)?2:0;
+      if(wet){liq[i]=wet;q[o]=r;q[o+1]=gg;q[o+2]=b;q[o+3]=255;p[o+3]=0;}else{solid[i]=1;p[o+3]=255;}}
+    tx.clearRect(0,0,W,H);tx.putImageData(id,0,0);lc.width=W;lc.height=H;lx.putImageData(L,0,0);
+  }
+  function genTerrain(){
+    var v=mode==='ffa'?variants()[ffaVar%variants().length]:levelVariant(level);setWorld(v);
+    var im=IM.maps[v.n];usingMap=ok(im);if(usingMap){try{mapTerrain(im,v);miniDirty=true;return;}catch(e){usingMap=false;}}
+    solid=new Uint8Array(W*H);
+    var isl=[{a:.02,b:.35,top:rand(.62,.7),th:rand(.14,.2)},{a:rand(.41,.44),b:rand(.56,.59),top:rand(.55,.64),th:rand(.1,.14)},{a:.65,b:.98,top:rand(.62,.7),th:rand(.14,.2)}];
+    isl.forEach(function(I){
+      var x0=Math.round(I.a*W),x1=Math.round(I.b*W),p1=rand(0,6),p2=rand(0,6),p3=rand(0,6),f1=rand(.008,.015),f2=rand(.025,.045);
+      for(var x=x0;x<=x1;x++){var u=(x-x0)/(x1-x0),e=Math.sin(u*Math.PI);
+        var top=Math.round(I.top*H+Math.sin(x*f1+p1)*14+Math.sin(x*f2+p2)*6+(1-Math.pow(e,.35))*40);
+        var bot=Math.min(H-30,Math.round(I.top*H+I.th*H*Math.pow(e,.8)+Math.sin(x*.05+p3)*6));
+        for(var y=Math.max(0,top);y<bot;y++)solid[y*W+x]=1;}
+    });
+    paintTerrain();miniDirty=true;
+  }
+  function hash(x,y){var h=(x*374761393+y*668265263)|0;h=Math.imul(h^(h>>>13),1274126177);return ((h^(h>>>16))>>>0)/4294967295;}
+  function paintTerrain(){
+    var id=tx.createImageData(W,H),p=id.data;
+    for(var x=0;x<W;x++){var depth=-1;
+      for(var y=0;y<H;y++){var i=y*W+x;if(!solid[i]){depth=-1;continue;}depth++;var o=i*4,r,g,b;
+        if(depth<3){r=58;g=219;b=151;}else if(depth<7){r=38;g=142;b=98;}
+        else{var band=Math.floor((y+Math.sin(x*.05)*4)/9)%2,n=hash(x>>1,y>>1)*16-8,k=Math.max(.55,1-depth/260);
+          r=(band?92:78)*k+n;g=(band?72:60)*k+n;b=(band?52:44)*k+n;}
+        p[o]=r;p[o+1]=g;p[o+2]=b;p[o+3]=255;}}
+    tx.putImageData(id,0,0);
+  }
+  function carve(x,y,R){
+    tx.save();tx.globalCompositeOperation='source-atop';tx.fillStyle='rgba(28,16,8,.6)';tx.beginPath();tx.arc(x,y,R+2,0,7);tx.fill();
+    tx.globalCompositeOperation='destination-out';tx.beginPath();tx.arc(x,y,R,0,7);tx.fill();tx.restore();
+    var R2=R*R;for(var dy=-Math.ceil(R);dy<=R;dy++){var yy=Math.round(y+dy);if(yy<0||yy>=H)continue;var span=Math.floor(Math.sqrt(Math.max(0,R2-dy*dy)));
+      for(var xx=Math.max(0,Math.round(x-span));xx<=Math.min(W-1,Math.round(x+span));xx++)solid[yy*W+xx]=0;}
+    crew.forEach(function(c){c.ground=false;});miniDirty=true;
+  }
+  function surfaceY(x){for(var y=0;y<H;y++)if(solidAt(x,y))return y-1;return H+50;}
+
+  /* ---- goons -------------------------------------------------------------------------------------------------- */
+  function spotX(x,dir){var tries=0;while(tries<240&&(surfaceY(x)>H-8||liqAt(x,surfaceY(x)+3)||liqAt(x+3,surfaceY(x)+3)||liqAt(x-3,surfaceY(x)+3))){x+=dir*4;tries++;}return x;}
+  function member(t,gi,i,x,hp,max,face){return {team:t,goma:gi,i:i,x:x,y:surfaceY(x),vx:0,vy:0,hp:hp,max:max,alive:true,ground:true,face:face,ang:face<0?Math.PI*.75:Math.PI*.25,pow:62,hit:0};}
+  function freshCrew(n){var a=[];for(var i=0;i<n;i++)a.push({hp:HP_CREW,max:HP_CREW});return a;}
+  function placeCrew(){
+    crew=[];
+    if(mode==='ffa'){
+      TEAMS=FFA_N;var order=[];for(var g=0;g<GOMAS.length;g++)if(g!==myGoma)order.push(g);order.sort(function(){return Math.random()-.5;});
+      var slot=Math.floor(Math.random()*FFA_N),k=0;
+      for(var j=0;j<FFA_N;j++){var me=j===slot,gi=me?myGoma:order[k++],x=spotX(Math.round((j+.5)/FFA_N*W+rand(-20,20)),j<FFA_N/2?1:-1);
+        crew.push(member(me?0:k,gi,0,x,HP_CREW,HP_CREW,x<W/2?1:-1));}
+      return;}
+    TEAMS=2;var cs=crewState||freshCrew(3),n1=rivalCount(level),hpR=rivalHp(level),rg=rivalGoma(level);
+    for(var i=0;i<cs.length;i++){var f=.04+(cs.length>1?i*.2/(cs.length-1):.1),x0=spotX(Math.round((f+rand(-.008,.008))*W),1);crew.push(member(0,myGoma,i,x0,cs[i].hp,cs[i].max,1));}
+    for(i=0;i<n1;i++){f=.96-(n1>1?i*.2/(n1-1):.1);x0=spotX(Math.round((f+rand(-.008,.008))*W),-1);crew.push(member(1,rg,i,x0,hpR,hpR,-1));}
+  }
+  function living(t){return crew.filter(function(c){return c.alive&&c.team===t;});}
+  function others(){return crew.filter(function(c){return c.alive&&c.team!==0;});}
+  function teamsAlive(){var t={};crew.forEach(function(c){if(c.alive)t[c.team]=1;});return Object.keys(t).length;}
+  function teamHp(t){return living(t).reduce(function(a,c){return a+Math.max(0,Math.ceil(c.hp));},0);}
+  function feetSolid(x,y){return solidAt(x,y+1)||solidAt(x-2,y+1)||solidAt(x+2,y+1);}
+  function inside(x,y){return solidAt(x,y)||solidAt(x-2,y)||solidAt(x+2,y);}
+  function charStep(c,dt){
+    if(!c.alive)return;if(c.hit>0)c.hit-=dt;if(c.fireT>0)c.fireT-=dt;
+    if(c.ground){if(feetSolid(c.x,c.y))return;c.ground=false;}
+    c.vy+=GC*dt;var nx=c.x+c.vx*dt,ny=c.y+c.vy*dt,sx=c.vx>0?1:-1;
+    if(c.vx!==0&&(solidAt(nx+sx*3,c.y-5)||solidAt(nx+sx*3,c.y-9))){c.vx*=-.3;nx=c.x;}
+    if(c.vy<0&&solidAt(nx,ny-12)){c.vy=0;ny=c.y;}
+    if(c.vy>=0&&(inside(nx,ny)||feetSolid(nx,ny))){var k=0;while(inside(nx,ny)&&k<20){ny--;k++;}
+      if(c.vy>330){hurt(c,Math.round((c.vy-330)*.1),-1);}
+      c.vy=0;c.vx=0;c.ground=true;}
+    c.x=nx;c.y=ny;
+    if(c.y>H+20)fallOut(c,'');
+    else{var lw=liqAt(c.x,c.y)||liqAt(c.x,c.y-4);if(lw)fallOut(c,lw===2?'lava':'water');}
+  }
+  // out of the fight: off the map, sunk in water (a splash, then gone), or burned up in lava (flames and smoke, then gone)
+  function fallOut(c,how){
+    if(!c.alive)return;
+    if(c.team!==0&&shotTeam===0&&phase!=='aim'){score+=Math.max(0,Math.ceil(c.hp));c.lastBy=0;if(cur)cur.hit=true;}
+    c.hp=0;c.alive=false;
+    if(how==='water'){fx.push({k:'sink',t:0,x:c.x,y:c.y,goma:c.goma,face:c.face});say('Into the water.');}
+    else if(how==='lava'){fx.push({k:'burn',t:0,x:c.x,y:c.y,goma:c.goma,face:c.face});say('Into the lava.');}
+    fx.push({k:'txt',t:0,x:Math.max(30,Math.min(W-30,c.x)),y:Math.min(H-20,c.y)-24,label:'OUT',c:'#fffffe'});ko(c);hud();
+  }
+  // a knockout: the shooter's bonus, and in Free-for-All your place when you go down
+  function ko(c){
+    if(c.lastBy===0&&c.team!==0){myKos++;var b=mode==='ffa'?100:25;score+=b;fx.push({k:'txt',t:0,x:Math.max(40,Math.min(W-40,c.x)),y:c.y-40,label:'KO +'+b,c:'#ffd166'});}
+    if(c.team===0&&mode==='ffa'&&!living(0).length&&!place)place=1+crew.reduce(function(a,o){return a+(o.alive&&o.team!==0?1:0);},0);
+  }
+  function walkStep(c,dir,dist){
+    c.face=dir;if(Math.cos(c.ang)*dir<0)c.ang=Math.PI-c.ang;
+    var nx=c.x+dir*dist;if(nx<3||nx>W-3)return false;
+    var ny=c.y,k=0;function body(y){return solidAt(nx,y)||solidAt(nx+dir*2,y-4)||solidAt(nx,y-8);}
+    while(body(ny)&&k<5){ny--;k++;}if(body(ny))return false;
+    k=0;while(!feetSolid(nx,ny)&&k<4){ny++;k++;}
+    c.x=nx;c.y=ny;c.ground=feetSolid(nx,ny);return true;
+  }
+  function hurt(c,dm,byTeam){
+    if(!c.alive||dm<=0)return;var real=Math.min(dm,Math.max(0,Math.ceil(c.hp)));c.hp-=dm;c.hit=.25;if(byTeam>=0)c.lastBy=byTeam;
+    if(byTeam===0&&c.team!==0){score+=real;if(cur)cur.hit=true;}
+    fx.push({k:'txt',t:0,x:c.x,y:c.y-26,label:'-'+dm,c:c.team?'#89fbcb':'#ff8a5c'});hud();
+  }
+
+  /* ---- pickups (Free-for-All): coins and crates on the ground; walk onto one to grab it ------------------------ */
+  function spawnPickup(k){for(var t=0;t<150;t++){var x=Math.round(rand(.03,.97)*W),y=surfaceY(x);if(y>H-8||liqAt(x,y+3)||liqAt(x,y+6))continue;
+      if(crew.some(function(c){return c.alive&&Math.abs(c.x-x)<14;})||pickups.some(function(p){return Math.abs(p.x-x)<16;}))continue;   // never where a goon would grab it at once (reach 8)
+      pickups.push({k:k,x:x,y:y,v:k==='coin'?(Math.random()<.4?15:10):0});return true;}return false;}
+  function pickStep(){
+    pickups.forEach(function(p){if(!solidAt(p.x,p.y+1)&&!solidAt(p.x-2,p.y+1)&&!solidAt(p.x+2,p.y+1))p.y+=1;if(p.y>H||liqAt(p.x,p.y))p.gone=true;});
+    crew.forEach(function(c){if(!c.alive)return;pickups.forEach(function(p){if(!p.gone&&Math.abs(p.x-c.x)<GS*.6&&Math.abs(p.y-c.y)<GS*.8)grab(c,p);});});
+    pickups=pickups.filter(function(p){return !p.gone;});
+  }
+  function grab(c,p){p.gone=true;var me=c.team===0,lab;
+    if(p.k==='coin'){if(me){score+=p.v;coins++;}lab=me?'+'+p.v:'COIN';}
+    else if(p.k==='gem'){if(me)score+=50;lab='+50 GEM';}
+    else if(p.k==='turn'){extraTurn[c.team]=true;lab='EXTRA TURN';}
+    else if(p.k==='life'){var down=crew.filter(function(o){return o.team===c.team&&!o.alive;})[0];if(down){down.alive=true;down.hp=40;down.x=c.x+(c.x>W/2?-GS:GS);down.y=surfaceY(down.x);down.vx=0;down.vy=0;down.ground=true;down.hit=0;}else c.hp=Math.min(c.max,c.hp+40);lab='EXTRA LIFE';}
+    else if(p.k==='big'){bigNext[c.team]=true;lab='BIG BOULDER';}
+    else if(p.k==='token'){if(me){if(mode==='campaign'){coins+=25;lab='+25 COINS';}else{score+=25;lab='+25';}}else lab='TOKEN';}
+    else{if(me)score+=10;if(p.k==='heal'){c.hp=Math.min(c.max,c.hp+40);lab='+40 HEALTH';}else if(p.k==='ammo'){[1,2,3].forEach(function(i){ammo[c.team][i]++;});lab='+AMMO';}else{boost[c.team]=true;lab='POWER SHOT';}}
+    fx.push({k:'txt',t:0,x:p.x,y:p.y-20,label:lab,c:me?'#ffd166':'#c3a6ff'});hud();if(me)renderWeapons();}
+
+  /* ---- shots -------------------------------------------------------------------------------------------------- */
+  // each goon has his mortar tube beside it; the shot leaves the mouth
+  function mortarAt(c){return {x:c.x+c.face*GS*.5,y:c.y-GS*.2};}
+  function muzzle(c,a){var p=mortarAt(c);return {x:p.x+Math.cos(a)*MORTAR_L,y:p.y-Math.sin(a)*MORTAR_L};}
+  function shotVel(a,pw,w){var v=VMAX*w.pmax*pw/100;return {vx:Math.cos(a)*v,vy:-Math.sin(a)*v};}
+  function hitChar(x,y,skip){for(var i=0;i<crew.length;i++){var c=crew[i];if(c.alive&&c!==skip&&Math.abs(x-c.x)<GS*.32&&y>c.y-GS*.95&&y<c.y+1)return c;}return null;}
+  function fire(){
+    if(!active||!active.alive)return;var w=WEAPONS[weapon];if(!(ammo[team][weapon]>0))return;
+    ammo[team][weapon]--;active.fireT=.32;var m=muzzle(active,active.ang),v=shotVel(active.ang,active.pow,w);
+    var rm=1,dm=1;if(team===0&&mode==='campaign'){rm=1+.15*(up.blast||0);dm=1+.15*(up.dmg||0);}if(boost[team]){dm*=1.5;boost[team]=false;}if(bigNext[team]){rm*=1.5;dm*=1.25;bigNext[team]=false;}
+    var mine=team===0&&mode==='campaign'&&w.k==='ball';
+    proj.push({w:w,x:m.x,y:m.y,vx:v.vx,vy:v.vy,t:0,owner:active,fuse:w.fuse||0,rest:false,rot:0,rm:rm,dm:dm,shat:mine&&!!up.shatter,burn:mine&&!!up.burn});
+    if(mine&&up.spray)[-1,1].forEach(function(k){var a=active.ang+k*.07,v2=shotVel(a,active.pow,w);proj.push({w:w,x:m.x,y:m.y,vx:v2.vx,vy:v2.vy,t:0,owner:active,fuse:0,rest:false,rot:k,rm:rm*.8,dm:dm*.6,shard:true});});
+    if(team===0){shots++;lvShots++;cur={hit:false,direct:false};}else cur=null;
+    camHold=false;fx.push({k:'smoke',t:0,x:m.x,y:m.y});shotTeam=team;phase='fly';walkDir=0;renderWeapons();padState();
+  }
+  function normalAt(x,y){var nx=0,ny=0;for(var a=0;a<16;a++){var an=a*Math.PI/8;if(solidAt(x+Math.cos(an)*4,y+Math.sin(an)*4)){nx-=Math.cos(an);ny-=Math.sin(an);}}
+    var l=Math.sqrt(nx*nx+ny*ny);return l?{x:nx/l,y:ny/l}:{x:0,y:-1};}
+  function projStep(p,dt){
+    if(p.delay>0){p.delay-=dt;return;}   // Barrage bombs wait for the airship to reach them
+    p.t+=dt;var w=p.w;
+    if(w.k==='mine'){p.fuse-=dt;if(p.fuse<=0){p.done=true;blast(p.x,p.y,w.R*p.rm,Math.round(w.dmg*p.dm));return;}
+      if(p.rest){if(solidAt(p.x,p.y+3)||solidAt(p.x-2,p.y+3)||solidAt(p.x+2,p.y+3))return;p.rest=false;}}
+    if(w.split&&p.t>=w.split){p.done=true;fx.push({k:'smoke',t:0,x:p.x,y:p.y});
+      [-1,0,1].forEach(function(k){proj.push({w:SHARD,x:p.x,y:p.y,vx:p.vx+k*60,vy:p.vy-15,t:0,owner:p.owner,fuse:0,rest:false,rot:k,rm:p.rm,dm:p.dm,shard:true});});return;}
+    p.vx+=wind*WK*w.wind*dt;p.vy+=G*w.grav*dt;
+    var nx=p.x+p.vx*dt,ny=p.y+p.vy*dt;
+    if(nx<-80||nx>W+80||ny>H+40){p.done=true;say('Off the map.');return;}
+    var lq=liqAt(nx,ny);if(lq){p.done=true;fx.push({k:lq===2?'fizz':'splash',t:0,x:nx,y:ny});say(lq===2?'Into the lava.':'Into the water.');return;}
+    if(w.k==='mine'){
+      if(solidAt(nx,ny)){var n=normalAt(nx,ny),dot=p.vx*n.x+p.vy*n.y;if(dot<0){p.vx-=2*dot*n.x;p.vy-=2*dot*n.y;}p.vx*=.5;p.vy*=.5;
+        var k=0;while(solidAt(p.x,p.y)&&k<10){p.x+=n.x;p.y+=n.y;k++;}
+        if(Math.sqrt(p.vx*p.vx+p.vy*p.vy)<40){p.vx=0;p.vy=0;p.rest=true;}return;}
+    }else{var hc=hitChar(nx,ny,p.t<.25&&!p.shard?p.owner:null);
+      if(hc||solidAt(nx,ny)){p.done=true;if(hc&&hc.team!==p.owner.team&&p.owner.team===0&&cur)cur.direct=true;
+        if(w.k==='storm')strike(nx,p);else if(w.k==='flare')barrage(nx,p);else{blast(nx,ny,w.R*p.rm,Math.round(w.dmg*p.dm));land(p,nx,ny);}return;}}
+    p.x=nx;p.y=ny;p.rot+=dt*(w.k==='ball'||w.k==='shard'?9:5);
+  }
+  // what happens where a shot lands (v7): Red Atomic's mushroom cloud, Shatter's chunks, Burning's shaft
+  function land(p,x,y){var w=p.w;
+    if(w.k==='atomic'){fx.push({k:'nuke',t:0,x:x,y:y,R:w.R*p.rm});}
+    if(p.shat)for(var i=0;i<5;i++){var a=-Math.PI/2+(i-2)*.45;proj.push({w:CHUNK,x:x,y:y-4,vx:Math.cos(a)*170,vy:Math.sin(a)*190,t:0,owner:p.owner,fuse:0,rest:false,rot:i,rm:1,dm:p.dm,shard:true});}
+    if(p.burn)fx.push({k:'fire',t:0,x:x,y:y,d:0,hit:[]});}
+  // Barrage: the flare calls the red airship, which drops seven bombs across the spot
+  function barrage(x,p){var top=Math.max(20,stormTop(x)-260);fx.push({k:'ship',t:0,x:x,y:top-14});say('Barrage!');
+    for(var i=0;i<7;i++)proj.push({w:BOMBLET,x:x-72+i*24+rand(-4,4),y:top,vx:0,vy:20,t:0,owner:p.owner,fuse:0,rest:false,rot:i,rm:p.rm,dm:p.dm,shard:true,delay:.45+i*.14});}
+  // Burning: the stone keeps going straight down for 0.8 s, carving a shaft and hurting any goon in it
+  function fireStep(f,dt){if(f.t>.8)return;f.d+=70*dt;carve(f.x,f.y+f.d,5);
+    crew.forEach(function(c){if(c.alive&&f.hit.indexOf(c)<0&&Math.abs(c.x-f.x)<GS*.5&&c.y>f.y-2&&c.y-GS<f.y+f.d){f.hit.push(c);hurt(c,18,shotTeam);}});}
+  function stormTop(x){var top=H+60,xi=Math.round(x);if(xi<0||xi>=W)return top;for(var y=0;y<H;y++)if(solid[y*W+xi]){top=y;break;}
+    crew.forEach(function(c){if(c.alive&&Math.abs(c.x-x)<5&&c.y-7<top)top=c.y-7;});return top;}
+  function strike(x,p){
+    var y=stormTop(x),w=WEAPONS[1];fx.push({k:'bolt',t:0,x:x,y:Math.min(y,H)});
+    if(y>H){say('Off the map.');return;}
+    blast(x,y,w.R*(p?p.rm:1),Math.round(w.dmg*(p?p.dm:1)));carve(x,y+7,6);carve(x,y+13,5);
+  }
+  function blast(x,y,R,dmg){
+    carve(x,y,R);fx.push({k:'boom',t:0,x:x,y:y,R:R});
+    crew.forEach(function(c){if(!c.alive)return;var dx=c.x-x,dy=(c.y-GS*.43)-y,dist=Math.sqrt(dx*dx+dy*dy),reach=R+5;
+      if(dist<reach){var k=1-dist/reach;if(dmg>0)hurt(c,Math.max(1,Math.round(dmg*Math.min(1,k*1.25))),shotTeam);
+        var dir=dist>1?dx/dist:(Math.random()<.5?-1:1);c.vx+=dir*90*k;c.vy-=80+90*k;c.ground=false;}});
+  }
+
+  /* ---- turns ------------------------------------------------------------------------------------------------- */
+  function newWind(){var m=windMax(level);wind=Math.round(rand(-m,m));}
+  function nextTurn(first){
+    if(first)team=0;
+    else if(extraTurn[team]&&living(team).length){extraTurn[team]=false;say('Extra turn!');}
+    else for(var k=1;k<=TEAMS;k++){var t=(team+k)%TEAMS;if(living(t).length){if(t<=team&&mode==='ffa')newRound();team=t;break;}}
+    if(!first&&mode==='campaign'&&team===0){round++;if(round%3===0)dropPicks(2);}
+    var L=crew.filter(function(c){return c.team===team;});
+    for(var j=1;j<=L.length;j++){var i=(turnIdx[team]+(first?j-1:j))%L.length;if(L[i].alive){turnIdx[team]=i;active=L[i];break;}}
+    newWind();walkLeft=WALK;jumped=false;walkDir=0;walkAcc=0;settleT=0;camHold=false;
+    if(team===0){phase='aim';weapon=ammo[0][myWeapon]>0?myWeapon:0;myWeapon=weapon;say('Your turn. Drag on the sky to aim, then press Fire.');}
+    else{phase='ai';ai={t:0,plan:null};say(mode==='ffa'?GOMAS[active.goma][1]+' is aiming.':'The rival crew is aiming.');}
+    renderWeapons();padState();hud();
+  }
+  // v7: every 3 rounds a few pickups drop in (Free-for-All also keeps its coins)
+  function newRound(){ffaRound++;if(ffaRound%3===0){dropPicks(2);spawnPickup('coin');}}
+  function dropPicks(n){for(var i=0;i<n;i++){if(lvDrops>=(mode==='ffa'?12:6))return;if(spawnPickup(PICKS[Math.floor(Math.random()*PICKS.length)]))lvDrops++;}}   // capped so a stalled level can't farm gems
+  // a shot of yours is done: hits build a streak (+10 x streak), a direct hit adds 25, a miss resets it
+  function shotDone(){
+    if(cur.hit){hits++;lvHits++;streak++;var b=10*streak+(cur.direct?25:0);score+=b;if(mode==='campaign')coins+=3;
+      var a=active&&active.alive?active:(living(0)[0]||active);
+      if(a)fx.push({k:'txt',t:0,x:a.x,y:a.y-44,label:(cur.direct?'DIRECT HIT ':'HIT ')+(streak>1?'x'+streak+' ':'')+'+'+b,c:'#ffd166'});}
+    else streak=0;
+  }
+  function resolve(){
+    crew.forEach(function(c){if(c.alive&&c.hp<=0){c.alive=false;fx.push({k:'burst',t:0,x:c.x,y:c.y-6,s:32});ko(c);}});
+    if(team===0&&cur)shotDone();cur=null;hud();
+    if(mode==='ffa'){if(!living(0).length){ffaOver(false);return;}if(teamsAlive()<=1){ffaOver(true);return;}nextTurn(false);return;}
+    if(!living(0).length){runOver();return;}
+    if(!others().length){levelWon();return;}
+    nextTurn(false);
+  }
+
+  /* ---- the AI's aim: pick a target, search angle and power against the real wind and ground, then miss a little -- */
+  function simulate(c,a,pw,w){
+    var m=muzzle(c,a),v=shotVel(a,pw,w),x=m.x,y=m.y,vx=v.vx,vy=v.vy,ax=wind*WK*w.wind,g=G*w.grav;
+    for(var i=0;i<1100;i++){vx+=ax*STEP;vy+=g*STEP;x+=vx*STEP;y+=vy*STEP;
+      if(x<-80||x>W+80||y>H+40)return null;
+      if(liqAt(x,y))return {x:x,y:y,wet:1};
+      if(solidAt(x,y)||hitChar(x,y,i<30?c:null)){if(w.k==='storm'){var ty=stormTop(x);return ty>H?null:{x:x,y:ty};}return {x:x,y:y};}}
+    return null;
+  }
+  // Free-for-All: each AI goon picks its own target (weak and close looks best, with a little chance), not just you
+  function pickTarget(c){var foes=crew.filter(function(o){return o.alive&&o.team!==c.team;});
+    if(mode==='ffa'){var best=null,bs=1e9;foes.forEach(function(o){var sc=o.hp*.6+Math.abs(o.x-c.x)*.12+Math.random()*40;if(sc<bs){bs=sc;best=o;}});return best;}
+    if(level>=4)return foes.slice().sort(function(a,b){return a.hp-b.hp;})[0];return foes[Math.floor(Math.random()*foes.length)];}
+  function planAi(){
+    var c=active,L=level,tgt=pickTarget(c);
+    var wi=0,am=ammo[c.team];
+    if(mode==='ffa'||L>=3){var r=Math.random();if(r<.15&&am[4]>0)wi=4;else if(r<.25&&am[2]>0)wi=2;else if(r<.4&&am[3]>0)wi=3;else if(r<.6&&am[1]>0)wi=1;}
+    var w=WEAPONS[wi],dir=tgt.x<c.x?-1:1,bestP=null,bestD=1e9,tx0=tgt.x,ty0=tgt.y-6;
+    for(var deg=8;deg<=86;deg+=3){var a=dir>0?deg*Math.PI/180:Math.PI-deg*Math.PI/180;
+      for(var pw=16;pw<=100;pw+=3){var hit=simulate(c,a,pw,w.split?WEAPONS[0]:w);if(!hit)continue;
+        var dd=Math.sqrt((hit.x-tx0)*(hit.x-tx0)+(hit.y-ty0)*(hit.y-ty0));if(hit.wet)dd+=200;
+        crew.forEach(function(o){if(!o.alive||o.team!==c.team)return;var ox=o.x-hit.x,oy=o.y-6-hit.y;if(Math.sqrt(ox*ox+oy*oy)<w.R+8)dd+=400;});
+        if(dd<bestD){bestD=dd;bestP={a:a,pw:pw};}}}
+    if(!bestP)bestP={a:dir>0?Math.PI/4:Math.PI*.75,pw:70};
+    var a2=bestP.a+gauss()*aimErr(L)*aiMul*Math.PI/180,p2=Math.max(10,Math.min(100,bestP.pw*(1+gauss()*powErr(L)*aiMul/100)));
+    return lastPlan={wi:wi,a:a2,pw:p2,a0:c.ang,p0:c.pow,miss:bestD,tgt:tgt.team,by:c.team};
+  }
+  function aiStep(dt){
+    ai.t+=dt;var t1=mode==='ffa'?.35:.45,t2=mode==='ffa'?.95:1.15;   // v7: rivals aim faster
+    if(!ai.plan&&ai.t>t1){ai.plan=planAi();weapon=ai.plan.wi;active.face=Math.cos(ai.plan.a)<0?-1:1;}
+    if(ai.plan){var k=Math.min(1,(ai.t-t1)/(t2-t1-.3));active.ang=ai.plan.a0+(ai.plan.a-ai.plan.a0)*k;active.pow=ai.plan.p0+(ai.plan.pw-ai.plan.p0)*k;
+      if(ai.t>t2){active.ang=ai.plan.a;active.pow=ai.plan.pw;fire();}}
+  }
+
+  /* ---- levels, runs, and the upgrade panel ------------------------------------------------------------------ */
+  function startAmmo(t){var a=WEAPONS.map(function(w){return w.ammo;});
+    if(mode==='ffa'){a[4]=0;return a;}
+    if(t===0){var x=up.ammo||0;a[1]+=x;a[2]+=x;a[3]+=x;a[4]=up.bomb?2:0;return a;}
+    var y=Math.floor((level-1)/6);a[1]+=y;a[2]+=y;a[3]+=y;a[4]=level>=8?1:0;return a;}
+  function startLevel(){
+    setView();if(mode==='ffa')ffaVar=Math.floor(Math.random()*variants().length);genTerrain();placeCrew();proj=[];fx=[];pickups=[];boost=[];bigNext=[];extraTurn=[];round=0;lvDrops=0;team=0;myWeapon=0;cur=null;
+    ammo=[];turnIdx=[];for(var t=0;t<TEAMS;t++){ammo.push(startAmmo(t));turnIdx.push(0);}
+    if(mode==='ffa'){ffaRound=0;place=0;CRATES.forEach(function(k){spawnPickup(k);});for(var i=0;i<8;i++)spawnPickup('coin');}
+    setOverview(false);camHold=false;lvStart0=living(0).length;starsEl.hidden=true;
+    panel.hidden=true;controls(true);paused=false;pauseBtn.textContent='Pause';finalScore=null;lvShots=lvHits=0;nextTurn(true);snapCam();
+  }
+  function starTotal(){var t=0;for(var k in starBest)t+=starBest[k]||0;return t;}
+  function saveRun(){if(mode!=='campaign'||!crewState)return;try{localStorage.setItem(SAVE_KEY,JSON.stringify({v:1,level:level,score:score,coins:coins,up:up,crewState:crewState,runFrom:runFrom,shots:shots,hits:hits,playT:playT,ticket:gRun&&gRun.ticket||'',at:Date.now()}));}catch(e){}}
+  function clearSave(){resumeSave=null;try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
+  function readSave(){try{var o=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(o&&o.v===1&&o.level>1&&o.crewState&&o.crewState.length)return o;}catch(e){}return null;}
+  function applySave(o){level=o.level;score=o.score|0;coins=o.coins|0;up=o.up||{};crewState=o.crewState.map(function(m){return {hp:m.hp,max:m.max};});runFrom=o.runFrom||1;shots=o.shots|0;hits=o.hits|0;playT=+o.playT||0;streak=0;finalScore=null;lastBonus=null;place=0;}
+  function newRun(){playT=0;myKos=0;level=1;score=0;runFrom=1;finalScore=null;coins=0;up={blast:0,dmg:0,ammo:0,bomb:0,heal:0,crew:0};crewState=freshCrew(3);shots=hits=streak=lvShots=lvHits=0;place=0;lastBonus=null;}
+  function levelWon(){
+    var L=level,bonus=WIN_BONUS*L,acc=lvShots?lvHits/lvShots:0,ab=Math.round(acc*200),earn=20+5*L;score+=bonus+ab;coins+=earn;phase='panel';
+    // stars: 1 for the win, 2 with at least two goons standing, 3 with every goon you started with still standing; 100 per star x level
+    var alive=living(0).length,stars=alive>=lvStart0?3:alive>=2?2:1,sp=100*stars*L;score+=sp;
+    if(stars>(starBest[L]||0)){starBest[L]=stars;try{localStorage.setItem(STAR_KEY,JSON.stringify(starBest));}catch(e){}}
+    // the crew carries its health on: half of what each goon lost comes back, and a knocked-out goon returns at a quarter
+    crewState=crew.filter(function(c){return c.team===0;}).map(function(c){return c.alive?{hp:Math.min(c.max,Math.round(c.hp+(c.max-c.hp)*.5)),max:c.max}:{hp:Math.round(c.max*.25),max:c.max};});
+    lastBonus={level:bonus,acc:Math.round(acc*100),accBonus:ab,coins:earn,stars:stars,starPts:sp};
+    var boxNow=L===BOX_LEVEL&&!boxShown;if(boxNow){boxShown=true;win.hidden=false;}
+    level=L+1;saveRun();hud();
+    openPanel('Level '+L+' won',stars+' of 3 stars (+'+sp+'). +'+bonus+' level bonus. Accuracy '+lastBonus.acc+'% (+'+ab+'). +'+earn+' coins. Your score: '+score+'. Spend coins below, then face level '+level+'.','Start level '+level,null,'shop');
+    drawStars(stars);say('');if(boxNow)setTimeout(function(){win.scrollIntoView({behavior:'smooth',block:'center'});},400);
+  }
+  function saveBest(){if(score>bests[mode]){bests[mode]=score;try{localStorage.setItem(mode==='ffa'?'ma-mortar-ffa-best':'ma-skyduel-best',String(score));}catch(e){}}}
+  function runOver(){
+    phase='panel';finalScore=score;saveBest();clearSave();hud();
+    if(gRun&&window.GBoard)GBoard.end(gRun,{score:score,secs:Math.round(playT*10)/10,level:level,fullRun:runFrom===1?1:0});gRun=null;
+    openPanel('Your crew is down','Final score: '+score+'. You reached level '+level+'. Best: '+bests.campaign+'.','New run','Retry level '+level,'start');say('');
+  }
+  function ffaOver(won){
+    var acc=shots?hits/shots:0,ab=Math.round(acc*300);score+=ab+(won?500:0);if(won)place=1;phase='panel';finalScore=score;saveBest();hud();
+    if(gRun&&window.GBoard)GBoard.end(gRun,{score:score,secs:Math.round(playT*10)/10,place:place||1,kos:Math.min(11,myKos)});gRun=null;
+    openPanel(won?'Last goon standing':'Knocked out',(won?'+500 last-standing bonus. ':'You placed '+place+' of '+FFA_N+'. ')+'Accuracy '+Math.round(acc*100)+'% (+'+ab+'). Final score: '+score+'. Best: '+bests.ffa+'.','Play again',null,'start');say('');
+  }
+  function drawStars(n){var pts='12,1.5 14.9,8.6 22.5,9.1 16.6,14 18.5,21.5 12,17.4 5.5,21.5 7.4,14 1.5,9.1 9.1,8.6';
+    starsEl.innerHTML=[0,1,2].map(function(i){return '<svg viewBox="0 0 24 23" width="40" height="38" aria-hidden="true"><polygon points="'+pts+'" fill="'+(i<n?'#ffd166':'none')+'" stroke="#ffd166" stroke-width="1.6" stroke-linejoin="miter"/></svg>';}).join('');
+    starsEl.setAttribute('aria-label',n+' of 3 stars');starsEl.hidden=false;}
+  function upCost(u){return Math.round(u.cost*(1+.5*(up[u.k]||0))/5)*5;}
+  function upMaxed(u){if(u.k==='crew')return crewState.length>=CREW_MAX;if(u.k==='heal')return crewState.every(function(m){return m.hp>=m.max;});return (up[u.k]||0)>=u.max;}
+  function renderShop(){upsEl.textContent='';coins2El.textContent=coins;
+    UPS.forEach(function(u){var mx=upMaxed(u),c=upCost(u),b=document.createElement('button');b.type='button';b.className='sd-up';b.dataset.k=u.k;
+      b.innerHTML='<span></span><small></small><b></b>';b.children[0].textContent=u.name;b.children[1].textContent=u.what;b.children[2].textContent=mx?'Maxed':c+' coins';
+      b.disabled=mx||coins<c;b.addEventListener('click',function(){buy(u.k);});upsEl.appendChild(b);});}
+  function buy(k){var u=UPS.filter(function(x){return x.k===k;})[0];if(!u||upMaxed(u))return false;var c=upCost(u);if(coins<c)return false;
+    coins-=c;up[k]=(up[k]||0)+1;
+    if(k==='heal')crewState.forEach(function(m){m.hp=Math.min(m.max,m.hp+40);});
+    if(k==='crew')crewState.push({hp:HP_CREW,max:HP_CREW});
+    saveRun();hud();renderShop();say(u.name+': done.');return true;}
+  function controls(on){wpnEl.hidden=padEl.hidden=!on;}
+  var gomasEl=$('.sd-gomas');
+  GOMAS.forEach(function(g,i){var b=document.createElement('button');b.type='button';b.className='sd-goma';b.setAttribute('aria-pressed',i===myGoma?'true':'false');
+    var im=document.createElement('img');im.src=ART+'141-goma-'+g[0]+'.webp';im.alt='';var sp=document.createElement('span');sp.textContent=g[1];b.appendChild(im);b.appendChild(sp);
+    b.addEventListener('click',function(){myGoma=i;try{localStorage.setItem('ma-mortar-goma',g[0]);}catch(e){}Array.prototype.forEach.call(gomasEl.children,function(x,j){x.setAttribute('aria-pressed',j===i?'true':'false');});preview();});
+    gomasEl.appendChild(b);});
+  var NOTE={campaign:'Drag on the sky to aim, then press Fire. Knock the whole rival crew out of the fight to win the level. Water and lava knock a goon out too. The levels never end, and every one is tougher.',
+    ffa:'All twelve goons, one map, every goon for itself. Grab coins and crates, land hits, knock goons out, and be the last one standing.'};
+  function startLabel(){return mode==='ffa'?'Start Free-for-All':'Start level 1';}
+  function setMode(m){mode=m;Array.prototype.forEach.call(modesEl.children,function(b){b.setAttribute('aria-pressed',String(b.dataset.mode===m));});
+    pnote.textContent=NOTE[m];goBtn.textContent=startLabel();altBtn.hidden=true;newRun();offerResume();preview();hud();}
+  // a saved Campaign run: Continue picks up at the start of the saved level; New run throws the save away
+  function offerResume(){resumeSave=mode==='campaign'?readSave():null;if(!resumeSave)return;
+    pnote.textContent='Your run is saved at level '+resumeSave.level+' with '+resumeSave.score+' points. Continue where you left off, or start over.';
+    goBtn.textContent='Continue level '+resumeSave.level;altBtn.textContent='New run';altBtn.hidden=false;}
+  Array.prototype.forEach.call(modesEl.children,function(b){b.addEventListener('click',function(){if(panelKind==='start')setMode(b.dataset.mode);});});
+  // behind the start panel: the next map, zoomed out
+  function preview(){if(phase!=='panel')return;setView();if(mode==='ffa')ffaVar=Math.floor(Math.random()*variants().length);genTerrain();placeCrew();pickups=[];setOverview(true);snapCam();hud();}
+  function openPanel(h,note,go,alt,kind){panelKind=kind;controls(false);ph.textContent=h;pnote.textContent=note;goBtn.textContent=go;altBtn.hidden=!alt;if(alt)altBtn.textContent=alt;
+    modesEl.hidden=pickEl.hidden=kind!=='start';shopEl.hidden=kind!=='shop';if(kind!=='shop')starsEl.hidden=true;if(kind==='shop')renderShop();panel.hidden=false;padState();renderWeapons();}
+  function hud(){starTotEl.textContent=starTotal();starWrap.hidden=mode==='ffa';lvEl.textContent=level;lvWrap.hidden=mode==='ffa';scoreEl.textContent=score;bestEl.textContent=bests[mode];coinEl.textContent=coins;hp0El.textContent=teamHp(0);
+    var o=others();if(mode==='ffa'){ylEl.textContent='You';rlEl.textContent='Goons left';hp1El.textContent=o.length;}
+    else{ylEl.textContent='Your crew';rlEl.textContent='Rival';hp1El.textContent=o.reduce(function(a,c){return a+Math.max(0,Math.ceil(c.hp));},0);}}
+
+  /* ---- the camera: follows the active goon and the shot in flight; you can pan, jump with the minimap, or zoom out -- */
+  function fitZ(){return Math.min(VW/W,VH/H);}
+  var zoomMul=1;   // v7: Zoom in / Zoom out (and the wheel, and a pinch) scale the close view, between the overview and 2.5x
+  function baseZ(){return (narrow?1.15:1)*zoomMul;}
+  function zoomBy(k){var b=narrow?1.15:1,lo=Math.min(1,fitZ()/b*1.05);zoomMul=Math.max(lo,Math.min(2.5,zoomMul*k));if(overview)setOverview(false);camHold=true;}
+  function setOverview(on){overview=on;ovBtn.setAttribute('aria-pressed',String(on));if(!on)camHold=false;}
+  function camTarget(){
+    if(overview)return {x:W/2,y:H/2,z:fitZ()};
+    var z=baseZ(),p=null;for(var i=0;i<proj.length;i++)if(!proj[i].done){p=proj[i];break;}
+    if(camHold)return {x:cam.cx,y:cam.cy,z:z};
+    if(p)return {x:p.x,y:p.y,z:z*.7};   // pull back a little while a shot is in the air
+    if(active)return {x:active.x,y:active.y-VH*.15/z,z:z};
+    return {x:W/2,y:H/2,z:z};
+  }
+  function clampCam(){var hw=VW/2/cam.z,hh=VH/2/cam.z;cam.cx=W<=2*hw?W/2:Math.max(hw,Math.min(W-hw,cam.cx));cam.cy=H<=2*hh?H/2:Math.max(hh,Math.min(H-hh,cam.cy));}
+  function camStep(dt){var t=camTarget(),k=Math.min(1,dt*5);cam.z+=(t.z-cam.z)*Math.min(1,dt*6);cam.cx+=(t.x-cam.cx)*k;cam.cy+=(t.y-cam.cy)*k;clampCam();}
+  function snapCam(){var t=camTarget();cam.z=t.z;cam.cx=t.x;cam.cy=t.y;clampCam();}
+  (function(){var zi=d.querySelector('.sd-zin'),zo=d.querySelector('.sd-zout');if(zi)zi.addEventListener('click',function(){zoomBy(1.25);});if(zo)zo.addEventListener('click',function(){zoomBy(.8);});
+    cv.addEventListener('wheel',function(e){if(phase==='panel')return;e.preventDefault();zoomBy(e.deltaY<0?1.1:.9);},{passive:false});
+    var pd=0;cv.addEventListener('touchmove',function(e){if(e.touches.length!==2)return;var a=e.touches[0],b2=e.touches[1],dd=Math.hypot(a.clientX-b2.clientX,a.clientY-b2.clientY);if(pd&&Math.abs(dd-pd)>8){zoomBy(dd>pd?1.04:.96);pd=dd;}else if(!pd)pd=dd;},{passive:true});
+    cv.addEventListener('touchend',function(e){if(e.touches.length<2)pd=0;});})();
+  function toScreen(x,y){return {x:(x-cam.cx)*cam.z+VW/2,y:(y-cam.cy)*cam.z+VH/2};}
+  function toWorld(x,y){return {x:(x-VW/2)/cam.z+cam.cx,y:(y-VH/2)/cam.z+cam.cy};}
+  function miniRect(){var mw=narrow?150:190,mh=Math.min(narrow?130:120,Math.round(mw*H/W));mw=Math.round(mh*W/H);return {x:VW-mw-12,y:VH-mh-12,w:mw,h:mh};}
+  function inMini(p){if(overview)return false;var r=miniRect();return p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+r.h;}
+  function miniJump(p){var r=miniRect();cam.cx=(p.x-r.x)/r.w*W;cam.cy=(p.y-r.y)/r.h*H;camHold=true;clampCam();}
+  ovBtn.addEventListener('click',function(){if(phase==='panel')return;setOverview(!overview);});
+  findBtn.addEventListener('click',function(){setOverview(false);camHold=false;});
+
+  /* ---- buttons ----------------------------------------------------------------------------------------------- */
+  function canAct(){return phase==='aim'&&!paused&&active&&active.alive&&team===0;}
+  function renderWeapons(){
+    wpnEl.textContent='';var shown=WEAPONS.filter(function(w,i){return i<4||(ammo[0]&&ammo[0][4]>0)||(mode==='campaign'&&up.bomb);});
+    wpnEl.style.gridTemplateColumns=narrow?'':'repeat('+shown.length+',minmax(0,1fr))';
+    WEAPONS.forEach(function(w,i){if(shown.indexOf(w)<0)return;var b=document.createElement('button');b.type='button';b.className='sd-wpn';
+      var n=ammo[0]?ammo[0][i]:w.ammo;b.innerHTML='<span></span><small></small>';b.children[0].textContent=w.name;b.children[1].textContent=n===Infinity?'Unlimited':(n||0)+' left';
+      b.setAttribute('aria-pressed',String(myWeapon===i&&phase!=='panel'));b.disabled=!(n>0)||!canAct();
+      b.addEventListener('click',function(){if(!canAct()||!(ammo[0][i]>0))return;weapon=myWeapon=i;renderWeapons();});wpnEl.appendChild(b);});
+    if(narrow&&shown.length%2&&wpnEl.lastChild)wpnEl.lastChild.style.gridColumn='span 2';
+  }
+  function padState(){var a=canAct();bL.disabled=bR.disabled=!a||walkLeft<=0;bJ.disabled=!a||jumped;bN.disabled=!a||living(0).length<2;bF.disabled=!a;}
+  function hold(btn,dir){
+    btn.addEventListener('pointerdown',function(e){if(btn.disabled)return;e.preventDefault();walkDir=dir;camHold=false;try{btn.setPointerCapture(e.pointerId);}catch(x){}});
+    ['pointerup','pointercancel','lostpointercapture'].forEach(function(ev){btn.addEventListener(ev,function(){if(walkDir===dir)walkDir=0;});});
+    btn.addEventListener('click',function(e){if(e.detail===0&&canAct())walkFor(dir,6);});
+  }
+  hold(bL,-1);hold(bR,1);
+  function walkFor(dir,px){var moved=0;while(moved<px&&walkLeft>0){if(!walkStep(active,dir,1))break;moved++;walkLeft--;}pickStep();padState();if(walkLeft<=0)say('Out of moves this turn.');}
+  function jump(){if(!canAct()||jumped||!active.ground)return;jumped=true;active.vy=-150;active.vx=active.face*60;active.ground=false;padState();}
+  function nextCrew(){if(!canAct())return;var L=crew.filter(function(c){return c.team===0;});
+    for(var k=1;k<=L.length;k++){var i=(turnIdx[0]+k)%L.length;if(L[i].alive){turnIdx[0]=i;active=L[i];break;}}camHold=false;setOverview(false);}
+  bJ.addEventListener('click',jump);bN.addEventListener('click',nextCrew);bF.addEventListener('click',function(){if(canAct())fire();});
+  goBtn.addEventListener('click',function(){if(panelKind==='start'){if(mode==='campaign'&&resumeSave){var tk=resumeSave.ticket;applySave(resumeSave);resumeSave=null;gRun=window.GBoard&&runFrom===1?GBoard.resume('campaign',tk):null;}else{newRun();gRun=window.GBoard?GBoard.start(mode):null;}}startLevel();hud();cv.scrollIntoView({behavior:'smooth',block:'center'});});
+  altBtn.addEventListener('click',function(){gRun=null;   // a retry, or a fresh run from the resume panel, is never on the board unless it starts at level 1
+if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun=window.GBoard?GBoard.start('campaign'):null;startLevel();hud();cv.scrollIntoView({behavior:'smooth',block:'center'});return;}
+    score=0;runFrom=level;crewState=freshCrew(Math.min(CREW_MAX,3+(up.crew||0)));streak=0;startLevel();hud();say('Practice from level '+level+': your score starts over.');cv.scrollIntoView({behavior:'smooth',block:'center'});});
+  function setPause(v){if(phase==='panel')return;paused=v;pauseBtn.textContent=paused?'Resume':'Pause';say(paused?'Paused.':'');walkDir=0;padState();renderWeapons();}
+  pauseBtn.addEventListener('click',function(){setPause(!paused);});
+  var armNew=false,newBtn=$('.sd-new');
+  newBtn.addEventListener('click',function(){
+    if(!armNew){armNew=true;newBtn.textContent='Tap again to start over';setTimeout(function(){armNew=false;newBtn.textContent='New run';},3000);return;}
+    armNew=false;newBtn.textContent='New run';if(mode==='campaign')clearSave();newRun();proj=[];phase='panel';paused=false;pauseBtn.textContent='Pause';hud();
+    openPanel('Ready to fight?','A fresh start: level 1, score 0.',startLabel(),null,'start');preview();
+  });
+  document.addEventListener('visibilitychange',function(){if(document.hidden&&phase!=='panel'&&!paused)setPause(true);if(document.hidden&&phase==='panel'&&panelKind==='shop')saveRun();});
+  window.addEventListener('pagehide',function(){if(phase==='panel'&&panelKind==='shop')saveRun();});
+  $('.sd-box').addEventListener('click',claim);
+
+  /* ---- pointer: one finger or the left button aims (drag on the sky); two fingers or the right/middle button pan;
+     a tap on the minimap jumps the view there; in Overview a tap zooms back in on that spot -------------------------- */
+  var dragging=false,panning=null,touches={};
+  function toLogical(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*VW/r.width,y:(e.clientY-r.top)*VH/r.height};}
+  function aimAt(p){var g=toScreen(active.x,active.y-7),dx=p.x-g.x,dy=g.y-p.y;if(dx*dx+dy*dy<16)return;
+    active.ang=Math.atan2(dy,dx);active.pow=Math.max(8,Math.min(100,Math.round(Math.sqrt(dx*dx+dy*dy)/(Math.min(VW,VH)*.42)*100)));active.face=dx<0?-1:1;}
+  function startPan(p){panning={x:p.x,y:p.y};dragging=false;camHold=true;}
+  cv.addEventListener('contextmenu',function(e){e.preventDefault();});
+  cv.addEventListener('pointerdown',function(e){
+    var p=toLogical(e);touches[e.pointerId]=p;var n=Object.keys(touches).length;
+    try{cv.setPointerCapture(e.pointerId);}catch(x){}
+    if(phase==='panel')return;
+    if(n>=2){e.preventDefault();var ks=Object.keys(touches),a=touches[ks[0]],b=touches[ks[1]];startPan({x:(a.x+b.x)/2,y:(a.y+b.y)/2});return;}
+    if(e.button===1||e.button===2){e.preventDefault();startPan(p);return;}
+    if(overview){e.preventDefault();var w=toWorld(p.x,p.y);setOverview(false);cam.z=baseZ();cam.cx=w.x;cam.cy=w.y;camHold=true;clampCam();return;}
+    if(inMini(p)){e.preventDefault();miniJump(p);return;}
+    if(!canAct())return;e.preventDefault();
+    var g=toScreen(active.x,active.y);if(g.x<0||g.x>VW||g.y<0||g.y>VH){camHold=false;snapCam();}
+    dragging=true;aimAt(p);
+  });
+  cv.addEventListener('pointermove',function(e){var p=toLogical(e);if(touches[e.pointerId])touches[e.pointerId]=p;
+    if(panning){var ks=Object.keys(touches),q=ks.length>=2?{x:(touches[ks[0]].x+touches[ks[1]].x)/2,y:(touches[ks[0]].y+touches[ks[1]].y)/2}:p;
+      cam.cx-=(q.x-panning.x)/cam.z;cam.cy-=(q.y-panning.y)/cam.z;panning=q;clampCam();return;}
+    if(dragging&&canAct())aimAt(p);});
+  ['pointerup','pointercancel'].forEach(function(ev){cv.addEventListener(ev,function(e){delete touches[e.pointerId];if(!Object.keys(touches).length){dragging=false;panning=null;}});});
+  document.addEventListener('keydown',function(e){
+    var ae=document.activeElement;if(ae&&ae!==document.body&&!d.contains(ae))return;
+    var k=e.key.toLowerCase();
+    if(k==='p'||k==='escape'){if(phase!=='panel'){setPause(!paused);e.preventDefault();}return;}
+    if(!canAct())return;
+    if(k==='arrowleft'||k==='a'){walkDir=-1;camHold=false;}else if(k==='arrowright'||k==='d'){walkDir=1;camHold=false;}
+    else if(k==='arrowup'){active.ang+=(active.face>0?1:-1)*Math.PI/90;}else if(k==='arrowdown'){active.ang-=(active.face>0?1:-1)*Math.PI/90;}
+    else if(k==='e')active.pow=Math.min(100,active.pow+2);else if(k==='q')active.pow=Math.max(8,active.pow-2);
+    else if(k==='w'||k==='j')jump();else if(k==='n')nextCrew();else if(k===' '){if(!e.repeat)fire();}
+    else if(k>='1'&&k<='5'){var i=+k-1;if(ammo[0][i]>0){weapon=myWeapon=i;renderWeapons();}}else return;
+    e.preventDefault();
+  });
+  document.addEventListener('keyup',function(e){var k=e.key.toLowerCase();if((k==='arrowleft'||k==='a')&&walkDir<0)walkDir=0;if((k==='arrowright'||k==='d')&&walkDir>0)walkDir=0;});
+
+  /* ---- the world ---------------------------------------------------------------------------------------------- */
+  function physics(dt){
+    crew.forEach(function(c){charStep(c,dt);});
+    proj.forEach(function(p){if(!p.done)projStep(p,dt);});proj=proj.filter(function(p){return !p.done;});
+    if(pickups.length)pickStep();
+  }
+  function update(dt){
+    if(paused)return;
+    if(phase!=='panel')playT+=dt;   // playing time for the board: no pauses, no panels   // paused: nothing moves, and the frame time is capped, so there is no jump on resume
+    clock+=dt;fx.forEach(function(f){f.t+=dt;});
+    fx.forEach(function(f){if(f.k==='fire')fireStep(f,dt);});
+    fx=fx.filter(function(f){return f.t<(f.k==='nuke'?1.4:f.k==='ship'?1.6:f.k==='fire'?.9:f.k==='boom'?.5:f.k==='burst'?.42:f.k==='bolt'?.55:f.k==='txt'?1.4:f.k==='sink'||f.k==='burn'?1.1:f.k==='splash'||f.k==='fizz'?.7:.5);});
+    camStep(dt);
+    if(phase==='panel')return;
+    if(phase==='aim'&&walkDir&&walkLeft>0&&active.ground){walkAcc+=WALK_SPEED*dt;while(walkAcc>=1&&walkLeft>0){walkAcc--;if(!walkStep(active,walkDir,1)){walkAcc=0;break;}walkLeft--;}
+      if(walkLeft<=0){walkDir=0;say('Out of moves this turn.');}padState();}
+    acc+=dt;while(acc>=STEP){physics(STEP);acc-=STEP;}
+    if(phase==='aim'&&!active.alive){phase='settle';settleT=0;padState();renderWeapons();}
+    if(phase==='ai')aiStep(dt);
+    if(phase==='fly'&&!proj.length){phase='settle';settleT=0;}
+    if(phase==='settle'){settleT+=dt;
+      var still=crew.every(function(c){return !c.alive||c.ground;})&&!fx.some(function(f){return f.k==='boom'||f.k==='bolt'||f.k==='sink'||f.k==='burn'||f.k==='nuke'||f.k==='ship'||f.k==='fire';});
+      if((still&&settleT>(mode==='ffa'?.45:.7))||settleT>5)resolve();}
+  }
+
+  /* ---- drawing: the world through the camera, then labels, the HUD, and the minimap on top in screen space ------- */
+  function drawGoonAt(gi,x,y,face,alpha,sink,tint){var im=IM.gomas[gi];if(!ok(im))return;var gh=GS*im.naturalHeight/im.naturalWidth;
+    cx.save();cx.globalAlpha=alpha;cx.translate(x,y+sink);cx.scale(face<0?-1:1,1);
+    if(sink>0){cx.beginPath();cx.rect(-GS,-gh-4,GS*2,gh+4-sink);cx.clip();}
+    cx.drawImage(im,-GS/2,-gh,GS,gh);if(tint){cx.globalCompositeOperation='source-atop';cx.fillStyle=tint;cx.fillRect(-GS/2,-gh,GS,gh);}cx.restore();}
+  function drawCrew(c){
+    var x=c.x,y=c.y,isA=c===active&&phase!=='panel';
+    var gi=IM.gomas[c.goma],moving=c._lx!==undefined&&Math.abs(c.x-c._lx)>.02&&c.ground;c._lx=c.x;
+    if(moving)c.wad=(c.wad||0)+1/60;else if(c.wad)c.wad=0;   // waddle: rock side to side and hop while walking
+    var rock=c.wad?Math.sin(c.wad*16)*.2:0,hop=c.wad?Math.abs(Math.sin(c.wad*16))*1.2:0;
+    if(ok(gi)){var gh=GS*gi.naturalHeight/gi.naturalWidth,sq=c.hit>0?.82:1;cx.save();cx.translate(x,y-hop);cx.rotate(rock);cx.scale(c.face<0?-1:1,1);if(c.hit>0)cx.globalAlpha=Math.floor(clock*20)%2?.45:1;
+      cx.drawImage(gi,-GS/2,-gh*sq,GS,gh*sq);cx.restore();}
+    else{cx.fillStyle=GCOL[c.goma];cx.beginPath();cx.ellipse(x,y-6,6,5.5,0,0,7);cx.fill();}
+    drawMortar(c,isA&&(phase==='aim'||phase==='ai')?c.ang:(c.face>0?1.05:Math.PI-1.05));
+  }
+  function drawMortar(c,a){var p=mortarAt(c);
+    var fi=c.fireT>0?Math.min(2,Math.floor((.32-c.fireT)/.107)):-1,t=tube(c.goma,fi)||tube(c.goma,-1);
+    cx.save();cx.translate(p.x,p.y);cx.rotate(-a);
+    if(t){var k=MORTAR_L/120;cx.drawImage(t.c,-t.px*k,-t.py*k,t.c.width*k,t.c.height*k);}
+    else{cx.fillStyle=GCOL[c.goma];cx.fillRect(-1.5,-2.5,MORTAR_L+1.5,5);}
+    cx.restore();}
+  function drawStone(p,sz){var st=stone();cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);
+    if(st)cx.drawImage(st,-sz/2,-sz*.54,sz,sz*1.08);else{cx.fillStyle='#8a8a8a';cx.beginPath();cx.arc(0,0,sz/2,0,7);cx.fill();}cx.restore();}
+  function drawProj(p){
+    if(p.delay>0)return;   // a Barrage bomb shows only once the airship drops it
+    var w=p.w;
+    if(w.k==='ball')drawStone(p,6);
+    else if(w.k==='shard')drawStone(p,4.5);
+    else if(w.k==='atomic'){if(ok(IM.atomic)){cx.save();cx.translate(p.x,p.y);cx.rotate(Math.atan2(p.vy,p.vx)+Math.PI/2);cx.drawImage(IM.atomic,-6,-10,12,20);cx.restore();}else{cx.fillStyle='#c1330a';cx.beginPath();cx.arc(p.x,p.y,5,0,7);cx.fill();}}
+    else if(w.k==='flare'){cx.fillStyle='rgba(255,76,15,.35)';cx.beginPath();cx.arc(p.x,p.y,6+Math.sin(clock*30)*1.5,0,7);cx.fill();cx.fillStyle='#ff4c0f';cx.beginPath();cx.arc(p.x,p.y,2.5,0,7);cx.fill();}
+    else if(w.k==='bomblet'){cx.fillStyle='#1d1d1d';cx.beginPath();cx.arc(p.x,p.y,3.2,0,7);cx.fill();}
+    else if(w.k==='chunk'){drawStone(p,3.5);}
+    else if(w.k==='bomb'){cx.fillStyle='#2a2a2a';cx.beginPath();cx.arc(p.x,p.y,3.5,0,7);cx.fill();cx.strokeStyle=GCOL[p.owner.goma];cx.lineWidth=1.2;cx.beginPath();cx.arc(p.x,p.y,3.5,0,7);cx.stroke();
+      cx.fillStyle=Math.floor(clock*14)%2?'#ffd166':'#ff4c0f';cx.beginPath();cx.arc(p.x+1.6,p.y-3.8,1.1,0,7);cx.fill();}
+    else if(w.k==='mine'){var fr=p.fuse<1?Math.floor(clock*12)%3:Math.floor(clock*5)%3,im=IM.mine[fr],sz=14;if(ok(im))cx.drawImage(im,p.x-sz/2,p.y-sz/2,sz,sz);else{cx.fillStyle='#c1330a';cx.beginPath();cx.arc(p.x,p.y,3,0,7);cx.fill();}}
+    else if(w.k==='rock'){cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);if(ok(IM.rock))cx.drawImage(IM.rock,-6,-6.5,12,13);else{cx.fillStyle='#555';cx.fillRect(-5,-5,10,10);}cx.restore();}
+    else{cx.fillStyle='rgba(255,209,102,.35)';cx.beginPath();cx.arc(p.x,p.y,5,0,7);cx.fill();cx.fillStyle='#ffd166';cx.beginPath();cx.arc(p.x,p.y,2,0,7);cx.fill();}
+  }
+  function drawPickup(p){var x=p.x,y=p.y,b=Math.sin(clock*4+x)*.8;
+    if(p.k==='coin'){var im=IM.coin[p.v===15?1:0];if(ok(im))cx.drawImage(im,x-4.5,y-10+b,9,9);else{cx.fillStyle='#ffd166';cx.beginPath();cx.arc(x,y-5.5+b,4.5,0,7);cx.fill();}return;}
+    cx.save();cx.translate(x,y);cx.scale(.6,.6);
+    var col={heal:'#89fbcb',ammo:'#ff4c0f',gem:'#5fd3f3',turn:'#ffd166',life:'#ff4c0f',big:'#b9b9b9',token:'#ffd166'}[p.k]||'#c3a6ff';cx.fillStyle='#6b4423';cx.fillRect(-7,-14,14,14);cx.strokeStyle='#2a1a10';cx.lineWidth=1.5;cx.strokeRect(-7,-14,14,14);
+    cx.fillStyle=col;if(p.k==='heal'){cx.fillRect(-1.5,-12,3,10);cx.fillRect(-5,-8.5,10,3);}
+    else if(p.k==='ammo'){cx.beginPath();cx.arc(0,-7,3.5,0,7);cx.fill();}
+    else if(p.k==='gem'){cx.beginPath();cx.moveTo(0,-12.5);cx.lineTo(4.5,-7);cx.lineTo(0,-1.5);cx.lineTo(-4.5,-7);cx.closePath();cx.fill();}
+    else if(p.k==='turn'){cx.lineWidth=2;cx.strokeStyle=col;cx.beginPath();cx.arc(0,-7,3.8,-.4,4.6);cx.stroke();cx.beginPath();cx.moveTo(3.2,-11.5);cx.lineTo(5.2,-7.5);cx.lineTo(1.2,-8);cx.closePath();cx.fill();}
+    else if(p.k==='life'){cx.beginPath();cx.moveTo(0,-2.5);cx.bezierCurveTo(-7,-7,-4,-13,0,-9.5);cx.bezierCurveTo(4,-13,7,-7,0,-2.5);cx.fill();}
+    else if(p.k==='big'){cx.beginPath();cx.arc(0,-7,4.6,0,7);cx.fill();cx.fillStyle='#6b6b6b';cx.beginPath();cx.arc(-1.4,-8.4,1.4,0,7);cx.fill();}
+    else if(p.k==='token'){cx.beginPath();cx.arc(0,-7,4.6,0,7);cx.fill();cx.fillStyle='#2a1a10';cx.font='800 6px Almarai,sans-serif';cx.textAlign='center';cx.fillText('UP',0,-5);}
+    else{cx.beginPath();cx.moveTo(1,-13);cx.lineTo(-4,-6);cx.lineTo(0,-6);cx.lineTo(-1,-1);cx.lineTo(4,-8);cx.lineTo(0,-8);cx.closePath();cx.fill();}cx.restore();}
+  function drawFx(f){
+    if(f.k==='nuke'){var nz=f.R*3.2*(.6+Math.min(1,f.t*2)*.4);cx.globalAlpha=Math.max(0,1-f.t/1.4);if(ok(IM.nuke))cx.drawImage(IM.nuke,f.x-nz/2,f.y-nz*.85,nz,nz);else{cx.fillStyle='#ff4c0f';cx.beginPath();cx.arc(f.x,f.y-nz*.3,nz*.4,0,7);cx.fill();}cx.globalAlpha=1;return;}
+    if(f.k==='ship'){var sx=f.x-220+f.t*280,sw=70;if(ok(IM.ship)){var sh=sw*IM.ship.naturalHeight/IM.ship.naturalWidth;cx.save();cx.translate(sx,f.y);cx.scale(-1,1);cx.drawImage(IM.ship,-sw/2,-sh/2,sw,sh);cx.restore();}else{cx.fillStyle='#c1330a';cx.fillRect(sx-30,f.y-8,60,16);}return;}
+    if(f.k==='fire'){var fy=f.y+f.d,fl=Math.sin(clock*40)*1.5;cx.fillStyle='rgba(255,140,0,.55)';cx.beginPath();cx.arc(f.x,fy,7+fl,0,7);cx.fill();cx.fillStyle='#ffd166';cx.beginPath();cx.arc(f.x,fy,3.5,0,7);cx.fill();return;}
+    if(f.k==='boom'){var bi=IM.burst[Math.min(2,Math.floor(f.t/.15))],sz=f.R*2.4;
+      if(ok(bi)){cx.globalAlpha=Math.max(0,1-f.t*1.2);cx.drawImage(bi,f.x-sz/2,f.y-sz/2,sz,sz);cx.globalAlpha=1;}
+      else{cx.fillStyle='rgba(255,76,15,'+Math.max(0,1-f.t*2)+')';cx.beginPath();cx.arc(f.x,f.y,f.R*(.5+f.t),0,7);cx.fill();}return;}
+    if(f.k==='burst'){var im=IM.burst[Math.min(2,Math.floor(f.t/.14))];if(ok(im))cx.drawImage(im,f.x-f.s/2,f.y-f.s/2,f.s,f.s);return;}
+    if(f.k==='bolt'){var a=Math.floor(f.t*20)%2?.6:1;cx.globalAlpha=a*Math.max(0,1-f.t*1.5);
+      if(ok(IM.bolt)){var bw=24;cx.drawImage(IM.bolt,f.x-bw/2,0,bw,f.y+3);}else{cx.strokeStyle='#ffd166';cx.lineWidth=2;cx.beginPath();cx.moveTo(f.x,0);cx.lineTo(f.x,f.y);cx.stroke();}
+      cx.globalAlpha=1;return;}
+    if(f.k==='smoke'){cx.fillStyle='rgba(243,234,217,'+Math.max(0,.5-f.t)+')';cx.beginPath();cx.arc(f.x,f.y,3+f.t*20,0,7);cx.fill();return;}
+    // water: the goon sinks out of sight in a ring of splash; lava: it flares up in flame and smoke and burns away
+    if(f.k==='sink'){var q=Math.min(1,f.t/.9);drawGoonAt(f.goma,f.x,f.y,f.face,1-q*.6,q*16,null);
+      cx.strokeStyle='rgba(220,240,255,'+(1-q)+')';cx.lineWidth=1.2;for(var r2=0;r2<2;r2++){cx.beginPath();cx.ellipse(f.x,f.y,4+q*12+r2*5,1.5+q*2,0,0,7);cx.stroke();}
+      cx.fillStyle='rgba(200,235,255,'+(1-q)+')';for(var dd=0;dd<5;dd++){var an=-Math.PI*(.15+dd*.175),rr=q*14;cx.beginPath();cx.arc(f.x+Math.cos(an)*rr,f.y+Math.sin(an)*rr*1.3+q*q*12,1.3,0,7);cx.fill();}return;}
+    if(f.k==='burn'){var q2=Math.min(1,f.t/.9);drawGoonAt(f.goma,f.x,f.y,f.face,1-q2,q2*6,'rgba(30,10,0,'+(.3+q2*.6)+')');
+      for(var fl=0;fl<5;fl++){var fx0=f.x-6+fl*3,fh=(6+Math.sin(clock*30+fl)*3)*(1-q2*.5);cx.fillStyle=fl%2?'rgba(255,209,102,'+(1-q2)+')':'rgba(255,76,15,'+(1-q2)+')';
+        cx.beginPath();cx.moveTo(fx0-2,f.y);cx.lineTo(fx0,f.y-fh-q2*6);cx.lineTo(fx0+2,f.y);cx.closePath();cx.fill();}
+      cx.fillStyle='rgba(60,60,60,'+Math.max(0,.6-q2*.5)+')';cx.beginPath();cx.arc(f.x+Math.sin(clock*3)*2,f.y-12-q2*20,3+q2*7,0,7);cx.fill();return;}
+    if(f.k==='splash'){var s1=Math.min(1,f.t/.7);cx.strokeStyle='rgba(220,240,255,'+(1-s1)+')';cx.lineWidth=1;cx.beginPath();cx.ellipse(f.x,f.y,3+s1*8,1+s1*2,0,0,7);cx.stroke();return;}
+    if(f.k==='fizz'){var s2=Math.min(1,f.t/.7);cx.fillStyle='rgba(80,80,80,'+(.5-s2*.5)+')';cx.beginPath();cx.arc(f.x,f.y-s2*10,2+s2*5,0,7);cx.fill();return;}
+  }
+  function drawLabels(){
+    var ovz=cam.z<.6,bw=ovz?10:(narrow?30:24),bh=ovz?3:5;
+    var al=crew.filter(function(c){return c.alive;}).map(function(c){var s=toScreen(c.x,c.y-GS*1.2-6);return {c:c,x:s.x,y:s.y};}).sort(function(a,b){return a.x-b.x;});
+    al.forEach(function(o,i){var p=al[i-1];o.lift=!ovz&&p&&o.x-p.x<bw+12&&Math.abs(o.y-p.y)<HFS+16&&!p.lift?HFS+bh+12:0;});
+    al.forEach(function(o){var c=o.c,x=o.x,by=o.y-(o.lift||0);if(x<-40||x>VW+40||by<-40||by>VH+40)return;
+      cx.fillStyle='rgba(11,23,15,.85)';cx.fillRect(x-bw/2-1,by-1,bw+2,bh+2);cx.fillStyle=c.team===0?'#ff4c0f':'#3adb97';cx.fillRect(x-bw/2,by,bw*Math.max(0,c.hp/c.max),bh);
+      if(!ovz){cx.font='800 '+HFS+'px Almarai,sans-serif';cx.textAlign='center';cx.fillStyle='#fffffe';cx.fillText(Math.max(0,Math.ceil(c.hp)),x,by-5);}
+      if(c===active&&phase!=='panel'){var bob=Math.sin(clock*5)*2,my=by-(ovz?6:HFS+12)+bob;cx.fillStyle=c.team===0?'#ffd166':'#89fbcb';cx.beginPath();cx.moveTo(x-6,my-8);cx.lineTo(x+6,my-8);cx.lineTo(x,my);cx.fill();}});
+    fx.forEach(function(f){if(f.k!=='txt')return;var s=toScreen(f.x,f.y);cx.font='800 '+(HFS+4)+'px Almarai,sans-serif';cx.textAlign='center';cx.globalAlpha=Math.max(0,1-f.t/1.4);
+      var x=Math.max(60,Math.min(VW-60,s.x)),y=s.y-f.t*30;cx.fillStyle='rgba(11,23,15,.7)';cx.fillText(f.label,x+1,y+1);cx.fillStyle=f.c;cx.fillText(f.label,x,y);cx.globalAlpha=1;});
+  }
+  function drawMini(){
+    var r=miniRect();
+    if(miniDirty&&clock-miniT>.25){mini.width=r.w*2;mini.height=r.h*2;var g=mini.getContext('2d');g.clearRect(0,0,mini.width,mini.height);
+      if(usingMap)g.drawImage(lc,0,0,mini.width,mini.height);g.drawImage(tc,0,0,mini.width,mini.height);miniDirty=false;miniT=clock;}
+    cx.fillStyle='rgba(11,23,15,.72)';cx.fillRect(r.x-3,r.y-3,r.w+6,r.h+6);cx.strokeStyle='rgba(243,234,217,.55)';cx.lineWidth=1;cx.strokeRect(r.x-3.5,r.y-3.5,r.w+7,r.h+7);
+    cx.drawImage(mini,r.x,r.y,r.w,r.h);
+    crew.forEach(function(c){if(!c.alive)return;var x=r.x+c.x/W*r.w,y=r.y+(c.y-6)/H*r.h;cx.fillStyle=c===active?'#ffd166':c.team===0?'#ff4c0f':'#3adb97';cx.fillRect(x-2,y-2,4,4);});
+    proj.forEach(function(p){var x=r.x+p.x/W*r.w,y=r.y+p.y/H*r.h;cx.fillStyle='#fffffe';cx.fillRect(x-1,y-1,2,2);});
+    var a=toWorld(0,0),b=toWorld(VW,VH);cx.strokeStyle='#ffd166';cx.lineWidth=1.5;
+    cx.strokeRect(r.x+Math.max(0,a.x)/W*r.w,r.y+Math.max(0,a.y)/H*r.h,(Math.min(W,b.x)-Math.max(0,a.x))/W*r.w,(Math.min(H,b.y)-Math.max(0,a.y))/H*r.h);
+  }
+  function drawHud(){
+    cx.font='800 '+FS+'px Almarai,sans-serif';cx.textBaseline='alphabetic';
+    cx.textAlign='left';cx.fillStyle='#fffffe';if(narrow&&mode==='ffa')cx.font='800 '+Math.round(FS*.75)+'px Almarai,sans-serif';cx.fillText(mode==='ffa'?'FREE-FOR-ALL':'LEVEL '+level,16,FS+12);cx.font='800 '+FS+'px Almarai,sans-serif';
+    if(canAct()){var my=FS*2+22;cx.font='800 '+Math.round(FS*.8)+'px Almarai,sans-serif';cx.fillText('MOVES',16,my);var mx=16+cx.measureText('MOVES').width+10,mw=narrow?90:70;
+      cx.fillStyle='rgba(11,23,15,.75)';cx.fillRect(mx,my-10,mw,9);cx.fillStyle='#ffd166';cx.fillRect(mx+1,my-9,(mw-2)*walkLeft/WALK,7);}
+    cx.font='800 '+FS+'px Almarai,sans-serif';cx.textAlign='center';cx.fillStyle='#fffffe';
+    var wx=VW/2;cx.fillText(wind?'WIND '+Math.abs(wind):'CALM',wx,FS+12);
+    if(wind){var ay=FS+30,len=12+Math.abs(wind)*(narrow?6:8),dir=wind>0?1:-1,x0=wx-dir*len/2,x1=wx+dir*len/2;
+      cx.strokeStyle='#89fbcb';cx.lineWidth=4;cx.beginPath();cx.moveTo(x0,ay);cx.lineTo(x1-dir*8,ay);cx.stroke();
+      cx.fillStyle='#89fbcb';cx.beginPath();cx.moveTo(x1,ay);cx.lineTo(x1-dir*12,ay-8);cx.lineTo(x1-dir*12,ay+8);cx.fill();}
+    if(phase!=='panel'&&active){cx.textAlign='right';cx.fillStyle=team?'#89fbcb':'#ffb08a';
+      var tl=team===0?'YOUR TURN':mode==='ffa'?GOMAS[active.goma][1].toUpperCase()+'’S TURN':'RIVAL TURN';if(narrow&&tl.length>12)tl=GOMAS[active.goma][1].toUpperCase();
+      cx.fillText(tl,VW-16,FS+12);
+      if(streak>1){cx.font='800 '+Math.round(FS*.8)+'px Almarai,sans-serif';cx.fillStyle='#ffd166';cx.fillText('STREAK x'+streak,VW-16,FS*2+22);}}
+  }
+  function draw(){
+    cx.setTransform(DPR,0,0,DPR,0,0);cx.fillStyle='#7fb3a0';cx.fillRect(0,0,VW,VH);
+    var z=cam.z;cx.setTransform(DPR*z,0,0,DPR*z,DPR*(VW/2-cam.cx*z),DPR*(VH/2-cam.cy*z));
+    if(ok(IM.sky)){var sk=Math.max(W/IM.sky.naturalWidth,H/IM.sky.naturalHeight),sw=IM.sky.naturalWidth*sk,sh=IM.sky.naturalHeight*sk;cx.drawImage(IM.sky,(W-sw)/2,H-sh,sw,sh);}
+    else{var g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#bfe3df');g.addColorStop(1,'#8cc7c0');cx.fillStyle=g;cx.fillRect(0,0,W,H);}
+    if(usingMap)cx.drawImage(lc,0,0,W,H);
+    cx.drawImage(tc,0,0,W,H);
+    pickups.forEach(drawPickup);
+    crew.forEach(function(c){if(c.alive)drawCrew(c);});
+    proj.forEach(drawProj);
+    fx.forEach(function(f){if(f.k!=='txt')drawFx(f);});
+    cx.setTransform(DPR,0,0,DPR,0,0);
+    if(canAct()){var c=active,w=WEAPONS[weapon],m=muzzle(c,c.ang),v=shotVel(c.ang,c.pow,w);cx.fillStyle='rgba(11,23,15,.85)';
+      for(var t=.06;t<=.5;t+=.055){var s=toScreen(m.x+v.vx*t,m.y+v.vy*t+G*w.grav*t*t/2);cx.beginPath();cx.arc(s.x,s.y,3.5,0,7);cx.fill();cx.fillStyle='#fffffe';cx.beginPath();cx.arc(s.x,s.y,2.2,0,7);cx.fill();cx.fillStyle='rgba(11,23,15,.85)';}}
+    drawLabels();
+    if(phase!=='panel'&&!overview)drawMini();
+    drawHud();
+    if(phase==='panel'||paused){cx.fillStyle='rgba(11,23,15,.5)';cx.fillRect(0,0,VW,VH);cx.textAlign='center';cx.font='400 '+(narrow?40:44)+'px "Cracked Imperia",Impact,sans-serif';cx.fillStyle='#fffffe';
+      cx.fillText(paused?'PAUSED':'READY',VW/2,VH/2);}
+  }
+  function loop(ts){var dt=Math.min(.05,(ts-(last||ts))/1000);last=ts;update(dt);draw();requestAnimationFrame(loop);}
+
+  /* read-only view of the game, for checking it and for the weekly boards later (mode, finalScore, fullRun, levelReached) */
+  d.peek=function(){var n=0;for(var i=0;i<solid.length;i++)n+=solid[i];var lq=0;for(i=0;i<liq.length;i++)if(liq[i])lq++;
+    return {W:W,H:H,VW:VW,VH:VH,G:G,narrow:narrow,mode:mode,phase:phase,paused:paused,level:level,levelReached:level,score:score,finalScore:finalScore,runFrom:runFrom,fullRun:runFrom===1,place:place,
+      best:bests[mode],bests:{campaign:bests.campaign,ffa:bests.ffa},wind:wind,team:team,teams:TEAMS,panel:panelKind,variant:variant,variants:variants().length,usingMap:usingMap,liquid:lq,
+      cam:{cx:cam.cx,cy:cam.cy,z:cam.z},overview:overview,camHold:camHold,mini:miniRect(),
+      weapon:WEAPONS[weapon].k,goma:GOMAS[myGoma][0],rivalGoma:GOMAS[rivalGoma(level)][0],ammo:ammo[0]?ammo[0].slice():[],walkLeft:walkLeft,jumped:jumped,solid:n,boxShown:boxShown,
+      coins:coins,up:JSON.parse(JSON.stringify(up)),stars:{best:JSON.parse(JSON.stringify(starBest)),total:starTotal(),last:lastBonus?lastBonus.stars:null},saved:readSave(),resume:!!resumeSave,clock:clock,crewState:crewState?crewState.map(function(m){return {hp:m.hp,max:m.max};}):null,
+      shots:shots,hits:hits,streak:streak,lvShots:lvShots,lvHits:lvHits,lastBonus:lastBonus,lastPlan:lastPlan,v7:{proj:proj.map(function(p){return p.w.k;}),fx:fx.map(function(f){return f.k;}),extraTurn:extraTurn.slice(),bigNext:bigNext.slice(),round:round,pickups:pickups.map(function(p){return p.k;}),zoomMul:zoomMul,fitZ:fitZ(),alive0:living(0).length,alive1:living(1).length,rivalHp:crew.filter(function(c){return c.team===1;}).map(function(c){return c.max;})},
+      pickups:pickups.map(function(p){return {k:p.k,x:p.x,y:p.y,v:p.v};}),
+      fx:fx.map(function(f){return f.k;}),
+      active:active?{team:active.team,i:active.i,x:active.x,y:active.y,ang:active.ang,pow:active.pow,goma:active.goma}:null,
+      activeScreen:active?toScreen(active.x,active.y):null,
+      crew:crew.map(function(c){return {team:c.team,goma:GOMAS[c.goma][0],i:c.i,x:c.x,y:c.y,hp:c.hp,max:c.max,alive:c.alive,ground:c.ground};}),
+      proj:proj.map(function(p){return {k:p.w.k,x:p.x,y:p.y,vx:p.vx,vy:p.vy};})};};
+  if(/[?&]test=1/.test(location.search))d.test={
+    start:function(L){mode='campaign';newRun();level=L||1;startLevel();hud();},
+    ffa:function(){setMode('ffa');newRun();startLevel();hud();},
+    mode:function(m){setMode(m);},
+    aim:function(deg,pw){active.ang=deg*Math.PI/180;active.pow=pw;active.face=Math.cos(active.ang)<0?-1:1;},
+    fire:function(){if(canAct())fire();},weapon:function(i){weapon=myWeapon=i;renderWeapons();},wind:function(w){wind=w;},
+    hp:function(t,i,v){crew.forEach(function(c){if(c.team===t&&c.i===i)c.hp=v;});hud();},
+    kill:function(t){crew.forEach(function(c){if(c.team===t)c.hp=0;});phase='settle';settleT=0;},
+    killOthers:function(){crew.forEach(function(c){if(c.team!==0)c.hp=0;});phase='settle';settleT=0;},
+    aiErr:function(m){aiMul=m;},walk:function(dir,px){walkFor(dir,px);},
+    blast:function(x,y,R,dm){blast(x,y,R,dm||0);},
+    plan:function(){return planAi();},
+    coins:function(n){coins=n;hud();if(panelKind==='shop')renderShop();},
+    buy:function(k){return buy(k);},
+    clearPickups:function(){pickups=[];},
+    // put a pickup right beside your active goon (on the side it faces) so one short walk grabs it
+    drop:function(n){dropPicks(n);},
+    pickupBeside:function(k,dx){var x=Math.round(active.x+(dx||6)),y=surfaceY(x);pickups.push({k:k,x:x,y:y,v:k==='coin'?10:0});return {x:x,y:y};},
+    hitRival:function(){var t=others()[0];proj.push({w:WEAPONS[0],x:t.x,y:t.y-16,vx:0,vy:40,t:1,owner:active,fuse:0,rest:false,rot:0,rm:1,dm:1});
+      shots++;lvShots++;cur={hit:false,direct:false};shotTeam=0;phase='fly';return t.team;},
+    // drop a goon into the nearest liquid (map 1 water, map 3 lava) to check the two ways out
+    dunk:function(t,i){var c=crew.filter(function(o){return o.team===t&&o.alive;})[i||0];for(var y=0;y<H;y++)for(var x=0;x<W;x+=2)if(liq[y*W+x]){c.x=x;c.y=y-12;c.ground=false;c.vy=0;phase='settle';settleT=0;return {x:x,y:y,kind:liq[y*W+x]};}return null;},
+    variantFor:function(L){return levelVariant(L);},
+    overview:function(on){setOverview(on);},
+    pan:function(dx,dy){cam.cx+=dx;cam.cy+=dy;camHold=true;clampCam();}
+  };
+  newRun();setView();
+  ammo=[WEAPONS.map(function(w){return w.ammo;}),WEAPONS.map(function(w){return w.ammo;})];
+  genTerrain();placeCrew();hud();controls(false);renderWeapons();padState();openPanel('Ready to fight?',NOTE.campaign,'Start level 1',null,'start');offerResume();setOverview(true);snapCam();requestAnimationFrame(loop);
+  // the maps load after the page starts: redraw the preview once they are in
+  IM.maps[0].addEventListener('load',function(){if(phase==='panel'&&mode==='campaign'&&level===1)preview();});
+  window.addEventListener('resize',function(){var n=(d.querySelector('.sd-stage').clientWidth||960)<640;if(n!==narrow){setView();clampCam();if(phase==='panel')preview();renderWeapons();}});
+})();
+</script>

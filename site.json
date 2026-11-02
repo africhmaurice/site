@@ -465,6 +465,24 @@
       "source": "pages/the-levian.html"
     },
     {
+      "slug": "master-cannoneer",
+      "url": "/hold-the-wall-13212",
+      "title": "Hold the Wall! (hidden; loot box 140, weekly high score)",
+      "source": "pages/master-cannoneer.html"
+    },
+    {
+      "slug": "sky-fishing",
+      "url": "/goma-goons-43216",
+      "title": "Goma Goons (hidden; loot box 141, weekly Campaign + Free-for-All boards)",
+      "source": "pages/sky-fishing.html"
+    },
+    {
+      "slug": "pick-the-lock",
+      "url": "/pick-the-lock-23966",
+      "title": "Pick the Lock (hidden; loot box 142, gear puzzle)",
+      "source": "pages/pick-the-lock.html"
+    },
+    {
       "slug": "master-stacker",
       "url": "/master-stacker-32368",
       "title": "Master Stacker (hidden; loot box 148, weekly high score)",
