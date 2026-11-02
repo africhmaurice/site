@@ -31,7 +31,7 @@
     '.tm-drop__in a.tm-top{display:block;text-align:center;border:1px solid rgba(243,234,217,.3);padding:14px!important;font-weight:800;letter-spacing:.12em}' +
     '.tm-grp>span:first-child,.tm-mnav .ma-mgrp>span:first-child{align-self:stretch;display:block;text-align:center;border-bottom:2px solid rgba(243,234,217,.45);padding-bottom:5px;margin-bottom:10px;line-height:1.3}' +
     '.tm-grp span.ma-sub,.tm-mnav span.ma-sub{display:block;align-self:stretch;font:800 11px/1.3 Almarai,sans-serif;letter-spacing:.16em;text-transform:uppercase;text-align:center;color:#fff;margin:10px 0 4px;padding:4px 10px;white-space:nowrap}' +
-    'span.ma-sub-one{background:#482d85}span.ma-sub-two{background:#1a5e41;outline:1px solid #89fbcb}span.ma-sub-all{background:rgba(243,234,217,.14)}span.ma-sub-three{background:#912501;outline:1px solid #fd7547}' +
+    'span.ma-sub-one{background:#482d85}span.ma-sub-two{background:#1a5e41;outline:1px solid #89fbcb}span.ma-sub-all{background:rgba(243,234,217,.14)}span.ma-sub-three{background:#912501;outline:1px solid #fd7547}span.ma-sub-four{background:#2c6021;outline:1px solid #a2f590}' +
     // the panel's sizes are the website's (loader.js huntCss), so it looks the same on both
     '.tm-mega3 a{font:700 clamp(12px,.92vw,14.4px)/1.2 Almarai,sans-serif!important;letter-spacing:.07em!important;padding:8px 14px!important}' +
     '.tm-mega3 a.tm-top{padding:14px!important;font-weight:800!important;letter-spacing:.12em!important}' +
@@ -55,13 +55,13 @@
     var ov = doc.getElementById('hunt-nav-ov'); if (!ov) return {};
     var q = function (s) { return [].slice.call(ov.querySelectorAll(s)); };
     q('.mn-ovgroup a[href$="/leaderboard"]').forEach(function (a) {
-      a.parentNode.insertBefore(link(SITE + '/leaderboard?act=one', 'ACT ONE STANDINGS'), a.nextSibling);
-      a.parentNode.insertBefore(link(SITE + '/leaderboard?act=two', 'ACT TWO STANDINGS'), a.nextSibling.nextSibling);
-      a.parentNode.insertBefore(link(SITE + '/leaderboard?act=three', 'ACT THREE STANDINGS'), a.nextSibling.nextSibling.nextSibling);
+      // newest act first (Act Four, Maurice 2026-11-02)
+      var nx = a.nextSibling;
+      [['four', 'FOUR'], ['three', 'THREE'], ['two', 'TWO'], ['one', 'ONE']].forEach(function (x) { a.parentNode.insertBefore(link(SITE + '/leaderboard?act=' + x[0], 'ACT ' + x[1] + ' STANDINGS'), nx); });
     });
     q('.mn-ovgroup a[href$="/the-hunt#rewards"]').forEach(function (a) {
       var p = a.parentNode;
-      [sub('REWARDS', 'all'), link(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), link(SITE + '/act-one-winners', 'ACT ONE WINNERS'), link(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), link(SITE + '/act-two-winners', 'ACT TWO WINNERS'), link(SITE + '/the-hunt#rewards-act-three', 'ACT THREE')].forEach(function (n) { p.insertBefore(n, a); });
+      [sub('REWARDS', 'all'), link(SITE + '/the-hunt#rewards-act-four', 'ACT FOUR'), link(SITE + '/the-hunt#rewards-act-three', 'ACT THREE'), link(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), link(SITE + '/act-two-winners', 'ACT TWO WINNERS'), link(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), link(SITE + '/act-one-winners', 'ACT ONE WINNERS')].forEach(function (n) { p.insertBefore(n, a); });
       p.removeChild(a);
     });
     var gs = {};
@@ -69,10 +69,12 @@
     if (gs['CURRENT PROGRESS'] && !gs['CURRENT PROGRESS'].querySelector('a[href$="/questions"]')) gs['CURRENT PROGRESS'].appendChild(link(SITE + '/questions', 'QUESTIONS?'));
     var earn = doc.createElement('div'); earn.appendChild(el('span', '', 'EARN POINTS'));
     [].filter.call(ov.children, function (a) { return a.tagName === 'A' && EARN.test(a.href) && !/#tasks$|#riddles$/.test(a.href); }).forEach(function (a) { earn.appendChild(link(a.getAttribute('href'), plain(a))); });
-    [sub('ACT ONE', 'one'), link(SITE + '/the-hunt#act1-tasks', 'TASKS'), link(SITE + '/the-hunt#act1-riddles', 'RIDDLES & PUZZLES'),
+    [sub('ACT FOUR', 'four'), link(SITE + '/the-hunt#tasks', 'TASKS'), link(SITE + '/the-hunt#act4-riddles', 'RIDDLES & PUZZLES'),
+      sub('ACT THREE', 'three'), link(SITE + '/the-hunt#riddles', 'RIDDLES & PUZZLES'),
       sub('ACT TWO', 'two'), link(SITE + '/the-hunt#act2-tasks', 'TASKS'), link(SITE + '/the-hunt#act2-riddles', 'RIDDLES & PUZZLES'),
-      sub('ACT THREE', 'three'), link(SITE + '/the-hunt#tasks', 'TASKS'), link(SITE + '/the-hunt#riddles', 'RIDDLES & PUZZLES')].forEach(function (n) { earn.appendChild(n); });
+      sub('ACT ONE', 'one'), link(SITE + '/the-hunt#act1-tasks', 'TASKS'), link(SITE + '/the-hunt#act1-riddles', 'RIDDLES & PUZZLES')].forEach(function (n) { earn.appendChild(n); });
     gs['EARN POINTS'] = earn;
+    if (gs['ADVENTURE']) [].slice.call(gs['ADVENTURE'].querySelectorAll('a')).forEach(function (a) { if (!/\/adventure\/?$/.test(a.getAttribute('href') || '')) a.parentNode.removeChild(a); else a.textContent = 'THE ADVENTURE SO FAR'; });
     return gs;
   }
   // a group's heading and links, copied, without repeats
@@ -230,7 +232,7 @@
     var row = [th, tm, link(SITE + '/links', 'LINKS', 'tm-nav__link'), link(SITE + '/newsletter', 'NEWSLETTER', 'tm-nav__link'), link(DISCORD, 'JOIN THE DISCORD!', 'tm-nav__link')];
     while (nav.firstChild) nav.removeChild(nav.firstChild);
     row.forEach(function (n) { nav.appendChild(n); });
-    if (pre) { nav.appendChild(pre); boxed(pre, "PRE-ORDER CELLO'S GATE"); }
+    if (pre) { nav.appendChild(pre); boxed(pre, "ORDER CELLO'S GATE"); }
     fitGap(nav); addEventListener('resize', function () { fitGap(nav); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { fitGap(nav); });
 

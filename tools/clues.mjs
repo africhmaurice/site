@@ -270,7 +270,7 @@ Haven't I Seen You Before?`],   // on Bard's Linktree (Maurice, 2026-10-16)
 const INTRO = `  <div class="lc-intro">
     <h1 class="lc-title">The Clues</h1>
     <p>Loot boxes are hidden all over the internet: on social media, reading apps, author websites, and more! Every card below is a clue that leads to one of them. Some are riddles, some are pictures, and some are hiding in plain sight.</p>
-    <p>When you find a box, click it to claim it and earn points. Every loot box found earns you an extra entry into the sweepstakes!</p>
+    <p>When you find a box, click it to claim it and earn points.</p>
   </div>`;
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

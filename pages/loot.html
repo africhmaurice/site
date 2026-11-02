@@ -296,7 +296,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <div class="lb-grid" id="lb-grid" aria-label="Your loot box scorecard"></div>
       <div class="lb-share"><div class="lb-colors" id="lb-colors" role="radiogroup" aria-label="Card color"><span>Card color</span></div>
         <button type="button" class="lb-btn" id="lb-share">Share my scorecard</button>
-        <p>Post it with #SkyPiratesHunt and #sweepstakes (U.S.) or #competition (UK), then submit it for “Show Off Your Scorecard” points.</p></div>
+        <p>Post it with #SkyPiratesHunt and #contest, then submit it for “Show Off Your Scorecard” points.</p></div>
     </div>
     <p class="lb-foot" id="lb-foot"></p>
   </main>
@@ -502,7 +502,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         btn.textContent = label; btn.disabled = false;
         if (!b) { alert('Your browser couldn’t make the picture. Try again in a moment.'); return; }
         var file = new File([b], 'loot-box-scorecard.png', { type: 'image/png' });
-        var tag = me.country === 'United Kingdom' ? '#competition' : '#sweepstakes';
+        var tag = '#contest';
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           navigator.share({ files: [file], text: 'My loot box scorecard! Join the hunt: mauriceafrich.com/the-hunt #SkyPiratesHunt ' + tag }).catch(function () {});
         } else {

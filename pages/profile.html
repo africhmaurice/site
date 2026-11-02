@@ -259,7 +259,7 @@ html,body{margin:0 !important;padding:0 !important}
     <h1>TREASURE HUNTER PROFILE</h1>
     <div class="hp-example">EXAMPLE PROFILE: MADE-UP NUMBERS TO SHOW THE DESIGN</div>
     <div class="hp-find" id="hp-find">
-      <p>See your rank, points, sweepstakes entries, and everything you’ve found so far.</p>
+      <p>See your rank, points, and everything you’ve found so far.</p>
       <form id="hp-form"><input id="hp-email" type="email" inputmode="email" autocomplete="email" placeholder="The email you use for the hunt" required><button type="submit">SHOW MY PROFILE</button></form>
       <p class="hp-err" id="hp-err" role="alert"></p>
       <small>Your stats update at each tally (10 AM and 7 PM ET). I’ll remember your email on this device.</small>
@@ -304,7 +304,7 @@ html,body{margin:0 !important;padding:0 !important}
       '<div class="hp-tiles">' +
         (p.rank ? '<div class="hp-tile hp-hot"><i>RANK</i><b>#' + p.rank + '</b><span>of ' + fmt(p.of) + ' on the board</span></div>' : '<div class="hp-tile hp-hot"><i>RANK</i><b>CREW</b><span>not on the public board</span></div>') +
         '<div class="hp-tile"><i>TOTAL POINTS</i><b>' + fmt(p.pts) + '</b><span>and counting</span></div>' +
-        '<div class="hp-tile"><i>SWEEPSTAKES ENTRIES</i><b>' + fmt(p.ent) + '</b><span>' + fmt(p.act[actNow]) + ' in ' + acts[actNow] + '</span></div>' +
+        '<div class="hp-tile"><i>ACT FOUR POINTS</i><b>' + fmt((p.ap || [])[3] || 0) + '</b><span>Nov 2 to Nov 10</span></div>' +
         '<div class="hp-tile"><i>DAYS ACTIVE</i><b>' + active + '</b><span>of ' + sofar + ' days so far</span></div>' +
       '</div>' +
       // Points per act (Maurice, 2026-10-01): Act One is fixed now that it's over; Act Two counts up from zero.
@@ -316,9 +316,9 @@ html,body{margin:0 !important;padding:0 !important}
       '<div class="hp-grid">' +
         '<div class="hp-stat"><i>SECRET LOOT BOXES</i><b>' + p.loot + ' <small>/ ' + BOXES + '</small></b><div class="hp-bar"><div style="width:' + (p.loot / BOXES * 100).toFixed(1) + '%"></div></div></div>' +
         '<div class="hp-stat"><i>DAILY GAME WINS</i><b>' + p.games + '</b><small>Skyword, Sort the Shelf, Book Icons, Crossword</small></div>' +
-        '<div class="hp-stat"><i>RIDDLES SOLVED</i><b>' + p.riddles + '</b><small>Every solve is an entry</small></div>' +
+        '<div class="hp-stat"><i>RIDDLES SOLVED</i><b>' + p.riddles + '</b><small>Answered right on their cards</small></div>' +
         '<div class="hp-stat"><i>ADVENTURE VOTES SEALED</i><b>' + p.votes + '</b><small>Choose Your Own Adventure</small></div>' +
-        '<div class="hp-stat"><i>PRE-ORDERS</i><b>' + p.pre + '</b><small>2,000 points + 5 entries each</small></div>' +
+        '<div class="hp-stat"><i>ORDERS</i><b>' + p.pre + '</b><small>2,000 points each</small></div>' +
         '<div class="hp-stat"><i>TASKS COMPLETED</i><b>' + p.tasks + '</b><small>Shares, apps, libraries, and more</small></div>' +
       '</div>' +
       '<h2>DAYS ON THE HUNT</h2><div class="hp-days">' + days + '</div><div class="hp-daykey"><span>One square for each day of the hunt, Sept 21 to Nov 10. <b>Red</b> means you earned points that day.</span></div>' +
@@ -402,7 +402,7 @@ html,body{margin:0 !important;padding:0 !important}
         btn.textContent = label; btn.disabled = false;
         if (!b) { alert('Your browser couldn’t make the picture. Try again in a moment.'); return; }
         var file = new File([b], 'sky-pirate-card.png', { type: 'image/png' });
-        var tag = p.r === 'uk' ? '#competition' : '#sweepstakes';
+        var tag = '#contest';
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           navigator.share({ files: [file], text: 'Join me on the hunt! #SkyPiratesHunt ' + tag + ' mauriceafrich.com/the-hunt' }).catch(function () {});
         } else {

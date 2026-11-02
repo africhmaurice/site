@@ -425,26 +425,48 @@
   function actSub(text, act) { var sp = document.createElement('span'); sp.className = 'ma-sub ma-sub-' + act; sp.textContent = text; return sp; }
   function actLink(href, text) { var a = document.createElement('a'); a.href = href; a.textContent = text; return a; }
   function earnActs(list) {
-    list.appendChild(actSub('ACT ONE', 'one'));
-    list.appendChild(actLink(SITE + '/the-hunt#act1-tasks', 'TASKS'));
-    list.appendChild(actLink(SITE + '/the-hunt#act1-riddles', 'RIDDLES & PUZZLES'));
+    // Act Four (Maurice, 2026-11-02): its section owns #tasks; Act Three's riddles and puzzles sit in its drawer
+    list.appendChild(actSub('ACT FOUR', 'four'));
+    list.appendChild(actLink(SITE + '/the-hunt#tasks', 'TASKS'));
+    list.appendChild(actLink(SITE + '/the-hunt#act4-riddles', 'RIDDLES & PUZZLES'));
+    list.appendChild(actSub('ACT THREE', 'three'));
+    list.appendChild(actLink(SITE + '/the-hunt#riddles', 'RIDDLES & PUZZLES'));
     list.appendChild(actSub('ACT TWO', 'two'));
     list.appendChild(actLink(SITE + '/the-hunt#act2-tasks', 'TASKS'));
     list.appendChild(actLink(SITE + '/the-hunt#act2-riddles', 'RIDDLES & PUZZLES'));
-    // Act Three (Maurice, 2026-10-16): its section owns #tasks and #riddles; Act Two's are in its drawer
-    list.appendChild(actSub('ACT THREE', 'three'));
-    list.appendChild(actLink(SITE + '/the-hunt#tasks', 'TASKS'));
-    list.appendChild(actLink(SITE + '/the-hunt#riddles', 'RIDDLES & PUZZLES'));
+    list.appendChild(actSub('ACT ONE', 'one'));
+    list.appendChild(actLink(SITE + '/the-hunt#act1-tasks', 'TASKS'));
+    list.appendChild(actLink(SITE + '/the-hunt#act1-riddles', 'RIDDLES & PUZZLES'));
   }
   function actCss() {
     if (!ACTMENU || document.getElementById('ma-act-menu')) return;
     var st = document.createElement('style'); st.id = 'ma-act-menu';
     var sel = function (x) { return ['#hunt-nav ', '#hunt-nav-ov ', '#header '].map(function (p) { return p + x; }).join(','); };
     st.textContent = sel('span.ma-sub') + '{display:block!important;align-self:stretch;font-family:Almarai,sans-serif!important;font-weight:800!important;font-size:11px!important;letter-spacing:.16em!important;text-transform:uppercase!important;text-align:center!important;color:#fff!important;margin:10px 0 4px!important;padding:4px 10px!important;white-space:nowrap}' +
-      sel('span.ma-sub-one') + '{background:#482d85!important}' + sel('span.ma-sub-two') + '{background:#1a5e41!important;outline:1px solid #89fbcb}' + sel('span.ma-sub-all') + '{background:rgba(243,234,217,.14)!important}' + sel('span.ma-sub-three') + '{background:#912501!important;outline:1px solid #fd7547}';
+      sel('span.ma-sub-one') + '{background:#482d85!important}' + sel('span.ma-sub-two') + '{background:#1a5e41!important;outline:1px solid #89fbcb}' + sel('span.ma-sub-all') + '{background:rgba(243,234,217,.14)!important}' + sel('span.ma-sub-three') + '{background:#912501!important;outline:1px solid #fd7547}' + sel('span.ma-sub-four') + '{background:#2c6021!important;outline:1px solid #a2f590}';
     document.head.appendChild(st);
   }
+  // Act Four (Maurice, 2026-11-02): the Adventure menu is one link, THE ADVENTURE SO FAR; every chapter is reached
+  // from that page or from the map on the Hunt page. Any ADVENTURE group or dropdown keeps only that link.
+  function advOne(root) {
+    if (!root || !root.querySelectorAll) return;
+    var head = function (g) { var h = g.firstElementChild; return h && h.tagName !== 'A' ? (h.textContent || '').replace(/\s+/g, ' ').trim().toUpperCase() : ''; };
+    Array.prototype.forEach.call(root.querySelectorAll('.mn-ovgroup, .ma-grp, .ma-ovgroup'), function (g) {
+      if (head(g) !== 'ADVENTURE') return;
+      var keep = null;
+      Array.prototype.slice.call(g.querySelectorAll('a')).forEach(function (a) { if (/\/adventure\/?$/.test(a.getAttribute('href') || '') && !keep) keep = a; else a.parentNode.removeChild(a); });
+      if (!keep) { keep = document.createElement('a'); keep.href = SITE + '/adventure'; if (g.querySelector('a')) keep.className = g.querySelector('a').className; g.appendChild(keep); }
+      keep.textContent = 'THE ADVENTURE SO FAR';
+    });
+    // the green hunt menu's desktop ADVENTURE dropdown becomes a plain link
+    Array.prototype.forEach.call(root.querySelectorAll('.mn-drop'), function (d) {
+      var t = d.querySelector(':scope > a.mn-link'); if (!t || !/\/adventure\/?$/.test(t.getAttribute('href') || '')) return;
+      var a = t.cloneNode(false); a.removeAttribute('aria-haspopup'); a.className = 'mn-link mn-vote'; a.textContent = 'THE ADVENTURE SO FAR';
+      d.parentNode.replaceChild(a, d);
+    });
+  }
   function actify(root) {
+    advOne(root);
     if (!ACTMENU || !root || root.getAttribute('data-acts')) return;
     root.setAttribute('data-acts', '1'); actCss();
     var q = function (sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); };
@@ -452,18 +474,21 @@
     q('a[href$="/games"]').forEach(function (x) { if (/^\s*games\s*$/i.test(x.textContent)) x.textContent = 'THE ARCADE'; });
     q('.mn-dd-in a[href$="/leaderboard"], .mn-ovgroup a[href$="/leaderboard"]').forEach(function (a) {
       var p = a.parentNode, next = a.nextSibling;
-      p.insertBefore(actLink(SITE + '/leaderboard?act=one', 'ACT ONE STANDINGS'), next);
-      p.insertBefore(actLink(SITE + '/leaderboard?act=two', 'ACT TWO STANDINGS'), next);
+      // newest act first (Act Four, Maurice 2026-11-02)
+      p.insertBefore(actLink(SITE + '/leaderboard?act=four', 'ACT FOUR STANDINGS'), next);
       p.insertBefore(actLink(SITE + '/leaderboard?act=three', 'ACT THREE STANDINGS'), next);
+      p.insertBefore(actLink(SITE + '/leaderboard?act=two', 'ACT TWO STANDINGS'), next);
+      p.insertBefore(actLink(SITE + '/leaderboard?act=one', 'ACT ONE STANDINGS'), next);
     });
     q('.mn-dd-in a[href$="/the-hunt#rewards"], .mn-ovgroup a[href$="/the-hunt#rewards"]').forEach(function (a) {
       var p = a.parentNode;
       p.insertBefore(actSub('REWARDS', 'all'), a);
-      p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), a);
-      p.insertBefore(actLink(SITE + '/act-one-winners', 'ACT ONE WINNERS'), a);   // the replayed draws (Maurice, 2026-10-02)
+      p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-four', 'ACT FOUR'), a);   // newest first (Act Four, 2026-11-02)
+      p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-three', 'ACT THREE'), a);
       p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), a);
       p.insertBefore(actLink(SITE + '/act-two-winners', 'ACT TWO WINNERS'), a);   // the replayed Act Two draws (Maurice, 2026-10-19)
-      p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-three', 'ACT THREE'), a);
+      p.insertBefore(actLink(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), a);
+      p.insertBefore(actLink(SITE + '/act-one-winners', 'ACT ONE WINNERS'), a);   // the replayed draws (Maurice, 2026-10-02)
       p.removeChild(a);
     });
     // Questions? (Maurice, 2026-10-09): no longer its own menu item; it closes the Current Progress dropdown instead.
@@ -809,7 +834,7 @@
       var tm = document.createElement('div'); tm.className = 'mn-drop ma-tm';
       tm.innerHTML = '<a href="' + MERCH_URL + '" class="mn-link" aria-haspopup="true">TRENCH MARKET' + (caret ? caret.outerHTML : '') + '</a><div class="mn-dd"><div class="mn-dd-in"></div></div>';
       SHOP_CATS.forEach(function (c) { var a = document.createElement('a'); a.href = SHOP + c[1]; a.textContent = c[0].toUpperCase(); tm.querySelector('.mn-dd-in').appendChild(a); });
-      [[tm, 'TRENCH MARKET'], [gift, "ORACLE'S GIFT"], [cta, "PRE-ORDER CELLO'S GATE"]].forEach(function (d) { if (d[0]) boxDrop(d[0], d[1]); });
+      [[tm, 'TRENCH MARKET'], [gift, "ORACLE'S GIFT"], [cta, "ORDER CELLO'S GATE"]].forEach(function (d) { if (d[0]) boxDrop(d[0], d[1]); });
       var row = [th, tm, mk(SITE + '/links', 'LINKS', 'mn-linkpage'), mk(SITE + '/newsletter', 'NEWSLETTER'), mk(DISCORD, 'JOIN THE DISCORD!'), gift];
       gift.style.display = 'none';   // kept (huntGift looks for it) but shown only in The Treasure Hunt panel
       while (links.firstChild) links.removeChild(links.firstChild);
@@ -943,7 +968,7 @@
   var QUIZ_URL = SITE + '/sky-pirate-quiz-61748', QUIZ_TEXT = 'The Sky Pirate Quiz';
   // the Pre-Order menu item in a list of menu items (null puts a new item at the end)
   function preOrder(items) {
-    for (var i = 0; i < items.length; i++) if (/^\s*(Folder:\s*)?Pre-Order/i.test(items[i].textContent)) return items[i];
+    for (var i = 0; i < items.length; i++) if (/^\s*(Folder:\s*)?(Pre-)?Order\b/i.test(items[i].textContent)) return items[i];
     return null;
   }
   function giftFolder(list) {
@@ -1111,9 +1136,24 @@
     if (window.__ropeLoaded) return; window.__ropeLoaded = true;
     var s = document.createElement('script'); s.src = GH + 'rope.js?v=3'; s.async = true; document.head.appendChild(s);
   }
+  // "Cello's Gate" is out (Maurice, 2026-11-02): every menu says ORDER, not PRE-ORDER. The Squarespace folder keeps
+  // its old name, so the text is swapped in the header, the green hunt menu, its phone menu, and the footer.
+  function orderText() {
+    ['#header', '#hunt-nav', '#hunt-nav-ov', 'footer'].forEach(function (sel) {
+      Array.prototype.forEach.call(document.querySelectorAll(sel), function (root) {
+        var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), t;
+        while ((t = w.nextNode())) if (/pre-order/i.test(t.data)) t.data = t.data.replace(/PRE-ORDER/g, 'ORDER').replace(/Pre-Order/g, 'Order').replace(/Pre-order/g, 'Order').replace(/pre-order/g, 'order');
+        Array.prototype.forEach.call(root.querySelectorAll('[aria-label*="re-order" i],[title*="re-order" i]'), function (el) {
+          ['aria-label', 'title'].forEach(function (k) { var v = el.getAttribute(k); if (v) el.setAttribute(k, v.replace(/pre-order/gi, function (m) { return m.charAt(0) === 'P' ? 'Order' : 'order'; })); });
+        });
+      });
+    });
+  }
   function huntGift() {
     huntLinks();
     huntRiver();
+    advOne(document);
+    orderText(); setTimeout(orderText, 1200); setTimeout(orderText, 4000);
     raftHunt();
     ropeHunt();
     chapterNav();
