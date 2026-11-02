@@ -1119,13 +1119,20 @@
         var a = src.cloneNode(false); a.href = SITE + '/the-break-in'; a.textContent = 'THE BREAK-IN GONE WRONG';
         box.insertBefore(a, src.nextSibling);
       });
+      // Search the Building (chapter 17, 2026-11-03) follows The Break-In Gone Wrong
+      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/the-break-in"]'), function (brk) {
+        var box = brk.parentNode;
+        if (box.querySelector('a[href$="/search-the-building"]')) return;
+        var a = brk.cloneNode(false); a.href = SITE + '/search-the-building'; a.textContent = 'SEARCH THE BUILDING';
+        box.insertBefore(a, brk.nextSibling);
+      });
     });
   }
   // The raft hunt (chapter 6, 2026-10-07): raft.js hides the pieces on every page; it checks its own hours.
   // Chapter buttons (2026-10-09): Previous chapter / See the map / Next chapter at the foot of each chapter page.
   function chapterNav() {
     if (window.__chapterNavLoaded) return; window.__chapterNavLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=12'; s.async = true; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=13'; s.async = true; document.head.appendChild(s);
   }
   function raftHunt() {
     if (window.__raftLoaded) return; window.__raftLoaded = true;

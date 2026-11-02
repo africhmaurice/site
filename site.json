@@ -249,6 +249,12 @@
       "source": "bot:squarespace-breakin.html"
     },
     {
+      "slug": "search-the-building",
+      "url": "/search-the-building",
+      "title": "Search the Building Vote (Chapter 17, after the break-in fight)",
+      "source": "bot:squarespace-search.html"
+    },
+    {
       "slug": "adventure",
       "url": "/adventure",
       "title": "The Adventure So Far (every Choose Your Own Adventure beat)",
