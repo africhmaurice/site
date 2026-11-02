@@ -445,8 +445,8 @@
     if (!ACTMENU || !root || root.getAttribute('data-acts')) return;
     root.setAttribute('data-acts', '1'); actCss();
     var q = function (sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); };
-    // The Games page is THE ARCADE in every menu (Maurice, 2026-10-13); the page address stays /games.
-    q('a[href$="/games"]').forEach(function (x) { if (/^\s*games\s*$/i.test(x.textContent)) x.textContent = 'THE ARCADE'; });
+    // The Games page is THE ARCADE in every menu (Maurice, 2026-10-13); the arcade links go to /arcade (the lobby, 2026-11-02); Skyword stays /games.
+    q('a[href$="/games"],a[href$="/arcade"]').forEach(function (x) { if (/^\s*games\s*$/i.test(x.textContent)) x.textContent = 'THE ARCADE'; });
     q('.mn-dd-in a[href$="/leaderboard"], .mn-ovgroup a[href$="/leaderboard"]').forEach(function (a) {
       var p = a.parentNode, next = a.nextSibling;
       // Act Four right under the Leaderboard; the locked acts' standings go under Past Standings below (Maurice, 2026-11-02)
