@@ -10,7 +10,7 @@
   var BASE = me && me.src ? me.src.replace(/shopmenu\.js.*$/, '') : 'https://africhmaurice.github.io/site/';
   var SITE = 'https://www.mauriceafrich.com', DISCORD = 'https://discord.gg/d36Xnj4umU', GAP = 25;
   var MEGA = [[['link', 'THE TREASURE HUNT', '/the-hunt'], ['group', 'EARN POINTS']], [['link', 'SUBMIT POINTS', '/points'], ['group', 'CURRENT PROGRESS']], [['check'], ['group', 'ADVENTURE'], ['group', 'REWARDS'], ['gift']]];
-  var CHECK_URL = 'https://africhmaurice.github.io/leaderboard/daily.html';   // the Daily Checklist (Maurice, 2026-11-02)
+  var CHECK_URL = 'https://www.mauriceafrich.com/daily-checklist';   // the Daily Checklist (Maurice, 2026-11-02)
   // categories in the order the shop page shows them; any new category follows, A to Z
   var CAT_ORDER = ['stickers', 'apparel', 'hats', 'beanies', 'pins', 'mugs', 'puzzles', 'art-prints'];
   var ALL = '/collections/merch', AURA = SITE + '/oracles-gift/aura-spectrum', QUIZ = SITE + '/sky-pirate-quiz-61748';   // the quiz under Aura Spectrum (Maurice, 2026-10-24)

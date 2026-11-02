@@ -411,7 +411,7 @@
     list.appendChild(actLink(SITE + '/the-hunt#act1-riddles', 'ACT ONE RIDDLES'));
   }
   // the Daily Checklist (Maurice, 2026-11-02): tops the panel's third column
-  var CHECK_URL = 'https://africhmaurice.github.io/leaderboard/daily.html';
+  var CHECK_URL = 'https://www.mauriceafrich.com/daily-checklist';
   function actCss() {
     if (!ACTMENU || document.getElementById('ma-act-menu')) return;
     var st = document.createElement('style'); st.id = 'ma-act-menu';
