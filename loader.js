@@ -8,6 +8,31 @@
    Every copy after the first only mounts blocks it finds, so a page can include it any number of times. */
 (function () {
   if (window.__maLoader) { window.__maLoader(); return; }
+  // Maintenance screen (Maurice, 2026-11-01): from midnight ET Nov 2 every page shows only EVERYTHING IS CHANGING.
+  // ?ma-open=1 lets this browser see the real site (?ma-open=0 undoes it); the Squarespace editor is never covered.
+  (function () {
+    var ON = Date.UTC(2026, 10, 2, 5, 0, 0);
+    try { var q = /[?&]ma-open=([01])/.exec(location.search); if (q) q[1] === '1' ? localStorage.setItem('maOpen', '1') : localStorage.removeItem('maOpen'); if (localStorage.getItem('maOpen') === '1') return; } catch (e) {}
+    if (window.top !== window || /squarespace\.com$/.test(location.hostname) || /\/config/.test(location.pathname)) return;
+    function show() {
+      if (document.getElementById('ma-maint')) return;
+      var st = document.createElement('style');
+      st.textContent = 'html.ma-maint,html.ma-maint body{overflow:hidden!important;height:100%!important}' +
+        'html.ma-maint body>*:not(#ma-maint){visibility:hidden!important}' +
+        '#ma-maint{position:fixed;inset:0;z-index:2147483647;background:#0b170f;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;text-align:center}' +
+        '#ma-maint h1{position:relative;margin:0;font-weight:700;font-size:clamp(40px,9vw,140px);line-height:1.05;letter-spacing:.03em;text-transform:uppercase;color:#f3ead9;font-family:"CI Face","Almarai",sans-serif;text-wrap:balance}' +
+        '#ma-maint h1 span{position:absolute;inset:0;color:#1d6b45;font-family:"CI Extrude","Almarai",sans-serif;z-index:-1}' +
+        '#ma-maint h1 b{font-weight:inherit;position:relative}';
+      (document.head || document.documentElement).appendChild(st);
+      document.documentElement.classList.add('ma-maint');
+      var d = document.createElement('div'); d.id = 'ma-maint'; d.setAttribute('role', 'main');
+      d.innerHTML = '<h1><span aria-hidden="true">Everything Is Changing</span><b>Everything Is Changing</b></h1>';
+      (document.body || document.documentElement).appendChild(d);
+      var ld = document.getElementById('ma-loading'); if (ld) ld.style.display = 'none';
+    }
+    function go() { if (document.body) show(); else document.addEventListener('DOMContentLoaded', show); }
+    if (Date.now() >= ON) go(); else setTimeout(go, ON - Date.now());
+  })();
   var me = document.currentScript;
   var inHead = !!(me && me.parentNode && me.parentNode.nodeName === 'HEAD');
   var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
