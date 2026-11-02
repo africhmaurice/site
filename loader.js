@@ -389,7 +389,7 @@
   // Clues, Games and Contests fold into one EARN POINTS dropdown (Maurice, 2026-09-27). It measures whether the
   // row really fits, so a browser's larger minimum font size counts too. If even that doesn't fit, the phone
   // menu button takes over. Phones and tablets already get the phone menu from each page's own styles.
-  var EARN = /\/the-hunt#tasks$|\/the-hunt#riddles$|\/lootbox-clue$|\/games$|\/contests$/;
+  var EARN = /\/the-hunt#tasks$|\/the-hunt#riddles$|\/lootbox-clue$|\/games$|\/arcade$|\/contests$/;
   // Act menus (Maurice, 2026-10-01): Current Progress adds the Act One and Act Two standings and splits Rewards by
   // act; Earn Points splits Tasks and Riddles & Puzzles by act. Done here so every page's copy of the menu changes at
   // once.

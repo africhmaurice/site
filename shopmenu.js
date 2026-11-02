@@ -51,7 +51,7 @@
   var plain = function (n) { return (n.textContent || '').replace(/\s+/g, ' ').trim(); };
 
   // ---- the hunt menu, shaped like the website's (mirrors loader.js actify, megaModel, and groupKids) ----
-  var EARN = /\/the-hunt#tasks$|\/the-hunt#riddles$|\/lootbox-clue$|\/games$|\/contests$/;
+  var EARN = /\/the-hunt#tasks$|\/the-hunt#riddles$|\/lootbox-clue$|\/games$|\/arcade$|\/contests$/;
   function sub(text, act) { return el('span', 'ma-sub ma-sub-' + act, text); }
   function shape(doc) {
     var ov = doc.getElementById('hunt-nav-ov'); if (!ov) return {};
