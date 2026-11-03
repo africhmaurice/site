@@ -3,7 +3,7 @@
  "title": "Cello's Gate",
  "lines": [
   "The Sky Pirates of Imperia (Book 1)",
-  "November 3, 2026 | Pre-Order Now!"
+  "November 3, 2026 | Order Now!"
  ],
  "socials": [
   {
@@ -107,14 +107,14 @@
  "copper": {
   "id": "copper-loot-box",
   "label": "Copper Loot Box (for Beginners)",
-  "sub": "Your first loot box (and the easiest one to find)! Open it, claim your loot, and enter to win the sweepstakes!",
+  "sub": "Your first loot box (and the easiest one to find)! Open it and claim your loot!",
   "img": "box-copper.png",
   "url": "https://www.mauriceafrich.com/loot?c=RDWC79VF"
  },
  "feature": [
   {
    "id": "preorder",
-   "label": "Pre-Order Cello's Gate",
+   "label": "Order Cello's Gate",
    "open": "preorder",
    "tone": "scarlet",
    "img": "../img/cellos-gate-book.webp",
@@ -140,7 +140,7 @@
  "sections": [
   {
    "id": "preorder",
-   "title": "Pre-Order Cello's Gate",
+   "title": "Order Cello's Gate",
    "tone": "scarlet",
    "layout": "four",
    "links": [

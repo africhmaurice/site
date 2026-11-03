@@ -42,7 +42,7 @@ const E = D.editions;
 const edCard = (e) => {
   const body = `<span class="lk-edart" style="background-image:url('${bgUrl(e.bg)}')"></span><span class="lk-edov"></span>`
     + `<span class="lk-edin"><img class="lk-edimg${e.frame ? ' lk-edframe' : ''}" src="${asset(e.img)}" alt=""><b>${esc(e.label)}</b><small>${esc(e.note)}</small>`
-    + `<span class="lk-edcta">${e.soldOut ? 'Sold Out!' : 'Pre-Order'}</span></span>`
+    + `<span class="lk-edcta">${e.soldOut ? 'Sold Out!' : 'Order'}</span></span>`
     + (e.soldOut ? '<span class="lk-edstamp" aria-hidden="true">Sold Out</span>' : '');
   const attrs = `class="lk-ed${e.soldOut ? ' lk-ed-out' : ''}" data-link="${e.id}" data-section="editions"${e.soldOut ? ' data-soldout="1"' : ''} aria-label="${esc(e.label)}${e.soldOut ? ' (Sold Out)' : ''}"`;
   return e.open ? `<button type="button" ${attrs} data-open="${e.open}">${body}</button>` : `<a href="${esc(e.url)}"${ext(e.url)} ${attrs}>${body}</a>`;

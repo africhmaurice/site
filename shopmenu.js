@@ -12,7 +12,8 @@
   var me = document.currentScript;
   var BASE = me && me.src ? me.src.replace(/shopmenu\.js.*$/, '') : 'https://africhmaurice.github.io/site/';
   var SITE = 'https://www.mauriceafrich.com', DISCORD = 'https://discord.gg/d36Xnj4umU', GAP = 25;
-  var MEGA = [[['link', 'THE TREASURE HUNT', '/the-hunt'], ['group', 'EARN POINTS']], [['link', 'SUBMIT POINTS', '/points'], ['group', 'CURRENT PROGRESS']], [['group', 'ADVENTURE'], ['gift']]];
+  var MEGA = [[['link', 'THE TREASURE HUNT', '/the-hunt'], ['group', 'EARN POINTS']], [['link', 'SUBMIT POINTS', '/points'], ['group', 'CURRENT PROGRESS']], [['check'], ['group', 'ADVENTURE'], ['group', 'REWARDS'], ['gift']]];
+  var CHECK_URL = 'https://www.mauriceafrich.com/daily-checklist';   // the Daily Checklist (Maurice, 2026-11-02)
   // categories in the order the shop page shows them; any new category follows, A to Z
   var CAT_ORDER = ['stickers', 'apparel', 'hats', 'beanies', 'pins', 'mugs', 'puzzles', 'art-prints'];
   var ALL = '/collections/merch', AURA = SITE + '/oracles-gift/aura-spectrum', QUIZ = SITE + '/sky-pirate-quiz-61748';   // the quiz under Aura Spectrum (Maurice, 2026-10-24)
@@ -34,7 +35,8 @@
     '.tm-drop__in a.tm-top{display:block;text-align:center;border:1px solid rgba(243,234,217,.3);padding:14px!important;font-weight:800;letter-spacing:.12em}' +
     '.tm-grp>span:first-child,.tm-mnav .ma-mgrp>span:first-child{align-self:stretch;display:block;text-align:center;border-bottom:2px solid rgba(243,234,217,.45);padding-bottom:5px;margin-bottom:10px;line-height:1.3}' +
     '.tm-grp span.ma-sub,.tm-mnav span.ma-sub{display:block;align-self:stretch;font:800 11px/1.3 Almarai,sans-serif;letter-spacing:.16em;text-transform:uppercase;text-align:center;color:#fff;margin:10px 0 4px;padding:4px 10px;white-space:nowrap}' +
-    'span.ma-sub-one{background:#482d85}span.ma-sub-two{background:#1a5e41;outline:1px solid #89fbcb}span.ma-sub-all{background:rgba(243,234,217,.14)}span.ma-sub-three{background:#912501;outline:1px solid #fd7547}' +
+    'span.ma-sub-one{background:#482d85}span.ma-sub-two{background:#1a5e41;outline:1px solid #89fbcb}span.ma-sub-all{background:rgba(243,234,217,.14)}span.ma-sub-three{background:#912501;outline:1px solid #fd7547}span.ma-sub-four{background:#2c6021;outline:1px solid #a2f590}span.ma-sub-past{background:none;color:rgba(243,234,217,.6);margin:14px 0 2px}' +
+    '.tm-drop__in a.tm-check,.tm-mnav a.tm-check{background:#2c6021;border:1.5px solid #f3ead9}' +
     // the panel's sizes are the website's (loader.js huntCss), so it looks the same on both
     '.tm-mega3 a{font:700 clamp(12px,.92vw,14.4px)/1.2 Almarai,sans-serif!important;letter-spacing:.07em!important;padding:8px 14px!important}' +
     '.tm-mega3 a.tm-top{padding:14px!important;font-weight:800!important;letter-spacing:.12em!important}' +
@@ -52,30 +54,35 @@
   var plain = function (n) { return (n.textContent || '').replace(/\s+/g, ' ').trim(); };
 
   // ---- the hunt menu, shaped like the website's (mirrors loader.js actify, megaModel, and groupKids) ----
-  var EARN = /\/the-hunt#tasks$|\/the-hunt#riddles$|\/lootbox-clue$|\/games$|\/contests$/;
+  var EARN = /\/the-hunt#tasks$|\/the-hunt#riddles$|\/lootbox-clue$|\/games$|\/arcade$|\/contests$/;
   function sub(text, act) { return el('span', 'ma-sub ma-sub-' + act, text); }
   function shape(doc) {
     var ov = doc.getElementById('hunt-nav-ov'); if (!ov) return {};
     var q = function (s) { return [].slice.call(ov.querySelectorAll(s)); };
     q('.mn-ovgroup a[href$="/leaderboard"]').forEach(function (a) {
-      a.parentNode.insertBefore(link(SITE + '/leaderboard?act=one', 'ACT ONE STANDINGS'), a.nextSibling);
-      a.parentNode.insertBefore(link(SITE + '/leaderboard?act=two', 'ACT TWO STANDINGS'), a.nextSibling.nextSibling);
-      a.parentNode.insertBefore(link(SITE + '/leaderboard?act=three', 'ACT THREE STANDINGS'), a.nextSibling.nextSibling.nextSibling);
+      // Act Four under the Leaderboard; the locked acts go under Past Standings (Maurice, 2026-11-02)
+      a.parentNode.insertBefore(link(SITE + '/leaderboard?act=four', 'ACT FOUR STANDINGS'), a.nextSibling);
     });
     q('.mn-ovgroup a[href$="/the-hunt#rewards"]').forEach(function (a) {
-      var p = a.parentNode;
-      [sub('REWARDS', 'all'), link(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), link(SITE + '/act-one-winners', 'ACT ONE WINNERS'), link(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), link(SITE + '/act-two-winners', 'ACT TWO WINNERS'), link(SITE + '/the-hunt#rewards-act-three', 'ACT THREE')].forEach(function (n) { p.insertBefore(n, a); });
+      // Rewards is its own box under Adventure (Maurice, 2026-11-02)
+      var p = a.parentNode, g = doc.createElement('div'); g.className = 'mn-ovgroup'; g.appendChild(el('span', '', 'REWARDS'));
+      [link(SITE + '/the-hunt#rewards-act-four', 'ACT FOUR'), link(SITE + '/the-hunt#rewards-act-three', 'ACT THREE'), link(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), link(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), link(SITE + '/act-two-winners', 'ACT TWO WINNERS'), link(SITE + '/act-one-winners', 'ACT ONE WINNERS')].forEach(function (n) { g.appendChild(n); });
+      p.parentNode.insertBefore(g, p.nextSibling);
       p.removeChild(a);
     });
     var gs = {};
     [].forEach.call(ov.children, function (g) { if (g.classList.contains('mn-ovgroup') && g.firstElementChild && g.firstElementChild.tagName !== 'A') gs[plain(g.firstElementChild).toUpperCase()] = g; });
-    if (gs['CURRENT PROGRESS'] && !gs['CURRENT PROGRESS'].querySelector('a[href$="/questions"]')) gs['CURRENT PROGRESS'].appendChild(link(SITE + '/questions', 'QUESTIONS?'));
+    if (gs['CURRENT PROGRESS']) {
+      [].slice.call(gs['CURRENT PROGRESS'].querySelectorAll('a[href$="/questions"]')).forEach(function (a) { a.parentNode.removeChild(a); });
+      [sub('PAST STANDINGS', 'past'), link(SITE + '/leaderboard?act=three', 'ACT THREE STANDINGS'), link(SITE + '/leaderboard?act=two', 'ACT TWO STANDINGS'), link(SITE + '/leaderboard?act=one', 'ACT ONE STANDINGS'), link(SITE + '/questions', 'QUESTIONS?')].forEach(function (n) { gs['CURRENT PROGRESS'].appendChild(n); });
+    }
     var earn = doc.createElement('div'); earn.appendChild(el('span', '', 'EARN POINTS'));
     [].filter.call(ov.children, function (a) { return a.tagName === 'A' && EARN.test(a.href) && !/#tasks$|#riddles$/.test(a.href); }).forEach(function (a) { earn.appendChild(link(a.getAttribute('href'), plain(a))); });
-    [sub('ACT ONE', 'one'), link(SITE + '/the-hunt#act1-tasks', 'TASKS'), link(SITE + '/the-hunt#act1-riddles', 'RIDDLES & PUZZLES'),
-      sub('ACT TWO', 'two'), link(SITE + '/the-hunt#act2-tasks', 'TASKS'), link(SITE + '/the-hunt#act2-riddles', 'RIDDLES & PUZZLES'),
-      sub('ACT THREE', 'three'), link(SITE + '/the-hunt#tasks', 'TASKS'), link(SITE + '/the-hunt#riddles', 'RIDDLES & PUZZLES')].forEach(function (n) { earn.appendChild(n); });
+    [sub('ACT FOUR', 'four'), link(SITE + '/the-hunt#tasks', 'TASKS'), link(SITE + '/the-hunt#act4-riddles', 'RIDDLES & PUZZLES'),
+      sub('PAST ACTS', 'all'), link(SITE + '/the-hunt#riddles', 'ACT THREE RIDDLES'), link(SITE + '/the-hunt#act2-tasks', 'ACT TWO TASKS'), link(SITE + '/the-hunt#act2-riddles', 'ACT TWO RIDDLES'),
+      link(SITE + '/the-hunt#act1-tasks', 'ACT ONE TASKS'), link(SITE + '/the-hunt#act1-riddles', 'ACT ONE RIDDLES')].forEach(function (n) { earn.appendChild(n); });
     gs['EARN POINTS'] = earn;
+    if (gs['ADVENTURE']) [].slice.call(gs['ADVENTURE'].querySelectorAll('a')).forEach(function (a) { if (!/\/adventure\/?$/.test(a.getAttribute('href') || '')) a.parentNode.removeChild(a); else a.textContent = 'THE ADVENTURE SO FAR'; });
     return gs;
   }
   // a group's heading and links, copied, without repeats
@@ -95,6 +102,7 @@
       var c = el('div', 'tm-col');
       col.forEach(function (it) {
         if (it[0] === 'link') { c.appendChild(link(SITE + it[2], it[1], 'tm-top')); return; }
+        if (it[0] === 'check') { c.appendChild(link(CHECK_URL, 'DAILY CHECKLIST', 'tm-top tm-check')); return; }
         if (it[0] === 'gift') { var gb = el('div', 'tm-grp'); gb.appendChild(el('span', '', "ORACLE'S GIFT")); gb.appendChild(link(AURA, 'AURA SPECTRUM')); gb.appendChild(link(QUIZ, 'THE SKY PIRATE QUIZ')); c.appendChild(gb); return; }
         if (!gs[it[1]]) return;
         var g = el('div', 'tm-grp'); kids(gs[it[1]], function (k) { g.appendChild(k); }); c.appendChild(g);
@@ -106,6 +114,7 @@
   function phoneHunt(gs, into) {
     MEGA.forEach(function (col) { col.forEach(function (it) {
       if (it[0] === 'link') { into.appendChild(link(SITE + it[2], it[1], 'tm-top')); return; }
+      if (it[0] === 'check') { into.appendChild(link(CHECK_URL, 'DAILY CHECKLIST', 'tm-top tm-check')); return; }
       if (it[0] === 'gift') { var gb = el('div', 'ma-mgrp'); gb.appendChild(el('span', '', "ORACLE'S GIFT")); gb.appendChild(link(AURA, 'AURA SPECTRUM')); gb.appendChild(link(QUIZ, 'THE SKY PIRATE QUIZ')); into.appendChild(gb); return; }
       if (!gs[it[1]]) return;
       var g = el('div', 'ma-mgrp'); kids(gs[it[1]], function (k) { g.appendChild(k); }); into.appendChild(g);
@@ -233,7 +242,7 @@
     var row = [th, tm, link(SITE + '/links', 'LINKS', 'tm-nav__link'), link(SITE + '/newsletter', 'NEWSLETTER', 'tm-nav__link'), link(DISCORD, 'JOIN THE DISCORD!', 'tm-nav__link')];
     while (nav.firstChild) nav.removeChild(nav.firstChild);
     row.forEach(function (n) { nav.appendChild(n); });
-    if (pre) { nav.appendChild(pre); boxed(pre, "PRE-ORDER CELLO'S GATE"); }
+    if (pre) { nav.appendChild(pre); boxed(pre, "ORDER CELLO'S GATE"); }
     fitGap(nav); addEventListener('resize', function () { fitGap(nav); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { fitGap(nav); });
 

@@ -1,0 +1,1215 @@
+<!-- ============================================================
+     HOLD THE WALL! - page for loot box 140 (Box 150 batch). Replaces the old Master Cannoneer game (10/29), which is
+     backed up at site-batch2/_batch2/box150/master-cannoneer.before-holdwall.html. The file keeps the master-cannoneer
+     slug for the loader; the Squarespace page to make at launch is /hold-the-wall-13212 (hide from search).
+     Built by site-batch2/_batch2/box150/holdwall/port.mjs from the reviewed mockup (artifact 8GCvPhE4UTa9m5hWXrRSzF,
+     v24): edit the mockup, then re-run port.mjs. Do not hand-edit this file.
+     How it plays: the enemy pours out of a portal and marches on your tower. Tap or drag on the field to fire the cannon;
+       kills earn credits; spend them on fighters (Brawler, Prism Guard, Intangible, Gunslinger, Oracle, Guardian,
+       Imperial, Crest Knight, Immortal), training (+25% health, speed, and damage a level), fighter shields, and tower
+       upgrades (Bigger rounds, Faster firing, Piercing, Double barrel, Grenades, Triple barrel, Airstrike, Shield,
+       Repair; Triple after Double, Grenades after Piercing, Airstrike after Grenades). The cannon takes hits first,
+       then the tower. Waves grow every wave. His sky turns one frame per wave, dawn through night.
+     Art (Maurice's): fighters, portal, tower and cannon, the 16 skies, YOU DIED, button icons (Icons.png), Intangible
+       frames, imperial rock, Sky Gauntlet missiles/atomic/shield, red airship. Files: site/assets/games/140-*.
+     LOOT BOX 140: shown once per visit right after wave 20 is held. Nothing on the page says so beforehand (Maurice).
+       BOX_K holds the box 140 placeholder until the go-live builder swaps in the claim link.
+     WEEKLY BOARD: holdwallstart / holdwallscore / holdwalltop on the Loot Boxes web app (staged server code in
+       site-batch2/_batch2/box150/boards-server.gs.txt; until it ships the board says "resting"). The score check:
+       wave, kills, and playing time must fit the page's own scoring (see holdwallCheck_). Maurice's runs are practice.
+     ARCADE: a button after MASTER STACKER (and GOMA GOONS after it) in every tab row; the arcade card after a game.
+     Keys: 1 to 9 send fighters, P or Escape pauses (never while typing in the board form). The game pauses itself when
+       the tab is hidden. Test hooks (window.__ss) exist only with ?test=1.
+     DRAFT (all words on this page are new, for Maurice to approve): heading "Hold the Wall!"; lede "The enemy is pouring
+       out of the portal and marching on your tower. Spend credits to send out fighters, work the cannon on top, and hold
+       out as long as you can. Every wave is bigger than the last."; weekly line "Weekly leaderboard: the top score at
+       11:59 PM ET every Friday wins 500 points. Then the board resets for a new week." (copied from Master Stacker; the
+       500 is not approved for this game); HUD "Wave", "Score", "Credits", "Best", "Cannon", "Tower", "Shield", "Enemies
+       left", "Destroyed"; panels "Fighters tap to send out", "Tower upgrades", the Train and Shield key, every fighter's
+       and upgrade's name and line; overlays "Hold the Wall!", "Start wave N", "Wave N held", "+N score and +N credits...",
+       "The tower fell", "You held out to wave N with a score of N.", "Play again", "YOU DIED", "PAUSED"; "Box 140 is
+       yours."; board "Best this week", "This week's top defenders", "Board closes in", "No games yet this week.", "Kept
+       on this device.", the form and its messages (copied from Master Stacker, "run" -> "game", "stacking" ->
+       "defending"); help "Hold on the field to keep firing. Tap a fighter to send one out. ..."
+     ============================================================ -->
+
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-display:block}
+@font-face{font-family:'Cracked Imperia 3D';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-ExtrudeFlush.woff2') format('woff2');font-display:block}
+#ma-holdwall{--ink:#0b170f;--ink-700:#213226;--sunk:#101f16;--muted:#a3b3a8;--parch:#f3ead9;--white:#fffffe;--emerald:#3adb97;--mint:#89fbcb;--ember:#ff4c0f;--ember-700:#c53200;--gold:#ffd166;--violet:#9e74fd;--line:rgba(243,234,217,.3);color-scheme:dark}
+#ma-holdwall *{box-sizing:border-box;border-radius:0}
+#ma-holdwall [hidden]{display:none!important}
+#ma-holdwall,#ma-holdwall{background:var(--ink)}
+#ma-holdwall{margin:0;color:var(--parch);font:16px/1.5 Almarai,Arial,sans-serif;padding:0 16px}
+#ma-holdwall .wrap{max-width:1100px;margin:0 auto;padding-block:40px 64px;display:flex;flex-direction:column;gap:20px;align-items:stretch}
+#ma-holdwall header{display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center}
+#ma-holdwall .eyebrow{margin:0;font-weight:800;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--ember)}
+#ma-holdwall h1{margin:0;position:relative;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(44px,8vw,84px);line-height:1.2;letter-spacing:.04em;text-transform:uppercase;color:var(--white)}
+#ma-holdwall h1 .d3{position:absolute;inset:0;font-family:'Cracked Imperia 3D',Impact,sans-serif;color:var(--ember-700);z-index:0}
+#ma-holdwall h1 .face{position:relative;z-index:1}
+#ma-holdwall .lede{margin:0;max-width:640px;font-weight:700;font-size:clamp(16px,1.8vw,19px)}
+#ma-holdwall .hud{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 26px;font-weight:800;font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+#ma-holdwall .hud b{font-weight:800;color:var(--mint)}
+#ma-holdwall .hud .c b{color:var(--gold)}
+#ma-holdwall .hud .p b{color:var(--violet)}
+#ma-holdwall .hud .w b.low{color:var(--ember)}
+#ma-holdwall .top{display:flex;flex-direction:column;gap:20px}
+#ma-holdwall .stage{position:relative;border:2px solid var(--parch);line-height:0;background:#4a7aa0}
+#ma-holdwall canvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair;user-select:none;-webkit-user-select:none}
+#ma-holdwall .over{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;background:rgba(11,23,15,.72);line-height:1.5;text-align:center}
+#ma-holdwall .over h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,5vw,56px);line-height:1.2;letter-spacing:.04em;text-transform:uppercase;color:var(--white)}
+#ma-holdwall .over p{margin:0;max-width:520px;font-weight:700;font-size:clamp(14px,1.7vw,17px)}
+#ma-holdwall .go{margin:0;padding:14px 30px;border:2px solid var(--parch);background:var(--ember-700);color:var(--white);font:800 16px/1.2 Almarai,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-holdwall .go:hover,#ma-holdwall .go:focus-visible{background:var(--ember);outline:none}
+
+#ma-holdwall .panel{display:flex;flex-direction:column;gap:14px;padding:20px;border:1px solid var(--line);background:var(--sunk)}
+#ma-holdwall .panel h3{margin:0;font-weight:800;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--mint)}
+#ma-holdwall .panel h3 span{color:var(--muted);letter-spacing:.08em}
+#ma-holdwall .btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#ma-holdwall .b{display:flex;flex-direction:column;gap:6px;align-items:flex-start;padding:12px 14px;border:1px solid rgba(243,234,217,.45);background:var(--ink-700);color:var(--parch);font:700 13px/1.35 Almarai,Arial,sans-serif;text-align:left;cursor:pointer;touch-action:manipulation;position:relative;overflow:hidden;min-width:0}
+#ma-holdwall .b strong{font-weight:800;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--white)}
+#ma-holdwall .b .cost{font-weight:800;letter-spacing:.06em;color:var(--gold)}
+#ma-holdwall .b.up .cost{color:var(--violet)}
+#ma-holdwall .b .rank{color:var(--muted)}
+#ma-holdwall .b:hover:not([disabled]),#ma-holdwall .b:focus-visible{border-color:var(--mint);outline:none}
+#ma-holdwall .b[disabled]{opacity:.45;cursor:default}
+
+#ma-holdwall .cell{display:flex;flex-direction:column;gap:4px;min-width:0}
+/* v18: icon tiles, 9 across on desktop, 5 across on phones */
+#ma-holdwall #hw-deploy,#ma-holdwall #hw-ups{grid-template-columns:repeat(9,minmax(0,1fr));gap:8px}
+#ma-holdwall .ctl{gap:10px}#ma-holdwall .ctl h3{font-size:12px}#ma-holdwall .key+h3{margin-top:6px}
+#ma-holdwall .btns .b{flex:1;gap:2px;align-items:center;justify-content:flex-start;padding:16px 4px 6px;text-align:center;font-size:10px}
+#ma-holdwall .btns .b .ic{display:block;width:40px;height:44px;flex:none;object-fit:contain}
+#ma-holdwall .btns .b.up .ic{width:34px;height:34px}
+#ma-holdwall #hw-deploy .b .ic{background:#9cc3cd;border:1px solid rgba(243,234,217,.35)}
+#ma-holdwall .btns .b svg.ic{color:var(--parch)}
+/* v23: every fighter and upgrade is named under its icon, in Almarai, wrapping to two lines when it has to */
+#ma-holdwall .btns .b .nm{display:block;max-width:100%;font:800 10px/1.2 Almarai,Arial,sans-serif;letter-spacing:.03em;white-space:normal;overflow-wrap:normal;text-transform:none}
+#ma-holdwall .key{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:2px;font:700 12px/1.4 Almarai,Arial,sans-serif;color:var(--muted);text-align:left}
+#ma-holdwall .key>span{display:flex;align-items:center;gap:8px;min-width:0}#ma-holdwall .key .mi{width:16px;height:16px;flex:none}#ma-holdwall .key b{font-weight:800}#ma-holdwall .key .k-tr{color:var(--violet)}#ma-holdwall .key .k-sh{color:var(--mint)}
+#ma-holdwall .btns .b .cost{font-size:12px}
+#ma-holdwall .b .badge{position:absolute;top:4px;display:flex;align-items:center;gap:2px;font:800 10px/1 Almarai,Arial,sans-serif;letter-spacing:.04em}
+#ma-holdwall .lootwin{display:flex;flex-direction:column;align-items:center;gap:20px;padding-block:8px;text-align:center}
+#ma-holdwall .lootwin p{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.25;letter-spacing:.04em;color:var(--mint);text-transform:uppercase}
+#ma-holdwall .lootbox{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(58vw,260px);animation:lbDrop .6s cubic-bezier(.25,1.5,.45,1) both}
+#ma-holdwall .lootbox img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 30px rgba(137,251,203,.45))}
+#ma-holdwall .lootbox:hover img,#ma-holdwall .lootbox:focus-visible img{filter:drop-shadow(0 0 44px rgba(137,251,203,.75))}#ma-holdwall .lootbox:focus-visible{outline:3px solid var(--mint);outline-offset:8px}
+@keyframes lbDrop{from{opacity:0;transform:translateY(-40px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#ma-holdwall .lootbox{animation:none}}
+#ma-holdwall .msk{display:block;background:currentColor;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
+#ma-holdwall #hw-deploy .b .ic{display:flex;align-items:center;justify-content:center;color:#0d0d0c}#ma-holdwall #hw-deploy .b .ic .msk{width:78%;height:78%}
+#ma-holdwall .btns .b.up .ic.msk{color:var(--parch)}
+#ma-holdwall .b .sp .mi{width:9px;height:9px}
+#ma-holdwall .b .lv{left:5px;color:var(--violet)}#ma-holdwall .b .lv svg{width:10px;height:10px;color:var(--parch)}#ma-holdwall .b .sp{right:5px;color:var(--mint)}#ma-holdwall .b .sp svg{width:9px;height:9px}
+#ma-holdwall .b.up .rank{display:block;max-width:100%;font-size:9px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ma-holdwall .mini{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+#ma-holdwall .mini .tr{display:flex;align-items:center;justify-content:center;gap:3px;padding:4px 2px;white-space:nowrap}
+#ma-holdwall .mini .tr svg,#ma-holdwall .mini .tr .mi{width:10px;height:10px;flex:none}
+/* desktop: the field shrinks to the screen height so the field and every button fit on one screen */
+@media (min-width:761px){#ma-holdwall .stage{width:min(100%,calc((100vh - 430px) * 2.112));min-width:min(100%,560px);align-self:center}#ma-holdwall .hud{font-size:13px}}
+#ma-holdwall .b .cost{font-size:12px}#ma-holdwall .b .lvl{color:var(--muted)}
+#ma-holdwall .tr{margin:0;padding:5px 4px;border:1px solid rgba(158,116,253,.6);background:none;color:var(--violet);font:800 10px/1.2 Almarai,Arial,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;touch-action:manipulation;min-width:0}
+#ma-holdwall .tr:hover:not([disabled]),#ma-holdwall .tr:focus-visible{border-color:var(--mint);color:var(--mint);outline:none}
+#ma-holdwall .tr[disabled]{opacity:.45;cursor:default}
+#ma-holdwall .tr.sh{border-color:rgba(137,251,203,.55);color:var(--mint)}#ma-holdwall .b .shl{color:var(--mint)}
+@media (max-width:1000px) and (min-width:761px){#ma-holdwall .btns .b .ic{width:34px;height:38px}#ma-holdwall .btns .b .nm{font-size:9px}}
+#ma-holdwall .b .cd{position:absolute;left:0;bottom:0;height:3px;background:var(--mint);width:0}
+#ma-holdwall .help{margin:0;text-align:center;font-size:14px;color:var(--muted)}
+#ma-holdwall .row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+#ma-holdwall .sm{margin:0;padding:10px 18px;border:1px solid rgba(243,234,217,.45);background:none;color:var(--parch);font:800 13px/1.2 Almarai,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+#ma-holdwall .sm:hover,#ma-holdwall .sm:focus-visible{border-color:var(--mint);color:var(--mint);outline:none}
+@media (max-width:760px){
+  #ma-holdwall .wrap{gap:16px}
+  #ma-holdwall .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;gap:8px;margin-inline:-16px;padding:8px 16px 10px;background:var(--ink);border-bottom:1px solid var(--line)}
+  #ma-holdwall .hud{gap:4px 14px;font-size:11px;letter-spacing:.08em}
+  #ma-holdwall .over{gap:12px;padding:10px 14px;background:rgba(11,23,15,.86)}
+  #ma-holdwall .over h2{font-size:20px}#ma-holdwall .over p{font-size:12px;line-height:1.35}#ma-holdwall .go{padding:8px 16px;font-size:12px}
+  #ma-holdwall .panel{padding:20px;gap:8px}
+  #ma-holdwall #hw-deploy,#ma-holdwall #hw-ups{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+  #ma-holdwall .btns .b{padding:14px 2px 4px}
+  #ma-holdwall .btns .b .ic{width:34px;height:36px}#ma-holdwall .btns .b.up .ic{width:28px;height:28px}
+  #ma-holdwall .b.up .rank{display:none}#ma-holdwall .btns .b .nm{font-size:8.5px;letter-spacing:0}
+  #ma-holdwall .key{font-size:11px;gap:6px}
+  #ma-holdwall .b .badge{top:3px;font-size:9px}#ma-holdwall .b .lv{left:3px}#ma-holdwall .b .sp{right:3px}
+  #ma-holdwall .btns .b .cost{font-size:11px}
+  #ma-holdwall .mini{grid-template-columns:1fr;gap:3px}
+  #ma-holdwall .mini .tr{padding:3px 2px;font-size:9px}}
+/* v25: one screen. Small titles in Almarai; compact tiles; the field shrinks to the room left */
+#ma-holdwall h3{font-family:Almarai,Arial,sans-serif}
+#ma-holdwall .top{gap:12px}
+#ma-holdwall .hudbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 20px}
+#ma-holdwall .hudbar .row{gap:8px}
+#ma-holdwall .hudbar .sm{padding:6px 12px;font-size:11px;letter-spacing:.1em}
+#ma-holdwall .stage{min-width:0;align-self:center;width:100%}
+#ma-holdwall .ctl{gap:10px;padding:16px 20px}
+#ma-holdwall .ph{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px}
+#ma-holdwall .tabs{display:none;gap:8px}
+#ma-holdwall .acts{display:flex;gap:8px}
+#ma-holdwall .tabs button,#ma-holdwall .acts button{margin:0;padding:7px 12px;border:1px solid rgba(243,234,217,.45);background:none;color:var(--parch);font:800 11px/1.2 Almarai,Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-holdwall .tabs button[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);background:rgba(255,209,102,.12)}
+#ma-holdwall .acts button[data-act="send"][aria-pressed="true"]{border-color:var(--gold);color:var(--gold);background:rgba(255,209,102,.12)}
+#ma-holdwall .acts button[data-act="train"][aria-pressed="true"]{border-color:var(--violet);color:#c3a6ff;background:rgba(158,116,253,.16)}
+#ma-holdwall .acts button[data-act="shield"][aria-pressed="true"]{border-color:var(--mint);color:var(--mint);background:rgba(137,251,203,.12)}
+#ma-holdwall .acts .mi{display:inline-block;width:11px;height:11px;vertical-align:-1px;margin-right:4px}
+#ma-holdwall .mini{display:none}
+#ma-holdwall .btns .b{padding:14px 2px 4px}
+#ma-holdwall .btns .b .ic{width:32px;height:34px}
+#ma-holdwall .btns .b.up .ic{width:28px;height:28px}
+#ma-holdwall .b.up .rank{display:none}
+#ma-holdwall #hw-deploy[data-act="train"] .b .cost{color:#c3a6ff}
+#ma-holdwall #hw-deploy[data-act="shield"] .b .cost{color:var(--mint)}
+#ma-holdwall .actkey{margin:0;display:flex;align-items:center;justify-content:center;gap:8px;min-height:18px;font:700 12px/1.4 Almarai,Arial,sans-serif;color:var(--muted);text-align:center}
+#ma-holdwall .actkey .mi{width:14px;height:14px;flex:none}#ma-holdwall .actkey b{font-weight:800}
+#ma-holdwall .actkey.train{color:#c3a6ff}
+#ma-holdwall .over.end{background:#0b170f}
+@media (max-height:700px){#ma-holdwall .actkey{display:none}}
+#ma-holdwall #hw-ups .cell{display:flex;flex-direction:column;gap:4px;min-width:0}#ma-holdwall #hw-ups .cell .b{flex:1}
+#ma-holdwall .auto{display:flex;align-items:center;justify-content:center;gap:5px;padding:2px 0;font:800 10px/1.2 Almarai,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;user-select:none;-webkit-user-select:none}
+#ma-holdwall .auto input{appearance:none;-webkit-appearance:none;width:12px;height:12px;margin:0;border:1px solid rgba(243,234,217,.6);background:none;cursor:pointer;flex:none}
+#ma-holdwall .auto input:checked{background:var(--gold);border-color:var(--gold);box-shadow:inset 0 0 0 2px var(--sunk)}
+#ma-holdwall .auto input:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+#ma-holdwall .auto.on{color:var(--gold)}
+@media (max-width:760px){#ma-holdwall .auto{font-size:9px;gap:4px;letter-spacing:.04em}}
+#ma-holdwall .lootwin{gap:12px;padding-block:0}#ma-holdwall .lootwin p{font-size:clamp(20px,2.6vw,28px)}#ma-holdwall .lootbox{width:min(30vw,130px)}
+#ma-holdwall .ph2{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px}
+#ma-holdwall .tacts{display:flex;gap:8px}
+#ma-holdwall .tacts button{margin:0;padding:7px 12px;border:1px solid rgba(243,234,217,.45);background:none;color:var(--parch);font:800 11px/1.2 Almarai,Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
+#ma-holdwall .tacts button[aria-pressed="true"]{border-color:var(--gold);color:var(--gold);background:rgba(255,209,102,.12)}
+#ma-holdwall .tacts button[data-tact="up"][aria-pressed="true"]{border-color:var(--violet);color:#c3a6ff;background:rgba(158,116,253,.16)}
+#ma-holdwall .b .use{right:5px;color:var(--gold)}
+#ma-holdwall #hw-ups[data-tact="up"] .b .cost{color:#c3a6ff}
+#ma-holdwall .btns .b.noup{opacity:.3}
+#ma-holdwall .inv{position:absolute;left:10px;top:10px;z-index:2;display:flex;gap:8px;line-height:1.2}
+#ma-holdwall .inv .it{position:relative;width:52px;height:52px;padding:0;margin:0;border:2px solid var(--parch);background:rgba(11,23,15,.78);color:var(--parch);cursor:pointer;touch-action:manipulation;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#ma-holdwall .inv .it .iti{display:block;width:30px;height:30px;color:var(--parch);object-fit:contain}
+#ma-holdwall .inv .it .itn{position:absolute;right:3px;bottom:2px;font:800 11px/1 Almarai,Arial,sans-serif;color:var(--gold)}
+#ma-holdwall .inv .it .itc{position:absolute;left:0;bottom:0;width:100%;height:0;background:rgba(11,23,15,.65);pointer-events:none}
+#ma-holdwall .inv .it:hover:not([disabled]),#ma-holdwall .inv .it:focus-visible{border-color:var(--mint);outline:none}
+#ma-holdwall .inv .it[disabled]{opacity:.5;cursor:default}
+@media (max-width:760px){#ma-holdwall .inv{left:6px;top:6px;gap:6px}#ma-holdwall .inv .it{width:40px;height:40px}#ma-holdwall .inv .it .iti{width:22px;height:22px}#ma-holdwall .inv .it .itn{font-size:10px}}
+#ma-holdwall .btns .b.up img.izzyic{object-fit:contain}
+#ma-holdwall .actkey.up{color:#c3a6ff}
+#ma-holdwall #hw-ups{grid-template-columns:repeat(10,minmax(0,1fr))}
+@media (max-width:760px){#ma-holdwall .ph2 h3{display:none}#ma-holdwall .ph2{justify-content:flex-end}#ma-holdwall .tacts button{padding:7px 10px;font-size:10px;letter-spacing:.05em}#ma-holdwall #hw-ups{grid-template-columns:repeat(5,minmax(0,1fr))}#ma-holdwall .b .use{right:3px}}#ma-holdwall .actkey.shield{color:var(--mint)}
+@media (max-width:760px){
+  #ma-holdwall .top{position:static;margin-inline:0;padding:0;border:0;background:none;gap:8px}
+  #ma-holdwall .hudbar{gap:6px 12px}
+  #ma-holdwall .ctl{padding:12px;gap:8px}
+  #ma-holdwall .tabs{display:flex}
+  #ma-holdwall .ph h3{display:none}
+  #ma-holdwall .ctl[data-tab="f"] .tw,#ma-holdwall .ctl[data-tab="t"] .fi{display:none}
+  #ma-holdwall .ph{display:flex;flex-wrap:nowrap;gap:6px}#ma-holdwall .tabs,#ma-holdwall .acts{display:contents}#ma-holdwall .tabs button,#ma-holdwall .acts button{flex:1 1 auto;min-width:0}
+  #ma-holdwall .tabs button,#ma-holdwall .acts button{padding:7px 2px;font-size:10px;letter-spacing:.03em;white-space:nowrap}#ma-holdwall .acts .mi{margin-right:3px;width:10px;height:10px}
+  #ma-holdwall .btns .b{padding:13px 2px 4px}
+  #ma-holdwall .btns .b .ic{width:28px;height:30px}#ma-holdwall .btns .b.up .ic{width:26px;height:26px}
+  #ma-holdwall .actkey{font-size:11px;min-height:30px}}
+
+#ma-holdwall{box-sizing:border-box;width:100vw;position:relative;left:50%;margin-left:-50vw;min-height:100vh;padding:clamp(110px,13vh,150px) 16px 80px;background:var(--ink);overflow-x:clip}
+#ma-holdwall .weekly{margin:0;max-width:640px;font-weight:700;font-size:14px;line-height:1.5;color:var(--gold)}
+#ma-holdwall .hw-boardrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media (max-width:760px){#ma-holdwall .hw-boardrow{grid-template-columns:1fr}}
+#ma-holdwall .hw-board{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+#ma-holdwall .hw-board li{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;align-items:baseline;font-weight:700;font-size:14px}
+#ma-holdwall .hw-board li i{font-style:normal;color:var(--muted)}#ma-holdwall .hw-board li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#ma-holdwall .hw-board li b{color:var(--gold)}
+#ma-holdwall .hw-board li.me span,#ma-holdwall .hw-board li.me b{color:var(--mint)}#ma-holdwall .hw-board li .hw-empty{grid-column:1/-1;white-space:normal;color:var(--muted)}
+#ma-holdwall .hw-count{margin:0;font-size:13px;color:var(--muted)}#ma-holdwall .hw-mybest{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-size:40px;line-height:1.2;letter-spacing:.04em;color:var(--white)}
+#ma-holdwall .hw-post{display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center}#ma-holdwall .hw-msg{margin:0;font-weight:700}#ma-holdwall .hw-msg.err{color:var(--ember)}
+#ma-holdwall .hw-form{display:grid;gap:8px;width:min(100%,420px);text-align:left}#ma-holdwall .hw-form label{font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+#ma-holdwall .hw-form input,#ma-holdwall .hw-form select{margin:0 0 6px;padding:10px 12px;border:1px solid rgba(243,234,217,.45);background:var(--sunk);color:var(--parch);font:700 15px/1.3 Almarai,Arial,sans-serif}
+#ma-holdwall .hw-quiet{margin:0;font-size:13px;color:var(--muted)}#ma-holdwall .hw-quiet a{color:var(--mint);cursor:pointer;text-decoration:underline}
+#ma-holdwall .wk-champ{margin:0}
+</style>
+<section id="ma-holdwall" aria-label="Hold the Wall!">
+<!-- ARCADE-TABS:BEGIN (pasted by holdwall/port.mjs from treasure-hunt-leaderboard/games/_tabs.html plus the 140-142 buttons; do not edit here) -->
+<div class="ma-arcade" style="width:min(100%,760px);margin:0 auto;position:relative;z-index:2">
+<style>.hg-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;max-width:760px;margin:0 auto 38px;position:relative;z-index:2}.hg-tabs a{grid-column:span 2}.hg-tabs a:last-child:nth-child(3n+1){grid-column:1/-1}.hg-tabs a:last-child:nth-child(3n+2),.hg-tabs a:nth-last-child(2):nth-child(3n+1){grid-column:span 3}.hg-tabs a{display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.25}.hg-tabs a{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(13px,1.2vw,16px);letter-spacing:.08em;text-decoration:none;border:2px solid #fffffe;padding:11px 24px;color:#fffffe;background:rgba(11,23,15,.4);transition:background .15s ease,color .15s ease}.hg-tabs a:hover{background:rgba(255,255,255,.14);color:#fffffe}.hg-tabs a[hidden]{display:none!important}.hg-tabs a.on,.hg-tabs a.on:hover{background:#fffffe;color:#111}@media (max-width:560px){.hg-tabs{gap:6px}.hg-tabs a{padding:9px 6px;font-size:11px;letter-spacing:.03em}}</style>
+    <h2 class="hg-arcade" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.2;letter-spacing:.03em;color:#fffffe;text-align:center;margin:0 auto 16px;position:relative;z-index:2">THE ARCADE</h2>
+    <nav class="hg-tabs" data-on="hold_wall" aria-label="Daily games">
+      <a href="https://www.mauriceafrich.com/games" data-k="skyword">SKYWORD</a>
+      <a href="https://www.mauriceafrich.com/sort-the-shelf" data-k="shelf_sort">SORT THE SHELF</a>
+      <a href="https://www.mauriceafrich.com/book-icons" data-k="emoji_reads">BOOK ICONS</a>
+      <a href="https://www.mauriceafrich.com/crossword" data-k="crossword">CROSSWORD</a>
+      <a href="https://www.mauriceafrich.com/blades-and-brass" data-k="blades_brass" data-unlock="50000" data-act="two" hidden>BLADES &amp; BRASS</a>
+      <a href="https://www.mauriceafrich.com/matching-auras" data-k="matching_auras" data-unlock="100000" data-act="two" hidden>MATCHING AURAS</a>
+      <a href="https://www.mauriceafrich.com/crest-quest" data-k="crest_quest" data-unlock="150000" data-act="two" hidden>CREST QUEST</a>
+      <a href="https://www.mauriceafrich.com/sky-mines" data-k="sky_mines">SKY MINES</a>
+      <a href="https://www.mauriceafrich.com/airship-runner" data-k="airship_runner">AIRSHIP RUNNER</a>
+      <a href="https://www.mauriceafrich.com/thread-the-needle" data-k="thread_needle">THREAD THE NEEDLE</a>
+      <a href="https://www.mauriceafrich.com/trench-run" data-k="trench_run">TRENCH RUN</a>
+      <a href="https://www.mauriceafrich.com/sky-gauntlet" data-k="sky_gauntlet">SKY GAUNTLET</a>
+      <a href="https://www.mauriceafrich.com/the-levian-30527" data-k="the_levian">THE LEVIAN</a>
+      <a href="https://www.mauriceafrich.com/master-stacker-32368" data-k="master_stacker">MASTER STACKER</a>
+      <a href="https://www.mauriceafrich.com/hold-the-wall-13212" data-k="hold_wall">HOLD THE WALL!</a>
+      <a href="https://www.mauriceafrich.com/goma-goons-43216" data-k="goma_goons">GOMA GOONS</a>
+    </nav>
+    <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++){var act=lk[j].getAttribute('data-act'),n=act?+((d.acts||{})[act])||0:+d.crewTotal||0;if(n>=+lk[j].getAttribute('data-unlock'))lk[j].hidden=false;}}).catch(function(){});})();</script>
+</div>
+<!-- ARCADE-TABS:END -->
+<div class="wrap">
+  <header>
+    <h1><span class="d3" aria-hidden="true">Hold the Wall!</span><span class="face">Hold the Wall!</span></h1>
+    <p class="lede">The enemy is pouring out of the portal and marching on your tower. Spend credits to send out fighters, work the cannon on top, and hold out as long as you can. Every wave is bigger than the last.</p>
+    <p class="weekly">Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week.</p>
+  </header>
+  <div class="top">
+  <div class="hudbar">
+  <div class="hud" aria-live="polite">
+    <span>Wave <b id="hw-hWave">1</b></span><span>Score <b id="hw-hScore">0</b></span><span class="c">Credits <b id="hw-hCoins">0</b></span><span>Best <b id="hw-hBest">0</b></span><span class="w">Cannon <b id="hw-hCan">150</b></span><span class="w">Tower <b id="hw-hWall">300</b></span><span class="w" id="hw-hShWrap" hidden>Shield <b id="hw-hSh">0</b></span><span id="hw-hLeftWrap" hidden>Enemies left <b id="hw-hLeft">0</b></span>
+  </div>
+  <div class="row"><button class="sm" id="hw-pause" type="button">Pause</button><button class="sm" id="hw-restart" type="button">New game</button></div>
+  </div>
+  <div class="stage">
+    <div class="inv" id="hw-inv" role="group" aria-label="Your items"></div>
+    <canvas id="hw-cv" width="1675" height="793" aria-label="Your tower and cannon on the left, the enemy coming out of a portal on the right"></canvas>
+    <div class="over" id="hw-over">
+      <h2 id="hw-oH">Hold the Wall!</h2>
+      <p id="hw-oP">The cannon fires on its own: tap or drag on the field to aim it. Kills earn credits: spend them on fighters, training, and tower upgrades. The cannon takes hits first, then the tower.</p>
+      <button class="go" id="hw-oGo" type="button">Start wave 1</button>
+    </div>
+  </div>
+  </div>
+  <div class="lootwin" id="hw-lootwin" hidden><p>Box 140 is yours.</p><button class="lootbox" id="hw-lootbox" type="button" aria-label="Open loot box 140"><img src="https://africhmaurice.github.io/site/assets/loot/140.png" alt="Loot box 140"></button></div>
+  <section class="panel ctl" id="hw-ctl" data-tab="f">
+    <div class="ph"><div class="tabs" role="group" aria-label="Show"><button type="button" data-tab="f" aria-pressed="true">Fighters</button><button type="button" data-tab="t" aria-pressed="false">Tower</button></div>
+      <h3 class="fi">Fighters</h3>
+      <div class="acts fi" id="hw-acts" role="group" aria-label="What tapping a fighter does"><button type="button" data-act="send" aria-pressed="true">Send</button><button type="button" data-act="train" aria-pressed="false"><span class="msk mi" style="--m:url(https://africhmaurice.github.io/site/assets/games/140-icon-train.png)" aria-hidden="true"></span>Train</button><button type="button" data-act="shield" aria-pressed="false"><span class="msk mi" style="--m:url(https://africhmaurice.github.io/site/assets/games/140-icon-fighter-shield.png)" aria-hidden="true"></span>Shield</button></div></div>
+    <div class="btns fi" id="hw-deploy" data-act="send"></div>
+    <p class="actkey fi send" id="hw-actkey" aria-live="polite"><span>Tap a fighter to send one out. Number keys 1 to 9 work too.</span></p>
+    <div class="ph2 tw"><h3>Tower upgrades</h3><div class="tacts" id="hw-tacts" role="group" aria-label="What tapping an upgrade does"><button type="button" data-tact="buy" aria-pressed="true">Buy</button><button type="button" data-tact="up" aria-pressed="false">Upgrade</button></div></div>
+    <div class="btns tw" id="hw-ups" data-tact="buy"></div>
+    <p class="actkey tw buy" id="hw-tkey"><span><b>×1</b> items go to your item bar on the field: buy as many as you like and tap one to use it. Switch to Upgrade to make them stronger.</span></p></section>
+  <div class="hw-post" id="hw-post" hidden><p class="hw-msg" id="hw-msg" role="status"></p><div id="hw-who" hidden></div></div>
+  <div class="hw-boardrow">
+    <section class="panel"><h3>Best this week</h3><p class="hw-mybest" id="hw-mybest">0</p><p class="hw-count" id="hw-mynote">No games yet this week.</p></section>
+    <section class="panel"><h3>This week&rsquo;s top defenders</h3><p class="hw-count">Board closes in <span id="hw-left">...</span></p>
+      <ol class="hw-board" id="hw-board"><li><span class="hw-empty">Loading the board...</span></li></ol></section>
+  </div>
+  <p class="help">The cannon fires on its own: tap or drag on the field to aim it. Tap a fighter to send one out, or switch to Train or Shield first. Check Auto under a fighter, upgrade, or item to keep buying it whenever you can afford it, one at a time. Number keys 1 to 9 send fighters.</p>
+</div>
+</section>
+<script>/* ARCADE-CARD:BEGIN (pasted from mauriceafrich-site/tools/arcade-card.js; do not edit here) */
+// ---- the arcade card (Airship Runner, Thread the Needle; Maurice 2026-10-13) ----
+// Built on the daily games' share card (treasure-hunt-leaderboard/games/share.js): a 1200x600 PNG in one of the six brand
+// colors with the run's score, time, and place on this week's board. tools/arcade.mjs pastes this file into each arcade
+// page between ARCADE-CARD markers; edit it here, then run node tools/arcade.mjs.
+//   ArcadeCard.show(o)  after a run: o.game 'Thread the Needle', o.after (element the panel goes under), o.label 'GAPS',
+//                       o.stat '312', o.line 'TIME 4:51' (optional), o.name '@handle', o.site 'mauriceafrich.com/...',
+//                       o.icon (image url of the player's ship)
+//   ArcadeCard.update(o) when the board answers: o.rank (place this week), o.best (best this week)
+var ArcadeCard = (function () {
+  var DISCORD = 'https://discord.gg/TV8SNnSGdb', url = null, opts = null, panel = null;
+  var THEMES = {
+    violet: { bg: '#482d85', band: '#2d1c53', text: '#fffffe', soft: 'rgba(255,255,254,.72)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
+    scarlet: { bg: '#c53200', band: '#912501', text: '#fffffe', soft: 'rgba(255,255,254,.75)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
+    green: { bg: '#2c6021', band: '#1b3b15', text: '#fffffe', soft: 'rgba(255,255,254,.72)', stat: '#a2f590', frame: 'rgba(162,245,144,.4)' },
+    teal: { bg: '#268e62', band: '#1a5e41', text: '#fffffe', soft: 'rgba(255,255,254,.75)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
+    ink: { bg: '#0b170f', band: '#213226', text: '#fffffe', soft: '#607667', stat: '#3adb97', frame: 'rgba(162,245,144,.35)' },
+    parchment: { bg: '#fffffe', band: '#c53200', text: '#0b170f', soft: '#607667', stat: '#c53200', frame: 'rgba(11,23,15,.25)' }
+  };
+  var NAMES = { violet: 'Violet', scarlet: 'Scarlet', green: 'Green', teal: 'Teal', ink: 'Ink', parchment: 'Parchment' };
+  var css = document.createElement('style');
+  css.textContent = '.ac-card{width:min(100%,640px);margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:16px;padding:clamp(22px,4vw,30px) clamp(18px,3vw,28px);background:#132219;border:2px solid rgba(243,234,217,.18);color:#fffffe;text-align:center;box-sizing:border-box}' +
+    '.ac-card *{box-sizing:border-box;border-radius:0}' +
+    '.ac-h{font-family:"Cracked Imperia",Impact,sans-serif;font-weight:400;font-size:clamp(26px,4.4vw,38px);line-height:1.25;letter-spacing:.03em;color:#a2f590;margin:0}' +
+    '.ac-img{display:block;width:100%;max-width:560px;aspect-ratio:2/1;background:#0b170f;border:2px solid rgba(162,245,144,.35)}' +
+    '.ac-sw{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0;padding:0;border:0}' +
+    '.ac-sw legend{width:100%;padding:0;margin:0 0 10px;font-family:"Almarai",sans-serif;font-weight:700;font-size:14px;letter-spacing:.08em;color:#fffffe;text-align:center}' +
+    '.ac-swatch{width:34px;height:34px;margin:0;border:2px solid rgba(255,255,254,.55);padding:0;cursor:pointer;transition:transform .12s ease}' +
+    '.ac-swatch:hover{transform:scale(1.1)}.ac-swatch[aria-pressed="true"]{outline:3px solid #a2f590;outline-offset:3px}' +
+    '.ac-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}' +
+    '.ac-btns button{margin:0;min-width:200px;font-family:"Almarai",sans-serif;font-weight:800;font-size:15px;letter-spacing:.08em;color:#fffffe;background:#c53200;border:2px solid #fffffe;padding:12px 20px;cursor:pointer;transition:background .15s ease,transform .15s ease}' +
+    '.ac-btns button:hover,.ac-btns button:focus-visible{background:#ff4c0f;transform:scale(1.04);outline:none}' +
+    '.ac-how{font-family:"Almarai",sans-serif;font-size:clamp(14px,1.8vw,16px);line-height:1.6;margin:0;max-width:480px;color:#f3ead9}.ac-how a{color:#a2f590}' +
+    '@media (prefers-reduced-motion:reduce){.ac-swatch,.ac-btns button{transition:none}}';
+  document.head.appendChild(css);
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function key() { return 'thArcadeColor:' + opts.game; }
+  function weekLine() {
+    // the Friday that ends this week, New York time (the board's week)
+    var f = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' }).formatToParts(new Date()), o = {};
+    f.forEach(function (p) { o[p.type] = p.value; });
+    var wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(o.weekday), add = (5 - wd + 7) % 7;
+    var d = new Date(Date.UTC(+o.year, +o.month - 1, +o.day + add, 12));
+    return 'WEEK ENDING ' + d.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
+  }
+  function show(o) {
+    opts = o; o.theme = 'ink';
+    try { var saved = localStorage.getItem(key()); if (saved && THEMES[saved]) o.theme = saved; } catch (e) {}
+    if (panel && panel.parentNode) panel.parentNode.removeChild(panel);
+    var d = document.createElement('div');
+    d.innerHTML = '<div class="ac-card" id="ac-card"><p class="ac-h">Export your card</p>' +
+      '<img loading="lazy" decoding="async" class="ac-img" alt="My ' + esc(o.game) + ' card: ' + esc(o.label.toLowerCase()) + ' ' + esc(o.stat) + '">' +
+      '<fieldset class="ac-sw"><legend>PICK YOUR COLOR</legend>' + Object.keys(THEMES).map(function (k) {
+        return '<button type="button" class="ac-swatch" data-theme="' + k + '" aria-pressed="' + (k === o.theme) + '" aria-label="' + NAMES[k] + '" title="' + NAMES[k] + '" style="background:' + THEMES[k].bg + '"></button>';
+      }).join('') + '</fieldset>' +
+      '<div class="ac-btns"><button type="button" class="ac-save">SAVE MY CARD</button><button type="button" class="ac-copy">COPY MY SCORE</button></div>' +
+      '<p class="ac-how">Post your card in <b>#🎯DAILY_GAMES</b> in the <a href="' + DISCORD + '" target="_blank" rel="noopener">Trench Community Discord</a> and see who can beat it.</p></div>';
+    panel = d.firstChild;
+    o.after.parentNode.insertBefore(panel, o.after.nextSibling);
+    panel.querySelector('.ac-sw').addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('.ac-swatch') : null; if (!b) return;
+      opts.theme = b.getAttribute('data-theme');
+      try { localStorage.setItem(key(), opts.theme); } catch (er) {}
+      [].forEach.call(panel.querySelectorAll('.ac-swatch'), function (s) { s.setAttribute('aria-pressed', String(s === b)); });
+      draw();
+    });
+    panel.querySelector('.ac-save').addEventListener('click', function () { save(this); });
+    panel.querySelector('.ac-copy').addEventListener('click', function () { copy(this); });
+    draw();
+    return panel;
+  }
+  function update(o) { if (!opts) return; for (var k in o) if (o[k] != null) opts[k] = o[k]; draw(); }
+  function load(src) { return new Promise(function (ok) { if (!src) return ok(null); var i = new Image(); i.crossOrigin = 'anonymous'; i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
+  function fit(x, s, px, py, max) {
+    var m = /^(.*?)(\d+)px\s*(.*)$/.exec(x.font), size = +m[2];
+    while (x.measureText(s).width > max && size > 12) { size -= 1; x.font = m[1] + size + 'px ' + m[3]; }
+    x.fillText(s, px, py);
+  }
+  function spaced(x, s, px, py, gap, max) {
+    if ('letterSpacing' in x) x.letterSpacing = gap + 'px';
+    if (max) fit(x, s, px, py, max); else x.fillText(s, px, py);
+    if ('letterSpacing' in x) x.letterSpacing = '0px';
+  }
+  function draw() {
+    var o = opts;
+    var fonts = document.fonts ? Promise.all([document.fonts.load('84px "Cracked Imperia"'), document.fonts.load('700 28px Almarai'), document.fonts.load('800 150px Almarai')]).catch(function () {}) : Promise.resolve();
+    return fonts.then(function () { return load(o.icon); }).then(function (icon) {
+      var W = 1200, H = 600, c = document.createElement('canvas'); c.width = W; c.height = H;
+      var x = c.getContext('2d'), T = THEMES[o.theme] || THEMES.ink;
+      x.fillStyle = T.bg; x.fillRect(0, 0, W, H);
+      x.fillStyle = T.band; x.fillRect(0, 0, W, 14); x.fillRect(0, H - 14, W, 14);
+      x.strokeStyle = T.frame; x.lineWidth = 2; x.strokeRect(40, 54, W - 80, H - 108);
+      x.textBaseline = 'alphabetic'; x.textAlign = 'left';
+      // left: whose run, which game, which week, and their ship
+      x.fillStyle = T.soft; x.font = '800 22px Almarai, sans-serif'; spaced(x, "THE ARCADE · CELLO'S GATE TREASURE HUNT", 80, 122, 3, 620);
+      x.fillStyle = T.text; x.font = '84px "Cracked Imperia", Impact, sans-serif'; spaced(x, o.game.toUpperCase(), 80, 230, 2, 600);
+      if (o.name) { x.fillStyle = T.text; x.font = '700 28px Almarai, sans-serif'; spaced(x, String(o.name).toUpperCase(), 80, 292, 2, 600); }
+      x.fillStyle = T.soft; x.font = '700 24px Almarai, sans-serif'; spaced(x, weekLine(), 80, o.name ? 336 : 300, 2, 600);
+      if (icon) {
+        var ih = 120, iw = Math.min(260, ih * icon.naturalWidth / icon.naturalHeight), px = 86, py = 380;
+        var m = document.createElement('canvas'); m.width = Math.ceil(iw); m.height = ih; var mx = m.getContext('2d');
+        mx.drawImage(icon, 0, 0, iw, ih); mx.globalCompositeOperation = 'source-in'; mx.fillStyle = T.text; mx.fillRect(0, 0, iw, ih);
+        for (var a = 0; a < 16; a++) x.drawImage(m, px + Math.cos(a / 8 * Math.PI) * 3, py + Math.sin(a / 8 * Math.PI) * 3);
+        x.drawImage(icon, px, py, iw, ih);
+      }
+      // right: the result, the time, the place on the board
+      x.textAlign = 'center';
+      x.fillStyle = T.text; x.font = '800 26px Almarai, sans-serif'; spaced(x, o.label.toUpperCase(), 930, 178, 4, 380);
+      x.fillStyle = T.stat; x.font = '800 150px Almarai, sans-serif'; fit(x, String(o.stat), 930, 330, 380);
+      var y = 384;
+      if (o.line) { x.fillStyle = T.text; x.font = '800 28px Almarai, sans-serif'; spaced(x, o.line.toUpperCase(), 930, y, 3, 380); y += 44; }
+      var place = o.rank ? '#' + o.rank + ' ON THIS WEEK’S BOARD' : (o.best ? 'BEST THIS WEEK: ' + o.best : '');
+      if (place) { x.fillStyle = T.stat; x.font = '800 26px Almarai, sans-serif'; spaced(x, place, 930, y, 2, 380); }
+      x.fillStyle = T.text; x.font = '700 21px Almarai, sans-serif'; fit(x, o.site.toUpperCase(), 930, 506, 360);
+      x.textAlign = 'left';
+      url = c.toDataURL('image/png');
+      var im = panel && panel.querySelector('.ac-img'); if (im) im.src = url;
+      return url;
+    });
+  }
+  function text() {
+    return opts.game + ': ' + opts.label.toLowerCase() + ' ' + opts.stat + (opts.line ? ' (' + opts.line.toLowerCase() + ')' : '') +
+      (opts.rank ? ', #' + opts.rank + ' on this week’s board' : '') + '. Play at ' + opts.site;
+  }
+  function save(btn) {
+    if (!url) return;
+    fetch(url).then(function (r) { return r.blob(); }).then(function (b) {
+      var name = opts.game.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + opts.stat + '.png';
+      var file = typeof File === 'function' ? new File([b], name, { type: 'image/png' }) : null;
+      // phones: the share sheet, so it can go straight into Discord. Everywhere else: a download.
+      if (file && navigator.canShare && navigator.canShare({ files: [file] }) && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+        return navigator.share({ files: [file], text: text() }).catch(function () {});
+      }
+      var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = name;
+      document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+      btn.textContent = 'SAVED!'; setTimeout(function () { btn.textContent = 'SAVE MY CARD'; }, 2200);
+    });
+  }
+  function copy(btn) {
+    var done = function () { btn.textContent = 'COPIED!'; setTimeout(function () { btn.textContent = 'COPY MY SCORE'; }, 2200); };
+    try { navigator.clipboard.writeText(text()).then(done, function () { window.prompt('Copy your score:', text()); }); }
+    catch (e) { window.prompt('Copy your score:', text()); }
+  }
+  return { show: show, update: update, scrollTo: function () { if (panel) try { panel.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} } };
+})();
+/* ARCADE-CARD:END */</script>
+<script>
+(function(){
+  var d=document.getElementById('ma-holdwall');if(!d)return;
+  var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
+  var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  document.documentElement.style.background=document.body.style.background='#0b170f';
+var ART='https://africhmaurice.github.io/site/assets/games/140-';
+var SEC=document.getElementById('ma-holdwall');if(!SEC)return;var cv=document.getElementById('hw-cv'),cx=cv.getContext('2d'),W=1675,H=793;
+var GY=748,WALLX=172;                       // feet line, front face of the tower
+var PV={x:109,y:468};                       // the cannon turns around this point (top of its base)
+var PORTAL_X=W-60;                          // where the enemy comes through
+var FIG=.62;                                // drawn size of a fighter (Maurice's drawings, about 95 tall next to the tower)
+var CAN_HP=190,TOWER_HP=375;   // v26: +25% (was 150 and 300)                // the cannon takes the hits first, then the tower
+function $(i){return document.getElementById('hw-'+i);}
+
+/* ---- art: his field and tower scenes (cut into layers), and his fighters, portal, and cannon ---- */
+var field=new Image();field.src=ART+'field2.jpg';
+// his sky, dawn (1) through night (16); wave 1 starts in full day and each wave moves one frame on, round the clock
+var SKY=[];for(var si=1;si<=16;si++){SKY.push(new Image());SKY[si-1].src=ART+'sky-'+(si<10?'0':'')+si+'.jpg';}
+var SKY_DARK=[.8,.5,0,0,0,0,0,0,0,.2,.5,.7,1,1,1,1];
+function skyAt(w){return ((3+w-1)%16+16)%16;}
+function dark(){return SKY_DARK[skyAt(G.wave)];}
+var diedArt=new Image();diedArt.src=ART+'you-died.webp';
+// tower.png + TW: cannon head (turns), base, fire, and the tower at each damage level, as [x, y, w, h, fieldX, fieldY]
+var TW={"field":[1675,793],"head":[[0,0,236,46,33.9,430.9],[240,0,236,46,33.9,430.9],[480,0,236,46,33.9,430.9]],"base":[[720,0,136,68,34.2,476.5],[860,0,136,68,34.2,476.5],[1000,0,136,68,34.2,476.5]],"fire":[[0,72,251,197,19.2,347.8],[255,72,252,224,17.6,320.4],[511,72,292,256,4.6,288.5]],"tower":[[807,72,183,207,0,542.4],[994,72,183,207,0,542.4],[0,332,183,207,0,542.4],[187,332,183,207,0,542.4],[374,332,183,207,0,542.4],[561,332,183,207,0,542.4],[748,332,183,205,0,544],[935,332,183,205,0,544],[0,543,183,207,0,542.4],[187,543,183,146,0,603],[374,543,183,146,0,603.3],[561,543,183,109,0,640.1]]};
+var towerArt=new Image();towerArt.src=ART+'tower.webp';
+var shipArt=new Image();shipArt.src=ART+'ship-red-right.webp';  // his red airship, for the airstrike
+function pic(f){var i=new Image();i.src=f;return i;}
+function has(i){return i.complete&&i.naturalWidth>0;}
+// his art from other games: the Sky Duel boulder, the Sky Gauntlet missiles (rounds) and atomic bomb, and a burst
+var rockArt=pic(ART+'imperial-rock.webp'),shieldArt=pic(ART+'shield.png'),healArt=null,atomArt=pic(ART+'atomic.png'),boomArt=pic(ART+'boom.webp'),MISSILE=[1,2,3,4,5].map(function(n){return pic(ART+'missile-'+n+'.png');});
+var MISSILE_LEN=[44,40,52,44,86];          // drawn length of each round on the field
+// the healing aura: the same shield bubble, tinted green
+function healBubble(){if(healArt||!has(shieldArt))return healArt;var c=document.createElement('canvas');c.width=shieldArt.naturalWidth;c.height=shieldArt.naturalHeight;
+  var g=c.getContext('2d');g.drawImage(shieldArt,0,0);g.globalCompositeOperation='source-atop';g.fillStyle='#57bb41';g.globalAlpha=.8;g.fillRect(0,0,c.width,c.height);return healArt=c;}
+// a dome from the bubble art, cut off at the ground line
+function bubble(img,x,y,rx,ry,a){if(!img)return false;cx.save();cx.beginPath();cx.rect(x-rx-4,y-ry-4,rx*2+8,ry+4);cx.clip();cx.globalAlpha*=a;
+  cx.drawImage(img,x-rx,y-ry,rx*2,ry*2);cx.restore();return true;}
+function roundTier(){var d=G.up.dmg;return d>=15?4:d>=10?3:d>=6?2:d>=3?1:0;}
+function layer(f){if(f&&towerArt.complete&&towerArt.naturalWidth)cx.drawImage(towerArt,f[0],f[1],f[2],f[3],f[4],f[5],f[2],f[3]);}
+// sprites.png + SPR: every frame is [x, y, w, h, feetX, feetY] on the sheet (cut from his drawings, which face left)
+var SPR={"sword":{"run":[[0,0,56,152,41.8,151.2],[60,0,83,130,24.1,129.6],[147,0,105,134,92.3,133.8],[256,0,62,138,45,137.4],[322,0,81,130,22.6,129.6],[407,0,113,158,7.1,157.8]],"atk":[[524,0,71,131,52.7,130.8],[599,0,59,134,40.7,133.2],[662,0,59,138,40.6,137.4],[725,0,63,137,44.9,136.2]]},"axe":{"run":[[792,0,96,153,67.1,153],[892,0,86,129,24.2,129],[982,0,99,135,93,134.4],[1085,0,75,138,45.1,137.4],[1164,0,81,130,22.5,129.6],[1249,0,113,161,7,160.2]],"atk":[[0,165,81,140,45.6,139.2],[85,165,77,135,56.3,134.4],[166,165,77,149,50.5,148.2],[247,165,69,155,48.8,154.2]]},"gun":{"run":[[320,165,66,138,52,137.4],[390,165,72,130,13.3,129.6],[466,165,95,135,89.2,134.4],[565,165,54,138,37.3,137.4],[623,165,74,130,15.4,129.6],[701,165,113,136,6.8,135.6]],"atk":[[818,165,71,116,50.1,115.2],[893,165,71,116,50,115.2],[968,165,74,126,53.1,125.4],[1046,165,68,117,46.7,116.4]]},"fist":{"run":[[1118,165,51,138,37.6,137.4],[1173,165,66,130,7.9,129.6],[1243,165,95,134,88.1,133.8],[1342,165,51,138,37.2,137.4],[0,324,66,130,8.2,129.6],[70,324,113,136,6.8,135.6]],"atk":[[187,324,54,128,39.1,127.8],[245,324,57,128,36.5,127.8],[306,324,67,128,52.3,127.8],[377,324,45,128,30.8,127.8]]},"glow":{"run":[[426,324,74,185,47.2,184.2],[504,324,83,129,24.1,128.5],[591,324,104,135,91.5,134.9],[699,324,69,154,43.2,153.2],[772,324,79,128,22.8,127.6],[855,324,114,188,9,187.8]],"atk":[[973,324,90,172,70.8,171.4],[1067,324,65,168,46.3,167.8],[1136,324,64,162,42.3,161.4],[1204,324,88,172,44.7,171.4]]},"portal":{"one":[[1296,324,65,210,35.3,210]]},"cannon":{"barrel":[[0,538,290,59,100.2,58.5,98.5],[294,538,290,59,100.4,58.5,98],[588,538,294,60,153,60,98],[886,538,289,59,100,58.5,98.5]],"base":[[1179,538,99,84,49.1,84],[1282,538,98,84,48.9,84],[0,626,234,86,49,86],[238,626,99,84,49.4,83.5]]},"staff":{"run":[[0,716,96,153,67.1,153],[100,716,86,129,24.2,129],[190,716,81,130,22.5,129.6],[275,716,113,161,7,160.2]],"atk":[[392,716,81,140,45.6,139.2],[477,716,77,135,56.3,134.4],[558,716,77,149,50.5,148.2],[639,716,69,155,48.8,154.2]]},"ostaff":{"run":[[0,881,55,147,41.6,146.5],[59,881,82,130,23.6,130],[145,881,100,135,89.8,134.6],[249,881,67,138,38.4,137.9],[320,881,84,130,25.4,130],[408,881,109,148,4.2,147.2]],"atk":[[521,881,56,126,35.7,125.3],[581,881,62,139,42.4,139],[647,881,70,133,50.7,132.8],[721,881,78,131,57.5,130.7]]},"imm":{"atk":[[803,881,68,128,52.7,127.8],[875,881,57,128,36.6,127.8],[936,881,54,128,38.4,127.8]],"run":[[1118,165,51,138,37.6,137.4],[1173,165,66,130,7.9,129.6],[1243,165,95,134,88.1,133.8],[1342,165,51,138,37.2,137.4],[0,324,66,130,8.2,129.6],[70,324,113,136,6.8,135.6]]},"wave":{"arc":[[994,881,8,25,2.4,24.1],[1006,881,8,56,3.9,55.4],[1018,881,20,143,11.7,142.2],[1042,881,27,192,7.7,191.2],[1073,881,21,220,11.2,219.2]]},"intang":{"run":[[0,1105,62,144,43.1,144],[66,1105,84,136,22.7,135.7],[154,1105,100,141,93.8,140.6],[258,1105,57,144,39.3,144],[319,1105,73,136,13.4,135.7],[396,1105,122,143,10,142.1]],"atk":[[522,1105,79,136,55.5,135.4],[605,1105,82,136,59.9,135.4],[691,1105,70,136,54.3,135.4],[765,1105,75,133,52.4,132.8],[844,1105,61,136,45.8,135.8],[909,1105,71,136,55.3,135.4]]}};
+var art=new Image(),tint={};art.src=ART+'sprites.webp';
+art.onload=function(){
+  // the enemy is the same crew in ember
+  [['foe','#a02800']].forEach(function(t){
+    var c=document.createElement('canvas');c.width=art.width;c.height=art.height;var g=c.getContext('2d');
+    g.drawImage(art,0,0);g.globalCompositeOperation='source-atop';g.fillStyle=t[1];g.globalAlpha=.85;g.fillRect(0,0,c.width,c.height);tint[t[0]]=c;});
+};
+function ready(){return art.complete&&art.naturalWidth>0;}
+function blit(src,f,x,y,s,flip){
+  cx.save();cx.translate(x,y);cx.scale(flip?-s:s,s);cx.drawImage(src,f[0],f[1],f[2],f[3],-f[4],-f[5],f[2],f[3]);cx.restore();
+}
+
+/* ---- the numbers, all in one place ---- */
+// look: which drawing set; run/atk speed come from the stats
+var ALLY={
+  brawler:{name:'Brawler',cost:10,hp:45,dmg:7,range:34,rate:.8,speed:60,s:1.08,look:'fist',cool:.8,what:'Tough fists.'},
+  prism:{name:'Prism Guard',cost:20,hp:50,dmg:11,range:42,rate:.9,speed:58,s:1,look:'sword',cool:1.1,what:'A steady sword.'},
+  intangible:{name:'Intangible',cost:30,hp:60,dmg:22,range:38,rate:.6,speed:70,s:1,look:'intang',cool:2,what:'Two blades. Portals in, strikes, portals back.',tele:true,aura:'black'},
+  gunslinger:{name:'Gunslinger',cost:40,hp:70,dmg:12,range:380,rate:1.2,speed:55,s:1,look:'gun',cool:1.5,what:'Shoots from the back.',ranged:true},
+  oracle:{name:'Oracle',cost:40,hp:70,dmg:10,range:50,rate:1,speed:55,s:1.08,look:'ostaff',cool:2,what:'While alive, shows how many enemies are left.',oracle:true,aura:'purple'},
+  guardian:{name:'Guardian',cost:50,hp:130,dmg:15,range:46,rate:1.3,speed:42,s:1.1,look:'axe',cool:2.5,what:'Big axe. Holds the line.'},
+  imperial:{name:'Imperial',cost:75,hp:160,dmg:24,range:340,rate:1.7,speed:50,s:.95,look:'fist',cool:3,what:'Hurls boulders with its mind and heals fighters near it.',rock:true,heal:true,aura:'green'},
+  crest:{name:'Crest Knight',cost:125,hp:480,dmg:60,range:48,rate:.85,speed:50,s:1.12,look:'glow',cool:5,what:'Hits four times as hard as a Guardian.'},
+  immortal:{name:'Immortal',cost:400,hp:380,dmg:12,range:440,rate:4,speed:55,s:.95,look:'imm',cool:8,what:'A telekinetic wave pushes back up to 3 enemies, one more each training level. Comes back once.',wave:true,aura:'mint'}
+};
+var FOE={
+  brawler:{hp:28,dmg:5,range:34,rate:.85,speed:55,s:1.05,look:'fist',coins:4,pts:10},
+  prism:{hp:38,dmg:8,range:42,rate:1,speed:50,s:1,look:'sword',coins:6,pts:15},
+  gunslinger:{hp:20,dmg:6,range:340,rate:1.5,speed:46,s:1,look:'gun',coins:6,pts:15,ranged:true},
+  guardian:{hp:120,dmg:16,range:46,rate:1.4,speed:34,s:1.1,look:'axe',coins:15,pts:40},
+  imperial:{hp:140,dmg:20,range:300,rate:1.9,speed:44,s:.95,look:'fist',coins:18,pts:45,rock:true,aura:'green'},
+  // the bosses, one notch at a time: Gladiator (wave 5), Crest Knight (wave 10), Immortal (wave 15), then in pairs
+  gladiator:{hp:400,dmg:28,range:52,rate:1.4,speed:30,s:1.45,look:'axe',coins:40,pts:150},
+  crest:{hp:520,dmg:48,range:48,rate:1.1,speed:40,s:1.12,look:'glow',coins:60,pts:200},
+  immortal:{hp:700,dmg:10,range:420,rate:2.8,speed:45,s:.95,look:'imm',coins:100,pts:350,wave:true,aura:'mint'}
+};
+var SHIELD_HP=CAN_HP+TOWER_HP,HEAL=6,HEAL_R=260;
+var TRICKLE=4,START_COINS=40,PUSH=W/4,CREDIT_MUL=2;   // v26: credits twice as fast (trickle, kills, wave bonus)
+var ALLY_MUL=1.25,FOE_HP=1.25,FOE_DMG=.5;   // v26: fighters +25%; enemies +25% health, half the attack
+var UPS=[
+  {k:'dmg',name:'Bigger rounds',what:'+25% damage; the rounds grow',base:60,grow:1.8,max:20},
+  {k:'rate',name:'Faster firing',what:'25% quicker shots',base:60,grow:1.8,max:10},
+  {k:'pierce',short:'Piercing',name:'Piercing rounds',what:'Each shot hits one more',base:200,grow:2.2,max:4},
+  {k:'dbl',name:'Double barrel',what:'Two shots at once',base:400,grow:1,max:1},
+  {k:'gren',short:'Grenades',name:'Grenade launcher',what:'Lobs a grenade while you fire',need:'pierce',base:300,grow:2,max:3},
+  {k:'tri',name:'Triple barrel',what:'Three shots at once',base:900,grow:1,max:1,need:'dbl'},
+  {k:'air',short:'Airstrike',name:'Call in an airstrike',what:'A red airship drops an atomic bomb on every enemy on the field',need:'gren',base:500,grow:1.25,max:99,cool:25,use:1},
+  {k:'izzy',short:'Izzy Pop',name:'Izzy Pop',what:'An Izzy bursts out of the ground under the enemy and leaves a hole they fall into',base:150,grow:1.15,max:99,cool:15,use:1},
+  {k:'shield',name:'Shield',what:'A second life: soaks up hits before the cannon',base:250,grow:1.4,max:99,use:1},
+  {k:'repair',name:'Repair',what:'Cannon first, then the tower',base:80,grow:1.3,max:99,use:1}
+];
+var GREN_EVERY=[0,2,1.6,1.2],GREN_R=95,AIR_SPEED=900;
+function waveSize(w){return 5+3*w;}
+function waveGap(w){return Math.max(.35,1.6-.07*w);}
+function hpMul(w){return Math.pow(1.25,w-1);}
+function dmgMul(w){return Math.pow(1.25,w-1);}   // v26: attack grows 25% a wave, like health
+function five(n){return Math.max(5,Math.round(n/5)*5);}
+function upCost(u){return five(u.base*Math.pow(u.grow,G.up[u.k]||0));}
+// v28: one-time items get stronger with Upgrade: +25% a level, up to level 6
+var PW_MAX=5;function pw(k){return (G.pw&&G.pw[k])||0;}function pwMul(k){return Math.pow(1.25,pw(k));}
+function pwCost(u){return five(u.base*1.5*Math.pow(1.7,pw(u.k)));}function canPower(u){return !!u.use&&!G.over&&pw(u.k)<PW_MAX&&G.coins>=pwCost(u)&&!(u.need&&!G.up[u.need]);}
+function powerUp(u){if(!canPower(u))return;G.coins-=pwCost(u);G.pw[u.k]=pw(u.k)+1;ui();}
+function gunDmg(){return 6.25*Math.pow(1.25,G.up.dmg);}
+function gunRate(){return .42*Math.pow(.8,G.up.rate);}   // v26: each step fires 25% quicker
+
+/* ---- state ---- */
+var G,best=0;try{best=+localStorage.getItem('ma-stick-siege-best')||0;}catch(e){}
+function newGame(){G={wave:1,score:0,pts:0,coins:START_COINS,wall:TOWER_HP,wallMax:TOWER_HP,can:CAN_HP,canMax:CAN_HP,boom:-1,up:{dmg:0,rate:0,pierce:0,dbl:0,gren:0,tri:0,air:0,izzy:0,shield:0,repair:0},pw:{air:0,izzy:0,shield:0,repair:0},inv:{air:0,izzy:0,shield:0,repair:0},holes:[],pops:[],izzyCool:0,shieldMax:SHIELD_HP,shield:0,reborn:[],grenT:0,airCool:0,ship:null,nades:[],
+  units:[],shots:[],bolts:[],rocks:[],waves:[],fx:[],queue:[],spawnT:0,running:false,paused:false,over:false,between:true,gunT:0,firedT:9,cool:{},lv:{},shl:{},t:0,shake:0,skyT:1,deadT:-1};}
+newGame();
+
+var BOSSES=['gladiator','crest','immortal'];
+function bossesFor(w){if(w%5)return [];var n=w/5,b=[BOSSES[(n-1)%3]];if(n>3)b.push(BOSSES[(n-2)%3]);return b;}
+function buildWave(w){
+  var n=waveSize(w),q=[];
+  for(var i=0;i<n;i++){
+    var r=Math.random(),k='brawler';
+    if(r>=.5){if(w>=8&&r>=.95)k='imperial';else if(w>=6&&r>=.88)k='guardian';else if(w>=4&&r>=.78)k='gunslinger';else if(w>=2)k='prism';}
+    q.push(k);
+  }
+  return q.concat(bossesFor(w));
+}
+// loot box 140: shown once per visit, the moment wave BOX_WAVE is held (the site version swaps in the real claim link)
+var BOX_WAVE=20,boxShown=false,BOX_K='RUgyQlRGOVA9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+function showBox(){if(boxShown)return;boxShown=true;$('lootwin').hidden=false;fitStage();}
+$('lootbox').addEventListener('click',function(){var u='';try{u=atob(BOX_K).split('').reverse().join('');}catch(e){}if(!u)return;
+  var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w){location.href=u;return;}
+  $('lootwin').hidden=true;fitStage();});   // v30: gone once claimed, so the buttons are back in reach
+function startWave(){if(G.wave===1&&!G.run&&window.HWBoard)G.run=HWBoard.start();if(G.wave>1)G.skyT=0;G.queue=buildWave(G.wave);G.spawnT=.5;G.between=false;G.running=true;$('over').hidden=true;ui();}
+
+var TRAIN_MAX=10;
+function lvl(k){return G.lv[k]||1;}
+function fCost(k){return Math.round(ALLY[k].cost*Math.pow(1.25,lvl(k)-1));}   // v33: each training level, 25% dearer to send out
+function lvMul(k){return Math.pow(1.25,lvl(k)-1);}   // each level: +25% health, speed, and damage
+function trainCost(k){return five(ALLY[k].cost*1.5*Math.pow(1.6,lvl(k)-1));}
+function canTrain(k){return !G.over&&lvl(k)<TRAIN_MAX&&G.coins>=trainCost(k);}
+function train(k){
+  if(!canTrain(k))return;
+  G.coins-=trainCost(k);G.lv[k]=lvl(k)+1;
+  // fighters of that kind already on the field get stronger too
+  G.units.forEach(function(u){if(u.side===1&&u.k===k&&!u.dead){u.max*=1.25;u.hp*=1.25;u.dmg*=1.25;u.spd*=1.25;}});
+  ui();
+}
+var SHIELD_MAX=5;
+function shLvl(k){return G.shl[k]||0;}
+function shCost(k){return five(ALLY[k].cost*1.2*Math.pow(1.8,shLvl(k)));}
+function canShield(k){return !G.over&&shLvl(k)<SHIELD_MAX&&G.coins>=shCost(k);}
+function shieldUp(k){if(!canShield(k))return;G.coins-=shCost(k);G.shl[k]=shLvl(k)+1;ui();}
+function unit(side,k){
+  var T=side===1?ALLY[k]:FOE[k],m=side===1?lvMul(k):hpMul(G.wave),dm=side===1?lvMul(k):dmgMul(G.wave);
+  var hm=side===1?ALLY_MUL:FOE_HP,dk=side===1?ALLY_MUL:FOE_DMG;m*=hm;dm*=dk;
+  return {side:side,k:k,T:T,x:side===1?WALLX-10:PORTAL_X,yo:Math.random()*14-7,hp:T.hp*m,max:T.hp*m,dmg:T.dmg*dm,spd:T.speed*(side===1?lvMul(k):1),sh:side===1?T.hp*m*.25*shLvl(k):0,shMax:side===1?T.hp*m*.25*shLvl(k):0,cd:Math.random()*.3,
+    phase:Math.random()*6,atk:0,dead:0,hit:0,tele:T.tele?1:0,gone:0};
+}
+function deploy(k){
+  var T=ALLY[k],fc=fCost(k);if(!G.running||G.paused||G.over||G.coins<fc||(G.cool[k]||0)>0)return;
+  G.coins-=fc;G.cool[k]=T.cool;G.units.push(unit(1,k));ui();
+}
+function repairWhat(){return G.can<=0?'rebuild':G.can<G.canMax?'cannon':G.wall<G.wallMax?'tower':'';}
+var INV_MAX=9;
+function canBuy(u){
+  if(G.over||G.coins<upCost(u)||G.up[u.k]>=u.max)return false;
+  if(u.need&&!G.up[u.need])return false;
+  if(u.use)return G.inv[u.k]<INV_MAX;
+  if(u.k==='repair'&&repairWhat()==='')return false;
+  if(u.k==='air'&&(!G.running||G.airCool>0||G.ship))return false;
+  if(u.k==='izzy'&&(!G.running||G.izzyCool>0))return false;
+  if(u.k==='shield'&&G.shield>0)return false;
+  return true;
+}
+function buy(u){
+  if(!canBuy(u))return;
+  if(u.use){G.coins-=upCost(u);G.up[u.k]++;G.inv[u.k]++;ui();return;}   // v29: stocked for the item bar
+  var r=null;
+  G.coins-=upCost(u);G.up[u.k]++;
+  ui();
+}
+// v29: the item bar. Each one-time item you own is a button on the field; tap to use one
+function canUse(k){if(G.over||!G.inv[k])return false;
+  if(k==='air')return G.running&&G.airCool<=0&&!G.ship;
+  if(k==='izzy')return G.running&&G.izzyCool<=0;
+  if(k==='shield')return G.shield<=0;
+  if(k==='repair')return repairWhat()!=='';return false;}
+function useItem(k){if(!canUse(k))return;G.inv[k]--;
+  if(k==='repair'){var r=repairWhat();
+    if(r==='rebuild'){G.can=G.canMax;G.boom=-1;}
+    else if(r==='cannon')G.can=Math.min(G.canMax,G.can+G.canMax*Math.min(1,.625*pwMul('repair')));
+    else if(r==='tower')G.wall=Math.min(G.wallMax,G.wall+G.wallMax*Math.min(1,.375*pwMul('repair')));}
+  if(k==='air')callAirstrike();
+  if(k==='shield')G.shield=G.shieldMax=Math.round(SHIELD_HP*pwMul('shield'));
+  if(k==='izzy')izzyPop();
+  ui();}
+// the airstrike: his red airship crosses the sky and drops an atomic bomb on the thick of the enemy
+function callAirstrike(){
+  var e=G.units.filter(function(o){return o.side===-1&&!o.dead;}).map(function(o){return o.x;}).sort(function(a,b){return a-b;});
+  var at=e.length?e[Math.floor(e.length/2)]:W*.65;G.ship={x:-300,at:Math.max(WALLX+300,Math.min(W-120,at)),dropped:false};G.airCool=25;
+}
+// v28: Izzy Pop. The blob is one of the Goma Goons, a different color each time.
+var IZZY_COLORS=['yellow','red','sand','blue','green','purple','white','teal','gold','lime','brown'],izzyArt={};
+function izzyImg(c){if(!izzyArt[c]){var im=new Image();im.src='https://africhmaurice.github.io/site/assets/games/141-goma-'+c+'.webp';izzyArt[c]=im;}return izzyArt[c];}
+IZZY_COLORS.forEach(izzyImg);
+var BOSS={gladiator:1,crest:1,immortal:1};
+function izzyPop(){
+  var e=G.units.filter(function(o){return o.side===-1&&!o.dead;}).map(function(o){return o.x;}).sort(function(a,b){return a-b;});
+  var x=Math.max(WALLX+300,Math.min(W-120,e.length?e[Math.floor(e.length/2)]:W*.6)),m=pwMul('izzy'),R=130*Math.sqrt(m);
+  G.izzyCool=15;G.pops.push({x:x,t:0,c:IZZY_COLORS[Math.floor(Math.random()*IZZY_COLORS.length)]});
+  G.units.forEach(function(o){if(o.side===-1&&!o.dead&&!o.gone&&Math.abs(o.x-x)<R){hurt(o,(40+o.max*.35)*m);o.kb=PUSH*.35;o.kbDir=1;o.fight=false;}});
+  G.holes.push({x:x,w:Math.min(420,150*Math.sqrt(m)),t:0,dur:2.5*Math.sqrt(m),hit:[]});
+  G.fx.push({type:'dust',x:x,y:GY-20,t:.5});G.shake=Math.max(G.shake,.35);
+}
+// every hit on the base lands on the cannon first; once it explodes, on the tower
+function holeOpen(h){var a=Math.min(1,h.t/.25),z=Math.min(1,Math.max(0,(h.dur-h.t)/.6));return Math.min(a,z);}
+function hitBase(d){
+  if(G.shield>0){var a=Math.min(G.shield,d);G.shield-=a;d-=a;G.shake=Math.max(G.shake,.06);if(d<=0)return;}
+  if(G.can>0){G.can-=d;if(G.can<=0){G.can=0;G.boom=0;G.shake=.5;}}
+  else G.wall-=d;
+  G.shake=Math.max(G.shake,.12);
+}
+
+/* ---- aiming the cannon ---- */
+var aim={x:1100,y:GY-70,down:false};   // v32: starts aimed at the middle of the field; the cannon fires on its own
+function pivot(){return PV;}
+function toField(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height};}
+cv.addEventListener('pointerdown',function(e){var p=toField(e);aim.x=p.x;aim.y=p.y;aim.down=true;try{cv.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();});
+cv.addEventListener('pointermove',function(e){var p=toField(e);aim.x=p.x;aim.y=p.y;});
+['pointerup','pointercancel','pointerleave'].forEach(function(t){cv.addEventListener(t,function(){aim.down=false;});});
+function aimAngle(){var p=pivot();return Math.max(-.5,Math.min(.75,Math.atan2(aim.y-p.y,Math.max(30,aim.x-p.x))));}
+function muzzle(a){var p=pivot();return {x:p.x+Math.cos(a)*158+Math.sin(a)*13,y:p.y+Math.sin(a)*158-Math.cos(a)*13};}
+function fire(){
+  var a=aimAngle(),m=muzzle(a),n=G.up.tri?3:G.up.dbl?2:1,spread=n===3?[-1,0,1]:n===2?[-.5,.5]:[0];   // v27: tight, so every round lands
+  spread.forEach(function(d){var off=d*10,da=d*.008;G.shots.push({x:m.x-Math.sin(a)*off,y:m.y+Math.cos(a)*off,vx:Math.cos(a+da)*1800,vy:Math.sin(a+da)*1800,life:1,left:1+G.up.pierce,hitSet:[]});});
+  G.fx.push({type:'flash',x:m.x,y:m.y,t:.08});G.firedT=0;
+}
+function lobGrenade(){
+  var m=muzzle(aimAngle()),tx=Math.max(WALLX+120,Math.min(W-40,aim.x)),d=Math.abs(tx-m.x);
+  G.nades.push({x:m.x,y:m.y,tx:tx,ty:GY-8,t:0,dur:.45+d/1400});
+}
+
+/* ---- the loop ---- */
+function box(u){var s=u.T.s*FIG;return {l:u.x-40*s,r:u.x+40*s,t:GY+u.yo-170*s,b:GY+u.yo+6};}
+function kill(u){if(u.side===-1&&!u.dead)G.kills=(G.kills||0)+1;
+  u.dead=.001;
+  if(u.side===1&&u.T.wave&&!u.reborn)G.reborn.push({k:u.k,t:1.5});
+  if(u.side===-1){var w=G.wave,c=u.T.coins*CREDIT_MUL,p=u.T.pts*w;G.coins+=c;G.score+=p;
+    G.fx.push({type:'txt',x:u.x,y:GY-140*u.T.s*FIG,t:1.1,s:'+'+c,c:'#ffd166'});}
+}
+function hurt(u,d){if(u.dead||u.gone)return;
+  if(u.sh>0){var a=Math.min(u.sh,d);u.sh-=a;d-=a;if(d<=0)return;}u.hp-=d;u.hit=.12;if(u.hp<=0)kill(u);}
+var TELE_HOME=WALLX+90,TELE_GONE=.28;
+function tele(u,dt,live){u.cd-=dt;u.atk=Math.max(0,u.atk-dt);if(u.hit>0)u.hit-=dt;
+  var foes=live.filter(function(o){return o.side===-1;}),near=null;foes.forEach(function(o){if(!near||o.x<near.x)near=o;});
+  if(u.ts==='strike'){
+    if(!u.struck){u.struck=1;u.atk=.4;u.fight=true;if(u.tgt&&!u.tgt.dead)hurt(u.tgt,u.dmg/2);}
+    else if(u.struck===1&&u.atk<=.2){u.struck=2;var t2=u.tgt&&!u.tgt.dead?u.tgt:(near&&Math.abs(near.x-u.x)<u.T.range+30?near:null);if(t2)hurt(t2,u.dmg/2);}
+    else if(u.struck===2&&u.atk<=0){u.ts='back';u.gone=TELE_GONE;u.dest=TELE_HOME;u.fight=false;
+      G.fx.push({type:'portal',x:u.x+30,t:.7});G.fx.push({type:'portal',x:TELE_HOME+30,t:.8});}
+    return;}
+  if(u.ts==='back'){u.ts='home';u.cd=u.T.rate;}
+  if(u.ts!=='home'){if(u.x<TELE_HOME){u.fight=false;u.x=Math.min(TELE_HOME,u.x+u.spd*dt);u.phase+=dt*u.spd/55;return;}u.ts='home';}
+  u.fight=true;u.phase=0;
+  if(u.cd<=0&&near){u.tgt=near;u.struck=0;u.ts='strike';u.gone=TELE_GONE;u.dest=Math.max(TELE_HOME,near.x-34);
+    G.fx.push({type:'portal',x:u.x+30,t:.7});G.fx.push({type:'portal',x:u.dest+30,t:.8});}
+}
+function frontX(){var e=G.units.filter(function(u){return u.side===-1&&!u.dead;});if(!e.length)return W*.62;
+  return Math.max(WALLX+200,Math.min.apply(null,e.map(function(u){return u.x;}))-140);}
+var GAME_SPEED=1.1;
+function step(dt){
+  dt*=GAME_SPEED;
+  if(G.skyT<1)G.skyT=Math.min(1,G.skyT+dt/3);
+  if(G.deadT>=0)G.deadT+=dt;
+  G.t+=dt;G.firedT+=dt;if(G.boom>=0)G.boom+=dt;
+  if(!G.paused)for(var k in G.cool)if(G.cool[k]>0)G.cool[k]=Math.max(0,G.cool[k]-dt);
+  if(!G.running||G.paused)return;G.playT=(G.playT||0)+dt;
+  G.coins+=TRICKLE*dt;autoStep(dt);
+  if(G.queue.length){G.spawnT-=dt;if(G.spawnT<=0){G.units.push(unit(-1,G.queue.shift()));G.spawnT=waveGap(G.wave)*(.6+Math.random()*.8);}}
+  G.gunT-=dt;if(G.can>0&&G.gunT<=0){fire();G.gunT=gunRate();}
+  G.grenT-=dt;if(G.up.gren&&G.can>0&&G.grenT<=0){lobGrenade();G.grenT=GREN_EVERY[G.up.gren];}
+  if(G.airCool>0)G.airCool=Math.max(0,G.airCool-dt);
+  if(G.izzyCool>0)G.izzyCool=Math.max(0,G.izzyCool-dt);
+  G.pops=G.pops.filter(function(p){p.t+=dt;return p.t<1.1;});
+  // an open hole: plain enemies that step in fall in and are out; a boss takes one big hit
+  G.holes=G.holes.filter(function(h){h.t+=dt;var open=h.w*holeOpen(h)/2;
+    G.units.forEach(function(o){if(o.side!==-1||o.dead||o.gone||h.hit.indexOf(o)>=0||Math.abs(o.x-h.x)>open)return;h.hit.push(o);
+      if(BOSS[o.k])hurt(o,o.max*.3*pwMul('izzy'));else{o.fell=0;hurt(o,o.hp+1);}});
+    return h.t<h.dur;});
+  G.nades=G.nades.filter(function(n){n.t+=dt;if(n.t<n.dur)return true;
+    G.units.forEach(function(o){if(o.side===-1&&!o.dead&&Math.abs(o.x-n.tx)<GREN_R)hurt(o,gunDmg()*3*(1+.5*(G.up.gren-1)));});
+    G.fx.push({type:'boom',x:n.tx,y:GY-30,t:.45,r:GREN_R});G.shake=Math.max(G.shake,.15);return false;});
+  if(G.ship){var sh=G.ship;sh.x+=AIR_SPEED*dt;
+    if(!sh.dropped&&sh.x>=sh.at){sh.dropped=true;G.fx.push({type:'bomb',x:sh.at,y:150,t:.7,at:sh.at});}
+    if(sh.x>W+320)G.ship=null;}
+  var live=G.units.filter(function(u){return !u.dead&&!u.gone;});
+  live.forEach(function(m){if(m.side!==1||!m.T.heal)return;var amt=HEAL*m.dmg/m.T.dmg*dt;
+    live.forEach(function(o){if(o.side===1&&Math.abs(o.x-m.x)<HEAL_R)o.hp=Math.min(o.max,o.hp+amt);});});
+  G.reborn=G.reborn.filter(function(r){r.t-=dt;if(r.t>0)return true;var n=unit(1,r.k);n.reborn=true;G.units.push(n);
+    G.fx.push({type:'portal',x:WALLX+60,t:1});return false;});
+  live.forEach(function(u){
+    if(u.kb>0){var m=Math.min(u.kb,1300*dt);u.kb-=m;u.x+=u.kbDir*m;u.x=Math.max(WALLX+10,Math.min(PORTAL_X,u.x));if(u.hit>0)u.hit-=dt;return;}
+    // the Intangible (Maurice 11/1): waits by the tower, portals in front of the nearest enemy, strikes with both blades
+    // (two hits of half its damage, so twice a Prism Guard's), then portals straight back, over and over
+    if(u.T.tele&&u.side===1){tele(u,dt,live);return;}
+    var bestU=null,bd=1e9;
+    live.forEach(function(o){if(o.side===u.side)return;var dx=(o.x-u.x)*u.side;if(dx>-8&&dx<bd){bd=dx;bestU=o;}});
+    var reach=u.T.range,target=null,wallHit=false;
+    if(bestU&&bd<=reach)target=bestU;
+    else if(u.side===-1&&u.x-WALLX<=reach)wallHit=true;
+    u.cd-=dt;u.atk=Math.max(0,u.atk-dt);
+    if(target||wallHit){u.fight=true;
+      if(u.cd<=0){u.cd=u.T.rate;u.atk=.4;
+        if(u.T.wave){G.waves.push({x:u.x+u.side*30,dir:u.side,go:0,dmg:u.dmg,hitSet:[],max:u.side===1?2+lvl(u.k):0});}
+        else if(u.T.rock){var rx=wallHit?WALLX-20:target.x,rs=Math.abs(rx-u.x),lx=u.x+u.side*36;G.rocks.push({gx:lx,x:lx,y:GY-150*u.T.s*FIG-40,tx:rx,ty:wallHit?GY-100:GY-20,t:0,lift:.35,dur:.5+rs/900,side:u.side,dmg:u.dmg,wall:wallHit,spin:Math.random()*6});}
+        else if(u.T.ranged){G.bolts.push({x:u.x+u.side*30*FIG,y:GY+u.yo-104*u.T.s*FIG,tx:wallHit?WALLX-10:target.x,ty:wallHit?GY-110:GY+target.yo-70*FIG,t:0,dur:.18,dmg:u.dmg,tgt:target,wall:wallHit});}
+        else if(wallHit){hitBase(u.dmg);G.fx.push({type:'dust',x:WALLX+4,y:GY-30-Math.random()*90,t:.4});}
+        else hurt(target,u.dmg);}
+    } else {u.fight=false;u.x+=u.side*u.spd*dt;u.phase+=dt*u.spd/55;}
+    if(u.side===1&&u.x>W+40)u.dead=.001;
+    if(u.hit>0)u.hit-=dt;
+  });
+  G.units.forEach(function(u){if(u.gone>0){u.gone-=dt;if(u.gone<=0){u.gone=0;u.x=u.dest;}}});
+  // rocks land in an arc and hit everyone near where they come down
+  G.rocks=G.rocks.filter(function(a){a.t+=dt;if(a.t<a.lift+a.dur)return true;
+    if(a.wall)hitBase(a.dmg);
+    else G.units.forEach(function(o){if(o.side!==a.side&&!o.dead&&!o.gone&&Math.abs(o.x-a.tx)<60)hurt(o,a.dmg);});
+    G.fx.push({type:'dust',x:a.tx,y:GY-14,t:.4});return false;});
+  // the Immortal's telekinetic wave rolls along the ground and shoves everyone in its path back a quarter of the field
+  G.waves=G.waves.filter(function(v){var d=620*dt;v.x+=v.dir*d;v.go+=d;
+    G.units.forEach(function(o){if(o.side!==v.dir&&!o.dead&&!o.gone&&v.hitSet.indexOf(o)<0&&(!v.max||v.hitSet.length<v.max)&&Math.abs(o.x-v.x)<30){hurt(o,v.dmg);o.kb=PUSH;o.kbDir=v.dir;o.fight=false;v.hitSet.push(o);}});
+    if(v.dir===-1&&v.x<=WALLX){hitBase(v.dmg);return false;}
+    return v.go<760&&v.x>-40&&v.x<W+40;});
+  G.bolts=G.bolts.filter(function(a){a.t+=dt;if(a.t<a.dur)return true;
+    if(a.wall){hitBase(a.dmg);G.fx.push({type:'dust',x:WALLX+2,y:a.ty,t:.3});}
+    else if(a.tgt&&!a.tgt.dead&&Math.abs(a.tgt.x-a.tx)<50)hurt(a.tgt,a.dmg);
+    return false;});
+  G.shots=G.shots.filter(function(s){
+    s.x+=s.vx*dt;s.y+=s.vy*dt;s.life-=dt;
+    for(var i=0;i<G.units.length&&s.left>0;i++){var u=G.units[i];if(u.side!==-1||u.dead||s.hitSet.indexOf(u)>=0)continue;
+      var b=box(u);if(s.x>b.l&&s.x<b.r&&s.y>b.t&&s.y<b.b){hurt(u,gunDmg());s.hitSet.push(u);s.left--;G.fx.push({type:'spark',x:s.x,y:s.y,t:.15});}}
+    return s.left>0&&s.life>0&&s.y<GY+10&&s.x<W+20;});
+  G.units.forEach(function(u){if(u.dead)u.dead+=dt;});
+  G.units=G.units.filter(function(u){return !u.dead||u.dead<1.2;});
+  var landed=[];
+  G.fx=G.fx.filter(function(f){f.t-=dt;if(f.type==='txt')f.y-=40*dt;
+    if(f.type==='bomb'&&f.t<=0){G.units.forEach(function(o){if(o.side===-1&&!o.dead)hurt(o,(o.max*.75+200)*4*pwMul('air'));});landed.push({type:'nuke',x:f.at,t:1.8,big:2});G.shake=.8;}
+    return f.t>0;});
+  G.fx=G.fx.concat(landed);
+  G.shake=Math.max(0,G.shake-dt);
+  if(G.wall<=0){G.wall=0;endGame();return;}
+  if(!G.queue.length&&!G.units.some(function(u){return u.side===-1&&!u.dead;})){
+    var bonus=100*G.wave,cb=(20+5*G.wave)*CREDIT_MUL;G.score+=bonus;G.coins+=cb;
+    G.running=false;G.between=true;
+    G.nades=[];G.ship=null;G.holes=[];G.pops=[];G.units.forEach(function(u){if(u.side===1&&!u.dead){u.x=Math.min(u.x,WALLX+60+Math.random()*120);u.gone=0;u.kb=0;if(u.tele){u.tele=1;u.ts=null;}}});
+    showOver('Wave '+G.wave+' held','+'+bonus+' score and +'+cb+' credits. Upgrade the tower, train, or send out fighters, then face wave '+(G.wave+1)+': it’s bigger.','Start wave '+(G.wave+1));
+    if(G.wave===BOX_WAVE)showBox();
+    G.wave++;
+  }
+  ui();
+}
+function endGame(){
+  G.running=false;G.over=true;if(window.HWBoard&&G.run)HWBoard.end(G.run,{score:Math.floor(G.score),wave:G.wave,kills:G.kills||0,secs:Math.round((G.playT||0)*10)/10});
+  if(G.score>best){best=Math.floor(G.score);try{localStorage.setItem('ma-stick-siege-best',best);}catch(e){}}
+  G.deadT=0;var w=G.wave,sc=Math.floor(G.score).toLocaleString('en-US');
+  setTimeout(function(){if(G.over)showOver('The tower fell','You held out to wave '+w+' with a score of '+sc+'.','Play again');},2600);
+  ui();
+}
+function showOver(h,p,b){$('oH').textContent=h;$('oP').textContent=p;$('oGo').textContent=b;$('over').classList.toggle('end',!!G.over);$('over').hidden=false;}
+
+/* ---- drawing ---- */
+var AURA={green:'rgba(87,187,65,.95)',mint:'rgba(137,251,203,.95)',purple:'rgba(158,116,253,.95)',black:'rgba(0,0,0,.95)'};
+function drawBody(u,src,f,s){
+  var flip=u.side===1;
+  if(u.T.short&&!u.dead){
+    // the Intangible: the Prism Guard drawing with the blade cut short, its tip a vibrating blur
+    cx.save();cx.beginPath();cx.rect(-300,-75*s,600,300);cx.arc(0,-98*s,46*s,0,7);cx.clip();blit(src,f,0,0,s,flip);cx.restore();
+    for(var i=0;i<3;i++){cx.save();cx.beginPath();cx.rect(-300,-600,600,600-75*s);cx.clip();
+      cx.beginPath();cx.arc(0,-98*s,70*s,0,7);cx.arc(0,-98*s,46*s,0,7,true);cx.clip('evenodd');
+      cx.globalAlpha*=i?.4:.75;blit(src,f,(Math.random()-.5)*7,(Math.random()-.5)*7,s,flip);cx.restore();}
+  } else blit(src,f,0,0,s,flip);
+  if(u.T.staff){
+    // the Oracle's staff: one long black stroke in the front hand, swung on the attack
+    var d=u.side,sw=u.atk>0?Math.sin((1-u.atk/.4)*Math.PI):0;
+    cx.save();cx.translate(d*26*s,-72*s);cx.rotate(d*sw*1.1);cx.strokeStyle='#0d0d0c';cx.lineWidth=6*s;cx.lineCap='round';
+    cx.beginPath();cx.moveTo(-d*3*s,70*s);cx.lineTo(d*4*s,-88*s);cx.stroke();cx.restore();
+  }
+}
+function oracleUp(){return G.units.some(function(u){return u.side===1&&u.T.oracle&&!u.dead&&!u.gone;});}
+function fighter(u){
+  if(u.gone>0||!ready())return;
+  var set=SPR[u.T.look],s=u.T.s*FIG,f,src=u.side===1?art:tint.foe||art;
+  if(u.dead)f=set.atk[0];
+  else if(u.atk>0)f=set.atk[Math.min(set.atk.length-1,Math.floor((1-u.atk/.4)*set.atk.length))];
+  else if(u.fight)f=set.atk[0];
+  else f=set.run[Math.floor(u.phase)%set.run.length];
+  var fade=u.dead?Math.max(0,1-u.dead/1.2):1,fall=u.dead?Math.min(1,u.dead/.35):0;
+  cx.save();cx.globalAlpha=fade;cx.translate(u.x,GY+u.yo);cx.rotate(-u.side*fall*Math.PI/2);
+  if(u.hit>0)cx.filter='brightness(2.2)';
+  if(u.side===1&&u.T.heal&&!u.dead){cx.save();cx.rotate(u.side*fall*Math.PI/2);
+    if(!bubble(healBubble(),0,0,HEAL_R,150,.32+.1*Math.sin(G.t*3))){cx.beginPath();cx.ellipse(0,0,HEAL_R,22,0,0,7);cx.strokeStyle='rgba(87,187,65,.45)';cx.lineWidth=3;cx.stroke();}
+    cx.restore();}
+  if(u.side===1&&!u.T.aura&&!u.dead&&dark()>=.5){cx.shadowColor='rgba(243,234,217,.8)';cx.shadowBlur=12;}
+  if(u.T.aura&&!u.dead){cx.shadowColor=u.side===-1?'rgba(255,76,15,.95)':AURA[u.T.aura];cx.shadowBlur=22;}
+  drawBody(u,src,f,s);
+  cx.restore();
+  if(u.sh>0&&!u.dead){var q=u.sh/u.shMax;
+    if(has(shieldArt)){cx.save();cx.globalAlpha=.35+.5*q;cx.drawImage(shieldArt,u.x-88*s,GY+u.yo-174*s,176*s,176*s);cx.restore();}
+    else{cx.save();cx.beginPath();cx.arc(u.x,GY+u.yo-86*s,88*s,0,7);cx.lineWidth=2.5;cx.strokeStyle='rgba(137,251,203,'+(.3+.55*q)+')';cx.stroke();cx.restore();}}
+  if(!u.dead&&u.hp<u.max){var bw=46*s;cx.fillStyle='rgba(11,23,15,.7)';cx.fillRect(u.x-bw/2,GY+u.yo-165*s,bw,5);
+    cx.fillStyle=u.side===1?'#3adb97':'#ff4c0f';cx.fillRect(u.x-bw/2,GY+u.yo-165*s,bw*Math.max(0,u.hp/u.max),5);}
+}
+function drawPortal(x,a,sc){if(!ready())return;var f=SPR.portal.one[0];cx.save();cx.globalAlpha=a;
+  cx.shadowColor='rgba(158,116,253,.9)';cx.shadowBlur=30;blit(art,f,x,GY+6,sc,false);cx.restore();}
+function canLook(){var f=G.can/G.canMax;return f>2/3?0:f>1/3?1:2;}
+function drawCannon(){
+  if(G.can>0){var i=canLook(),hd=TW.head[i],a=aimAngle();
+    layer(TW.base[i]);
+    if(towerArt.complete&&towerArt.naturalWidth){cx.save();cx.translate(PV.x,PV.y);cx.rotate(a);
+      cx.drawImage(towerArt,hd[0],hd[1],hd[2],hd[3],hd[4]-PV.x,hd[5]-PV.y,hd[2],hd[3]);cx.restore();}
+    var lv=G.up.dmg+G.up.rate+G.up.pierce+G.up.dbl+G.up.tri+G.up.gren;
+    if(lv>0){cx.font='800 24px Almarai,Arial';cx.textAlign='center';cx.fillStyle='rgba(11,23,15,.75)';cx.fillRect(PV.x-80,PV.y-112,160,36);
+      cx.fillStyle='#c3a6ff';cx.fillText('CANNON '+(lv+1),PV.x,PV.y-86);}
+  } else if(G.boom>=0&&G.boom<1.6)layer(TW.fire[Math.min(2,Math.floor(G.boom/.45))]);
+}
+function drawTower(){
+  var f=Math.max(0,G.wall/G.wallMax),k=G.wall<=0?5:Math.min(5,Math.floor((1-f)*6));
+  layer(TW.tower[6+k]);
+  // strength bars along the bottom: cannon (violet) over tower (green)
+  cx.fillStyle='rgba(11,23,15,.8)';cx.fillRect(0,H-22,W,22);
+  cx.fillStyle='#9e74fd';cx.fillRect(0,H-22,W*Math.max(0,G.can/G.canMax),9);
+  cx.fillStyle=f>.35?'#3adb97':'#ff4c0f';cx.fillRect(0,H-11,W*f,11);
+  // tower shield: a full circle around the tower and cannon (Maurice 11/1: "make the shield a circle"), cut off at the ground
+  if(G.shield>0&&has(shieldArt)){var SR=225,SX=WALLX/2+10,SY=GY-205;cx.save();cx.beginPath();cx.rect(SX-SR-4,SY-SR-4,SR*2+8,GY+4-(SY-SR-4));cx.clip();
+    cx.globalAlpha*=.35+.45*G.shield/(G.shieldMax||SHIELD_HP);cx.drawImage(shieldArt,SX-SR,SY-SR,SR*2,SR*2);cx.restore();}
+  else if(G.shield>0){var sf=G.shield/(G.shieldMax||SHIELD_HP);cx.save();cx.beginPath();cx.ellipse(WALLX/2+10,GY,250,380,0,Math.PI,2*Math.PI);
+    cx.fillStyle='rgba(137,251,203,'+(.06+.1*sf)+')';cx.fill();cx.lineWidth=4;cx.strokeStyle='rgba(137,251,203,'+(.35+.5*sf)+')';
+    cx.shadowColor='rgba(137,251,203,.9)';cx.shadowBlur=18;cx.stroke();cx.restore();}
+}
+function draw(){
+  cx.save();
+  if(G.shake>0)cx.translate((Math.random()-.5)*8,(Math.random()-.5)*5);
+  var sa=SKY[skyAt(G.wave-1)],sb=SKY[skyAt(G.wave)];
+  if(has(sb)){if(G.skyT<1&&has(sa))cx.drawImage(sa,0,0,W,H);cx.globalAlpha=G.skyT<1&&has(sa)?G.skyT:1;cx.drawImage(sb,0,0,W,H);cx.globalAlpha=1;}
+  else if(field.complete&&field.naturalWidth)cx.drawImage(field,0,0,W,H);else{cx.fillStyle='#4a7aa0';cx.fillRect(0,0,W,H);}
+  drawPortal(PORTAL_X,G.running?1:.55,.62);
+  drawTower();
+  G.fx.forEach(function(f){if(f.type==='portal')drawPortal(f.x,Math.min(1,f.t*2.5),.46);});
+  G.holes.forEach(function(h){var k=holeOpen(h),hw=h.w*k/2;if(hw<2)return;
+    cx.fillStyle='#3b2a1a';cx.beginPath();cx.ellipse(h.x,GY+4,hw+10,16*k+4,0,0,7);cx.fill();
+    cx.fillStyle='#0b0907';cx.beginPath();cx.ellipse(h.x,GY+6,hw,13*k,0,0,7);cx.fill();});
+  var us=G.units.slice().sort(function(a,b){return a.yo-b.yo;});
+  us.forEach(function(u){if(u.dead)fighter(u);});us.forEach(function(u){if(!u.dead)fighter(u);});
+  G.pops.forEach(function(p){var im=izzyImg(p.c);if(!im.complete||!im.naturalWidth)return;var t=p.t,up=t<.3?t/.3:t<.6?1:Math.max(0,1-(t-.6)/.5),sz=150,h=sz*im.naturalHeight/im.naturalWidth;
+    cx.save();cx.beginPath();cx.rect(p.x-sz,0,sz*2,GY+6);cx.clip();cx.drawImage(im,p.x-sz/2,GY+6-up*(h+60),sz,h);cx.restore();});
+  cx.strokeStyle='#ffd166';cx.lineWidth=3;
+  G.rocks.forEach(function(a){var x,y,p;
+    if(a.t<a.lift){p=a.t/a.lift;x=a.gx;y=GY-6+(a.y-GY+6)*(1-Math.pow(1-p,2));}
+    else{p=(a.t-a.lift)/a.dur;x=a.x+(a.tx-a.x)*p;y=a.y+(a.ty-a.y)*p-Math.sin(p*Math.PI)*120;}
+    cx.save();cx.translate(x,y);cx.rotate(a.spin+(a.t>a.lift?p*7:0));
+    cx.shadowColor=a.side===1?'rgba(87,187,65,.95)':'rgba(255,76,15,.95)';cx.shadowBlur=20;
+    if(has(rockArt))cx.drawImage(rockArt,-29,-33,58,66);
+    else{cx.fillStyle='#55514c';cx.beginPath();cx.arc(0,0,22,0,7);cx.fill();}
+    cx.restore();});
+  G.waves.forEach(function(v){var f=Math.min(1,(760-v.go)/200),arcs=ready()&&SPR.wave&&SPR.wave.arc;
+    if(!arcs)return;var a=arcs[Math.min(arcs.length-1,Math.floor(v.go/760*arcs.length))];
+    cx.save();cx.globalAlpha=f;cx.shadowColor=v.dir===1?'rgba(137,251,203,.95)':'rgba(255,76,15,.95)';cx.shadowBlur=18;
+    blit(v.dir===1?art:tint.foe||art,a,v.x,GY+12,.75+.45*Math.min(1,v.go/760),v.dir===1);cx.restore();});
+  G.bolts.forEach(function(a){var p=a.t/a.dur,x=a.x+(a.tx-a.x)*p,y=a.y+(a.ty-a.y)*p,an=Math.atan2(a.ty-a.y,a.tx-a.x);
+    cx.beginPath();cx.moveTo(x-Math.cos(an)*18,y-Math.sin(an)*18);cx.lineTo(x,y);cx.stroke();});
+  var mt=roundTier(),mi=MISSILE[mt],ml=MISSILE_LEN[mt];
+  G.shots.forEach(function(s){cx.save();cx.translate(s.x,s.y);cx.rotate(Math.atan2(s.vy,s.vx)+Math.PI/2);
+    if(has(mi)){var mw=ml*mi.naturalWidth/mi.naturalHeight;cx.drawImage(mi,-mw/2,-ml*.6,mw,ml);}
+    else{cx.fillStyle='#fffffe';cx.fillRect(-3,-20,6,32);}
+    cx.restore();});
+  G.nades.forEach(function(n){var p=n.t/n.dur,x=n.x+(n.tx-n.x)*p,y=n.y+(n.ty-n.y)*p-Math.sin(p*Math.PI)*170;
+    cx.fillStyle='#22261f';cx.beginPath();cx.arc(x,y,9,0,7);cx.fill();cx.fillStyle='#ffd166';cx.fillRect(x-2,y-14,4,6);});
+  if(G.ship&&shipArt.complete&&shipArt.naturalWidth){cx.drawImage(shipArt,G.ship.x-170,96,340,105);}
+  drawCannon();
+  G.fx.forEach(function(f){
+    if(f.type==='bomb'){var p=1-f.t/.7;cx.save();cx.translate(f.at,150+p*(GY-190));cx.rotate(Math.PI);
+      if(has(atomArt))cx.drawImage(atomArt,-13,-48,26,96);cx.restore();return;}
+    if(f.type==='boom'){var q=1-f.t/.45,bz=f.r*2*(.55+q*.6);cx.save();cx.globalAlpha=Math.min(1,(1-q)*1.6);
+      if(has(boomArt))cx.drawImage(boomArt,f.x-bz/2,f.y-bz/2,bz,bz*688/700);cx.restore();return;}
+    if(f.type==='nuke'){
+      // the red atomic, as in Sky Gauntlet: his explosion art swelling over the enemy, turning slowly, then fading
+      var e=1.8-f.t,k3=Math.min(1,e/.5),nz=(.3+.9*k3)*560*(f.big||1);
+      cx.fillStyle='rgba(255,76,15,'+Math.max(0,.55-e*1.4)+')';cx.fillRect(0,0,W,H);
+      if(has(boomArt)){cx.save();cx.globalAlpha=e<.9?1:Math.max(0,1-(e-.9)/.9);cx.translate(f.x,GY-nz*.42);cx.rotate(e*.6);
+        cx.shadowColor='rgba(255,76,15,.9)';cx.shadowBlur=40;cx.drawImage(boomArt,-nz/2,-nz/2*688/700,nz,nz*688/700);cx.restore();}
+      return;}
+    if(f.type==='flash'){cx.fillStyle='rgba(255,255,254,'+(f.t/.08)+')';cx.beginPath();cx.arc(f.x,f.y,20,0,7);cx.fill();}
+    else if(f.type==='spark'){cx.strokeStyle='rgba(255,255,254,'+(f.t/.15)+')';cx.lineWidth=2;cx.beginPath();for(var i=0;i<6;i++){var an=i*1.05;cx.moveTo(f.x,f.y);cx.lineTo(f.x+Math.cos(an)*14,f.y+Math.sin(an)*14);}cx.stroke();}
+    else if(f.type==='dust'){cx.fillStyle='rgba(180,170,160,'+(f.t/.4*.8)+')';cx.beginPath();cx.arc(f.x+(.4-f.t)*30,f.y,8+(.4-f.t)*30,0,7);cx.fill();}
+    else if(f.type==='txt'){cx.globalAlpha=Math.min(1,f.t);cx.font='800 38px Almarai,Arial';cx.textAlign='center';cx.lineWidth=6;cx.strokeStyle='rgba(11,23,15,.8)';cx.strokeText(f.s,f.x,f.y);cx.fillStyle=f.c;cx.fillText(f.s,f.x,f.y);cx.globalAlpha=1;}
+  });
+  if(G.running&&!G.paused&&G.can>0){cx.strokeStyle='rgba(255,255,254,.8)';cx.lineWidth=2.5;cx.beginPath();cx.arc(aim.x,aim.y,16,0,7);cx.moveTo(aim.x-26,aim.y);cx.lineTo(aim.x-9,aim.y);cx.moveTo(aim.x+9,aim.y);cx.lineTo(aim.x+26,aim.y);cx.moveTo(aim.x,aim.y-26);cx.lineTo(aim.x,aim.y-9);cx.moveTo(aim.x,aim.y+9);cx.lineTo(aim.x,aim.y+26);cx.stroke();}
+  if(G.running&&oracleUp()){var left=G.queue.length+G.units.filter(function(u){return u.side===-1&&!u.dead;}).length;
+    cx.font='800 26px Almarai,Arial';cx.textAlign='right';var tw=cx.measureText('ENEMIES LEFT '+left).width;
+    cx.fillStyle='rgba(45,28,83,.85)';cx.fillRect(W-tw-56,20,tw+36,46);cx.strokeStyle='#9e74fd';cx.lineWidth=2;cx.strokeRect(W-tw-56,20,tw+36,46);
+    cx.fillStyle='#fffffe';cx.fillText('ENEMIES LEFT '+left,W-38,52);}
+  if(G.deadT>=0&&has(diedArt)){var da=Math.min(1,G.deadT/.8),dw=560,dh=dw*diedArt.naturalHeight/diedArt.naturalWidth;
+    cx.fillStyle='rgba(0,0,0,'+(.45*da)+')';cx.fillRect(0,0,W,H);cx.globalAlpha=da;
+    cx.drawImage(diedArt,(W-dw)/2,(H-dh)/2-40+(1-da)*30,dw,dh);cx.globalAlpha=1;}
+  if(G.paused){cx.fillStyle='rgba(11,23,15,.55)';cx.fillRect(0,0,W,H);cx.fillStyle='#fffffe';cx.font='800 48px Almarai,Arial';cx.textAlign='center';cx.fillText('PAUSED',W/2,H/2);}
+  cx.restore();
+}
+
+/* ---- panels ---- */
+var dEl=$('deploy'),uEl=$('ups'),KEYS=Object.keys(ALLY);
+// v31: Auto. One box at a time: 'f:brawler' for a fighter, 'u:dmg' for an upgrade or item
+var autoPick=null,autoT=0;
+function autoBox(id,label){var l=document.createElement('label');l.className='auto';l.innerHTML='<input type="checkbox"><span>Auto</span>';var i=l.firstChild;i.dataset.id=id;
+  i.setAttribute('aria-label','Auto: '+label+' whenever you can afford it');
+  i.addEventListener('change',function(){autoPick=i.checked?id:null;Array.prototype.forEach.call(document.querySelectorAll('.auto input'),function(x){if(x!==i)x.checked=false;});
+    Array.prototype.forEach.call(document.querySelectorAll('.auto'),function(x){x.classList.toggle('on',x.firstChild.checked);});});
+  return l;}
+function autoStep(dt){autoT-=dt;if(!autoPick||autoT>0)return;autoT=.25;var k=autoPick.slice(2);
+  if(autoPick[0]==='f'){if(G.coins>=fCost(k)&&!(G.cool[k]>0))deploy(k);}
+  else{var u=UPS.filter(function(x){return x.k===k;})[0];if(u&&canBuy(u))buy(u);}}
+// v25: Send / Train / Shield switch for the fighter tiles, and the Fighters / Tower switch on phones
+var tact='buy',TKEY={buy:'<b>×1</b> items go to your item bar on the field: buy as many as you like and tap one to use it. Switch to Upgrade to make them stronger.',up:'<b>Upgrade</b>: tap a ×1 item to make it 25% stronger every time you use it.'};
+function setTact(a){tact=a;Array.prototype.forEach.call($('tacts').children,function(b){b.setAttribute('aria-pressed',b.dataset.tact===a?'true':'false');});uEl.dataset.tact=a;var kk=$('tkey');kk.className='actkey tw '+a;kk.innerHTML='<span>'+TKEY[a]+'</span>';ui();}
+var act='send',ACTKEY={send:'Tap a fighter to send one out. Number keys 1 to 9 work too.',
+  train:'<b>Train</b>: tap a fighter to level it up. Every one, on the field and new, gets +25% health, speed, and damage, and each new one costs 25% more.',
+  shield:'<b>Shield</b>: tap a fighter. Every new one arrives with a shield worth 25% of its health per level.'};
+function setAct(a){act=a;Array.prototype.forEach.call($('acts').children,function(b){b.setAttribute('aria-pressed',b.dataset.act===a?'true':'false');});
+  dEl.dataset.act=a;var kk=$('actkey');kk.className='actkey fi '+a;kk.innerHTML=(a==='send'?'':ico(a==='train'?'train':'fshield','mi'))+'<span>'+ACTKEY[a]+'</span>';ui();}
+Array.prototype.forEach.call($('acts').children,function(b){b.addEventListener('click',function(){var a=b.dataset.act;setAct(act===a?'send':a);});});
+Array.prototype.forEach.call($('tacts').children,function(b){b.addEventListener('click',function(){var a=b.dataset.tact;setTact(tact===a?'buy':a);});});
+Array.prototype.forEach.call($('ctl').querySelectorAll('.tabs button'),function(b){b.addEventListener('click',function(){$('ctl').dataset.tab=b.dataset.tab;
+  Array.prototype.forEach.call($('ctl').querySelectorAll('.tabs button'),function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});fitStage();});});
+// the field takes the height left on screen under the site's pinned header, so the field and every button show together
+function hdrCover(){var h=0;Array.prototype.forEach.call(document.querySelectorAll('header,#header,.header'),function(e){var st=getComputedStyle(e);if(st.position==='fixed'||st.position==='sticky'){var r=e.getBoundingClientRect();if(r.top<=1&&r.bottom>h)h=r.bottom;}});return Math.min(h,innerHeight*.3);}
+function fitStage(){var stg=cv.parentNode,top=stg.parentNode,pan=$('ctl'),R=cv.width/cv.height;stg.style.width='100%';var full=stg.clientWidth;if(!full)return;
+  var lw=$('lootwin'),other=(top.offsetHeight-stg.offsetHeight)+pan.offsetHeight+20+(lw&&!lw.hidden?lw.offsetHeight+20:0),room=innerHeight-hdrCover()-other-16;
+  stg.style.width=Math.round(Math.min(full,Math.max(Math.min(full,innerWidth<=760?240:300),room*R)))+'px';}
+var fitT=0;window.addEventListener('resize',function(){clearTimeout(fitT);fitT=setTimeout(fitStage,120);});setTimeout(fitStage,0);window.addEventListener('load',fitStage);
+// small line icons for the buttons (his art where there is some: missile, burst, atomic bomb, shield bubble)
+var SVG={
+  up:'<path d="M2 9 6 4l4 5" fill="none" stroke="currentColor" stroke-width="2.4"/>',
+  sh:'<path d="M6 1 1.5 2.8V6c0 2.6 2 4.3 4.5 5 2.5-.7 4.5-2.4 4.5-5V2.8z" fill="currentColor"/>',
+  rate:'<path d="M6 8l8 8-8 8M16 8l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3"/>',
+  pierce:'<circle cx="18" cy="16" r="7" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M2 16h26M23 11l6 5-6 5" fill="none" stroke="currentColor" stroke-width="2.5"/>',
+  dbl:'<path d="M3 11h22M3 21h22" stroke="currentColor" stroke-width="5"/><path d="M25 8v6M25 18v6" stroke="currentColor" stroke-width="2"/>',
+  tri:'<path d="M3 7h22M3 16h22M3 25h22" stroke="currentColor" stroke-width="4.5"/>',
+  lock:'<rect x="2" y="5.5" width="8" height="6" fill="currentColor"/><path d="M3.8 5.5V4a2.2 2.2 0 0 1 4.4 0v1.5" fill="none" stroke="currentColor" stroke-width="1.5"/>',
+  repair:'<path d="M6 26 18 14" stroke="currentColor" stroke-width="4"/><path d="M15 8l5-4 8 8-4 5z" fill="currentColor"/>'};
+// his icons (Downloads/Icons.png, 11/1), one 256 px PNG each
+var ICON={brawler:'brawler',prism:'prism-guard',intangible:'intangible',gunslinger:'gunslinger',oracle:'oracle',guardian:'guardian',imperial:'imperial',crest:'crest-knight',immortal:'immortal',
+  dmg:'bigger-rounds',rate:'faster-firing',pierce:'piercing',dbl:'double-barrel',gren:'grenades',tri:'triple-barrel',air:'airstrike',shield:'tower-shield',repair:'repair',train:'train',fshield:'fighter-shield'};
+function ico(k,cls){return '<span class="msk '+(cls||'')+'" style="--m:url('+ART+'icon-'+ICON[k]+'.png)" aria-hidden="true"></span>';}
+function svg(k,cls,vb){return '<svg class="'+(cls||'')+'" viewBox="0 0 '+(vb||32)+' '+(vb||32)+'" aria-hidden="true">'+SVG[k]+'</svg>';}
+var UP_IMG={dmg:ART+'missile-3.png',gren:ART+'boom.webp',air:ART+'atomic.png',shield:ART+'shield.png'};
+function kfmt(n){n=Math.round(n);return n>=10000?Math.round(n/1000)+'k':n>=1000?(Math.round(n/100)/10)+'k':String(n);}
+KEYS.forEach(function(k,i){var T=ALLY[k],c=document.createElement('div'),b=document.createElement('button'),t=document.createElement('button');
+  var sb=document.createElement('button');sb.type='button';sb.className='tr sh';sb.addEventListener('click',function(){shieldUp(k);});
+  c.className='cell';c.dataset.k=k;b.type=t.type='button';b.className='b';b.title=T.name+': '+T.what;t.className='tr';
+  b.innerHTML='<span class="ic">'+ico(k)+'</span><span class="nm">'+T.name+'</span><span class="cost">'+T.cost+'</span><span class="badge lv"></span><span class="badge sp"></span><span class="cd"></span>';
+  b.addEventListener('click',function(){if(act==='train'){train(k);setAct('send');}else if(act==='shield'){shieldUp(k);setAct('send');}else deploy(k);});t.addEventListener('click',function(){train(k);});
+  var m=document.createElement('div');m.className='mini';m.appendChild(t);m.appendChild(sb);
+  c.appendChild(b);c.appendChild(m);c.appendChild(autoBox('f:'+k,'send a '+T.name));dEl.appendChild(c);});
+UPS.forEach(function(u){var b=document.createElement('button');b.type='button';b.className='b up';b.dataset.k=u.k;b.title=u.name+': '+u.what;
+  var ic=u.k==='izzy'?'<img class="ic izzyic" src="https://africhmaurice.github.io/site/assets/games/141-goma-yellow.webp" alt="">':ico(u.k,'ic');
+  b.innerHTML=ic+'<strong class="nm">'+(u.short||u.name)+'</strong><span class="rank"></span><span class="cost"></span><span class="badge lv"></span><span class="cd"></span>';
+  if(u.use)b.insertAdjacentHTML('beforeend','<span class="badge use" title="One-time: goes to your item bar, used up when you tap it">×1</span>');
+  b.addEventListener('click',function(){if(tact==='up'){powerUp(u);setTact('buy');}else buy(u);});
+  var cu=document.createElement('div');cu.className='cell';cu.dataset.k=u.k;cu.appendChild(b);cu.appendChild(autoBox('u:'+u.k,'buy '+(u.short||u.name)));uEl.appendChild(cu);});
+// each fighter's picture on its button, from the same drawings the field uses
+var iconsDone=false;
+function drawIcons(){return;  // fighter buttons now use his icons (ico); the old sprite pictures are kept below, unused
+  if(iconsDone||!ready())return;iconsDone=true;
+  Array.prototype.forEach.call(dEl.children,function(c){var T=ALLY[c.dataset.k],set=SPR[T.look],f=set.run[0],cv=c.querySelector('canvas'),g=cv.getContext('2d');
+    var sc=Math.min(76/f[3],64/f[2]);g.save();g.translate(40,84);g.scale(-sc,sc);
+    if(T.aura){g.shadowColor=AURA[T.aura];g.shadowBlur=14;}
+    g.drawImage(art,f[0],f[1],f[2],f[3],-f[2]/2,-f[3],f[2],f[3]);g.restore();});}
+var INV_KEYS=['air','izzy','shield','repair'],INV_NAME={air:'Airstrike',izzy:'Izzy Pop',shield:'Shield',repair:'Repair'};
+(function(){var bar=$('inv');INV_KEYS.forEach(function(k){var b=document.createElement('button');b.type='button';b.className='it';b.dataset.k=k;b.hidden=true;
+  b.innerHTML=(k==='izzy'?'<img class="iti" src="https://africhmaurice.github.io/site/assets/games/141-goma-yellow.webp" alt="">':ico(k,'iti'))+'<span class="itn"></span><span class="itc"></span>';
+  b.addEventListener('click',function(e){e.stopPropagation();useItem(k);});['pointerdown','touchstart','mousedown'].forEach(function(ev){b.addEventListener(ev,function(e){e.stopPropagation();},{passive:true});});
+  bar.appendChild(b);});})();
+function ui(){
+  $('hWave').textContent=G.wave;$('hScore').textContent=Math.floor(G.score).toLocaleString('en-US');
+  $('hCoins').textContent=Math.floor(G.coins);$('hBest').textContent=best.toLocaleString('en-US');
+  var wl=$('hWall');wl.textContent=Math.ceil(G.wall)+' / '+G.wallMax;wl.className=G.wall/G.wallMax>.35?'':'low';
+  var cl=$('hCan');cl.textContent=G.can>0?Math.ceil(G.can)+' / '+G.canMax:'Destroyed';cl.className=G.can/G.canMax>.35?'':'low';
+  $('hShWrap').hidden=!(G.shield>0);$('hSh').textContent=Math.ceil(G.shield)+' / '+(G.shieldMax||SHIELD_HP);
+  $('hLeftWrap').hidden=!(G.running&&oracleUp());
+  $('hLeft').textContent=G.between&&!G.over?waveSize(G.wave)+bossesFor(G.wave).length:G.queue.length+G.units.filter(function(u){return u.side===-1&&!u.dead;}).length;
+  Array.prototype.forEach.call(dEl.children,function(c){var k=c.dataset.k,T=ALLY[k],cd=G.cool[k]||0,b=c.children[0],t=c.children[1].children[0],sb=c.children[1].children[1],L=lvl(k),S=shLvl(k);
+    b.querySelector('.sp').innerHTML=S?ico('fshield','mi')+S:'';
+    sb.innerHTML=ico('fshield','mi')+(S>=SHIELD_MAX?'Max':kfmt(shCost(k)));sb.disabled=!canShield(k);
+    sb.title=S>=SHIELD_MAX?T.name+' shield is maxed':'Shield '+(S+1)+' for '+T.name+': new ones arrive with a shield of '+(25*(S+1))+'% of their health ('+shCost(k).toLocaleString('en-US')+' credits)';
+    sb.setAttribute('aria-label',sb.title);
+    b.disabled=!G.running||G.over||G.coins<fCost(k)||cd>0;b.querySelector('.cd').style.width=(cd>0?100*cd/T.cool:0)+'%';
+    b.querySelector('.lv').textContent=L>1?'L'+L:'';
+    b.setAttribute('aria-label','Send out a '+T.name+', '+fCost(k)+' credits'+(L>1?', level '+L:'')+(S?', shield '+S:''));
+    t.innerHTML=ico('train','mi')+(L>=TRAIN_MAX?'Max':kfmt(trainCost(k)));t.disabled=!canTrain(k);
+    t.title=L>=TRAIN_MAX?T.name+' is at the top level':'Train '+T.name+' to level '+(L+1)+': +25% health, speed, and damage, and 25% dearer to send out ('+trainCost(k).toLocaleString('en-US')+' credits)';
+    t.setAttribute('aria-label',t.title);
+    if(act!=='send'){var trn=act==='train',mx=trn?L>=TRAIN_MAX:S>=SHIELD_MAX;b.querySelector('.cost').textContent=mx?'Max':kfmt(trn?trainCost(k):shCost(k));b.disabled=trn?!canTrain(k):!canShield(k);b.setAttribute('aria-label',(trn?t:sb).title);}
+    else b.querySelector('.cost').textContent=kfmt(fCost(k));});
+  drawIcons();
+  Array.prototype.forEach.call($('inv').children,function(b){var k=b.dataset.k,n=G.inv?G.inv[k]:0,cd=k==='air'?G.airCool/25:k==='izzy'?G.izzyCool/15:0;
+    b.hidden=!n;b.disabled=!canUse(k);b.querySelector('.itn').textContent='×'+n;b.querySelector('.itc').style.height=(cd>0?100*cd:0)+'%';
+    var why=G.over?'':k==='shield'&&G.shield>0?' (shield is up)':k==='repair'&&repairWhat()===''?' (nothing to repair)':(k==='air'||k==='izzy')&&!G.running?' (during a wave)':cd>0?' (recharging)':'';
+    b.title=INV_NAME[k]+': use one ('+n+' left)'+why;b.setAttribute('aria-label',b.title);});
+  Array.prototype.forEach.call(uEl.querySelectorAll('.b'),function(b){var u=UPS.filter(function(x){return x.k===b.dataset.k;})[0],c=upCost(u),maxed=G.up[u.k]>=u.max;
+    var rw=u.k==='repair'?repairWhat():null;
+    b.querySelector('.lv').textContent=u.use?(pw(u.k)?'L'+(pw(u.k)+1):''):u.max>1&&u.max<99&&G.up[u.k]?'L'+G.up[u.k]:'';
+    b.querySelector('.cd').style.width='0';
+    if(u.k==='repair')b.querySelector('strong').textContent=rw==='rebuild'?'Rebuild':'Repair';
+    if(u.use){b.querySelector('.rank').textContent='You have '+G.inv[u.k];}
+    else if(u.k==='air'){b.querySelector('.rank').textContent=G.ship?'Incoming':G.airCool>0?'Ready in '+Math.ceil(G.airCool)+' s':G.running?'Ready':'During a wave';}
+    else if(u.k==='dbl'||u.k==='tri'){b.querySelector('.rank').textContent=maxed?'Fitted':u.need&&!G.up[u.need]?'Needs the double barrel':'Not fitted';}
+    else if(u.k==='shield'){b.querySelector('.rank').textContent=G.shield>0?'Up: '+Math.ceil(G.shield)+' of '+(G.shieldMax||SHIELD_HP):'Down';}
+    else if(u.k==='gren'){b.querySelector('.rank').textContent=G.up.gren?'Level '+G.up.gren+(maxed?' (max)':''):'Not fitted';}
+    else b.querySelector('.rank').textContent=u.k==='repair'?(rw==='rebuild'?'The cannon is down':rw==='cannon'?'Cannon '+Math.ceil(G.can)+' of '+G.canMax:'Tower '+Math.ceil(G.wall)+' of '+G.wallMax):'Level '+(G.up[u.k]+1)+(maxed?' (max)':'');
+    var locked=u.need&&!G.up[u.need];
+    if(locked)b.querySelector('.rank').textContent='Unlocks after '+UPS.filter(function(x){return x.k===u.need;})[0].name.toLowerCase();
+    b.querySelector('.lv').innerHTML=locked?svg('lock','',12):b.querySelector('.lv').textContent;b.classList.toggle('locked',!!locked);
+    b.querySelector('.cost').textContent=u.use?(G.inv[u.k]>=INV_MAX?'Full':kfmt(c)):maxed?(u.max===1?'Fitted':'Max'):kfmt(c);
+    b.setAttribute('aria-label',b.querySelector('strong').textContent+': '+b.querySelector('.cost').textContent+(u.use?' credits. You have '+G.inv[u.k]:maxed?'':' credits')+'. '+b.querySelector('.rank').textContent);
+    b.disabled=!canBuy(u);
+    if(tact==='up'){b.querySelector('.cost').textContent=!u.use?'':pw(u.k)>=PW_MAX?'Max':kfmt(pwCost(u));b.disabled=!canPower(u);b.classList.toggle('noup',!u.use);
+      b.setAttribute('aria-label','Upgrade '+b.querySelector('strong').textContent+(u.use?' to level '+(pw(u.k)+2)+': 25% stronger, '+kfmt(pwCost(u))+' credits':': not a one-time item'));}
+    else b.classList.remove('noup');});
+}
+$('oGo').addEventListener('click',function(){if(G.over){newGame();}startWave();
+  fitStage();var tp=SEC.querySelector('.top').getBoundingClientRect().top-hdrCover()-8;if(Math.abs(tp)>4)scrollBy(0,tp);});
+$('pause').addEventListener('click',function(){if(!G.running)return;G.paused=!G.paused;$('pause').textContent=G.paused?'Resume':'Pause';});
+$('restart').addEventListener('click',function(){newGame();$('pause').textContent='Pause';showOver('Hold the Wall!','The cannon fires on its own: tap or drag on the field to aim it. Kills earn credits: spend them on fighters, training, and tower upgrades. The cannon takes hits first, then the tower.','Start wave 1');ui();});
+document.addEventListener('keydown',function(e){var t=e.target&&e.target.tagName;if(t==='INPUT'||t==='SELECT'||t==='TEXTAREA')return;
+  if(e.key==='p'||e.key==='P'||e.key==='Escape'){if(G.running){G.paused=!G.paused;$('pause').textContent=G.paused?'Resume':'Pause';}return;}
+  var n=e.key==='0'?10:+e.key;if(n>=1&&n<=KEYS.length)deploy(KEYS[n-1]);});
+document.addEventListener('visibilitychange',function(){if(document.hidden&&G.running&&!G.paused){G.paused=true;$('pause').textContent='Resume';}});
+
+var last=performance.now(),uiT=0;
+function loop(now){var dt=Math.min(.05,(now-last)/1000);last=now;step(dt);uiT+=dt;if(uiT>.15){uiT=0;ui();}draw();requestAnimationFrame(loop);}
+ui();requestAnimationFrame(loop);
+if(/[?&]test=1/.test(location.search))window.__ss={G:function(){return G;},deploy:deploy,start:startWave,aim:aim,hurt:hurt,
+  sim:function(sec){for(var i=0;i<sec*60;i++)step(1/60);ui();draw();},end:function(){endGame();},board:function(){return window.HWBoard;}};
+})();
+</script>
+<script>
+/* Hold the Wall! weekly board (the same shape as Master Stacker's): lootbox.gs answers holdwallstart / holdwallscore /
+   holdwalltop. A one-use ticket is asked for when wave 1 starts; when the tower falls the score, wave, kills, and
+   playing time go to the board. The form is asked once and shared with the loot box page and the other arcade games.
+   BOARD=false sends nothing at all. When the web app does not know these actions yet, the board says it is resting and
+   the game plays on. */
+(function(){
+  var SEC=document.getElementById('ma-holdwall');if(!SEC)return;
+  var BOARD=true,ENDPOINT='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var ME='thLoot:me',TZ='America/New_York',WEEKBEST='thHoldWall:best',SITE='mauriceafrich.com/hold-the-wall-13212';
+  function $(i){return document.getElementById('hw-'+i);}
+  var postEl=$('post'),msgEl=$('msg'),whoEl=$('who'),boardEl=$('board'),leftEl=$('left');
+  function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function loadJ(k,d){try{var v=JSON.parse(localStorage.getItem(k)||'null');return v==null?d:v;}catch(e){return d;}}
+  function storeJ(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+  var me=loadJ(ME,{})||{},RUN=null;
+  function msg(t,err){msgEl.textContent=t;msgEl.className='hw-msg'+(err?' err':'');}
+  function api(action,payload,done){payload=payload||{};payload.action=action;if(!BOARD)return done({ok:false,error:'off'});send(payload,done,1);}
+  function send(payload,done,attempt){
+    var settled=false;
+    var finish=function(res){if(settled)return;settled=true;
+      var flaky=!res||(!res.ok&&(res.error==='network'||res.error==='server'||res.error==='empty'));
+      if(flaky&&attempt<2)return setTimeout(function(){send(payload,done,attempt+1);},1500);
+      done(res||{ok:false,error:'network'});};
+    var wait=setTimeout(function(){finish({ok:false,error:'wait'});},40000),fin=finish;finish=function(res){clearTimeout(wait);fin(res);};
+    try{fetch(ENDPOINT,{method:'POST',body:JSON.stringify(payload)}).then(function(r){return r.json();}).then(finish).catch(function(){jsonp(payload,finish);});}
+    catch(e){jsonp(payload,finish);}
+  }
+  function jsonp(payload,done){
+    var name='hwcb'+Math.random().toString(36).slice(2),q=['callback='+name];
+    for(var k in payload)if(payload[k]!=null&&payload[k]!=='')q.push(encodeURIComponent(k)+'='+encodeURIComponent(payload[k]));
+    var sc=document.createElement('script');var timer=setTimeout(function(){cleanup();done({ok:false,error:'network'});},30000);
+    function cleanup(){clearTimeout(timer);delete window[name];if(sc.parentNode)sc.parentNode.removeChild(sc);}
+    window[name]=function(res){cleanup();done(res);};sc.onerror=function(){cleanup();done({ok:false,error:'network'});};
+    sc.src=ENDPOINT+'?'+q.join('&');document.body.appendChild(sc);
+  }
+  /* New York week (Saturday to Friday 11:59 PM), same as the other arcade boards */
+  function nyParts(){var f=new Intl.DateTimeFormat('en-US',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',weekday:'short',hour12:false}).formatToParts(new Date());
+    var o={};for(var i=0;i<f.length;i++)o[f[i].type]=f[i].value;if(o.hour==='24')o.hour='00';o.wd=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(o.weekday);return o;}
+  function weekId(){var p=nyParts(),add=(5-p.wd+7)%7;return new Date(Date.UTC(+p.year,+p.month-1,+p.day+add)).toISOString().slice(0,10);}
+  function weekLeft(){var p=nyParts(),add=(5-p.wd+7)%7;return add*86400+86400-(+p.hour*3600+ +p.minute*60+ +p.second);}
+  function fmtN(n){return Math.floor(n).toLocaleString('en-US');}
+  function weekBest(){var b=loadJ(WEEKBEST,null);return b&&b.week===weekId()?+b.score||0:0;}
+  function noteWeekBest(v){var isNew=v>weekBest();if(isNew)storeJ(WEEKBEST,{week:weekId(),score:v});paintLocal();return isNew;}
+  function paintLocal(){var b=weekBest();$('mybest').textContent=fmtN(b);$('mynote').textContent=b?'Kept on this device.':'No games yet this week.';}
+  function myName(){return me.handle?'@'+String(me.handle).replace(/^@+/,''):(me.first_name||'');}
+  function paintBoard(list){
+    if(!list||!list.length){boardEl.innerHTML='<li><span class="hw-empty">No scores yet this week. Be the first.</span></li>';return;}
+    var mine=myName();
+    boardEl.innerHTML=list.map(function(r,i){return '<li'+((r.me||(mine&&r.name===mine))?' class="me"':'')+'><i>'+(i+1)+'</i><span>'+esc(r.name)+'</span><b>'+fmtN(r.score)+'</b></li>';}).join('');
+  }
+  function refreshBoard(){api('holdwalltop',{},function(res){if(res&&res.ok)paintBoard(res.top);else boardEl.innerHTML='<li><span class="hw-empty">'+(res&&res.preview?'The board is offline right now.':'The board is resting. Try again soon.')+'</span></li>';});}
+  function tickWeek(){var t=weekLeft(),dd=Math.floor(t/86400),hh=Math.floor(t%86400/3600),mm=Math.floor(t%3600/60);leftEl.textContent=(dd?dd+'d ':'')+hh+'h '+('0'+mm).slice(-2)+'m';}
+  paintLocal();tickWeek();setInterval(tickWeek,20000);refreshBoard();
+
+  function start(){var run={ticket:null,ticketWait:[],offline:false};RUN=run;postEl.hidden=true;whoEl.hidden=true;whoEl.innerHTML='';msg('');
+    if(window.ArcadeCard&&ArcadeCard.hide)try{ArcadeCard.hide();}catch(e){}
+    api('holdwallstart',{},function(res){run.ticket=res&&res.ok?res.ticket:'';run.offline=!!(res&&res.preview);var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});
+    return run;}
+  function end(run,data){
+    run.data=data;noteWeekBest(data.score);
+    if(window.ArcadeCard)try{ArcadeCard.show({game:'Hold the Wall!',after:postEl,label:'WAVE',stat:String(data.wave),line:'SCORE '+fmtN(data.score),name:myName(),site:SITE,
+      icon:'https://africhmaurice.github.io/site/assets/games/140-card-icons.png'});}catch(e){}
+    if(!BOARD||data.score<=0)return;
+    if(run.offline){msg('The board is offline right now, so this game stays on this device.');postEl.hidden=false;return;}
+    if(me.email)submit(run);else who(run);
+  }
+  function who(run){
+    msg('Put your score on the board below.');postEl.hidden=false;whoEl.hidden=false;
+    whoEl.innerHTML='<div class="hw-form"><label for="hw-first">First name</label><input id="hw-first" autocomplete="given-name">'+
+      '<label for="hw-email">Email you use for the hunt</label><input id="hw-email" type="email" autocomplete="email" inputmode="email">'+
+      '<label for="hw-handle">Social handle (shown on the board)</label><input id="hw-handle" placeholder="@yourname" autocomplete="off">'+
+      '<label for="hw-platform">Where that handle lives</label><select id="hw-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select>'+
+      '<label for="hw-country">Country</label><select id="hw-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select>'+
+      '<input id="hw-other" placeholder="Which country?" hidden>'+
+      '<button type="button" class="go" id="hw-saveme">SAVE MY SCORE</button></div>';
+    var c=$('country'),other=$('other');
+    c.onchange=function(){other.hidden=c.value!=='__other';};
+    $('saveme').onclick=function(){
+      var p={first_name:$('first').value.trim(),email:$('email').value.trim(),handle:$('handle').value.trim(),platform:$('platform').value,country:c.value==='__other'?other.value.trim():c.value};
+      if(!p.first_name)return msg('A first name, please.',1);
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email))return msg('That email does not look right.',1);
+      if(!p.country)return msg('Which country are you hunting from?',1);
+      me=p;storeJ(ME,me);whoEl.hidden=true;whoEl.innerHTML='';submit(run);
+    };
+  }
+  function submit(run){
+    if(run.ticket===null){msg('Logging your game...');postEl.hidden=false;run.ticketWait.push(function(){submit(run);});return;}
+    if(run.offline){msg('The board is offline right now, so this game stays on this device.');postEl.hidden=false;return;}
+    if(!run.ticket){msg('The board could not check in when this game started, so it cannot go on the board. Play again!',1);postEl.hidden=false;return;}
+    msg('Logging your game...');postEl.hidden=false;
+    var d=run.data,payload={ticket:run.ticket,email:me.email,first_name:me.first_name,handle:me.handle,platform:me.platform,country:me.country,score:d.score,secs:d.secs,wave:d.wave,kills:d.kills};
+    api('holdwallscore',payload,function(res){
+      if(run!==RUN)return;
+      if(res&&res.ok){
+        if(res.status==='host'){msg('Practice game. Your games stay off the board.');return;}
+        msg((res.rank?'Logged! You are #'+res.rank+' this week.':'Logged!')+' Best this week: '+fmtN(res.best)+'.');
+        if(window.ArcadeCard&&ArcadeCard.update)try{ArcadeCard.update({rank:res.rank,best:res.best});}catch(e){}
+        whoEl.hidden=false;whoEl.innerHTML='<p class="hw-quiet">Playing as '+esc(me.first_name||me.email)+'. <a class="hw-notme">Not you?</a></p>';
+        whoEl.querySelector('.hw-notme').onclick=function(){try{localStorage.removeItem(ME);}catch(e){}me={};who(run);};
+        if(res.top)paintBoard(res.top);return;
+      }
+      var e=res&&res.error;
+      if(e==='slow'){msg('Easy, captain. Logging it in a few seconds...');return setTimeout(function(){submit(run);},6000);}
+      if(e==='wait'){msg('The ship’s log is answering slowly. Your game has most likely landed already: check the board in a minute.');setTimeout(refreshBoard,10000);setTimeout(refreshBoard,40000);return;}
+      msg(({email:'That email does not look right.',closed:'The hunt is over, so games no longer go on the board.',ticket:'This game took too long to check in, so it cannot go on the board.',
+        check:'The Captain could not verify this game.',limit:'That is a lot of defending for one day. Come back tomorrow!'})[e]||'The ship is slow today. Give it another go in a moment.',1);
+      if(!e||e==='network'||e==='server'||e==='empty'){whoEl.hidden=false;whoEl.innerHTML='<button type="button" class="sm">TRY AGAIN</button>';whoEl.querySelector('button').onclick=function(){whoEl.hidden=true;submit(run);};}
+    });
+  }
+  window.HWBoard={start:start,end:end,refresh:refreshBoard};
+})();
+</script>
+
+<script>/* PARALLAX FIXED (Maurice, 2026-10-16; Hold the Wall! 11/2): a library picture pinned to the screen behind the game while the page scrolls over it */(function(){
+  var r=document.getElementById('ma-holdwall');if(!r||r.querySelector('.ma-plx'))return;
+  var dir=(window.innerWidth||1400)<=900?'m/':'d/';
+  if(getComputedStyle(r).position==='static')r.style.position='relative';r.style.isolation='isolate';/* the picture sits under everything in the game, even parts added later (the export card) */
+  Array.prototype.forEach.call(r.children,function(c){var cs=getComputedStyle(c);if(cs.position==='static'){c.style.position='relative';}if(!cs.zIndex||cs.zIndex==='auto')c.style.zIndex='1';});
+  var w=document.createElement('div');w.className='ma-plx';w.setAttribute('aria-hidden','true');
+  w.style.cssText='position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none';
+  var im=document.createElement('div');im.style.cssText='position:absolute;left:0;right:0;top:0;background:url(https://africhmaurice.github.io/site/assets/bg/'+dir+'red-sun-ruins-as360866146.webp) center/cover no-repeat;will-change:transform';
+  var wash=document.createElement('div');wash.style.cssText='position:absolute;inset:0;background:linear-gradient(rgba(11,23,15,.72),rgba(11,23,15,.84))';
+  w.appendChild(im);w.appendChild(wash);r.insertBefore(w,r.firstChild);
+  // best way: the picture is position:fixed (pinned to the screen by the browser itself, no stutter) and the section's
+  // clip-path keeps it inside the game. That only works when nothing above the game has a transform or filter, so check.
+  var el=r,clean=true;while(el&&el!==document.documentElement){var st=getComputedStyle(el);if(st.transform!=='none'||st.filter!=='none'||st.perspective!=='none'||/transform|filter|perspective/.test(st.willChange)||/paint|layout|strict|content/.test(st.contain||'')){clean=false;break;}el=el.parentElement;}
+  if(clean){w.style.clipPath='inset(0)';w.style.webkitClipPath='inset(0)';w.style.overflow='visible';
+    im.style.cssText+=';position:fixed;top:0;bottom:auto;height:100vh;height:100lvh;will-change:auto';return;}
+  // fallback: the picture is one screen tall (the tallest the phone screen gets, so it never shows a gap when the address bar
+  // hides) and slides down exactly as far as the page scrolls past the game's top, so it holds still on screen
+  var H=0;
+  function size(){H=Math.max(window.innerHeight||800,document.documentElement.clientHeight||0,window.visualViewport?Math.round(visualViewport.height):0);H=Math.min(H,r.offsetHeight||H);im.style.height=H+'px';}
+  function move(){var y=Math.max(0,Math.min((r.offsetHeight||H)-H,-r.getBoundingClientRect().top));im.style.transform='translate3d(0,'+y.toFixed(1)+'px,0)';}
+  window.addEventListener('scroll',move,{passive:true});
+  window.addEventListener('resize',function(){size();move();});
+  size();move();setTimeout(function(){size();move();},800);
+})();</script>

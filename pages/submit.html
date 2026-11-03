@@ -325,48 +325,32 @@ h1,h2,h3{text-wrap:balance}
   // The Daily Word Game is left out: the games pay themselves when you finish on the page.
   var TASKS = [
     // Act Three (Maurice, 2026-10-16): only the kept tasks, with the new points. The cut tasks are gone from every act.
-    { label: "Pre-Order Cello's Gate", send: "Pre-Order Cello's Gate", copies: true,
-      hint: "Your receipt or order confirmation. It has to show Cello's Gate, how many copies, and the order date. Every copy counts: 2,000 points and 5 bonus sweepstakes entries each." },
-    { label: 'Send Fairy Mail', send: 'Send Fairy Mail', hint: 'Your receipt for the pre-ordered copy you sent as a gift. It has to show Cello\'s Gate, the order date, and that it ships to someone else. Each gift earns 2,000 points and 5 bonus sweepstakes entries.' },
-    { label: "Join Maurice's Newsletter (Limit: 1)", send: "Join Maurice's Newsletter", hint: 'The confirmation email or the welcome screen. 200 points, one time only.' },
-    { label: 'Reading Apps', send: 'Reading Apps', detail: 'Which reading app did you add Cello\'s Gate to?',
-      hint: "Cello's Gate shelved as Want to Read (or Read) on Goodreads, StoryGraph, or another reading app. 100 points per app. One app per submission." },
+    // Act Four (Maurice, 2026-11-02): only the tasks on the Hunt page; Order the Book; library checkout or waiting list.
+    { label: 'Order the Book', send: 'Order the Book', copies: true,
+      hint: "Your receipt or order confirmation. It has to show Cello's Gate, how many copies, and the order date. Every copy counts: 2,000 points each." },
+    { label: 'Send Fairy Mail', send: 'Send Fairy Mail', hint: 'Your receipt for the copy you sent as a gift. It has to show Cello\'s Gate, the order date, and that it ships to someone else. Each gift earns 2,000 points.' },
     { label: 'Libraries', send: 'Library Request', detail: 'Which library, and which format (print, ebook, or audiobook)?', hint: 'Your request: the suggest-a-purchase form, your message to the library, or your Libby "Notify me" or "Suggest a purchase." 150 points per library for each format (print, ebook, or audiobook), with no limit.' },
     { label: 'A Library Stocked It', send: 'A Library Stocked It', detail: 'Which library? Its name and city.',
       hint: 'The library\'s confirmation email, or Cello\'s Gate on its catalog page. 150 more points for each library that stocks it.' },
-    { label: 'Place a Hold', send: 'Place a Hold', detail: 'Which library (name and city), and which format (print, ebook, or audiobook)?',
-      hint: 'A screenshot of your hold on Cello\'s Gate in your library\'s catalog or Libby. 150 points per library for each format (print, ebook, or audiobook), with no limit.' },
+    { label: "Check Out Cello's Gate or Join the Waiting List at a Library", send: "Check Out Cello's Gate or Join the Waiting List at a Library", detail: 'Which library (name and city), and which format (print, ebook, or audiobook)?',
+      hint: 'A screenshot of your checkout of Cello\'s Gate, or of your spot on the waiting list (your hold), in your library\'s catalog or Libby. 150 points per library for each format (print, ebook, or audiobook), with no limit.' },
     { label: 'Indie Bookstores', send: 'Indie Bookstore Request', detail: 'Which indie bookstore did you contact?', hint: 'Your request or message to the shop. 150 points per bookstore, with no limit.' },
     { label: 'An Indie Bookstore Stocked It', send: 'An Indie Bookstore Stocked It', detail: 'Which bookstore? Its name and city.',
       hint: 'A photo of Cello\'s Gate on the shelf, or the store\'s catalog page. 150 more points for each bookstore that stocks it.' },
     { label: "Share Cello's Gate", send: "Share Cello's Gate", account: 'that account', pick: ['Where did you share it?', ['Instagram', 'TikTok', 'YouTube', 'Reddit']], pick2: ['What did you do?', ['1 post', '3 comments on 3 recent posts']],
       hint: 'A screenshot of your post (with the hashtags), or of all 3 comments. Hunt-related posts don\'t count for this task. 100 points, once per day, per account.' },
-    { label: 'Share Your Sky Pirate Quiz Results', send: 'Share Your Sky Pirate Quiz Results', account: 'that account', pick: ['Where did you share it?', ['Instagram', 'TikTok', 'Threads', 'Facebook', 'X', 'Bluesky', 'YouTube', 'Reddit']],
-      hint: 'A screenshot of your post with your quiz results, the link to the quiz, and the hashtags. 250 points, once per platform.' },
     { label: "Engage With Maurice's Content", send: "Engage With Maurice's Content", detail: 'Link to the post of mine you engaged with', pick: ['Which platform?', ['Instagram', 'TikTok', 'YouTube']], pick2: ['Did you repost it?', ['Yes, I reposted it (+50)', 'No repost']],
       hint: 'Screenshots of every step: your like, both comments, your share, your save, and your repost (save and repost don\'t apply on YouTube). Without all the screenshots, the task won\'t be approved. 200 points, +50 for a repost. Once per post, per platform.' },
-    { label: 'Share the Pre-Order Link', send: 'Share the Pre-Order Link', account: 'that account', pick: ['Where did you share it?', ['Instagram', 'TikTok']],
-      hint: 'A screenshot of your story with the pre-order link and your tag of Maurice. 100 points, once per day, per platform.' },
     { label: 'Fill Up the Sky Pirates of Imperia Subreddit With Content', send: 'Fill Up the Sky Pirates of Imperia Subreddit With Content', detail: 'Link to your post on r/SkyPiratesofImperia', account: 'Reddit',
       hint: 'A screenshot of your post: a fan theory, fan cast, merch, meme, favorite line, speculation, or fan art. 100 points per post, one a day.' },
     { label: 'Interact on the Sky Pirates of Imperia Reddit Board', send: 'Interact on the Sky Pirates of Imperia Reddit Board', detail: 'Your Reddit username', comments: true, noProof: true,
       hint: "No screenshot needed. Type your Reddit username and how many comments you've made on r/SkyPiratesofImperia that haven't been paid yet. I check them on Reddit. 25 points per comment." },
-    { label: 'Comment in the Fantasy-Faction Facebook Group', send: 'Comment in the Fantasy-Faction Facebook Group', detail: 'Link to your comment (or to the post you commented on)', account: 'Facebook',
-      hint: "A screenshot of your comment with the post's date showing. One comment per submission. 100 points per comment, on posts from the last 7 days." },
     { label: 'Submit Fan Art', send: 'Submit Fan Art', media: true, hint: 'A PNG or JPEG of your fan art, or a video or audio file (MP4, MOV, MP3, M4A, WAV, up to 35 MB). 200 points per entry.' },
     { label: 'Submit Fan Fiction', send: 'Submit Fan Fiction', docs: true, media: true, hint: 'Your fan fiction as a .docx, .doc, .pdf, or .txt. You can add music or audio too (MP4, MP3, M4A, WAV, up to 35 MB). 200 points per entry.' },
     { label: 'Join the Trench Community Discord', send: 'Join the Trench Community Discord', hint: 'Any screenshot from inside the Discord: a post, your role, the server list. 250 points.' },
-    { label: 'Reach Level 10', send: 'Reach Level 10', hint: 'Your level in the Discord. 50 points.' },
-    { label: 'Reach Level 25', send: 'Reach Level 25', hint: 'Your level in the Discord. 100 points.' },
-    { label: 'Become a Crest Knight', send: 'Become a Crest Knight', hint: 'Your level 50 or Crest Knight role in the Discord, or your Mark of the Crest. 200 points.' },
-    { label: 'Play in the Tournament of Blades', send: 'Play in the Tournament of Blades', hint: 'A screenshot of your nomination or vote in today\'s Tournament of Blades in the Discord. 25 points per nomination or vote.' },
     { label: 'Join the Sky Pirates Subreddit', send: 'Join the Sky Pirates Subreddit', account: 'Reddit', hint: 'A screenshot showing you’ve joined r/SkyPiratesofImperia. 50 points.' },
     { label: 'Buy Something From Trench Market', send: 'Buy Something From Trench Market', items: true,
       hint: 'Your Trench Market receipt or order confirmation. 50 points for each item.' },
-    { label: '(Semi-)Aggressive Recruiting', send: '(Semi-)Aggressive Recruiting', detail: 'Who did you recruit? Their name and handle.',
-      hint: 'A screenshot that shows they joined the hunt: their scorecard, a daily game share, a loot box claim, or their message to you. 100 points for each new hunter. Each hunter can only be claimed once.' },
-    { label: 'Create a Sky Pirates of Imperia Pinterest Board', send: 'Create a Sky Pirates of Imperia Pinterest Board', detail: 'Link to your Pinterest board', noProof: true,
-      hint: 'Paste the link to your board. It should be a board of Sky Pirates of Imperia art with at least 25 pins. 100 points, one time only, plus 1 point for every pin past 25 (up to 200 bonus points). Your board grew? Submit the link again for the new pins.' },
     { label: 'Submit a GIF to Klipy or GIPHY', send: 'Submit a GIF to Klipy or GIPHY', pick: ['Where did you submit it?', ['Klipy', 'GIPHY']], detail: 'The title of your GIF',
       hint: 'A screenshot showing you submitted your Sky Pirates, Cello\'s Gate, or Treasure Hunt GIF. 50 points per GIF on Klipy and 50 per GIF on GIPHY, no limit. Submitted it to both? Send one claim for each.' },
     // Loot box 122 (The Odd Skull) has no claim link: hunters send a screenshot of the odd skull (Dennis, 2026-10-27). fixed = the item sent with it
@@ -434,13 +418,13 @@ h1,h2,h3{text-wrap:balance}
     return item('', 'Your first name and social media handle will be listed on the leaderboard.',
         '<div class="sb-pair"><div><span class="sb-sub">First Name ' + req() + '</span><input type="text" id="sb-first" autocomplete="given-name" value="' + esc(first) + '"></div>' +
         '<div><span class="sb-sub">Last Name ' + req() + '</span><input type="text" id="sb-last" autocomplete="family-name" value="' + esc(last) + '"></div></div>') +
-      item('What Country Do You Live In?', 'United States and United Kingdom residents enter separate promotions with separate prizes. Everyone else can earn points and unlock digital rewards.',
+      item('What Country Do You Live In?', 'Act Four is one worldwide leaderboard: everyone 18 or older can win, wherever they live. (Acts One through Three had separate U.S. and UK promotions.)',
         '<select id="sb-country" class="' + (c ? '' : 'empty') + '"><option value="">Select an option</option>' +
         '<option' + (c === 'United States' ? ' selected' : '') + '>United States</option>' +
         '<option' + (c === 'United Kingdom' ? ' selected' : '') + '>United Kingdom</option>' +
         '<option value="__other"' + (other ? ' selected' : '') + '>Other Country</option><option value="__imperia">Imperia</option></select>' +
         '<input type="text" id="sb-other" placeholder="Which country?" value="' + esc(other ? c : '') + '" style="' + (other ? '' : 'display:none;') + 'margin-top:10px">' +
-        '<div class="sb-imp" id="sb-imp" hidden><button type="button" id="sb-imp-box" aria-label="Loot box 106"><img src="https://africhmaurice.github.io/site/assets/loot/106.png" alt="" width="160" height="160"></button></div>', 'sb-country') +
+        '<div class="sb-imp" id="sb-imp" hidden><button type="button" id="sb-imp-box" aria-label="Loot box 106"><img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/loot/106.png" alt="" width="160" height="160"></button></div>', 'sb-country') +
       item('Preferred Social Media Handle', 'Please choose the social media platform you\'d like to be featured on the leaderboard.',
         '<select id="sb-platform" class="' + (plat ? '' : 'empty') + '"><option value="">Choose an option.</option>' +
         platOpts.map(function (p) { return '<option' + (plat === p ? ' selected' : '') + '>' + p + '</option>'; }).join('') + '</select>' +
@@ -490,12 +474,12 @@ h1,h2,h3{text-wrap:balance}
     }
     html += item('Official Rules and Privacy Policy', 'They can be found at <a href="https://www.mauriceafrich.com/rules" target="_blank" rel="noopener">mauriceafrich.com/rules</a> and ' +
         '<a href="https://www.mauriceafrich.com/privacy-policy" target="_blank" rel="noopener">mauriceafrich.com/privacy-policy</a>',
-        '<label class="sb-check"><input type="checkbox" id="sb-agree"><span>I\'ve read and agree to the Official Rules and Privacy Policy. I understand The Treasure and the Act prize draws are open only to U.S. and UK residents 18+, under the rules for their country.</span></label>');
+        '<label class="sb-check"><input type="checkbox" id="sb-agree"><span>I\'ve read and agree to the Official Rules and Privacy Policy. I understand the Act Four leaderboard prize is open worldwide to participants 18+ (except where prohibited), and that the Acts One through Three prizes were open only to U.S. and UK residents 18+, under the rules for their country.</span></label>');
     if (mode === 'points') {
       html += '<div id="sb-proofwrap">' + item('Upload Proof of Task Completion',
         'Please upload clear and easy-to-read images or screenshots that prove the completion of the task, up to ' + MAX_FILES + '.</p>' +
         '<p class="sb-desc"><b>Fan Fiction:</b> Please upload your fan fiction as a .docx, .doc, .pdf, or .txt.<br><b>Fan Art:</b> Please upload a PNG or JPEG of your fan art.<br><b>Music, video, or audio:</b> MP4, MOV, MP3, M4A, WAV, and other audio files work too, up to 35 MB each.</p>' +
-        '<p class="sb-desc"><i>All entries will be manually reviewed by one overworked sky pirate captain (self-imposed), and he is grateful for your patience.</i>',
+        '<p class="sb-desc"><i>All submissions will be manually reviewed by one overworked sky pirate captain (self-imposed), and he is grateful for your patience.</i>',
         '<label class="sb-add" id="sb-drop"><input type="file" id="sb-files" accept="image/*" multiple>Add a File</label>' +
         '<div class="sb-thumbs" id="sb-thumbs"></div>') + '</div>';
     }

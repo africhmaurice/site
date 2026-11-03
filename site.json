@@ -243,6 +243,18 @@
       "source": "bot:squarespace-source.html"
     },
     {
+      "slug": "the-break-in",
+      "url": "/the-break-in",
+      "title": "The Break-In Gone Wrong Vote (Chapter 16, the fight inside the building)",
+      "source": "bot:squarespace-breakin.html"
+    },
+    {
+      "slug": "search-the-building",
+      "url": "/search-the-building",
+      "title": "Search the Building Vote (Chapter 17, after the break-in fight)",
+      "source": "bot:squarespace-search.html"
+    },
+    {
       "slug": "adventure",
       "url": "/adventure",
       "title": "The Adventure So Far (every Choose Your Own Adventure beat)",
@@ -451,6 +463,24 @@
       "url": "/the-levian-30527",
       "title": "The Levian (hidden; loot box 145, weekly high score)",
       "source": "pages/the-levian.html"
+    },
+    {
+      "slug": "master-cannoneer",
+      "url": "/hold-the-wall-13212",
+      "title": "Hold the Wall! (hidden; loot box 140, weekly high score)",
+      "source": "pages/master-cannoneer.html"
+    },
+    {
+      "slug": "sky-fishing",
+      "url": "/goma-goons-43216",
+      "title": "Goma Goons (hidden; loot box 141, weekly Campaign + Free-for-All boards)",
+      "source": "pages/sky-fishing.html"
+    },
+    {
+      "slug": "pick-the-lock",
+      "url": "/pick-the-lock-23966",
+      "title": "Pick the Lock (hidden; loot box 142, gear puzzle)",
+      "source": "pages/pick-the-lock.html"
     },
     {
       "slug": "master-stacker",
