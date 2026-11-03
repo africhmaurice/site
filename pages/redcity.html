@@ -4,6 +4,8 @@
      Built by scripts/build-redcity.mjs from config/red-city.json into
      squarespace-redcity.html. Edit the JSON (or this template), rebuild,
      never the built file.
+     GOLDEN TRAIL slot 12 (Maurice 10/31): the last script adds a Skybreaker Maul to the Demolition Kit for finishers;
+     it lives only in this staged copy so far: move it into squarespace-redcity.html (or the template) before a publish.
 
      Every fren votes once (and may change their vote until it closes):
      three recruits from three different jobs (the five most voted make the
@@ -1415,4 +1417,36 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   if (closed && DATA.results) $('rc-count').textContent = fmt(DATA.results.votes);
   else jsonp({ action: 'votecount' }, function (res) { $('rc-count').textContent = res && res.ok ? fmt(res.count) : '—'; });
 })();
+</script>
+<script>
+/* Golden Trail slot 12 (Maurice 10/31), finishers only (golden.js): a "Skybreaker Maul" at the end of the Demolition Kit's
+   list (on the results card, which lists nothing, it is the only line under the kit's note). Tapping it keeps the maul (localStorage thGolden:maul) and opens the chest on The Treasure (#golden-chest). */
+(window.maGoldenQ = window.maGoldenQ || []).push(function (G) {
+  var TO = 'https://www.mauriceafrich.com/the-treasure#golden-chest';
+  var st = document.createElement('style');
+  st.textContent = '#rc .gd-maul{font:inherit;color:inherit;background:none;border:0;border-radius:0;padding:0;margin:0;text-align:left;cursor:pointer;letter-spacing:inherit}' +
+    '#rc .gd-maul:hover,#rc .gd-maul:focus-visible{color:#f2cf5b;outline:none}';
+  document.head.appendChild(st);
+  function add() {
+    Array.prototype.forEach.call(document.querySelectorAll('.rc-kit'), function (card) {
+      var h = card.querySelector('h3'), ul = card.querySelector('.rc-kitlist');
+      if (!h || !/Demolition Kit/i.test(h.textContent) || card.querySelector('.gd-maul')) return;
+      // the results card shows no list of what was in the kit, so the maul gets a list of its own there
+      if (!ul) { ul = document.createElement('ul'); ul.className = 'rc-kitlist'; var foot = card.querySelector('.rc-kitfoot'); card.insertBefore(ul, foot || null); }
+      var li = document.createElement('li'), b = document.createElement('button');
+      b.type = 'button'; b.className = 'gd-maul'; b.textContent = 'Skybreaker Maul';
+      b.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        try { localStorage.setItem('thGolden:maul', '1'); } catch (x) {}
+        location.href = TO;
+      });
+      li.appendChild(b); ul.appendChild(li);
+    });
+    return !!document.querySelector('.gd-maul');
+  }
+  // the page redraws its cards when anything changes, so the maul is put back each time
+  var t = 0, iv = setInterval(function () { add(); if (++t > 40) clearInterval(iv); }, 250);
+  var root = document.getElementById('rc');
+  if (root && window.MutationObserver) new MutationObserver(function () { add(); }).observe(root, { childList: true, subtree: true });
+});
 </script>

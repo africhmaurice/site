@@ -253,3 +253,21 @@
     e.preventDefault();e.stopPropagation();claim();
   },true);
 })();</script>
+<!-- GOLDEN TRAIL slot 10 (Maurice 10/31, clue "3"). For finishers only (golden.js runs the queued function): on question 3,
+     the 3 in "Question 3 of 15" can be tapped (or reached with Tab and Enter); it looks exactly like the rest of the line.
+     Tapping it records slot 10. The quiz and its scoring are untouched. -->
+<script>(function(){
+  (window.maGoldenQ=window.maGoldenQ||[]).push(function(G){
+    var root=document.getElementById('ma-quiz'),cnt=root&&root.querySelector('.q-count');if(!cnt)return;
+    function wrap(){
+      var m=/^Question 3 of (\d+)$/.exec(cnt.textContent);if(!m||cnt.querySelector('.q-g3'))return;
+      cnt.textContent='Question ';
+      var s=document.createElement('span');s.className='q-g3';s.textContent='3';s.setAttribute('role','button');s.tabIndex=0;
+      s.style.cssText='cursor:pointer;outline-offset:3px';
+      var go=function(){G.found(10);};
+      s.addEventListener('click',go);s.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+      cnt.appendChild(s);cnt.appendChild(document.createTextNode(' of '+m[1]));
+    }
+    new MutationObserver(wrap).observe(cnt,{childList:true,characterData:true,subtree:true});wrap();
+  });
+})();</script>

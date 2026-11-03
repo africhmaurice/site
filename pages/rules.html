@@ -433,6 +433,17 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <style>#rules-body p.ma-fine-95{margin:64px 0 0;font-size:11px;line-height:1.6;letter-spacing:.01em;color:#6f6f6f}#ma-fine-95w{cursor:default}</style>
       <p class="ma-fine-95">Small print under the small print: if you read every rule all the way down to here, you are exactly the kind of sky pirate the Imperial courts warned me about, and you have earned a little <span id="ma-fine-95w">loot</span>.</p>
       <script>(function(){var w=document.getElementById('ma-fine-95w');if(!w)return;var k='MlFYWllDRFM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';w.addEventListener('click',function(){location.href=atob(k).split('').reverse().join('');});})();</script>
+      <!-- GOLDEN TRAIL slot 18 (Maurice 10/31, clue "Read the fine print."). For finishers only (golden.js runs the queued
+           function): in the small print above, the word "Imperial" turns gold; tapping it (or Tab and Enter) records slot 18. -->
+      <script>(function(){(window.maGoldenQ=window.maGoldenQ||[]).push(function(G){
+        var p=document.querySelector('#rules-body p.ma-fine-95');if(!p||p.querySelector('.ma-gold-18'))return;
+        var walk=document.createTreeWalker(p,NodeFilter.SHOW_TEXT),t;
+        while((t=walk.nextNode())){var i=t.data.indexOf('Imperial');if(i<0)continue;
+          var rest=t.splitText(i);rest.splitText(8);var s=document.createElement('span');s.className='ma-gold-18';s.textContent='Imperial';
+          s.setAttribute('role','button');s.tabIndex=0;s.style.cssText='color:#c9a227;font-weight:700;cursor:pointer';
+          var go=function(){G.found(18);};s.addEventListener('click',go);s.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+          rest.parentNode.replaceChild(s,rest);break;}
+      });})();</script>
     </div>
   </div>
 </section>

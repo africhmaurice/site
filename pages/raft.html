@@ -1630,3 +1630,31 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 })();
 </script>
+<!-- GOLDEN TRAIL slot 17 (Maurice 10/31, clue "The Missing Plank"). For finishers only (golden.js runs the queued function):
+     a small drawing of the raft sits under the "What Happens" story, lashed planks with one plank missing. Tapping the
+     gap (or Tab and Enter on it) records slot 17. This page is generated from squarespace-raft.html in the leaderboard
+     project, so this block has to go there too at go-live. -->
+<style>
+.cr-gold-raft{position:relative;width:min(100%,264px);aspect-ratio:264/96;margin-top:20px}
+.cr-gold-raft svg{display:block;width:100%;height:100%}
+.cr-gold-raft button{position:absolute;top:0;bottom:0;left:calc(100% * 170 / 264);width:calc(100% * 32 / 264);margin:0;padding:0;border:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cr-gold-raft button:focus-visible{outline:2px solid #a2f590;outline-offset:2px}
+</style>
+<script>(function(){
+  (window.maGoldenQ=window.maGoldenQ||[]).push(function(G){
+    var tries=0;
+    (function wait(){
+      var story=document.querySelector('#cr-results .cr-story');
+      if(!story){if(++tries<120)setTimeout(wait,500);return;}
+      if(story.querySelector('.cr-gold-raft'))return;
+      var planks='';
+      for(var i=0;i<9;i++){if(i===6)continue;var x=6+i*28;planks+='<rect x="'+x+'" y="10" width="24" height="76" fill="#f3ead9" stroke="#0b170f" stroke-width="2.5"/><path d="M'+(x+7)+' 22v18M'+(x+15)+' 52v22" stroke="#0b170f" stroke-width="1.4" fill="none" opacity=".55"/>';}
+      var ropes='<path d="M2 30h260M2 66h260" stroke="#a2f590" stroke-width="2" fill="none" opacity=".75"/>';
+      var fig=document.createElement('div');fig.className='cr-gold-raft';
+      fig.innerHTML='<svg viewBox="0 0 264 96" aria-hidden="true">'+planks+ropes+'</svg>';
+      var b=document.createElement('button');b.type='button';b.setAttribute('aria-label','The gap in the raft');
+      b.addEventListener('click',function(){G.found(17);});
+      fig.appendChild(b);story.appendChild(fig);
+    })();
+  });
+})();</script>

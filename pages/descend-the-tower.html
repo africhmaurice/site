@@ -30,6 +30,8 @@
      tower; Resume carries on with no time jump. Pausing mid-pull on the catapult lets go of the pull. There is no save
      (Maurice 10/19); a leftover ma-save-descend-the-tower from testing is deleted on load.
      DRAFT copy (10/19): "Pause", "Paused", "Resume".
+     GOLDEN TRAIL slot 2 (Maurice 10/31, "Descend Dante's Inferno."): for hunters with all 151 loot boxes only, a third
+     start button, "Inferno: 34 floors", opens the hidden Inferno page (/inferno-60934). DRAFT: the button words.
      ============================================================ -->
 
 <style>
@@ -562,3 +564,17 @@
   function req(){if(!ticking){ticking=true;requestAnimationFrame(move);}}
   window.addEventListener('scroll',req,{passive:true});window.addEventListener('resize',req);move();setTimeout(move,800);
 })();</script>
+<script>
+// Golden Trail slot 2: the way down to the Inferno, shown only to finishers (golden.js runs this only for them).
+(window.maGoldenQ = window.maGoldenQ || []).push(function () {
+  var tries = 0;
+  (function add() {
+    var modes = document.querySelector('#ma-tower .tw-start .tw-modes');
+    if (!modes) { if (++tries < 60) setTimeout(add, 250); return; }
+    if (modes.querySelector('.tw-inferno')) return;
+    var b = document.createElement('a'); b.className = 'tw-btn tw-inferno'; b.textContent = 'Inferno: 34 floors';
+    b.href = 'https://www.mauriceafrich.com/inferno-60934'; b.style.cssText = 'background:#482d85;text-decoration:none;display:inline-block';
+    modes.appendChild(b);
+  })();
+});
+</script>

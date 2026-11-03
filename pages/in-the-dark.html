@@ -1,6 +1,7 @@
 <!-- ============================================================
      IN THE DARK - clue #25. The Night Box shows here only between sunset and sunrise
      (Asheville, NC, Eastern time). By day the page is empty. Clicking the box opens loot box 25.
+     GOLDEN TRAIL slot 4 (Maurice 10/31): the last script drops a golden D for finishers who turn their phone upside down.
      ============================================================ -->
 <style>
 html,body{margin:0 !important;padding:0 !important;background:#060d08 !important}
@@ -47,4 +48,43 @@ html,body{margin:0 !important;padding:0 !important;background:#060d08 !important
     location.href=atob(k).split('').reverse().join('');
   });
 })();
+</script>
+<script>
+/* Golden Trail slot 4 (Maurice 10/31), finishers only (golden.js): "In the dark." with a phone, upside down.
+   On a phone, any time of day: turn it upside down and a golden D falls out of the page (toward the ground, which is
+   the top of the screen while the phone is upside down) and lands there. Tapping it gives the golden character.
+   iOS asks for motion access, so the first tap anywhere on this page asks (finishers on touch screens only).
+   Test hook: ?goldentest=flip acts as if the phone were turned over, on any screen. DRAFT copy: the D's label. */
+(window.maGoldenQ = window.maGoldenQ || []).push(function (G) {
+  var test = /[?&]goldentest=flip\b/.test(location.search);
+  var touch = (window.matchMedia && matchMedia('(pointer:coarse)').matches) || 'ontouchstart' in window;
+  if (!touch && !test) return;   // phones only
+  var dark = document.getElementById('ma-dark'); if (!dark) return;
+  var st = document.createElement('style');
+  st.textContent = '.gd-d{position:fixed;left:50%;top:0;z-index:60;margin:0;padding:12px 20px;border:0;border-radius:0;background:transparent;cursor:pointer;' +
+    'font-family:"Cracked Imperia",Impact,sans-serif;font-size:88px;line-height:1.2;letter-spacing:.03em;color:#f2cf5b;text-shadow:0 0 30px rgba(242,207,91,.7);' +
+    'transform:translate(-50%,85vh) rotate(180deg);animation:gdFall 1.3s cubic-bezier(.5,0,.75,0) forwards}' +
+    '@keyframes gdFall{0%{transform:translate(-50%,85vh) rotate(180deg)}80%{transform:translate(-50%,12px) rotate(180deg)}90%{transform:translate(-50%,40px) rotate(180deg)}100%{transform:translate(-50%,20px) rotate(180deg)}}' +
+    '@media (prefers-reduced-motion:reduce){.gd-d{animation:none;transform:translate(-50%,20px) rotate(180deg)}}';
+  document.head.appendChild(st);
+  var dropped = false, held = 0;
+  function drop() {
+    if (dropped) return; dropped = true;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'gd-d'; b.textContent = 'D'; b.setAttribute('aria-label', 'A golden D');
+    b.onclick = function () { b.remove(); G.found(4); };
+    document.body.appendChild(b);
+  }
+  // upside down: the phone's top points at the ground (beta below -50), held for a moment
+  function tilt(e) {
+    var down = e.beta != null && e.beta < -50, sec = screen.orientation && /portrait-secondary/.test(screen.orientation.type || '');
+    if (down || sec) { if (!held) held = Date.now(); else if (Date.now() - held > 350) drop(); } else held = 0;
+  }
+  function listen() { window.addEventListener('deviceorientation', tilt); }
+  if (test) { setTimeout(drop, 800); return; }
+  if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    var ask = function () { document.removeEventListener('click', ask, true);
+      DeviceOrientationEvent.requestPermission().then(function (r) { if (r === 'granted') listen(); }, function () {}); };
+    document.addEventListener('click', ask, true);
+  } else listen();
+});
 </script>

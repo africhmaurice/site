@@ -39,6 +39,11 @@
      DRAFT copy (10/19): "Save progress", "Saved on this device.", "Couldn't save on this device.", "You have a saved
      game from <time>.", "You have a saved game from <time>, but it was made on a different screen size, so it can't
      open here.", "Continue", and "Start over".
+     GOLDEN TRAIL slot 1 (Maurice 10/31, clue "Find Arcturus."): for finishers only (golden.js runs the queued function),
+     seven RED stars join the sky, about the size of the white ones and each a little different. The fourth-largest
+     (Arcturus) is a star of the northernmost (topmost) constellation, in the portrait and the landscape sky alike; the
+     other six are bright field stars spread across the sky. Tapping Arcturus records slot 1 (G.found(1)) and isn't added
+     to the drawing; once slot 1 is on the board it taps like any star. Other red stars tap like any star.
      ============================================================ -->
 <style>
 @font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
@@ -264,7 +269,8 @@
     L.neb.forEach(function(n){var rg=ctx.createRadialGradient(n[0],n[1],0,n[0],n[1],n[2]);rg.addColorStop(0,'rgba('+COLS[n[3]]+',.2)');rg.addColorStop(1,'rgba('+COLS[n[3]]+',0)');ctx.fillStyle=rg;ctx.fillRect(n[0]-n[2],n[1]-n[2],n[2]*2,n[2]*2);});
     var x0=vx-10,y0=vy-10,x1=vx+cssW/s+10,y1=vy+cssH/s+10,px=1/s,grow=Math.min(1.6,0.85+zoom*0.15); /* stars keep about the same size on screen at every zoom */
     ctx.fillStyle='#fffffe';
-    function dot(q,a,big){if(q[0]<x0||q[0]>x1||q[1]<y0||q[1]>y1)return;ctx.globalAlpha=a;ctx.beginPath();ctx.arc(q[0],q[1],q[2]*px*big*grow,0,6.283);ctx.fill();}
+    if(GOLD&&!L.red)redStars();
+    function dot(q,a,big){if(q[0]<x0||q[0]>x1||q[1]<y0||q[1]>y1)return;ctx.globalAlpha=a;ctx.beginPath();if(q.rr){ctx.fillStyle='#ff5a3a';ctx.arc(q[0],q[1],q.rr*px*big*grow,0,6.283);ctx.fill();ctx.fillStyle='#fffffe';return;}ctx.arc(q[0],q[1],q[2]*px*big*grow,0,6.283);ctx.fill();}
     L.bg.forEach(function(q){dot(q,q[3]*tw(q[4],t),1);});
     L.pl.forEach(function(p,i){var on=charted[ALL[i].id];p.stars.forEach(function(q){dot(q,on?1:q[3]*tw(q[4],t),on?1.25:1);});});
     ctx.globalAlpha=1;ctx.lineCap='round';ctx.lineJoin='round';
@@ -293,6 +299,29 @@
       dp.forEach(function(q,i){(i&&!q.lift)?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y);});ctx.stroke();
       ctx.strokeStyle='#ff4c0f';ctx.lineWidth=1.8*px;dp.forEach(function(q,i){ctx.beginPath();ctx.arc(q.x,q.y,(moving&&q.id===moving.id?10:i===dp.length-1?8:6)*px,0,6.283);ctx.stroke();});}
   }
+  /* Golden Trail slot 1: seven red stars (finishers only). Sizes run 1.50 down to 0.86, inside the white stars' own
+     range (0.4 to 1.45); the fourth (1.16) is Arcturus, in the topmost of the ten constellations. */
+  var GOLD=null,RED_R=[1.5,1.38,1.27,1.16,1.05,0.95,0.86];
+  function redStars(){
+    var top=-1,ty=1e9;for(var i=0;i<SLOTS;i++){var b=L.pl[i].bx,cy=(b[1]+b[3])/2;if(cy<ty){ty=cy;top=i;}}
+    var p=L.pl[top],j=Math.floor(p.stars.length/2),arc=p.stars[j];arc.rr=RED_R[3];L.arc='c'+top+'_'+j;
+    var r=rng(L.portrait?7151:7149),picks=[],tries=0,box=p.bx;
+    while(picks.length<6&&tries<20000){tries++;var k=Math.floor(r()*L.bg.length),q=L.bg[k];
+      if(q.rr||q[2]<0.75||q[3]<0.6)continue;
+      if(q[0]>box[0]-150&&q[0]<box[2]+150&&q[1]>box[1]-150&&q[1]<box[3]+150)continue;
+      if(Math.hypot(q[0]-arc[0],q[1]-arc[1])<L.W*0.3)continue;
+      var ok=true;for(var u=0;u<picks.length;u++)if(Math.hypot(q[0]-picks[u][0],q[1]-picks[u][1])<L.W*0.3){ok=false;break;}
+      if(ok)picks.push(q);}
+    [0,1,2,4,5,6].forEach(function(z,i){if(picks[i])picks[i].rr=RED_R[z];});
+    L.red=true;
+  }
+  (window.maGoldenQ=window.maGoldenQ||[]).push(function(G){GOLD=G;if(L)L.red=false;kick();});
+  /* test hook (?test=1 only): centers the view on Arcturus and says where it is on screen, for the test harness */
+  if(/[?&]test=1(&|$)/.test(location.search))window.__goldSky=function(){if(!GOLD||!L)return null;if(!L.red)redStars();
+    var m=/c([0-9]+)_([0-9]+)/.exec(L.arc),q=L.pl[+m[1]].stars[+m[2]],s=S();vx=q[0]-cssW/s/2;vy=q[1]-cssH/s/2;clampView();draw(performance.now());
+    var reds=[];L.bg.concat([].concat.apply([],L.pl.map(function(p){return p.stars;}))).forEach(function(z){if(z.rr)reds.push(z.rr);});
+    var tops=L.pl.slice(0,SLOTS).map(function(p){return(p.bx[1]+p.bx[3])/2;});
+    return{x:(q[0]-vx)*s,y:(q[1]-vy)*s,rank:reds.sort(function(a,b){return b-a;}).indexOf(q.rr)+1,reds:reds.length,top:tops.indexOf(Math.min.apply(null,tops))===+m[1],path:path.length,portrait:L.portrait};};
   var raf=0;
   function loop(t){draw(t);raf=requestAnimationFrame(loop);}
   function kick(){if(reduce)requestAnimationFrame(draw);}
@@ -423,7 +452,7 @@
       if(e.type==='pointerup'){var to=nearest(q.x,q.y,q.touch?22:14);if(to&&to.id!==src){snap();path=path.map(function(r){return r.id===src?{x:to.x,y:to.y,id:to.id,lift:r.lift}:r;});
         path=path.filter(function(r,i){return !(i&&!r.lift&&path[i-1].id===r.id);});}}
       tools();return;}
-    if(e.type==='pointerup'&&!q.moved){var st=nearest(q.x,q.y,q.touch?22:14);if(st)pick(st);}}
+    if(e.type==='pointerup'&&!q.moved){var st=nearest(q.x,q.y,q.touch?22:14);if(st&&GOLD&&L.arc===st.id&&!(GOLD.state&&GOLD.state.found&&GOLD.state.found[1])){GOLD.found(1);return;}if(st)pick(st);}}
   sky.addEventListener('pointerup',up);sky.addEventListener('pointercancel',up);
   sky.addEventListener('wheel',function(e){var p=local(e);
     if(e.ctrlKey||e.metaKey){e.preventDefault();setZoom(zoom*Math.exp(-e.deltaY*0.0025),p.x,p.y);return;}

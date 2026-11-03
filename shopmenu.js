@@ -4,6 +4,9 @@
 // its third column. The panel's words and spacing match the website's exactly. The Treasure Hunt panel is built from the same
 // pages/hunt-menu.html as the website's (the act links work like loader.js actify), in the same three columns,
 // with a line under each box heading. Loaded by the shop theme (layout/theme.liquid) after its own tm.js.
+// Golden Trail slot 14 (Maurice 10/31): on the King & Queen Crown Skull Pin, the o in "crown" in the description is a little
+// gold and opens the scorecard with ?golden=14 (golden.js records it there for hunters with all 151 loot boxes; the shop
+// can't tell who they are). Everything else on the product page is untouched.
 (function () {
   if (window.__maShopMenu) return; window.__maShopMenu = true;
   var me = document.currentScript;
@@ -248,6 +251,7 @@
       if (mPre) list.appendChild(mPre);
     }
     specialEditions(); readExcerpt(); setTimeout(function () { specialEditions(); readExcerpt(); }, 1500);
+    goldenPin(); setTimeout(goldenPin, 1500);
 
     fetch(BASE + 'pages/hunt-menu.html', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (html) {
       var gs = shape(new DOMParser().parseFromString(html, 'text/html'));
@@ -257,6 +261,21 @@
       thIn.appendChild(link(SITE + '/the-hunt', 'THE TREASURE HUNT')); thIn.appendChild(link(SITE + '/points', 'SUBMIT POINTS'));
       if (list) { mHunt.appendChild(link(SITE + '/the-hunt', 'THE TREASURE HUNT')); mHunt.appendChild(link(SITE + '/points', 'SUBMIT POINTS')); }
     });
+  }
+  // Golden Trail slot 14: one golden letter in the crown skull pin's description
+  function goldenPin() {
+    if (location.pathname.indexOf('/products/king-queen-crown-skull-pin') < 0 || document.querySelector('.ma-gold-o')) return;
+    var box = document.querySelector('rte-formatter, .product__description, .rte'); if (!box) return;
+    var tw = document.createTreeWalker(box, NodeFilter.SHOW_TEXT), n;
+    while ((n = tw.nextNode())) {
+      var i = n.nodeValue.indexOf('crown'); if (i < 0) continue;
+      var o = n.splitText(i + 2); o.splitText(1);
+      var s = document.createElement('span'); s.className = 'ma-gold-o'; s.textContent = 'o';
+      s.style.cssText = 'color:#b8902a;cursor:pointer';
+      s.addEventListener('click', function () { location.href = SITE + '/loot?golden=14'; });
+      o.parentNode.replaceChild(s, o);
+      return;
+    }
   }
   // Built once the theme's own scripts have run (tm.js wires up the theme's dropdowns), so they never double up on
   // these: at DOMContentLoaded, or at load if this arrives later.

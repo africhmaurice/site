@@ -1,4 +1,6 @@
 <!-- Generated copy of squarespace-hunt.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
+<!-- THE GOLDEN TRAIL (Maurice 10/31): slot 5 = tapping the Mark of the Crest (Act Four: the top-banner crest, img[data-mark="crest"]; before: above THE MECHANICS); slot 19 = the gold 4 on Act One riddle #4.
+     Finishers only (all 151 loot boxes); the script is at the end of this file. At go-live it must also go into squarespace-hunt.html. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
@@ -2475,3 +2477,43 @@ card.addEventListener('pointerup',up);card.addEventListener('pointercancel',up);
 card.addEventListener('click',function(e){if(moved){e.preventDefault();e.stopPropagation();moved=false;}},true);
 card.addEventListener('dragstart',function(e){e.preventDefault();});
 })();</script>
+<script>
+// THE GOLDEN TRAIL, slots 5 and 19 (Maurice 10/31). Only hunters with all 151 loot boxes get these (golden.js runs the queue).
+(window.maGoldenQ = window.maGoldenQ || []).push(function (G) {
+  // Slot 5, "Tap the Mark": the Mark of the Crest. Act Four (11/2) moved it into the top banner as
+  // img.h-mark[data-mark="crest"] above the Welcome text; before that it sat just above THE MECHANICS.
+  function mark() {
+    var top = document.querySelector('img[data-mark="crest"]');
+    if (top) {
+      if (top.getAttribute('data-gd')) return;
+      top.setAttribute('data-gd', '1'); top.style.cursor = 'pointer';
+      top.addEventListener('click', function () { G.found(5); });
+      return;
+    }
+    var hs = document.querySelectorAll('h3');
+    for (var i = 0; i < hs.length; i++) {
+      if (hs[i].textContent.replace(/\s+/g, ' ').trim().toUpperCase() !== 'THE MECHANICS') continue;
+      var img = hs[i].previousElementSibling;
+      while (img && img.tagName === 'SCRIPT') img = img.previousElementSibling;
+      if (!img || img.tagName !== 'IMG' || img.getAttribute('data-gd')) return;
+      img.setAttribute('data-gd', '1'); img.style.cursor = 'pointer';
+      img.addEventListener('click', function () { G.found(5); });
+      return;
+    }
+  }
+  // Slot 19, "The First, The Fourth": in Act One's dropdown, the 4 on riddle #4 is gold and can be tapped.
+  function four() {
+    var box = document.getElementById('act1-more'); if (!box) return;
+    var nums = box.querySelectorAll('.rd-num');
+    for (var i = 0; i < nums.length; i++) {
+      var n = nums[i]; if (n.textContent.trim() !== '#4' || n.querySelector('.gd-four')) continue;
+      n.innerHTML = '#<span class="gd-four" role="button" tabindex="0" aria-label="4" style="color:#f2cf5b;text-shadow:0 0 10px rgba(242,207,91,.7);cursor:pointer">4</span>';
+      var s = n.querySelector('.gd-four');
+      s.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); G.found(19); });
+      s.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); G.found(19); } });
+    }
+  }
+  function both() { mark(); four(); }
+  both(); var t = 0, iv = setInterval(function () { both(); if (++t > 60) clearInterval(iv); }, 500);
+});
+</script>

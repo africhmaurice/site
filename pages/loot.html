@@ -567,6 +567,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     tally.innerHTML = 'You have found <strong>' + found.length + '</strong> of ' + TOTAL +
       ' &nbsp;&middot;&nbsp; <strong>' + (found.length * 50) + '</strong> points';
     cardBox.style.display = 'block';
+    // Every box found: the card splits open onto the golden board (golden.js, Maurice 10/31).
+    if (found.length >= TOTAL) { if (window.maGolden) window.maGolden.board(cardBox, grid, true); else window.maGoldenBoardWait = [cardBox, grid]; return; } // the card is lit as is: its fill-in would wait for a card the board hides
     fillIn(found.slice().sort(function (a, b) { return a - b; }).join(','));
   }
 

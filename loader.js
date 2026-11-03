@@ -27,6 +27,9 @@
   // Headings (Maurice, 2026-10-09): heads.js turns every Atomic Marker and Cinzel heading into Cracked Imperia Bold
   // with its 3D (Extrude Flush). Clue and puzzle text keeps its own capitals and line breaks.
   (function () { var s = document.createElement('script'); s.src = BASE + 'heads.js'; (document.head || document.documentElement).appendChild(s); })();
+  // The Golden Trail (Maurice, 2026-10-31): golden.js records the hidden golden characters and draws the golden board
+  // on /loot for hunters with all 151 loot boxes. For everyone else it does nothing.
+  (function () { var s = document.createElement('script'); s.src = BASE + 'golden.js'; (document.head || document.documentElement).appendChild(s); })();
 
   function runScripts(root) {
     var scripts = Array.prototype.slice.call(root.querySelectorAll('script'));
