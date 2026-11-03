@@ -599,7 +599,7 @@ var ArcadeCard = (function () {
   var ART='https://africhmaurice.github.io/site/assets/games/';
   // crossOrigin: the maps are read pixel by pixel, so the drawings must load CORS-clean from GitHub Pages
   function img(f){var i=new Image();i.crossOrigin='anonymous';i.src=ART+f;return i;}
-  var IM={atomic:img('140-atomic.png'),nuke:img('140-boom.webp'),ship:img('ship-red.webp'),mine:[img('141-mine-1.webp'),img('141-mine-2.webp'),img('141-mine-3.webp')],bolt:img('141-lightning.webp'),sky:img('141-sky.webp'),
+  var IM={atomic:img('140-atomic.png'),nuke:img('140-boom.webp'),ship:img('ship-red.webp'),mine:[img('141-mine-1.webp'),img('141-mine-2.webp'),img('141-mine-3.webp')],bolt:img('78-lightning.png'),sky:img('141-sky.webp'),
     rock:img('141-rock.webp'),burst:[img('140-burst-1.webp'),img('140-burst-2.webp'),img('140-burst-3.webp')],coin:[img('141-coin-10.webp'),img('141-coin-15.webp')],
     spin:img('77-coin-spin.png'),ruby:img('74-ruby.png'),boost:img('77-boost.png'),skull:img('../img/skull-heart-red.webp'),chest:img('golden-chest.png'),repair:img('140-icon-repair.png'),crate:img('74-crate.png'),
     bolt2:img('78-bolt.png'),shipR:img('ship-red-right.webp'),flame:img('shared-flame.png'),tri:img('140-icon-triple-barrel.png'),gren:img('140-icon-grenades.png'),bigr:img('140-icon-bigger-rounds.png')};
@@ -1323,7 +1323,7 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
       else{cx.fillStyle='rgba(255,76,15,'+Math.max(0,1-f.t*2)+')';cx.beginPath();cx.arc(f.x,f.y,f.R*(.5+f.t),0,7);cx.fill();}return;}
     if(f.k==='burst'){var im=IM.burst[Math.min(2,Math.floor(f.t/.14))];if(ok(im))cx.drawImage(im,f.x-f.s/2,f.y-f.s/2,f.s,f.s);return;}
     if(f.k==='bolt'){var a=Math.floor(f.t*20)%2?.6:1;cx.globalAlpha=a*Math.max(0,1-f.t*1.5);
-      if(ok(IM.bolt)){var bw=24;cx.drawImage(IM.bolt,f.x-bw/2,0,bw,f.y+3);}else{cx.strokeStyle='#ffd166';cx.lineWidth=2;cx.beginPath();cx.moveTo(f.x,0);cx.lineTo(f.x,f.y);cx.stroke();}
+      if(ok(IM.bolt)){var lh=f.y+3,lw=lh*IM.bolt.naturalWidth/IM.bolt.naturalHeight;cx.save();cx.shadowColor='rgba(200,190,255,.9)';cx.shadowBlur=18;cx.drawImage(IM.bolt,f.x-lw*.885,0,lw,lh);cx.restore();}   // v11: Sky Gauntlet's lightning (its tip sits 88.5% across the art)else{cx.strokeStyle='#ffd166';cx.lineWidth=2;cx.beginPath();cx.moveTo(f.x,0);cx.lineTo(f.x,f.y);cx.stroke();}
       cx.globalAlpha=1;return;}
     if(f.k==='smoke'){cx.fillStyle='rgba(243,234,217,'+Math.max(0,.5-f.t)+')';cx.beginPath();cx.arc(f.x,f.y,3+f.t*20,0,7);cx.fill();return;}
     // water: the goon sinks out of sight in a ring of splash; lava: it flares up in flame and smoke and burns away
