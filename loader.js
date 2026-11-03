@@ -404,6 +404,7 @@
     list.appendChild(actLink(SITE + '/the-hunt#act4-riddles', 'RIDDLES & PUZZLES'));
     // the locked acts share one Past Acts heading (Maurice, 2026-11-02: "let's even this out")
     list.appendChild(actSub('PAST ACTS', 'all'));
+    list.appendChild(actLink(SITE + '/the-hunt#act3-tasks', 'ACT THREE TASKS'));
     list.appendChild(actLink(SITE + '/the-hunt#riddles', 'ACT THREE RIDDLES'));
     list.appendChild(actLink(SITE + '/the-hunt#act2-tasks', 'ACT TWO TASKS'));
     list.appendChild(actLink(SITE + '/the-hunt#act2-riddles', 'ACT TWO RIDDLES'));

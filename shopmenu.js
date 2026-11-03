@@ -76,7 +76,7 @@
     var earn = doc.createElement('div'); earn.appendChild(el('span', '', 'EARN POINTS'));
     [].filter.call(ov.children, function (a) { return a.tagName === 'A' && EARN.test(a.href) && !/#tasks$|#riddles$/.test(a.href); }).forEach(function (a) { earn.appendChild(link(a.getAttribute('href'), plain(a))); });
     [sub('ACT FOUR', 'four'), link(SITE + '/the-hunt#tasks', 'TASKS'), link(SITE + '/the-hunt#act4-riddles', 'RIDDLES & PUZZLES'),
-      sub('PAST ACTS', 'all'), link(SITE + '/the-hunt#riddles', 'ACT THREE RIDDLES'), link(SITE + '/the-hunt#act2-tasks', 'ACT TWO TASKS'), link(SITE + '/the-hunt#act2-riddles', 'ACT TWO RIDDLES'),
+      sub('PAST ACTS', 'all'), link(SITE + '/the-hunt#act3-tasks', 'ACT THREE TASKS'), link(SITE + '/the-hunt#riddles', 'ACT THREE RIDDLES'), link(SITE + '/the-hunt#act2-tasks', 'ACT TWO TASKS'), link(SITE + '/the-hunt#act2-riddles', 'ACT TWO RIDDLES'),
       link(SITE + '/the-hunt#act1-tasks', 'ACT ONE TASKS'), link(SITE + '/the-hunt#act1-riddles', 'ACT ONE RIDDLES')].forEach(function (n) { earn.appendChild(n); });
     gs['EARN POINTS'] = earn;
     if (gs['ADVENTURE']) [].slice.call(gs['ADVENTURE'].querySelectorAll('a')).forEach(function (a) { if (!/\/adventure\/?$/.test(a.getAttribute('href') || '')) a.parentNode.removeChild(a); else a.textContent = 'THE ADVENTURE SO FAR'; });
