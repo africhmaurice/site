@@ -630,9 +630,10 @@ var ArcadeCard = (function () {
   /* ---- the numbers (all in one place, to tune with Maurice) ------------------------------------------------- */
   // HUGE BOARDS (11/2): the world is 1920 wide (the maps at full width) with open sky above; goons are 14 across,
   // a quarter of their old size next to the map. A camera shows part of it; Overview shows all of it.
-  var WW=1920,SKY=700,GS=67.5,PS=22.5,MORTAR_L=45,WALL=24;   // v10: goons 3x the old size (22.5 -> 67.5); PS keeps drops their old size; WALL: the barrier on each side
+  var WW=1920,SKY=700,GS=67.5,PS=67.5,MORTAR_L=45,WALL=24,AS=3;   // AS (v11): every attack 3x bigger: blasts, craters, and the shots themselves
+    // v10: goons and drops 3x the old size (22.5 -> 67.5); WALL: the barrier on each side
   function wallIn(){return WALL+GS*.3;}   // how close a goon's middle can get to a barrier
-  var BOX_LEVEL=3,HP_CREW=100,WIN_BONUS=100,WALK=50,WALK_SPEED=30,STEP=1/120,GC=400,CREW_MAX=5,FFA_N=12;
+  var BOX_LEVEL=3,HP_CREW=100,WIN_BONUS=100,WALK=100,WALK_SPEED=60,DMGX=2,STEP=1/120,GC=400,CREW_MAX=5,FFA_N=12;
   var G=360,VMAX=860,WK=5;   // a full-power shot at 45 degrees carries about the width of the map
   function dl(L){return 1+(L-1)*9/5;}   // levels 1-6 cover the old ten steps of difficulty; past 6 it keeps climbing to the floors below
   function rivalHp(L){return L<=6?40+20*(L-1):150+12*(L-6);}   // v7: 40, 60, 80 ... 140, then +12 a level
@@ -649,6 +650,7 @@ var ArcadeCard = (function () {
   ];
   var SHARD={k:'shard',name:'Goma Bomb',R:10,dmg:24,wind:1,grav:1,pmax:1};
   var BOMBLET={k:'bomblet',name:'Barrage',R:12,dmg:24,wind:0,grav:1,pmax:1},CHUNK={k:'chunk',name:'Shatter',R:7,dmg:12,wind:1,grav:1,pmax:1};
+  [WEAPONS[1],WEAPONS[2],WEAPONS[4],SHARD,BOMBLET].forEach(function(w){w.dmg*=4;});   // v11: the specials (Lightning, Red Atomic, Goma Bomb, Barrage) do 4x damage
   var UPS=[
     {k:'blast',name:'Bigger blasts',what:'+15% blast size',cost:200,max:3},
     {k:'dmg',name:'Heavier stones',what:'+15% damage',cost:200,max:3},
@@ -851,7 +853,7 @@ var ArcadeCard = (function () {
   /* ---- pickups (Free-for-All): coins and crates on the ground; walk onto one to grab it ------------------------ */
   function safeX(near){for(var t=0;t<200;t++){var x=Math.round(t<100?near+rand(-300,300):rand(.05,.95)*W);if(x<10||x>W-10)continue;var y=surfaceY(x);if(y>H-8||liqAt(x,y+3)||liqAt(x,y+6))continue;return x;}return Math.round(W/2);}
   function spawnPickup(k,a,b){for(var t=0;t<150;t++){var x=Math.round(rand(a||.03,b||.97)*W),y=surfaceY(x);if(y>H-8||liqAt(x,y+3)||liqAt(x,y+6))continue;
-      if(crew.some(function(c){return c.alive&&Math.abs(c.x-x)<GS*.6+PS;})||pickups.some(function(p){return Math.abs(p.x-x)<PS*1.5;}))continue;   // never where a goon would grab it at once (reach GS*.6)
+      if(crew.some(function(c){return c.alive&&Math.abs(c.x-x)<GS*.6+PS*.4;})||pickups.some(function(p){return Math.abs(p.x-x)<PS*1.2;}))continue;   // never where a goon would grab it at once (reach GS*.6)
       pickups.push({k:k,x:x,y:y,v:k==='coin'?(Math.random()<.4?15:10):0,w:k==='wpn'?1+Math.floor(Math.random()*3):0,u:k==='up'?Math.floor(Math.random()*TEMP_UPS.length):-1});return true;}return false;}
   function pickStep(){
     pickups.forEach(function(p){if(!solidAt(p.x,p.y+1)&&!solidAt(p.x-2,p.y+1)&&!solidAt(p.x+2,p.y+1))p.y+=1;if(p.y>H||liqAt(p.x,p.y))p.gone=true;});
@@ -912,27 +914,27 @@ var ArcadeCard = (function () {
   }
   // what happens where a shot lands (v7): Red Atomic's mushroom cloud, Shatter's chunks, Burning's shaft
   function land(p,x,y){var w=p.w;
-    if(w.k==='atomic'){fx.push({k:'nuke',t:0,x:x,y:y,R:w.R*p.rm});}
+    if(w.k==='atomic'){fx.push({k:'nuke',t:0,x:x,y:y,R:w.R*p.rm*AS});}
     if(p.shat)for(var i=0;i<5;i++){var a=-Math.PI/2+(i-2)*.45;proj.push({w:CHUNK,x:x,y:y-4,vx:Math.cos(a)*170,vy:Math.sin(a)*190,t:0,owner:p.owner,fuse:0,rest:false,rot:i,rm:1,dm:p.dm,shard:true});}
     if(p.burn)fx.push({k:'fire',t:0,x:x,y:y,d:0,hit:[]});}
   // Barrage: the flare calls the red airship, which drops seven bombs across the spot
   function barrage(x,p){var top=Math.max(20,stormTop(x)-260);fx.push({k:'ship',t:0,x:x,y:top-14});say('Barrage!');
-    for(var i=0;i<7;i++)proj.push({w:BOMBLET,x:x-72+i*24+rand(-4,4),y:top,vx:0,vy:20,t:0,owner:p.owner,fuse:0,rest:false,rot:i,rm:p.rm,dm:p.dm,shard:true,delay:.45+i*.14});}
+    for(var i=0;i<7;i++)proj.push({w:BOMBLET,x:x+(-72+i*24+rand(-4,4))*AS,y:top,vx:0,vy:20,t:0,owner:p.owner,fuse:0,rest:false,rot:i,rm:p.rm,dm:p.dm,shard:true,delay:.45+i*.14});}
   // Burning: the stone keeps going straight down for 0.8 s, carving a shaft and hurting any goon in it
-  function fireStep(f,dt){if(f.t>.8)return;f.d+=70*dt;carve(f.x,f.y+f.d,5);
-    crew.forEach(function(c){if(c.alive&&f.hit.indexOf(c)<0&&Math.abs(c.x-f.x)<GS*.5&&c.y>f.y-2&&c.y-GS<f.y+f.d){f.hit.push(c);hurt(c,18,shotTeam);}});}
+  function fireStep(f,dt){if(f.t>.8)return;f.d+=70*AS*dt;carve(f.x,f.y+f.d,5*AS);
+    crew.forEach(function(c){if(c.alive&&f.hit.indexOf(c)<0&&Math.abs(c.x-f.x)<GS*.5&&c.y>f.y-2&&c.y-GS<f.y+f.d){f.hit.push(c);hurt(c,18*DMGX,shotTeam);}});}
   function stormTop(x){var top=H+60,xi=Math.round(x);if(xi<0||xi>=W)return top;for(var y=0;y<H;y++)if(solid[y*W+xi]){top=y;break;}
     crew.forEach(function(c){if(c.alive&&Math.abs(c.x-x)<5&&c.y-7<top)top=c.y-7;});return top;}
   function strike(x,p){
     var y=stormTop(x),w=WEAPONS[1];fx.push({k:'bolt',t:0,x:x,y:Math.min(y,H)});
     if(y>H){say('Off the map.');return;}
-    blast(x,y,w.R*(p?p.rm:1),Math.round(w.dmg*(p?p.dm:1)));carve(x,y+7,6);carve(x,y+13,5);
+    blast(x,y,w.R*(p?p.rm:1),Math.round(w.dmg*(p?p.dm:1)));carve(x,y+7*AS,6*AS);carve(x,y+13*AS,5*AS);
   }
-  function blast(x,y,R,dmg){
+  function blast(x,y,R,dmg){R*=AS;dmg*=DMGX;   // v11: attacks 3x bigger, 2x damage
     carve(x,y,R);fx.push({k:'boom',t:0,x:x,y:y,R:R});
-    crew.forEach(function(c){if(!c.alive)return;var dx=c.x-x,dy=(c.y-GS*.43)-y,dist=Math.sqrt(dx*dx+dy*dy),reach=R+5;
+    crew.forEach(function(c){if(!c.alive)return;var dx=c.x-x,bx=Math.max(0,Math.abs(dx)-GS*.32),by=Math.max(0,y-c.y,(c.y-GS*.95)-y),dist=Math.sqrt(bx*bx+by*by),reach=R+5;   // v11: measured to the goon's body, not its middle, so a hit on a big goon counts in full
       if(dist<reach){var k=1-dist/reach;if(dmg>0)hurt(c,Math.max(1,Math.round(dmg*Math.min(1,k*1.25))),shotTeam);
-        var dir=dist>1?dx/dist:(Math.random()<.5?-1:1);c.vx+=dir*90*k;c.vy-=80+90*k;c.ground=false;}});
+        var dir=Math.abs(dx)>2?(dx>0?1:-1):(Math.random()<.5?-1:1);c.vx+=dir*90*k;c.vy-=80+90*k;c.ground=false;}});
   }
 
   /* ---- turns ------------------------------------------------------------------------------------------------- */
@@ -950,7 +952,7 @@ var ArcadeCard = (function () {
     newWind();walkLeft=WALK;jumped=false;walkDir=0;walkAcc=0;settleT=0;camHold=false;
     if(team===0){phase='aim';weapon=ammo[0][myWeapon]>0?myWeapon:0;myWeapon=weapon;say('Your turn. Drag on the sky to aim, then press Fire.');
       coins+=TURN_COINS;fx.push({k:'txt',t:0,x:Math.max(40,Math.min(W-40,active.x)),y:active.y-46,label:'+'+TURN_COINS+' COINS',c:'#ffd166'});}
-    else{phase='ai';ai={t:0,plan:null};say(mode==='ffa'?GOMAS[active.goma][1]+' is aiming.':'The rival crew is aiming.');}
+    else{phase='ai';ai={t:0,plan:null,go:aiLoot(active),left:WALK,acc:0};say(mode==='ffa'?GOMAS[active.goma][1]+' is aiming.':'The rival crew is aiming.');}
     renderWeapons();padState();hud();
   }
   // v8: every third turn one random drop lands on each side of the map (Free-for-All also keeps its coins)
@@ -977,30 +979,37 @@ var ArcadeCard = (function () {
   function simulate(c,a,pw,w){
     var m=muzzle(c,a),v=shotVel(a,pw,w),x=m.x,y=m.y,vx=v.vx,vy=v.vy,ax=wind*WK*w.wind,g=G*w.grav;
     for(var i=0;i<1100;i++){vx+=ax*STEP;vy+=g*STEP;x+=vx*STEP;y+=vy*STEP;
+      if(x<WALL&&vx<0){vx=-vx*.7;x=2*WALL-x;}else if(x>W-WALL&&vx>0){vx=-vx*.7;x=2*(W-WALL)-x;}   // v11: the barriers bounce it, as in play
       if(x<-80||x>W+80||y>H+40)return null;
       if(liqAt(x,y))return {x:x,y:y,wet:1};
-      if(solidAt(x,y)||hitChar(x,y,i<30?c:null)){if(w.k==='storm'){var ty=stormTop(x);return ty>H?null:{x:x,y:ty};}return {x:x,y:y};}}
+      var hc=hitChar(x,y,i<30?c:null);if(solidAt(x,y)||hc){if(hc)return {x:x,y:y,who:hc};if(w.k==='storm'){var ty=stormTop(x);return ty>H?null:{x:x,y:ty};}return {x:x,y:y};}}
     return null;
   }
   // Free-for-All: each AI goon picks its own target (weak and close looks best, with a little chance), not just you
   function pickTarget(c){var foes=crew.filter(function(o){return o.alive&&o.team!==c.team;});
     if(mode==='ffa'){var best=null,bs=1e9;foes.forEach(function(o){var sc=o.hp*.6+Math.abs(o.x-c.x)*.12+Math.random()*40;if(sc<bs){bs=sc;best=o;}});return best;}
     if(level>=4)return foes.slice().sort(function(a,b){return a.hp-b.hp;})[0];return foes[Math.floor(Math.random()*foes.length)];}
-  function planAi(){
+  function planAi(force){
     var c=active,L=level,tgt=pickTarget(c);
-    var wi=0,am=ammo[c.team];
-    if(mode==='ffa'||L>=3){var r=Math.random();if(r<.15&&am[4]>0)wi=4;else if(r<.25&&am[2]>0)wi=2;else if(r<.4&&am[3]>0)wi=3;else if(r<.6&&am[1]>0)wi=1;}
-    var w=WEAPONS[wi],dir=tgt.x<c.x?-1:1,bestP=null,bestD=1e9,tx0=tgt.x,ty0=tgt.y-6;
+    var wi=force>=0?force:0,am=ammo[c.team];
+    if(!(force>=0)&&(mode==='ffa'||L>=3)){var r=Math.random();if(r<.15&&am[4]>0)wi=4;else if(r<.25&&am[2]>0)wi=2;else if(r<.4&&am[3]>0)wi=3;else if(r<.6&&am[1]>0)wi=1;}
+    var w=WEAPONS[wi],dir=tgt.x<c.x?-1:1,bestP=null,bestD=1e9,tx0=tgt.x,ty0=tgt.y-GS*.45;   // v11: aim at the middle of the (bigger) goon
     for(var deg=8;deg<=86;deg+=3){var a=dir>0?deg*Math.PI/180:Math.PI-deg*Math.PI/180;
       for(var pw=16;pw<=100;pw+=3){var hit=simulate(c,a,pw,w.split?WEAPONS[0]:w);if(!hit)continue;
-        var dd=Math.sqrt((hit.x-tx0)*(hit.x-tx0)+(hit.y-ty0)*(hit.y-ty0));if(hit.wet)dd+=200;
+        var dd=hit.who===tgt?0:Math.sqrt((hit.x-tx0)*(hit.x-tx0)+(hit.y-ty0)*(hit.y-ty0));if(hit.wet)dd+=200;
         crew.forEach(function(o){if(!o.alive||o.team!==c.team)return;var ox=o.x-hit.x,oy=o.y-6-hit.y;if(Math.sqrt(ox*ox+oy*oy)<w.R+8)dd+=400;});
         if(dd<bestD){bestD=dd;bestP={a:a,pw:pw};}}}
     if(!bestP)bestP={a:dir>0?Math.PI/4:Math.PI*.75,pw:70};
     var a2=bestP.a+gauss()*aimErr(L)*aiMul*Math.PI/180,p2=Math.max(10,Math.min(100,bestP.pw*(1+gauss()*powErr(L)*aiMul/100)));
     return lastPlan={wi:wi,a:a2,pw:p2,a0:c.ang,p0:c.pow,miss:bestD,tgt:tgt.team,by:c.team};
   }
+  // v11: a rival first walks over to grab a drop it can reach this turn (never into water or lava), then aims
+  function aiLoot(c){var reach=WALK+GS*.6,best=null,bd=1e9;pickups.forEach(function(p){var d=Math.abs(p.x-c.x);if(!p.gone&&d<=reach&&d<bd&&Math.abs(p.y-c.y)<GS*1.5){bd=d;best=p;}});return best;}
+  function aiWalk(dt){var c=active,p=ai.go;if(!p||p.gone||ai.left<=0||!(c.ground||feetSolid(c.x,c.y))||Math.abs(p.x-c.x)<GS*.4){ai.go=null;return false;}
+    var dir=p.x<c.x?-1:1;ai.acc+=WALK_SPEED*dt;while(ai.acc>=1&&ai.left>0){ai.acc--;if(liqAt(c.x+dir*4,c.y+3)||liqAt(c.x+dir*4,c.y+6)||!walkStep(c,dir,1)){ai.go=null;return false;}ai.left--;}
+    pickStep();return true;}
   function aiStep(dt){
+    if(ai.go&&aiWalk(dt))return;
     ai.t+=dt;var t1=mode==='ffa'?.35:.45,t2=mode==='ffa'?.95:1.15;   // v7: rivals aim faster
     if(!ai.plan&&ai.t>t1){ai.plan=planAi();weapon=ai.plan.wi;active.face=Math.cos(ai.plan.a)<0?-1:1;}
     if(ai.plan){var k=Math.min(1,(ai.t-t1)/(t2-t1-.3));active.ang=ai.plan.a0+(ai.plan.a-ai.plan.a0)*k;active.pow=ai.plan.p0+(ai.plan.pw-ai.plan.p0)*k;
@@ -1140,7 +1149,7 @@ var ArcadeCard = (function () {
   }
   hold(bL,-1);hold(bR,1);
   function walkFor(dir,px){var moved=0;while(moved<px&&walkLeft>0){if(!walkStep(active,dir,1))break;moved++;walkLeft--;}pickStep();padState();if(walkLeft<=0)say('Out of moves this turn.');}
-  function jump(){if(!canAct()||jumped||!active.ground)return;jumped=true;active.vy=-150;active.vx=active.face*60;active.ground=false;padState();}
+  function jump(){if(!canAct()||jumped||!active.ground)return;jumped=true;active.vy=-212;active.vx=active.face*120;active.ground=false;padState();}
   var shopOv=$('.sd-shopov'),shopIn=$('.sd-shopin'),shopOpen=false,shopHome=null;
   function openShop(){if(mode!=='ffa'||!canAct()||shopOpen)return;shopOpen=true;paused=true;shopHome=shopEl.nextSibling;shopIn.appendChild(shopEl);shopEl.hidden=false;renderShop();shopOv.hidden=false;padState();
     try{shopOv.querySelector('.sd-up:not([disabled])').focus({preventScroll:true});}catch(e){}}
@@ -1269,6 +1278,8 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
     if(st)cx.drawImage(st,-sz/2,-sz*.54,sz,sz*1.08);else{cx.fillStyle='#8a8a8a';cx.beginPath();cx.arc(0,0,sz/2,0,7);cx.fill();}cx.restore();}
   function drawProj(p){
     if(p.delay>0)return;   // a Barrage bomb shows only once the airship drops it
+    cx.save();cx.translate(p.x,p.y);cx.scale(AS,AS);cx.translate(-p.x,-p.y);drawProj1(p);cx.restore();}
+  function drawProj1(p){
     var w=p.w;
     if(w.k==='ball')drawStone(p,6);
     else if(w.k==='shard')drawStone(p,4.5);
@@ -1415,10 +1426,11 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
     killOthers:function(){crew.forEach(function(c){if(c.team!==0)c.hp=0;});phase='settle';settleT=0;},
     aiErr:function(m){aiMul=m;},walk:function(dir,px){walkFor(dir,px);},
     blast:function(x,y,R,dm){blast(x,y,R,dm||0);},
-    plan:function(){return planAi();},
+    plan:function(wi){return planAi(wi);},
     coins:function(n){coins=n;hud();if(panelKind==='shop')renderShop();},
     buy:function(k){return buy(k);},
     clearPickups:function(){pickups=[];},
+    pickupAt:function(k,x){x=Math.round(x);var y=surfaceY(x);pickups.push({k:k,x:x,y:y,v:k==='coin'?10:0});return {x:x,y:y};},
     // put a pickup right beside your active goon (on the side it faces) so one short walk grabs it
     drop:function(n){dropPicks(n);},
     pickupBeside:function(k,dx){var x=Math.round(active.x+(dx||6)),y=surfaceY(x);pickups.push({k:k,x:x,y:y,v:k==='coin'?10:0});return {x:x,y:y};},
