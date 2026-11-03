@@ -630,7 +630,8 @@ var ArcadeCard = (function () {
   /* ---- the numbers (all in one place, to tune with Maurice) ------------------------------------------------- */
   // HUGE BOARDS (11/2): the world is 1920 wide (the maps at full width) with open sky above; goons are 14 across,
   // a quarter of their old size next to the map. A camera shows part of it; Overview shows all of it.
-  var WW=1920,SKY=700,GS=22.5,MORTAR_L=15;   // v8: goons 25% bigger again (14 -> 18 -> 22.5)
+  var WW=1920,SKY=700,GS=67.5,PS=22.5,MORTAR_L=45,WALL=24;   // v10: goons 3x the old size (22.5 -> 67.5); PS keeps drops their old size; WALL: the barrier on each side
+  function wallIn(){return WALL+GS*.3;}   // how close a goon's middle can get to a barrier
   var BOX_LEVEL=3,HP_CREW=100,WIN_BONUS=100,WALK=50,WALK_SPEED=30,STEP=1/120,GC=400,CREW_MAX=5,FFA_N=12;
   var G=360,VMAX=860,WK=5;   // a full-power shot at 45 degrees carries about the width of the map
   function dl(L){return 1+(L-1)*9/5;}   // levels 1-6 cover the old ten steps of difficulty; past 6 it keeps climbing to the floors below
@@ -806,6 +807,7 @@ var ArcadeCard = (function () {
     if(!c.alive)return;if(c.hit>0)c.hit-=dt;if(c.fireT>0)c.fireT-=dt;
     if(c.ground){if(feetSolid(c.x,c.y))return;c.ground=false;}
     c.vy+=GC*dt;var nx=c.x+c.vx*dt,ny=c.y+c.vy*dt,sx=c.vx>0?1:-1;
+    if(nx<wallIn()&&c.vx<0){c.vx=-c.vx*.6;nx=wallIn();}else if(nx>W-wallIn()&&c.vx>0){c.vx=-c.vx*.6;nx=W-wallIn();}   // v10: bounce off the barrier
     if(c.vx!==0&&(solidAt(nx+sx*3,c.y-5)||solidAt(nx+sx*3,c.y-9))){c.vx*=-.3;nx=c.x;}
     if(c.vy<0&&solidAt(nx,ny-12)){c.vy=0;ny=c.y;}
     if(c.vy>=0&&(inside(nx,ny)||feetSolid(nx,ny))){var k=0;while(inside(nx,ny)&&k<20){ny--;k++;}
@@ -834,7 +836,7 @@ var ArcadeCard = (function () {
   }
   function walkStep(c,dir,dist){
     c.face=dir;if(Math.cos(c.ang)*dir<0)c.ang=Math.PI-c.ang;
-    var nx=c.x+dir*dist;if(nx<3||nx>W-3)return false;
+    var nx=c.x+dir*dist;if(nx<wallIn()||nx>W-wallIn())return false;
     var ny=c.y,k=0;function body(y){return solidAt(nx,y)||solidAt(nx+dir*2,y-4)||solidAt(nx,y-8);}
     while(body(ny)&&k<5){ny--;k++;}if(body(ny))return false;
     k=0;while(!feetSolid(nx,ny)&&k<4){ny++;k++;}
@@ -849,7 +851,7 @@ var ArcadeCard = (function () {
   /* ---- pickups (Free-for-All): coins and crates on the ground; walk onto one to grab it ------------------------ */
   function safeX(near){for(var t=0;t<200;t++){var x=Math.round(t<100?near+rand(-300,300):rand(.05,.95)*W);if(x<10||x>W-10)continue;var y=surfaceY(x);if(y>H-8||liqAt(x,y+3)||liqAt(x,y+6))continue;return x;}return Math.round(W/2);}
   function spawnPickup(k,a,b){for(var t=0;t<150;t++){var x=Math.round(rand(a||.03,b||.97)*W),y=surfaceY(x);if(y>H-8||liqAt(x,y+3)||liqAt(x,y+6))continue;
-      if(crew.some(function(c){return c.alive&&Math.abs(c.x-x)<GS;})||pickups.some(function(p){return Math.abs(p.x-x)<GS;}))continue;   // never where a goon would grab it at once (reach GS*.6)
+      if(crew.some(function(c){return c.alive&&Math.abs(c.x-x)<GS*.6+PS;})||pickups.some(function(p){return Math.abs(p.x-x)<PS*1.5;}))continue;   // never where a goon would grab it at once (reach GS*.6)
       pickups.push({k:k,x:x,y:y,v:k==='coin'?(Math.random()<.4?15:10):0,w:k==='wpn'?1+Math.floor(Math.random()*3):0,u:k==='up'?Math.floor(Math.random()*TEMP_UPS.length):-1});return true;}return false;}
   function pickStep(){
     pickups.forEach(function(p){if(!solidAt(p.x,p.y+1)&&!solidAt(p.x-2,p.y+1)&&!solidAt(p.x+2,p.y+1))p.y+=1;if(p.y>H||liqAt(p.x,p.y))p.gone=true;});
@@ -896,6 +898,7 @@ var ArcadeCard = (function () {
       [-1,0,1].forEach(function(k){proj.push({w:SHARD,x:p.x,y:p.y,vx:p.vx+k*60,vy:p.vy-15,t:0,owner:p.owner,fuse:0,rest:false,rot:k,rm:p.rm,dm:p.dm,shard:true});});return;}
     p.vx+=wind*WK*w.wind*dt;p.vy+=G*w.grav*dt;
     var nx=p.x+p.vx*dt,ny=p.y+p.vy*dt;
+    if(nx<WALL&&p.vx<0){p.vx=-p.vx*.7;nx=WALL+(WALL-nx);fx.push({k:'smoke',t:0,x:WALL,y:ny});}else if(nx>W-WALL&&p.vx>0){p.vx=-p.vx*.7;nx=W-WALL-(nx-(W-WALL));fx.push({k:'smoke',t:0,x:W-WALL,y:ny});}   // v10: bounce off the barrier
     if(nx<-80||nx>W+80||ny>H+40){p.done=true;say('Off the map.');return;}
     var lq=liqAt(nx,ny);if(lq){p.done=true;fx.push({k:lq===2?'fizz':'splash',t:0,x:nx,y:ny});say(lq===2?'Into the lava.':'Into the water.');return;}
     if(w.k==='mine'){
@@ -1283,12 +1286,12 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
     case 'heal':return IM.repair;case 'ammo':return IM.crate;case 'boost':return IM.bigr;case 'wpn':return [IM.bolt2,IM.bolt2,IM.atomic,IM.shipR][p.w||1];case 'up':return [IM.tri,IM.gren,IM.flame][p.u>=0?p.u:0];}return null;}
   function drawPickup(p){var x=p.x,y=p.y,b=Math.sin(clock*4+x)*.8;
     // the spinning Izzy coin: 32 frames of a half-turn, each coin at its own point in the turn
-    if(p.k==='coin'&&ok(IM.spin)){var cd=GS*(p.v===15?.8:.7),fs=cd*220/150,fi=Math.floor(((clock*.75+x*.013)%1+1)%1*32)%32;cx.drawImage(IM.spin,fi*128,0,128,128,x-fs/2,y-cd*.6-fs/2+b,fs,fs);return;}
+    if(p.k==='coin'&&ok(IM.spin)){var cd=PS*(p.v===15?.8:.7),fs=cd*220/150,fi=Math.floor(((clock*.75+x*.013)%1+1)%1*32)%32;cx.drawImage(IM.spin,fi*128,0,128,128,x-fs/2,y-cd*.6-fs/2+b,fs,fs);return;}
     var pim=pickImg(p);
-    if(pim&&ok(pim)){var S=GS*(p.k==='gem'?1.6:p.k==='wpn'&&p.w===3?1.5:1.05),r=pim.naturalWidth/pim.naturalHeight,dw=r>=1?S:S*r,dh=r>=1?S/r:S;
+    if(pim&&ok(pim)){var S=PS*(p.k==='gem'?1.6:p.k==='wpn'&&p.w===3?1.5:1.05),r=pim.naturalWidth/pim.naturalHeight,dw=r>=1?S:S*r,dh=r>=1?S/r:S;
       cx.save();cx.shadowColor='rgba(255,255,254,.95)';cx.shadowBlur=3;cx.drawImage(pim,x-dw/2,y-dh-1+b,dw,dh);cx.restore();return;}
     if(p.k==='coin'){var im=IM.coin[p.v===15?1:0];if(ok(im))cx.drawImage(im,x-4.5,y-10+b,9,9);else{cx.fillStyle='#ffd166';cx.beginPath();cx.arc(x,y-5.5+b,4.5,0,7);cx.fill();}return;}
-    cx.save();cx.translate(x,y);cx.scale(GS/30,GS/30);
+    cx.save();cx.translate(x,y);cx.scale(PS/30,PS/30);
     var col={heal:'#89fbcb',ammo:'#ff4c0f',gem:'#5fd3f3',turn:'#ffd166',life:'#ff4c0f',big:'#b9b9b9',token:'#ffd166',wpn:'#ff4c0f',up:'#c3a6ff'}[p.k]||'#c3a6ff';cx.fillStyle='#6b4423';cx.fillRect(-7,-14,14,14);cx.strokeStyle='#2a1a10';cx.lineWidth=1.5;cx.strokeRect(-7,-14,14,14);
     cx.fillStyle=col;if(p.k==='heal'){cx.fillRect(-1.5,-12,3,10);cx.fillRect(-5,-8.5,10,3);}
     else if(p.k==='ammo'){cx.beginPath();cx.arc(0,-7,3.5,0,7);cx.fill();}
@@ -1360,6 +1363,10 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
       cx.fillText(tl,VW-16,FS+12);
       if(streak>1){cx.font='800 '+Math.round(FS*.8)+'px Almarai,sans-serif';cx.fillStyle='#ffd166';cx.fillText('STREAK x'+streak,VW-16,FS*2+22);}}
   }
+  function drawWalls(){var top=Math.min(0,cam.cy-VH/cam.z),bot=Math.max(H,cam.cy+VH/cam.z),o=80;   // dark stone from past the map edge to the barrier, with a glowing emerald face
+    [[-o,1],[W-WALL,-1]].forEach(function(w){var x=w[0],ww=WALL+o,g=cx.createLinearGradient(w[1]>0?x:x+ww,0,w[1]>0?x+ww:x,0);
+      g.addColorStop(0,'#0b170f');g.addColorStop(.75,'#163323');g.addColorStop(1,'#2bd4a0');cx.fillStyle=g;cx.fillRect(x,top,ww,bot-top);
+      cx.fillStyle='#89fbcb';cx.fillRect(w[1]>0?WALL-3:W-WALL,top,3,bot-top);});}
   function draw(){
     cx.setTransform(DPR,0,0,DPR,0,0);cx.fillStyle='#7fb3a0';cx.fillRect(0,0,VW,VH);
     var z=cam.z;cx.setTransform(DPR*z,0,0,DPR*z,DPR*(VW/2-cam.cx*z),DPR*(VH/2-cam.cy*z));
@@ -1367,6 +1374,7 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
     else{var g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#bfe3df');g.addColorStop(1,'#8cc7c0');cx.fillStyle=g;cx.fillRect(0,0,W,H);}
     if(usingMap)cx.drawImage(lc,0,0,W,H);
     cx.drawImage(tc,0,0,W,H);
+    drawWalls();
     pickups.forEach(drawPickup);
     crew.forEach(function(c){if(c.alive)drawCrew(c);});
     proj.forEach(drawProj);
