@@ -1630,31 +1630,45 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 })();
 </script>
-<!-- GOLDEN TRAIL slot 17 (Maurice 10/31, clue "The Missing Plank"). For finishers only (golden.js runs the queued function):
-     a small drawing of the raft sits under the "What Happens" story, lashed planks with one plank missing. Tapping the
-     gap (or Tab and Enter on it) records slot 17. This page is generated from squarespace-raft.html in the leaderboard
-     project, so this block has to go there too at go-live. -->
+<!-- GOLDEN TRAIL slot 17 (Maurice 11/3, clue "The Missing Plank, Lost In The River"). For finishers only (golden.js runs the
+     queued function): only the I in RIVER in the title at the top of the page can be tapped (or reached with Tab and Enter).
+     An invisible button is laid over the letter instead of wrapping it: heads.js copies the title's text nodes into the 3D
+     layer, and splitting the word would put spaces in that copy. So the title itself is untouched. This page is generated
+     from squarespace-raft.html in the leaderboard project, so this block has to go there too at go-live. -->
 <style>
-.cr-gold-raft{position:relative;width:min(100%,264px);aspect-ratio:264/96;margin-top:20px}
-.cr-gold-raft svg{display:block;width:100%;height:100%}
-.cr-gold-raft button{position:absolute;top:0;bottom:0;left:calc(100% * 170 / 264);width:calc(100% * 32 / 264);margin:0;padding:0;border:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.cr-gold-raft button:focus-visible{outline:2px solid #a2f590;outline-offset:2px}
+#cr-title .cr-gold-i{position:absolute;display:block;z-index:2;margin:0;padding:0;border:0;border-radius:0;min-width:0;min-height:0;background:transparent;box-shadow:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#cr-title .cr-gold-i:focus-visible{outline:2px solid #a2f590;outline-offset:2px}
+@media (pointer:coarse){#cr-title .cr-gold-i{pointer-events:none}}
 </style>
 <script>(function(){
   (window.maGoldenQ=window.maGoldenQ||[]).push(function(G){
     var tries=0;
     (function wait(){
-      var story=document.querySelector('#cr-results .cr-story');
-      if(!story){if(++tries<120)setTimeout(wait,500);return;}
-      if(story.querySelector('.cr-gold-raft'))return;
-      var planks='';
-      for(var i=0;i<9;i++){if(i===6)continue;var x=6+i*28;planks+='<rect x="'+x+'" y="10" width="24" height="76" fill="#f3ead9" stroke="#0b170f" stroke-width="2.5"/><path d="M'+(x+7)+' 22v18M'+(x+15)+' 52v22" stroke="#0b170f" stroke-width="1.4" fill="none" opacity=".55"/>';}
-      var ropes='<path d="M2 30h260M2 66h260" stroke="#a2f590" stroke-width="2" fill="none" opacity=".75"/>';
-      var fig=document.createElement('div');fig.className='cr-gold-raft';
-      fig.innerHTML='<svg viewBox="0 0 264 96" aria-hidden="true">'+planks+ropes+'</svg>';
-      var b=document.createElement('button');b.type='button';b.setAttribute('aria-label','The gap in the raft');
+      var title=document.getElementById('cr-title'),word=title&&title.querySelector('span'),text=word&&word.firstChild;
+      if(!text||text.nodeType!==3){if(++tries<120)setTimeout(wait,500);return;}
+      if(title.querySelector('.cr-gold-i'))return;
+      var at=text.data.search(/i/i);if(at<0)return;
+      if(getComputedStyle(title).position==='static')title.style.position='relative';
+      var b=document.createElement('button');b.type='button';b.className='cr-gold-i';b.setAttribute('aria-label','I');
       b.addEventListener('click',function(){G.found(17);});
-      fig.appendChild(b);story.appendChild(fig);
+      // Phones steer a tap onto the nearest button, so a tap on the R or V would land here. On a touch screen the button stays
+      // out of the way (it is still there for Tab and Enter) and the title checks where the tap really landed.
+      title.addEventListener('click',function(e){
+        if(e.target===b||!e.detail)return;
+        var q=letter(),w=Math.max(q.width,14);
+        if(Math.abs(e.clientX-(q.left+q.width/2))<=w/2&&e.clientY>=q.top&&e.clientY<=q.bottom)G.found(17);
+      });
+      title.appendChild(b);
+      function letter(){var r=document.createRange();r.setStart(text,at);r.setEnd(text,at+1);return r.getBoundingClientRect();}
+      // Keep the button on the letter: the title resizes with the page and when its fonts arrive.
+      function seat(){
+        var q=letter(),t=title.getBoundingClientRect();if(!q.width)return;
+        b.style.left=(q.left-t.left-title.clientLeft)+'px';b.style.width=q.width+'px';
+        b.style.top=(q.top-t.top-title.clientTop)+'px';b.style.height=q.height+'px';
+      }
+      seat();window.addEventListener('resize',seat);window.addEventListener('load',seat);
+      if(window.ResizeObserver)new ResizeObserver(seat).observe(title);
+      if(document.fonts){document.fonts.ready.then(seat);document.fonts.addEventListener('loadingdone',seat);}
     })();
   });
 })();</script>

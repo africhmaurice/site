@@ -466,9 +466,10 @@ maStart();
    Slot 15 "Monitor Buster Casey, X Marks the Spot": the X in EXCLUSIVE. Two places count: the X on this slider's Screen
    Rant slide (span.gd-x, slide copies included) and the X in the SCREENRANT EXCLUSIVE badge on the Screen Rant picture
    in the press slider further down the page (a hotspot measured on screenrant-sneak-peek.png, 750 x 645).
-   Slot 16 "Peeking Over Wine Daddy's Shoulder": in Smitty's picture in the reviews slider (Elfsight, img alt SMITTY),
-   the R of BRIDGERTON peeking over his shoulder looks like a P; tapping that letter counts (measured on the 856 x 804
-   picture; the phone widget shows the same picture as a 40px avatar with no alt, matched by its file name). Both pictures are drawn with object-fit: cover, so a tap is mapped back onto the picture before checking. */
+   Slot 16 "The Eye Peaking Over Wine Daddy's Shoulder" (Maurice 11/3): in Smitty's picture in the reviews slider (Elfsight,
+   img alt SMITTY), the I of BRIDGERTON right after the P-looking R, peeking over his shoulder, on the left side of the
+   picture; tapping that letter counts and the P does not (measured on the 856 x 804 picture; the phone widget shows the
+   same picture as a 40px avatar with no alt, matched by its file name). Both pictures are drawn with object-fit: cover, so a tap is mapped back onto the picture before checking. */
 (window.maGoldenQ = window.maGoldenQ || []).push(function (G) {
   var st = document.createElement('style'); st.textContent = '.gd-x{cursor:pointer}'; document.head.appendChild(st);
   // where a tap landed on the picture, as fractions of its full width and height (object-fit cover/contain/fill)
@@ -480,14 +481,16 @@ maStart();
     return { fx: (e.clientX - ox) / w, fy: (e.clientY - oy) / h, w: w, h: h };
   }
   // a tap within the letter, or within 14px of its middle (the letters are small on a phone)
-  function inLetter(p, box) {
+  // (zone, if given, is as far as that reach may go, so it can't spill onto the next letter)
+  function inLetter(p, box, zone) {
     if (!p) return false;
+    if (zone && !(p.fx >= zone[0] && p.fx <= zone[2] && p.fy >= zone[1] && p.fy <= zone[3])) return false;
     var cx = (box[0] + box[2]) / 2, cy = (box[1] + box[3]) / 2;
     var inside = p.fx >= box[0] && p.fx <= box[2] && p.fy >= box[1] && p.fy <= box[3];
     var near = Math.abs((p.fx - cx) * p.w) <= 14 && Math.abs((p.fy - cy) * p.h) <= 14;
     return inside || near;
   }
-  var SR_X = [327 / 750, 287 / 645, 340 / 750, 301 / 645], SMITTY_R = [582 / 856, 308 / 804, 630 / 856, 350 / 804];
+  var SR_X = [327 / 750, 287 / 645, 340 / 750, 301 / 645], SMITTY_I = [293 / 856, 306 / 804, 309 / 856, 350 / 804], SMITTY_ZONE = [274 / 856, 296 / 804, 325 / 856, 362 / 804];
   document.addEventListener('click', function (e) {
     var t = e.target;
     if (t.closest && t.closest('.gd-x')) { e.preventDefault(); e.stopPropagation(); G.found(15); return; }
@@ -496,7 +499,7 @@ maStart();
     for (var i = 0; i < under.length; i++) {
       var im = under[i]; if (im.tagName !== 'IMG') continue;
       if (/screenrant-sneak-peek/.test(im.currentSrc || im.src) && inLetter(onPic(im, e), SR_X)) { e.preventDefault(); e.stopPropagation(); G.found(15); return; }
-      if ((im.alt === 'SMITTY' || /Screenshot-2026-03-04-193300/.test(im.currentSrc || im.src)) && inLetter(onPic(im, e), SMITTY_R)) { e.preventDefault(); e.stopPropagation(); G.found(16); return; }
+      if ((im.alt === 'SMITTY' || /Screenshot-2026-03-04-193300/.test(im.currentSrc || im.src)) && inLetter(onPic(im, e), SMITTY_I, SMITTY_ZONE)) { e.preventDefault(); e.stopPropagation(); G.found(16); return; }
     }
   }, true);
 });

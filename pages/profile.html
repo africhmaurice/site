@@ -214,8 +214,8 @@ html,body{margin:0 !important;padding:0 !important}
 #hp .hp-race{background:rgba(11,23,15,.55);border:1px solid rgba(195,166,255,.45);padding:20px 22px;margin:0 0 18px}
 #hp .hp-race p{margin:0 0 12px;font-size:17px;line-height:1.5}
 #hp .hp-race p a{color:var(--hitext);font-weight:700}
-#hp .hp-bar{height:16px;background:rgba(255,255,255,.12);position:relative}
-#hp .hp-bar>div{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--red),var(--ember))}
+#hp .hp-bar{height:16px;background:rgba(255,255,255,.12);position:relative;overflow:hidden}
+#hp .hp-bar>div{position:absolute;inset:0 auto 0 0;max-width:100%;background:linear-gradient(90deg,var(--red),var(--ember))}
 #hp .hp-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:0 0 18px}
 #hp .hp-stat{background:rgba(72,45,133,.55);border:1px solid rgba(195,166,255,.45);padding:18px 18px 16px;display:flex;flex-direction:column;gap:6px}
 #hp .hp-stat i{font-style:normal;font-weight:800;font-size:12px;letter-spacing:.14em;color:var(--lav)}
@@ -273,7 +273,7 @@ html,body{margin:0 !important;padding:0 !important}
   var DATA = 'https://africhmaurice.github.io/leaderboard/profiles.json', BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var SALT = 'thp1:', KEY = 'thProfile:email', U = 'https://www.mauriceafrich.com';
   var root = document.getElementById('hp'), card = document.getElementById('hp-card'), find = document.getElementById('hp-find'), err = document.getElementById('hp-err');
-  var EXAMPLE = /\/preview-next\//.test(location.pathname), BOXES = 51;
+  var EXAMPLE = /\/preview-next\//.test(location.pathname), BOXES = 151;
   var fmt = function (n) { return Number(n || 0).toLocaleString('en-US'); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var get = function (u) { return fetch(u + '?t=' + Math.floor(Date.now() / 300000)).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); };
@@ -315,7 +315,7 @@ html,body{margin:0 !important;padding:0 !important}
       '</div>' : '') +
       '<div class="hp-race"><p>' + race + '</p>' + (p.tr && p.rank ? '<div class="hp-bar"><div style="width:' + pct.toFixed(1) + '%"></div></div>' : '') + '</div>' +
       '<div class="hp-grid">' +
-        '<div class="hp-stat"><i>SECRET LOOT BOXES</i><b>' + p.loot + ' <small>/ ' + BOXES + '</small></b><div class="hp-bar"><div style="width:' + (p.loot / BOXES * 100).toFixed(1) + '%"></div></div></div>' +
+        '<div class="hp-stat"><i>SECRET LOOT BOXES</i><b>' + p.loot + ' <small>/ ' + BOXES + '</small></b><div class="hp-bar"><div style="width:' + Math.min(100, p.loot / BOXES * 100).toFixed(1) + '%"></div></div></div>' +
         '<div class="hp-stat"><i>DAILY GAME WINS</i><b>' + p.games + '</b><small>Skyword, Sort the Shelf, Book Icons, Crossword</small></div>' +
         '<div class="hp-stat"><i>RIDDLES SOLVED</i><b>' + p.riddles + '</b><small>Answered right on their cards</small></div>' +
         '<div class="hp-stat"><i>ADVENTURE VOTES SEALED</i><b>' + p.votes + '</b><small>Choose Your Own Adventure</small></div>' +
@@ -419,7 +419,7 @@ html,body{margin:0 !important;padding:0 !important}
       if (!r[1]) { err.textContent = 'The ship is slow today. Give it another go in a moment.'; return; }
       var p = r[1].players && r[1].players[r[0]];
       if (!p) { err.textContent = 'I can’t find that email on the board yet. Points show up after the next tally, so check that it’s the email you used on the forms.'; remember(''); return; }
-      if (r[1].boxes) BOXES = r[1].boxes;
+      if (r[1].boxes > BOXES) BOXES = r[1].boxes;
       err.textContent = ''; remember(email); render(p, r[1].crewTotal, r[2]);
     });
   }
