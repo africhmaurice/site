@@ -3,7 +3,7 @@
      "Descend Dante's Inferno." Only hunters with every loot box can take the golden character it gives.
      Maurice's brief: "Descend the Tower but you play as the Izzy Goma, and you have to play 34 levels similar to the
      tenth floor of Descend the Tower, but it's more intricate; the floors present new and exciting challenges."
-     10/31: 34 floors, tighter, getting harder as you go, a checkpoint every five floors (1, 6, 11, 16, 21, 26, 31).
+     10/31: 34 floors, tighter, getting harder as you go, three lives (Maurice 11/4, replacing the checkpoints every five floors).
      Izzy is the blob goma from the Sky Pirate Quiz crew card (site/assets/quiz/crew/izzy.webp), the same art as Goma Bopper.
      Spikes are Maurice's spike drawing (75-spike.png) and cannonballs his 74-cannonball.png, as on the tower.
      The floors (each one adds something new, then later floors mix them):
@@ -24,8 +24,8 @@
        15 Swinging Chains    swinging fireballs           32 Molten Run            rising lava, a lift, falling ledges
        16 Rising Lava        climb before the lava does   33 The Burning Bridge    a crumbling bridge between fire jets
        17 Cinders            falling ledges and fire jets 34 The Ninth Circle      everything at once
-     Rules: dying sends Izzy back to the last checkpoint (kept on this device in ma-inferno-cp, so a visit can carry on
-     from it); the deepest floor reached is ma-inferno-best. Controls: arrows or A / D to move, space, up, or W to jump
+     Rules: three lives. A death restarts the current floor; losing the last life goes back to floor 1 with three new lives
+     (floor and lives kept on this device in ma-inferno-run, so a visit can carry on from there and a reload can't refill them); the deepest floor reached is ma-inferno-best. Controls: arrows or A / D to move, space, up, or W to jump
      (hold for a higher jump); Left, Jump, and Right buttons under the game on touch screens. Pause button (or P, or Escape,
      or hiding the tab). Reduced motion: no shake, no drifting embers. No clock.
      The engine is one deterministic step function (seeded randomness for weights and cannonballs), so the test can
@@ -40,8 +40,8 @@
      Win: after floor 34 a golden G rises. Tapping it calls window.maGolden.found(2) (golden.js, finishers only).
      DRAFT copy (not Maurice's words yet): eyebrow "The Golden Trail", heading "Descend the Inferno", the how-to line,
        start overlay heading "Into the Inferno" and its line, "Start at floor 1", "Carry on from floor N", every floor
-       name and how-to line in FL, the fail lines in DIE, "Floor N of 34", "Checkpoint: floor N", "Best: floor N",
-       "Back to floor N", "Checkpoint saved", the win heading "The bottom of the Inferno", the win line, "The second golden
+       name and how-to line in FL, the fail lines in DIE, "Floor N of 34", "Lives: N", "Best: floor N",
+       "N lives left", "Out of lives", "Back to floor 1", the win heading "The bottom of the Inferno", the win line, "The second golden
        character is yours.", "Only hunters with every loot box can take this.", "Pause", "Paused", "Resume", the on-canvas
        control tips, "DOWN", "THE BOTTOM", "Pick your goon", the goon line, the double jump tips, and the two new fail lines.
      ============================================================ -->
@@ -104,11 +104,11 @@
 <section id="ma-inferno" aria-label="Descend the Inferno">
   <p class="if-eye">The Golden Trail</p>
   <h1 class="if-h1">Descend the Inferno</h1>
-  <p class="if-how">Take your goon down 34 floors of fire, each one meaner than the last. Jump twice for a double jump. Fall, and you climb back to the last checkpoint.</p>
+  <p class="if-how">Take your goon down 34 floors of fire, each one meaner than the last. Jump twice for a double jump. You get three lives. Die, and you start that floor over. Lose all three, and you go back to floor 1.</p>
   <div class="if-hud"><span class="if-floor">Floor 1 of 34</span><span class="if-best">Best: floor 1</span></div>
   <div class="if-ctl"><button class="if-btn if-pause" type="button" disabled>Pause</button></div>
   <div class="if-stage" tabindex="0" role="application" aria-label="Descend the Inferno game"><canvas></canvas>
-    <div class="if-ov if-start"><h2>Into the Inferno</h2><p>Thirty-four floors down. Every fifth floor is a checkpoint: fall after it, and you start again from there.</p><p class="if-gname">Pick your goon: Izzy</p><div class="if-goons" role="group" aria-label="Pick your goon"></div><div class="if-modes"><button class="if-btn if-go" type="button">Start at floor 1</button><button class="if-btn if-alt if-cont" type="button" hidden>Carry on</button></div></div>
+    <div class="if-ov if-start"><h2>Into the Inferno</h2><p>Thirty-four floors down, three lives. Die, and you start that floor over. Lose all three, and you go back to floor 1.</p><p class="if-gname">Pick your goon: Izzy</p><div class="if-goons" role="group" aria-label="Pick your goon"></div><div class="if-modes"><button class="if-btn if-go" type="button">Start at floor 1</button><button class="if-btn if-alt if-cont" type="button" hidden>Carry on</button></div></div>
     <div class="if-ov if-paused" hidden><h2>Paused</h2><button class="if-btn if-resume" type="button">Resume</button></div>
   </div>
   <p class="if-msg" aria-live="polite"></p>
@@ -373,17 +373,17 @@
 
   /* ================= the run ================= */
   var lvl=1,f=null,S=null,state='title',phase=0,t=0,shake=0,keys={l:0,r:0,j:0};
-  var best=parseInt(lsGet('ma-inferno-best')||'1',10)||1,cpSaved=parseInt(lsGet('ma-inferno-cp')||'1',10)||1;
+  var best=parseInt(lsGet('ma-inferno-best')||'1',10)||1,LIVES=3,lives=LIVES,backTo=1,run=(lsGet('ma-inferno-run')||'').split(','),runL=parseInt(run[0],10)||1,runV=parseInt(run[1],10)||LIVES;
   var DIE={enemy:'Caught by a skull.',roam:'Burned by a roaming fireball.',lava:'Into the lava.',rise:'The lava caught up.',spike:'Spikes!',fire:'Scorched by a fire jet.',chain:'Hit by a swinging fireball.',weight:'Flattened by a falling weight.',ball:'Flattened by a cannonball.'};
-  function cpAt(){return Math.floor((lvl-1)/5)*5+1;}
+  function livesWord(n){return n+(n===1?' life':' lives')+' left';}
   var touchy=(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window&&window.innerWidth<900);
-  function hud(){floorEl.textContent='Floor '+lvl+' of '+TOTAL+(f?' · '+f.name:'');bestEl.textContent=(state!=='title'?'Checkpoint: floor '+cpAt()+' · ':'')+'Best: floor '+best;pad.classList.toggle('on',touchy&&state!=='title'&&state!=='won');}
+  function hud(){floorEl.textContent='Floor '+lvl+' of '+TOTAL+(f?' · '+f.name:'');bestEl.textContent=(state!=='title'?'Lives: '+lives+' · ':'')+'Best: floor '+best;pad.classList.toggle('on',touchy&&state!=='title'&&state!=='won');}
   function enter(L){lvl=L;f=FL[L-1];S=make(L);keys.l=keys.r=keys.j=0;state='intro';phase=1.2;
-    if(lvl>best){best=lvl;lsSet('ma-inferno-best',String(best));}var cp=cpAt();if(cp>cpSaved||cp===1&&cpSaved<1){cpSaved=cp;lsSet('ma-inferno-cp',String(cp));}
+    if(lvl>best){best=lvl;lsSet('ma-inferno-best',String(best));}lsSet('ma-inferno-run',lvl+','+lives);
     hud();say(f.how);ctl();}
   var DROP=1.9,dropS=null;
   function clear(){state=lvl===TOTAL?'won':'drop';phase=still?.8:DROP;if(state==='drop')dropS=make(lvl+1);if(state==='won'){lsSet('ma-inferno-won','1');setTimeout(showWin,still?100:700);}ctl();}
-  function fail(why){state='fail';phase=1.6;shake=still?0:1;say((DIE[why]||'Ouch.')+' Back to floor '+cpAt()+'.',true);ctl();}
+  function fail(why){state='fail';phase=1.6;shake=still?0:1;lives--;backTo=lives>0?lvl:1;hud();say((DIE[why]||'Ouch.')+(lives>0?' '+livesWord(lives)+'.':' Out of lives. Back to floor 1.'),true);ctl();}
   function showWin(){winEl.hidden=false;pad.classList.remove('on');hud();say('Thirty-four floors down!');try{winEl.scrollIntoView({block:'center',behavior:still?'auto':'smooth'});}catch(e){}}
   var gBtn=d.querySelector('.if-g'),gMsg=d.querySelector('.if-gmsg');
   gBtn.addEventListener('click',function(){
@@ -391,9 +391,9 @@
     else{gMsg.classList.add('miss');gMsg.textContent='Only hunters with every loot box can take this.';}});
 
   var goBtn=d.querySelector('.if-go'),contBtn=d.querySelector('.if-cont');
-  if(cpSaved>1){contBtn.hidden=false;contBtn.textContent='Carry on from floor '+cpSaved;}
+  if(runL>1){contBtn.hidden=false;contBtn.textContent='Carry on from floor '+runL;}
   function go(L){startOv.hidden=true;winEl.hidden=true;gMsg.textContent='';enter(L);try{stage.focus({preventScroll:true});}catch(e){}}
-  goBtn.addEventListener('click',function(){go(1);});contBtn.addEventListener('click',function(){go(cpSaved);});
+  goBtn.addEventListener('click',function(){lives=LIVES;go(1);});contBtn.addEventListener('click',function(){lives=runV;go(runL);});
 
   /* ---- pause ---- */
   var paused=false,pauseBtn=d.querySelector('.if-pause'),pauseOv=d.querySelector('.if-paused');
@@ -413,16 +413,16 @@
     if(state==='intro'){phase-=dt;if(phase<=0)state='play';return;}
     if(state==='play'){sim(f,S,keys,dt);if(S.dead)fail(S.dead);else if(S.done)clear();return;}
     if(state==='drop'){phase-=dt;if(phase<=0)enter(lvl+1);return;}
-    if(state==='fail'){phase-=dt;if(phase<=0)enter(cpAt());return;}}
+    if(state==='fail'){phase-=dt;if(phase<=0){if(lives<=0)lives=LIVES;enter(backTo);}return;}}
   function draw(){ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);var k=scale*dpr,sx=shake?Math.sin(t*80)*6*shake:0;ctx.setTransform(k,0,0,k,sx*k,0);
     if(!f){var s0=make(1);drawFloor(FL[0],s0);return;}
     if(state==='drop'&&!still){drawDrop();return;}
     drawFloor(f,S);
     if(state==='intro'||state==='drop'||state==='won'){var msg=state==='intro'?'FLOOR '+lvl:state==='won'?'THE BOTTOM':'FLOOR '+lvl+' CLEAR';ctx.fillStyle='rgba(11,23,15,.82)';ctx.fillRect(0,H/2-60,W,120);
       ctx.fillStyle=state==='won'?'#f2cf5b':'#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font="400 54px 'Cracked Imperia',Impact,sans-serif";ctx.fillText(msg,W/2,H/2-8);
-      ctx.font="800 15px Almarai,sans-serif";ctx.fillStyle='#89fbcb';var sub=state==='intro'?((lvl>1&&(lvl-1)%5===0?'Checkpoint · ':'')+f.name):state==='won'?'Thirty-four floors down':((lvl%5===0?'Checkpoint saved · ':'')+'Down to floor '+(lvl+1));
+      ctx.font="800 15px Almarai,sans-serif";ctx.fillStyle='#89fbcb';var sub=state==='intro'?f.name:state==='won'?'Thirty-four floors down':('Down to floor '+(lvl+1));
       ctx.fillText(sub.toUpperCase(),W/2,H/2+36);ctx.textBaseline='alphabetic';}
-    if(state==='fail'){ctx.fillStyle='rgba(145,37,1,.55)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fffffe';ctx.textAlign='center';ctx.font="400 46px 'Cracked Imperia',Impact,sans-serif";ctx.fillText('BACK TO FLOOR '+cpAt(),W/2,H/2);}}
+    if(state==='fail'){ctx.fillStyle='rgba(145,37,1,.55)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fffffe';ctx.textAlign='center';ctx.font="400 46px 'Cracked Imperia',Impact,sans-serif";ctx.fillText(lives>0?livesWord(lives).toUpperCase():'BACK TO FLOOR 1',W/2,H/2);}}
 
   /* Down the stairs: the old floor slides up, the next one comes up under it on the same stairs, then the view slides over to the start. */
   function drawDrop(){var p=1-phase/DROP,u=Math.min(1,p/.74),v=Math.max(0,(p-.74)/.26),next=FL[lvl],ey=f.ex[1],sx0=f.ex[0]-camX(f,S.x);
@@ -432,7 +432,7 @@
     var w=ey+u*(H+GY-ey),tri=Math.abs(((w/STEP)%1)*2-1),zig=(1-tri)*28-14,fx=(1-tri)*0+(((w/STEP)%1)<.5?1:-1);
     var ax=S.x-camX(f,S.x),gx=sx0+zig*(1-v),bx=u<.08?ax+(gx-ax)*(u/.08):gx,x=bx+(next.start-sx0)*v;
     goon(x,ey+u*(GY-ey),v>0?-1:fx);
-    var msg='FLOOR '+lvl+' CLEAR',sub=(lvl%5===0?'Checkpoint saved · ':'')+'Down to floor '+(lvl+1);ctx.fillStyle='rgba(11,23,15,.82)';ctx.fillRect(0,20,W,96);ctx.fillStyle='#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font="400 40px 'Cracked Imperia',Impact,sans-serif";ctx.fillText(msg,W/2,56);
+    var msg='FLOOR '+lvl+' CLEAR',sub='Down to floor '+(lvl+1);ctx.fillStyle='rgba(11,23,15,.82)';ctx.fillRect(0,20,W,96);ctx.fillStyle='#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font="400 40px 'Cracked Imperia',Impact,sans-serif";ctx.fillText(msg,W/2,56);
     ctx.font="800 14px Almarai,sans-serif";ctx.fillStyle='#89fbcb';ctx.fillText(sub.toUpperCase(),W/2,94);ctx.textBaseline='alphabetic';}
 
   /* ---- pick a goon ---- */
@@ -460,7 +460,7 @@
 
   /* test tools, only with ?test=1 and window.__infernoTest set before load */
   if(window.__infernoTest&&/[?&]test=1\b/.test(location.search))window.__inferno={floors:FL,total:TOTAL,make:make,clone:clone,sim:function(n,s,k,dt){sim(FL[n-1],s,k,dt);},camX:camX,
-    go:function(k){go(k);},level:function(){return lvl;},state:function(){return state;},run:function(){return S;},keys:keys,best:function(){return best;},cp:function(){return cpAt();},
+    go:function(k){go(k);},level:function(){return lvl;},state:function(){return state;},run:function(){return S;},keys:keys,best:function(){return best;},lives:function(){return lives;},
     win:function(){lvl=TOTAL;state='play';S.done=true;},paused:function(){return paused;},enPos:enPos,fbPos:fbPos};
 })();
 </script>
