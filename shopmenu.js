@@ -4,9 +4,10 @@
 // its third column. The panel's words and spacing match the website's exactly. The Treasure Hunt panel is built from the same
 // pages/hunt-menu.html as the website's (the act links work like loader.js actify), in the same three columns,
 // with a line under each box heading. Loaded by the shop theme (layout/theme.liquid) after its own tm.js.
-// Golden Trail slot 14 (Maurice 10/31): on the King & Queen Crown Skull Pin, the o in "crown" in the description is a little
-// gold and opens the scorecard with ?golden=14 (golden.js records it there for hunters with all 151 loot boxes; the shop
-// can't tell who they are). Everything else on the product page is untouched.
+// Golden Trail slot 14 (Maurice 10/31, letter changed to D 11/4, "I couldn't see this one"): on the King & Queen Crown Skull
+// Pin, the d in "gold plated" in the description shows as a large bright gold D and opens the scorecard with ?golden=14
+// (golden.js records it there for hunters with all 151 loot boxes; the shop can't tell who they are, so everyone sees
+// the letter). Everything else on the product page is untouched.
 (function () {
   if (window.__maShopMenu) return; window.__maShopMenu = true;
   var me = document.currentScript;
@@ -261,6 +262,7 @@
     }
     specialEditions(); readExcerpt(); setTimeout(function () { specialEditions(); readExcerpt(); }, 1500);
     goldenPin(); setTimeout(goldenPin, 1500);
+    if (/\/products\/king-queen-crown-skull-pin/.test(location.pathname)) new MutationObserver(goldenPin).observe(document.body, { childList: true, subtree: true });   // the theme redraws the description when a variant is picked
 
     fetch(BASE + 'pages/hunt-menu.html', { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (html) {
       var gs = shape(new DOMParser().parseFromString(html, 'text/html'));
@@ -273,17 +275,20 @@
   }
   // Golden Trail slot 14: one golden letter in the crown skull pin's description
   function goldenPin() {
-    if (location.pathname.indexOf('/products/king-queen-crown-skull-pin') < 0 || document.querySelector('.ma-gold-o')) return;
-    var box = document.querySelector('rte-formatter, .product__description, .rte'); if (!box) return;
-    var tw = document.createTreeWalker(box, NodeFilter.SHOW_TEXT), n;
-    while ((n = tw.nextNode())) {
-      var i = n.nodeValue.indexOf('crown'); if (i < 0) continue;
-      var o = n.splitText(i + 2); o.splitText(1);
-      var s = document.createElement('span'); s.className = 'ma-gold-o'; s.textContent = 'o';
-      s.style.cssText = 'color:#b8902a;cursor:pointer';
-      s.addEventListener('click', function () { location.href = SITE + '/loot?golden=14'; });
-      o.parentNode.replaceChild(s, o);
-      return;
+    if (location.pathname.indexOf('/products/king-queen-crown-skull-pin') < 0 || document.querySelector('.ma-gold-d')) return;
+    var boxes = document.querySelectorAll('rte-formatter, .product__description, .rte');
+    for (var b = 0; b < boxes.length; b++) {
+      var tw = document.createTreeWalker(boxes[b], NodeFilter.SHOW_TEXT), n;
+      while ((n = tw.nextNode())) {
+        var m = /\bgold\b/.exec(n.nodeValue); if (!m) continue;
+        var d = n.splitText(m.index + 3); d.splitText(1);
+        var s = document.createElement('a'); s.className = 'ma-gold-d'; s.textContent = 'D'; s.href = SITE + '/loot?golden=14'; s.setAttribute('aria-label', 'A golden D');
+        // the wider tap area is a pseudo-element, so the line of text doesn't move
+        var st = document.createElement('style'); st.textContent = '.ma-gold-d{position:relative;font-size:1.55em;line-height:1;font-weight:800;color:#f2cf5b!important;text-decoration:none!important;text-shadow:0 0 10px rgba(242,207,91,.85);cursor:pointer}.ma-gold-d::after{content:"";position:absolute;inset:-10px -12px}.ma-gold-d:focus-visible{outline:2px solid #f2cf5b;outline-offset:3px}';
+        document.head.appendChild(st);
+        d.parentNode.replaceChild(s, d);
+        return;
+      }
     }
   }
   // Built once the theme's own scripts have run (tm.js wires up the theme's dropdowns), so they never double up on

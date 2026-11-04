@@ -166,22 +166,41 @@
   tick();setInterval(tick,30000);
 })();</script>
 <!-- GOLDEN TRAIL slot 8 (Maurice 10/31, clue "Click the rainbow."). For finishers only (golden.js runs the queued function):
-     a faint rainbow arc sits above "The Oracle's Gift" in the page heading. Tapping it (or Enter on it) records slot 8.
+     a rainbow sits above "The Oracle's Gift" in the page heading. Maurice 11/4: "they have to click the colors of the rainbow
+     in order. One of each: red, orange, yellow, green, blue, purple, pink". Each arc is its own target (a wider invisible
+     stroke, 17px per arc, for phones; Tab and Enter or Space work too). A right color brightens its arc; a wrong one
+     quietly clears the run. All seven in order records slot 8.
      tools/aura-spectrum.mjs generates this page, so this block has to go into it too at go-live. -->
 <style>
-#ma-aura .au-rainbow{display:block;margin:0 auto;padding:0;width:132px;height:44px;border:0;background:none;cursor:pointer;opacity:.4;transition:opacity .3s ease;-webkit-tap-highlight-color:transparent}
-#ma-aura .au-rainbow:hover,#ma-aura .au-rainbow:focus-visible{opacity:.85;outline:none}
-#ma-aura .au-rainbow:focus-visible{outline:2px solid #a2f590;outline-offset:4px}
-#ma-aura .au-rainbow svg{display:block;width:100%;height:100%}
+#ma-aura .au-rainbow{display:block;margin:0 auto 16px;padding:0;width:300px;max-width:100%;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#ma-aura .au-rainbow svg{display:block;width:100%;height:auto;overflow:visible}
+#ma-aura .au-rainbow g{cursor:pointer;outline:none}
+#ma-aura .au-rainbow .au-arc{fill:none;stroke-width:12;opacity:.55;transition:opacity .2s ease,stroke-width .2s ease;pointer-events:none}
+#ma-aura .au-rainbow .au-hit{fill:none;stroke:transparent;stroke-width:17;pointer-events:stroke}
+#ma-aura .au-rainbow g:hover .au-arc{opacity:.8}
+#ma-aura .au-rainbow g:focus-visible .au-arc{opacity:.9}
+#ma-aura .au-rainbow g:focus-visible .au-hit{stroke:rgba(255,255,255,.3)}
+#ma-aura .au-rainbow g.on .au-arc{opacity:1;stroke-width:15}
 </style>
 <script>(function(){
   (window.maGoldenQ=window.maGoldenQ||[]).push(function(G){
     var root=document.getElementById('ma-aura'),head=root&&root.querySelector('.au-head');if(!head||head.querySelector('.au-rainbow'))return;
-    var C=['#ff4c0f','#fd9a47','#f2cf5b','#3adb97','#4aa8ff','#7b4ee1','#c3a6ff'],arcs='';
-    C.forEach(function(c,i){var r=60-i*5.5;arcs+='<path d="M'+(66-r)+' 44 A'+r+' '+r+' 0 0 1 '+(66+r)+' 44" fill="none" stroke="'+c+'" stroke-width="5"/>';});
-    var b=document.createElement('button');b.type='button';b.className='au-rainbow';b.setAttribute('aria-label','A faint rainbow');
-    b.innerHTML='<svg viewBox="0 0 132 44" aria-hidden="true">'+arcs+'</svg>';
-    b.addEventListener('click',function(){G.found(8);});
+    /* outside in: red, orange, yellow, green, blue, purple, pink (yellow, green, and purple are brand tones) */
+    var C=[['#f01826','Red'],['#fd8f2f','Orange'],['#f2cf5b','Yellow'],['#3adb97','Green'],['#3d9bff','Blue'],['#9e74fd','Purple'],['#ff86cf','Pink']],arcs='',at=0;
+    C.forEach(function(c,i){var r=140-i*17,d='M'+(150-r)+' 150 A'+r+' '+r+' 0 0 1 '+(150+r)+' 150';
+      arcs+='<g role="button" tabindex="0" aria-label="'+c[1]+'"><path class="au-arc" d="'+d+'" stroke="'+c[0]+'"/><path class="au-hit" d="'+d+'"/></g>';});
+    var b=document.createElement('div');b.className='au-rainbow';b.setAttribute('role','group');b.setAttribute('aria-label','A rainbow');
+    b.innerHTML='<svg viewBox="0 0 300 152">'+arcs+'</svg>';
+    var gs=b.querySelectorAll('g');
+    function clear(){for(var k=0;k<gs.length;k++)gs[k].classList.remove('on');}
+    function tap(i){
+      if(i===at){gs[i].classList.add('on');at++;if(at===gs.length){at=0;G.found(8);setTimeout(function(){if(!at)clear();},1500);}return;}
+      clear();at=0;if(i===0){gs[0].classList.add('on');at=1;}
+    }
+    Array.prototype.forEach.call(gs,function(g,i){
+      g.addEventListener('click',function(){tap(i);});
+      g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tap(i);}});
+    });
     head.insertBefore(b,head.firstChild);
   });
 })();</script>
