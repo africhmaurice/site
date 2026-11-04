@@ -172,7 +172,7 @@
   Q.forEach(run);
   // A link from off the site (the shop) carries ?golden=N; the find is recorded here, on the scorecard page.
   var gq = (location.search.match(/[?&]golden=(\d{1,2})\b/) || [])[1];
-  if (gq && G.finisher) { var go = function () { G.found(+gq); }; if (document.body) setTimeout(go, 600); else document.addEventListener('DOMContentLoaded', function () { setTimeout(go, 600); }); }
+  if (gq && G.finisher) { var go = function () { G.found(+gq); }, later = window.maAfterLoading || function (f) { f(); }; later(function () { setTimeout(go, 300); }); }   // after the loading screen, so the popup is never behind it
 
   // ---- the board on /loot ----
   var PHONE = '<svg viewBox="0 0 14 22" aria-hidden="true"><rect x="1" y="1" width="12" height="20" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="5" y="17" width="4" height="1.8" fill="currentColor"/></svg>';

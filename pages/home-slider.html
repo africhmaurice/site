@@ -495,6 +495,15 @@ maStart();
   document.addEventListener('click', function (e) {
     var t = e.target;
     if (t.closest && t.closest('.gd-x')) { e.preventDefault(); e.stopPropagation(); G.found(15); return; }
+    // on a touch screen the X is tiny, so a fingertip beside it counts too (Maurice 11/4), if that slide is the one showing
+    if (window.matchMedia && matchMedia('(pointer:coarse)').matches) {
+      var xs = document.querySelectorAll('.gd-x');
+      for (var xi = 0; xi < xs.length; xi++) {
+        var xr = xs[xi].getBoundingClientRect(); if (!xr.width || e.clientX < xr.left - 16 || e.clientX > xr.right + 16 || e.clientY < xr.top - 16 || e.clientY > xr.bottom + 16) continue;
+        if (document.elementsFromPoint(xr.left + xr.width / 2, xr.top + xr.height / 2).indexOf(xs[xi]) < 0) continue;
+        e.preventDefault(); e.stopPropagation(); G.found(15); return;
+      }
+    }
     // the picture may sit under a link or a layer of the slider, so look at everything under the tap
     var under = document.elementsFromPoint ? document.elementsFromPoint(e.clientX, e.clientY) : [t];
     for (var i = 0; i < under.length; i++) {

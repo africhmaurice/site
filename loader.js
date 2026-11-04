@@ -55,6 +55,8 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   // Cookie choices and the Meta Pixel (Maurice, 2026-10-07): cookies.js asks visitors in Europe first, loads the
   // Pixel for everyone else, and adds Cookie Preferences to the footer. Squarespace's banner and Pixel are off.
   (function () { var s = document.createElement('script'); s.src = BASE + 'cookies.js'; (document.head || document.documentElement).appendChild(s); })();
+  // Phones (Maurice, 2026-11-04): the hunt menu gets a solid bar, so its button never floats over the page's text.
+  (function () { var s = document.createElement('style'); s.textContent = '@media (max-width:900px){#hunt-nav{background:#1a5e41!important;padding:5px 0!important}}'; (document.head || document.documentElement).appendChild(s); })();
   // Headings (Maurice, 2026-10-09): heads.js turns every Atomic Marker and Cinzel heading into Cracked Imperia Bold
   // with its 3D (Extrude Flush). Clue and puzzle text keeps its own capitals and line breaks.
   (function () { var s = document.createElement('script'); s.src = BASE + 'heads.js'; (document.head || document.documentElement).appendChild(s); })();

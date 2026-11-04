@@ -263,7 +263,8 @@
       var m=/^Question 3 of (\d+)$/.exec(cnt.textContent);if(!m||cnt.querySelector('.q-g1'))return;
       cnt.textContent='Question 3 of ';
       var s=document.createElement('span');s.className='q-g1';s.textContent=m[1].charAt(0);s.setAttribute('role','button');s.tabIndex=0;
-      s.style.cssText='cursor:pointer;outline-offset:3px';
+      s.style.cssText='cursor:pointer;outline-offset:3px;position:relative';
+      if(!document.getElementById('q-g1-st')){var gs=document.createElement('style');gs.id='q-g1-st';gs.textContent='@media (pointer:coarse){.q-g1::after{content:"";position:absolute;inset:-12px -10px}}';document.head.appendChild(gs);}
       var go=function(){G.found(10);};
       s.addEventListener('click',go);s.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
       cnt.appendChild(s);cnt.appendChild(document.createTextNode(m[1].slice(1)));
