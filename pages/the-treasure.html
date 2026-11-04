@@ -1,6 +1,6 @@
 <!-- THE TREASURE. GOLDEN TRAIL slot 12 (Maurice 10/31): the last script adds a locked chest at the bottom of the page for
-     hunters with all 151 loot boxes. Without the Skybreaker Maul (Red City, Demolition Kit) it says to check the kits;
-     with it, three swings crack it and a golden 1 comes out. -->
+     hunters with all 151 loot boxes. Without the Skybreaker Maul (Red City, Demolition Kit) it says "Find the Hammer";
+     with it, three swings crack Maurice's drawn chest apart and a golden W comes out. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@700;800&display=swap" rel="stylesheet">
@@ -353,10 +353,11 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
 })();</script>
 <script>
 /* Golden Trail slot 12 "Crack the Treasure Chest" (Maurice 10/31), finishers only (golden.js).
-   A chest at the bottom of the treasure section (#golden-chest). Tapped without the maul: "You need a hammer. Check the
-   kits." The Skybreaker Maul is in the Demolition Kit on the Red City page; tapping it there sets localStorage
-   thGolden:maul and comes back here (#golden-chest). With the maul, three swings crack the chest and a golden 1 rises;
-   tapping the 1 gives the golden character.
+   A chest at the bottom of the treasure section (#golden-chest), Maurice's own drawings (11/4: "use the treasure chest I
+   drew for this"): assets/games/golden-chest-1 to 4 and -chunks, one for each stage of cracking. Tapped without the maul:
+   "Find the Hammer" (his words). The Skybreaker Maul is in the Demolition Kit on the Red City page; tapping it there sets
+   localStorage thGolden:maul and comes back here (#golden-chest). With the maul, each of the three swings cracks the chest
+   further, the third breaks it into chunks, and a golden W rises; tapping the W gives the golden character.
    DRAFT copy: "Swing the maul.", "It's cracking.", "One more.", the chest's label. */
 (window.maGoldenQ = window.maGoldenQ || []).push(function (G) {
   function setup() {
@@ -365,41 +366,36 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
     var st = document.createElement('style');
     st.textContent = '#golden-chest{display:flex;flex-direction:column;align-items:center;gap:16px;margin:56px auto 0;padding:24px 20px;max-width:420px;text-align:center}' +
       '#golden-chest *{border-radius:0;box-sizing:border-box}' +
-      '#golden-chest .gc-box{width:150px;height:auto;margin:0;padding:0;border:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}' +
-      '#golden-chest .gc-box svg{width:100%;height:auto;display:block;overflow:visible}' +
+      '#golden-chest .gc-box{width:300px;max-width:100%;height:auto;margin:0;padding:0;border:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}' +
+      '#golden-chest .gc-box:focus-visible{outline:3px solid #f2cf5b;outline-offset:3px}' +
+      '#golden-chest .gc-box img{width:100%;height:auto;display:block}' +
       '#golden-chest .gc-box.gc-hit{animation:gcShake .35s ease}' +
-      '#golden-chest .gc-lid{transition:transform .9s cubic-bezier(.2,.8,.3,1),opacity .9s ease;transform-origin:30px 40px}' +
-      '#golden-chest.gc-open .gc-lid{transform:translate(-26px,-70px) rotate(-38deg);opacity:0}' +
       '#golden-chest .gc-msg{margin:0;min-height:1.5em;font:700 17px/1.5 Almarai,Arial,sans-serif;color:#fffffe}' +
-      '#golden-chest .gc-one{margin:0;padding:8px 20px;border:0;background:transparent;cursor:pointer;font-family:"Cracked Imperia",Impact,sans-serif;font-size:84px;line-height:1.2;letter-spacing:.03em;color:#f2cf5b;text-shadow:0 0 28px rgba(242,207,91,.75);animation:gcRise 1s cubic-bezier(.2,1.4,.4,1)}' +
+      '#golden-chest .gc-one{margin:0;padding:8px 20px;border:0;background:transparent;cursor:pointer;font-family:"Cracked Imperia",Impact,sans-serif;font-size:84px;line-height:1.2!important;letter-spacing:.03em;color:#f2cf5b;text-shadow:0 0 28px rgba(242,207,91,.75);animation:gcRise 1s cubic-bezier(.2,1.4,.4,1)}' +
       '@keyframes gcShake{0%,100%{transform:none}25%{transform:translateX(-6px) rotate(-2deg)}75%{transform:translateX(6px) rotate(2deg)}}' +
       '@keyframes gcRise{0%{transform:translateY(40px) scale(.3);opacity:0}100%{transform:none;opacity:1}}' +
       '@media (prefers-reduced-motion:reduce){#golden-chest .gc-box.gc-hit,#golden-chest .gc-one{animation:none}}';
     document.head.appendChild(st);
     var wrap = document.createElement('div'); wrap.id = 'golden-chest';
-    wrap.innerHTML = '<button type="button" class="gc-box" aria-label="A locked chest"><svg viewBox="0 0 120 100" aria-hidden="true">' +
-      '<rect x="10" y="44" width="100" height="50" fill="#0b170f" stroke="#f3ead9" stroke-width="3"/>' +
-      '<g class="gc-lid"><path d="M10 44 V28 Q60 4 110 28 V44 Z" fill="#0b170f" stroke="#f3ead9" stroke-width="3"/><rect x="30" y="16" width="8" height="28" fill="#c1330a"/><rect x="82" y="16" width="8" height="28" fill="#c1330a"/></g>' +
-      '<rect x="30" y="44" width="8" height="50" fill="#c1330a"/><rect x="82" y="44" width="8" height="50" fill="#c1330a"/>' +
-      '<rect x="52" y="38" width="16" height="18" fill="#f2cf5b" stroke="#0b170f" stroke-width="2"/><rect x="58" y="44" width="4" height="7" fill="#0b170f"/>' +
-      '<g class="gc-cracks" stroke="#f2cf5b" stroke-width="2.5" fill="none" stroke-linecap="square"></g></svg></button>' +
+    var ART = ['1', '2', '3', '4', 'chunks'].map(function (s) { return 'https://africhmaurice.github.io/site/assets/games/golden-chest-' + s + '.webp'; });
+    ART.forEach(function (u) { new Image().src = u; });   // every stage ready before the first swing
+    wrap.innerHTML = '<button type="button" class="gc-box" aria-label="A locked chest"><img src="' + ART[0] + '" width="640" height="592" alt=""></button>' +
       '<p class="gc-msg" aria-live="polite"></p>';
     sec.appendChild(wrap);
-    var box = wrap.querySelector('.gc-box'), msg = wrap.querySelector('.gc-msg'), cracks = wrap.querySelector('.gc-cracks'), hits = 0, done = false;
-    var CR = ['M48 60 L56 70 L50 80 L58 92', 'M70 56 L64 68 L74 76 L66 90', 'M20 52 L32 64 L24 74 L36 86 M100 52 L90 66 L98 78'];
+    var box = wrap.querySelector('.gc-box'), pic = box.querySelector('img'), msg = wrap.querySelector('.gc-msg'), hits = 0, done = false;
     function maul() { try { return !!localStorage.getItem('thGolden:maul'); } catch (e) { return false; } }
     box.addEventListener('click', function () {
       if (done) return;
-      if (!maul()) { msg.textContent = 'You need a hammer. Check the kits.'; return; }
+      if (!maul()) { msg.textContent = 'Find the Hammer'; return; }
       box.classList.remove('gc-hit'); void box.offsetWidth; box.classList.add('gc-hit');
-      var p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', CR[hits]); cracks.appendChild(p);
-      hits++;
+      hits++; pic.src = ART[hits];
       msg.textContent = hits === 1 ? 'It\u2019s cracking.' : hits === 2 ? 'One more.' : '';
       if (hits >= 3) {
-        done = true; wrap.classList.add('gc-open');
-        var one = document.createElement('button'); one.type = 'button'; one.className = 'gc-one'; one.textContent = 'W'; one.setAttribute('aria-label', 'A golden W');
+        done = true; box.style.cursor = 'default';
+        var one = document.createElement('button'); one.type = 'button'; one.className = 'gc-one'; one.textContent = 'W'; one.setAttribute('aria-label', 'A golden W'); one.setAttribute('data-ci-keep', '');
         one.onclick = function () { one.remove(); G.found(12); };
-        setTimeout(function () { wrap.insertBefore(one, msg); }, 500);
+        setTimeout(function () { pic.src = ART[4]; }, 450);
+        setTimeout(function () { wrap.insertBefore(one, msg); }, 800);
       }
     });
     if (maul()) msg.textContent = 'Swing the maul.';
