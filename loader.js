@@ -8,7 +8,7 @@
    Every copy after the first only mounts blocks it finds, so a page can include it any number of times. */
 // Maintenance mode (Maurice, 2026-11-04). Set MAINT to false and publish to reopen the site. /links, /arcade, /games, and every game in the Arcade stay open.
 // ?ma-open=1 lets this browser see the site anyway; ?ma-open=0 undoes that.
-var MAINT = true;
+var MAINT = false;
 (function () {
   if (!MAINT || window.__maClosed) return;
   if (/^\/(links|arcade|games|sort-the-shelf|book-icons|crossword|blades-and-brass|matching-auras|crest-quest|sky-mines|airship-runner|thread-the-needle|trench-run|sky-gauntlet|the-levian-30527|master-stacker-32368|hold-the-wall-13212|goma-goons-43216)\/?$/i.test(location.pathname)) return;
@@ -117,7 +117,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   // 4. Images come from a copy of this site pinned to one publish, cached for a year (GitHub Pages only allows
   // 10 minutes, and every publish makes visitors download everything again). Anything newer than the pin
   // falls back to GitHub Pages by itself. tools/pin-assets.mjs moves the pin after a publish.
-  var PIN = 'e56c083a673d24e9670f30090cb77880050a6e88';
+  var PIN = '4c02d9a43e997fddaf2aff8a41f34ab1ced25fcb';
   var GH = 'https://africhmaurice.github.io/site/', CDN = PIN ? 'https://cdn.jsdelivr.net/gh/africhmaurice/site@' + PIN + '/' : '';
   function cdn(u) { return CDN && u.indexOf(GH + 'assets/') === 0 ? CDN + u.slice(GH.length) : u; }
   function prep(html) {
