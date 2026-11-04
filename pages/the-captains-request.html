@@ -569,6 +569,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 /* advantage: two dice in one box; the lower one greys out */
 #rc .cr-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;width:100%;margin-top:auto;border-top:1px solid var(--hair)}
 #rc .cr-pair .rc-dice{border-top:0;margin-top:0}
+#rc .cr-pair .rc-roll{width:100%;box-sizing:border-box;padding-left:8px;padding-right:8px;font-size:13px;letter-spacing:.04em;white-space:nowrap;text-align:center}
 #rc .cr-pair-card .cr-pair{border-top:0}
 #rc .cr-pair .rc-dice,#rc .cr-pair-res{transition:opacity .3s ease,filter .3s ease}
 #rc .cr-pair .cr-low,#rc .cr-pair-res.cr-low{opacity:.35;filter:grayscale(1)}
@@ -1741,3 +1742,21 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 })();
 </script>
+<!-- THE LOOPED TRANSMISSION, Gary's video, above Step 1 on The Captain's Request. -->
+<style>
+#rc .cr-video{display:flex;flex-direction:column;gap:12px}
+#rc .cr-video video{width:100%;max-width:405px;max-height:85vh;display:block;background:#000;border-radius:0}
+</style>
+<script>(function(){
+  var SRC = 'https://africhmaurice.github.io/site/assets/video/looped-transmission.mp4';
+  function setup(){
+    var first = document.querySelector('#rc .rc-step');
+    if (!first) return false;
+    if (document.querySelector('.cr-video')) return true;
+    var sec = document.createElement('section'); sec.className = 'rc-step cr-video';
+    sec.innerHTML = '<header><p class="rc-kick">WATCH</p><h2>The Looped Transmission</h2></header><video controls playsinline preload="metadata" src="' + SRC + '"></video>';
+    first.parentNode.insertBefore(sec, first);
+    return true;
+  }
+  if (!setup()) { var n = 0, iv = setInterval(function () { if (setup() || ++n > 80) clearInterval(iv); }, 250); }
+})();</script>
