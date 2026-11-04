@@ -289,7 +289,7 @@
     for(var ci=0;ci<f.ch.length;ci++){var cp=chPos(f.ch[ci],t1);if(Math.hypot(cp.x-s.x,cp.y-s.y)<18+HW-2)return die(s,'chain');}
     for(var ei=0;ei<f.en.length;ei++){if(s.st[ei]!=null)continue;var en=enPos(f.en[ei],t1);if(Math.abs(en.x-s.x)<HW+9&&nfoot>en.y-24&&s.y-HH<en.y){
       if(!f.en[ei].kind&&s.vy>0&&ofoot<=en.y-12){s.st=Object.assign({},s.st);s.st[ei]=t1;s.vy=-JV*.62;s.dj=0;s.on=false;s.y=en.y-24-HH;continue;}
-      return die(s,'enemy');}}
+      return die(s,f.en[ei].kind?'burn':'enemy');}}
     for(var fi=0;fi<f.fb.length;fi++){var fp=fbPos(f.fb[fi],t1);if(Math.hypot(fp.x-s.x,fp.y-s.y)<13+HW-2)return die(s,'roam');}
     var cam=camX(f,s.x);
     if(f.wz){s.dropT-=dt;var inZ=false;for(var z=0;z<f.wz.z.length;z++){var zz=f.wz.z[z];if(s.x>zz[0]-150&&s.x<zz[1])inZ=true;}
@@ -376,7 +376,7 @@
   /* ================= the run ================= */
   var lvl=1,f=null,S=null,state='title',phase=0,t=0,shake=0,keys={l:0,r:0,j:0};
   var best=parseInt(lsGet('ma-inferno-best')||'1',10)||1,LIVES=3,lives=LIVES,backTo=1,run=(lsGet('ma-inferno-run')||'').split(','),runL=parseInt(run[0],10)||1,runV=parseInt(run[1],10)||LIVES;
-  var DIE={enemy:'Caught by a skull.',roam:'Burned by a roaming fireball.',lava:'Into the lava.',rise:'The lava caught up.',spike:'Spikes!',fire:'Scorched by a fire jet.',chain:'Hit by a swinging fireball.',weight:'Flattened by a falling weight.',ball:'Flattened by a cannonball.'};
+  var DIE={enemy:'Caught by a skull.',burn:'Burned by a flaming skull.',roam:'Burned by a roaming fireball.',lava:'Into the lava.',rise:'The lava caught up.',spike:'Spikes!',fire:'Scorched by a fire jet.',chain:'Hit by a swinging fireball.',weight:'Flattened by a falling weight.',ball:'Flattened by a cannonball.'};
   function livesWord(n){return n+(n===1?' life':' lives')+' left';}
   var touchy=(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window&&window.innerWidth<900);
   function hud(){floorEl.textContent='Floor '+lvl+' of '+TOTAL+(f?' · '+f.name:'');bestEl.textContent=(state!=='title'?'Lives: '+lives+' · ':'')+'Best: floor '+best;pad.classList.toggle('on',touchy&&state!=='title'&&state!=='won');}
