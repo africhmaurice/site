@@ -497,6 +497,10 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 /* the next chapter's button under the closing note (2026-11-01) */
 #rc .cr-after .cr-next{display:inline-block;margin-top:20px;text-decoration:none;max-width:100%;white-space:normal;text-align:center}
 
+/* a d100 is a number tile, not the 3D die (2026-11-03) */
+#rc .cr-d100{width:96px;height:96px;display:flex;align-items:center;justify-content:center;background:#150d28;color:#fffffe;border:2px solid #9e74fd;border-radius:0;font:800 34px/1 Almarai,sans-serif;font-variant-numeric:tabular-nums}
+#rc .cr-d100.rolling{opacity:.6}
+
 /* the river vote (chapter 5), on top of the crash vote's styles: the bone-white color story. The page sits on the
    mist city under a parchment veil with dark ink text; the panels are ink with parchment text and green accents
    (#0b170f, #213226, #1a5e41, #268e62, #3adb97, #89fbcb, #ede9dc). */
@@ -617,7 +621,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 <script>
 (function () {
-  var DATA = {"_help":"Chapter 17 vote: after the break-in fight (7 of 10 rounds won, all five prism guards down) the crew searches the building (Maurice, 2026-11-01). Rolls: Rune, Sparrow, and Hale each search for things and loot; the defense systems; shutting down the EMP with advantage (Rune); any more guards here or nearby. One roll per die drawn at random from the sealed votes (Maurice left out). Bone in the adventure color rotation. Built by node scripts/build-crash.mjs search. Goes live with the site at midnight ET Tue 11/3 (end of the Act Four maintenance) for 24 hours; Maurice loved it (2026-11-02).","key":"search_vote","points":100,"opens":"2026-11-02T18:00:00Z","closes":"2026-11-03T20:00:00Z","title":["Search the","Building"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"Rune, Sparrow, and Hale handle the prism guards pretty well, in fact. All five go down, and the building is theirs, at least for now.\n\nRoll for what each of them finds when they look around, the defense systems in place, whether they can figure out how to shut down the EMP (with advantage, because of Rune), and whether there are any more guards here or near here.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY ROLLS","questions":[{"id":"search","kind":"rolls","kicker":"THE SEARCH","title":"What do they find?","text":"With the guards down, the crew takes a look around. Roll for each of them: their eye for finding things, and any loot worth taking.","items":[["search_rune","Rune Overclock · Techtailor"],["search_sparrow","Sparrow Zipmeister · Intangible"],["search_hale","Hale · Crest Knight"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each of them."},{"id":"defense","kind":"rolls","kicker":"THE BUILDING","title":"What defenses are in place?","text":"Five guards weren’t the only thing protecting this place. Roll for the defense systems in place.","items":[["defense","Defense Systems"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"emp","kind":"rolls","kicker":"RUNE · TECHTAILOR","title":"Can they shut down the EMP?","text":"The machine that fired the energy wave is somewhere in here. Rune knows tech, so the crew has advantage: roll both dice, and the higher one counts.","items":[["emp","Shut Down the EMP"],["emp_2","EMP (Advantage)"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each die. The crew gets the higher of the two.","pairs":{"emp":"emp_2"}},{"id":"guards","kind":"rolls","kicker":"THE PRISM GUARDS","title":"Are there more guards?","text":"Five prism guards came running when the alarm went off. Roll for whether there are any more here or near here.","items":[["guards","More Guards"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."}],"draw":true,"onAdventure":true,"badge":["#268e62","#1a5e41","#89fbcb"],"hoursNote":"25 hours"};
+  var DATA = {"_help":"Chapter 17 vote: after the break-in fight (7 of 10 rounds won, all five prism guards down) the crew searches the building (Maurice, 2026-11-01). Rolls: Rune, Sparrow, and Hale each search for things and loot; the defense systems; shutting down the EMP with advantage (Rune); any more guards here or nearby. One roll per die drawn at random from the sealed votes (Maurice left out). Bone in the adventure color rotation. Built by node scripts/build-crash.mjs search. Goes live with the site at midnight ET Tue 11/3 (end of the Act Four maintenance) for 24 hours; Maurice loved it (2026-11-02).","key":"search_vote","points":100,"opens":"2026-11-02T18:00:00Z","closes":"2026-11-03T20:00:00Z","title":["Search the","Building"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"Rune, Sparrow, and Hale handle the prism guards pretty well, in fact. All five go down, and the building is theirs, at least for now.\n\nRoll for what each of them finds when they look around, the defense systems in place, whether they can figure out how to shut down the EMP (with advantage, because of Rune), and whether there are any more guards here or near here.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY ROLLS","questions":[{"id":"search","kind":"rolls","kicker":"THE SEARCH","title":"What do they find?","text":"With the guards down, the crew takes a look around. Roll for each of them: their eye for finding things, and any loot worth taking.","items":[["search_rune","Rune Overclock · Techtailor"],["search_sparrow","Sparrow Zipmeister · Intangible"],["search_hale","Hale · Crest Knight"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each of them."},{"id":"defense","kind":"rolls","kicker":"THE BUILDING","title":"What defenses are in place?","text":"Five guards weren’t the only thing protecting this place. Roll for the defense systems in place.","items":[["defense","Defense Systems"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"emp","kind":"rolls","kicker":"RUNE · TECHTAILOR","title":"Can they shut down the EMP?","text":"The machine that fired the energy wave is somewhere in here. Rune knows tech, so the crew has advantage: roll both dice, and the higher one counts.","items":[["emp","Shut Down the EMP"],["emp_2","EMP (Advantage)"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each die. The crew gets the higher of the two.","pairs":{"emp":"emp_2"}},{"id":"guards","kind":"rolls","kicker":"THE PRISM GUARDS","title":"Are there more guards?","text":"Five prism guards came running when the alarm went off. Roll for whether there are any more here or near here.","items":[["guards","More Guards"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."}],"draw":true,"onAdventure":true,"badge":["#268e62","#1a5e41","#89fbcb"],"hoursNote":"25 hours","results":{"key":"search_vote","sealed":15,"draws":[{"id":"search_rune","name":"Rune Overclock · Techtailor","roll":12,"by":"@ryan_reads_big_books","from":15},{"id":"search_sparrow","name":"Sparrow Zipmeister · Intangible","roll":3,"by":"@seannyv","from":15},{"id":"search_hale","name":"Hale · Crest Knight","roll":2,"by":"@jordanbivs","from":15},{"id":"defense","name":"Defense Systems","roll":13,"by":"@dearthedays","from":15},{"id":"emp","name":"Shut Down the EMP","roll":14,"by":"@dearthedays","from":15},{"id":"emp_2","name":"EMP (Advantage)","roll":6,"by":"@heathers_endless_tbr","from":15},{"id":"guards","name":"More Guards","roll":9,"by":"@jordanbivs","from":15}],"picks":[],"outcomes":{"search_rune":"Rune finds everything on his own.","search_sparrow":"Sparrow accidentally locks herself in the basement with Hale.","search_hale":"Hale spends the entire time trying to get out of the basement with Sparrow.","defense":"The crew shuts down the island’s aerial defense systems.","emp":"The crew shuts down the EMP.","guards":"No guards in the building."},"story":"The crew shuts down the EMP and the island’s aerial defense systems.\n\nRune finds everything on his own, while Sparrow and Hale accidentally lock themselves in the basement and spend the entire time trying to get out.\n\nThere are no guards in the building.\n\nThen Rune discovers the comm system, and on the crew’s private channel, a transmission from the Captain, on a loop.\n\nSparrow and Hale make it out of the basement just in time to hear it with him.","storyTitle":"What Happens","lede":"The rolls are in! 15 frens rolled for what happens inside the building.","afterNote":"What happens next?","next":["NEXT: THE CAPTAIN’S REQUEST","https://www.mauriceafrich.com/the-captains-request"]},"resultsLive":true};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
@@ -1199,7 +1203,11 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   var notYet = !PREVIEW && NOW < OPENS, closed = !PREVIEW && NOW > CLOSES, locked = notYet || closed;
   function when(ms) { return new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(ms)).replace(':00', '') + ' ET'; }
   function changed() { S.sealed = false; store(STORE, S); render(); }
-  function rollText(r) {
+  // a die with q.sides 100 (2026-11-03) is a plain number tile: the 3D die only has 20 faces
+  var D100 = {};
+  DATA.questions.forEach(function (q) { if (q.sides === 100) q.items.forEach(function (it) { D100[it[0]] = 1; }); });
+  function rollText(r, id) {
+    if (D100[id]) return 'You rolled ' + r + '.' + (PREVIEW ? ' (Preview roll, not recorded.)' : '');
     // a drawn-roll vote (DATA.draw, from Chapter 5 on): one roll per die is picked at random from everyone's rolls
     if (DATA.draw && r === 20) return 'NATURAL 20! If yours is the roll drawn, it’s a big one.';
     if (DATA.draw && r === 1) return 'NATURAL 1. Here’s hoping someone else’s roll gets drawn.';
@@ -1226,7 +1234,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     if (!PREVIEW) { me = who; store(ME, me); renderWho(); }
     rolling[id] = true; render();
     // Shaken in its card while the sheet answers, then thrown with the answer already on the die.
-    Dice.spin(id);
+    if (!D100[id]) Dice.spin(id);
     var started = Date.now(), answered = false;
     // If the sheet never answers, the die stops and says so instead of shaking forever.
     var watchdog = setTimeout(function () { land({ ok: false, error: 'network' }); }, 45000);
@@ -1236,27 +1244,35 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         var ok = res && res.ok && res.roll, n = ok ? Number(res.roll) : 0;
         var finish = function () {
           rolling[id] = false;
-          if (ok) { S.rolls[id] = n; S.sealed = false; store(STORE, S); } else Dice.stop(id);
+          if (ok) { S.rolls[id] = n; S.sealed = false; store(STORE, S); } else if (!D100[id]) Dice.stop(id);
           render();
           [].forEach.call(document.querySelectorAll('.cr-chart[data-chart="' + id + '"] li'), function (li, k) { li.classList.toggle('on', S.rolls[id] === k + 1); });
           if (!ok) { var o = document.getElementById('rc-rr-' + id); if (o) o.textContent = ERR[res && res.error] || (res && res.error === 'notopen' ? 'Voting opens ' + when(OPENS) + '.' : 'The die rolled off the table. Give it another go.'); }
         };
-        if (ok && Dice.ready(id)) Dice.land(id, n, finish); else finish();
+        if (ok && !D100[id] && Dice.ready(id)) Dice.land(id, n, finish); else finish();
       }, Math.max(0, 700 - (Date.now() - started)));
     };
-    if (PREVIEW) setTimeout(function () { land({ ok: true, roll: 1 + Math.floor(Math.random() * 20) }); }, 1400);
+    if (PREVIEW) setTimeout(function () { land({ ok: true, roll: 1 + Math.floor(Math.random() * (D100[id] ? 100 : 20)) }); }, 1400);
     else send({ action: 'advroll', vote: DATA.key, q: id, email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country }, land);
   }
 
   function diceBlock(id, note) {
-    var r = S.rolls[id], tone = r === 20 ? ' crit' : r === 1 ? ' fumble' : '';
+    var r = S.rolls[id], tone = D100[id] ? '' : r === 20 ? ' crit' : r === 1 ? ' fumble' : '';
     var d = document.createElement('div');
     d.className = 'rc-dice';
     d.innerHTML = (r
-        ? '<p class="rc-rollres' + tone + '" id="rc-rr-' + id + '" aria-live="polite">' + rollText(r) + '</p>'
-        : '<button type="button" class="rc-roll"' + (rolling[id] || locked || busy() || gated() ? ' disabled' : '') + '>' + (rolling[id] ? 'ROLLING…' : 'ROLL THE D20') + '</button>' +
+        ? '<p class="rc-rollres' + tone + '" id="rc-rr-' + id + '" aria-live="polite">' + rollText(r, id) + '</p>'
+        : '<button type="button" class="rc-roll"' + (rolling[id] || locked || busy() || gated() ? ' disabled' : '') + '>' + (rolling[id] ? 'ROLLING…' : D100[id] ? 'ROLL THE D100' : 'ROLL THE D20') + '</button>' +
           '<p class="rc-rollres" id="rc-rr-' + id + '" aria-live="polite"></p>') +
       '<p class="rc-rollnote">' + esc(note) + '</p>';
+    if (D100[id]) {
+      var tile = document.createElement('div'); tile.className = 'cr-d100' + (rolling[id] ? ' rolling' : '');
+      tile.textContent = rolling[id] ? '…' : r || '?';
+      d.insertBefore(tile, d.firstChild);
+      var rb100 = d.querySelector('.rc-roll');
+      if (rb100) rb100.onclick = function () { rollFor(id); };
+      return d;
+    }
     var die = dieNode(id);
     die.className = 'rc-die' + (Dice.ready(id) ? ' is3d' : '') + (rolling[id] ? ' rolling' : tone);
     if (!rolling[id]) { var dn = die.querySelector('.rc-dn'); dn.textContent = r || '?'; }
@@ -1726,3 +1742,24 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 })();
 </script>
+<!-- THE LOOPED TRANSMISSION, Gary's video, under the story on the Search the Building results. SRC stays empty until Maurice OKs the video. -->
+<style>
+#rc .cr-video{display:flex;flex-direction:column;gap:12px}
+#rc .cr-video-slot{aspect-ratio:9/16;width:100%;max-width:360px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;background:#0b170f;color:#fffffe;border:2px dashed #268e62;border-radius:0;font:800 14px/1.5 Almarai,sans-serif;letter-spacing:.08em}
+#rc .cr-video video{width:100%;max-width:405px;max-height:85vh;display:block;background:#000;border-radius:0}
+</style>
+<script>(function(){
+  var SRC = 'https://africhmaurice.github.io/site/assets/video/looped-transmission.mp4';
+  var PREV = /github\.io/.test(location.hostname);
+  if (!SRC && !PREV) return;
+  function setup(){
+    var st = document.querySelector('#cr-results .cr-story');
+    if (!st) return false;
+    if (document.querySelector('.cr-video')) return true;
+    var sec = document.createElement('section'); sec.className = 'rc-step cr-video';
+    sec.innerHTML = '<header><p class="rc-kick">WATCH</p><h2>The Looped Transmission</h2></header>' + (SRC ? '<video controls playsinline preload="metadata" src="' + SRC + '"></video>' : '<div class="cr-video-slot">DRAFT: GARY’S FULL VIDEO GOES HERE, ONCE MAURICE CONFIRMS IT</div>');
+    st.insertAdjacentElement('afterend', sec);
+    return true;
+  }
+  if (!setup()) { var n = 0, iv = setInterval(function () { if (setup() || ++n > 80) clearInterval(iv); }, 250); }
+})();</script>

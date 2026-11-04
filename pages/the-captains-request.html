@@ -1,7 +1,7 @@
-<!-- Generated copy of squarespace-search.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
+<!-- Generated copy of squarespace-captains-request.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
 <!-- ============================================================
-     SEARCH THE BUILDING - after the break-in fight: roll for what Rune, Sparrow, and Hale find, the defense systems, shutting down the EMP (with advantage), and more guards.
-     Built by scripts/build-crash.mjs from config/search-vote.json and games/crash.*; the dice come
+     THE CAPTAIN'S REQUEST - after the search: hearing and perception for the crew (Hale with advantage), how they proceed, and a secret d100.
+     Built by scripts/build-crash.mjs from config/request-vote.json and games/crash.*; the dice come
      from games/redcity.template.html. Edit those and rebuild, never this file.
      ============================================================ -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -175,7 +175,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 @font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
 #rc{--cream:#f3ead9;--paper:#ede9dc;--hair:rgba(243,234,217,.18);--hair2:rgba(243,234,217,.4);--mint:#c53200;--lime:#a2f590;--ember:#fd7547;--red:#c1330a;--well:rgba(12,26,8,.35);--panel:rgba(38,142,98,.16);--muted:rgba(237,233,220,.72);
   box-sizing:border-box;position:relative;width:100vw;overflow-x:clip;
-  background:linear-gradient(rgba(243,234,217,.8),rgba(237,233,220,.92)),url('https://africhmaurice.github.io/site/assets/bg/dome-city-mist-as159145789.webp') center/cover no-repeat fixed;
+  background:linear-gradient(rgba(33,50,38,.78),rgba(11,23,15,.9)),url('https://africhmaurice.github.io/site/assets/bg/monolith-canyon-as444233611.webp') center/cover no-repeat fixed;
   padding-top:clamp(140px,12vw,180px);padding-bottom:64px;color:#fffffe;font-family:'Almarai',sans-serif;letter-spacing:.03em;font-size:16px;line-height:1.55;text-align:left}
 #rc *,#rc *::before,#rc *::after{box-sizing:border-box}
 #rc [hidden]{display:none!important}
@@ -497,60 +497,63 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 /* the next chapter's button under the closing note (2026-11-01) */
 #rc .cr-after .cr-next{display:inline-block;margin-top:20px;text-decoration:none;max-width:100%;white-space:normal;text-align:center}
 
-/* the river vote (chapter 5), on top of the crash vote's styles: the bone-white color story. The page sits on the
-   mist city under a parchment veil with dark ink text; the panels are ink with parchment text and green accents
-   (#0b170f, #213226, #1a5e41, #268e62, #3adb97, #89fbcb, #ede9dc). */
-#rc.cr.rv{--mint:#fffffe;--ember:#89fbcb;--red:#1a5e41;--lime:#3adb97;--panel:rgba(11,23,15,.9);--well:rgba(255,255,255,.06);--hair:rgba(243,234,217,.2);--hair2:rgba(243,234,217,.42)}
-#rc.cr.rv .rc-hero h1{color:#0b170f}
-#rc.cr.rv .rc-hero h1 span{color:#1a5e41}
-#rc.cr.rv .rc-hero .rc-kick{color:#1a5e41}
-#rc.cr.rv .rc-lede{color:#213226}
-#rc.cr.rv .rc-stat{background:rgba(11,23,15,.9);border-color:rgba(11,23,15,.9)}
-#rc.cr.rv .rc-stat .v.e{color:#3adb97}
-#rc.cr.rv .rc-stat .v.e{--ci-depth:#1a5e41!important}
-#rc.cr.rv .rc-step{background:rgba(11,23,15,.9);border-color:rgba(11,23,15,.9)}
-#rc.cr.rv .rc-cta{background:#1a5e41;border-color:#f3ead9;color:#fffffe}
-#rc.cr.rv .rc-cta:hover:not(:disabled){background:#268e62}
-#rc.cr.rv .rc-cta:disabled{background:rgba(11,23,15,.55);border-color:rgba(243,234,217,.4);color:rgba(237,233,220,.6)}
-#rc.cr.rv .rc-roll{background:#1a5e41}
-#rc.cr.rv .rc-roll:hover:not(:disabled){background:#268e62}
-#rc.cr.rv .rc-opt,#rc.cr.rv .rc-arch{background-color:rgba(255,255,255,.04)}
-#rc.cr.rv .rc-opt[aria-pressed="true"]{background:#1a5e41;border-color:#3adb97}
-#rc.cr.rv .rc-orders{border-color:rgba(58,219,151,.45)}
-#rc.cr.rv .rc-die .face{fill:#1a5e41;stroke:#89fbcb}
-#rc.cr.rv .rc-die.fumble .face{fill:#1a5e41;stroke:#fffffe}
-#rc.cr.rv .cr-kit h3{color:#89fbcb}
-#rc.cr.rv .cw-orders b{color:#89fbcb}
-/* the priorities: one row per crew member, five choices each */
-#rc .cr-grid{display:grid;gap:20px}
-#rc .cr-grid-row{display:grid;gap:12px;padding-top:18px;border-top:1px solid var(--hair)}
-#rc .cr-grid-row:first-child{border-top:0;padding-top:0}
-#rc .cr-grid-row .rc-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
-#rc .cr-grid-row .rc-opt{padding:12px 14px;text-align:center}
-#rc .cr-one{grid-template-columns:minmax(0,320px);margin-top:20px}
+/* a d100 is a number tile, not the 3D die (2026-11-03) */
+#rc .cr-d100{width:96px;height:96px;display:flex;align-items:center;justify-content:center;background:#150d28;color:#fffffe;border:2px solid #9e74fd;border-radius:0;font:800 34px/1 Almarai,sans-serif;font-variant-numeric:tabular-nums}
+#rc .cr-d100.rolling{opacity:.6}
+
+/* the raft hunt (chapter 6), on top of the crash vote's styles: the olive color story. The monolith canyon under a
+   deep green veil, ink panels, parchment and slate accents (#0b170f, #213226, #607667, #ede9dc, #f3ead9, #a2f590). */
+#rc.cr.rf{--mint:#fffffe;--ember:#a2f590;--red:#607667;--lime:#a2f590;--panel:rgba(11,23,15,.88);--well:rgba(255,255,255,.06);--hair:rgba(243,234,217,.2);--hair2:rgba(243,234,217,.42)}
+#rc.cr.rf .rc-hero h1{color:#fffffe}
+#rc.cr.rf .rc-hero h1 span{color:#a2f590}
+#rc.cr.rf .rc-hero .rc-kick{color:#a2f590}
+#rc.cr.rf .rc-lede{color:#ede9dc}
+#rc.cr.rf .rc-stat{background:rgba(11,23,15,.88);border-color:rgba(243,234,217,.24)}
+#rc.cr.rf .rc-stat .v.e{color:#a2f590}
+#rc.cr.rf .rc-stat .v.e{--ci-depth:#2c6021!important}
+#rc.cr.rf .rc-step{background:rgba(11,23,15,.88);border-color:rgba(243,234,217,.18)}
+#rc.cr.rf .rc-cta{background:#607667;border-color:#f3ead9;color:#fffffe}
+#rc.cr.rf .rc-cta:hover:not(:disabled){background:#213226}
+#rc.cr.rf .rc-cta:disabled{background:rgba(11,23,15,.55);border-color:rgba(243,234,217,.4);color:rgba(237,233,220,.6)}
+#rc.cr.rf .rc-roll{background:#607667}
+#rc.cr.rf .rc-roll:hover:not(:disabled){background:#213226}
+#rc.cr.rf .rc-roll:disabled{opacity:.5;cursor:not-allowed}
+#rc.cr.rf .rc-die .face{fill:#607667;stroke:#ede9dc}
+#rc.cr.rf .cr-kit h3{color:#a2f590}
+#rc.cr.rf .cw-orders b{color:#a2f590}
 #rc .cr-kit h3 small{display:block;margin-top:6px;font-size:11px;letter-spacing:.14em;color:rgba(237,233,220,.72)}
 #rc .cr-kit h3{flex-direction:column;align-items:flex-start;justify-content:flex-end;min-height:4.6em}
-/* the results: drawn rolls with whose roll it was, the plan's votes, and each crew member's priority */
-#rc.cr.rv .cr-res-kit{border-color:rgba(243,234,217,.24)}
-#rc.cr.rv .cr-res-kit .q{color:#89fbcb}
-#rc .cr-res-kit .by{margin-top:6px;font-size:14px;line-height:1.45;color:rgba(237,233,220,.82)}
-#rc .cr-res-kit .by b{color:#fffffe;font-weight:800;overflow-wrap:anywhere}
-#rc .cr-res-kit .prio{margin-top:8px;font-weight:800;font-size:12px;line-height:1.4;letter-spacing:.12em;color:rgba(237,233,220,.72)}
-#rc .cr-res-kit .prio b{color:#3adb97}
-#rc .cr-res-kit .cr-todo{font-style:italic;font-weight:400;color:rgba(237,233,220,.5)}
-#rc .cr-res-kits.cr-one{grid-template-columns:minmax(0,420px);margin-bottom:24px}
-#rc.cr.rv .cr-win{border-left-color:#3adb97}
-#rc.cr.rv .cr-win .k{color:#89fbcb}
-#rc.cr.rv .cr-bar{background:rgba(137,251,203,.14)}
-#rc.cr.rv .cr-bar i{background:#1a5e41}
-#rc.cr.rv .cr-bars li.win .cr-bar i{background:#3adb97}
-#rc.cr.rv .cr-bars li.win .cr-bar-top b{color:#89fbcb}
-#rc.cr.rv .cr-res-kit{align-items:flex-start}
-#rc .cr-res-kit .a+.a{margin-top:10px}
-#rc .cr-story p{margin:0;max-width:65ch;font-size:17px;line-height:1.65}
-#rc .cr-story p+p{margin-top:14px}
-/* the plan the frens chose: big bold Almarai (Maurice, 2026-10-06) */
-#rc.cr.rv .cr-win h3{font-family:'Almarai',sans-serif!important;font-weight:800!important;font-size:clamp(28px,3.6vw,40px)!important;line-height:1.25!important;letter-spacing:.01em!important}
+/* the raft panel: the count, your 5 pieces, and where to look */
+#rc .rf-top{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px}
+#rc .rf-count,#rc .rf-mine,#rc .rf-where{background:var(--well);border:1px solid var(--hair);padding:20px;display:grid;gap:12px;align-content:start;min-width:0}
+#rc .rf-raft .k{font-weight:800;font-size:12px;letter-spacing:.14em;color:#a2f590}
+#rc .rf-count .v{font-family:'Atomic Marker',cursive;font-size:clamp(40px,5vw,56px);line-height:1.2;letter-spacing:.03em;color:#fffffe}
+#rc .rf-count .v small{font-size:.5em;color:rgba(237,233,220,.7)}
+#rc .rf-bar{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:3px}
+#rc .rf-bar i{display:block;aspect-ratio:1/2;background:rgba(243,234,217,.12);border:1px solid rgba(243,234,217,.18)}
+#rc .rf-bar i.in{background:#ede9dc;border-color:#ede9dc}
+#rc .rf-bar i.mine{background:#a2f590;border-color:#a2f590}
+#rc .rf-slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+#rc .rf-slot{aspect-ratio:1;border:1.5px dashed rgba(243,234,217,.4);display:grid;place-items:center;min-width:0}
+#rc .rf-slot span{font-weight:800;font-size:14px;color:rgba(237,233,220,.5)}
+#rc .rf-slot.got{border-style:solid;border-color:#a2f590;background:rgba(162,245,144,.1)}
+#rc .rf-slot svg{width:80%;height:80%}
+#rc .rf-note{margin:0;font-size:14px;line-height:1.45;color:#ede9dc}
+#rc .rf-where{margin-top:20px}
+#rc .rf-where ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px 20px}
+#rc .rf-where li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--hair);font-size:15px}
+#rc .rf-where li a{color:#fffffe;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+#rc .rf-where li span{flex:none;font-weight:800;font-size:12px;letter-spacing:.1em;color:#a2f590;text-transform:uppercase}
+#rc .rf-where li.done span{color:rgba(237,233,220,.5)}
+@media (max-width:760px){#rc .rf-top{grid-template-columns:minmax(0,1fr)}}
+#rc .rf-cd{font-weight:800;color:#a2f590;font-variant-numeric:tabular-nums;white-space:nowrap}
+#rc .rf-hard{margin:0 0 20px;padding:20px;border:2px solid #a2f590;background:rgba(162,245,144,.08);font-weight:800;font-size:18px;line-height:1.45;color:#fffffe}
+
+/* The Transmission (chapter 18, 2026-11-03): a pick on the olive pages, and the d100 tile */
+#rc.cr.rf .rc-opt,#rc.cr.rf .rc-arch{background-color:rgba(255,255,255,.04);border-color:rgba(243,234,217,.35)}
+#rc.cr.rf .rc-opt:hover{border-color:#a2f590}
+#rc.cr.rf .rc-opt[aria-pressed="true"]{background:#607667;border-color:#a2f590}
+#rc.cr.rf .cr-d100{background:#0b170f;border-color:#a2f590}
 /* the reunion, chapter 10, on top of the crash vote's styles (its violet is the purple color story) */
 #rc .cr-kit h3 small{display:block;margin-top:6px;font-size:11px;letter-spacing:.14em;color:rgba(237,233,220,.72)}
 #rc .cr-kit h3{flex-direction:column;align-items:flex-start;justify-content:flex-end;min-height:4.6em}
@@ -566,6 +569,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 /* advantage: two dice in one box; the lower one greys out */
 #rc .cr-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;width:100%;margin-top:auto;border-top:1px solid var(--hair)}
 #rc .cr-pair .rc-dice{border-top:0;margin-top:0}
+#rc .cr-pair .rc-roll{width:100%;box-sizing:border-box;padding-left:8px;padding-right:8px;font-size:13px;letter-spacing:.04em;white-space:nowrap;text-align:center}
 #rc .cr-pair-card .cr-pair{border-top:0}
 #rc .cr-pair .rc-dice,#rc .cr-pair-res{transition:opacity .3s ease,filter .3s ease}
 #rc .cr-pair .cr-low,#rc .cr-pair-res.cr-low{opacity:.35;filter:grayscale(1)}
@@ -577,7 +581,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 @media (max-width:600px){#rc .cr-pair-res{flex-direction:column;align-items:flex-start}}
 </style>
 
-<div id="rc" class="cr rv">
+<div id="rc" class="cr rf">
   <header class="rc-hero">
     <div>
       <p class="rc-kick" id="cr-kick"></p>
@@ -587,7 +591,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     <div class="rc-stats">
       <div class="rc-stat"><div class="k">FRENS WHO HAVE VOTED</div><div class="v rc-num" id="rc-count">…</div><small class="rc-open-only">One vote each. You can change yours until it closes.</small></div>
       <div class="rc-stat"><div class="k">FOR VOTING</div><div class="v e rc-num" id="rc-pts"></div><small class="rc-open-only">Seal your plan and the points go straight to the leaderboard.</small></div>
-      <div class="rc-stat"><div class="k" id="rc-close-k">VOTING CLOSES</div><div class="v rc-num cw-when" id="rc-close">…</div><small id="rc-close-s">You have 24 hours.</small></div>
+      <div class="rc-stat"><div class="k" id="rc-close-k">VOTING CLOSES</div><div class="v rc-num cw-when" id="rc-close">…</div><small id="rc-close-s">You have 25 hours.</small></div>
     </div>
   </header>
 
@@ -617,11 +621,11 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 <script>
 (function () {
-  var DATA = {"_help":"Chapter 17 vote (DRAFT name, copy, and times): after the break-in fight (7 of 10 rounds won, all five prism guards down) the crew searches the building (Maurice, 2026-11-01). Rolls: Rune, Sparrow, and Hale each search for things and loot; the defense systems; shutting down the EMP with advantage (Rune); any more guards here or nearby. One roll per die drawn at random from the sealed votes (Maurice left out). Bone in the adventure color rotation. Built by node scripts/build-crash.mjs search. NOT LIVE: Maurice said not to push yet.","key":"search_vote","points":100,"opens":"2026-11-02T20:00:00Z","closes":"2026-11-03T20:00:00Z","title":["Search the","Building"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"Rune, Sparrow, and Hale handle the prism guards pretty well, in fact. All five go down, and the building is theirs, at least for now.\n\nRoll for what each of them finds when they look around, the defense systems in place, whether they can figure out how to shut down the EMP (with advantage, because of Rune), and whether there are any more guards here or near here.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY ROLLS","questions":[{"id":"search","kind":"rolls","kicker":"THE SEARCH","title":"What do they find?","text":"With the guards down, the crew takes a look around. Roll for each of them: their eye for finding things, and any loot worth taking.","items":[["search_rune","Rune Overclock · Techtailor"],["search_sparrow","Sparrow Zipmeister · Intangible"],["search_hale","Hale · Crest Knight"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each of them."},{"id":"defense","kind":"rolls","kicker":"THE BUILDING","title":"What defenses are in place?","text":"Five guards weren’t the only thing protecting this place. Roll for the defense systems in place.","items":[["defense","Defense Systems"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."},{"id":"emp","kind":"rolls","kicker":"RUNE · TECHTAILOR","title":"Can they shut down the EMP?","text":"The machine that fired the energy wave is somewhere in here. Rune knows tech, so the crew has advantage: roll both dice, and the higher one counts.","items":[["emp","Shut Down the EMP"],["emp_2","EMP (Advantage)"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls for each die. The crew gets the higher of the two.","pairs":{"emp":"emp_2"}},{"id":"guards","kind":"rolls","kicker":"THE PRISM GUARDS","title":"Are there more guards?","text":"Five prism guards came running when the alarm went off. Roll for whether there are any more here or near here.","items":[["guards","More Guards"]],"tiers":["","","","",""],"resultText":"One roll was drawn at random from everyone’s rolls."}],"draw":true,"onAdventure":false,"badge":["#268e62","#1a5e41","#89fbcb"],"hoursNote":"24 hours"};
+  var DATA = {"_help":"The Captain’s Request, chapter 18 vote (Maurice 2026-11-03): after the search. Hearing and perception for the crew, Hale with advantage; how they proceed; one secret d100.","key":"request_vote","points":100,"opens":"2026-11-04T03:20:00Z","closes":"2026-11-05T04:45:00Z","title":["The Captain’s","Request"],"kicker":"THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE","lede":"The EMP and the island’s aerial defense systems are down, and there are no guards in the building. The Captain’s transmission says the Second Wind’s propulsion engines are fried, and he needs an electromagnetic coil conductor to get her flying again.\n\nRoll hearing and perception for each of the crew, with advantage for Hale, choose how they want to proceed, and roll one secret die.","tiers":["WORST","BAD","FINE","GOOD","BEST"],"tierAt":[9.5,10.2,10.8,11.4],"twist":"","sealLabel":"SEAL MY VOTE","draw":true,"onAdventure":true,"badge":["#607667","#213226","#d4e4d9"],"hoursNote":"25 hours","questions":[{"kind":"rolls","tiers":["","","","",""],"id":"hearing","kicker":"THE CREW","title":"Hearing and perception","text":"Roll for each of the crew. Hale has advantage: roll both dice, and the higher one counts.","items":[["hear_rune","Rune Overclock · Techtailor"],["hear_sparrow","Sparrow Zipmeister · Intangible"],["hear_hale","Hale · Crest Knight"],["hear_hale_2","Hale (Advantage)"]],"pairs":{"hear_hale":"hear_hale_2"},"resultText":"One roll was drawn at random from everyone’s rolls for each die. Hale gets the higher of his two."},{"id":"proceed","kind":"pick","kicker":"THE CREW","title":"How do they want to proceed?","text":"Majority rules.","options":[["Head to the sword",""],["Head north to the cave",""],["Head back to the captain",""],["Head south to the cave",""],["Continue searching for Scarlett",""]]},{"kind":"rolls","tiers":["","","","",""],"id":"secret","kicker":"SECRET ROLL","title":"The secret roll","text":"Roll the D100. What it’s for stays a secret.","sides":100,"items":[["secret_d100","Secret Roll"]],"resultText":"One roll was drawn at random from everyone’s rolls."}]};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var BOARD = 'https://africhmaurice.github.io/leaderboard/leaderboard.json';
   var TZ = 'America/New_York';
-  var STORE = 'thSearch:v1', ME = 'thLoot:me';
+  var STORE = 'thRequest:v1', ME = 'thLoot:me';
 
   var root = document.getElementById('rc');
   var $ = function (id) { return document.getElementById(id); };
@@ -697,7 +701,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       var c = document.createElement('canvas'); c.width = c.height = 256;
       var g = c.getContext('2d');
       var grad = g.createLinearGradient(0, 0, 0, 256);
-      grad.addColorStop(0, '#268e62'); grad.addColorStop(1, '#1a5e41');
+      grad.addColorStop(0, '#607667'); grad.addColorStop(1, '#213226');
       g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
       g.fillStyle = '#fffffe'; g.textAlign = 'center'; g.textBaseline = 'middle';
       var word = lab ? String(lab[n]) : null;
@@ -1199,7 +1203,11 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   var notYet = !PREVIEW && NOW < OPENS, closed = !PREVIEW && NOW > CLOSES, locked = notYet || closed;
   function when(ms) { return new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(new Date(ms)).replace(':00', '') + ' ET'; }
   function changed() { S.sealed = false; store(STORE, S); render(); }
-  function rollText(r) {
+  // a die with q.sides 100 (2026-11-03) is a plain number tile: the 3D die only has 20 faces
+  var D100 = {};
+  DATA.questions.forEach(function (q) { if (q.sides === 100) q.items.forEach(function (it) { D100[it[0]] = 1; }); });
+  function rollText(r, id) {
+    if (D100[id]) return 'You rolled ' + r + '.' + (PREVIEW ? ' (Preview roll, not recorded.)' : '');
     // a drawn-roll vote (DATA.draw, from Chapter 5 on): one roll per die is picked at random from everyone's rolls
     if (DATA.draw && r === 20) return 'NATURAL 20! If yours is the roll drawn, it’s a big one.';
     if (DATA.draw && r === 1) return 'NATURAL 1. Here’s hoping someone else’s roll gets drawn.';
@@ -1226,7 +1234,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     if (!PREVIEW) { me = who; store(ME, me); renderWho(); }
     rolling[id] = true; render();
     // Shaken in its card while the sheet answers, then thrown with the answer already on the die.
-    Dice.spin(id);
+    if (!D100[id]) Dice.spin(id);
     var started = Date.now(), answered = false;
     // If the sheet never answers, the die stops and says so instead of shaking forever.
     var watchdog = setTimeout(function () { land({ ok: false, error: 'network' }); }, 45000);
@@ -1236,27 +1244,35 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         var ok = res && res.ok && res.roll, n = ok ? Number(res.roll) : 0;
         var finish = function () {
           rolling[id] = false;
-          if (ok) { S.rolls[id] = n; S.sealed = false; store(STORE, S); } else Dice.stop(id);
+          if (ok) { S.rolls[id] = n; S.sealed = false; store(STORE, S); } else if (!D100[id]) Dice.stop(id);
           render();
           [].forEach.call(document.querySelectorAll('.cr-chart[data-chart="' + id + '"] li'), function (li, k) { li.classList.toggle('on', S.rolls[id] === k + 1); });
           if (!ok) { var o = document.getElementById('rc-rr-' + id); if (o) o.textContent = ERR[res && res.error] || (res && res.error === 'notopen' ? 'Voting opens ' + when(OPENS) + '.' : 'The die rolled off the table. Give it another go.'); }
         };
-        if (ok && Dice.ready(id)) Dice.land(id, n, finish); else finish();
+        if (ok && !D100[id] && Dice.ready(id)) Dice.land(id, n, finish); else finish();
       }, Math.max(0, 700 - (Date.now() - started)));
     };
-    if (PREVIEW) setTimeout(function () { land({ ok: true, roll: 1 + Math.floor(Math.random() * 20) }); }, 1400);
+    if (PREVIEW) setTimeout(function () { land({ ok: true, roll: 1 + Math.floor(Math.random() * (D100[id] ? 100 : 20)) }); }, 1400);
     else send({ action: 'advroll', vote: DATA.key, q: id, email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country }, land);
   }
 
   function diceBlock(id, note) {
-    var r = S.rolls[id], tone = r === 20 ? ' crit' : r === 1 ? ' fumble' : '';
+    var r = S.rolls[id], tone = D100[id] ? '' : r === 20 ? ' crit' : r === 1 ? ' fumble' : '';
     var d = document.createElement('div');
     d.className = 'rc-dice';
     d.innerHTML = (r
-        ? '<p class="rc-rollres' + tone + '" id="rc-rr-' + id + '" aria-live="polite">' + rollText(r) + '</p>'
-        : '<button type="button" class="rc-roll"' + (rolling[id] || locked || busy() || gated() ? ' disabled' : '') + '>' + (rolling[id] ? 'ROLLING…' : 'ROLL THE D20') + '</button>' +
+        ? '<p class="rc-rollres' + tone + '" id="rc-rr-' + id + '" aria-live="polite">' + rollText(r, id) + '</p>'
+        : '<button type="button" class="rc-roll"' + (rolling[id] || locked || busy() || gated() ? ' disabled' : '') + '>' + (rolling[id] ? 'ROLLING…' : D100[id] ? 'ROLL THE D100' : 'ROLL THE D20') + '</button>' +
           '<p class="rc-rollres" id="rc-rr-' + id + '" aria-live="polite"></p>') +
       '<p class="rc-rollnote">' + esc(note) + '</p>';
+    if (D100[id]) {
+      var tile = document.createElement('div'); tile.className = 'cr-d100' + (rolling[id] ? ' rolling' : '');
+      tile.textContent = rolling[id] ? '…' : r || '?';
+      d.insertBefore(tile, d.firstChild);
+      var rb100 = d.querySelector('.rc-roll');
+      if (rb100) rb100.onclick = function () { rollFor(id); };
+      return d;
+    }
     var die = dieNode(id);
     die.className = 'rc-die' + (Dice.ready(id) ? ' is3d' : '') + (rolling[id] ? ' rolling' : tone);
     if (!rolling[id]) { var dn = die.querySelector('.rc-dn'); dn.textContent = r || '?'; }
@@ -1448,7 +1464,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   // paint it the color of the page's foot so nothing shows below.
   function paintSection() {
     var sec = root.closest('section'); if (!sec) return;
-    var bg = sec.querySelector('.section-background'), color = '#ede9dc';
+    var bg = sec.querySelector('.section-background'), color = '#0b170f';
     sec.style.setProperty('background', color, 'important'); if (bg) bg.style.setProperty('background', color, 'important');
   }
   paintSection(); addEventListener('load', paintSection); setTimeout(paintSection, 800);
@@ -1726,3 +1742,21 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 })();
 </script>
+<!-- THE LOOPED TRANSMISSION, Gary's video, above Step 1 on The Captain's Request. -->
+<style>
+#rc .cr-video{display:flex;flex-direction:column;gap:12px}
+#rc .cr-video video{width:100%;max-width:405px;max-height:85vh;display:block;background:#000;border-radius:0}
+</style>
+<script>(function(){
+  var SRC = 'https://africhmaurice.github.io/site/assets/video/looped-transmission.mp4';
+  function setup(){
+    var first = document.querySelector('#rc .rc-step');
+    if (!first) return false;
+    if (document.querySelector('.cr-video')) return true;
+    var sec = document.createElement('section'); sec.className = 'rc-step cr-video';
+    sec.innerHTML = '<header><p class="rc-kick">WATCH</p><h2>The Looped Transmission</h2></header><video controls playsinline preload="metadata" src="' + SRC + '"></video>';
+    first.parentNode.insertBefore(sec, first);
+    return true;
+  }
+  if (!setup()) { var n = 0, iv = setInterval(function () { if (setup() || ++n > 80) clearInterval(iv); }, 250); }
+})();</script>
