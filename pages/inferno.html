@@ -24,7 +24,7 @@
        15 Swinging Chains    swinging fireballs           32 Molten Run            rising lava, a lift, falling ledges
        16 Rising Lava        climb before the lava does   33 The Burning Bridge    a crumbling bridge between fire jets
        17 Cinders            falling ledges and fire jets 34 The Ninth Circle      everything at once
-     Rules: smashing a skull scores 1 point and every 10 points is an extra life (Maurice 11/4; game points only, nothing goes to the hunt). Three lives. A death restarts the current floor; losing the last life goes back to floor 1 with three new lives
+     Rules: coins (his spinning Izzy coin, 77-coin-spin.png): one pops out of each smashed skull, and more sit around every floor, some only a jump, a double jump, or a leap over lava away. Every 10 coins is an extra life (Maurice 11/4; game coins only, nothing goes to the hunt). Three lives. A death restarts the current floor; losing the last life goes back to floor 1 with three new lives
      (floor and lives kept on this device in ma-inferno-run, so a visit can carry on from there and a reload can't refill them); the deepest floor reached is ma-inferno-best. Controls: arrows or A / D to move, space, up, or W to jump
      (hold for a higher jump); Left, Jump, and Right buttons under the game on touch screens. Pause button (or P, or Escape,
      or hiding the tab). Reduced motion: no shake, no drifting embers. No clock.
@@ -40,7 +40,7 @@
      Win: after floor 34 a golden G rises. Tapping it calls window.maGolden.found(2) (golden.js, finishers only).
      DRAFT copy (not Maurice's words yet): eyebrow "The Golden Trail", heading "Descend the Inferno", the how-to line,
        start overlay heading "Into the Inferno" and its line, "Start at floor 1", "Carry on from floor N", every floor
-       name and how-to line in FL, the fail lines in DIE, "Floor N of 34", "LIVES:" (with a goma per life), "Points: N", "Extra life!", "Best: floor N",
+       name and how-to line in FL, the fail lines in DIE, "Floor N of 34", "LIVES:" (with a goma per life), "COINS:", "Extra life!", "Best: floor N",
        "N lives left", "Out of lives", "Back to floor 1", the win heading "The bottom of the Inferno", the win line, "The second golden
        character is yours.", "Only hunters with every loot box can take this.", "Pause", "Paused", "Resume", the on-canvas
        control tips, "DOWN", "THE BOTTOM", "Pick your goon", the goon line, the double jump tips, and the two new fail lines.
@@ -104,7 +104,7 @@
 <section id="ma-inferno" aria-label="Descend the Inferno">
   <p class="if-eye">The Golden Trail</p>
   <h1 class="if-h1">Descend the Inferno</h1>
-  <p class="if-how">Take your goon down 34 floors of fire, each one meaner than the last. Jump twice for a double jump. Land on a skull to smash it, unless it's on fire. Every 10 you smash is an extra life. You get three lives. Die, and you start that floor over. Lose all three, and you go back to floor 1.</p>
+  <p class="if-how">Take your goon down 34 floors of fire, each one meaner than the last. Jump twice for a double jump. Land on a skull to smash it, unless it's on fire. Every 10 coins is an extra life. You get three lives. Die, and you start that floor over. Lose all three, and you go back to floor 1.</p>
   <div class="if-hud"><span class="if-floor">Floor 1 of 34</span><span class="if-best">Best: floor 1</span></div>
   <div class="if-ctl"><button class="if-btn if-pause" type="button" disabled>Pause</button></div>
   <div class="if-stage" tabindex="0" role="application" aria-label="Descend the Inferno game"><canvas></canvas>
@@ -134,7 +134,7 @@
   var ART='https://africhmaurice.github.io/site/assets/';function pic(f){var i=new Image();i.src=ART+f;return i;}function ok(i){return i&&i.complete&&i.naturalWidth>0;}
   var GOONS=[['izzy','Izzy','quiz/crew/izzy.webp'],['yellow','Daisy'],['red','Molt'],['sand','Sandy'],['black','Onyx'],['blue','Bluey'],['green','Vern'],['purple','Po'],['white','Galaxy'],['teal','Pebble'],['gold','Goldie'],['lime','Mossy'],['brown','Dirty Dan']];
   GOONS.forEach(function(g){g.img=pic(g[2]||'games/141-goma-'+g[0]+'.webp');});
-  var IZ=GOONS[0].img,ANGRY=pic('games/80-angry.webp'),CURSING=pic('games/inferno/skull-cursing.webp'),FLAMING=pic('games/80-flaming.webp'),BALL=pic('games/74-cannonball.png'),SPIKE=pic('games/75-spike.png'),KEY=pic('games/80-skull-key.webp');
+  var IZ=GOONS[0].img,COIN=pic('games/77-coin-spin.png?v=32'),ANGRY=pic('games/80-angry.webp'),CURSING=pic('games/inferno/skull-cursing.webp'),FLAMING=pic('games/80-flaming.webp'),BALL=pic('games/74-cannonball.png'),SPIKE=pic('games/75-spike.png'),KEY=pic('games/80-skull-key.webp');
   /* Maurice's drawings (11/3). Six materials going down, grass to lava: 0 grass, 1 dirt, 2 stone, 3 black, 4 cracked, 5 lava.
      led = ledge, crk = crumbling ledge, brk = ledge falling apart, tile = ground and walls. Until a picture loads, the old shapes draw. */
   var A={};(function(){var i,n=['ice','lava','bg','stairs-run','fireball','arrow','exit','flame','jet','chain','ball','weight','shadow','lift','spring-1','spring-2','door','wind'];for(i=0;i<6;i++)n.push('led'+i,'crk'+i,'brk'+i,'tile'+i);n.forEach(function(k){A[k]=pic('games/inferno/'+k+'.webp');});})();
@@ -194,7 +194,7 @@
   /* Every floor is its layout five times over. The floor's timing shifts each stretch, the key and door wait in the last one,
      and each stretch but the first brings skulls and roaming fireballs, more of them the deeper you go. */
   function shiftP(o,add,dx){var c={};for(var k in o)c[k]=o[k];c.x=o.x+dx;c.ph=(o.ph||0)+add;return c;}
-  function stretch(b,idx){var n=idx+1,P=b.L,R5=5,f=F({name:b.name,how:b.how,L:P*R5,P:P,last:b.last,start:b.start});f.en=[];f.fb=[];
+  function stretch(b,idx){var n=idx+1,P=b.L,R5=5,f=F({name:b.name,how:b.how,L:P*R5,P:P,last:b.last,start:b.start});f.en=[];f.fb=[];f.co=[];
     f.ex=[b.ex[0]+P*(R5-1),b.ex[1]];
     for(var i=0;i<R5;i++){(function(i){var o=P*i,add=i*.37,lastOne=i===R5-1;
       b.gs.forEach(function(g){var l=f.gs[f.gs.length-1];if(l&&l[1]===g[0]+o)l[1]=g[1]+o;else f.gs.push([g[0]+o,g[1]+o]);});
@@ -223,6 +223,14 @@
       for(var e=0;e<want&&ways.length;e++){var w=ways[e%ways.length],part=ways.length===1&&want>1;
         var a0=part?w[0]+(w[1]-w[0])*e/want:w[0],a1=part?w[0]+(w[1]-w[0])*(e+1)/want:w[1];
         if(a1-a0<90)continue;f.en.push({a:a0,b:a1,y:w[2],sp:sp,ph:(i*.37+e*.61+n*.13)*7,kind:n>=6&&(i+e)%3===2?2:n<=20?0:e%2});}
+      /* coins: about one or two a stretch, so a full floor is worth roughly one extra life */
+      var pat=(n+i)%3,gap=null,led=null;for(var gi=0;gi+1<b.gs.length;gi++)if(b.gs[gi+1][0]-b.gs[gi][1]>=50&&(!lastOne||b.gs[gi][1]+o<f.ex[0]-150))gap=[b.gs[gi][1]+o,b.gs[gi+1][0]+o];b.pl.forEach(function(p){if(p[3]!=='c'&&p[2]>=60)led=p;});
+      var mainW=ways.length?ways[0]:null;
+      if(pat===0&&mainW&&mainW[1]-mainW[0]>=110&&mainW[2]===GY){var mx=(mainW[0]+mainW[1])/2;f.co.push({x:mx-30,y:GY-72},{x:mx+30,y:GY-72});}
+      else if(pat===1&&gap)f.co.push({x:(gap[0]+gap[1])/2,y:GY-105});
+      else if(pat===1&&mainW&&mainW[2]===GY)f.co.push({x:(mainW[0]+mainW[1])/2,y:GY-185});
+      else if(led)f.co.push({x:led[0]+o+led[2]/2,y:led[1]-62});
+      else if(mainW&&mainW[2]===GY)f.co.push({x:(mainW[0]+mainW[1])/2,y:GY-72});
       var fc=n<3?0:i===0?(n>=20?1:0):n<14?(i>=2?1:0):n<26?1:(i>=1?2:1);
       for(var q=0;q<fc;q++){var cx=o+P*(.3+.45*q/Math.max(1,fc));if(lastOne&&Math.abs(cx-f.ex[0])<220)cx=f.ex[0]-260;
         f.fb.push({x:cx,y:330+((i+q)%3)*40,ax:70+n*2,ay:60,px:3.8+(q%2)*.7,py:2.8+(i%2)*.5,ph:i*.9+q*1.3});}
@@ -248,7 +256,7 @@
   function inRange(list,x){for(var i=0;i<list.length;i++)if(x>list[i][0]&&x<list[i][1])return list[i];return null;}
   function camX(f,x){return Math.max(0,Math.min(f.L-W,x-W*.35));}
   function make(i){var f=FL[i-1];return {n:i,t:0,x:f.start,y:GY-HH,vx:0,vy:0,on:true,ride:-1,face:1,boing:false,ice:false,surf:'g',cr:f.pl.map(function(){return 0;}),
-    drops:[],balls:[],rng:(i*2654435761)>>>0,dropT:1.2,ballT:1,key:false,done:false,dead:'',jp:0,dj:0,djT:-9,rlS:0,rlT:0,st:{}};}
+    drops:[],balls:[],rng:(i*2654435761)>>>0,dropT:1.2,ballT:1,key:false,done:false,dead:'',jp:0,dj:0,djT:-9,rlS:0,rlT:0,st:{},cg:{}};}
   function clone(s){var c={};for(var k in s)c[k]=s[k];c.cr=s.cr.slice();
     c.drops=s.drops.map(function(o){return {x:o.x,y:o.y,warn:o.warn,vy:o.vy};});c.balls=s.balls.map(function(o){return {x:o.x,y:o.y,vx:o.vx,a:o.a};});return c;}
   function rnd(s,a,b){s.rng=(s.rng+0x6D2B79F5)|0;var t=Math.imul(s.rng^(s.rng>>>15),1|s.rng);t=(t+Math.imul(t^(t>>>7),61|t))^t;return a+(((t^(t>>>14))>>>0)/4294967296)*(b-a);}
@@ -283,6 +291,7 @@
       }
     }
     s.x=nx;s.y=nfoot-HH;
+    for(var co=0;co<f.co.length;co++){if(s.cg[co]!=null)continue;var cn=f.co[co];if(Math.abs(cn.x-s.x)<26&&Math.abs(cn.y-s.y)<30){s.cg=Object.assign({},s.cg);s.cg[co]=t1;}}
     /* what can kill you */
     if(nfoot>545)return die(s,'lava');
     if(f.rl){var sec=Math.floor(s.x/f.P);if(sec>s.rlS){s.rlS=sec;s.rlT=t1;}}
@@ -360,7 +369,8 @@
       ctx.fillStyle='#3b3b3b';ctx.fillRect(dr.x-26,dr.y-22,52,44);ctx.fillStyle='#607667';ctx.fillRect(dr.x-10,dr.y-34,20,12);ctx.fillStyle='#f3ead9';ctx.font="800 13px Almarai,sans-serif";ctx.textAlign='center';ctx.fillText('10T',dr.x,dr.y+5);});
     s.balls.forEach(function(bl){if(ok(BALL)){ctx.save();ctx.translate(bl.x,bl.y);ctx.rotate(bl.a);ctx.drawImage(BALL,-16,-16,32,32);ctx.restore();}else{ctx.fillStyle='#2b2b2b';ctx.beginPath();ctx.arc(bl.x,bl.y,14,0,Math.PI*2);ctx.fill();}});
     if(ok(A.wind))f.wd.forEach(function(wz,wi){var sp=wz[1]-wz[0];ctx.globalAlpha=.8;for(var i=0;i<4;i++){var ox=(i*sp/4+(still?0:t*wz[2]*1.1))%sp;if(ox<0)ox+=sp;ctx.drawImage(A.wind,wz[0]+ox-60,150+((i+wi)*83)%260,120,78);}ctx.globalAlpha=1;});
-    f.en.forEach(function(e,ei){var q=enPos(e,t);if(q.x<VL||q.x>VR)return;var im=e.kind===1?FLAMING:e.kind===2?CURSING:ANGRY;if(s.st[ei]!=null){if(t-s.st[ei]<.35&&ok(im)){ctx.globalAlpha=1-(t-s.st[ei])/.35;ctx.drawImage(im,q.x-20,q.y-10,40,10);ctx.globalAlpha=1;}return;}var hop=still||e.kind===2?0:Math.abs(Math.sin(t*6+e.ph))*5,air=e.y-q.y;ctx.save();ctx.translate(q.x,q.y-hop);ctx.scale(q.face,1);ctx.fillStyle='rgba(11,23,15,.45)';ctx.beginPath();ctx.ellipse(0,1+hop+air,18,4,0,0,6.283);ctx.fill();if(ok(im))ctx.drawImage(im,-17,-32,34,32);else{ctx.fillStyle='#912501';ctx.fillRect(-14,-26,28,26);}ctx.restore();});
+    f.co.forEach(function(cn,ci){var got=s.cg[ci];if(got==null){if(cn.x>VL-30&&cn.x<VR+30)coin(cn.x,cn.y+(still?0:Math.sin(t*3+ci)*3),30,t,ci*.7,1);return;}var ag=t-got;if(ag<.4)coin(cn.x,cn.y-ag*90,30,t,ci,1-ag/.4);});
+    f.en.forEach(function(e,ei){var q=enPos(e,t);if(q.x<VL||q.x>VR)return;var im=e.kind===1?FLAMING:e.kind===2?CURSING:ANGRY;if(s.st[ei]!=null){if(t-s.st[ei]<.35&&ok(im)){ctx.globalAlpha=1-(t-s.st[ei])/.35;ctx.drawImage(im,q.x-20,q.y-10,40,10);ctx.globalAlpha=1;}var pg=t-s.st[ei];if(pg<.8)coin(q.x,e.y-34-Math.sin(pg/.8*Math.PI)*70,34,t*2,ei,pg<.6?1:(.8-pg)/.2);return;}var hop=still||e.kind===2?0:Math.abs(Math.sin(t*6+e.ph))*5,air=e.y-q.y;ctx.save();ctx.translate(q.x,q.y-hop);ctx.scale(q.face,1);ctx.fillStyle='rgba(11,23,15,.45)';ctx.beginPath();ctx.ellipse(0,1+hop+air,18,4,0,0,6.283);ctx.fill();if(ok(im))ctx.drawImage(im,-17,-32,34,32);else{ctx.fillStyle='#912501';ctx.fillRect(-14,-26,28,26);}ctx.restore();});
     f.fb.forEach(function(b){var q=fbPos(b,t);if(q.x<VL-40||q.x>VR+40)return;ctx.save();ctx.translate(q.x,q.y);ctx.rotate(still?0:t*2+b.ph);ctx.fillStyle='rgba(11,23,15,.5)';ctx.beginPath();ctx.arc(0,0,21,0,6.283);ctx.fill();if(ok(A.fireball))ctx.drawImage(A.fireball,-25,-28,50,57);else{ctx.fillStyle='#ff4c0f';ctx.beginPath();ctx.arc(0,0,14,0,6.283);ctx.fill();}ctx.restore();});
     if(!o.noPlayer){izzy(s);if(!still&&t-s.djT<.25){var pg=(t-s.djT)/.25;ctx.fillStyle='rgba(243,234,217,'+(1-pg)+')';for(var pi=-2;pi<=2;pi++)ctx.fillRect(s.x+pi*10*(1+pg)-2,s.y+HH+2+pg*10,5,5);}}
     if(f.rl){var ly=lavaY(f,t-s.rlT);if(ly<H){var rg=ctx.createLinearGradient(0,ly,0,ly+80);rg.addColorStop(0,'rgba(242,207,91,.95)');rg.addColorStop(.15,'#ff4c0f');rg.addColorStop(1,'#912501');ctx.fillStyle=ok(A.lava)?lavaPat():rg;
@@ -369,12 +379,14 @@
     if(o.noHud)return;
     if(f.key){ctx.font="800 13px Almarai,sans-serif";ctx.textAlign='left';ctx.fillStyle='rgba(11,23,15,.85)';ctx.fillRect(8,H-44,112,26);ctx.fillStyle=s.key?'#f2cf5b':'#f3ead9';ctx.fillText(s.key?'KEY: GOT IT':'KEY: NOT YET',14,H-24);}
     var pr=Math.min(1,s.x/f.ex[0]);ctx.fillStyle='rgba(243,234,217,.25)';ctx.fillRect(40,H-12,W-80,4);ctx.fillStyle='#f2cf5b';ctx.fillRect(40,H-12,(W-80)*pr,4);
-    lifeBar();
+    lifeBar();coinBar();
     if(s.n<=2){var tip=touchy?'USE THE LEFT, JUMP, AND RIGHT BUTTONS BELOW':'MOVE: ARROWS OR A / D     JUMP: SPACE, UP, OR W',tip2='PRESS JUMP AGAIN IN THE AIR FOR A DOUBLE JUMP';
       var tf=touchy?21:14,th=tf*3.9;ctx.font='800 '+tf+'px Almarai,sans-serif';var tw=Math.min(W-16,Math.max(ctx.measureText(tip).width,ctx.measureText(tip2).width)+32);ctx.fillStyle='rgba(11,23,15,.82)';ctx.fillRect(W/2-tw/2,TIPY,tw,th);ctx.strokeStyle='#89fbcb';ctx.lineWidth=1;ctx.strokeRect(W/2-tw/2+.5,TIPY+.5,tw-1,th-1);
       ctx.fillStyle='#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(tip,W/2,TIPY+th*.3,W-40);ctx.fillText(tip2,W/2,TIPY+th*.7,W-40);ctx.textBaseline='alphabetic';}}
   /* LIVES: a little goma per life, in the character they picked (Maurice 11/4); past eight, the count is written out */
   var TIPY=touchy?66:54;
+  function coin(x,y,sz,t,ph,a){ctx.save();ctx.globalAlpha=a;if(ok(COIN)){var fr=still?0:Math.floor((t+ph)*20)%32;ctx.drawImage(COIN,fr*128,0,128,128,x-sz/2,y-sz/2,sz,sz);}else{ctx.fillStyle='#f2cf5b';ctx.beginPath();ctx.arc(x,y,sz/2-3,0,6.283);ctx.fill();}ctx.restore();}
+  function coinBar(){var sz=touchy?36:28,fs=touchy?20:15,pad=touchy?10:8,lab=String(coins);ctx.save();ctx.font='800 '+fs+'px Almarai,sans-serif';ctx.textBaseline='middle';ctx.textAlign='left';var lw=ctx.measureText('COINS:').width,nw=ctx.measureText(lab).width,bw=pad*2+lw+8+sz+6+nw,bh=sz+pad,x0=W-10-bw;ctx.fillStyle='rgba(11,23,15,.82)';ctx.fillRect(x0,8,bw,bh);ctx.fillStyle='#fffffe';ctx.fillText('COINS:',x0+pad,8+bh/2+1);if(ok(COIN))ctx.drawImage(COIN,0,0,128,128,x0+pad+lw+8,8+pad/2,sz,sz);ctx.fillStyle='#f2cf5b';ctx.fillText(lab,x0+pad+lw+8+sz+6,8+bh/2+1);ctx.restore();}
   function lifeBar(){var sz=touchy?36:28,fs=touchy?20:15,pad=touchy?10:8,show=Math.min(lives,8),extra=lives-show;ctx.save();ctx.font='800 '+fs+'px Almarai,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
     var lab='LIVES:',lw=ctx.measureText(lab).width,more=extra>0?'+'+extra:'',mw=more?ctx.measureText(more).width+8:0,bw=pad*2+lw+10+show*(sz+2)+mw,bh=sz+pad;
     ctx.fillStyle='rgba(11,23,15,.82)';ctx.fillRect(10,8,bw,bh);ctx.fillStyle='#fffffe';ctx.fillText(lab,10+pad,8+bh/2+1);
@@ -386,18 +398,18 @@
 
   /* ================= the run ================= */
   var lvl=1,f=null,S=null,state='title',phase=0,t=0,shake=0,keys={l:0,r:0,j:0};
-  var best=parseInt(lsGet('ma-inferno-best')||'1',10)||1,LIVES=3,lives=LIVES,backTo=1,run=(lsGet('ma-inferno-run')||'').split(','),runL=parseInt(run[0],10)||1,runV=parseInt(run[1],10)||LIVES,runP=parseInt(run[2],10)||0,points=0,seen=0;
+  var best=parseInt(lsGet('ma-inferno-best')||'1',10)||1,LIVES=3,lives=LIVES,backTo=1,run=(lsGet('ma-inferno-run')||'').split(','),runL=parseInt(run[0],10)||1,runV=parseInt(run[1],10)||LIVES,runP=parseInt(run[2],10)||0,coins=0,seen=0;
   var DIE={enemy:'Caught by a skull.',burn:'Burned by a flaming skull.',roam:'Burned by a roaming fireball.',lava:'Into the lava.',rise:'The lava caught up.',spike:'Spikes!',fire:'Scorched by a fire jet.',chain:'Hit by a swinging fireball.',weight:'Flattened by a falling weight.',ball:'Flattened by a cannonball.'};
   function livesWord(n){return n+(n===1?' life':' lives')+' left';}
   var touchy=(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window&&window.innerWidth<900);
-  function hud(){floorEl.textContent='Floor '+lvl+' of '+TOTAL+(f?' · '+f.name:'');bestEl.textContent=(state!=='title'?'Points: '+points+' · ':'')+'Best: floor '+best;pad.classList.toggle('on',touchy&&state!=='title'&&state!=='won');}
+  function hud(){floorEl.textContent='Floor '+lvl+' of '+TOTAL+(f?' · '+f.name:'');bestEl.textContent='Best: floor '+best;pad.classList.toggle('on',touchy&&state!=='title'&&state!=='won');}
   function enter(L){lvl=L;f=FL[L-1];S=make(L);keys.l=keys.r=keys.j=0;state='intro';phase=1.2;
-    if(lvl>best){best=lvl;lsSet('ma-inferno-best',String(best));}seen=0;lsSet('ma-inferno-run',lvl+','+lives+','+points);
+    if(lvl>best){best=lvl;lsSet('ma-inferno-best',String(best));}seen=0;lsSet('ma-inferno-run',lvl+','+lives+','+coins);
     hud();say(f.how);ctl();}
   var DROP=1.9,dropS=null;
   function clear(){state=lvl===TOTAL?'won':'drop';phase=still?.8:DROP;if(state==='drop')dropS=make(lvl+1);if(state==='won'){lsSet('ma-inferno-won','1');setTimeout(showWin,still?100:700);}ctl();}
   function fail(why){state='fail';phase=1.6;shake=still?0:1;lives--;backTo=lives>0?lvl:1;hud();say((DIE[why]||'Ouch.')+(lives>0?' '+livesWord(lives)+'.':' Out of lives. Back to floor 1.'),true);ctl();}
-  function score(){var n=Object.keys(S.st).length;if(n<=seen)return;for(;seen<n;seen++){points++;if(points%10===0){lives++;say('Extra life! '+livesWord(lives)+'.');}}hud();}
+  function score(){var n=Object.keys(S.st).length+Object.keys(S.cg).length;if(n<=seen)return;for(;seen<n;seen++){coins++;if(coins%10===0){lives++;say('Extra life! '+livesWord(lives)+'.');}}hud();}
   function showWin(){winEl.hidden=false;pad.classList.remove('on');hud();say('Thirty-four floors down!');try{winEl.scrollIntoView({block:'center',behavior:still?'auto':'smooth'});}catch(e){}}
   var gBtn=d.querySelector('.if-g'),gMsg=d.querySelector('.if-gmsg');
   gBtn.addEventListener('click',function(){
@@ -407,7 +419,7 @@
   var goBtn=d.querySelector('.if-go'),contBtn=d.querySelector('.if-cont');
   if(runL>1){contBtn.hidden=false;contBtn.textContent='Carry on from floor '+runL;}
   function go(L){startOv.hidden=true;winEl.hidden=true;gMsg.textContent='';enter(L);try{stage.focus({preventScroll:true});}catch(e){}}
-  goBtn.addEventListener('click',function(){lives=LIVES;points=0;go(1);});contBtn.addEventListener('click',function(){lives=runV;points=runP;go(runL);});
+  goBtn.addEventListener('click',function(){lives=LIVES;coins=0;go(1);});contBtn.addEventListener('click',function(){lives=runV;coins=runP;go(runL);});
 
   /* ---- pause ---- */
   var paused=false,pauseBtn=d.querySelector('.if-pause'),pauseOv=d.querySelector('.if-paused');
@@ -427,7 +439,7 @@
     if(state==='intro'){phase-=dt;if(phase<=0)state='play';return;}
     if(state==='play'){sim(f,S,keys,dt);score();if(S.dead)fail(S.dead);else if(S.done)clear();return;}
     if(state==='drop'){phase-=dt;if(phase<=0)enter(lvl+1);return;}
-    if(state==='fail'){phase-=dt;if(phase<=0){if(lives<=0){lives=LIVES;points=0;}enter(backTo);}return;}}
+    if(state==='fail'){phase-=dt;if(phase<=0){if(lives<=0){lives=LIVES;coins=0;}enter(backTo);}return;}}
   function draw(){ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);var k=scale*dpr,sx=shake?Math.sin(t*80)*6*shake:0;ctx.setTransform(k,0,0,k,sx*k,0);
     if(!f){var s0=make(1);drawFloor(FL[0],s0);return;}
     if(state==='drop'&&!still){drawDrop();return;}
@@ -474,7 +486,7 @@
 
   /* test tools, only with ?test=1 and window.__infernoTest set before load */
   if(window.__infernoTest&&/[?&]test=1\b/.test(location.search))window.__inferno={floors:FL,total:TOTAL,make:make,clone:clone,sim:function(n,s,k,dt){sim(FL[n-1],s,k,dt);},camX:camX,
-    go:function(k){go(k);},level:function(){return lvl;},state:function(){return state;},run:function(){return S;},keys:keys,best:function(){return best;},lives:function(){return lives;},points:function(){return points;},
+    go:function(k){go(k);},level:function(){return lvl;},state:function(){return state;},run:function(){return S;},keys:keys,best:function(){return best;},lives:function(){return lives;},coins:function(){return coins;},
     win:function(){lvl=TOTAL;state='play';S.done=true;},paused:function(){return paused;},enPos:enPos,fbPos:fbPos};
 })();
 </script>
