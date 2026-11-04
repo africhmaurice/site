@@ -6,12 +6,12 @@
    Published edits show up as soon as GitHub Pages has them (each fetch checks for a newer copy).
    Loaded once site-wide from Code Injection (in <head>), it also shows the crest loading screen.
    Every copy after the first only mounts blocks it finds, so a page can include it any number of times. */
-// Maintenance mode (Maurice, 2026-11-04). Set MAINT to false and publish to reopen the site. /links stays open.
+// Maintenance mode (Maurice, 2026-11-04). Set MAINT to false and publish to reopen the site. /links, /arcade, /games, and every game in the Arcade stay open.
 // ?ma-open=1 lets this browser see the site anyway; ?ma-open=0 undoes that.
 var MAINT = true;
 (function () {
   if (!MAINT || window.__maClosed) return;
-  if (/^\/links\/?$/i.test(location.pathname)) return;
+  if (/^\/(links|arcade|games|sort-the-shelf|book-icons|crossword|blades-and-brass|matching-auras|crest-quest|sky-mines|airship-runner|thread-the-needle|trench-run|sky-gauntlet|the-levian-30527|master-stacker-32368|hold-the-wall-13212|goma-goons-43216)\/?$/i.test(location.pathname)) return;
   var open = false, q = /[?&]ma-open=([01])/.exec(location.search);
   try { if (q) { if (q[1] === '1') localStorage.setItem('ma-open', '1'); else localStorage.removeItem('ma-open'); } open = localStorage.getItem('ma-open') === '1'; } catch (e) {}
   if (open) return;
