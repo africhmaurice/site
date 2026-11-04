@@ -162,6 +162,7 @@
 #ma-holdwall .actkey .mi{width:14px;height:14px;flex:none}#ma-holdwall .actkey b{font-weight:800}
 #ma-holdwall .actkey.train{color:#c3a6ff}
 #ma-holdwall .over.end{background:#0b170f}
+#ma-holdwall .over.tight{gap:6px;padding:8px 14px;background:rgba(11,23,15,.86)}#ma-holdwall .over.tight h2{font-size:20px}#ma-holdwall .over.tight p{font-size:12px;line-height:1.35}#ma-holdwall .over.tight .go{padding:8px 16px;font-size:12px}#ma-holdwall .over.tiny p{display:none}
 @media (max-height:700px){#ma-holdwall .actkey{display:none}}
 #ma-holdwall #hw-ups .cell{display:flex;flex-direction:column;gap:4px;min-width:0}#ma-holdwall #hw-ups .cell .b{flex:1}
 #ma-holdwall .auto{display:flex;align-items:center;justify-content:center;gap:5px;padding:2px 0;font:800 10px/1.2 Almarai,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;user-select:none;-webkit-user-select:none}
@@ -799,7 +800,7 @@ function endGame(){
   setTimeout(function(){if(G.over)showOver('The tower fell','You held out to wave '+w+' with a score of '+sc+'.','Play again');},2600);
   ui();
 }
-function showOver(h,p,b){$('oH').textContent=h;$('oP').textContent=p;$('oGo').textContent=b;$('over').classList.toggle('end',!!G.over);$('over').hidden=false;}
+function showOver(h,p,b){$('oH').textContent=h;$('oP').textContent=p;$('oGo').textContent=b;$('over').classList.toggle('end',!!G.over);$('over').hidden=false;fitOver();}
 
 /* ---- drawing ---- */
 var AURA={green:'rgba(87,187,65,.95)',mint:'rgba(137,251,203,.95)',purple:'rgba(158,116,253,.95)',black:'rgba(0,0,0,.95)'};
@@ -967,7 +968,9 @@ Array.prototype.forEach.call($('ctl').querySelectorAll('.tabs button'),function(
 function hdrCover(){var h=0;Array.prototype.forEach.call(document.querySelectorAll('header,#header,.header'),function(e){var st=getComputedStyle(e);if(st.position==='fixed'||st.position==='sticky'){var r=e.getBoundingClientRect();if(r.top<=1&&r.bottom>h)h=r.bottom;}});return Math.min(h,innerHeight*.3);}
 function fitStage(){var stg=cv.parentNode,top=stg.parentNode,pan=$('ctl'),R=cv.width/cv.height;stg.style.width='100%';var full=stg.clientWidth;if(!full)return;
   var lw=$('lootwin'),other=(top.offsetHeight-stg.offsetHeight)+pan.offsetHeight+20+(lw&&!lw.hidden?lw.offsetHeight+20:0),room=innerHeight-hdrCover()-other-16;
-  stg.style.width=Math.round(Math.min(full,Math.max(Math.min(full,innerWidth<=760?240:300),room*R)))+'px';}
+  stg.style.width=Math.round(Math.min(full,Math.max(Math.min(full,innerWidth<=760?240:300),room*R)))+'px';fitOver();}
+// v34: the card always fits inside the game screen
+function fitOver(){var o=$('over');o.classList.remove('tight','tiny');if(o.hidden)return;if(o.scrollHeight>o.clientHeight)o.classList.add('tight');if(o.scrollHeight>o.clientHeight)o.classList.add('tiny');}
 var fitT=0;window.addEventListener('resize',function(){clearTimeout(fitT);fitT=setTimeout(fitStage,120);});setTimeout(fitStage,0);window.addEventListener('load',fitStage);
 // small line icons for the buttons (his art where there is some: missile, burst, atomic bomb, shield bubble)
 var SVG={
