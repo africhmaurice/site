@@ -102,12 +102,24 @@
     '.gd-msg{margin:0;min-height:1.5em;font-weight:700;font-size:16px;line-height:1.5}' +
     '.gd-msg.gd-bad{color:#ff4c0f}.gd-msg.gd-good{color:#89fbcb}' +
     '.gd-won{text-transform:uppercase;font-family:"Cracked Imperia",Impact,sans-serif;font-size:clamp(32px,6vw,52px);line-height:1.2;letter-spacing:.03em;color:#f2cf5b;margin:0}' +
-    /* the split: two halves of the scorecard slide apart */
+    /* the cupboard: the scorecard splits down the middle and its two halves swing open on hinges at the outer edges (Maurice 11/3) */
     '.gd-stage{position:relative}' +
-    '.gd-half-l,.gd-half-r{position:absolute;inset:0;pointer-events:none;z-index:3;transition:transform 1.1s cubic-bezier(.6,0,.2,1),opacity 1.1s ease}' +
-    '.gd-half-l{clip-path:inset(0 50% 0 0)}.gd-half-r{clip-path:inset(0 0 0 50%)}' +
-    '.gd-stage.gd-open .gd-half-l{transform:translateX(-58%) rotate(-3deg);opacity:0}' +
-    '.gd-stage.gd-open .gd-half-r{transform:translateX(58%) rotate(3deg);opacity:0}' +
+    '.gd-stage.gd-cup{transition:height .7s ease}' +
+    '.gd-inside{position:absolute;inset:0;z-index:1;overflow:hidden;background:#050b07;box-shadow:inset 0 0 80px rgba(242,207,91,.25)}' +
+    '.gd-door{position:absolute;top:0;bottom:0;width:50%;z-index:3;pointer-events:none;transform-style:preserve-3d;transition:transform 1.6s cubic-bezier(.5,.02,.2,1)}' +
+    '.gd-door-l{left:0;transform-origin:0 50%}.gd-door-r{right:0;transform-origin:100% 50%}' +
+    '.gd-face,.gd-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}' +
+    '.gd-back{transition:opacity .4s ease}.gd-knob{backface-visibility:hidden;-webkit-backface-visibility:hidden}' +
+    '.gd-face{overflow:hidden}' +
+    '.gd-face .lb-grid{position:absolute;top:0;margin:0;max-width:none}' +
+    '.gd-back{transform:rotateY(180deg);background:#16241a;border:2px solid #f2cf5b;box-shadow:inset 0 0 60px rgba(0,0,0,.65)}' +
+    '.gd-knob{position:absolute;width:16px;height:16px;margin-top:-8px;border-radius:50%!important;background:#f2cf5b;border:2px solid #0b170f;opacity:0;transition:opacity .3s ease}' +
+    '.gd-door-l .gd-knob{right:12px}.gd-door-r .gd-knob{left:12px}' +
+    '.gd-door-l .gd-face{box-shadow:inset -1px 0 0 #0b170f}.gd-door-r .gd-face{box-shadow:inset 1px 0 0 #0b170f}' +
+    '.gd-cup.gd-ajar .gd-knob{opacity:1}' +
+    '.gd-cup.gd-ajar .gd-door-l{transform:rotateY(-4deg);transition-duration:.35s}.gd-cup.gd-ajar .gd-door-r{transform:rotateY(4deg);transition-duration:.35s}' +
+    '.gd-cup.gd-open .gd-door-l{transform:rotateY(-114deg);transition-duration:1.6s}.gd-cup.gd-open .gd-door-r{transform:rotateY(114deg);transition-duration:1.6s}' +
+    '.gd-cup.gd-gone .gd-back{opacity:0}' +
     '.gd-switch{display:flex;justify-content:center;margin-top:16px}' +
     '.gd-switch .gd-btn.gd-2{color:#0b170f;border-color:#0b170f}' +
     '@media (max-width:640px){.gd-slots{grid-template-columns:repeat(5,minmax(0,1fr))}.gd-board{padding:24px 20px}.gd-tb{padding:24px 20px}}';
@@ -164,6 +176,39 @@
     if (next.style === 'flip') return head + '<span class="gd-flip">' + PHONE + '<span>' + t + '</span></span>';
     return head + t;
   }
+  function cupboard(stage, grid, cardBox, board, done) {
+    var W = stage.offsetWidth, H = stage.offsetHeight, gl = grid.offsetLeft, gw = grid.offsetWidth;
+    var bg = getComputedStyle(cardBox).backgroundColor;
+    if (!bg || bg === 'transparent' || bg === 'rgba(0, 0, 0, 0)') bg = '#faf3ef';
+    function door(side) {
+      var d = el('div', 'gd-door gd-door-' + side), f = el('div', 'gd-face'), c = grid.cloneNode(true), k = el('span', 'gd-knob');
+      c.removeAttribute('id'); c.style.width = gw + 'px'; c.style.left = (side === 'l' ? gl : gl - W / 2) + 'px';
+      f.style.background = bg; f.appendChild(c); d.appendChild(f); d.appendChild(el('div', 'gd-back')); d.appendChild(k);
+      d.setAttribute('aria-hidden', 'true'); stage.appendChild(d); return d;
+    }
+    var l = door('l'), r = door('r'), inside = el('div', 'gd-inside');
+    stage.style.height = H + 'px'; stage.classList.add('gd-cup'); stage.appendChild(inside);
+    board.hidden = false; inside.appendChild(board); grid.style.visibility = 'hidden';
+    // A swung door reaches past the card; on a phone that must not widen the page.
+    var wrap = stage.closest('section') || document.body, was = wrap.style.overflowX; wrap.style.overflowX = 'clip';
+    // Bring the card up under the site header, then set the view on the middle of what's on screen.
+    window.scrollTo({ top: stage.getBoundingClientRect().top + window.pageYOffset - 130, behavior: 'smooth' });
+    setTimeout(function () {
+      var mid = Math.max(40, Math.min(H - 40, innerHeight / 2 - stage.getBoundingClientRect().top));
+      stage.style.perspective = Math.max(900, W * 2.4) + 'px'; stage.style.perspectiveOrigin = '50% ' + mid + 'px';
+      l.lastChild.style.top = r.lastChild.style.top = mid + 'px';
+      stage.classList.add('gd-ajar');
+      keep('thGolden:opened', 1);
+      setTimeout(function () { stage.classList.add('gd-open'); }, 500);
+      setTimeout(function () { stage.classList.add('gd-gone'); stage.style.height = board.offsetHeight + 'px'; }, 2500);
+      setTimeout(function () {
+        stage.parentNode.insertBefore(board, stage); inside.remove(); l.remove(); r.remove();
+        stage.classList.remove('gd-cup', 'gd-ajar', 'gd-open', 'gd-gone');
+        stage.style.height = stage.style.perspective = stage.style.perspectiveOrigin = ''; grid.style.visibility = ''; wrap.style.overflowX = was;
+        done();
+      }, 3250);
+    }, 800);
+  }
   G.board = function (cardBox, grid, sure) {
     // Before the trail opens, a hunter with every box gets the waiting card instead of the board.
     var early = Date.now() < OPENS && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
@@ -192,20 +237,13 @@
     }
     stage.parentNode.insertBefore(board, stage); stage.parentNode.insertBefore(sw, stage.nextSibling);
     swb.onclick = function () { show(!open); if (open) board.scrollIntoView({ block: 'start', behavior: 'smooth' }); };
-    // The first time: the card splits down the middle and the board is underneath.
+    // The first time: the card splits down the middle and opens like a cupboard, with the board inside.
     var seen = load('thGolden:opened');
     if (!seen && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
-      board.hidden = true;
-      var l = grid.cloneNode(true), r = grid.cloneNode(true); l.className += ' gd-half-l'; r.className += ' gd-half-r'; l.removeAttribute('id'); r.removeAttribute('id');
-      stage.appendChild(l); stage.appendChild(r); grid.style.visibility = 'hidden';
-      var go = function () {
-        stage.classList.add('gd-open');
-        setTimeout(function () { board.hidden = false; grid.style.visibility = ''; show(true); }, 650);
-        setTimeout(function () { l.remove(); r.remove(); stage.classList.remove('gd-open'); }, 1300);
-        keep('thGolden:opened', 1);
-      };
+      board.hidden = true; sw.style.visibility = 'hidden';
+      Array.prototype.forEach.call(grid.querySelectorAll('img'), function (m) { m.loading = 'eager'; });
       var later = window.maAfterLoading || function (f) { f(); };
-      later(function () { setTimeout(go, 900); });
+      later(function () { setTimeout(function () { cupboard(stage, grid, cardBox, board, function () { sw.style.visibility = ''; show(true); }); }, 900); });
     } else show(true);
     if (/#golden/.test(location.hash)) setTimeout(function () { board.scrollIntoView({ block: 'start' }); }, 300);
 
