@@ -6,7 +6,36 @@
    Published edits show up as soon as GitHub Pages has them (each fetch checks for a newer copy).
    Loaded once site-wide from Code Injection (in <head>), it also shows the crest loading screen.
    Every copy after the first only mounts blocks it finds, so a page can include it any number of times. */
+// Maintenance mode (Maurice, 2026-11-04). Set MAINT to false and publish to reopen the site. ?ma-open=1 lets this browser see the site anyway; ?ma-open=0 undoes that.
+var MAINT = true;
 (function () {
+  if (!MAINT || window.__maClosed) return;
+  var open = false, q = /[?&]ma-open=([01])/.exec(location.search);
+  try { if (q) { if (q[1] === '1') localStorage.setItem('ma-open', '1'); else localStorage.removeItem('ma-open'); } open = localStorage.getItem('ma-open') === '1'; } catch (e) {}
+  if (open) return;
+  window.__maClosed = true;
+  var HEAD = 'Laying The Golden Bricks, Be Patient, You Heathens!';
+  var css = '@font-face{font-family:"Cracked Imperia";src:url(https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2) format("woff2");font-weight:100 900;font-display:swap;size-adjust:109.5%}' +
+    'html,body{overflow:hidden!important;background:#0b170f!important}' +
+    'body>*{visibility:hidden!important}' +
+    '#ma-closed{position:fixed;inset:0;z-index:2147483647;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;padding:24px;box-sizing:border-box;background:#0b170f;text-align:center}' +
+    '#ma-closed h1{margin:0;max-width:960px;font-family:"Cracked Imperia",Impact,sans-serif;font-weight:400;font-size:clamp(36px,7vw,84px);line-height:1.2;letter-spacing:.03em;text-transform:uppercase;color:#f2cf5b;text-wrap:balance;text-shadow:0 0 28px rgba(242,207,91,.4)}' +
+    '#ma-closed .b{display:grid;grid-template-columns:repeat(4,clamp(52px,11vw,104px));gap:8px}' +
+    '#ma-closed .b i{display:block;height:clamp(20px,4vw,38px);background:#f2cf5b;border:2px solid #912501}' +
+    '#ma-closed .b i:nth-child(n+5){transform:translateX(50%)}';
+  function paint() {
+    if (document.getElementById('ma-closed')) return;
+    var st = document.createElement('style'); st.textContent = css; (document.head || document.documentElement).appendChild(st);
+    var o = document.createElement('div'); o.id = 'ma-closed'; o.style.visibility = 'visible';
+    o.innerHTML = '<div class="b" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><h1></h1>';
+    o.querySelector('h1').textContent = HEAD; document.documentElement.appendChild(o);
+    document.title = HEAD;
+  }
+  paint();
+})();
+if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
+(function () {
+  if (window.__maClosed) return;
   if (window.__maLoader) { window.__maLoader(); return; }
   var me = document.currentScript;
   var inHead = !!(me && me.parentNode && me.parentNode.nodeName === 'HEAD');
