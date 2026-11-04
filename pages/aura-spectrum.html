@@ -165,42 +165,30 @@
   function tick(){var h=hourET();dot.hidden=!(h>=0&&h<3);}
   tick();setInterval(tick,30000);
 })();</script>
-<!-- GOLDEN TRAIL slot 8 (Maurice 10/31, clue "Click the rainbow."). For finishers only (golden.js runs the queued function):
-     a rainbow sits above "The Oracle's Gift" in the page heading. Maurice 11/4: "they have to click the colors of the rainbow
-     in order. One of each: red, orange, yellow, green, blue, purple, pink". Each arc is its own target (a wider invisible
-     stroke, 17px per arc, for phones; Tab and Enter or Space work too). A right color brightens its arc; a wrong one
-     quietly clears the run. All seven in order records slot 8.
+<!-- GOLDEN TRAIL slot 8 (clue "Click the rainbow."). For finishers only (golden.js runs the queued function). Maurice 11/4:
+     no drawn rainbow; hunters click the colored cards in rainbow order, one of each: red, orange, yellow, green, blue, purple,
+     pink (any card of that color; the small label on each card names it). A right card gets a gold edge; a wrong one quietly
+     clears the run. Tab and Enter or Space work too. All seven in order records slot 8.
      tools/aura-spectrum.mjs generates this page, so this block has to go into it too at go-live. -->
 <style>
-#ma-aura .au-rainbow{display:block;margin:0 auto 16px;padding:0;width:300px;max-width:100%;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-#ma-aura .au-rainbow svg{display:block;width:100%;height:auto;overflow:visible}
-#ma-aura .au-rainbow g{cursor:pointer;outline:none}
-#ma-aura .au-rainbow .au-arc{fill:none;stroke-width:12;opacity:.55;transition:opacity .2s ease,stroke-width .2s ease;pointer-events:none}
-#ma-aura .au-rainbow .au-hit{fill:none;stroke:transparent;stroke-width:17;pointer-events:stroke}
-#ma-aura .au-rainbow g:hover .au-arc{opacity:.8}
-#ma-aura .au-rainbow g:focus-visible .au-arc{opacity:.9}
-#ma-aura .au-rainbow g:focus-visible .au-hit{stroke:rgba(255,255,255,.3)}
-#ma-aura .au-rainbow g.on .au-arc{opacity:1;stroke-width:15}
+#ma-aura .au-card.gd-on{outline:4px solid #f2cf5b;outline-offset:-4px}
+#ma-aura .au-grid.gd-live .au-card{cursor:pointer}
+#ma-aura .au-grid.gd-live .au-card:focus-visible{outline:3px solid #fffffe;outline-offset:-3px}
 </style>
 <script>(function(){
   (window.maGoldenQ=window.maGoldenQ||[]).push(function(G){
-    var root=document.getElementById('ma-aura'),head=root&&root.querySelector('.au-head');if(!head||head.querySelector('.au-rainbow'))return;
-    /* outside in: red, orange, yellow, green, blue, purple, pink (yellow, green, and purple are brand tones) */
-    var C=[['#f01826','Red'],['#fd8f2f','Orange'],['#f2cf5b','Yellow'],['#3adb97','Green'],['#3d9bff','Blue'],['#9e74fd','Purple'],['#ff86cf','Pink']],arcs='',at=0;
-    C.forEach(function(c,i){var r=140-i*17,d='M'+(150-r)+' 150 A'+r+' '+r+' 0 0 1 '+(150+r)+' 150';
-      arcs+='<g role="button" tabindex="0" aria-label="'+c[1]+'"><path class="au-arc" d="'+d+'" stroke="'+c[0]+'"/><path class="au-hit" d="'+d+'"/></g>';});
-    var b=document.createElement('div');b.className='au-rainbow';b.setAttribute('role','group');b.setAttribute('aria-label','A rainbow');
-    b.innerHTML='<svg viewBox="0 0 300 152">'+arcs+'</svg>';
-    var gs=b.querySelectorAll('g');
-    function clear(){for(var k=0;k<gs.length;k++)gs[k].classList.remove('on');}
-    function tap(i){
-      if(i===at){gs[i].classList.add('on');at++;if(at===gs.length){at=0;G.found(8);setTimeout(function(){if(!at)clear();},1500);}return;}
-      clear();at=0;if(i===0){gs[0].classList.add('on');at=1;}
+    var grid=document.getElementById('au-grid');if(!grid||grid.classList.contains('gd-live'))return;grid.classList.add('gd-live');
+    var ORDER=['Red','Orange','Yellow','Green','Blue','Purple','Pink'],picked=[];
+    function nameOf(c){var n=c.querySelector('.au-name');return n?n.textContent.trim():'';}
+    function dress(){Array.prototype.forEach.call(grid.querySelectorAll('.au-card'),function(c){c.tabIndex=0;c.classList.toggle('gd-on',picked.indexOf(nameOf(c))>=0);});}
+    function tap(c){
+      var r=c.querySelector('.au-root'),root=r?r.textContent.trim():'';
+      if(root===ORDER[picked.length])picked.push(nameOf(c));else picked=root===ORDER[0]?[nameOf(c)]:[];
+      dress();
+      if(picked.length===ORDER.length){picked=[];G.found(8);setTimeout(dress,1500);}
     }
-    Array.prototype.forEach.call(gs,function(g,i){
-      g.addEventListener('click',function(){tap(i);});
-      g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tap(i);}});
-    });
-    head.insertBefore(b,head.firstChild);
+    grid.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('.au-card');if(c)tap(c);});
+    grid.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('au-card')){e.preventDefault();tap(e.target);}});
+    new MutationObserver(dress).observe(grid,{childList:true});dress();
   });
 })();</script>

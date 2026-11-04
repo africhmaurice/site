@@ -502,6 +502,12 @@ maStart();
       if (/screenrant-sneak-peek/.test(im.currentSrc || im.src) && inLetter(onPic(im, e), SR_X)) { e.preventDefault(); e.stopPropagation(); G.found(15); return; }
       if ((im.alt === 'SMITTY' || /Screenshot-2026-03-04-193300/.test(im.currentSrc || im.src)) && inLetter(onPic(im, e), SMITTY_I, SMITTY_ZONE)) { e.preventDefault(); e.stopPropagation(); G.found(16); return; }
     }
+    // on a phone the review widget lays other things over Smitty's small picture, so look for the picture itself too
+    var pics = document.querySelectorAll('img[alt="SMITTY"],img[src*="Screenshot-2026-03-04-193300"]');
+    for (var j = 0; j < pics.length; j++) {
+      var q = pics[j].getBoundingClientRect(); if (!q.width || q.width >= 200 || e.clientX < q.left || e.clientX > q.right || e.clientY < q.top || e.clientY > q.bottom) continue;
+      if (inLetter(onPic(pics[j], e), SMITTY_I, SMITTY_ZONE)) { e.preventDefault(); e.stopPropagation(); G.found(16); return; }
+    }
   }, true);
 });
 </script>
