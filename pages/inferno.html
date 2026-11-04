@@ -137,8 +137,10 @@
   var IZ=GOONS[0].img,COIN=pic('games/77-coin-spin.png?v=32'),ANGRY=pic('games/80-angry.webp'),CURSING=pic('games/inferno/skull-cursing.webp'),FLAMING=pic('games/80-flaming.webp'),BALL=pic('games/74-cannonball.png'),SPIKE=pic('games/75-spike.png'),KEY=pic('games/80-skull-key.webp');
   /* Maurice's drawings (11/3). Six materials going down, grass to lava: 0 grass, 1 dirt, 2 stone, 3 black, 4 cracked, 5 lava.
      led = ledge, crk = crumbling ledge, brk = ledge falling apart, tile = ground and walls. Until a picture loads, the old shapes draw. */
-  var A={};(function(){var i,n=['ice','lava','bg','stairs-run','fireball','arrow','exit','flame','jet','chain','ball','weight','shadow','lift','spring-1','spring-2','door','wind'];for(i=0;i<6;i++)n.push('led'+i,'crk'+i,'brk'+i,'tile'+i);n.forEach(function(k){A[k]=pic('games/inferno/'+k+'.webp');});})();
-  function mat(n){return n<=5?0:n<=10?1:n<=15?2:n<=20?3:n<=30?4:5;}
+  var A={};(function(){var i,n=['sky','cloud-1','cloud-2','cloud-3','ice','lava','bg','stairs-run','fireball','arrow','exit','flame','jet','chain','ball','weight','shadow','lift','spring-1','spring-2','door','wind'];for(i=0;i<6;i++)n.push('led'+i,'crk'+i,'brk'+i,'tile'+i);n.forEach(function(k){A[k]=pic('games/inferno/'+k+'.webp');});})();
+  /* the way down (Maurice 11/4): floor 1 blue sky and green grass; floors 2-7 dirt and water under a dirt wall; from floor 8 stone, and the water turns to lava; then the ground gets darker and darker */
+  function mat(n){return n<=1?0:n<=7?1:n<=15?2:n<=22?3:n<=29?4:5;}
+  function wet(n){return n<=7;}
   function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
   function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
   function say(t,miss){msgEl.textContent=t;msgEl.classList.toggle('miss',!!miss);}
@@ -238,6 +240,8 @@
     if(b.rl)f.rl=b.rl;if(b.cb)f.cb=b.cb;
     return f;}
   FL=FL.map(stretch);
+  /* floors above the lava: their names and how-to lines say water */
+  FL.forEach(function(f,i){if(!wet(i+1))return;f.name=f.name.replace(/Lava/g,'Water').replace(/lava/g,'water');f.how=f.how.replace(/Lava/g,'Water').replace(/lava/g,'water');});
 
   /* ================= the engine (deterministic: the same inputs give the same floor) ================= */
   function wave(per,ph,t){return Math.sin(2*Math.PI*(t+(ph||0))/per);}
@@ -322,15 +326,18 @@
   function tile(im,x,y,w,h,tw,th){if(x>VR||x+w<VL)return;ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();for(var a=x;a<x+w;a+=tw){if(a>VR||a+tw<VL)continue;for(var b=y;b<y+h;b+=th)ctx.drawImage(im,a,b,tw+.5,th+.5);}ctx.restore();}
   function chain(x0,y0,x1,y1){var L=Math.hypot(x1-x0,y1-y0),pw=10,ph=pw*A.chain.naturalHeight/A.chain.naturalWidth;ctx.save();ctx.translate(x0,y0);ctx.rotate(Math.atan2(y1-y0,x1-x0)-Math.PI/2);ctx.beginPath();ctx.rect(-pw,0,pw*2,L);ctx.clip();for(var q=0;q<L;q+=ph)ctx.drawImage(A.chain,-pw/2,q,pw,ph);ctx.restore();}
   var lavaP=null;function lavaPat(){if(!lavaP)lavaP=ctx.createPattern(A.lava,'repeat');return lavaP;}
-  function bg(t){if(ok(A.bg))ctx.drawImage(A.bg,-20,0,H,H);else{var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0b170f');g.addColorStop(.55,'#2d1c53');g.addColorStop(1,'#912501');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);}
+  function bg(t,n){n=n||1;if(n===1&&ok(A.sky)){var sw=H*A.sky.naturalWidth/A.sky.naturalHeight;ctx.drawImage(A.sky,(W-sw)/2,0,sw,H);
+      [[1,300,120,30,4],[2,210,115,150,7],[3,170,95,70,5],[1,240,78,235,3]].forEach(function(k,i){var im=A['cloud-'+k[0]];if(!ok(im))return;var span=W+k[1]*2,x=((i*197+(still?0:t*k[4]))%span)-k[1];ctx.drawImage(im,x,k[3],k[1],k[2]);});return;}
+    if(wet(n)&&ok(A.tile1)){ctx.drawImage(A.tile1,0,0,W,H);ctx.fillStyle='rgba(16,9,3,.62)';ctx.fillRect(0,0,W,H);return;}
+    if(ok(A.bg))ctx.drawImage(A.bg,-20,0,H,H);else{var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0b170f');g.addColorStop(.55,'#2d1c53');g.addColorStop(1,'#912501');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);}
     for(var i=0;i<38;i++){var sp=14+(i%5)*9,x=(i*137.5+(still?0:Math.sin(t*.7+i)*12))%W,y=H-(((i*71.3)+(still?0:t*sp))%(H+40));
       ctx.fillStyle=i%3?'rgba(255,76,15,.55)':'rgba(242,207,91,.6)';ctx.fillRect(x,y,i%4?2:3,i%4?2:3);}}
   function plank(x,y,w,fill,edge){ctx.fillStyle=fill;ctx.fillRect(x,y,w,14);ctx.fillStyle=edge;ctx.fillRect(x,y,w,3);ctx.strokeStyle='#0b170f';ctx.lineWidth=2;ctx.strokeRect(x,y,w,14);}
   function stairs(x,y0,y1,shaft){var im=A['stairs-run'];ctx.save();ctx.beginPath();ctx.rect(x-44,y0,88,y1-y0);ctx.clip();if(shaft){ctx.fillStyle='#c53200';ctx.fillRect(x-44,y0,88,y1-y0);ctx.strokeStyle='#0b170f';ctx.lineWidth=4;ctx.strokeRect(x-44,y0-4,88,y1-y0+8);}
     if(ok(im))for(var y=shaft?y1-STEP*Math.ceil((y1-y0)/STEP):y0;y<y1;y+=STEP)ctx.drawImage(im,x-36,y,72,STEP+.5);ctx.restore();}
-  function drawFloor(f,s,o){o=o||{};var t=s.t,c=camX(f,s.x)-(o.dx||0),M=mat(s.n),TL=A['tile'+M],LD=A['led'+M],CK=A['crk'+M],BK=A['brk'+M];if(!o.noBg)bg(t);ctx.save();ctx.translate(-c,o.dy||0);VL=c-60;VR=c+W+60;
+  function drawFloor(f,s,o){o=o||{};var t=s.t,c=camX(f,s.x)-(o.dx||0),M=mat(s.n),TL=A['tile'+M],LD=A['led'+M],CK=A['crk'+M],BK=A['brk'+M],WET=wet(s.n);if(!o.noBg)bg(t,s.n);ctx.save();ctx.translate(-c,o.dy||0);VL=c-60;VR=c+W+60;
     /* the lava sea, showing through every gap */
-    var lg=ctx.createLinearGradient(0,GY,0,H);lg.addColorStop(0,'#ff4c0f');lg.addColorStop(1,'#912501');ctx.fillStyle=ok(A.lava)?lavaPat():lg;
+    var lg=ctx.createLinearGradient(0,GY,0,H);lg.addColorStop(0,'#ff4c0f');lg.addColorStop(1,'#912501');if(WET){lg=ctx.createLinearGradient(0,GY,0,H);lg.addColorStop(0,'#3d9bff');lg.addColorStop(1,'#0c3f66');}ctx.fillStyle=!WET&&ok(A.lava)?lavaPat():lg;
     ctx.beginPath();ctx.moveTo(c-10,H);for(var x=c-10;x<=c+W+10;x+=20)ctx.lineTo(x,GY+12+(still?0:Math.sin(x*.05+t*3)*4));ctx.lineTo(c+W+10,H);ctx.fill();ctx.strokeStyle='#0b170f';ctx.lineWidth=3;ctx.stroke();
     f.gs.forEach(function(g){if(ok(TL)){tile(TL,g[0],GY,g[1]-g[0],H-GY,90,120);return;}ctx.fillStyle='#213226';ctx.fillRect(g[0],GY,g[1]-g[0],H-GY);ctx.fillStyle='#ff4c0f';ctx.fillRect(g[0],GY,g[1]-g[0],3);});
     f.ice.forEach(function(r){f.gs.forEach(function(g){var a=Math.max(r[0],g[0]),b=Math.min(r[1],g[1]);if(b>a){if(ok(A.ice)){strip(A.ice,a,GY-1,b-a,10);return;}ctx.fillStyle='#89fbcb';ctx.fillRect(a,GY,b-a,7);ctx.fillStyle='rgba(243,234,217,.8)';for(var x=a+8;x<b-12;x+=36)ctx.fillRect(x,GY+2,14,2);}});});
@@ -339,9 +346,9 @@
     if(s.n>1)stairs(f.start,0,GY,false);
     f.pl.forEach(function(p,i){var st=s.cr[i],y=p[1],x=p[0];if(x>VR||x+p[2]<VL)return;
       if(p[3]==='c'){if(st>CRF){var fallT=st-CRF;if(fallT<.8){ctx.globalAlpha=1-fallT/.8;if(ok(BK))ctx.drawImage(BK,x-4,y+fallT*240-4,p[2]+8,24);else plank(x,y+fallT*240,p[2],'#912501','#ff4c0f');ctx.globalAlpha=1;}return;}
-        var sh=st>0&&!still?Math.sin(st*90)*2:0;if(ok(CK)){ctx.drawImage(CK,x+sh,y,p[2],16);return;}plank(x+sh,y,p[2],'#912501','#ff4c0f');ctx.strokeStyle='rgba(11,23,15,.8)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x+sh+p[2]*.3,y);ctx.lineTo(x+sh+p[2]*.4,y+14);ctx.moveTo(x+sh+p[2]*.7,y);ctx.lineTo(x+sh+p[2]*.6,y+14);ctx.stroke();return;}
+        var sh=st>0&&!still?Math.sin(st*90)*2:0;if(ok(CK)){ctx.drawImage(CK,x+sh,y,p[2],16);if(WET){ctx.fillStyle='#e8d9b0';ctx.fillRect(x+sh,y,p[2],2);}return;}plank(x+sh,y,p[2],'#912501','#ff4c0f');ctx.strokeStyle='rgba(11,23,15,.8)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x+sh+p[2]*.3,y);ctx.lineTo(x+sh+p[2]*.4,y+14);ctx.moveTo(x+sh+p[2]*.7,y);ctx.lineTo(x+sh+p[2]*.6,y+14);ctx.stroke();return;}
       if(p[3]==='i'){if(ok(A.ice))strip(A.ice,x,y,p[2],16);else plank(x,y,p[2],'#89fbcb','#f3ead9');return;}
-      if(ok(LD)){strip(LD,x,y,p[2],16);return;}
+      if(ok(LD)){strip(LD,x,y,p[2],16);if(WET){ctx.fillStyle='#e8d9b0';ctx.fillRect(x,y,p[2],2);}return;}
       plank(x,y,p[2],'#482d85','#c3a6ff');});
     f.wl.forEach(function(q){if(ok(TL)){tile(TL,q[0],q[1],q[2],GY-q[1],q[2],q[2]*1.34);ctx.strokeStyle='#0b170f';ctx.lineWidth=2;ctx.strokeRect(q[0],q[1],q[2],GY-q[1]);return;}ctx.fillStyle='#213226';ctx.fillRect(q[0],q[1],q[2],GY-q[1]);ctx.strokeStyle='#f3ead9';ctx.lineWidth=2;ctx.strokeRect(q[0],q[1],q[2],GY-q[1]);
       ctx.fillStyle='rgba(243,234,217,.18)';for(var y=q[1]+20;y<GY-10;y+=28)ctx.fillRect(q[0]+4,y,q[2]-8,2);});
@@ -373,7 +380,7 @@
     f.en.forEach(function(e,ei){var q=enPos(e,t);if(q.x<VL||q.x>VR)return;var im=e.kind===1?FLAMING:e.kind===2?CURSING:ANGRY;if(s.st[ei]!=null){if(t-s.st[ei]<.35&&ok(im)){ctx.globalAlpha=1-(t-s.st[ei])/.35;ctx.drawImage(im,q.x-20,q.y-10,40,10);ctx.globalAlpha=1;}var pg=t-s.st[ei];if(pg<.8)coin(q.x,e.y-34-Math.sin(pg/.8*Math.PI)*70,34,t*2,ei,pg<.6?1:(.8-pg)/.2);return;}var hop=still||e.kind===2?0:Math.abs(Math.sin(t*6+e.ph))*5,air=e.y-q.y;ctx.save();ctx.translate(q.x,q.y-hop);ctx.scale(q.face,1);ctx.fillStyle='rgba(11,23,15,.45)';ctx.beginPath();ctx.ellipse(0,1+hop+air,18,4,0,0,6.283);ctx.fill();if(ok(im))ctx.drawImage(im,-17,-32,34,32);else{ctx.fillStyle='#912501';ctx.fillRect(-14,-26,28,26);}ctx.restore();});
     f.fb.forEach(function(b){var q=fbPos(b,t);if(q.x<VL-40||q.x>VR+40)return;ctx.save();ctx.translate(q.x,q.y);ctx.rotate(still?0:t*2+b.ph);ctx.fillStyle='rgba(11,23,15,.5)';ctx.beginPath();ctx.arc(0,0,21,0,6.283);ctx.fill();if(ok(A.fireball))ctx.drawImage(A.fireball,-25,-28,50,57);else{ctx.fillStyle='#ff4c0f';ctx.beginPath();ctx.arc(0,0,14,0,6.283);ctx.fill();}ctx.restore();});
     if(!o.noPlayer){izzy(s);if(!still&&t-s.djT<.25){var pg=(t-s.djT)/.25;ctx.fillStyle='rgba(243,234,217,'+(1-pg)+')';for(var pi=-2;pi<=2;pi++)ctx.fillRect(s.x+pi*10*(1+pg)-2,s.y+HH+2+pg*10,5,5);}}
-    if(f.rl){var ly=lavaY(f,t-s.rlT);if(ly<H){var rg=ctx.createLinearGradient(0,ly,0,ly+80);rg.addColorStop(0,'rgba(242,207,91,.95)');rg.addColorStop(.15,'#ff4c0f');rg.addColorStop(1,'#912501');ctx.fillStyle=ok(A.lava)?lavaPat():rg;
+    if(f.rl){var ly=lavaY(f,t-s.rlT);if(ly<H){var rg=ctx.createLinearGradient(0,ly,0,ly+80);rg.addColorStop(0,'rgba(242,207,91,.95)');rg.addColorStop(.15,'#ff4c0f');rg.addColorStop(1,'#912501');if(WET){rg=ctx.createLinearGradient(0,ly,0,ly+80);rg.addColorStop(0,'rgba(190,226,255,.95)');rg.addColorStop(.15,'#3d9bff');rg.addColorStop(1,'#0c3f66');}ctx.fillStyle=!WET&&ok(A.lava)?lavaPat():rg;
       ctx.beginPath();ctx.moveTo(c-10,H);for(var x2=c-10;x2<=c+W+10;x2+=20)ctx.lineTo(x2,ly+(still?0:Math.sin(x2*.04+t*2.5)*5));ctx.lineTo(c+W+10,H);ctx.fill();}}
     ctx.restore();
     if(o.noHud)return;
@@ -399,7 +406,7 @@
   /* ================= the run ================= */
   var lvl=1,f=null,S=null,state='title',phase=0,t=0,shake=0,keys={l:0,r:0,j:0};
   var best=parseInt(lsGet('ma-inferno-best')||'1',10)||1,LIVES=3,lives=LIVES,backTo=1,run=(lsGet('ma-inferno-run')||'').split(','),runL=parseInt(run[0],10)||1,runV=parseInt(run[1],10)||LIVES,runP=parseInt(run[2],10)||0,coins=0,seen=0;
-  var DIE={enemy:'Caught by a skull.',burn:'Burned by a flaming skull.',roam:'Burned by a roaming fireball.',lava:'Into the lava.',rise:'The lava caught up.',spike:'Spikes!',fire:'Scorched by a fire jet.',chain:'Hit by a swinging fireball.',weight:'Flattened by a falling weight.',ball:'Flattened by a cannonball.'};
+  var DIE={water:'Into the water.',flood:'The water caught up.',enemy:'Caught by a skull.',burn:'Burned by a flaming skull.',roam:'Burned by a roaming fireball.',lava:'Into the lava.',rise:'The lava caught up.',spike:'Spikes!',fire:'Scorched by a fire jet.',chain:'Hit by a swinging fireball.',weight:'Flattened by a falling weight.',ball:'Flattened by a cannonball.'};
   function livesWord(n){return n+(n===1?' life':' lives')+' left';}
   var touchy=(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window&&window.innerWidth<900);
   function hud(){floorEl.textContent='Floor '+lvl+' of '+TOTAL+(f?' · '+f.name:'');bestEl.textContent='Best: floor '+best;pad.classList.toggle('on',touchy&&state!=='title'&&state!=='won');}
@@ -408,7 +415,7 @@
     hud();say(f.how);ctl();}
   var DROP=1.9,dropS=null;
   function clear(){state=lvl===TOTAL?'won':'drop';phase=still?.8:DROP;if(state==='drop')dropS=make(lvl+1);if(state==='won'){lsSet('ma-inferno-won','1');setTimeout(showWin,still?100:700);}ctl();}
-  function fail(why){state='fail';phase=1.6;shake=still?0:1;lives--;backTo=lives>0?lvl:1;hud();say((DIE[why]||'Ouch.')+(lives>0?' '+livesWord(lives)+'.':' Out of lives. Back to floor 1.'),true);ctl();}
+  function fail(why){if(wet(lvl))why=why==='lava'?'water':why==='rise'?'flood':why;state='fail';phase=1.6;shake=still?0:1;lives--;backTo=lives>0?lvl:1;hud();say((DIE[why]||'Ouch.')+(lives>0?' '+livesWord(lives)+'.':' Out of lives. Back to floor 1.'),true);ctl();}
   function score(){var n=Object.keys(S.st).length+Object.keys(S.cg).length;if(n<=seen)return;for(;seen<n;seen++){coins++;if(coins%10===0){lives++;say('Extra life! '+livesWord(lives)+'.');}}hud();}
   function showWin(){winEl.hidden=false;pad.classList.remove('on');hud();say('Thirty-four floors down!');try{winEl.scrollIntoView({block:'center',behavior:still?'auto':'smooth'});}catch(e){}}
   var gBtn=d.querySelector('.if-g'),gMsg=d.querySelector('.if-gmsg');
@@ -452,7 +459,7 @@
 
   /* Down the stairs: the old floor slides up, the next one comes up under it on the same stairs, then the view slides over to the start. */
   function drawDrop(){var p=1-phase/DROP,u=Math.min(1,p/.74),v=Math.max(0,(p-.74)/.26),next=FL[lvl],ey=f.ex[1],sx0=f.ex[0]-camX(f,S.x);
-    v=v*v*(3-2*v);var oy=H*u;bg(t);
+    v=v*v*(3-2*v);var oy=H*u;ctx.save();ctx.translate(0,-oy);bg(t,lvl);ctx.restore();ctx.save();ctx.translate(0,H-oy);bg(t,lvl+1);ctx.restore();
     drawFloor(f,S,{noBg:1,noHud:1,noPlayer:1,dy:-oy});
     drawFloor(next,dropS,{noBg:1,noHud:1,noPlayer:1,dy:H-oy,dx:(sx0-next.start)*(1-v)});
     var w=ey+u*(H+GY-ey),tri=Math.abs(((w/STEP)%1)*2-1),zig=(1-tri)*28-14,fx=(1-tri)*0+(((w/STEP)%1)<.5?1:-1);
