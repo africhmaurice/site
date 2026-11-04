@@ -82,6 +82,9 @@ const signup = `<form class="lk-news" data-kit="${N.form}" novalidate><h2 class=
 
 const page = `<!-- ============================================================
      THE LINK PAGE (mauriceafrich.com/links). BUILT by tools/links.mjs from tools/links.json; edit those, not this.
+     THE GOLDEN TRAIL (Maurice 10/31), finishers only (all 151 loot boxes), script at the end: slot 7 = the Comet in the footer logo blinks
+     PLEASE MOVE ME in Morse code and can be dragged aside onto a golden D; slot 9 = the Brick in the Brick discount picture can be dragged
+     aside onto a golden H. At go-live these must also go into tools/links.mjs, or the next build drops them.
      ============================================================ -->
 <style>
 #ma-links{--ink:#0b170f;--ink7:#213226;--moss:#607667;--green:#a2f590;--green7:#2c6021;--teal:#268e62;--scarlet:#c53200;--violet:#482d85;--parch:#fffffe;
@@ -424,6 +427,104 @@ ${sections}
       coin.innerHTML='<img src="https://africhmaurice.github.io/site/assets/loot/117.png" alt="" width="160" height="160">';}
   });
 })();</script>
+<script>
+// THE GOLDEN TRAIL, slots 7 and 9 (Maurice 10/31). Only hunters with all 151 loot boxes get these (golden.js runs the queue).
+(window.maGoldenQ = window.maGoldenQ || []).push(function (G) {
+  // Shared bits for the golden spots on this page (only finishers ever run them).
+  function gdStyle() {
+    if (document.getElementById('gd-spot-css')) return;
+    var s = document.createElement('style'); s.id = 'gd-spot-css';
+    s.textContent = '.gd-hid{position:absolute;z-index:1;margin:0;padding:0 4px;border:0;border-radius:0;background:none;font-family:"CI Face",Impact,sans-serif;font-weight:400;line-height:1.2;letter-spacing:.03em;color:#f2cf5b;text-shadow:0 0 14px rgba(242,207,91,.75);opacity:0;pointer-events:none;transform:translate(-50%,-50%);transition:opacity .25s ease;cursor:pointer}' +
+      '.gd-hid.gd-show{opacity:1;pointer-events:auto}.gd-hid:focus-visible{outline:2px solid #ff4c0f;outline-offset:2px}' +
+      '.gd-glow{filter:brightness(1.35) drop-shadow(0 0 6px rgba(242,207,91,.95))}' +
+      '@media (prefers-reduced-motion:reduce){.gd-hid{transition:none}}';
+    (document.head || document.documentElement).appendChild(s);
+  }
+  // A golden character waiting under something; it can only be tapped once whatever covers it is moved.
+  function gdChar(ch, n, G) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'gd-hid'; b.textContent = ch; b.tabIndex = -1;
+    b.setAttribute('aria-label', 'Golden character');
+    b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); if (b.classList.contains('gd-show')) G.found(n); });
+    return b;
+  }
+  // Drag with a finger or a mouse (pointer events). A drag never counts as a click on the link underneath.
+  // free: drag any way (touch-action none, for small pieces); otherwise a finger drags sideways and still scrolls the page.
+  function gdDrag(el, o) {
+    var id = null, sx = 0, sy = 0, bx = 0, by = 0, x = 0, y = 0, moved = false, lim = o.limit || 200;
+    el.style.touchAction = o.free ? 'none' : 'pan-y'; el.style.userSelect = 'none'; el.style.webkitUserSelect = 'none';
+    el.addEventListener('pointerdown', function (e) { if (e.button > 0) return; id = e.pointerId; sx = e.clientX; sy = e.clientY; bx = x; by = y; moved = false; });
+    // Moves are heard on the whole page, so a fast drag that slips off a small piece keeps going.
+    addEventListener('pointermove', function (e) {
+      if (e.pointerId !== id) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      if (!moved) { if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return; moved = true; try { el.setPointerCapture(id); } catch (z) {} }
+      x = Math.max(-lim, Math.min(lim, bx + dx));
+      if (o.free || e.pointerType === 'mouse') y = Math.max(-lim, Math.min(lim, by + dy));
+      el.style.translate = x + 'px ' + y + 'px';
+      if (o.move) o.move(Math.sqrt(x * x + y * y));
+      e.preventDefault();
+    });
+    function up(e) { if (e.pointerId !== id) return; id = null; if (moved) setTimeout(function () { moved = false; }, 0); }
+    addEventListener('pointerup', up); addEventListener('pointercancel', up);
+    (o.guard || el).addEventListener('click', function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+    el.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  }
+  // Run an installer now and again whenever the page redraws (each one does nothing the second time).
+  function gdKeep(fn) { fn(); var t = 0, iv = setInterval(function () { fn(); if (++t > 60) clearInterval(iv); }, 500);
+    try { new MutationObserver(function () { fn(); }).observe(document.body, { childList: true, subtree: true }); } catch (e) {} }
+  // Cut a shape out of a picture inside a link: the picture gets a hole, and the cut piece sits on top where it was,
+  // so nothing looks different until the piece is dragged away. Shapes are SVG in the picture's own pixels ({F} = fill).
+  function gdCut(a, img, W, H, shapes, box, ch, n, G, at, fs) {
+    function svg(inner) { return 'url("data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' + inner + '</svg>') + '")'; }
+    var hole = svg('<defs><mask id="m"><rect width="' + W + '" height="' + H + '" fill="white"/>' + shapes.replace(/\{F\}/g, 'black') + '</mask></defs><rect width="' + W + '" height="' + H + '" fill="white" mask="url(#m)"/>');
+    var only = svg(shapes.replace(/\{F\}/g, 'white'));
+    function mask(el, u) { ['webkitMask', 'mask'].forEach(function (k) { el.style[k + 'Image'] = u; el.style[k + 'Size'] = '100% 100%'; el.style[k + 'Repeat'] = 'no-repeat'; }); }
+    if (getComputedStyle(a).position === 'static') a.style.position = 'relative';
+    var c = gdChar(ch, n, G); c.style.left = at[0] / W * 100 + '%'; c.style.top = at[1] / H * 100 + '%'; a.appendChild(c);
+    var p = document.createElement('span'); p.className = 'gd-piece'; p.setAttribute('aria-hidden', 'true');
+    p.style.cssText = 'position:absolute;z-index:2;display:block;margin:0;left:' + box[0] / W * 100 + '%;top:' + box[1] / H * 100 + '%;width:' + box[2] / W * 100 + '%;height:' + box[3] / H * 100 + '%;cursor:grab';
+    var pi = img.cloneNode(); pi.removeAttribute('loading'); pi.alt = ''; pi.removeAttribute('class');
+    pi.style.cssText = 'position:absolute;display:block;max-width:none;max-height:none;margin:0;aspect-ratio:auto;pointer-events:none;left:' + (-box[0] / box[2] * 100) + '%;top:' + (-box[1] / box[3] * 100) + '%;width:' + W / box[2] * 100 + '%;height:' + H / box[3] * 100 + '%';
+    mask(pi, only); p.appendChild(pi); a.appendChild(p); mask(img, hole);
+    a.addEventListener('dragstart', function (e) { e.preventDefault(); });
+    function size() { c.style.fontSize = Math.max(16, a.clientWidth * fs) + 'px'; } size(); addEventListener('resize', size);
+    gdDrag(p, { free: true, guard: a, limit: 240, move: function (d) { c.classList.toggle('gd-show', d > p.offsetWidth * 0.55); } });
+    return { piece: p, img: pi };
+  }
+  // Slot 7, "The Falling Man Speaks": the Comet in the footer logo blinks PLEASE MOVE ME in Morse code. Drag it aside: a golden D.
+  var MORSE = { P: '.--.', L: '.-..', E: '.', A: '.-', S: '...', M: '--', O: '---', V: '...-' }, UNIT = 200;
+  function comet() {
+    var a = document.querySelector('#ma-links .lk-flogo'), img = a && a.querySelector('img');
+    if (!img || a.getAttribute('data-gd')) return; a.setAttribute('data-gd', '1'); gdStyle();
+    var cut = gdCut(a, img, 640, 396, '<ellipse cx="268" cy="136" rx="64" ry="64" fill="{F}"/><polygon points="198,0 224,0 266,96 228,112" fill="{F}"/>',
+      [196, 0, 140, 204], 'D', 7, G, [268, 136], 0.15);
+    // On and off times in units: a dot is 1, a dash 3, 1 between parts of a letter, 3 between letters, 7 between words.
+    var seq = [];
+    'PLEASE MOVE ME'.split(' ').forEach(function (w, wi) {
+      if (wi) seq[seq.length - 1] = 7;
+      w.split('').forEach(function (l, li) {
+        if (li) seq[seq.length - 1] = 3;
+        MORSE[l].split('').forEach(function (s) { seq.push(s === '-' ? 3 : 1, 1); });
+      });
+    });
+    seq[seq.length - 1] = 14;
+    var k = 0, stop = false;
+    cut.piece.addEventListener('pointerdown', function () { stop = true; cut.img.classList.remove('gd-glow'); });
+    (function tick() {
+      if (stop) return;
+      cut.img.classList.toggle('gd-glow', k % 2 === 0);
+      var t = seq[k] * UNIT; k = (k + 1) % seq.length; setTimeout(tick, t);
+    })();
+  }
+  // Slot 9, "Behind a brick.": the Brick in the Brick discount picture can be dragged out of the way. Behind it: a golden R.
+  function brick() {
+    var a = document.querySelector('#ma-links a.lk-promo[data-link="brick"]'), img = a && a.querySelector('img');
+    if (!img || a.getAttribute('data-gd')) return; a.setAttribute('data-gd', '1'); gdStyle();
+    gdCut(a, img, 2000, 1333, '<rect x="284" y="188" width="414" height="424" rx="50" fill="{F}"/>', [280, 184, 422, 432], 'H', 9, G, [491, 400], 0.14);
+  }
+  gdKeep(function () { comet(); brick(); });
+});
+</script>
 `;
 writeFileSync(join(ROOT, 'pages/links.html'), page);
 const n = D.sections.reduce((a, s) => a + s.links.length + (s.promo ? 1 : 0), 0) + D.socials.length + D.feature.length + (D.editions ? D.editions.items.length : 0) + 2;

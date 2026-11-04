@@ -194,6 +194,33 @@ const page = `<!-- ============================================================
   function tick(){var h=hourET();dot.hidden=!(h>=0&&h<3);}
   tick();setInterval(tick,30000);
 })();</script>
+<!-- GOLDEN TRAIL slot 8 (clue "Click the rainbow."). For finishers only (golden.js runs the queued function). Maurice 11/4:
+     no drawn rainbow; hunters click the colored cards in rainbow order, one of each: red, orange, yellow, green, blue, purple,
+     pink (any card of that color; the small label on each card names it). A right card gets a gold edge; a wrong one quietly
+     clears the run. Tab and Enter or Space work too. All seven in order records slot 8.
+     tools/aura-spectrum.mjs generates this page, so this block has to go into it too at go-live. -->
+<style>
+#ma-aura .au-card.gd-on{outline:4px solid #f2cf5b;outline-offset:-4px}
+#ma-aura .au-grid.gd-live .au-card{cursor:pointer}
+#ma-aura .au-grid.gd-live .au-card:focus-visible{outline:3px solid #fffffe;outline-offset:-3px}
+</style>
+<script>(function(){
+  (window.maGoldenQ=window.maGoldenQ||[]).push(function(G){
+    var grid=document.getElementById('au-grid');if(!grid||grid.classList.contains('gd-live'))return;grid.classList.add('gd-live');
+    var ORDER=['Red','Orange','Yellow','Green','Blue','Purple','Pink'],picked=[];
+    function nameOf(c){var n=c.querySelector('.au-name');return n?n.textContent.trim():'';}
+    function dress(){Array.prototype.forEach.call(grid.querySelectorAll('.au-card'),function(c){c.tabIndex=0;c.classList.toggle('gd-on',picked.indexOf(nameOf(c))>=0);});}
+    function tap(c){
+      var r=c.querySelector('.au-root'),root=r?r.textContent.trim():'';
+      if(root===ORDER[picked.length])picked.push(nameOf(c));else picked=root===ORDER[0]?[nameOf(c)]:[];
+      dress();
+      if(picked.length===ORDER.length){picked=[];G.found(8);setTimeout(dress,1500);}
+    }
+    grid.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('.au-card');if(c)tap(c);});
+    grid.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('au-card')){e.preventDefault();tap(e.target);}});
+    new MutationObserver(dress).observe(grid,{childList:true});dress();
+  });
+})();</script>
 `;
 writeFileSync(join(ROOT, 'pages/aura-spectrum.html'), page);
 console.log(`pages/aura-spectrum.html: ${COLORS.length} colors, ${COLORS.reduce((n, c) => n + c.words.length, 0)} words, ${added} added (${(page.length / 1024).toFixed(0)} KB)`);
