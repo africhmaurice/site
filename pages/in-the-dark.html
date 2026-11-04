@@ -81,10 +81,11 @@ html,body{margin:0 !important;padding:0 !important;background:#060d08 !important
   }
   function listen() { window.addEventListener('deviceorientation', tilt); }
   if (test) { setTimeout(drop, 800); return; }
+  listen();   // phones that don't ask permission report tilt right away; on the others no events arrive until the tap below
   if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
     var ask = function () { document.removeEventListener('click', ask, true);
       DeviceOrientationEvent.requestPermission().then(function (r) { if (r === 'granted') listen(); }, function () {}); };
     document.addEventListener('click', ask, true);
-  } else listen();
+  }
 });
 </script>
