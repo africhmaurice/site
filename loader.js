@@ -10,7 +10,7 @@
 var MAINT = true;
 (function () {
   if (!MAINT || window.__maClosed) return;
-  var open = false, q = /[?&]ma-open=([01])/.exec(location.search);
+  var open = false, q = /[?&]ma-open=([01])(?!d)/.exec(location.search);
   try { if (q) { if (q[1] === '1') localStorage.setItem('ma-open', '1'); else localStorage.removeItem('ma-open'); } open = localStorage.getItem('ma-open') === '1'; } catch (e) {}
   if (open) return;
   window.__maClosed = true;
