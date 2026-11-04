@@ -40,7 +40,7 @@
      Win: after floor 34 a golden G rises. Tapping it calls window.maGolden.found(2) (golden.js, finishers only).
      DRAFT copy (not Maurice's words yet): eyebrow "The Golden Trail", heading "Descend the Inferno", the how-to line,
        start overlay heading "Into the Inferno" and its line, "Start at floor 1", "Carry on from floor N", every floor
-       name and how-to line in FL, the fail lines in DIE, "Floor N of 34", "Lives: N", "Points: N", "Extra life!", "Best: floor N",
+       name and how-to line in FL, the fail lines in DIE, "Floor N of 34", "LIVES:" (with a goma per life), "Points: N", "Extra life!", "Best: floor N",
        "N lives left", "Out of lives", "Back to floor 1", the win heading "The bottom of the Inferno", the win line, "The second golden
        character is yours.", "Only hunters with every loot box can take this.", "Pause", "Paused", "Resume", the on-canvas
        control tips, "DOWN", "THE BOTTOM", "Pick your goon", the goon line, the double jump tips, and the two new fail lines.
@@ -369,9 +369,17 @@
     if(o.noHud)return;
     if(f.key){ctx.font="800 13px Almarai,sans-serif";ctx.textAlign='left';ctx.fillStyle='rgba(11,23,15,.85)';ctx.fillRect(8,H-44,112,26);ctx.fillStyle=s.key?'#f2cf5b':'#f3ead9';ctx.fillText(s.key?'KEY: GOT IT':'KEY: NOT YET',14,H-24);}
     var pr=Math.min(1,s.x/f.ex[0]);ctx.fillStyle='rgba(243,234,217,.25)';ctx.fillRect(40,H-12,W-80,4);ctx.fillStyle='#f2cf5b';ctx.fillRect(40,H-12,(W-80)*pr,4);
+    lifeBar();
     if(s.n<=2){var tip=touchy?'USE THE LEFT, JUMP, AND RIGHT BUTTONS BELOW':'MOVE: ARROWS OR A / D     JUMP: SPACE, UP, OR W',tip2='PRESS JUMP AGAIN IN THE AIR FOR A DOUBLE JUMP';
-      var tf=touchy?21:14,th=tf*3.9;ctx.font='800 '+tf+'px Almarai,sans-serif';var tw=Math.min(W-16,Math.max(ctx.measureText(tip).width,ctx.measureText(tip2).width)+32);ctx.fillStyle='rgba(11,23,15,.82)';ctx.fillRect(W/2-tw/2,14,tw,th);ctx.strokeStyle='#89fbcb';ctx.lineWidth=1;ctx.strokeRect(W/2-tw/2+.5,14.5,tw-1,th-1);
-      ctx.fillStyle='#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(tip,W/2,14+th*.3,W-40);ctx.fillText(tip2,W/2,14+th*.7,W-40);ctx.textBaseline='alphabetic';}}
+      var tf=touchy?21:14,th=tf*3.9;ctx.font='800 '+tf+'px Almarai,sans-serif';var tw=Math.min(W-16,Math.max(ctx.measureText(tip).width,ctx.measureText(tip2).width)+32);ctx.fillStyle='rgba(11,23,15,.82)';ctx.fillRect(W/2-tw/2,TIPY,tw,th);ctx.strokeStyle='#89fbcb';ctx.lineWidth=1;ctx.strokeRect(W/2-tw/2+.5,TIPY+.5,tw-1,th-1);
+      ctx.fillStyle='#fffffe';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(tip,W/2,TIPY+th*.3,W-40);ctx.fillText(tip2,W/2,TIPY+th*.7,W-40);ctx.textBaseline='alphabetic';}}
+  /* LIVES: a little goma per life, in the character they picked (Maurice 11/4); past eight, the count is written out */
+  var TIPY=touchy?66:54;
+  function lifeBar(){var sz=touchy?36:28,fs=touchy?20:15,pad=touchy?10:8,show=Math.min(lives,8),extra=lives-show;ctx.save();ctx.font='800 '+fs+'px Almarai,sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';
+    var lab='LIVES:',lw=ctx.measureText(lab).width,more=extra>0?'+'+extra:'',mw=more?ctx.measureText(more).width+8:0,bw=pad*2+lw+10+show*(sz+2)+mw,bh=sz+pad;
+    ctx.fillStyle='rgba(11,23,15,.82)';ctx.fillRect(10,8,bw,bh);ctx.fillStyle='#fffffe';ctx.fillText(lab,10+pad,8+bh/2+1);
+    for(var i=0;i<show;i++){var x=10+pad+lw+10+i*(sz+2),y=8+pad/2;if(ok(IZ)){var iw=Math.min(sz,sz*IZ.naturalWidth/IZ.naturalHeight);ctx.drawImage(IZ,x+(sz-iw)/2,y,iw,sz);}else{ctx.fillStyle='#a3a3a3';ctx.fillRect(x+2,y+2,sz-4,sz-4);}}
+    if(more){ctx.fillStyle='#f2cf5b';ctx.fillText(more,10+pad+lw+10+show*(sz+2)+6,8+bh/2+1);}ctx.restore();}
   function izzy(s){goon(s.x,s.y+HH,s.face);}
   function goon(x,foot,face){ctx.save();ctx.translate(x,foot);ctx.scale(face<0?-1:1,1);
     if(ok(IZ)){var gw=Math.min(54,49*IZ.naturalWidth/IZ.naturalHeight);ctx.drawImage(IZ,-gw/2,-47,gw,49);}else{ctx.fillStyle='#a3a3a3';ctx.fillRect(-20,-40,40,40);ctx.fillStyle='#0b170f';ctx.fillRect(-10,-28,6,8);ctx.fillRect(4,-28,6,8);}ctx.restore();}
@@ -382,7 +390,7 @@
   var DIE={enemy:'Caught by a skull.',burn:'Burned by a flaming skull.',roam:'Burned by a roaming fireball.',lava:'Into the lava.',rise:'The lava caught up.',spike:'Spikes!',fire:'Scorched by a fire jet.',chain:'Hit by a swinging fireball.',weight:'Flattened by a falling weight.',ball:'Flattened by a cannonball.'};
   function livesWord(n){return n+(n===1?' life':' lives')+' left';}
   var touchy=(window.matchMedia&&window.matchMedia('(pointer: coarse)').matches)||('ontouchstart' in window&&window.innerWidth<900);
-  function hud(){floorEl.textContent='Floor '+lvl+' of '+TOTAL+(f?' · '+f.name:'');bestEl.textContent=(state!=='title'?'Lives: '+lives+' · Points: '+points+' · ':'')+'Best: floor '+best;pad.classList.toggle('on',touchy&&state!=='title'&&state!=='won');}
+  function hud(){floorEl.textContent='Floor '+lvl+' of '+TOTAL+(f?' · '+f.name:'');bestEl.textContent=(state!=='title'?'Points: '+points+' · ':'')+'Best: floor '+best;pad.classList.toggle('on',touchy&&state!=='title'&&state!=='won');}
   function enter(L){lvl=L;f=FL[L-1];S=make(L);keys.l=keys.r=keys.j=0;state='intro';phase=1.2;
     if(lvl>best){best=lvl;lsSet('ma-inferno-best',String(best));}seen=0;lsSet('ma-inferno-run',lvl+','+lives+','+points);
     hud();say(f.how);ctl();}
