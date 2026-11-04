@@ -1,7 +1,7 @@
 <!-- ============================================================
      IN THE DARK - clue #25. The Night Box shows here only between sunset and sunrise
      (Asheville, NC, Eastern time). By day the page is empty. Clicking the box opens loot box 25.
-     GOLDEN TRAIL slot 4 (Maurice 10/31): the last script drops a golden D for finishers who turn their phone upside down.
+     GOLDEN TRAIL slot 4 (Maurice 10/31): the last script drops a golden N for finishers who turn their phone upside down.
      ============================================================ -->
 <style>
 html,body{margin:0 !important;padding:0 !important;background:#060d08 !important}
@@ -51,7 +51,7 @@ html,body{margin:0 !important;padding:0 !important;background:#060d08 !important
 </script>
 <script>
 /* Golden Trail slot 4 (Maurice 10/31), finishers only (golden.js): "In the dark." with a phone, upside down.
-   On a phone, any time of day: turn it upside down and a golden D falls out of the page (toward the ground, which is
+   On a phone, any time of day: turn it upside down and a golden N falls out of the page (toward the ground, which is
    the top of the screen while the phone is upside down) and lands there. Tapping it gives the golden character.
    iOS asks for motion access, so the first tap anywhere on this page asks (finishers on touch screens only).
    Test hook: ?goldentest=flip acts as if the phone were turned over, on any screen. DRAFT copy: the D's label. */
@@ -70,7 +70,7 @@ html,body{margin:0 !important;padding:0 !important;background:#060d08 !important
   var dropped = false, held = 0;
   function drop() {
     if (dropped) return; dropped = true;
-    var b = document.createElement('button'); b.type = 'button'; b.className = 'gd-d'; b.textContent = 'D'; b.setAttribute('aria-label', 'A golden D');
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'gd-d'; b.textContent = 'N'; b.setAttribute('aria-label', 'A golden N');
     b.onclick = function () { b.remove(); G.found(4); };
     document.body.appendChild(b);
   }

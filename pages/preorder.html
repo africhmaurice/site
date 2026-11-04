@@ -172,7 +172,7 @@ document.querySelectorAll('#preorder .po-jump a').forEach(function (a) {
     if (!a || a.getAttribute('data-gd')) return; a.setAttribute('data-gd', '1'); gdStyle();
     var box = a.parentNode; if (getComputedStyle(box).position === 'static') box.style.position = 'relative';
     a.style.position = 'relative'; a.style.zIndex = '2'; a.style.cursor = 'grab';
-    var c = gdChar('T', 13, G); box.insertBefore(c, a);
+    var c = gdChar('R', 13, G); box.insertBefore(c, a);
     function place() { c.style.left = a.offsetLeft + a.offsetWidth / 2 + 'px'; c.style.top = a.offsetTop + a.offsetHeight / 2 + 'px'; c.style.fontSize = '34px'; }
     place(); addEventListener('resize', place);
     gdDrag(a, { limit: 260, move: function (d) { place(); c.classList.toggle('gd-show', d > a.offsetWidth * 0.75); } });

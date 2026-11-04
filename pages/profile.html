@@ -518,7 +518,7 @@ html,body{margin:0 !important;padding:0 !important}
     no.style.cssText = 'display:inline-block;position:relative;z-index:2;padding:8px 0;margin:-8px 0;cursor:grab';
     t.nodeValue = t.nodeValue.slice(2); f.insertBefore(no, t);
     if (getComputedStyle(f).position === 'static') f.style.position = 'relative';
-    var c = gdChar('8', 20, G); f.appendChild(c);
+    var c = gdChar('2', 20, G); f.appendChild(c);
     function place() { c.style.left = no.offsetLeft + no.offsetWidth / 2 + 'px'; c.style.top = no.offsetTop + no.offsetHeight / 2 + 'px'; c.style.fontSize = '20px'; }
     place(); addEventListener('resize', place);
     gdDrag(no, { limit: 120, move: function (d) { place(); c.classList.toggle('gd-show', d > no.offsetWidth * 1.1); } });

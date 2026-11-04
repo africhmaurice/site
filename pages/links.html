@@ -1,8 +1,8 @@
 <!-- ============================================================
      THE LINK PAGE (mauriceafrich.com/links). BUILT by tools/links.mjs from tools/links.json; edit those, not this.
      THE GOLDEN TRAIL (Maurice 10/31), finishers only (all 151 loot boxes), script at the end: slot 7 = the Comet in the footer logo blinks
-     PLEASE MOVE ME in Morse code and can be dragged aside onto a golden P; slot 9 = the Brick in the Brick discount picture can be dragged
-     aside onto a golden R. At go-live these must also go into tools/links.mjs, or the next build drops them.
+     PLEASE MOVE ME in Morse code and can be dragged aside onto a golden D; slot 9 = the Brick in the Brick discount picture can be dragged
+     aside onto a golden H. At go-live these must also go into tools/links.mjs, or the next build drops them.
      ============================================================ -->
 <style>
 #ma-links{--ink:#0b170f;--ink7:#213226;--moss:#607667;--green:#a2f590;--green7:#2c6021;--teal:#268e62;--scarlet:#c53200;--violet:#482d85;--parch:#fffffe;
@@ -416,13 +416,13 @@
     gdDrag(p, { free: true, guard: a, limit: 240, move: function (d) { c.classList.toggle('gd-show', d > p.offsetWidth * 0.55); } });
     return { piece: p, img: pi };
   }
-  // Slot 7, "The Falling Man Speaks": the Comet in the footer logo blinks PLEASE MOVE ME in Morse code. Drag it aside: a golden P.
+  // Slot 7, "The Falling Man Speaks": the Comet in the footer logo blinks PLEASE MOVE ME in Morse code. Drag it aside: a golden D.
   var MORSE = { P: '.--.', L: '.-..', E: '.', A: '.-', S: '...', M: '--', O: '---', V: '...-' }, UNIT = 200;
   function comet() {
     var a = document.querySelector('#ma-links .lk-flogo'), img = a && a.querySelector('img');
     if (!img || a.getAttribute('data-gd')) return; a.setAttribute('data-gd', '1'); gdStyle();
     var cut = gdCut(a, img, 640, 396, '<ellipse cx="268" cy="136" rx="64" ry="64" fill="{F}"/><polygon points="198,0 224,0 266,96 228,112" fill="{F}"/>',
-      [196, 0, 140, 204], 'P', 7, G, [268, 136], 0.15);
+      [196, 0, 140, 204], 'D', 7, G, [268, 136], 0.15);
     // On and off times in units: a dot is 1, a dash 3, 1 between parts of a letter, 3 between letters, 7 between words.
     var seq = [];
     'PLEASE MOVE ME'.split(' ').forEach(function (w, wi) {
@@ -445,7 +445,7 @@
   function brick() {
     var a = document.querySelector('#ma-links a.lk-promo[data-link="brick"]'), img = a && a.querySelector('img');
     if (!img || a.getAttribute('data-gd')) return; a.setAttribute('data-gd', '1'); gdStyle();
-    gdCut(a, img, 2000, 1333, '<rect x="284" y="188" width="414" height="424" rx="50" fill="{F}"/>', [280, 184, 422, 432], 'R', 9, G, [491, 400], 0.14);
+    gdCut(a, img, 2000, 1333, '<rect x="284" y="188" width="414" height="424" rx="50" fill="{F}"/>', [280, 184, 422, 432], 'H', 9, G, [491, 400], 0.14);
   }
   gdKeep(function () { comet(); brick(); });
 });

@@ -397,7 +397,7 @@ window.__openPrize=function(el){var img=el.getAttribute('data-img');var i=docume
       msg.textContent = hits === 1 ? 'It\u2019s cracking.' : hits === 2 ? 'One more.' : '';
       if (hits >= 3) {
         done = true; wrap.classList.add('gc-open');
-        var one = document.createElement('button'); one.type = 'button'; one.className = 'gc-one'; one.textContent = '1'; one.setAttribute('aria-label', 'A golden 1');
+        var one = document.createElement('button'); one.type = 'button'; one.className = 'gc-one'; one.textContent = 'W'; one.setAttribute('aria-label', 'A golden W');
         one.onclick = function () { one.remove(); G.found(12); };
         setTimeout(function () { wrap.insertBefore(one, msg); }, 500);
       }
