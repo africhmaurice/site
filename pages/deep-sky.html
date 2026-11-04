@@ -319,13 +319,6 @@
     L.red=true;L.redGap=gap;
   }
   (window.maGoldenQ=window.maGoldenQ||[]).push(function(G){GOLD=G;if(L)L.red=false;kick();});
-  /* test hook (?test=1 only): centers the view on Arcturus and says where it is on screen, for the test harness */
-  if(/[?&]test=1(&|$)/.test(location.search))window.__goldSky=function(){if(!GOLD||!L)return null;if(!L.red)redStars();
-    var m=/c([0-9]+)_([0-9]+)/.exec(L.arc),q=L.pl[+m[1]].stars[+m[2]],s=S();vx=q[0]-cssW/s/2;vy=q[1]-cssH/s/2;clampView();draw(performance.now());
-    var reds=[];L.bg.concat([].concat.apply([],L.pl.map(function(p){return p.stars;}))).forEach(function(z){if(z.rr)reds.push(z.rr);});
-    var tops=L.pl.slice(0,SLOTS).map(function(p){return(p.bx[1]+p.bx[3])/2;});
-    var near=null,nd=1e9;L.bg.forEach(function(z){if(!z.rr)return;var zx=(z[0]-vx)*s,zy=(z[1]-vy)*s;if(zx<20||zy<20||zx>cssW-20||zy>cssH-20)return;var dd=Math.hypot(zx-(q[0]-vx)*s,zy-(q[1]-vy)*s);if(dd>40&&dd<nd){nd=dd;near={x:zx,y:zy};}});
-    return{near:near,gap:L.redGap,sizes:reds.slice().sort(function(a,b){return b-a;}),x:(q[0]-vx)*s,y:(q[1]-vy)*s,rank:reds.sort(function(a,b){return b-a;}).indexOf(q.rr)+1,reds:reds.length,top:tops.indexOf(Math.min.apply(null,tops))===+m[1],path:path.length,portrait:L.portrait};};
   var raf=0;
   function loop(t){draw(t);raf=requestAnimationFrame(loop);}
   function kick(){if(reduce)requestAnimationFrame(draw);}
