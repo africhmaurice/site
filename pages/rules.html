@@ -479,7 +479,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         var walk=document.createTreeWalker(p,NodeFilter.SHOW_TEXT),t;
         while((t=walk.nextNode())){var i=t.data.indexOf('Imperial');if(i<0)continue;
           var rest=t.splitText(i);rest.splitText(8);var s=document.createElement('span');s.className='ma-gold-18';s.textContent='Imperial';
-          s.setAttribute('role','button');s.tabIndex=0;s.style.cssText='color:#c9a227;font-weight:700;cursor:pointer';
+          s.setAttribute('role','button');s.tabIndex=0;s.style.cssText='color:#b8860b;font-weight:800;font-size:1.15em;cursor:pointer';
           var go=function(){G.found(18);};s.addEventListener('click',go);s.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
           rest.parentNode.replaceChild(s,rest);break;}
       });})();</script>
