@@ -481,10 +481,11 @@ maStart();
     return { fx: (e.clientX - ox) / w, fy: (e.clientY - oy) / h, w: w, h: h };
   }
   // a tap within the letter, or within 14px of its middle (the letters are small on a phone)
-  // (zone, if given, is as far as that reach may go, so it can't spill onto the next letter)
+  // (zone, if given, is as far as that reach may go, so it can't spill onto the next letter; on a small picture the
+  // letters are too tiny for that, so Maurice 11/4: no zone there, and a neighbor counts too)
   function inLetter(p, box, zone) {
     if (!p) return false;
-    if (zone && !(p.fx >= zone[0] && p.fx <= zone[2] && p.fy >= zone[1] && p.fy <= zone[3])) return false;
+    if (zone && p.w >= 200 && !(p.fx >= zone[0] && p.fx <= zone[2] && p.fy >= zone[1] && p.fy <= zone[3])) return false;
     var cx = (box[0] + box[2]) / 2, cy = (box[1] + box[3]) / 2;
     var inside = p.fx >= box[0] && p.fx <= box[2] && p.fy >= box[1] && p.fy <= box[3];
     var near = Math.abs((p.fx - cx) * p.w) <= 14 && Math.abs((p.fy - cy) * p.h) <= 14;
