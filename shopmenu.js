@@ -284,7 +284,7 @@
         var d = n.splitText(m.index + 3); d.splitText(1);
         var s = document.createElement('a'); s.className = 'ma-gold-d'; s.textContent = 'D'; s.href = SITE + '/loot?golden=14'; s.setAttribute('aria-label', 'A golden D');
         // the wider tap area is a pseudo-element, so the line of text doesn't move
-        var st = document.createElement('style'); st.textContent = '.ma-gold-d{position:relative;font-size:1.55em;line-height:1;font-weight:800;color:#f2cf5b!important;text-decoration:none!important;text-shadow:0 0 10px rgba(242,207,91,.85);cursor:pointer}.ma-gold-d::after{content:"";position:absolute;inset:-10px -12px}.ma-gold-d:focus-visible{outline:2px solid #f2cf5b;outline-offset:3px}';
+        var st = document.createElement('style'); st.textContent = '.ma-gold-d{position:relative;font-size:1em;font-weight:800;color:#f2cf5b!important;text-decoration:none!important;text-shadow:0 0 10px rgba(242,207,91,.85);cursor:pointer}.ma-gold-d::after{content:"";position:absolute;inset:-10px -12px}.ma-gold-d:focus-visible{outline:2px solid #f2cf5b;outline-offset:3px}';
         document.head.appendChild(st);
         d.parentNode.replaceChild(s, d);
         return;
