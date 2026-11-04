@@ -255,6 +255,12 @@
       "source": "bot:squarespace-search.html"
     },
     {
+      "slug": "the-captains-request",
+      "url": "/the-captains-request",
+      "title": "The Captain's Request Vote (Chapter 18, after the search)",
+      "source": "bot:squarespace-captains-request.html"
+    },
+    {
       "slug": "adventure",
       "url": "/adventure",
       "title": "The Adventure So Far (every Choose Your Own Adventure beat)",

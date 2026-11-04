@@ -1120,7 +1120,7 @@
   // Chapter buttons (2026-10-09): Previous chapter / See the map / Next chapter at the foot of each chapter page.
   function chapterNav() {
     if (window.__chapterNavLoaded) return; window.__chapterNavLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=13'; s.async = true; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=14'; s.async = true; document.head.appendChild(s);
   }
   function raftHunt() {
     if (window.__raftLoaded) return; window.__raftLoaded = true;
