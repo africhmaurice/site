@@ -488,6 +488,11 @@ var ArcadeCard = (function () {
   function setPrizesToday(n){store('thRunner:prizes',{day:today(),n:n});}
 
   /* ---- talking to the sheet: POST, JSONP if that is blocked, one quiet retry (same as the daily games) ---- */
+  /* a ticket request that hangs (Maurice, 2026-11-04): ask again at 7 s and 15 s while the first keeps waiting; the first ticket back wins */
+  function ticketRace(ask,done){var over=false,left=3,timers=[];
+    function end(res){if(over)return;over=true;timers.forEach(function(t){clearTimeout(t);});done(res);}
+    function one(){ask(function(res){if(over)return;var soft=!res||(!res.ok&&!res.preview&&/^(wait|network|server|empty)$/.test(res.error||''));if(!soft)return end(res);if(--left<1)end(res);});}
+    timers.push(setTimeout(function(){end({ok:false,error:'wait'});},40000));timers.push(setTimeout(one,7000));timers.push(setTimeout(one,15000));one();}
   function api(action,payload,done){
     payload=payload||{};payload.action=action;
     if(MOCK)return setTimeout(function(){done(mock(payload));},300);
@@ -849,7 +854,7 @@ var ArcadeCard = (function () {
     S=newRun();mode='run';paintHud();ctl();
     var r=stage.getBoundingClientRect();if(r.top<0||r.bottom>window.innerHeight){try{stage.scrollIntoView({block:'center',behavior:calm?'auto':'smooth'});}catch(e){}}
     var run=S;
-    api('runstart',{},function(res){run.ticket=res&&res.ok?res.ticket:'';var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});
+    ticketRace(function(cb){api('runstart',{},cb);},function(res){run.ticket=res&&res.ok?res.ticket:'';var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});
     go();
   }
   function pause(){if(mode!=='run')return;mode='paused';pauseOv.hidden=false;paintHud();

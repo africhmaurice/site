@@ -364,7 +364,7 @@ var ArcadeCard = (function () {
   }
   function begin(){reset();S.state='ready';S.y=H*.45;ovStart.hidden=ovDead.hidden=ovWin.hidden=ovPause.hidden=true;view();
     var run=S;run.ticket=null;run.ticketWait=[];postEl.hidden=true;whoEl.hidden=true;whoEl.innerHTML='';
-    api('needlestart',{},function(res){run.ticket=res&&res.ok?res.ticket:'';var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});}
+    ticketRace(function(cb){api('needlestart',{},cb);},function(res){run.ticket=res&&res.ok?res.ticket:'';var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});}
   function liveRun(){return S&&(S.state==='play'||S.state==='ready'||S.state==='resume');}
   setInterval(function(){stage.classList.toggle('fl-live',!!liveRun());ctlSync();},120);
   cv.addEventListener('touchstart',function(e){if(liveRun())e.preventDefault();},{passive:false});
@@ -555,6 +555,11 @@ var ArcadeCard = (function () {
   function gotToday(){var c=load('thNeedle:got',null);return c&&c.day===nyDay()&&c.gaps&&c.gaps.slice?c.gaps.slice():[];}
   function markGot(g){var a=gotToday();if(a.indexOf(+g)<0)a.push(+g);store('thNeedle:got',{day:nyDay(),gaps:a});}
   function msg(t,err){dmsgEl.textContent=t;dmsgEl.className='fl-dmsg'+(err?' err':'');msgEl.textContent=t;msgEl.className='fl-msg'+(err?' err':'');}
+  /* a ticket request that hangs (Maurice, 2026-11-04): ask again at 7 s and 15 s while the first keeps waiting; the first ticket back wins */
+  function ticketRace(ask,done){var over=false,left=3,timers=[];
+    function end(res){if(over)return;over=true;timers.forEach(function(t){clearTimeout(t);});done(res);}
+    function one(){ask(function(res){if(over)return;var soft=!res||(!res.ok&&!res.preview&&/^(wait|network|server|empty)$/.test(res.error||''));if(!soft)return end(res);if(--left<1)end(res);});}
+    timers.push(setTimeout(function(){end({ok:false,error:'wait'});},40000));timers.push(setTimeout(one,7000));timers.push(setTimeout(one,15000));one();}
   function api(action,payload,done){payload=payload||{};payload.action=action;send(payload,done,1);}
   function send(payload,done,attempt){
     var settled=false;

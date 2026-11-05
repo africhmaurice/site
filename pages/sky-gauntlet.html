@@ -790,6 +790,11 @@
   function sgbStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   var sgbMe=sgbLoad(SGB_ME,{})||{};
   function sgbMsg(t,err){sgbDmsgEl.textContent=t;sgbDmsgEl.className='sgb-dmsg'+(err?' err':'');sgbMsgEl.textContent=t;sgbMsgEl.className='sgb-msg'+(err?' err':'');}
+  /* a ticket request that hangs (Maurice, 2026-11-04): ask again at 7 s and 15 s while the first keeps waiting; the first ticket back wins */
+  function ticketRace(ask,done){var over=false,left=3,timers=[];
+    function end(res){if(over)return;over=true;timers.forEach(function(t){clearTimeout(t);});done(res);}
+    function one(){ask(function(res){if(over)return;var soft=!res||(!res.ok&&!res.preview&&/^(wait|network|server|empty)$/.test(res.error||''));if(!soft)return end(res);if(--left<1)end(res);});}
+    timers.push(setTimeout(function(){end({ok:false,error:'wait'});},40000));timers.push(setTimeout(one,7000));timers.push(setTimeout(one,15000));one();}
   function sgbApi(action,payload,done){payload=payload||{};payload.action=action;sgbSend(payload,done,1);}
   function sgbSend(payload,done,attempt){
     var settled=false;
@@ -825,7 +830,7 @@
   sgbTick();setInterval(sgbTick,20000);sgbRefresh();setTimeout(cpFetch,0);
   function sgbStart(){
     var r={ticket:null,wait:[],logged:false};sgbRun=r;sgbPostEl.hidden=true;sgbWhoEl.hidden=true;sgbWhoEl.innerHTML='';sgbMsg('');
-    sgbApi(act('gauntletstart'),{},function(res){r.ticket=res&&res.ok?res.ticket:'';var w=r.wait;r.wait=[];w.forEach(function(f){f();});});
+    ticketRace(function(cb){sgbApi(act('gauntletstart'),{},cb);},function(res){r.ticket=res&&res.ok?res.ticket:'';var w=r.wait;r.wait=[];w.forEach(function(f){f();});});
   }
   /* ---- checkpoints (Maurice, 2026-10-21): every Destroyer you destroy opens a checkpoint at the next wave (6, 11, 16, 21,
      26) for you this week. Starting there is optional and gives the group average, from the board, of everyone who got

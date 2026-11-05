@@ -1095,6 +1095,11 @@ if(/[?&]test=1/.test(location.search))window.__ss={G:function(){return G;},deplo
   function storeJ(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   var me=loadJ(ME,{})||{},RUN=null;
   function msg(t,err){msgEl.textContent=t;msgEl.className='hw-msg'+(err?' err':'');}
+  /* a ticket request that hangs (Maurice, 2026-11-04): ask again at 7 s and 15 s while the first keeps waiting; the first ticket back wins */
+  function ticketRace(ask,done){var over=false,left=3,timers=[];
+    function end(res){if(over)return;over=true;timers.forEach(function(t){clearTimeout(t);});done(res);}
+    function one(){ask(function(res){if(over)return;var soft=!res||(!res.ok&&!res.preview&&/^(wait|network|server|empty)$/.test(res.error||''));if(!soft)return end(res);if(--left<1)end(res);});}
+    timers.push(setTimeout(function(){end({ok:false,error:'wait'});},40000));timers.push(setTimeout(one,7000));timers.push(setTimeout(one,15000));one();}
   function api(action,payload,done){payload=payload||{};payload.action=action;if(!BOARD)return done({ok:false,error:'off'});send(payload,done,1);}
   function send(payload,done,attempt){
     var settled=false;
@@ -1135,7 +1140,7 @@ if(/[?&]test=1/.test(location.search))window.__ss={G:function(){return G;},deplo
 
   function start(){var run={ticket:null,ticketWait:[],offline:false};RUN=run;postEl.hidden=true;whoEl.hidden=true;whoEl.innerHTML='';msg('');
     if(window.ArcadeCard&&ArcadeCard.hide)try{ArcadeCard.hide();}catch(e){}
-    api('holdwallstart',{},function(res){run.ticket=res&&res.ok?res.ticket:'';run.offline=!!(res&&res.preview);var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});
+    ticketRace(function(cb){api('holdwallstart',{},cb);},function(res){run.ticket=res&&res.ok?res.ticket:'';run.offline=!!(res&&res.preview);var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});
     return run;}
   function end(run,data){
     run.data=data;noteWeekBest(data.score);

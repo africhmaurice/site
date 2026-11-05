@@ -602,6 +602,11 @@
   function trStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   var trMe=trLoad(TR_ME,{})||{};
   function trMsg(t,err){trDmsgEl.textContent=t;trDmsgEl.className='tr-dmsg'+(err?' err':'');trMsgEl.textContent=t;trMsgEl.className='tr-msg'+(err?' err':'');}
+  /* a ticket request that hangs (Maurice, 2026-11-04): ask again at 7 s and 15 s while the first keeps waiting; the first ticket back wins */
+  function ticketRace(ask,done){var over=false,left=3,timers=[];
+    function end(res){if(over)return;over=true;timers.forEach(function(t){clearTimeout(t);});done(res);}
+    function one(){ask(function(res){if(over)return;var soft=!res||(!res.ok&&!res.preview&&/^(wait|network|server|empty)$/.test(res.error||''));if(!soft)return end(res);if(--left<1)end(res);});}
+    timers.push(setTimeout(function(){end({ok:false,error:'wait'});},40000));timers.push(setTimeout(one,7000));timers.push(setTimeout(one,15000));one();}
   function trApi(action,payload,done){payload=payload||{};payload.action=action;trSend(payload,done,1);}
   function trSend(payload,done,attempt){
     var settled=false;
@@ -637,7 +642,7 @@
   trTick();setInterval(trTick,20000);trRefresh();
   function trStart(){
     var r={ticket:null,wait:[],rt:0,logged:false};trRun=r;trPostEl.hidden=true;trWhoEl.hidden=true;trWhoEl.innerHTML='';trMsg('');
-    trApi('trenchstart',{},function(res){r.ticket=res&&res.ok?res.ticket:'';var w=r.wait;r.wait=[];w.forEach(function(f){f();});});
+    ticketRace(function(cb){trApi('trenchstart',{},cb);},function(res){r.ticket=res&&res.ok?res.ticket:'';var w=r.wait;r.wait=[];w.forEach(function(f){f();});});
   }
   function trEnd(){
     var r=trRun;if(!r||r.logged)return;r.logged=true;r.score=score;r.board=board;
