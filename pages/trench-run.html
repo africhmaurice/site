@@ -607,6 +607,15 @@
     function end(res){if(over)return;over=true;timers.forEach(function(t){clearTimeout(t);});done(res);}
     function one(){ask(function(res){if(over)return;var soft=!res||(!res.ok&&!res.preview&&/^(wait|network|server|empty)$/.test(res.error||''));if(!soft)return end(res);if(--left<1)end(res);});}
     timers.push(setTimeout(function(){end({ok:false,error:'wait'});},40000));timers.push(setTimeout(one,7000));timers.push(setTimeout(one,15000));one();}
+  /* a score request that hangs (Maurice, 2026-11-04): send it again at 10 s and 22 s. A ticket logs one run, so copies can't count twice; a used ticket after a resend means a copy landed */
+  function scoreRace(run,ask,done){var over=false,waiting=0,fresh=0,timers=[];
+    function end(res){if(over)return;over=true;timers.forEach(function(t){clearTimeout(t);});done(res);}
+    function one(){if(over||fresh>=3)return;fresh++;waiting++;run.scoreSent=(run.scoreSent||0)+1;ask(function(res){waiting--;if(over)return;var e=res&&res.error;
+      if(res&&res.ok)return end(res);
+      if(e==='ticket'&&run.scoreSent>1){timers.push(setTimeout(function(){end({ok:false,error:'landed'});},8000));return;}
+      if(res&&!/^(wait|network|server|empty)$/.test(e||''))return end(res);
+      if(!waiting){if(fresh<3)one();else end(res);}});}
+    timers.push(setTimeout(function(){end({ok:false,error:'wait'});},50000));timers.push(setTimeout(one,10000));timers.push(setTimeout(one,22000));one();}
   function trApi(action,payload,done){payload=payload||{};payload.action=action;trSend(payload,done,1);}
   function trSend(payload,done,attempt){
     var settled=false;
@@ -672,8 +681,8 @@
     if(r.ticket===null){trMsg('Logging your run...');r.wait.push(function(){trSubmit(r);});return;}
     if(!r.ticket){trMsg('The ship could not check in when this run started, so it cannot go on the board. Fly again!',1);return;}
     trMsg('Logging your run...');
-    trApi('trenchscore',{ticket:r.ticket,email:trMe.email,first_name:trMe.first_name,handle:trMe.handle,platform:trMe.platform,country:trMe.country,
-      score:r.score,board:r.board,secs:Math.round(r.rt*10)/10},function(res){
+    var sp={ticket:r.ticket,email:trMe.email,first_name:trMe.first_name,handle:trMe.handle,platform:trMe.platform,country:trMe.country,
+      score:r.score,board:r.board,secs:Math.round(r.rt*10)/10};scoreRace(r,function(cb){trApi('trenchscore',sp,cb);},function(res){
       if(res&&res.ok){
         if(res.status==='host'){trMsg('Practice run. Your runs stay off the board.');return;}
         trMsg((res.rank?'Logged! You are #'+res.rank+' this week.':'Logged!')+' Best this week: '+trFmt(res.best)+'.');
@@ -683,7 +692,8 @@
       }
       var e=res&&res.error;
       if(e==='slow'){trMsg('Easy, captain. Logging it in a few seconds...');return setTimeout(function(){trSubmit(r);},6000);}
-      if(e==='wait'){trMsg('The ship’s log is answering slowly. Your run has most likely landed already: check the board below in a minute.');setTimeout(trRefresh,10000);setTimeout(trRefresh,40000);return;}
+      if(e==='landed'){trMsg('Logged! Check the board for your place.');setTimeout(trRefresh,10000);setTimeout(trRefresh,40000);return;}
+      if(e==='wait'){trMsg('The ship’s log is not answering right now. Check the board in a minute. If your run is not there, tap TRY AGAIN.');setTimeout(trRefresh,10000);setTimeout(trRefresh,40000);trPostEl.hidden=false;trWhoEl.hidden=false;trWhoEl.innerHTML='<button type="button" class="ch-btn ghost">TRY AGAIN</button>';trWhoEl.querySelector('button').onclick=function(){trWhoEl.hidden=true;trSubmit(r);};return;}
       trMsg(({email:'That email does not look right.',closed:'The hunt is over, so runs no longer go on the board.',ticket:'This run took too long to check in, so it cannot go on the board.',
         check:'The Captain could not verify this run.',limit:'That is a lot of flying for one day. Come back tomorrow!'})[e]||'The ship is slow today. Give it another go in a moment.',1);
       if(!e||e==='network'||e==='server'||e==='empty'){trPostEl.hidden=false;trWhoEl.hidden=false;trWhoEl.innerHTML='<button type="button" class="ch-btn ghost">TRY AGAIN</button>';trWhoEl.querySelector('button').onclick=function(){trWhoEl.hidden=true;trSubmit(r);};}

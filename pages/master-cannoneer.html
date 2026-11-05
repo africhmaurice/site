@@ -1100,6 +1100,15 @@ if(/[?&]test=1/.test(location.search))window.__ss={G:function(){return G;},deplo
     function end(res){if(over)return;over=true;timers.forEach(function(t){clearTimeout(t);});done(res);}
     function one(){ask(function(res){if(over)return;var soft=!res||(!res.ok&&!res.preview&&/^(wait|network|server|empty)$/.test(res.error||''));if(!soft)return end(res);if(--left<1)end(res);});}
     timers.push(setTimeout(function(){end({ok:false,error:'wait'});},40000));timers.push(setTimeout(one,7000));timers.push(setTimeout(one,15000));one();}
+  /* a score request that hangs (Maurice, 2026-11-04): send it again at 10 s and 22 s. A ticket logs one run, so copies can't count twice; a used ticket after a resend means a copy landed */
+  function scoreRace(run,ask,done){var over=false,waiting=0,fresh=0,timers=[];
+    function end(res){if(over)return;over=true;timers.forEach(function(t){clearTimeout(t);});done(res);}
+    function one(){if(over||fresh>=3)return;fresh++;waiting++;run.scoreSent=(run.scoreSent||0)+1;ask(function(res){waiting--;if(over)return;var e=res&&res.error;
+      if(res&&res.ok)return end(res);
+      if(e==='ticket'&&run.scoreSent>1){timers.push(setTimeout(function(){end({ok:false,error:'landed'});},8000));return;}
+      if(res&&!/^(wait|network|server|empty)$/.test(e||''))return end(res);
+      if(!waiting){if(fresh<3)one();else end(res);}});}
+    timers.push(setTimeout(function(){end({ok:false,error:'wait'});},50000));timers.push(setTimeout(one,10000));timers.push(setTimeout(one,22000));one();}
   function api(action,payload,done){payload=payload||{};payload.action=action;if(!BOARD)return done({ok:false,error:'off'});send(payload,done,1);}
   function send(payload,done,attempt){
     var settled=false;
@@ -1175,7 +1184,7 @@ if(/[?&]test=1/.test(location.search))window.__ss={G:function(){return G;},deplo
     if(!run.ticket){msg('The board could not check in when this game started, so it cannot go on the board. Play again!',1);postEl.hidden=false;return;}
     msg('Logging your game...');postEl.hidden=false;
     var d=run.data,payload={ticket:run.ticket,email:me.email,first_name:me.first_name,handle:me.handle,platform:me.platform,country:me.country,score:d.score,secs:d.secs,wave:d.wave,kills:d.kills};
-    api('holdwallscore',payload,function(res){
+    scoreRace(run,function(cb){api('holdwallscore',payload,cb);},function(res){
       if(run!==RUN)return;
       if(res&&res.ok){
         if(res.status==='host'){msg('Practice game. Your games stay off the board.');return;}
@@ -1187,7 +1196,8 @@ if(/[?&]test=1/.test(location.search))window.__ss={G:function(){return G;},deplo
       }
       var e=res&&res.error;
       if(e==='slow'){msg('Easy, captain. Logging it in a few seconds...');return setTimeout(function(){submit(run);},6000);}
-      if(e==='wait'){msg('The ship’s log is answering slowly. Your game has most likely landed already: check the board in a minute.');setTimeout(refreshBoard,10000);setTimeout(refreshBoard,40000);return;}
+      if(e==='landed'){msg('Logged! Check the board for your place.');setTimeout(refreshBoard,10000);setTimeout(refreshBoard,40000);return;}
+      if(e==='wait'){msg('The ship’s log is not answering right now. Check the board in a minute. If your game is not there, tap TRY AGAIN.');setTimeout(refreshBoard,10000);setTimeout(refreshBoard,40000);whoEl.hidden=false;whoEl.innerHTML='<button type="button" class="sm">TRY AGAIN</button>';whoEl.querySelector('button').onclick=function(){whoEl.hidden=true;submit(run);};return;}
       msg(({email:'That email does not look right.',closed:'The hunt is over, so games no longer go on the board.',ticket:'This game took too long to check in, so it cannot go on the board.',
         check:'The Captain could not verify this game.',limit:'That is a lot of defending for one day. Come back tomorrow!'})[e]||'The ship is slow today. Give it another go in a moment.',1);
       if(!e||e==='network'||e==='server'||e==='empty'){whoEl.hidden=false;whoEl.innerHTML='<button type="button" class="sm">TRY AGAIN</button>';whoEl.querySelector('button').onclick=function(){whoEl.hidden=true;submit(run);};}
