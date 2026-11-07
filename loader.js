@@ -407,6 +407,92 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
         }
       }
     });
+    phoneFixed();
+  }
+
+  // Fixed backgrounds on phones (Maurice, 2026-11-07): phones ignore background-attachment:fixed, and most pages turn it
+  // off at 900px, so there the picture moves to its own layer pinned to the screen (position:fixed), inside a box clipped
+  // to the section so it only shows behind that section. Same picture and wash as desktop. Any rule on the page that
+  // sets a fixed background counts, ::before ones too, so every page gets this without editing the page.
+  var PFX = window.matchMedia && matchMedia('(max-width:900px),(hover:none)');
+  var pfxSheets = typeof WeakSet === 'function' ? new WeakSet() : null, pfxItems = [], pfxOn = false, pfxPos = {};
+  // these scroll on desktop too, but Maurice wants every phone background held still
+  var pfxSel = { '#av .av-hero': 1, '#av .av-band': 1, '#golden-trail': 1 };
+  function pfxRules(rules) {
+    Array.prototype.forEach.call(rules, function (r) {
+      if (r.cssRules && !r.selectorText) return pfxRules(r.cssRules);
+      if (r.selectorText && r.style && /fixed/.test(r.style.backgroundAttachment)) r.selectorText.split(',').forEach(function (s) { pfxSel[s.trim()] = 1; });
+      if (r.selectorText && r.style && r.style.position === 'fixed') r.selectorText.split(',').forEach(function (s) { if (s.indexOf('::') < 0) pfxPos[s.trim()] = 1; });
+    });
+  }
+  function pfxPinnable(el) {
+    var sec = el.closest('section');
+    for (var a = el; a && a !== document.documentElement; a = a.parentElement) {
+      var cs = getComputedStyle(a), bad = cs.transform !== 'none' || cs.filter !== 'none' || cs.perspective !== 'none' || /transform|filter|perspective/.test(cs.willChange) || /paint|layout|strict|content/.test(cs.contain || '');
+      if (!bad) continue;
+      if (!sec || !sec.contains(a) || a === sec) return false;
+      a.style.setProperty('transform', 'none', 'important');
+      a.style.setProperty('will-change', 'auto', 'important');
+      a.style.setProperty('filter', 'none', 'important');
+    }
+    return true;
+  }
+  // Pinning makes each section its own stack, so a menu bar or popup inside it would slide under the next section.
+  // A section holding one sits as high as that menu or popup, but stays under the site header.
+  function pfxLift(el) {
+    var top = 0, hd = document.getElementById('header'), hz = hd ? parseInt(getComputedStyle(hd).zIndex, 10) || 0 : 0;
+    function see(k) { if (!k.closest('.ma-pfx')) top = Math.max(top, parseInt(getComputedStyle(k).zIndex, 10) || 1); }
+    Object.keys(pfxPos).forEach(function (s) { try { Array.prototype.forEach.call(el.querySelectorAll(s), see); } catch (e) {} });
+    Array.prototype.forEach.call(el.querySelectorAll('[style*="position:fixed"],[style*="position: fixed"]'), see);
+    if (top) el.style.zIndex = hz ? Math.max(1, Math.min(top, hz - 1)) : top;
+  }
+  function pfxPin(el, pseudo) {
+    if (el === document.body || el === document.documentElement || !el.isConnected) return;
+    var item = pfxItems.filter(function (x) { return x.el === el; })[0];
+    if (item && !item.box.isConnected) el.appendChild(item.box);
+    var cs = getComputedStyle(el, pseudo || null);
+    if (!/url\(/.test(cs.backgroundImage) || !pfxPinnable(el)) return;
+    if (!item) {
+      var box = document.createElement('div'); box.className = 'ma-pfx'; box.setAttribute('aria-hidden', 'true');
+      box.style.cssText = 'position:absolute;top:0;right:0;bottom:0;left:0;z-index:-1;pointer-events:none;clip-path:inset(0);-webkit-clip-path:inset(0)';
+      var im = document.createElement('div');
+      im.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:100vh;height:100lvh';
+      box.appendChild(im);
+      item = { el: el, box: box, im: im }; pfxItems.push(item);
+    }
+    item.im.style.backgroundImage = cs.backgroundImage;
+    item.im.style.backgroundSize = cs.backgroundSize;
+    item.im.style.backgroundPosition = cs.backgroundPosition;
+    item.im.style.backgroundRepeat = cs.backgroundRepeat;
+    if (pseudo) el.classList.add('ma-pfx-' + pseudo.replace(/:/g, ''));
+    else {
+      el.style.backgroundImage = 'none';
+      if (/url\(/.test(getComputedStyle(el).backgroundImage)) el.style.setProperty('background-image', 'none', 'important');
+    }
+    if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+    el.style.isolation = 'isolate';
+    pfxLift(el);
+    if (!item.box.isConnected) el.appendChild(item.box);
+  }
+  function phoneFixed() {
+    if (!PFX || !PFX.matches || !document.body) return;
+    if (!pfxOn) {
+      pfxOn = true; setInterval(phoneFixed, 1000);
+      var css = document.createElement('style');
+      css.textContent = '.ma-pfx-before::before,.ma-pfx-after::after{background-image:none!important}';
+      document.head.appendChild(css);
+    }
+    Array.prototype.forEach.call(document.styleSheets, function (sh) {
+      if (pfxSheets && pfxSheets.has(sh)) return;
+      try { pfxRules(sh.cssRules); if (pfxSheets) pfxSheets.add(sh); } catch (e) {}  // another site's stylesheet can't be read
+    });
+    Object.keys(pfxSel).forEach(function (s) {
+      var m = s.match(/::?(before|after)$/), base = m ? s.slice(0, m.index) : s;
+      try { Array.prototype.forEach.call(document.querySelectorAll(base || '*'), function (el) { pfxPin(el, m ? '::' + m[1] : ''); }); } catch (e) {}
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[style*="fixed"],[style*="attachment"]'), function (el) {
+      if (/fixed/.test(el.style.backgroundAttachment)) pfxPin(el, '');
+    });
   }
 
   var nativeDone = false;

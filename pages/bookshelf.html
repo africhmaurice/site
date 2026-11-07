@@ -1,5 +1,5 @@
 <!-- THE BOOKSHELF (mauriceafrich.com/bookshelf). Maurice 11/6: top 10 of all time, then the five books most recently rated 5 stars,
-     newest first. Five per row, full page, one per row on phones: number, cover, white outline, hard drop shadow, nothing else.
+     newest first. Five per row, full page, two per row on phones: number, cover, white outline, hard drop shadow, nothing else.
      Maurice 11/7: red overlay, every cover links to its Amazon page, "Maurice's" above Bookshelf, BOOKSHELF in every menu. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,9 +24,9 @@ section:has(#ma-shelf) .content-wrapper{padding:0!important;max-width:none!impor
 #ma-shelf .bs-book a:focus-visible{outline:3px solid #fff;outline-offset:6px}
 #ma-shelf .bs-book img{display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;border:5px solid #fff;border-radius:0;box-shadow:clamp(6px,.7vw,12px) clamp(7px,.84vw,14px) 0 #0b170f}
 @media (max-width:600px){
-  #ma-shelf .bs-grid{grid-template-columns:minmax(0,1fr);row-gap:44px}
-  #ma-shelf .bs-num{font-size:52px}
-  #ma-shelf .bs-book img{box-shadow:9px 11px 0 #0b170f}
+  #ma-shelf .bs-grid{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px;row-gap:32px}
+  #ma-shelf .bs-num{font-size:30px}
+  #ma-shelf .bs-book img{border-width:4px;box-shadow:6px 7px 0 #0b170f}
 }
 </style>
 <div id="ma-shelf">
@@ -40,7 +40,7 @@ section:has(#ma-shelf) .content-wrapper{padding:0!important;max-width:none!impor
       <li class="bs-book"><div class="bs-num">3</div><a href="https://www.amazon.com/dp/0765348802" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/memories-of-ice.jpg" width="900" height="1358" alt="Memories of Ice by Steven Erikson, cover, on Amazon"></a></li>
       <li class="bs-book"><div class="bs-num">4</div><a href="https://www.amazon.com/dp/0316229296" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/the-fifth-season.jpg" width="364" height="549" alt="The Fifth Season by N.K. Jemisin, cover, on Amazon"></a></li>
       <li class="bs-book"><div class="bs-num">5</div><a href="https://www.amazon.com/dp/0316044989" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/the-heroes.jpg" width="900" height="1408" alt="The Heroes by Joe Abercrombie, cover, on Amazon"></a></li>
-      <li class="bs-book"><div class="bs-num">6</div><a href="https://www.amazon.com/dp/0425285944" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/dark-age.jpg" width="900" height="1325" alt="Dark Age by Pierce Brown, cover, on Amazon" loading="lazy"></a></li>
+      <li class="bs-book"><div class="bs-num">6</div><a href="https://www.amazon.com/dp/0425285944" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/dark-age.jpg" width="900" height="1364" alt="Dark Age by Pierce Brown, cover, on Amazon" loading="lazy"></a></li>
       <li class="bs-book"><div class="bs-num">7</div><a href="https://www.amazon.com/dp/153431346X" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/saga-compendium-one.jpg" width="700" height="1076" alt="Saga: Compendium One by Brian K. Vaughan and Fiona Staples, cover, on Amazon" loading="lazy"></a></li>
       <li class="bs-book"><div class="bs-num">8</div><a href="https://www.amazon.com/dp/0765385309" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/the-builders.jpg" width="740" height="1184" alt="The Builders by Daniel Polansky, cover, on Amazon" loading="lazy"></a></li>
       <li class="bs-book"><div class="bs-num">9</div><a href="https://www.amazon.com/dp/0593156617" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/spear-cuts-through-water.jpg" width="900" height="1350" alt="The Spear Cuts Through Water by Simon Jimenez, cover, on Amazon" loading="lazy"></a></li>
