@@ -119,7 +119,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   // 4. Images come from a copy of this site pinned to one publish, cached for a year (GitHub Pages only allows
   // 10 minutes, and every publish makes visitors download everything again). Anything newer than the pin
   // falls back to GitHub Pages by itself. tools/pin-assets.mjs moves the pin after a publish.
-  var PIN = '4c02d9a43e997fddaf2aff8a41f34ab1ced25fcb';
+  var PIN = '51d6db776ec1f6d85660eb962fa744ce92257928';
   var GH = 'https://africhmaurice.github.io/site/', CDN = PIN ? 'https://cdn.jsdelivr.net/gh/africhmaurice/site@' + PIN + '/' : '';
   function cdn(u) { return CDN && u.indexOf(GH + 'assets/') === 0 ? CDN + u.slice(GH.length) : u; }
   function prep(html) {
