@@ -1,0 +1,60 @@
+<!-- THE BOOKSHELF (mauriceafrich.com/bookshelf). Maurice 11/6: top 10 of all time, then the five books most recently rated 5 stars,
+     newest first. Five per row, full page, one per row on phones: number, cover, white outline, hard drop shadow, nothing else.
+     Maurice 11/7: red overlay, every cover links to its Amazon page, "Maurice's" above Bookshelf, BOOKSHELF in every menu. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
+#ma-shelf{font-family:'Almarai',sans-serif;letter-spacing:0;color:#fffffe;position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow-x:hidden;
+  background:linear-gradient(178deg,rgba(145,37,1,.95) 0%,rgba(197,50,0,.94) 50%,rgba(145,37,1,.96) 100%),url(https://africhmaurice.github.io/site/assets/bg/neon-street-as1928158052.webp) center/cover;background-color:#912501;background-attachment:fixed}
+#ma-shelf *{box-sizing:border-box}
+#ma-shelf .bs-wrap{padding:clamp(130px,14vw,170px) clamp(20px,3.4vw,64px) clamp(64px,7vw,110px);display:flex;flex-direction:column;gap:clamp(56px,6vw,96px)}
+#ma-shelf h1,#ma-shelf h2,#ma-shelf .bs-num,#ma-shelf .bs-owner{font-family:'Cracked Imperia',Impact,sans-serif;font-weight:700;text-transform:uppercase;line-height:1.05;letter-spacing:.03em;color:#fffffe;text-align:center;margin:0}
+#ma-shelf .bs-title{display:flex;flex-direction:column;gap:clamp(12px,1.4vw,22px)}
+#ma-shelf .bs-owner{font-size:clamp(34px,4.6vw,72px)}
+#ma-shelf h1{font-size:clamp(60px,10vw,150px)}
+#ma-shelf h2{font-size:clamp(34px,4.6vw,72px);text-wrap:balance}
+#ma-shelf .bs-sec{display:flex;flex-direction:column;gap:clamp(28px,3.2vw,48px)}
+#ma-shelf .bs-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));column-gap:clamp(22px,2.8vw,52px);row-gap:clamp(36px,3.8vw,64px)}
+#ma-shelf .bs-book{display:flex;flex-direction:column;gap:clamp(12px,1.2vw,18px);margin:0;padding:0}
+#ma-shelf .bs-num{font-size:clamp(30px,3.6vw,60px)}
+#ma-shelf .bs-book a{display:block}
+#ma-shelf .bs-book a:focus-visible{outline:3px solid #fff;outline-offset:6px}
+#ma-shelf .bs-book img{display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;border:5px solid #fff;border-radius:0;box-shadow:clamp(6px,.7vw,12px) clamp(7px,.84vw,14px) 0 #0b170f}
+@media (max-width:600px){
+  #ma-shelf .bs-grid{grid-template-columns:minmax(0,1fr);row-gap:44px}
+  #ma-shelf .bs-num{font-size:52px}
+  #ma-shelf .bs-book img{box-shadow:9px 11px 0 #0b170f}
+}
+</style>
+<div id="ma-shelf">
+  <div class="bs-wrap">
+    <div class="bs-title"><div class="bs-owner">Maurice's</div><h1>Bookshelf</h1></div>
+    <section class="bs-sec">
+      <h2>My Top 10 Books of All Time</h2>
+      <ol class="bs-grid">
+      <li class="bs-book"><div class="bs-num">1</div><a href="https://www.amazon.com/dp/0316362476" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/kings-of-the-wyld.jpg" width="900" height="1351" alt="Kings of the Wyld by Nicholas Eames, cover, on Amazon"></a></li>
+      <li class="bs-book"><div class="bs-num">2</div><a href="https://www.amazon.com/dp/0765348780" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/gardens-of-the-moon.jpg" width="900" height="1359" alt="Gardens of the Moon by Steven Erikson, cover, on Amazon"></a></li>
+      <li class="bs-book"><div class="bs-num">3</div><a href="https://www.amazon.com/dp/0765348802" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/memories-of-ice.jpg" width="900" height="1358" alt="Memories of Ice by Steven Erikson, cover, on Amazon"></a></li>
+      <li class="bs-book"><div class="bs-num">4</div><a href="https://www.amazon.com/dp/0316229296" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/the-fifth-season.jpg" width="364" height="549" alt="The Fifth Season by N.K. Jemisin, cover, on Amazon"></a></li>
+      <li class="bs-book"><div class="bs-num">5</div><a href="https://www.amazon.com/dp/0316044989" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/the-heroes.jpg" width="900" height="1408" alt="The Heroes by Joe Abercrombie, cover, on Amazon"></a></li>
+      <li class="bs-book"><div class="bs-num">6</div><a href="https://www.amazon.com/dp/0425285944" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/dark-age.jpg" width="900" height="1325" alt="Dark Age by Pierce Brown, cover, on Amazon" loading="lazy"></a></li>
+      <li class="bs-book"><div class="bs-num">7</div><a href="https://www.amazon.com/dp/153431346X" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/saga-compendium-one.jpg" width="700" height="1076" alt="Saga: Compendium One by Brian K. Vaughan and Fiona Staples, cover, on Amazon" loading="lazy"></a></li>
+      <li class="bs-book"><div class="bs-num">8</div><a href="https://www.amazon.com/dp/0765385309" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/the-builders.jpg" width="740" height="1184" alt="The Builders by Daniel Polansky, cover, on Amazon" loading="lazy"></a></li>
+      <li class="bs-book"><div class="bs-num">9</div><a href="https://www.amazon.com/dp/0593156617" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/spear-cuts-through-water.jpg" width="900" height="1350" alt="The Spear Cuts Through Water by Simon Jimenez, cover, on Amazon" loading="lazy"></a></li>
+      <li class="bs-book"><div class="bs-num">10</div><a href="https://www.amazon.com/dp/0345806875" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/dept-of-speculation.jpg" width="900" height="1388" alt="Dept. of Speculation by Jenny Offill, cover, on Amazon" loading="lazy"></a></li>
+      </ol>
+    </section>
+    <section class="bs-sec">
+      <h2>My Most Recent Five Star Reads</h2>
+      <ol class="bs-grid">
+      <li class="bs-book"><div class="bs-num">1</div><a href="https://www.amazon.com/dp/0765348845" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/reapers-gale.jpg" width="536" height="810" alt="Reaper's Gale by Steven Erikson, cover, on Amazon" loading="lazy"></a></li>
+      <li class="bs-book"><div class="bs-num">2</div><a href="https://www.amazon.com/dp/0345457692" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/altered-carbon.jpg" width="900" height="1359" alt="Altered Carbon by Richard K. Morgan, cover, on Amazon" loading="lazy"></a></li>
+      <li class="bs-book"><div class="bs-num">3</div><a href="https://www.amazon.com/dp/B0GHZN2GXX" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/the-ash-remains.jpg" width="900" height="1400" alt="The Ash Remains by C. William Phillips, cover, on Amazon" loading="lazy"></a></li>
+      <li class="bs-book"><div class="bs-num">4</div><a href="https://www.amazon.com/dp/1401262791" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/injustice-year-one.jpg" width="900" height="1383" alt="Injustice: Gods Among Us: Year One, cover, on Amazon" loading="lazy"></a></li>
+      <li class="bs-book"><div class="bs-num">5</div><a href="https://www.amazon.com/dp/076532363X" target="_blank" rel="noopener"><img src="https://africhmaurice.github.io/site/assets/bookshelf/forge-of-darkness.jpg" width="250" height="329" alt="Forge of Darkness by Steven Erikson, cover, on Amazon" loading="lazy"></a></li>
+      </ol>
+    </section>
+  </div>
+</div>
