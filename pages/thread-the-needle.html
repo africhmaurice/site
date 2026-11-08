@@ -22,8 +22,8 @@
      wider). Flying into it pauses the run and shows loot box 76 as a button that opens the claim link
      (scrambled in K); "Keep flying" picks the run back up (Maurice, 10/12). The crash panel shows the box
      again if it was caught that run. Hitting a tower or the bottom of the sky ends the run.
-     The sky is plain pale blue. Now and then one of his mist clouds (76-mist-1..3.webp) drifts past behind the
-     towers to show motion. A crash blows the airship up with the Airship Runner explosion frames (74-boom-1..4).
+     The sky is one still dusk blue (#4f7fa3) with nothing behind the towers: no far city and no mist clouds (Maurice 11/8,
+     after frens said the scrolling city lines made them dizzy at speed). A crash blows the airship up with the Airship Runner explosion frames (74-boom-1..4).
      Both Maurice, 10/12.
      The game pauses itself when the tab is hidden or the stage scrolls out of view; a tap resumes.
      Reduced motion: "calm skies" (slower, gentler lift, wider gaps, half the speed-up, no shake, no sparks, still sky).
@@ -324,7 +324,7 @@ var ArcadeCard = (function () {
   var ART='https://africhmaurice.github.io/site/assets/games/';
   function pic(f){var i=new Image();i.src=ART+f;return i;}
   function ok(i){return i.complete&&i.naturalWidth>0;}
-  var chestImg=pic('golden-chest.png'),shipImg=pic('76-ship.png'),rockImg=pic('76-rock-tower.png'),giantImg=pic('76-rock-giant.png'),fireImg=pic('76-fire-tower.png'),mistImg=[pic('76-mist-1.webp'),pic('76-mist-2.webp'),pic('76-mist-3.webp')],boomImg=[pic('74-boom-1.png'),pic('74-boom-2.png'),pic('74-boom-3.png'),pic('74-boom-4.png')];
+  var chestImg=pic('golden-chest.png'),shipImg=pic('76-ship.png'),rockImg=pic('76-rock-tower.png'),giantImg=pic('76-rock-giant.png'),fireImg=pic('76-fire-tower.png'),boomImg=[pic('74-boom-1.png'),pic('74-boom-2.png'),pic('74-boom-3.png'),pic('74-boom-4.png')];
   // Tower sizes in world units. The rock art (his taller tower, 10/12) is about 1:2.27, the fire art about 1:3.8. GROUND is the bottom of the sky.
   var RW=116,RH=263,FW=92,FH=351,GROUND=H-6;
   // It gets harder as you go: faster, and tighter gaps.
@@ -456,22 +456,8 @@ var ArcadeCard = (function () {
   // ---- drawing ----
   function moved(){return S.state==='paused'?0:S.state==='play'||S.state==='dead'?1:.35;}
   var scroll=0;
-  // one mist cloud at a time drifts past behind the towers, every few seconds, a little slower than the towers
-  var MIST=[],mistT=1.5;
-  /* PARALLAX (Maurice, 2026-10-16): a far city from the background library, scrolling at a tenth of the sky's speed */
-  var farImg=new Image();farImg.src='https://africhmaurice.github.io/site/assets/bg/'+((window.innerWidth||1400)<=900?'m/':'d/')+'floating-blocks-city-as311317794.webp';var farX=0;
-  function sky(dt){
-    ctx.fillStyle='#d6eef8';ctx.fillRect(0,0,W,H);
-    var mv=calm&&S.state!=='play'?0:moved();
-    if(ok(farImg)){var fh=H,fw=fh*farImg.naturalWidth/farImg.naturalHeight;farX=(farX+dt*speed()*.1*mv)%fw;
-      ctx.globalAlpha=.3;for(var fx=-farX;fx<W;fx+=fw)ctx.drawImage(farImg,fx,0,fw,fh);ctx.globalAlpha=1;
-      ctx.fillStyle='rgba(214,238,248,.45)';ctx.fillRect(0,0,W,H);}
-    mistT-=dt*mv;
-    if(mistT<=0){mistT=rnd(4,8);var im=mistImg[Math.floor(Math.random()*3)];MIST.push({im:im,x:W+20,y:rnd(-60,H-280),w:rnd(380,620),p:rnd(.5,.75),a:rnd(.5,.75)});}
-    for(var i=MIST.length-1;i>=0;i--){var m=MIST[i];m.x-=dt*speed()*m.p*mv*(calm?.5:1);if(m.x+m.w<-20){MIST.splice(i,1);continue;}
-      if(!ok(m.im))continue;ctx.globalAlpha=m.a;ctx.drawImage(m.im,m.x,m.y,m.w,m.w*m.im.naturalHeight/m.im.naturalWidth);}
-    ctx.globalAlpha=1;
-  }
+  /* the sky: one still dusk blue (Maurice 11/8: no far city, no clouds) */
+  function sky(dt){ctx.fillStyle='#4f7fa3';ctx.fillRect(0,0,W,H);}
   function tower(c){
     var mid=c.x+COLW/2,top=c.gy+c.gap/2;
     if(!ok(rockImg)){ctx.fillStyle='#4a4440';ctx.fillRect(mid-RW*.34,top,RW*.68,H-top);return;}
