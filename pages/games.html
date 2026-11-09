@@ -314,7 +314,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     <div class="thw-wrap">
       <div class="thw-legend" id="thw-legend" aria-label="Color key">
         <span><i class="correct"></i>Right letter, right spot</span>
-        <span><i class="present" data-box="68" data-k="U1lZRk1RODI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo" onclick="location.href=atob(this.dataset.k).split('').reverse().join('')" style="cursor:default"></i>Right letter, wrong spot</span><!-- Box 68 (Maurice, 2026-10-16): the red square in the key is the loot box. -->
+        <span><i class="present" data-box="68" data-k="U1lZRk1RODI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo" onclick="if(new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10')return;location.href=atob(this.dataset.k).split('').reverse().join('')" style="cursor:default"></i>Right letter, wrong spot</span><!-- Box 68 (Maurice, 2026-10-16): the red square in the key is the loot box. After the hunt (Maurice, 2026-11-09) it does nothing. -->
         <span><i class="absent"></i>Not in the word</span>
       </div>
       <div id="thw-play">
@@ -336,10 +336,12 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 // HGShare.show(o) adds a panel under the win box: a 1200x600 PNG card, Save and Copy buttons, and where to post it.
 //   o.game 'Blades & Brass'   o.board 'Board #1'   o.day '2026-10-02'   o.theme violet, scarlet, green, teal, ink or parchment
 //   o.label 'SOLVED IN'       o.stat '1:25'        o.site 'mauriceafrich.com/blades-and-brass'
-//   o.icons [image urls]      o.grid [['#3adb97', ...], ...] rows of colored squares (Skyword)
+//   o.icons [image urls] (o.tint: one-color icons in the text color; o.outline false: no outline)      o.grid [['#3adb97', ...], ...] rows of colored squares (Skyword)
 //   o.timed true: the panel says "time" instead of "result"     o.after the element the panel goes under
+// HGShare.streak(game, email) asks the web app for this player's streak on the game, then adds it to the panel and the card.
 var HGShare = (function () {
   var DISCORD = 'https://discord.gg/TV8SNnSGdb', url = null, opts = null;
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   // the six brand colors, each a whole card: ground, top and bottom bands, text, the big result, the frame
   var THEMES = {
     violet: { bg: '#482d85', band: '#2d1c53', text: '#fffffe', soft: 'rgba(255,255,254,.72)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
@@ -360,19 +362,22 @@ var HGShare = (function () {
     '.hg-swatches legend{width:100%;padding:0;margin:0 0 10px;font-family:"Almarai",sans-serif;font-weight:700;font-size:14px;letter-spacing:.08em;color:#fffffe;text-align:center}' +
     '.hg-swatch{width:34px;height:34px;border:2px solid rgba(255,255,254,.55);border-radius:0;padding:0;cursor:pointer;transition:transform .12s ease}' +
     '.hg-swatch:hover{transform:scale(1.1)}.hg-swatch[aria-pressed="true"]{outline:3px solid #a2f590;outline-offset:3px}' +
-    '.hg-share-how{font-family:"Almarai",sans-serif;font-size:clamp(15px,1.9vw,17px);line-height:1.6;margin:0;max-width:500px;color:#fffffe}.hg-share-how a{color:#a2f590}';
+    '.hg-share-how{font-family:"Almarai",sans-serif;font-size:clamp(15px,1.9vw,17px);line-height:1.6;margin:0;max-width:500px;color:#fffffe}.hg-share-how a{color:#a2f590}' +
+    '.hg-streak{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:8px 16px;margin:0;font-family:"Almarai",sans-serif;font-weight:800;letter-spacing:.08em;color:#fffffe}' +
+    '.hg-streak[hidden]{display:none}.hg-streak b{font-size:clamp(20px,3vw,26px);color:#a2f590}.hg-streak span{font-size:14px;color:rgba(255,255,254,.72)}';
   document.head.appendChild(css);
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   var NAMES = { violet: 'Violet', scarlet: 'Scarlet', green: 'Green', teal: 'Teal', ink: 'Ink', parchment: 'Parchment' };
   function pickKey() { return 'thShareColor:' + opts.game; }
   function word() { return opts.timed ? 'TIME' : 'RESULT'; }
   function show(o) {
+    if (opts && opts.streak && opts.game === o.game && !o.streak) { o.streak = opts.streak; o.best = opts.best; }   // a redrawn panel keeps its streak
     opts = o;
     if (!o.date) o.date = new Date(o.day + 'T12:00:00Z').toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' });
     try { var saved = localStorage.getItem(pickKey()); if (saved && THEMES[saved]) o.theme = saved; } catch (e) {}
     var old = document.querySelector('.hg-share'); if (old) old.remove();
     var after = o.after || document.getElementById('hg-result'), d = document.createElement('div');
-    d.innerHTML = '<div class="hg-share"><div class="hg-share-h">SHARE YOUR ' + word() + '!</div>' +
+    d.innerHTML = '<div class="hg-share"><div class="hg-share-h">SHARE YOUR ' + word() + '!</div>' + streakLine(o) +
       '<img loading="lazy" decoding="async" class="hg-badge" alt="My ' + esc(o.game) + ' card: ' + esc(o.label.toLowerCase()) + ' ' + esc(o.stat) + '">' +
       '<fieldset class="hg-swatches"><legend>PICK YOUR COLOR</legend>' + Object.keys(THEMES).map(function (k) {
         return '<button type="button" class="hg-swatch" data-theme="' + k + '" aria-pressed="' + (k === o.theme) + '" aria-label="' + NAMES[k] + '" title="' + NAMES[k] + '" style="background:' + THEMES[k].bg + '"></button>';
@@ -382,6 +387,29 @@ var HGShare = (function () {
       '<p class="hg-share-how">Post your card in <b>#🎯DAILY_GAMES</b> in the <a href="' + DISCORD + '" target="_blank" rel="noopener">Trench Community Discord</a> and see how the rest of the crew did.</p></div>';
     after.parentNode.insertBefore(d.firstChild, after.nextSibling);
     draw(o);
+  }
+  // Streaks (Maurice, 2026-11-09): days in a row this player has played the game, counted back through every day they've
+  // played; a missed day starts it over. Shown on the panel and in the card's top right corner.
+  function days(n) { return n + (n === 1 ? ' DAY' : ' DAYS'); }
+  function streakLine(o) {
+    return '<p class="hg-streak"' + (o.streak ? '' : ' hidden') + '>' + (o.streak ? '<b>' + o.streak + '-DAY STREAK</b>' + (o.best > o.streak ? '<span>BEST ' + days(o.best) + '</span>' : '<span>YOUR BEST YET</span>') : '') + '</p>';
+  }
+  function setStreak(n, best) {
+    if (!opts || !(n > 0)) return;
+    opts.streak = n; opts.best = best || n;
+    var el = document.querySelector('.hg-streak'); if (el) el.outerHTML = streakLine(opts);
+    draw(opts);
+  }
+  function streak(game, email) {
+    if (!game || !email) return;
+    var q = 'action=streak&game=' + encodeURIComponent(game) + '&email=' + encodeURIComponent(email), done = false;
+    var take = function (r) { if (done || !r || !r.ok) return; done = true; setStreak(r.streak, r.best); };
+    fetch(ENDPOINT + '?' + q).then(function (r) { return r.json(); }).then(take).catch(function () {
+      var name = 'hgst' + Math.random().toString(36).slice(2), s = document.createElement('script');
+      window[name] = function (r) { delete window[name]; s.remove(); take(r); };
+      s.onerror = function () { delete window[name]; s.remove(); };
+      s.src = ENDPOINT + '?' + q + '&callback=' + name; document.body.appendChild(s);
+    });
   }
   function load(src) {
     return new Promise(function (ok) { var i = new Image(); i.crossOrigin = 'anonymous'; i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; });
@@ -398,10 +426,16 @@ var HGShare = (function () {
       x.textBaseline = 'alphabetic';
       // left: the game, the puzzle, the day, then its icons or its guess grid
       x.fillStyle = T.soft; x.font = '800 22px Almarai, sans-serif'; spaced(x, "CELLO'S GATE TREASURE HUNT", 80, 122, 3);
+      if (o.streak) { x.textAlign = 'right'; x.fillStyle = T.stat; x.font = '800 30px Almarai, sans-serif'; spaced(x, o.streak + '-DAY STREAK', 1120, 124, 3); x.textAlign = 'left'; }
       x.fillStyle = T.text; x.font = '84px "Atomic Marker", cursive'; fit(x, o.game.toUpperCase(), 80, 236, 600);
       x.fillStyle = T.text; x.font = '700 26px Almarai, sans-serif'; spaced(x, o.board.toUpperCase(), 80, 300, 2);
       x.fillStyle = T.soft; spaced(x, o.date.toUpperCase(), 80, 342, 2);
-      icons.forEach(function (im, k) { x.fillStyle = o.theme === 'teal' || o.theme === 'green' ? '#0b170f' : '#607667'; x.fillRect(80 + k * 124, 380, 108, 108); if (im) x.drawImage(im, 86 + k * 124, 386, 96, 96); });
+      // No square behind the icons (Maurice, 2026-10-11): a one-color icon (o.tint) takes the card's text color; an icon with
+      // its own colors gets a thin die-cut outline in that color so it reads on every card (o.outline false skips it).
+      icons.forEach(function (im, k) { if (!im) return; var px = 86 + k * 124, py = 386, sz = 96, m = document.createElement('canvas'); m.width = m.height = sz; var mx = m.getContext('2d'); mx.drawImage(im, 0, 0, sz, sz); mx.globalCompositeOperation = 'source-in'; mx.fillStyle = T.text; mx.fillRect(0, 0, sz, sz);
+        if (o.tint) { x.drawImage(m, px, py); return; }
+        if (o.outline !== false) for (var a = 0; a < 16; a++) x.drawImage(m, px + Math.cos(a / 8 * Math.PI) * 3, py + Math.sin(a / 8 * Math.PI) * 3);
+        x.drawImage(im, px, py, sz, sz); });
       if (o.grid) {
         var sq = Math.min(22, Math.floor(130 / o.grid.length) - 4);
         o.grid.forEach(function (row, r) { row.forEach(function (col, k) { x.fillStyle = T.band; x.fillRect(78 + k * (sq + 5), 370 + r * (sq + 5), sq + 4, sq + 4); x.fillStyle = col; x.fillRect(80 + k * (sq + 5), 372 + r * (sq + 5), sq, sq); }); });
@@ -428,7 +462,7 @@ var HGShare = (function () {
     while (x.measureText(s).width > max && size > 12) { size -= 1; x.font = m[1] + size + 'px ' + m[3]; }
     x.fillText(s, px, py);
   }
-  function text() { return opts.game + ' ' + opts.board + ': ' + opts.label.toLowerCase() + ' ' + opts.stat + (opts.time ? ', in ' + opts.time : '') + '. Play at ' + opts.site; }
+  function text() { return opts.game + ' ' + opts.board + ': ' + opts.label.toLowerCase() + ' ' + opts.stat + (opts.time ? ', in ' + opts.time : '') + (opts.streak ? '. ' + opts.streak + '-day streak' : '') + '. Play at ' + opts.site; }
   function save(btn) {
     if (!url) return;
     fetch(url).then(function (r) { return r.blob(); }).then(function (b) {
@@ -459,7 +493,7 @@ var HGShare = (function () {
     var t = e.target.closest && e.target.closest('.hg-share-save, .hg-share-copy'); if (!t) return;
     if (t.classList.contains('hg-share-save')) save(t); else copy(t);
   });
-  return { show: show };
+  return { show: show, streak: streak, setStreak: setStreak };
 })();
 </script>
 <!-- SHARE:END -->
@@ -585,7 +619,8 @@ var HGBoard = (function () {
     var panel = null, boardEl = null, leftEl = null, startedEl = null, week = friday(o.day), note = '';
     if (o.lineAfter && o.lineAfter.parentNode) {
       var line = document.createElement('p'); line.className = 'dbd-line';
-      line.textContent = 'Weekly leaderboard: the fastest single solve of the week wins 500 points every Friday at 11:59 PM ET.';
+      // after the hunt (Maurice, 2026-11-09): no hunt points; the weekly champion earns Discord XP
+      line.textContent = 'Weekly leaderboard: the fastest single solve of the week wins ' + (o.day > '2026-11-10' ? '5,000 Discord XP' : '500 points') + ' every Friday at 11:59 PM ET.';
       o.lineAfter.parentNode.insertBefore(line, o.lineAfter.nextSibling);
     }
     if (o.card && o.card.parentNode) {
@@ -688,7 +723,7 @@ var HGBoard = (function () {
         var cover = document.createElement('div'); cover.className = 'dbd-cover';
         // the board needs to know who is playing before the clock starts (Maurice 10/23: first START counts, on any device)
         var who0 = (o.me && o.me()) || {}, ask = !rec && (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(myEmail()) || !String(who0.first_name || '').trim());
-        cover.innerHTML = '<h2>' + esc(o.label) + '</h2>' + (ask ? '<div class="dbd-who"><p>Who\u2019s playing? Pressing START puts you on this week\u2019s board, and solving claims your points.</p>' +
+        cover.innerHTML = '<h2>' + esc(o.label) + '</h2>' + (ask ? '<div class="dbd-who"><p>Who\u2019s playing? Pressing START puts you on this week\u2019s board, and solving ' + (o.day > '2026-11-10' ? 'saves your streak' : 'claims your points') + '.</p>' +
           '<label>First name<input class="dbd-first" autocomplete="given-name" value="' + esc(who0.first_name || '') + '"></label>' +
           '<label>Email you use for the hunt<input class="dbd-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" value="' + esc(myEmail()) + '"></label></div><p class="dbd-whoerr" aria-live="polite"></p>' : '') +
           '<button type="button">START</button><p>The clock starts the moment you press START and keeps running until you solve it.</p>';
@@ -1114,11 +1149,14 @@ var HGBoard = (function () {
 
   // ---- claiming the points --------------------------------------------
   var WIN = '<div class="thw-bang">CONGRATS!</div>';
+  // after the hunt (Maurice, 2026-11-09): no hunt points, so a solve saves the day to the player's streak instead
+  function over() { return dateStr > '2026-11-10'; }
+  function btnLabel() { return over() ? 'SAVE MY STREAK' : 'CLAIM ' + POINTS + ' POINTS'; }
 
   function showClaimButton() {
     resultEl.innerHTML = WIN +
-      '<p>You cracked it. Claim your ' + POINTS + ' points for today.</p>' +
-      '<button type="button" class="thw-submit wv2" id="thw-claim">CLAIM ' + POINTS + ' POINTS</button>' +
+      '<p>' + (over() ? 'You cracked it. Save today to your streak.' : 'You cracked it. Claim your ' + POINTS + ' points for today.') + '</p>' +
+      '<button type="button" class="thw-submit wv2" id="thw-claim">' + btnLabel() + '</button>' +
       '<p class="thw-quiet">Claiming as ' + esc(me.first_name || me.email) + '. <a id="thw-notme">Not you?</a></p>' +
       '<p class="thw-err" id="thw-err"></p>';
     document.getElementById('thw-claim').onclick = claim;
@@ -1132,7 +1170,7 @@ var HGBoard = (function () {
   // The same questions the loot box page asks, saved the same way.
   function showClaimForm() {
     resultEl.innerHTML = WIN +
-      '<p>Tell the Captain who you are and your ' + POINTS + ' points go straight to the leaderboard. ' +
+      '<p>' + (over() ? 'Tell the Captain who you are and your streak is saved. ' : 'Tell the Captain who you are and your ' + POINTS + ' points go straight to the leaderboard. ') +
       'Only the first time &mdash; after this it is one click.</p>' +
       '<div class="thw-form">' +
       '<label for="thw-first">First name</label><input id="thw-first" autocomplete="given-name">' +
@@ -1146,7 +1184,7 @@ var HGBoard = (function () {
       '<select id="thw-country"><option value="">Pick one</option><option>United States</option>' +
       '<option>United Kingdom</option><option value="__other">Somewhere else</option></select>' +
       '<input id="thw-other" placeholder="Which country?" style="display:none;margin-top:8px">' +
-      '<button type="button" class="thw-submit wv2" id="thw-claim">CLAIM ' + POINTS + ' POINTS</button>' +
+      '<button type="button" class="thw-submit wv2" id="thw-claim">' + btnLabel() + '</button>' +
       '<p class="thw-err" id="thw-err"></p>' +
       '</div>';
     var country = document.getElementById('thw-country'), other = document.getElementById('thw-other');
@@ -1208,12 +1246,14 @@ var HGBoard = (function () {
 
   function showClaimed(status) {
     resultEl.innerHTML = WIN +
-      '<div class="thw-pts">+' + POINTS + ' POINTS</div>' +
-      '<p class="thw-quiet">' + (status === 'already'
+      '<div class="thw-pts">' + (over() ? 'STREAK SAVED' : '+' + POINTS + ' POINTS') + '</div>' +
+      '<p class="thw-quiet">' + (over() ? (status === 'already' ? 'Already saved for today.' : 'Come back tomorrow to keep your streak going.') : status === 'already'
         ? 'Already claimed for today &mdash; no need to submit anything.'
         : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>' +
       (board && board.note() ? '<p class="thw-quiet dbd-note">' + board.note() + '</p>' : '') +
       '<a class="thw-go" href="https://www.mauriceafrich.com/sort-the-shelf">CONGRATS! PLAY SORT THE SHELF</a>';
+    // the streak, counted from this player's claims, goes on the share panel and the card
+    if (window.HGShare && HGShare.streak && me.email) HGShare.streak('skyword', me.email);
   }
 
   // Same round trip as the loot box page: a simple POST, JSONP if that is

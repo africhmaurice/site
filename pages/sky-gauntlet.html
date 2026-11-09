@@ -168,6 +168,7 @@
 #ma-gauntlet .sgb-form input:focus,#ma-gauntlet .sgb-form select:focus{border-color:#7b4ee1}
 #ma-gauntlet .sgb-form .sg-btn{margin-top:10px;width:100%}
 #ma-gauntlet .sgb-dmsg{margin:0;font-weight:700;font-size:15px;line-height:1.5;color:#89fbcb}
+#ma-gauntlet .sg-ov p.sg-streak{font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#89fbcb}#ma-gauntlet .sg-streak[hidden]{display:none}
 #ma-gauntlet .sgb-dmsg:empty{display:none}
 #ma-gauntlet .sgb-dmsg.err{color:#ff8a5c}
 #ma-gauntlet .sgb-panel{width:min(100%,560px);box-sizing:border-box;margin:16px auto 0;background:#132219;border:2px solid rgba(243,234,217,.18);padding:24px;display:flex;flex-direction:column;gap:14px;text-align:left}
@@ -248,6 +249,7 @@
             <div class="sg-ov sg-over">
               <h2>Shot down</h2>
               <p class="sg-final"></p>
+              <p class="sg-streak" hidden></p>
               <p class="sgb-dmsg" role="status"></p>
               <div class="sg-overboxes"><button class="sg-box sg-box-over" type="button" hidden aria-label="Open loot box 78"><img src="https://africhmaurice.github.io/leaderboard/loot/78.png" alt="Loot box 78"></button><button class="sg-skullbox sg-box138-over" type="button" hidden aria-label="Open loot box 138"><img src="https://africhmaurice.github.io/site/assets/loot/138.png" alt="Loot box 138"></button></div>
               <button class="sg-btn sg-again" type="button">Play again</button>
@@ -524,7 +526,7 @@
     S.diveT=2.2;S.shootT=1.6;
     S.banner=n%5===0?'Destroyer!':'Wave '+S.wave;S.bannerT=1.6;hud();say('Wave '+S.wave);
     /* loot box 138: the pirate ship crosses once on wave 13, 4 seconds in */
-    if(S.wave===13)S.skull={t:-4,x:-70,y:300,hp:6,max:6,flash:0};
+    if(S.wave===13&&!HUNT_OVER)S.skull={t:-4,x:-70,y:300,hp:6,max:6,flash:0};
   }
 
   /* ---- the new fleet: sizes, toughness, points ---- */
@@ -620,6 +622,7 @@
     mine:[[19,'torch']],
     freighter:[[1,'ruby','ruby','ruby','ruby'],[3,'life'],[5,'recharge']]
   };
+  var HUNT_OVER=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10';
   var TIMED={ruby:28,crest:60,brass:42,torch:44,bolt:55,crate:60,life:120,shield:66,pierce:67,scythe:83,recharge:86,trench:156,atomic:187};
   var BOSSROW=['life','crest','crate','ruby','bolt','ruby','bolt','shield','crest','torch'];   /* 10/21 tune: 2 crests, 1 life */
   var DROPV=120,EXTRASHIPS=.1,EXTRASHIPS_LATE=.1;   /* extra side ships: 10% of the wave, every wave (10/21 tune) */
@@ -652,6 +655,7 @@
     S.t+=dt;if(S.bannerT>0)S.bannerT-=dt;if(S.inv>0)S.inv-=dt;
     for(var k in S.temp)if(S.temp[k]>0)S.temp[k]=Math.max(0,S.temp[k]-dt);
     /* timed drops: each upgrade falls every TIMED[k] seconds of flying, in its own lane (the loop stops while paused) */
+    if(HUNT_OVER&&S.drops.length)S.drops=S.drops.filter(function(d){return d.kind!=='crate';});   /* after the hunt (Maurice, 2026-11-09): no golden chests */
     if(state==='play'){var f0=S.flyT,TM=easy()?EASY.timed:TIMED;S.flyT+=dt;for(var tk in TM)if(Math.floor(S.flyT/TM[tk])>Math.floor(f0/TM[tk]))S.drops.push({x:lane(tk),y:-20,kind:tk});}
     if(S.rs&&!S.rs.up){S.rs.t-=dt;if(S.rs.t<=0){S.rs.up=true;S.rs.t=0;S.pops.push({x:S.x,y:PY-46,txt:'Shield back',t:.9});}}
     if(!RM())skyY=(skyY+dt*40)%100000;
@@ -772,7 +776,7 @@
     if(state==='dying'){S.dead-=dt;if(S.dead<=0)gameOver();return;}
     /* wave cleared */
     if(state==='play'&&!S.foes.length&&!S.queue.length&&!S.boxOut){
-      if(S.wave>=boxWave()&&!boxTaken&&!S.boxDropped){S.boxDropped=true;S.boxOut={x:W/2,y:-60};S.banner='A loot box!';S.bannerT=2;say('A loot box is falling. Fly into it.');return;}
+      if(!HUNT_OVER&&S.wave>=boxWave()&&!boxTaken&&!S.boxDropped){S.boxDropped=true;S.boxOut={x:W/2,y:-60};S.banner='A loot box!';S.bannerT=2;say('A loot box is falling. Fly into it.');return;}
       S.boxDropped=false;S.score+=S.wave*250;hud();
       if(S.wave%5===0)S.cps.push({cp:S.wave+1,score:S.score,crests:S.crests,lives:S.lives,shields:S.shields});   /* a checkpoint: the Destroyer is down */
       startWave();
@@ -962,10 +966,24 @@
     sgbStart();
     if(window.__siegeHooks&&window.__siegeHooks.start)window.__siegeHooks.start();
   }
+  // Streaks (Maurice, 2026-11-09): days in a row this player has played, counted back through every day they've played;
+  // a missed day starts it over. The run that just ended counts for today even before the web app has logged it.
+  var STREAK=0,streakDay='';
+  function lookStreak(){
+    var me={},p=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date());
+    try{me=JSON.parse(localStorage.getItem('thLoot:me')||'null')||{};}catch(e){}
+    if(!me.email||streakDay===p)return paintStreak();
+    var EP='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+    var q='action=streak&game=sky_gauntlet&email='+encodeURIComponent(me.email),done=false;
+    var take=function(r){if(done||!r||!r.ok)return;done=true;STREAK=r.today?r.streak:r.streak+1;streakDay=p;paintStreak();};
+    fetch(EP+'?'+q).then(function(r){return r.json();}).then(take).catch(function(){var n='sgst'+Math.random().toString(36).slice(2),s=document.createElement('script');
+      window[n]=function(r){delete window[n];s.remove();take(r);};s.onerror=function(){delete window[n];s.remove();};s.src=EP+'?'+q+'&callback='+n;document.body.appendChild(s);});
+  }
+  function paintStreak(){var el=$('.sg-streak');if(!el||!STREAK)return;el.textContent=STREAK+'-day streak';el.hidden=false;}
   function gameOver(){
     state='over';stop();pauseBtn.disabled=true;
     if(S.score>best){best=S.score;lsSet(bestKey(),String(best));}
-    $('.sg-final').textContent='Score '+fmt(S.score)+' on wave '+S.wave+'. Best '+fmt(best)+'.';
+    $('.sg-final').textContent='Score '+fmt(S.score)+' on wave '+S.wave+'. Best '+fmt(best)+'.';lookStreak();
     $('.sg-box-over').hidden=!boxTaken;$('.sg-box138-over').hidden=lsGet('ma-gauntlet-box138')!=='1';
     showOv(ovOver);draw();
     try{$('.sg-again').focus({preventScroll:true});}catch(e){}
@@ -1213,4 +1231,20 @@ function fit(){if(!p||p.hidden)return;p.style.width=hud.offsetWidth+'px';p.style
 [].forEach.call(root.querySelectorAll('.sg-mode'),function(b){b.addEventListener('click',function(){setTimeout(show,0);});});
 fetch('https://africhmaurice.github.io/leaderboard/champions.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.ok?r.json():null;}).then(function(d){data=d;show();}).catch(function(){});})();
 </script>
-
+<script>
+/* After the hunt (Maurice, 2026-11-09): from Nov 11 New York time no hunt points are paid. The weekly champion earns
+   Discord XP, golden chests are gone, and playing every day keeps your streak going. */
+(function(){
+  var r=document.getElementById('ma-gauntlet');if(!r||!(new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10'))return;
+  [].forEach.call(r.querySelectorAll('li'),function(li){if(/hunt points|loot box|loot chest/i.test(li.textContent))li.remove();});
+  [].forEach.call(r.querySelectorAll('.ar-cell'),function(c){if(/PRIZES/.test(c.textContent))c.hidden=true;});
+  var w=document.createTreeWalker(r,NodeFilter.SHOW_TEXT),n,all=[];while((n=w.nextNode()))all.push(n);
+  all.forEach(function(t){var s=t.nodeValue,o=s;
+    s=s.replace(/wins 500 (hunt )?points/g,'wins 5,000 Discord XP').replace(/wins 250 (hunt )?points/g,'wins 2,500 Discord XP').replace(/ golden chests,/g,'')
+      .replace(/ ?Every day you play also earns 50 hunt points \(once a day[^)]*\)(, on top of golden chests)?\./g,' Play every day to keep your streak going.')
+      .replace(/ Golden chests wait in gaps[^.]*\./g,'');
+    if(/loot box|loot chest|chest appears/i.test(s))s=s.split(/(?<=\.)\s+/).filter(function(x){return !/loot box|loot chest|chest appears|claim it|keep swimming/i.test(x);}).join(' ');
+    if(!s.trim()&&o.trim()){if(/ and the loot box/i.test(o))s=o.replace(/ and the loot box/i,'');else{t.parentElement.hidden=true;return;}}
+    if(s!==o)t.nodeValue=s;});
+})();
+</script>

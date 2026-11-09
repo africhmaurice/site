@@ -168,6 +168,7 @@
 #ms-stack .ms-final span{font-weight:800;font-size:13px;letter-spacing:.14em;color:#89fbcb;text-transform:uppercase}
 #ms-stack .ms-final b{font-weight:800;font-size:clamp(44px,9vw,64px);line-height:1.1;color:#fffffe;font-variant-numeric:tabular-nums}
 #ms-stack .ms-nb{margin:0;font-weight:800;font-size:14px;letter-spacing:.12em;color:#a2f590;text-transform:uppercase}
+#ms-stack .ms-streak{margin:0;font-weight:800;font-size:14px;letter-spacing:.12em;color:#c3a6ff;text-transform:uppercase}#ms-stack .ms-streak[hidden]{display:none}
 #ms-stack .ms-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(52vw,220px);animation:msDrop .6s cubic-bezier(.25,1.5,.45,1) both}
 #ms-stack .ms-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 30px rgba(123,78,225,.6))}
 #ms-stack .ms-box:hover img,#ms-stack .ms-box:focus-visible img{filter:drop-shadow(0 0 42px rgba(195,166,255,.8))}
@@ -314,6 +315,7 @@
             <p class="ms-final"><span>Final score</span><b class="ms-fs">0</b></p>
             <p class="ms-stats"></p>
             <p class="ms-nb" hidden>New best!</p>
+            <p class="ms-streak" hidden></p>
             <p class="ms-dmsg" role="status"></p>
             <button type="button" class="ms-btn ms-again">Play again</button>
             <div class="ms-row">
@@ -562,7 +564,8 @@
   var bag=[];
   function draw1(){if(!bag.length){bag=BAG.slice();for(var i=bag.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=bag[i];bag[i]=bag[j];bag[j]=t;}}return bag.pop();}
   function fill(){while(manifest.length<2)manifest.push(draw1());}
-  function queueLoot(){if(!lootQueued&&!lootFound&&level>=LOOT_LEVEL){lootQueued=true;fill();manifest.splice(1,0,'loot');}}
+  function queueLoot(){if(new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10')return;   /* after the hunt (Maurice, 2026-11-09): no loot box */
+    if(!lootQueued&&!lootFound&&level>=LOOT_LEVEL){lootQueued=true;fill();manifest.splice(1,0,'loot');}}
   function spawn(){
     fill();var t=manifest.shift();fill();
     var c=norm(CARGO[t].c.map(function(p){return p.slice();})),dm=dims(c);
@@ -815,7 +818,19 @@
   var CARDART={},cardArtP=null;
   function loadCardArt(){if(!cardArtP)cardArtP=Promise.all(['bigcrate','barrel','cannonball'].map(function(t){return new Promise(function(res){var im=new Image();im.crossOrigin='anonymous';im.onload=im.onerror=res;setTimeout(res,5000);im.src='https://africhmaurice.github.io/site/assets/games/148-'+t+'.webp';CARDART[t]=im;});}));return cardArtP;}
   /* start fetching it as soon as the game-over screen shows, so a phone's share sheet opens straight from the tap */
-  new MutationObserver(function(){if(!overOv.hidden)loadCardArt();}).observe(overOv,{attributes:true,attributeFilter:['hidden']});
+  new MutationObserver(function(){if(!overOv.hidden){loadCardArt();lookStreak();}}).observe(overOv,{attributes:true,attributeFilter:['hidden']});
+  /* Streaks (Maurice, 2026-11-09): days in a row this player has played, counted back through every day they've played; */
+  /* a missed day starts it over. The run that just ended counts for today even before the web app has logged it. */
+  var STREAK=0,streakDay='';
+  function lookStreak(){
+    var me={};try{me=JSON.parse(localStorage.getItem(ME)||'null')||{};}catch(e){}
+    if(!me.email||streakDay===today())return paintStreak();
+    var q='action=streak&game=master_stacker&email='+encodeURIComponent(me.email),done=false;
+    var take=function(r){if(done||!r||!r.ok)return;done=true;STREAK=r.today?r.streak:r.streak+1;streakDay=today();paintStreak();};
+    fetch(ENDPOINT+'?'+q).then(function(r){return r.json();}).then(take).catch(function(){var n='msst'+Math.random().toString(36).slice(2),s=document.createElement('script');
+      window[n]=function(r){delete window[n];s.remove();take(r);};s.onerror=function(){delete window[n];s.remove();};s.src=ENDPOINT+'?'+q+'&callback='+n;document.body.appendChild(s);});
+  }
+  function paintStreak(){var el=$('.ms-streak');if(!STREAK)return;el.textContent=STREAK+'-day streak';el.hidden=false;}
   function rowsShipped(){return Math.floor((shipped||0)/COLS);}
   function today(){var p=nyParts();return p.year+'-'+p.month+'-'+p.day;}
   function fit(x,s,px,py,max){var m=/^(.*?)(\d+)px\s*(.*)$/.exec(x.font),size=+m[2];while(x.measureText(s).width>max&&size>12){size--;x.font=m[1]+size+'px '+m[3];}x.fillText(s,px,py);}
@@ -824,6 +839,7 @@
     x.fillStyle='#0b170f';x.fillRect(0,0,Wc,Hc);x.fillStyle='#2d1c53';x.fillRect(0,0,Wc,14);x.fillRect(0,Hc-14,Wc,14);
     x.strokeStyle='rgba(195,166,255,.35)';x.lineWidth=2;x.strokeRect(40,54,Wc-80,Hc-108);
     x.fillStyle='#607667';x.font='800 22px Almarai, sans-serif';x.fillText("CELLO'S GATE TREASURE HUNT",80,122);
+    if(STREAK){x.textAlign='right';x.fillStyle='#c3a6ff';x.font='800 30px Almarai, sans-serif';fit(x,STREAK+'-DAY STREAK',1120,124,340);x.textAlign='left';}
     x.fillStyle='#fffffe';x.font='84px "Cracked Imperia", cursive';fit(x,'MASTER STACKER',80,236,620);
     x.font='700 26px Almarai, sans-serif';fit(x,'ROWS '+rowsShipped()+'  ·  LEVEL '+(level||1),80,300,620);
     x.fillStyle='#607667';x.fillText('WEEK ENDING '+new Date(weekId()+'T12:00:00Z').toLocaleDateString('en-US',{timeZone:'UTC',month:'long',day:'numeric'}).toUpperCase(),80,342);
@@ -836,7 +852,7 @@
     x.fillStyle='#fffffe';x.font='700 21px Almarai, sans-serif';fit(x,SITE.toUpperCase(),930,470,360);
     try{return c.toDataURL('image/png');}catch(e){return art?card(false):'';}   /* art that could not be read: the card without it */
   }
-  function shareText(){var r=rowsShipped();return 'Master Stacker: '+fmt(score||0)+' points, '+r+(r===1?' row':' rows')+', level '+(level||1)+'. Beat me at '+SITE;}
+  function shareText(){var r=rowsShipped();return 'Master Stacker: '+fmt(score||0)+' points, '+r+(r===1?' row':' rows')+', level '+(level||1)+(STREAK?', '+STREAK+'-day streak':'')+'. Beat me at '+SITE;}
   function fontsReady(){try{return Promise.all([document.fonts.load('84px "Cracked Imperia"'),document.fonts.load('800 26px Almarai')]).catch(function(){});}catch(e){return Promise.resolve();}}
   $('.ms-save').addEventListener('click',function(){
     var btn=this;
@@ -893,4 +909,21 @@ fetch('https://africhmaurice.github.io/leaderboard/champions.json?t='+Math.floor
 if(c&&stage){var p=document.createElement('p');p.className='wk-champ';var t1=document.createElement('span');t1.className='wk-ci';t1.textContent='Current Champion: ';var t2=document.createElement('span');t2.className='wk-ci wk-name';t2.textContent=c.name;p.appendChild(t1);p.appendChild(t2);var n=wins[key(c.key)];if(n)p.appendChild(sup(n));stage.parentNode.insertBefore(p,stage);setTimeout(function(){dispatchEvent(new Event('resize'));},0);
 var fit=function(){var gap=parseFloat(getComputedStyle(stage.parentNode).rowGap)||0;p.style.marginBottom=(-gap)+'px';p.style.width=stage.offsetWidth+'px';p.style.fontSize='';var fs=parseFloat(getComputedStyle(p).fontSize);while(p.scrollWidth>p.clientWidth+1&&fs>12){fs-=1;p.style.fontSize=fs+'px';}};fit();addEventListener('resize',fit);}
 mark();new MutationObserver(mark).observe(board,{childList:true,subtree:true});}).catch(function(){});})();
+</script>
+<script>
+/* After the hunt (Maurice, 2026-11-09): from Nov 11 New York time no hunt points are paid. The weekly champion earns
+   Discord XP, golden chests are gone, and playing every day keeps your streak going. */
+(function(){
+  var r=document.getElementById('ms-stack');if(!r||!(new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10'))return;
+  [].forEach.call(r.querySelectorAll('li'),function(li){if(/hunt points|loot box|loot chest/i.test(li.textContent))li.remove();});
+  [].forEach.call(r.querySelectorAll('.ar-cell'),function(c){if(/PRIZES/.test(c.textContent))c.hidden=true;});
+  var w=document.createTreeWalker(r,NodeFilter.SHOW_TEXT),n,all=[];while((n=w.nextNode()))all.push(n);
+  all.forEach(function(t){var s=t.nodeValue,o=s;
+    s=s.replace(/wins 500 (hunt )?points/g,'wins 5,000 Discord XP').replace(/wins 250 (hunt )?points/g,'wins 2,500 Discord XP').replace(/ golden chests,/g,'')
+      .replace(/ ?Every day you play also earns 50 hunt points \(once a day[^)]*\)(, on top of golden chests)?\./g,' Play every day to keep your streak going.')
+      .replace(/ Golden chests wait in gaps[^.]*\./g,'');
+    if(/loot box|loot chest|chest appears/i.test(s))s=s.split(/(?<=\.)\s+/).filter(function(x){return !/loot box|loot chest|chest appears|claim it|keep swimming/i.test(x);}).join(' ');
+    if(!s.trim()&&o.trim()){if(/ and the loot box/i.test(o))s=o.replace(/ and the loot box/i,'');else{t.parentElement.hidden=true;return;}}
+    if(s!==o)t.nodeValue=s;});
+})();
 </script>

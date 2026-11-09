@@ -131,6 +131,7 @@
 #ma-levian .lv-win{justify-content:safe center;overflow:auto}
 /* the share card buttons on the tangled screen (same as Airship Runner's) */
 #ma-levian .lv-dead{justify-content:safe center;overflow:auto}
+#ma-levian .lv-streak{color:#3adb97;font-weight:800;letter-spacing:.08em;text-transform:uppercase}#ma-levian .lv-streak[hidden]{display:none}
 #ma-levian .lv-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
 @media (max-width:560px){#ma-levian .lv-dead{gap:12px;padding:20px}#ma-levian .lv-dead p.big{font-size:22px}#ma-levian .lv-row .lv-btn{padding:10px 12px;font-size:12px;letter-spacing:.1em}}
 @media (prefers-reduced-motion:reduce){#ma-levian .lv-box{animation:none}}
@@ -170,7 +171,7 @@
       <canvas class="lv-cv" aria-label="The Levian board"></canvas>
       <div class="lv-ov lv-start"><p>Arrow keys, WASD, or swipe to swim.</p><button class="lv-btn go lv-go" type="button">Start</button></div>
       <div class="lv-ov lv-paused" hidden><button class="lv-btn go lv-resume" type="button">Resume</button></div>
-      <div class="lv-ov lv-dead" hidden><p class="big bad">The Levian tangled itself.</p><p class="lv-deadlen"></p><p class="lvb-dmsg" role="status"></p><button class="lv-btn go lv-again" type="button">Play again</button>
+      <div class="lv-ov lv-dead" hidden><p class="big bad">The Levian tangled itself.</p><p class="lv-deadlen"></p><p class="lv-streak" hidden></p><p class="lvb-dmsg" role="status"></p><button class="lv-btn go lv-again" type="button">Play again</button>
         <div class="lv-row"><button class="lv-btn lv-save" type="button">Save my card</button><button class="lv-btn lv-copy" type="button">Copy my score</button></div></div>
       <div class="lv-ov lv-win" role="status" hidden><p class="big">The Levian found the chest. Box 145 is yours.</p>
         <button class="lv-box" type="button" aria-label="Open loot box 145"><img src="https://africhmaurice.github.io/site/assets/loot/145.png" alt="Loot box 145"></button>
@@ -407,7 +408,7 @@
     body.unshift([nx,ny]);
     if(food&&nx===food[0]&&ny===food[1]){grow+=GROW;if(RUN)RUN.rubies++;placeFood();}
     if(grow>0)grow--;else body.pop();
-    if(body.length>=GOAL&&!chest&&!chestTaken)placeChest();
+    if(body.length>=GOAL&&!chest&&!chestTaken&&!(new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10'))placeChest();   // after the hunt (Maurice, 2026-11-09): no loot boxes
     hud();draw();
     later();
   }
@@ -511,7 +512,19 @@
   var CARDART={},cardArtP=null;
   function loadCardArt(){if(!cardArtP)cardArtP=Promise.all(['head','body','tail'].map(function(n){return new Promise(function(res){var i=new Image();i.crossOrigin='anonymous';i.onload=i.onerror=res;setTimeout(res,5000);i.src='https://africhmaurice.github.io/site/assets/games/145-'+n+'.webp';CARDART[n]=i;});}));return cardArtP;}
   // start fetching it as soon as the tangled screen shows, so a phone's share sheet opens straight from the tap
-  new MutationObserver(function(){if(!ov.dead.hidden)loadCardArt();}).observe(ov.dead,{attributes:true,attributeFilter:['hidden']});
+  new MutationObserver(function(){if(!ov.dead.hidden){loadCardArt();lookStreak();}}).observe(ov.dead,{attributes:true,attributeFilter:['hidden']});
+  // Streaks (Maurice, 2026-11-09): days in a row this player has played, counted back through every day they've played;
+  // a missed day starts it over. The run that just ended counts for today even before the web app has logged it.
+  var STREAK=0,streakDay='';
+  function lookStreak(){
+    var me={};try{me=JSON.parse(localStorage.getItem(ME)||'null')||{};}catch(e){}
+    if(!me.email||streakDay===today())return paintStreak();
+    var q='action=streak&game=the_levian&email='+encodeURIComponent(me.email),done=false;
+    var take=function(r){if(done||!r||!r.ok)return;done=true;STREAK=r.today?r.streak:r.streak+1;streakDay=today();paintStreak();};
+    fetch(ENDPOINT+'?'+q).then(function(r){return r.json();}).then(take).catch(function(){var n='lvst'+Math.random().toString(36).slice(2),s=document.createElement('script');
+      window[n]=function(r){delete window[n];s.remove();take(r);};s.onerror=function(){delete window[n];s.remove();};s.src=ENDPOINT+'?'+q+'&callback='+n;document.body.appendChild(s);});
+  }
+  function paintStreak(){var el=d.querySelector('.lv-streak');if(!STREAK)return;el.textContent=STREAK+'-day streak';el.hidden=false;}
   function today(){var p=nyParts();return p.year+'-'+p.month+'-'+p.day;}
   function segs(){return body?body.length:0;}
   function rubies(){return RUN&&RUN.rubies!=null?RUN.rubies:Math.max(0,Math.floor((segs()-START)/GROW));}
@@ -521,6 +534,7 @@
     x.fillStyle='#0b170f';x.fillRect(0,0,Wc,Hc);x.fillStyle='#1a5e41';x.fillRect(0,0,Wc,14);x.fillRect(0,Hc-14,Wc,14);
     x.strokeStyle='rgba(137,251,203,.35)';x.lineWidth=2;x.strokeRect(40,54,Wc-80,Hc-108);
     x.fillStyle='#607667';x.font='800 22px Almarai, sans-serif';x.fillText("CELLO'S GATE TREASURE HUNT",80,122);
+    if(STREAK){x.textAlign='right';x.fillStyle='#3adb97';x.font='800 30px Almarai, sans-serif';fit(x,STREAK+'-DAY STREAK',1120,124,340);x.textAlign='left';}
     x.fillStyle='#fffffe';x.font='84px "Cracked Imperia", cursive';fit(x,'THE LEVIAN',80,236,620);
     x.font='700 26px Almarai, sans-serif';fit(x,'RUBIES '+fmtN(rubies())+'  ·  BEST THIS WEEK '+fmtN(Math.max(weekBest(),segs())),80,300,620);
     x.fillStyle='#607667';x.fillText('WEEK ENDING '+new Date(weekId()+'T12:00:00Z').toLocaleDateString('en-US',{timeZone:'UTC',month:'long',day:'numeric'}).toUpperCase(),80,342);
@@ -537,7 +551,7 @@
     x.fillStyle='#fffffe';x.font='700 21px Almarai, sans-serif';fit(x,SITE.toUpperCase(),930,470,360);
     try{return c.toDataURL('image/png');}catch(e){return art?card(false):'';}   // art that could not be read: the card without it
   }
-  function shareText(){return 'The Levian: '+fmtN(segs())+' segments. Beat me at '+SITE;}
+  function shareText(){return 'The Levian: '+fmtN(segs())+' segments'+(STREAK?', '+STREAK+'-day streak':'')+'. Beat me at '+SITE;}
   function fontsReady(){try{return Promise.all([document.fonts.load('84px "Cracked Imperia"'),document.fonts.load('800 26px Almarai')]).catch(function(){});}catch(e){return Promise.resolve();}}
   d.querySelector('.lv-save').addEventListener('click',function(){
     var btn=this;
@@ -582,3 +596,20 @@ var fit=function(){var gap=parseFloat(getComputedStyle(stage.parentNode).rowGap)
 mark();new MutationObserver(mark).observe(board,{childList:true,subtree:true});}).catch(function(){});})();
 </script>
 <!-- END OF FILE - if you cannot find this comment after pasting, the paste was truncated -->
+<script>
+/* After the hunt (Maurice, 2026-11-09): from Nov 11 New York time no hunt points are paid. The weekly champion earns
+   Discord XP, golden chests are gone, and playing every day keeps your streak going. */
+(function(){
+  var r=document.getElementById('ma-levian');if(!r||!(new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10'))return;
+  [].forEach.call(r.querySelectorAll('li'),function(li){if(/hunt points|loot box|loot chest/i.test(li.textContent))li.remove();});
+  [].forEach.call(r.querySelectorAll('.ar-cell'),function(c){if(/PRIZES/.test(c.textContent))c.hidden=true;});
+  var w=document.createTreeWalker(r,NodeFilter.SHOW_TEXT),n,all=[];while((n=w.nextNode()))all.push(n);
+  all.forEach(function(t){var s=t.nodeValue,o=s;
+    s=s.replace(/wins 500 (hunt )?points/g,'wins 5,000 Discord XP').replace(/wins 250 (hunt )?points/g,'wins 2,500 Discord XP').replace(/ golden chests,/g,'')
+      .replace(/ ?Every day you play also earns 50 hunt points \(once a day[^)]*\)(, on top of golden chests)?\./g,' Play every day to keep your streak going.')
+      .replace(/ Golden chests wait in gaps[^.]*\./g,'');
+    if(/loot box|loot chest|chest appears/i.test(s))s=s.split(/(?<=\.)\s+/).filter(function(x){return !/loot box|loot chest|chest appears|claim it|keep swimming/i.test(x);}).join(' ');
+    if(!s.trim()&&o.trim()){if(/ and the loot box/i.test(o))s=o.replace(/ and the loot box/i,'');else{t.parentElement.hidden=true;return;}}
+    if(s!==o)t.nodeValue=s;});
+})();
+</script>

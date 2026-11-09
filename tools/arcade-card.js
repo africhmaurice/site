@@ -6,8 +6,13 @@
 //                       o.stat '312', o.line 'TIME 4:51' (optional), o.name '@handle', o.site 'mauriceafrich.com/...',
 //                       o.icon (image url of the player's ship)
 //   ArcadeCard.update(o) when the board answers: o.rank (place this week), o.best (best this week)
+//   The streak (days in a row the player has played this game) is looked up on its own when the card opens.
 var ArcadeCard = (function () {
   var DISCORD = 'https://discord.gg/TV8SNnSGdb', url = null, opts = null, panel = null;
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  // each card's game, as the web app knows it
+  var KEYS = { 'Airship Runner': 'airship_runner', 'Thread the Needle': 'thread_needle', 'Hold the Wall!': 'hold_wall', 'Goma Goons': 'goma_goons',
+    'Trench Run': 'trench_run', 'The Sky Gauntlet': 'sky_gauntlet', 'The Levian': 'the_levian', 'Master Stacker': 'master_stacker' };
   var THEMES = {
     violet: { bg: '#482d85', band: '#2d1c53', text: '#fffffe', soft: 'rgba(255,255,254,.72)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
     scarlet: { bg: '#c53200', band: '#912501', text: '#fffffe', soft: 'rgba(255,255,254,.75)', stat: '#fffffe', frame: 'rgba(255,255,254,.3)' },
@@ -30,6 +35,8 @@ var ArcadeCard = (function () {
     '.ac-btns button{margin:0;min-width:200px;font-family:"Almarai",sans-serif;font-weight:800;font-size:15px;letter-spacing:.08em;color:#fffffe;background:#c53200;border:2px solid #fffffe;padding:12px 20px;cursor:pointer;transition:background .15s ease,transform .15s ease}' +
     '.ac-btns button:hover,.ac-btns button:focus-visible{background:#ff4c0f;transform:scale(1.04);outline:none}' +
     '.ac-how{font-family:"Almarai",sans-serif;font-size:clamp(14px,1.8vw,16px);line-height:1.6;margin:0;max-width:480px;color:#f3ead9}.ac-how a{color:#a2f590}' +
+    '.ac-streak{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:8px 16px;margin:0;font-family:"Almarai",sans-serif;font-weight:800;letter-spacing:.08em;color:#fffffe}' +
+    '.ac-streak[hidden]{display:none}.ac-streak b{font-size:clamp(20px,3vw,26px);color:#a2f590}.ac-streak span{font-size:14px;color:rgba(243,234,217,.72)}' +
     '@media (prefers-reduced-motion:reduce){.ac-swatch,.ac-btns button{transition:none}}';
   document.head.appendChild(css);
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -47,7 +54,7 @@ var ArcadeCard = (function () {
     try { var saved = localStorage.getItem(key()); if (saved && THEMES[saved]) o.theme = saved; } catch (e) {}
     if (panel && panel.parentNode) panel.parentNode.removeChild(panel);
     var d = document.createElement('div');
-    d.innerHTML = '<div class="ac-card" id="ac-card"><p class="ac-h">Export your card</p>' +
+    d.innerHTML = '<div class="ac-card" id="ac-card"><p class="ac-h">Export your card</p>' + streakLine() +
       '<img loading="lazy" decoding="async" class="ac-img" alt="My ' + esc(o.game) + ' card: ' + esc(o.label.toLowerCase()) + ' ' + esc(o.stat) + '">' +
       '<fieldset class="ac-sw"><legend>PICK YOUR COLOR</legend>' + Object.keys(THEMES).map(function (k) {
         return '<button type="button" class="ac-swatch" data-theme="' + k + '" aria-pressed="' + (k === o.theme) + '" aria-label="' + NAMES[k] + '" title="' + NAMES[k] + '" style="background:' + THEMES[k].bg + '"></button>';
@@ -66,7 +73,32 @@ var ArcadeCard = (function () {
     panel.querySelector('.ac-save').addEventListener('click', function () { save(this); });
     panel.querySelector('.ac-copy').addEventListener('click', function () { copy(this); });
     draw();
+    lookStreak(o);
     return panel;
+  }
+  // Streaks (Maurice, 2026-11-09): days in a row this player has played the game, counted back through every day they've
+  // played; a missed day starts it over. The run that just ended counts for today even before the web app has logged it.
+  function streakLine() {
+    var n = opts && opts.streak, b = opts && opts.streakBest;
+    return '<p class="ac-streak"' + (n ? '' : ' hidden') + '>' + (n ? '<b>' + n + '-DAY STREAK</b><span>' + (b > n ? 'BEST ' + b + (b === 1 ? ' DAY' : ' DAYS') : 'YOUR BEST YET') + '</span>' : '') + '</p>';
+  }
+  function lookStreak(o) {
+    var game = KEYS[o.game], me = {}; try { me = JSON.parse(localStorage.getItem('thLoot:me') || 'null') || {}; } catch (e) {}
+    if (!game || !me.email) return;
+    var q = 'action=streak&game=' + game + '&email=' + encodeURIComponent(me.email), done = false;
+    var take = function (r) {
+      if (done || !r || !r.ok || opts !== o) return; done = true;
+      var n = r.today ? r.streak : r.streak + 1;
+      o.streak = n; o.streakBest = Math.max(r.best || 0, n);
+      var el = panel && panel.querySelector('.ac-streak'); if (el) el.outerHTML = streakLine();
+      draw();
+    };
+    fetch(ENDPOINT + '?' + q).then(function (r) { return r.json(); }).then(take).catch(function () {
+      var name = 'acst' + Math.random().toString(36).slice(2), s = document.createElement('script');
+      window[name] = function (r) { delete window[name]; s.remove(); take(r); };
+      s.onerror = function () { delete window[name]; s.remove(); };
+      s.src = ENDPOINT + '?' + q + '&callback=' + name; document.body.appendChild(s);
+    });
   }
   function update(o) { if (!opts) return; for (var k in o) if (o[k] != null) opts[k] = o[k]; draw(); }
   function load(src) { return new Promise(function (ok) { if (!src) return ok(null); var i = new Image(); i.crossOrigin = 'anonymous'; i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
@@ -91,7 +123,8 @@ var ArcadeCard = (function () {
       x.strokeStyle = T.frame; x.lineWidth = 2; x.strokeRect(40, 54, W - 80, H - 108);
       x.textBaseline = 'alphabetic'; x.textAlign = 'left';
       // left: whose run, which game, which week, and their ship
-      x.fillStyle = T.soft; x.font = '800 22px Almarai, sans-serif'; spaced(x, "THE ARCADE · CELLO'S GATE TREASURE HUNT", 80, 122, 3, 620);
+      x.fillStyle = T.soft; x.font = '800 22px Almarai, sans-serif'; spaced(x, "THE ARCADE · CELLO'S GATE TREASURE HUNT", 80, 122, 3, o.streak ? 560 : 620);
+      if (o.streak) { x.textAlign = 'right'; x.fillStyle = T.stat; x.font = '800 30px Almarai, sans-serif'; spaced(x, o.streak + '-DAY STREAK', 1120, 124, 3, 340); x.textAlign = 'left'; }
       x.fillStyle = T.text; x.font = '84px "Cracked Imperia", Impact, sans-serif'; spaced(x, o.game.toUpperCase(), 80, 230, 2, 600);
       if (o.name) { x.fillStyle = T.text; x.font = '700 28px Almarai, sans-serif'; spaced(x, String(o.name).toUpperCase(), 80, 292, 2, 600); }
       x.fillStyle = T.soft; x.font = '700 24px Almarai, sans-serif'; spaced(x, weekLine(), 80, o.name ? 336 : 300, 2, 600);
@@ -119,7 +152,7 @@ var ArcadeCard = (function () {
   }
   function text() {
     return opts.game + ': ' + opts.label.toLowerCase() + ' ' + opts.stat + (opts.line ? ' (' + opts.line.toLowerCase() + ')' : '') +
-      (opts.rank ? ', #' + opts.rank + ' on this week’s board' : '') + '. Play at ' + opts.site;
+      (opts.rank ? ', #' + opts.rank + ' on this week’s board' : '') + (opts.streak ? ', ' + opts.streak + '-day streak' : '') + '. Play at ' + opts.site;
   }
   function save(btn) {
     if (!url) return;
