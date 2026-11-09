@@ -13,7 +13,7 @@
 html,body{margin:0;padding:0;background:#0b170f}
 a{color:#fff}
 #ma-slider{position:relative;width:100%;aspect-ratio:1366/576;overflow:hidden;background:#111;font-family:'Almarai',sans-serif;container-type:inline-size}
-#ma-track{display:flex;width:1100%;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+#ma-track{display:flex;width:600%;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1)}
 .ma-arrow{position:absolute;top:50%;transform:translateY(-50%);width:2.7cqw;height:2.7cqw;min-width:28px;min-height:28px;opacity:.9;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6))}
 .ma-arrow:hover{opacity:1;transform:translateY(-50%) scale(1.1)}
 .ma-dots{position:absolute;left:50%;bottom:1.6cqw;transform:translateX(-50%);display:flex;gap:.7cqw;z-index:5}
@@ -30,60 +30,50 @@ a{color:#fff}
 
 @media (max-width:760px){
   #ma-slider{aspect-ratio:2/3}
-  /* Screen Rant slide: the book on top, the words under it */
-  #ma-track>div[data-screen-label="SR"]>div{max-width:100% !important}
-  #ma-track>div[data-screen-label="SR"] img{width:34cqw !important}
-  #ma-track>div[data-screen-label="SR"] [style*="Cracked Imperia"]{font-size:9.4cqw !important}
-  #ma-track>div[data-screen-label="SR"] div[style*="letter-spacing:.12em"]{font-size:2.6cqw !important;margin-top:3cqw !important}
-  #ma-track>div[data-screen-label="SR"] p[style*="italic"]{font-size:3.6cqw !important}
-  /* Sky Pirate Quiz slide: the four crew members in a row on top, the words under them */
+  /* Release slide: five books and the audiobook, three and three, under the heading */
+  #ma-track>div[data-screen-label="ED"]{padding:8cqw 6cqw 11cqw !important;gap:0 !important}
+  #ma-track>div[data-screen-label="ED"] .ed-head{font-size:8cqw !important}
+  #ma-track>div[data-screen-label="ED"] .ed-row{flex-wrap:wrap;gap:4.5cqw 5cqw !important;margin-top:5cqw !important;max-width:88cqw}
+  #ma-track>div[data-screen-label="ED"] .ed-book img{height:29cqw !important}
+  #ma-track>div[data-screen-label="ED"] .ed-label{font-size:2.3cqw !important}
+  #ma-track>div[data-screen-label="ED"] a[style*="display:inline-block"]{margin-top:5cqw !important}
+  /* Collider slide: the three articles stacked, the logo on top */
+  #ma-track>div[data-screen-label="CO"]{flex-direction:column !important;padding:0 !important;gap:0 !important}
+  #ma-track>div[data-screen-label="CO"] .co-col{padding:4cqw 8cqw !important;flex:1 1 0 !important;justify-content:center !important}
+  #ma-track>div[data-screen-label="CO"] .co-col:first-child{padding-top:15cqw !important;flex-grow:1.3 !important}
+  #ma-track>div[data-screen-label="CO"] .co-n{font-size:9cqw !important}
+  #ma-track>div[data-screen-label="CO"] .co-t{font-size:4.4cqw !important;max-width:80cqw !important;margin-top:1.5cqw !important}
+  #ma-track>div[data-screen-label="CO"] .co-q{display:none !important}
+  #ma-track>div[data-screen-label="CO"] a{font-size:3.2cqw !important;padding:2cqw 5cqw !important;margin-top:3cqw !important}
+  #ma-track img[alt="Collider"]{width:24cqw !important;top:2cqw !important}
+  /* Screen Rant slide: like Collider, the two columns stack under the name */
+  #ma-track>div[data-screen-label="SR"]{flex-direction:column !important;padding:0 !important;gap:0 !important}
+  #ma-track>div[data-screen-label="SR"] .sr-col{padding:4cqw 9cqw 6cqw !important;flex:1 1 0 !important;justify-content:center !important}
+  #ma-track>div[data-screen-label="SR"] .sr-col:first-child{padding-top:24cqw !important;flex-grow:1.4 !important}
+  #ma-track>div[data-screen-label="SR"] .sr-logo{top:5cqw !important;padding:3cqw 4.5cqw !important}
+  #ma-track>div[data-screen-label="SR"] .sr-logo img{width:56cqw !important}
+  #ma-track>div[data-screen-label="SR"] .sr-kick{font-size:2.6cqw !important}
+  #ma-track>div[data-screen-label="SR"] .sr-t{font-size:6cqw !important;max-width:80cqw !important;margin-top:2cqw !important}
+  #ma-track>div[data-screen-label="SR"] .sr-q{display:none !important}
+  #ma-track>div[data-screen-label="SR"] a{font-size:3.2cqw !important;padding:2cqw 5cqw !important;margin-top:3cqw !important}
+  /* Sky Pirate Quiz slide: the crew on top, the words under them */
   #ma-track>div[data-screen-label="QZ"]>div{max-width:100% !important}
-  #ma-track>div[data-screen-label="QZ"] .qz-crew{gap:1.5cqw !important}
-  #ma-track>div[data-screen-label="QZ"] .qz-crew img{height:28cqw !important}
-  #ma-track>div[data-screen-label="QZ"] .qz-crew img.qz-izzy{height:16cqw !important}
+  #ma-track>div[data-screen-label="QZ"] .qz-crew{width:86cqw !important}
   #ma-track>div[data-screen-label="QZ"] .qz-head{font-size:8.6cqw !important}
-  /* Special Editions slide: both books side by side on top, the words under them */
-  #ma-track>div[data-screen-label="SE"]{display:grid !important;grid-template-columns:1fr 1fr !important;align-content:center;justify-content:center;align-items:center;justify-items:center;gap:5cqw 4cqw !important;padding:8cqw 8cqw !important}
-  #ma-track>div[data-screen-label="SE"]>img:first-child{grid-column:1;grid-row:1;justify-self:end;height:52cqw !important;width:auto !important}
-  #ma-track>div[data-screen-label="SE"]>img:last-child{grid-column:2;grid-row:1;justify-self:start;height:52cqw !important;width:auto !important}
-  #ma-track>div[data-screen-label="SE"]>div{grid-column:1/-1;grid-row:2;max-width:100% !important}
-  #ma-track>div[data-screen-label="SE"] [style*="Cinzel"]{font-size:7cqw !important}
-  #ma-track>div[data-screen-label="SE"] a[style*="display:inline-block"]{margin-top:0 !important;padding:2.4cqw 4.5cqw !important}
-  #ma-track>div[data-screen-label="SE"] div[style*="gap:1.2cqw"]{gap:3cqw !important;margin-top:5cqw !important}
   #ma-track>div{flex-direction:column !important;justify-content:center !important;gap:4cqw !important;padding:8cqw 12cqw !important}
-  #ma-track>div[data-screen-label="03"]{flex-direction:column-reverse !important;justify-content:center !important;padding:8cqw 12cqw !important}
-  #ma-track>div[data-screen-label="03"]>div{max-width:100% !important}
-  #ma-track>div[data-screen-label="02"]>div{max-width:100% !important}
   #ma-track>div[data-screen-label="06"]>div{max-width:100% !important}
-  #ma-track>div[data-screen-label="07"]>div{max-width:100% !important}
-  #ma-track img[alt^="Morally Grey merch"]{width:62cqw !important}
-  #ma-track img[alt="I Like My Ship Captains Morally Grey"]{width:64cqw !important}
-  #ma-track>div[data-screen-label="07"] div[style*="letter-spacing:.18em"]{font-size:2.6cqw !important;margin-bottom:4cqw !important}
   #ma-track img[alt^="Trench Market merch"]{width:62cqw !important}
-  #ma-track>div[data-screen-label="06"] div[style*="letter-spacing:.18em"]{font-size:2.6cqw !important}
-  #ma-track>div[data-screen-label="02"]{padding:8cqw 12cqw !important}
+  #ma-track>div[data-screen-label="06"] div[style*="letter-spacing:.18em"]{font-size:2.6cqw !important;margin-bottom:4cqw !important}
+  #ma-track>div[data-screen-label="06"] .tm-head{font-size:11cqw !important}
+  #ma-track>div[data-screen-label="04"] .dc-head{font-size:8.5cqw !important;margin-top:4cqw !important}
   #ma-track>div[data-screen-label="04"] p{max-width:100% !important}
-  #ma-track>div[data-screen-label="03"] p{max-width:100% !important}
-  #ma-track>div[data-screen-label="05"]{flex-direction:column !important;padding:0 !important;gap:0 !important}
   #ma-track [style*="Atomic Marker"]{font-size:15cqw !important}
   #ma-track [style*="Cinzel"]{font-size:5.3cqw !important}
-  #ma-track>div[data-screen-label="02"] [style*="Cinzel"],#ma-track>div[data-screen-label="03"] [style*="Cinzel"],#ma-track>div[data-screen-label="04"] [style*="Cinzel"]{font-size:8.5cqw !important}
-  #ma-track>div[data-screen-label="02"] [style*="Cinzel"]{font-size:7.6cqw !important}
-  #ma-track>div[data-screen-label="02"] div[style*="letter-spacing:.18em"]{font-size:2.15cqw !important;letter-spacing:.1em !important;white-space:nowrap}
-  #ma-track>div[data-screen-label="02"] img[alt*="hardcover"]{width:30cqw !important}
   #ma-track div[style*="letter-spacing:.18em"]{font-size:2.4cqw !important}
   #ma-track p{font-size:3.6cqw !important;max-width:100% !important;margin-top:3cqw !important}
   #ma-track p[style*="italic"]{font-size:2.89cqw !important}
   #ma-track a[style*="display:inline-block"]{font-size:3.6cqw !important;padding:2.4cqw 7cqw !important;margin-top:4cqw !important}
-  #ma-track img[alt*="hardcover"]{width:38cqw !important}
-  #ma-track img[alt*="Walmart special"]{width:38cqw !important}
   #ma-track img[alt*="skull"]{width:26cqw !important}
-  #ma-track img[alt="Collider"]{width:34cqw !important}
-  #ma-track>div[data-screen-label="05"]>div{padding:14cqw 8cqw 6cqw !important;flex:1 !important}
-  #ma-track>div[data-screen-label="05"] [style*="Cinzel"]{font-size:7.2cqw !important}
-  #ma-track>div[data-screen-label="05"]>div>div:first-child{font-size:12cqw !important}
-  #ma-track>div[data-screen-label="05"]>div:first-child{padding-top:18cqw !important}
-  #ma-track>div[data-screen-label="05"] a{font-size:3.4cqw !important;padding:2.2cqw 5.5cqw !important}
   #ma-row>div{display:grid !important;grid-template-columns:repeat(20,1fr);gap:6cqw 0 !important;padding:6cqw 8cqw !important}
   #ma-row a{justify-self:center}
   #ma-row a:nth-child(-n+4){grid-row:1;grid-column:span 5}
@@ -100,43 +90,44 @@ a{color:#fff}
   <div id="ma-track">
 
 
-    <!-- SLIDE SR : SCREEN RANT EXCLUSIVE EXCERPT (Maurice, 2026-10-30; copy is DRAFT). The X in EXCLUSIVE is golden spot 15 (span.gd-x; Golden Trail, Maurice 10/31). -->
-    <div data-screen-label="SR" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(11,23,15,.84),rgba(11,23,15,.92)),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:4cqw;padding:2.25cqw 6cqw;box-sizing:border-box">
-      <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/679b434d86628027.webp" alt="Cello's Gate hardcover, featured on Screen Rant" style="width:24cqw;height:auto;flex:none;filter:drop-shadow(0.75cqw 0.9cqw 1.2cqw rgba(0,0,0,.45))">
-      <div style="text-align:center;max-width:46cqw">
-        <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#a2f590;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.4cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">SCREEN RANT E<span class="gd-x">X</span>CLUSIVE</div>
-        <div style="font-family:'Cracked Imperia',sans-serif;font-weight:700;text-transform:uppercase;color:#fffffe;font-size:4.6cqw;line-height:1.05;letter-spacing:.03em">Read a Sneak Peek of Cello&rsquo;s Gate!</div>
-        <p style="color:#fff;font-style:italic;font-size:1.42cqw;line-height:1.55;margin:1.65cqw 0 0;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">&ldquo;Blending witty and poetic prose, Africh&rsquo;s debut is a must-read.&rdquo;</p>
-        <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#fff;font-size:1.1cqw;letter-spacing:.12em;margin-top:1.2cqw">&mdash; SCREEN RANT</div>
-        <a href="https://screenrant.com/exclusive-excerpt-preview-cellos-gate-maruice-africh/" target="_blank" rel="noopener" style="display:inline-block;margin-top:2.1cqw;background:#c1330a;border:1px solid #f3ead9;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none" class="hv0">READ THE EXCERPT!</a>
-      </div>
-    </div>
-
-    <!-- SLIDE SE : SPECIAL EDITIONS (Broken Binding + Waterstones Exclusive, 2026-10-12; copy is DRAFT) -->
-    <div data-screen-label="SE" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(26,94,65,.80),rgba(15,58,39,.86)),url(https://africhmaurice.github.io/site/assets/img/ef80affe30140e01.jpg) center/cover;position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;justify-items:center;column-gap:2.25cqw;padding:2.25cqw 4cqw;box-sizing:border-box;overflow:hidden">
-      <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/ed-broken-binding.webp" alt="The Broken Binding special edition of Cello's Gate, with foil boards and digital edges" style="height:30cqw;width:auto;max-width:100%;flex:none;filter:drop-shadow(0.75cqw 0.9cqw 1.2cqw rgba(0,0,0,.45))">
-      <div style="text-align:center;max-width:40cqw;position:relative">
-        <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#a2f590;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.2cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">NEW SPECIAL EDITIONS</div>
-        <div style="font-family:'Cinzel',serif;font-weight:900;color:#fff;font-size:3.4cqw;line-height:1.35;text-shadow:0 0.19cqw 0.38cqw rgba(0,0,0,.5)">Two New Special Editions of &ldquo;Cello&rsquo;s Gate&rdquo;!</div>
-        <p style="color:#fff;font-size:1.31cqw;line-height:1.55;margin:1.35cqw 0 0;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">The Broken Binding edition is signed, with foil on the boards and digital edges. The Waterstones Exclusive Edition has a sprayed edge and the crew on its endpapers.</p>
-        <div style="display:inline-flex;flex-direction:column;align-items:stretch;gap:1.2cqw;margin-top:1.95cqw">
-          <a href="https://thebrokenbindingsub.com/products/cellos-gate" target="_blank" rel="noopener" style="display:inline-block;background:#132e15;border:1px solid #f3ead9;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 1.8cqw;text-decoration:none;text-align:center" class="hv2">THE BROKEN BINDING</a>
-          <a href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227" target="_blank" rel="noopener" style="display:inline-block;background:#132e15;border:1px solid #f3ead9;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 1.8cqw;text-decoration:none;text-align:center" class="hv2">WATERSTONES EXCLUSIVE</a>
+    <!-- SLIDE ED : CELLO'S GATE RELEASE, FIVE EDITIONS (Maurice, 2026-11-09; copy is DRAFT). Loot box 43 moved here from the
+         Act Four slide; the 101 Airship hot spot still finds the Broken Binding cover. -->
+    <div data-screen-label="ED" style="flex:0 0 16.6667%;height:100%;position:relative;background:linear-gradient(rgba(24,84,56,.84),rgba(13,40,26,.93)),url(https://africhmaurice.github.io/site/assets/img/ef80affe30140e01.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.4cqw 5cqw 3.6cqw;box-sizing:border-box;overflow:hidden">
+      <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#a2f590;font-size:1.15cqw;letter-spacing:.18em;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45);margin-bottom:1.2cqw">OUT NOW &bull; FOUR EDITIONS AND THE AUDIOBOOK</div>
+      <div class="ed-head" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fffffe;font-size:3.8cqw;line-height:1.1;text-shadow:0 0.19cqw 0.38cqw rgba(0,0,0,.5)">Cello&rsquo;s Gate Is Here!</div>
+      <div class="ed-row" style="display:flex;align-items:flex-start;justify-content:center;gap:2.2cqw;margin-top:2.2cqw">
+        <a class="ed-book" href="https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;gap:1cqw;text-decoration:none;color:#fff">
+          <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/ed-deluxe-sm.webp" alt="The Saga Deluxe Edition of Cello's Gate" draggable="false" style="height:15.5cqw;width:auto;display:block;filter:drop-shadow(0.6cqw 0.75cqw 1cqw rgba(0,0,0,.45))">
+          <span class="ed-label" style="display:block;font-weight:800;font-size:.95cqw;letter-spacing:.08em;line-height:1.4;color:#fff;text-decoration:none">SAGA DELUXE<span style="display:block;font-weight:400;color:#e9e4d2">U.S. HARDCOVER</span></span>
+        </a>
+        <a class="ed-book" href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;gap:1cqw;text-decoration:none;color:#fff">
+          <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/ed-walmart-sm.webp" alt="The Walmart Exclusive Special Edition of Cello's Gate" draggable="false" style="height:15.5cqw;width:auto;display:block;filter:drop-shadow(0.6cqw 0.75cqw 1cqw rgba(0,0,0,.45))">
+          <span class="ed-label" style="display:block;font-weight:800;font-size:.95cqw;letter-spacing:.08em;line-height:1.4;color:#fff;text-decoration:none">WALMART<span style="display:block;font-weight:400;color:#e9e4d2">U.S. EXCLUSIVE</span></span>
+        </a>
+        <a class="ed-book" href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;gap:1cqw;text-decoration:none;color:#fff">
+          <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/ed-waterstones-sm.webp" alt="The Waterstones Exclusive Edition of Cello's Gate" draggable="false" style="height:15.5cqw;width:auto;display:block;filter:drop-shadow(0.6cqw 0.75cqw 1cqw rgba(0,0,0,.45))">
+          <span class="ed-label" style="display:block;font-weight:800;font-size:.95cqw;letter-spacing:.08em;line-height:1.4;color:#fff;text-decoration:none">WATERSTONES<span style="display:block;font-weight:400;color:#e9e4d2">UK EXCLUSIVE</span></span>
+        </a>
+        <div class="ed-book" style="display:flex;flex-direction:column;align-items:center;gap:1cqw;text-decoration:none;color:#fff">
+          <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/ed-broken-binding.webp" alt="The signed Broken Binding edition of Cello's Gate" draggable="false" style="height:15.5cqw;width:auto;display:block;filter:drop-shadow(0.6cqw 0.75cqw 1cqw rgba(0,0,0,.45))">
+          <a href="https://thebrokenbindingsub.com/products/cellos-gate" target="_blank" rel="noopener" style="text-decoration:none"><span class="ed-label" style="display:block;font-weight:800;font-size:.95cqw;letter-spacing:.08em;line-height:1.4;color:#fff;text-decoration:none">BROKEN BINDING<span style="display:block;font-weight:400;color:#e9e4d2">SIGNED, SOLD OUT</span></span></a>
         </div>
+        <a class="ed-book" href="https://r.amzlink.to/?btn_url=https%3A%2F%2Fwww.amazon.com%2FAudible-Cellos-Gate%2Fdp%2FB0GKZWW416%2Fref%3Dtmm_aud_swatch_0%3F_encoding%3DUTF8%26dib_tag%3Dse%26dib%3DeyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps%26qid%3D1770340593%26sr%3D8-1&amp;btn_ref=org-433bb393e1b8b503" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;gap:1cqw;text-decoration:none;color:#fff">
+          <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/ed-audiobook.webp" alt="The Cello's Gate audiobook" draggable="false" style="height:15.5cqw;width:auto;display:block;filter:drop-shadow(0.6cqw 0.75cqw 1cqw rgba(0,0,0,.45))">
+          <span class="ed-label" style="display:block;font-weight:800;font-size:.95cqw;letter-spacing:.08em;line-height:1.4;color:#fff;text-decoration:none">AUDIOBOOK<span style="display:block;font-weight:400;color:#e9e4d2">READ BY GARY FURLONG</span></span>
+        </a>
       </div>
-      <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/ed-waterstones.webp" alt="The Waterstones Exclusive Edition of Cello's Gate, with a sprayed edge" style="height:30cqw;width:auto;max-width:100%;flex:none;filter:drop-shadow(0.75cqw 0.9cqw 1.2cqw rgba(0,0,0,.45))">
+      <a href="https://www.mauriceafrich.com/preorder" style="display:inline-block;border:1px solid #f3ead9;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none;margin-top:2.2cqw;background:#c1330a" class="hv0">ORDER TODAY</a>
+      <a href="#" data-box="43" data-k="UTdDQTdIVEI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo" onclick="location.href=atob(this.dataset.k).split('').reverse().join('');return false" aria-label="Loot box" style="position:absolute;right:1.6cqw;bottom:1.6cqw;width:2.6cqw;height:2.6cqw;display:block;opacity:.35;cursor:default"><img src="https://africhmaurice.github.io/leaderboard/loot/43.png" alt="" style="width:100%;height:100%;object-fit:contain;display:block"></a>
     </div>
 
-    <!-- SLIDE QZ : THE SKY PIRATE QUIZ (Maurice, 2026-10-26; staged, not live). Grey, Minn, Dot, and Izzy from the quiz's chibi
-         crew art. Loot box 107 hides in Grey's eye (data-ma-eye, see HOME HIDES below).
+    <!-- SLIDE QZ : THE SKY PIRATE QUIZ (Maurice, 2026-10-26; staged, not live). The whole adult crew (Maurice, 2026-11-09).
+         Loot box 107 hides in Grey's eyes (data-ma-eye, see HOME HIDES below).
          DRAFT words: eyebrow "THE SKY PIRATE QUIZ"; heading "Which Sky Pirate Are You?"; line "Take the quiz and meet your
-         match in the crew."; button "TAKE THE QUIZ"; image alt texts "Grey", "Minn", "Dot", "Izzy". -->
-    <div data-screen-label="QZ" style="flex:0 0 9.0909%;height:100%;position:relative;background:linear-gradient(rgba(72,45,133,.84),rgba(45,28,83,.92)),url(https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3cqw;padding:2.25cqw 6cqw;box-sizing:border-box;overflow:hidden">
-      <div class="qz-crew" style="display:flex;align-items:flex-end;justify-content:center;gap:.9cqw;flex:none;filter:drop-shadow(0.5cqw 0.7cqw 1cqw rgba(0,0,0,.4))">
-        <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/quiz/crew/grey.webp" data-ma-eye="38.6,31.3;58.4,30" alt="Grey" draggable="false" style="height:19cqw;width:auto;flex:none;display:block">
-        <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/quiz/crew/minn.webp" alt="Minn" draggable="false" style="height:19cqw;width:auto;flex:none;display:block">
-        <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/quiz/crew/dot.webp" alt="Dot" draggable="false" style="height:19cqw;width:auto;flex:none;display:block">
-        <img loading="lazy" decoding="async" class="qz-izzy" src="https://africhmaurice.github.io/site/assets/quiz/crew/izzy.webp" alt="Izzy" draggable="false" style="height:11cqw;width:auto;flex:none;display:block">
+         match in the crew."; button "TAKE THE QUIZ"; image alt text "The crew of the Cello: Grey, Minn, Farlow, Bones, Willow, Mars, and Dot". -->
+    <div data-screen-label="QZ" style="flex:0 0 16.6667%;height:100%;position:relative;background:linear-gradient(rgba(72,45,133,.84),rgba(45,28,83,.92)),url(https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3cqw;padding:2.25cqw 6cqw;box-sizing:border-box;overflow:hidden">
+      <div class="qz-crew" style="position:relative;flex:none;width:46cqw;filter:drop-shadow(0.5cqw 0.7cqw 1cqw rgba(0,0,0,.4))">
+        <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/quiz/crew/crew-adult.webp" data-ma-eye="43.2,28.7;44.6,29.2" alt="The crew of the Cello: Grey, Minn, Farlow, Bones, Willow, Mars, and Dot" draggable="false" style="width:100%;height:auto;display:block">
       </div>
       <div style="text-align:center;max-width:34cqw;display:flex;flex-direction:column;align-items:center">
         <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#c3a6ff;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.2cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">THE SKY PIRATE QUIZ</div>
@@ -146,94 +137,66 @@ a{color:#fff}
       </div>
     </div>
 
-    <!-- SLIDE A3 : ACT FOUR (was Act Three; Maurice, 2026-11-02; green; loot box 43 hides in it) -->
-    <div data-screen-label="A3" style="flex:0 0 9.0909%;height:100%;position:relative;background:linear-gradient(rgba(44,96,33,.86),rgba(14,52,20,.92)),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3cqw 9cqw;box-sizing:border-box">
-      <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#a2f590;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">THE TREASURE HUNT &bull; NOVEMBER 2<sup style="font-size:.6em">ND</sup> &ndash; NOVEMBER 10<sup style="font-size:.6em">TH</sup></div>
-      <div style="font-family:'Atomic Marker',cursive;color:#fff;font-size:5.4cqw;line-height:1.2;text-shadow:0 0.22cqw 0.45cqw rgba(0,0,0,.25)">ACT FOUR: EVERYTHING CHANGES!</div>
-      <p style="color:#fff;font-weight:800;font-size:1.42cqw;line-height:1.55;margin:1.65cqw 0 0;max-width:42cqw;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">New tasks, seven new riddles, 100 points a day for every game in the arcade, and the Golden Loot Box on November 4!</p>
-      <p style="color:#fff;font-style:italic;font-size:1.01cqw;line-height:1.6;margin:1.8cqw 0 0;max-width:37.5cqw;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">*The top 3 sky pirates on the Act Four leaderboard, anywhere in the world, win once the crew reaches 500,000 points. See the Official Rules.</p>
-      <a href="https://www.mauriceafrich.com/the-hunt" style="display:inline-block;margin-top:2.25cqw;background:#0b170f;border:1px solid #f3ead9;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.04em;padding:0.83cqw 2.55cqw;text-decoration:none" class="hv0">JOIN ACT FOUR!</a>
-      <a href="#" data-box="43" data-k="UTdDQTdIVEI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo" onclick="location.href=atob(this.dataset.k).split('').reverse().join('');return false" aria-label="Loot box" style="position:absolute;right:1.6cqw;bottom:1.6cqw;width:2.6cqw;height:2.6cqw;display:block;opacity:.35;cursor:default"><img src="https://africhmaurice.github.io/leaderboard/loot/43.png" alt="" style="width:100%;height:100%;object-fit:contain;display:block"></a>
+    <!-- SLIDE CO : COLLIDER, ALL THREE ARTICLES (Maurice, 2026-11-09; copy is DRAFT; quotes are Collider's, as on the press kit) -->
+    <div data-screen-label="CO" style="flex:0 0 16.6667%;height:100%;position:relative;display:flex">
+      <div class="co-col" style="flex:1 1 0;min-width:0;background:linear-gradient(rgba(13,26,17,.84),rgba(13,26,17,.84)),url(https://africhmaurice.github.io/site/assets/img/a2a9db140e257c36.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding:12.5cqw 3cqw 5cqw 5.5cqw;box-sizing:border-box">
+        <div class="co-n" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;font-size:6cqw;line-height:1.05">10</div>
+        <div class="co-t" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;font-size:2.3cqw;line-height:1.15;margin-top:1cqw;max-width:26cqw">Sci-Fi Books That Are Perfect From Start to Finish</div>
+        <p class="co-q" style="color:#fff;font-style:italic;font-size:1.25cqw;line-height:1.5;margin:1.3cqw 0 1.8cqw;max-width:24cqw">&ldquo;A rip-roaring ride from the first to the final page.&rdquo;</p>
+        <a href="https://collider.com/sci-fi-books-perfect-start-to-finish/" target="_blank" rel="noopener" style="display:inline-block;border:1px solid #fff;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none;margin-top:auto;background:#4caf3f;padding:0.83cqw 2.6cqw" class="hv4">READ THE ARTICLE</a>
+      </div>
+      <div class="co-col" style="flex:1 1 0;min-width:0;background:linear-gradient(rgba(76,175,63,.8),rgba(76,175,63,.8)),url(https://africhmaurice.github.io/site/assets/img/30878cd9e582da4b.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding:12.5cqw 3cqw 5cqw 3cqw;box-sizing:border-box">
+        <div class="co-n" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#0d1a11;font-size:6cqw;line-height:1.05">8</div>
+        <div class="co-t" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#0d1a11;font-size:2.3cqw;line-height:1.15;margin-top:1cqw;max-width:26cqw">Sci-Fi Books That Are Perfect From Cover to Cover</div>
+        <p class="co-q" style="color:#0d1a11;font-style:italic;font-size:1.25cqw;line-height:1.5;margin:1.3cqw 0 1.8cqw;max-width:24cqw">&ldquo;&hellip;absolutely great read that cannot be missed.&rdquo;</p>
+        <a href="https://collider.com/sci-fi-books-perfect-cover-to-cover/" target="_blank" rel="noopener" style="display:inline-block;border:1px solid #fff;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none;margin-top:auto;background:#0d1a11;padding:0.83cqw 2.6cqw" class="hv5">READ THE ARTICLE</a>
+      </div>
+      <div class="co-col" style="flex:1 1 0;min-width:0;background:linear-gradient(rgba(26,94,65,.82),rgba(15,58,39,.88)),url(https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding:12.5cqw 5.5cqw 5cqw 3cqw;box-sizing:border-box">
+        <div class="co-n" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;font-size:6cqw;line-height:1.05">10</div>
+        <div class="co-t" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;font-size:2.3cqw;line-height:1.15;margin-top:1cqw;max-width:26cqw">Essential Sci-Fi Books for Beginners</div>
+        <p class="co-q" style="color:#fff;font-style:italic;font-size:1.25cqw;line-height:1.5;margin:1.3cqw 0 1.8cqw;max-width:24cqw">&ldquo;Heart-filled, fun, and filled with great worldbuilding.&rdquo;</p>
+        <a href="https://collider.com/essential-sci-fi-books-beginners/" target="_blank" rel="noopener" style="display:inline-block;border:1px solid #fff;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none;margin-top:auto;background:#0d1a11;padding:0.83cqw 2.6cqw" class="hv5">READ THE ARTICLE</a>
+      </div>
+      <img loading="lazy" decoding="async" src="data:image/webp;base64,UklGRiITAABXRUJQVlA4WAoAAAAwAAAAowEA0QAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIkAYAAA2gQm27pDiqKBytaAWqUWSPYvZ9cLODSqvsoKjZVWePA5U9uFZFz6qyhyhQ3YpSoEAF1e1mn6Luv9xL1f0ra0WEA7dtHMnX2yI7l2J7fuCk/l9S/5H6j9R/pP4jbRKp/3inZxLDPUkds5xJ7B4mdUzzRoN8rZ/QsZM1ivw0qT9cqZtE5U5Sh18yidwsqeNywySKIye5f9ns209BB83ucFDC0wyPK1OegS5OxZ53ipkQXQpVEHofhEFhewqjB2GxVKMfnlWFQcYmvgQYFTk4AwefPpHxqlR9NzApvtLJATlH8Z0WCKBGnoGKflvBu+QJL+VLVxp4lBxseOGZtwiE2VIY1iTquW5QCUhtX8mWj6J//+nTxLLfqtDFfDn76eL7sApOKPVL7dPmzoGq9cvv2V30K70O9itQQC7Voga3Xmsi+GoDv7VYZ3Ho4mq0SCeRis3dxisRdqFHRwfC4HVGYO7UY7pQVBIhoT1aNrNEi6rE3acXFfCto7LYHa+xgrlTwYbbGMPh+Chs9FTXDYCbsHkbq36qq6L54DMT5qjH+nGguWMELDUPdRcV8JGOJMLsDrcNv5tD1DMmuvlotqOAHv5FnEcS3FCsrQJmC0XFDTLkyo7T7UNuuHlIi/J15zUV0u1mAa5FNADWxFXZxuXdSJMn8CmWq4q8RNaipizF7tviiGdc0D5SqEH+2BAtcSUUpMdlYACdOyC23m9IcFGay1N1adZvwtP9gxKVf2p2pmFHEXAyiGd+cRZ+aHBKHBYSBNJRtw5GelZPq/p2Mn86ABdaIKMQWgkHtyCd0SnNuE2Y5SfGm1PMEaU+loXAZgpCH2H6JG07l+UKrpEh4aYTKFLIFV4LvNanhgsmvnyg10qI6ErWQB1alrODzD048//Ig20R+1apIAc1wMsa3mtAhD4tAJVp83oFhfyHmXlqOdj/oGyM4bZH2UUGY2K/215i4we3+ljdVEj0rBHaFzqG3R+V0OLFiY0WEu4LnZg+vnN6XdmhQl4+TdyhFaveEKM2gb+EPqCJGDEXCjhXCfylQcxVAAg1uYKvv6qGYBfrGviXJYia9Xp/7HYlFp6GMVslkDuWd86gnW4EFnHcjfaaRyCAqQxGodGvLGyd41a2NQV1pG9KCLseSrWcv6IaVOBAPw1d2k8nIB9F+ErJrM62jDOD/OmaMvFrEfLbkFdhJ2rm6q4COLIQ7xXMCisLf3pMiDnxmkVWoDjSgdlBEJbsmqo2/f/mkO/teNHnzB86MDsIwmm96ytZdggqFmeRmps5px1Jruasc7VlWXI9wZ6AOuUnAn7SOf1jHb3Z2LYpD0RAVW99lx3nUu0dS/9yVFQNKbEcKGQ7aDP83SeXEVXgacMyyroC3GeRZBlWrDWgPld/A/hjbEGg86CkOgN5XwR7Q6P51mszJYAtF+wAjY3+MYtFVNTZa6AJebLJsnf7QCf1fLvtAWn0n/mED0X0GQmUs54rCArZu7OQDSA7PIjxcY0HULaQcdpaXm8eUrEyFu1Yj1lOrmWFmYrlJ3FA1K25FQyMVIDpY5ldK6N8SQwXinsDY09z18qGyvTMmhRY0nFBB/TjHU6MRzpQOTSjCUA2CgYBkgHk9m7gsvVlcXLB8cqKZL6FG4lKJPiMAcj//ociwKt8uortd/j49MU64VBnTcAZu+y4KqGkBGngMw8FYf1vEnkP1tKtOs6Z20j6sL55pQ7K1v0kQ/IZuk8j17CaEDMLC4wnm8D50z2BJB0tLLE3PO7HwM4VwhYE2wdQB6h/MH23jeFyg4w9JnTGPHmfqM25OJLk7uO7THGNfRN9MT3IxXoEYWxHRusuN7PyHX+uADLC75L4Ev/+iYp4Sbfdi3A4ZDA4qlQavLbDQOAQYsBJ526cnSBs5pNIr9HqQrZFIEO2/IYI1U5dl74efg0BRSqOFpqhU0/lVjvSn57GMpC5RcBL1R2VzXy1YXeUyXK+dLRH4JHOurfuNtU3seSJxqfs1t1FpUHW6Eug8MW4U8e6V9h0nMFE7b+FuRmPcki1WlG23ssFswmmyiSgEsR+CoMf5KhRhigKJRxMXRDRwZOaUosVXBknpdDNeYcHZ48QYxHoSY5jSh1ynDLPUPgDzkh0MM4Cn0rbB0anKJsSKuGYIY4Yrw1XgLcybGPd/jahWVGUaC7WYNE71oYAm1ZmzYLEjjWjCMb+c4xLQOnFu5PhqE9Fd4MjTxe/FFZspv5fUv+R+o/Uf6T+4xXGSP2HA1ZQOCCcCgAA0EoAnQEqpAHSAD5RKJJGI6KiISPVWOBwCglnbuF2sQdYc6bjk+NJVTr3h/+z/z38vvof/Xv6r0gHOb8yX2Ae7d/kv2A9wHoAf1H/O+sJ/kvYn9CjpVP3XwnL/M/iT4b/5D8icxbIT7S9An8x/lPGOWGch/n3+v4xONDwlfsX/L9gD+Gf2f/keq1/t+Yb6i9gz+Uf2vqp/uz7AH66f/8WGs+QtKpj5C0qmPkLSqY+QtKpj5C0qmPkLSqY+QtKpj5C0qmPkLSqY+QtKpj5C0qmPkLSqY5F3cSNIAVKZtTiXSwsG8cGAIy0MWiQZR37gsHk7pJil5iDbgLNpK0yXWKbkgbutewPsFy0ZtUblpdAwAdBCqFWbDgJSt7DfinEgZoFjasUMHC82YQ/Pb8EugnK7bUubj1tNuMlwoG6D6yD37+7Htvnc+7F9PIQRi11eJlqgEbHax+S4AOghVCKffymt1GLNX0Y25YHxyxWOM+jJNzHlB/ndtgY+3sE9gyG7G6X+2cOOotXIJGh6zoWgDoIVQi7L9xTlnuRkuAUhr5SFbTEu+vUU3TcvsiQhNejHAfTgSqqoyJB+xXPoELNtktEYB7gFnETQVcKPg9V1IiQxmVK0qmPjvGn0sIYHm8NXcHxrXTWzyOUZqD/RSDb8R7il6REuHVZBsbfQWFt/gfdgRVjtXZHG39Bebvfuz6V3t/R31EoGd8gHRykfIWlUv4MnG1Fy8BVEA6CFUQDoIVRAOghVEA6CFUQDoIVRAOghVEA6CFUQDoIVRAOghVEA6CFUQDoIVRAOghVEA6CFUQBAAD+/+S/gAAAAAAAO2qkoDk2JdCBdY/C50E5/62xiza6ISov4Nn+tsYs2wjol9Lg1Z3Ux7mH27PhKMCCtB0qIvcJE4CT61/ExefFpdF0NqkKQCCls5ZKoRVB3KES+myT6g+7e0tQazBS+fXG7tUhby8fsMWgFsM8GWBTZxunmN+6WisW8yZPynd57M08800t9tYIkYQr4B6/8YhyJjQv8aNteOR9mmaink8JepEk1VPOYNyxFYS5bYaaQxauUyTJT7XIpHNfsVUHm0d8/HaltHVBT8p5I6b6oFCRkLn2RY01lkj/63VtQsCOuaFTywffhi2ZReZ3UiGrwXkUFTk/0RMnI/cDLU6d9eOMZRStBZ6w6hLo9P/nnFR0Z1wDJg35qdPYHzMPmarl0ltbHUmNFZbAuKh/xJRc6L//CP3/zGfQMj9HSwZFGcjMxrRdsHHCiPRhwBPPjjZh/E72hK5s3vWUGach2zh9vxycLT26i5rl9wa2O4rfm4R9W5sSHMNReOMCz+3ivXSbOlGFT4L2XCAcsnVlrJbTIE3zFbu3m6lxGP4BiB3uxLNzMDwjel0q438xmvpe8HwSbwxm6Kc7mzF4729412rvuZlMW8vs1V1NM7QgKhwpFa2DD1zHahvjXjBChJg/nxvQClsz9sLWrRXHXbjToaK7u41CM4qjSsFHUOoYxd8IYiG2syKviI4y0lO8Zug94iM1whiIbw9iIvaDowqnJw0R8bFnbj1KXS8panMlEX5AirOspfi3+6xDgNqPtlunYeE9aMUFrRoPaiL/8a4ZSbRB7vbUmQzILye8yRRNJlILh3aIA+86BNniYi0s5CTd/yzsP2QoVvp9sGjLmAoKdFrHb3I0xRNg+YT6a+SniI/BwMgHtGbw1jtlaGW/+beikacuqn6FI25gtsIJfQo9tfVg2Ayukc4UaqrPKmdc1MB9VTy45O7ODIbeg8CBjFsKUpgVydYSAtQT+yLCO+ed/4GCBFnyiZwSZ2pFOaot6DZoj+XDsjM4bhr8OMP8KAeypfyRF5PzOxjINiFd5gjQ74LKw9YV1Rybty4zZtQ6jRWI//Sw6bhNHt02wXqlP/hqsoDHKBISPj1lqYuKYv/rYvus/8Q7HUCg9OMiiHnjg4zbwknp0kw9yW5gtcrWx3WpSnbb1u5hpaGCnk6HsYGzPPPvKufviE/PRKIl7Ri+8/SgUg6Hf9cqLtrX33rYOu1lDzyVcZiFGd1hml2RyP1d3XVO0ASlGkql6GjAWmMS9KmQvF8FB85UYx+sndEdwq8l9GQAY9oZzNzh+mFT8v++oDEmHOm93SDD2OYAhDhBAog3aOzXQtPqAAuHP8+Zcbt+ZyU/0gDk7U+yEZcRnxWFG29Ysvzhz3gOv6pIkFnBKVNE8ygjFFOLtpEkQdKkJYov8yVWjiZ8gH4IHFuO25PR8XOd/xo++smhjY//9Iw188lH91+PWrHpd9RzhYmOCvVTtBc6zwZrTUy9OUP4qbZL5ltYSjhxPJNp8pq+JL/lytZKfOecjzukR7LGM53y8Fr/HADVE/lNx0cd1eH85oJNeDbo3LDPFqotmFc+h8hXWeOjqL9yfPIYxYAynS8G0NkIyfKYhRd/2GuO/BdQvRI67g/rbN8DnW4wwplH4LQnIkLDKkBG9tHTELd3fNqxlD42CPHg4muVXsfX+kgOq8G1Y7sJgbPEEcwENVIfAw0X2h+vNxzIoU73X8ArJa4rtXku6WJsJFsn5k7cgfryeN6Acvru8MN+d1omQTGBwiaopEe0wE08CzLa1SvoHqj/t2wvlKW+RiIUBN+cGtxJ1kX6pe5dQ31WKra4mY2nPgGm2hNX2H2bn/cyUei6VNxivfnNAKpcGE5DrSGr3Qm5LX/5fF2er1pC1EIiUNE9eUrHpiaLJfHd53fWv5iKKNj5Eu5JIwb2IATBUo6id414nc3XmqIxmKV9pcjxTKq0z5IV+yverj7GU/V803W30BTXUeXJKEQiJE0ozKwaOAB/BtfGZzBxvktMwFzYisbeOEImzugEqEECsXJpI1yRBNJTGmLf+VrDaQJnnuublDm3r03k4Qxige48QGrc7TD4MIsm0DHh9fFcFRGLkWewd4rNrUAzGlKbwrjrvtm7zLy2SnxMXocgJYqIaH1VLATSykGUISv5WJI+dRHr+tlxzeadfcnYJejtsOltQB9WjWmBqzEpGXVwEwlsPa2OMBq9GCGbL3g9upO83P4qnmJS8vecH6gnko83oTlQRC9p5nUKSTA0NyHrF478nNANN/yR01CjnP1Q7Haa7lnTMr3hFCOGZn8IUZhwPx/43VKXDF//xu7kxzmgUPg0FHIjLIhgT9Qf6wqwka9AKjmxnkuAB+aiNGw7+7qNWvh4bElN71eCcFDUIgjEorlMZOMWcOR40EHJnprhg//BjWEN/cGyMH07b3SZI5ybCaFPSCqFajw9pwu0X52CPEr4HdGqVQPqiNzrNTnvufTHOZRFFzO+sTyQXje+FkUdK2vUo6T6JhZTTsG2oNauGh0OrNzKRLIf7vX+MTSuy/fek2k2Uf+Tb+GT8tkDKin+6VrV2h+5y8damUpG5NmgXhQkrLMivlGHwFQzZi/ImBpkve76/zxwqjTmdqqDVPWi+Gj47tzKhxbl0twyGv6J/yvrQkknRLKAUkBsse0GPrVvPPE5uX/FJo3Ty2uCUayGWnYRvoj4LYivLyzuGxeMct1/4+GlThDN+b1hhJ1pVJd4DFtPcl4wQNuYzPEO/WXPZm4kpuNK4XwWRdEvpMuq0MxreJn/5NugAABkxAAAAAAAAAAAAA==" alt="Collider" style="position:absolute;top:1.6cqw;left:50%;transform:translateX(-50%);width:17cqw;height:auto;filter:drop-shadow(0 0.15cqw 0.38cqw rgba(0,0,0,.4))">
     </div>
 
-    <!-- SLIDE MG : MORALLY GREY (MAKA of Echo 7 Design Co) -->
-    <div data-screen-label="07" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(26,94,65,.86),rgba(16,62,41,.92)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3.5cqw;padding:2.25cqw 7cqw;box-sizing:border-box">
-      <img src="https://africhmaurice.github.io/site/assets/merch/morally-grey-fan.webp" alt="Morally Grey merch: the hoodie, the tee, and the women's tee" style="width:36cqw;height:auto;flex:none;filter:drop-shadow(0.5cqw 0.7cqw 1cqw rgba(0,0,0,.4))">
-      <div style="text-align:center;max-width:38cqw;display:flex;flex-direction:column;align-items:center">
-        <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#89fbcb;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.4cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">NEW IN THE TRENCH MARKET</div>
-        <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/merch/morally-grey-lettering.webp" alt="I Like My Ship Captains Morally Grey" style="width:30cqw;height:auto;display:block">
-        <p style="color:#fff;font-weight:800;font-size:1.42cqw;line-height:1.55;margin:1.65cqw 0 0;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">Tees, women's tees, crop tees, crop tops, and hoodies. Designed by MAKA of <a href="https://www.e7dc.com/" target="_blank" rel="noopener" style="color:#89fbcb">Echo 7 Design Co</a> (<a href="https://www.instagram.com/echo7designco/" target="_blank" rel="noopener" style="color:#89fbcb">@echo7designco</a>).</p>
-        <a href="https://shop.mauriceafrich.com/products/i-like-my-ship-captains-morally-grey-tee" style="display:inline-block;margin-top:2.1cqw;background:#c1330a;border:1px solid #f3ead9;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none" class="hv0">SHOP MORALLY GREY</a>
+    <!-- SLIDE SR : SCREEN RANT, BOTH ARTICLES (Maurice, 2026-11-09; copy is DRAFT). The X in EXCLUSIVE is golden spot 15 (span.gd-x; Golden Trail, Maurice 10/31). -->
+    <div data-screen-label="SR" style="flex:0 0 16.6667%;height:100%;position:relative;display:flex">
+      <div class="sr-col" style="flex:1 1 0;min-width:0;background:linear-gradient(rgba(13,26,17,.84),rgba(13,26,17,.88)),url(https://africhmaurice.github.io/site/assets/bg/neon-street-as1928158052.webp) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding:12.5cqw 4cqw 5cqw 8cqw;box-sizing:border-box">
+        <div class="sr-kick" style="font-weight:800;color:#a2f590;font-size:1.15cqw;letter-spacing:.16em">E<span class="gd-x">X</span>CLUSIVE EXCERPT</div>
+        <div class="sr-t" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fffffe;font-size:3.2cqw;line-height:1.15;margin-top:1.2cqw;max-width:34cqw;text-shadow:0 0.19cqw 0.38cqw rgba(0,0,0,.4)">Read a Sneak Peek of Cello&rsquo;s Gate</div>
+        <p class="sr-q" style="color:#fff;font-style:italic;font-size:1.3cqw;line-height:1.5;margin:1.4cqw 0 1.8cqw;max-width:30cqw">&ldquo;Blending witty and poetic prose, Africh&rsquo;s debut is a must-read.&rdquo;</p>
+        <a href="https://screenrant.com/exclusive-excerpt-preview-cellos-gate-maruice-africh/" target="_blank" rel="noopener" style="display:inline-block;border:1px solid #fff;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none;margin-top:auto;background:#c1330a;padding:0.83cqw 2.6cqw" class="hv0">READ THE EXCERPT</a>
       </div>
-    </div>
-
-    <!-- SLIDE 0 : TRENCH MARKET (the merch shop) -->
-    <div data-screen-label="06" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(45,28,83,.86),rgba(29,16,58,.9)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3.5cqw;padding:2.25cqw 7cqw;box-sizing:border-box">
-      <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/merch/trench-market-fan.webp" alt="Trench Market merch: The Crew hoodie, the I Survived Loot Box 13 tee, and the Little Dot hat" style="width:36cqw;height:auto;flex:none;filter:drop-shadow(0.5cqw 0.7cqw 1cqw rgba(0,0,0,.4))">
-      <div style="text-align:center;max-width:38cqw">
-        <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#9e74fd;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">NEW: THE OFFICIAL MERCH SHOP</div>
-        <div style="font-family:'Atomic Marker',cursive;color:#fff;font-size:5.2cqw;line-height:1;text-shadow:0 0.22cqw 0.45cqw rgba(0,0,0,.25)">TRENCH MARKET</div>
-        <p style="color:#fff;font-weight:800;font-size:1.42cqw;line-height:1.55;margin:1.65cqw 0 0;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">Stickers, shirts, hoodies, hats, mugs, puzzles, and art prints from the Sky Pirates of Imperia, all printed to order.</p>
-        <a href="https://shop.mauriceafrich.com/" style="display:inline-block;margin-top:2.1cqw;background:#c1330a;border:1px solid #f3ead9;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none" class="hv0">SHOP THE MERCH</a>
+      <div class="sr-col" style="flex:1 1 0;min-width:0;background:linear-gradient(rgba(193,51,10,.84),rgba(150,36,6,.88)),url(https://africhmaurice.github.io/site/assets/bg/city-skyline-panorama-as348070597.webp) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding:12.5cqw 8cqw 5cqw 4cqw;box-sizing:border-box">
+        <div class="sr-kick" style="font-weight:800;color:#fffffe;font-size:1.15cqw;letter-spacing:.16em">NEW FANTASY SERIES</div>
+        <div class="sr-t" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fffffe;font-size:3.2cqw;line-height:1.15;margin-top:1.2cqw;max-width:34cqw;text-shadow:0 0.19cqw 0.38cqw rgba(0,0,0,.4)">10 Can&rsquo;t-Miss New Fantasy Series</div>
+        <p class="sr-q" style="color:#fff;font-style:italic;font-size:1.3cqw;line-height:1.5;margin:1.4cqw 0 1.8cqw;max-width:30cqw">&ldquo;A must-read new release.&rdquo;</p>
+        <a href="https://screenrant.com/fantasy-book-series-starting-release-2026-november-december/" target="_blank" rel="noopener" style="display:inline-block;border:1px solid #fff;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none;margin-top:auto;background:#0d1a11;padding:0.83cqw 2.6cqw" class="hv5">READ THE LIST</a>
       </div>
-    </div>
-
-    <!-- SLIDE 1 : JOIN THE HUNT -->
-    <div data-screen-label="01" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(178,52,9,.82),rgba(163,44,7,.88)),url(https://africhmaurice.github.io/site/assets/img/e3346bbd4195fa1c.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3cqw 9cqw;box-sizing:border-box">
-      <div style="font-family:'Atomic Marker',cursive;color:#fff;font-size:5.4cqw;line-height:1;text-shadow:0 0.22cqw 0.45cqw rgba(0,0,0,.25)">JOIN THE HUNT</div>
-      
-      <p style="color:#fff;font-weight:800;font-size:1.42cqw;line-height:1.55;margin:1.65cqw 0 0;max-width:40.5cqw;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">Solve riddles, complete tasks, locate hidden secrets, and rack up points between now and the end of the hunt (November 10<sup style="font-size:.55em">th</sup>, 2026) and walk away with TREASURE*.</p>
-      <p style="color:#fff;font-style:italic;font-size:1.01cqw;line-height:1.6;margin:1.8cqw 0 0;max-width:37.5cqw;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">*Not a metaphor about pride in a job well done or the frens we made along the way. The top three sky pirates on the Act Four leaderboard, anywhere in the world, win a Signed Deluxe Edition, a crew art print, a set of enamel pins, and a Trench Market hoodie, once the crew reaches 500,000 points!</p>
-      <a href="https://www.mauriceafrich.com/the-hunt" target="_blank" rel="noopener" style="display:inline-block;margin-top:2.25cqw;background:#c1330a;border:1px solid #f3ead9;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.04em;padding:0.83cqw 2.55cqw;text-decoration:none" class="hv0">JOIN THE HUNT!</a>
-    </div>
-
-    <!-- SLIDE 2 : ACQUIRED -->
-    <div data-screen-label="02" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(24,84,56,.74),rgba(16,62,41,.82)),url(https://africhmaurice.github.io/site/assets/img/ef80affe30140e01.jpg) center/cover;display:flex;align-items:center;justify-content:center;gap:3cqw;padding:2.25cqw 5.25cqw;box-sizing:border-box">
-      <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/679b434d86628027.webp" alt="Cello's Gate hardcover" style="width:27cqw;height:auto;flex:none;filter:drop-shadow(0.75cqw 0.9cqw 1.2cqw rgba(0,0,0,.45))">
-      <div style="text-align:center;max-width:48cqw">
-        <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#e9e4d2;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.2cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">SAGA PRESS &bull; SIMON MAVERICK &bull; HODDERSCAPE</div>
-        <div style="font-family:'Cinzel',serif;font-weight:900;color:#fff;font-size:3.4cqw;line-height:1.35;text-shadow:0 0.19cqw 0.3cqw rgba(0,0,0,.4)">The Sky Pirates of Imperia has been acquired by Traditional Publishers!</div>
-        <p style="color:#fff;font-size:1.31cqw;line-height:1.55;margin:1.35cqw 0 0;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">The brand-new deluxe hardcover and audiobook editions were published on November 3, 2026. Order the hardcover today!</p>
-        <a href="https://www.mauriceafrich.com/preorder" target="_blank" rel="noopener" style="display:inline-block;margin-top:1.95cqw;background:#132e15;border:1px solid #f3ead9;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none" class="hv1">ORDER TODAY</a>
-        <a href="https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834#excerpt" target="_blank" rel="noopener" style="display:inline-block;margin:1.95cqw 0 0 1.2cqw;background:transparent;border:1px solid #f3ead9;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none" class="hv1">READ EXCERPT</a><!-- Maurice, 2026-10-16 (Navi’s idea) -->
+      <!-- Screen Rant's logo (Maurice sent it 2026-11-09), on a dark plate so the gold RANT reads over the red column. -->
+      <div class="sr-logo" style="position:absolute;top:2.2cqw;left:50%;transform:translateX(-50%);background:#0d1a11;padding:1.3cqw 2cqw;box-shadow:0 0.15cqw 0.6cqw rgba(0,0,0,.4);pointer-events:none">
+        <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/screenrant-logo.webp" alt="Screen Rant" style="display:block;width:22cqw;height:auto">
       </div>
-    </div>
-
-    <!-- SLIDE 3 : WALMART -->
-    <div data-screen-label="03" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(12,70,135,.78),rgba(12,70,135,.78)),url(https://africhmaurice.github.io/site/assets/img/430c8d3436037392.jpg) center/cover;position:relative;display:flex;align-items:center;justify-content:center;gap:2.25cqw;padding:2.25cqw 6cqw;box-sizing:border-box;overflow:hidden">
-      <div style="position:absolute;right:1.5cqw;bottom:1.13cqw;text-align:left;opacity:.5;pointer-events:none">
-        <div style="color:#fff;font-weight:800;font-size:4.5cqw;line-height:1;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">Walmart</div>
-        <div style="color:#fff;font-weight:700;font-size:1.95cqw;line-height:1.3;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">Save money. Live better.</div>
-      </div>
-      <div style="text-align:center;max-width:36cqw;position:relative">
-        <div style="font-family:'Cinzel',serif;font-weight:900;color:#fff;font-size:3.6cqw;line-height:1.35;text-shadow:0 0.19cqw 0.38cqw rgba(0,30,70,.55)">The Walmart Exclusive Special Edition of &ldquo;Cello&rsquo;s Gate&rdquo;!</div>
-        <p style="color:#fff;font-size:1.35cqw;line-height:1.55;margin:1.2cqw 0 0;text-shadow:0 0.11cqw 0.3cqw rgba(0,30,70,.6)">Order the Walmart Exclusive Special Edition of "Cello's Gate" today! It's also on the Walmart shopping app. And the Walmart website. I'm not lying! Go look!</p>
-        <a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704?classType=REGULAR&amp;from=/search" target="_blank" rel="noopener" style="display:inline-block;margin-top:1.95cqw;background:#ffc220;border:1px solid #fff;box-shadow:0.22cqw 0.26cqw 0 rgba(0,20,50,.45);color:#0a3a7a;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none" class="hv2">CHECK IT OUT!</a>
-      </div>
-      <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/e1e6cfeef89d6121.webp" alt="Walmart special edition of Cello's Gate" style="width:33cqw;height:auto;flex:none;position:relative;filter:drop-shadow(0.75cqw 0.9cqw 1.35cqw rgba(0,20,50,.5))">
     </div>
 
     <!-- SLIDE 4 : DISCORD -->
-    <div data-screen-label="04" style="flex:0 0 9.0909%;height:100%;background:linear-gradient(rgba(70,12,0,.42),rgba(50,8,0,.55)),url(https://africhmaurice.github.io/site/assets/img/d1def44814f7b9d2.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.25cqw 9cqw;box-sizing:border-box">
-      <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/7bf9c98ba157d33f.webp" alt="Trench skull and crossed tanto" style="width:16cqw;height:auto;filter:drop-shadow(0 0.38cqw 0.75cqw rgba(0,0,0,.4))">
-      <div style="font-family:'Cinzel',serif;font-weight:900;color:#fff;font-size:3.9cqw;line-height:1.3;margin-top:1.2cqw;text-shadow:0 0.19cqw 0.3cqw rgba(0,0,0,.45)">join the TRENCH Community Discord!</div>
+    <div data-screen-label="04" style="flex:0 0 16.6667%;height:100%;background:linear-gradient(rgba(60,10,4,.5),rgba(24,6,4,.7)),url(https://africhmaurice.github.io/site/assets/bg/red-sun-ruins-as360866146.webp) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.25cqw 9cqw;box-sizing:border-box">
+      <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/img/7bf9c98ba157d33f.webp" alt="Trench skull and crossed tanto" style="width:12cqw;height:auto;filter:drop-shadow(0 0.38cqw 0.75cqw rgba(0,0,0,.4))">
+      <div class="dc-head" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;font-size:3.9cqw;line-height:1.15;margin-top:1.2cqw;text-shadow:0 0.19cqw 0.3cqw rgba(0,0,0,.45)">join the TRENCH Community Discord!</div>
       <p style="color:#fff;font-size:1.35cqw;line-height:1.55;margin:1.2cqw 0 0;max-width:43.5cqw;text-shadow:0 0.11cqw 0.26cqw rgba(0,0,0,.45)">Oh, you're not in the Discord community? Well, guess what? It's totally free to join! We have daily tournament brackets, book discussions, chat sessions, a fan fiction contest with a $100 cash prize, and more!</p>
       <a href="https://discord.gg/TV8SNnSGdb" target="_blank" rel="noopener" style="display:inline-block;margin-top:2.1cqw;background:rgba(80,15,0,.25);border:1px solid #fff;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none" class="hv3">JOIN THE DISCORD</a>
     </div>
 
-    <!-- SLIDE 5 : COLLIDER ARTICLES -->
-    <div data-screen-label="05" style="flex:0 0 9.0909%;height:100%;position:relative;display:flex">
-      <div style="flex:1;background:linear-gradient(rgba(13,26,17,.82),rgba(13,26,17,.82)),url(https://africhmaurice.github.io/site/assets/img/a2a9db140e257c36.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5.25cqw 6cqw 3cqw;box-sizing:border-box">
-        <div style="font-family:'Cinzel',serif;font-weight:900;color:#fff;font-size:6cqw;line-height:1;text-shadow:0 0.19cqw 0.3cqw rgba(0,0,0,.5)">10</div>
-        <div style="font-family:'Cinzel',serif;font-weight:900;color:#fff;font-size:3.4cqw;line-height:1.35;margin-top:1.2cqw;text-shadow:0 0.19cqw 0.3cqw rgba(0,0,0,.5)">Essential Sci-Fi Books for Beginners</div>
-        <a href="https://collider.com/essential-sci-fi-books-beginners/" target="_blank" rel="noopener" style="display:inline-block;margin-top:1.95cqw;background:#4caf3f;border:1px solid #fff;box-shadow:0.19cqw 0.22cqw 0 rgba(0,0,0,.4);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.06em;padding:0.83cqw 3cqw;text-decoration:none" class="hv4">READ THE ARTICLE!</a>
+    <!-- SLIDE 0 : TRENCH MARKET (the merch shop) -->
+    <div data-screen-label="06" style="flex:0 0 16.6667%;height:100%;background:linear-gradient(rgba(45,28,83,.86),rgba(29,16,58,.9)),url(https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp) center/cover;display:flex;align-items:center;justify-content:center;gap:3.5cqw;padding:2.25cqw 7cqw;box-sizing:border-box">
+      <img loading="lazy" decoding="async" src="https://africhmaurice.github.io/site/assets/merch/trench-market-fan.webp" alt="Trench Market merch: The Crew hoodie, the I Survived Loot Box 13 tee, and the Little Dot hat" style="width:36cqw;height:auto;flex:none;filter:drop-shadow(0.5cqw 0.7cqw 1cqw rgba(0,0,0,.4))">
+      <div style="text-align:center;max-width:38cqw">
+        <div style="font-family:'Almarai',sans-serif;font-weight:800;color:#9e74fd;font-size:1.15cqw;letter-spacing:.18em;margin-bottom:1.2cqw;text-shadow:0 .15cqw .35cqw rgba(0,0,0,.45)">NEW: THE OFFICIAL MERCH SHOP</div>
+        <div class="tm-head" style="font-family:'Cracked Imperia',Impact,sans-serif;font-weight:700;text-transform:uppercase;color:#fff;font-size:5.2cqw;line-height:1.1;letter-spacing:.03em;text-shadow:0 0.22cqw 0.45cqw rgba(0,0,0,.25)">TRENCH MARKET</div>
+        <p style="color:#fff;font-weight:800;font-size:1.42cqw;line-height:1.55;margin:1.65cqw 0 0;text-shadow:0 0.08cqw 0.22cqw rgba(0,0,0,.35)">Stickers, shirts, hoodies, hats, mugs, puzzles, and art prints from the Sky Pirates of Imperia, all printed to order.</p>
+        <a href="https://shop.mauriceafrich.com/" style="display:inline-block;margin-top:2.1cqw;background:#c1330a;border:1px solid #f3ead9;box-shadow:0.22cqw 0.26cqw 0 rgba(0,0,0,.35);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.05em;padding:0.83cqw 3cqw;text-decoration:none" class="hv0">SHOP THE MERCH</a>
       </div>
-      <div style="flex:1;background:linear-gradient(rgba(76,175,63,.75),rgba(76,175,63,.75)),url(https://africhmaurice.github.io/site/assets/img/30878cd9e582da4b.jpg) center/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5.25cqw 6cqw 3cqw;box-sizing:border-box">
-        <div style="font-family:'Cinzel',serif;font-weight:900;color:#0d1a11;font-size:6cqw;line-height:1;text-shadow:none">8</div>
-        <div style="font-family:'Cinzel',serif;font-weight:900;color:#0d1a11;font-size:3.4cqw;line-height:1.35;margin-top:1.2cqw;text-shadow:none">Sci-Fi Books That Are Perfect From Cover to Cover</div>
-        <a href="https://collider.com/sci-fi-books-perfect-cover-to-cover/" target="_blank" rel="noopener" style="display:inline-block;margin-top:1.95cqw;background:#0d1a11;border:1px solid #fff;box-shadow:0.19cqw 0.22cqw 0 rgba(0,0,0,.4);color:#fff;font-weight:800;font-size:1.2cqw;letter-spacing:.06em;padding:0.83cqw 3cqw;text-decoration:none" class="hv5">READ THE ARTICLE!</a>
-      </div>
-      <img loading="lazy" decoding="async" src="data:image/webp;base64,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" alt="Collider" style="position:absolute;top:1.5cqw;left:50%;transform:translateX(-50%);width:22cqw;height:auto;filter:drop-shadow(0 0.15cqw 0.38cqw rgba(0,0,0,.4))">
     </div>
   
 
@@ -251,18 +214,13 @@ a{color:#fff}
     <div class="ma-dot" onclick="maGo(3)" role="button" aria-label="Slide 4"></div>
     <div class="ma-dot" onclick="maGo(4)" role="button" aria-label="Slide 5"></div>
     <div class="ma-dot" onclick="maGo(5)" role="button" aria-label="Slide 6"></div>
-      <div class="ma-dot" onclick="maGo(6)" role="button" aria-label="Slide 7"></div>
-    <div class="ma-dot" onclick="maGo(7)" role="button" aria-label="Slide 8"></div>
-      <div class="ma-dot" onclick="maGo(8)" role="button" aria-label="Slide 9"></div>
-    <div class="ma-dot" onclick="maGo(9)" role="button" aria-label="Slide 10"></div>
-    <div class="ma-dot" onclick="maGo(10)" role="button" aria-label="Slide 11"></div>
   </div>
 </div>
 <script>
 var maI=0,maHover=false,maTimer=null;
 function maGo(n){
-  maI=(n+11)%11;
-  document.getElementById('ma-track').style.transform='translateX(-'+(maI*100/11)+'%)';
+  maI=(n+6)%6;
+  document.getElementById('ma-track').style.transform='translateX(-'+(maI*100/6)+'%)';
   var dots=document.querySelectorAll('.ma-dot');
   for(var i=0;i<dots.length;i++)dots[i].className='ma-dot'+(i===maI?' on':'');
   maStart();
