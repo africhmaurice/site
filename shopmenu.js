@@ -240,7 +240,7 @@
     var tm = drop('TRENCH MARKET', '/'), tmIn = boxed(tm, 'TRENCH MARKET');
     cats(tmIn, function (a) { tmIn.appendChild(a); });
     var gift = drop("ORACLE'S GIFT", SITE + '/oracles-gift/aura-spectrum'); var giftIn = boxed(gift, "ORACLE'S GIFT"); giftIn.appendChild(link(SITE + '/oracles-gift/aura-spectrum', 'AURA SPECTRUM')); giftIn.appendChild(link(QUIZ, 'THE SKY PIRATE QUIZ'));
-    var row = [th, tm, link(SITE + '/bookshelf', 'BOOKSHELF', 'tm-nav__link'), link(SITE + '/links', 'LINKS', 'tm-nav__link'), link(SITE + '/newsletter', 'NEWSLETTER', 'tm-nav__link'), link(DISCORD, 'JOIN THE DISCORD!', 'tm-nav__link')];
+    var row = [th, tm, link(SITE + '/bookshelf', 'BOOKSHELF', 'tm-nav__link'), link(SITE + '/crew-dossier', 'CREW DOSSIERS', 'tm-nav__link'), link(SITE + '/links', 'LINKS', 'tm-nav__link'), link(SITE + '/newsletter', 'NEWSLETTER', 'tm-nav__link'), link(DISCORD, 'JOIN THE DISCORD!', 'tm-nav__link')];
     while (nav.firstChild) nav.removeChild(nav.firstChild);
     row.forEach(function (n) { nav.appendChild(n); });
     if (pre) { nav.appendChild(pre); boxed(pre, "ORDER CELLO'S GATE"); }
@@ -255,7 +255,7 @@
       sum(mHunt, 'THE TREASURE HUNT'); sum(mShop, 'TRENCH MARKET'); sum(mGift, "ORACLE'S GIFT");
       cats(mShop, function (a) { mShop.appendChild(a); }, true);
       mGift.appendChild(link(SITE + '/oracles-gift/aura-spectrum', 'AURA SPECTRUM')); mGift.appendChild(link(QUIZ, 'THE SKY PIRATE QUIZ'));
-      var mrow = [mHunt, mShop, link(SITE + '/bookshelf', 'BOOKSHELF'), link(SITE + '/links', 'LINKS'), link(SITE + '/newsletter', 'NEWSLETTER'), link(DISCORD, 'JOIN THE DISCORD!')];
+      var mrow = [mHunt, mShop, link(SITE + '/bookshelf', 'BOOKSHELF'), link(SITE + '/crew-dossier', 'CREW DOSSIERS'), link(SITE + '/links', 'LINKS'), link(SITE + '/newsletter', 'NEWSLETTER'), link(DISCORD, 'JOIN THE DISCORD!')];
       while (list.firstChild) list.removeChild(list.firstChild);
       mrow.forEach(function (n) { list.appendChild(n); });
       if (mPre) list.appendChild(mPre);

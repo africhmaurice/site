@@ -860,9 +860,10 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     });
   }
   // BOOKSHELF sits between Trench Market and Links (Maurice, 2026-11-07), made from the Links item.
-  function bookRow(links, text) {
+  // CREW DOSSIERS follows it (Maurice, 2026-11-09).
+  function bookRow(links, text, slug) {
     var row = links.cloneNode(true), a = row.querySelector('a');
-    a.href = SITE + '/bookshelf'; a.removeAttribute('aria-current'); row.classList.remove('header-nav-item--active');
+    a.href = SITE + '/' + (slug || 'bookshelf'); a.removeAttribute('aria-current'); row.classList.remove('header-nav-item--active');
     (a.querySelector('.header-menu-nav-item-content') || a).textContent = text;
     return row;
   }
@@ -889,7 +890,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
       var submit = find('.header-nav-folder-title[data-href="/submit"]'); if (submit) submit.style.display = 'none';
       var shop = gift ? marketFolder(gift) : market; if (shop !== market) market.style.display = 'none';
       if (gift) gift.style.display = 'none';   // in The Treasure Hunt panel now
-      [hunt, shop, bookRow(links, 'Bookshelf'), links, find('a[href$="/newsletter"]'), find('a[href*="discord"]')].forEach(function (it) { if (it) list.insertBefore(it, pre); });
+      [hunt, shop, bookRow(links, 'Bookshelf'), bookRow(links, 'Crew Dossiers', 'crew-dossier'), links, find('a[href$="/newsletter"]'), find('a[href*="discord"]')].forEach(function (it) { if (it) list.insertBefore(it, pre); });
     });
     mainGap();
     var root = document.querySelector('.header-menu-nav [data-folder="root"]');
@@ -915,7 +916,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
       gPanel.parentNode.insertBefore(tmPanel, gPanel.nextSibling);
       if (rMarket) rMarket.style.display = 'none'; rMarket = tmRow;
     }
-    [huntRow.closest('.header-menu-nav-item'), rMarket, bookRow(rLinks, 'Bookshelf'), rLinks, rfind('a[href$="/newsletter"]'), rfind('a[href*="discord"]')]
+    [huntRow.closest('.header-menu-nav-item'), rMarket, bookRow(rLinks, 'Bookshelf'), bookRow(rLinks, 'Crew Dossiers', 'crew-dossier'), rLinks, rfind('a[href$="/newsletter"]'), rfind('a[href*="discord"]')]
       .forEach(function (r) { if (r) rowList.insertBefore(r, rPre); });
   }
   // The green hunt menu (copied into each hunt page) becomes the same menu: desktop row and phone menu.
@@ -952,7 +953,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
       tm.innerHTML = '<a href="' + MERCH_URL + '" class="mn-link" aria-haspopup="true">TRENCH MARKET' + (caret ? caret.outerHTML : '') + '</a><div class="mn-dd"><div class="mn-dd-in"></div></div>';
       SHOP_CATS.forEach(function (c) { var a = document.createElement('a'); a.href = SHOP + c[1]; a.textContent = c[0].toUpperCase(); tm.querySelector('.mn-dd-in').appendChild(a); });
       [[tm, 'TRENCH MARKET'], [gift, "ORACLE'S GIFT"], [cta, "ORDER CELLO'S GATE"]].forEach(function (d) { if (d[0]) boxDrop(d[0], d[1]); });
-      var row = [th, tm, mk(SITE + '/bookshelf', 'BOOKSHELF'), mk(SITE + '/links', 'LINKS', 'mn-linkpage'), mk(SITE + '/newsletter', 'NEWSLETTER'), mk(DISCORD, 'JOIN THE DISCORD!'), gift];
+      var row = [th, tm, mk(SITE + '/bookshelf', 'BOOKSHELF'), mk(SITE + '/crew-dossier', 'CREW DOSSIERS'), mk(SITE + '/links', 'LINKS', 'mn-linkpage'), mk(SITE + '/newsletter', 'NEWSLETTER'), mk(DISCORD, 'JOIN THE DISCORD!'), gift];
       gift.style.display = 'none';   // kept (huntGift looks for it) but shown only in The Treasure Hunt panel
       while (links.firstChild) links.removeChild(links.firstChild);
       row.forEach(function (el) { links.appendChild(el); });
@@ -969,7 +970,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     var tmGroup = document.createElement('div'); tmGroup.className = 'mn-ovgroup mn-merch-group'; tmGroup.appendChild(document.createElement('span')).textContent = 'TRENCH MARKET';
     SHOP_CATS.forEach(function (c) { tmGroup.appendChild(ol(SHOP + c[1], c[0].toUpperCase())); });
     var order = [ov.querySelector('.mn-x'), ov.querySelector('.mn-ovlogo'), ol(SITE + '/the-hunt', 'THE TREASURE HUNT'), gs['EARN POINTS'], ol(SITE + '/points', 'SUBMIT POINTS'), gs['CURRENT PROGRESS'], ol(CHECK_URL, 'DAILY CHECKLIST', 'mn-check'), gs['ADVENTURE'], gs['REWARDS'], ov.querySelector('.mn-gift'),
-      tmGroup, ol(SITE + '/bookshelf', 'BOOKSHELF'), ol(SITE + '/links', 'LINKS', 'mn-linkpage'), ol(SITE + '/newsletter', 'NEWSLETTER'), ol(DISCORD, 'JOIN THE DISCORD!'), ov.querySelector(':scope > .mn-cta')];
+      tmGroup, ol(SITE + '/bookshelf', 'BOOKSHELF'), ol(SITE + '/crew-dossier', 'CREW DOSSIERS'), ol(SITE + '/links', 'LINKS', 'mn-linkpage'), ol(SITE + '/newsletter', 'NEWSLETTER'), ol(DISCORD, 'JOIN THE DISCORD!'), ov.querySelector(':scope > .mn-cta')];
     while (ov.firstChild) ov.removeChild(ov.firstChild);
     order.forEach(function (el) { if (el) ov.appendChild(el); });
   }
