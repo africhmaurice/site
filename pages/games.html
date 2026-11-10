@@ -1150,12 +1150,12 @@ var HGBoard = (function () {
   // ---- claiming the points --------------------------------------------
   var WIN = '<div class="thw-bang">CONGRATS!</div>';
   // after the hunt (Maurice, 2026-11-09): no hunt points, so a solve saves the day to the player's streak instead
-  function over() { return dateStr > '2026-11-10'; }
-  function btnLabel() { return over() ? 'SAVE MY STREAK' : 'CLAIM ' + POINTS + ' POINTS'; }
+  function huntOver() { return dateStr > '2026-11-10'; }
+  function btnLabel() { return huntOver() ? 'SAVE MY STREAK' : 'CLAIM ' + POINTS + ' POINTS'; }
 
   function showClaimButton() {
     resultEl.innerHTML = WIN +
-      '<p>' + (over() ? 'You cracked it. Save today to your streak.' : 'You cracked it. Claim your ' + POINTS + ' points for today.') + '</p>' +
+      '<p>' + (huntOver() ? 'You cracked it. Save today to your streak.' : 'You cracked it. Claim your ' + POINTS + ' points for today.') + '</p>' +
       '<button type="button" class="thw-submit wv2" id="thw-claim">' + btnLabel() + '</button>' +
       '<p class="thw-quiet">Claiming as ' + esc(me.first_name || me.email) + '. <a id="thw-notme">Not you?</a></p>' +
       '<p class="thw-err" id="thw-err"></p>';
@@ -1170,7 +1170,7 @@ var HGBoard = (function () {
   // The same questions the loot box page asks, saved the same way.
   function showClaimForm() {
     resultEl.innerHTML = WIN +
-      '<p>' + (over() ? 'Tell the Captain who you are and your streak is saved. ' : 'Tell the Captain who you are and your ' + POINTS + ' points go straight to the leaderboard. ') +
+      '<p>' + (huntOver() ? 'Tell the Captain who you are and your streak is saved. ' : 'Tell the Captain who you are and your ' + POINTS + ' points go straight to the leaderboard. ') +
       'Only the first time &mdash; after this it is one click.</p>' +
       '<div class="thw-form">' +
       '<label for="thw-first">First name</label><input id="thw-first" autocomplete="given-name">' +
@@ -1246,8 +1246,8 @@ var HGBoard = (function () {
 
   function showClaimed(status) {
     resultEl.innerHTML = WIN +
-      '<div class="thw-pts">' + (over() ? 'STREAK SAVED' : '+' + POINTS + ' POINTS') + '</div>' +
-      '<p class="thw-quiet">' + (over() ? (status === 'already' ? 'Already saved for today.' : 'Come back tomorrow to keep your streak going.') : status === 'already'
+      '<div class="thw-pts">' + (huntOver() ? 'STREAK SAVED' : '+' + POINTS + ' POINTS') + '</div>' +
+      '<p class="thw-quiet">' + (huntOver() ? (status === 'already' ? 'Already saved for today.' : 'Come back tomorrow to keep your streak going.') : status === 'already'
         ? 'Already claimed for today &mdash; no need to submit anything.'
         : 'Claimed! No screenshot needed. Points land on the leaderboard at the next tally.') + '</p>' +
       (board && board.note() ? '<p class="thw-quiet dbd-note">' + board.note() + '</p>' : '') +
