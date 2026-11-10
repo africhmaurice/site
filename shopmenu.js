@@ -67,7 +67,7 @@
     q('.mn-ovgroup a[href$="/the-hunt#rewards"]').forEach(function (a) {
       // Rewards is its own box under Adventure (Maurice, 2026-11-02)
       var p = a.parentNode, g = doc.createElement('div'); g.className = 'mn-ovgroup'; g.appendChild(el('span', '', 'REWARDS'));
-      [link(SITE + '/the-hunt#rewards-act-four', 'ACT FOUR'), link(SITE + '/the-hunt#rewards-act-three', 'ACT THREE'), link(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), link(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), link(SITE + '/act-two-winners', 'ACT TWO WINNERS'), link(SITE + '/act-one-winners', 'ACT ONE WINNERS')].forEach(function (n) { g.appendChild(n); });
+      [link(SITE + '/the-hunt#rewards-act-four', 'ACT FOUR'), link(SITE + '/the-hunt#rewards-act-three', 'ACT THREE'), link(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'), link(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'), link(SITE + '/act-three-winners', 'ACT THREE WINNERS'), link(SITE + '/act-two-winners', 'ACT TWO WINNERS'), link(SITE + '/act-one-winners', 'ACT ONE WINNERS')].forEach(function (n) { g.appendChild(n); });
       p.parentNode.insertBefore(g, p.nextSibling);
       p.removeChild(a);
     });

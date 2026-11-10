@@ -585,6 +585,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
         g.appendChild(actLink(SITE + '/the-hunt#rewards-act-three', 'ACT THREE'));
         g.appendChild(actLink(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'));
         g.appendChild(actLink(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'));
+        g.appendChild(actLink(SITE + '/act-three-winners', 'ACT THREE WINNERS'));   // the replayed Act Three draws (Maurice, 2026-11-09)
         g.appendChild(actLink(SITE + '/act-two-winners', 'ACT TWO WINNERS'));   // the replayed Act Two draws (Maurice, 2026-10-19)
         g.appendChild(actLink(SITE + '/act-one-winners', 'ACT ONE WINNERS'));   // the replayed draws (Maurice, 2026-10-02)
         p.parentNode.insertBefore(g, p.nextSibling);
