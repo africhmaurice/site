@@ -273,6 +273,12 @@
       "source": "bot:squarespace-back.html"
     },
     {
+      "slug": "the-crew-decides",
+      "url": "/the-crew-decides",
+      "title": "The Crew Decides Vote (Chapter 21, investigate rolls and the plan)",
+      "source": "bot:squarespace-decide.html"
+    },
+    {
       "slug": "adventure",
       "url": "/adventure",
       "title": "The Adventure So Far (every Choose Your Own Adventure beat)",
