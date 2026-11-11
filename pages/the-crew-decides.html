@@ -434,6 +434,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cw-orders ul{margin:0 0 20px;padding-left:18px;display:grid;gap:6px;font-size:15px}
 #rc .cw-orders b{display:inline-block;min-width:200px;font-weight:800;font-size:12px;letter-spacing:.12em;color:#9e74fd;text-transform:uppercase}
 #rc .cw-orders .rc-empty{color:var(--muted)}
+#rc .cw-xp{display:grid;gap:12px;max-width:560px;margin:4px 0 8px}#rc .cw-xp[hidden]{display:none}#rc .cw-xp .rc-form{margin:0}
 #rc .cr-kits{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:18px}
 #rc .cr-kit{background:var(--well);border:1px solid var(--hair);padding:20px;min-width:0;display:flex;flex-direction:column}
 #rc .cr-kit .rc-dice{margin-top:auto}
@@ -624,6 +625,10 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <h2>Seal your vote</h2>
     </header>
     <div class="cw-orders" id="rc-olist"></div>
+    <div class="cw-xp" id="rc-xp" hidden>
+      <div class="rc-form"><label>Discord username (optional)<input id="rc-discord" placeholder="yourname" autocomplete="off" maxlength="40"></label></div>
+      <p class="rc-quiet">In the <i>Trench</i> Discord? Add your username and sealing this vote pays you 1,000 XP there too.</p>
+    </div>
     <p class="rc-msg" id="rc-msg"></p>
     <button class="rc-cta" id="rc-seal" type="button">SEAL MY PLAN</button>
     <div id="rc-result"></div>
@@ -1450,6 +1455,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     if (!$('rc-result').innerHTML) $('rc-msg').textContent = locked ? (notYet ? 'Voting opens ' + when(OPENS) + '.' : 'Voting has closed.') : m.length ? 'Still to do: ' + m.join(' · ') : '';
   }
   function render() { renderQuestions(); renderOrders(); renderWho(); }
+  // Trench XP (Maurice, 2026-11-10): from The Crew Decides on, a sealed vote also pays 1,000 XP in the Discord
+  var XP = String(DATA.opens || '') >= '2026-11-10T23:30:00Z';
 
   $('rc-seal').onclick = function () {
     var msg = $('rc-msg');
@@ -1459,6 +1466,9 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     me = who; store(ME, me);
     if (missing().length) { msg.textContent = 'Before you seal it: ' + missing().join(', ') + '.'; return; }
     var btn = this, payload = { action: 'advvote', vote: DATA.key, email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country };
+    // the Discord username rides along with the vote, and is remembered for the next one
+    var discord = XP ? $('rc-discord').value.trim().replace(/^@+/, '') : '';
+    if (XP) { me.discord = discord; store(ME, me); payload.discord = discord; }
     DATA.questions.forEach(function (q) {
       if (q.kind === 'pick' || q.kind === 'pickroll') payload['p_' + q.id] = S.picks[q.id];
       if (q.kind === 'pick2') { payload['p_' + q.id + '_1'] = S.picks[q.id + '_1']; payload['p_' + q.id + '_2'] = S.picks[q.id + '_2']; }
@@ -1475,7 +1485,8 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         if (DATA.raft && DATA.raft.hunt === 'rope') $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.status === 'new' ? 'ROLLS SEALED' : 'ROLLS UPDATED') + '</b>Your rolls are in. The points come from your strands of rope, ' + DATA.raft.points + ' for each one you claimed. They land on the leaderboard at the next tally.</p>';
         else if (DATA.raft) $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.bonus ? '+' + res.bonus + ' POINTS · THE RAFT IS BUILT' : res.status === 'new' ? 'ROLLS SEALED' : 'ROLLS UPDATED') + '</b>' + (res.bonus ? 'All ' + DATA.raft.total + ' pieces were found, so sealing your rolls earns you a ' + res.bonus + '-point bonus for finding the raft so fast. ' : '') + 'Your rolls are in. The points come from your raft pieces, ' + DATA.raft.points + ' for each one you claimed' + (DATA.rollBonus ? ', plus a ' + DATA.rollBonus.points + '-point bonus once all ' + DATA.raft.total + ' pieces are found' : '') + '. They land on the leaderboard at the next tally.</p>';
         else $('rc-result').innerHTML = '<p class="rc-ok"><b>' + (res.status === 'new' ? '+' + res.points + ' POINTS' : 'PLAN UPDATED') + '</b>' +
-          (res.status === 'new' ? 'Your plan is with the Captain. The points land on the leaderboard at the next tally.' : 'Your new plan replaces your old one.') + ' You can change your vote until it closes.</p>';
+          (res.status === 'new' ? 'Your plan is with the Captain. The points land on the leaderboard at the next tally.' : 'Your new plan replaces your old one.') + ' You can change your vote until it closes.' +
+          (discord ? ' If that username is in the <i>Trench</i> Discord, this vote&rsquo;s 1,000 XP lands there within a few minutes.' : '') + '</p>';
         btn.textContent = DATA.sealLabel || 'SEAL MY PLAN'; btn.disabled = false;
         return;
       }
@@ -1502,6 +1513,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     lp.slice(1).reverse().forEach(function (t) { var e = document.createElement('p'); e.className = 'rc-lede rc-lede-more'; e.textContent = t.trim(); $('cr-lede').insertAdjacentElement('afterend', e); }); })();
   $('rc-pts').textContent = '+' + DATA.points;
   if (DATA.sealLabel) $('rc-seal').textContent = DATA.sealLabel;
+  if (XP && !closed) { $('rc-xp').hidden = false; $('rc-discord').value = me.discord || ''; }
   $('rc-close').textContent = when(CLOSES);
   // a closed vote drops the lines that only make sense while it is open
   if (closed) { $('rc-close-k').textContent = 'VOTING CLOSED'; $('rc-close-s').textContent = 'The votes are in.'; [].forEach.call(document.querySelectorAll('#rc .rc-open-only'), function (el) { el.style.display = 'none'; }); }
