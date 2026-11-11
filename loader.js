@@ -6,31 +6,76 @@
    Published edits show up as soon as GitHub Pages has them (each fetch checks for a newer copy).
    Loaded once site-wide from Code Injection (in <head>), it also shows the crest loading screen.
    Every copy after the first only mounts blocks it finds, so a page can include it any number of times. */
-// Maintenance mode (Maurice, 2026-11-04). Set MAINT to false and publish to reopen the site. /links, /arcade, /games, and every game in the Arcade stay open.
-// ?ma-open=1 lets this browser see the site anyway; ?ma-open=0 undoes that.
-var MAINT = false;
+// The Hunt Is Over (Maurice, 2026-11-10). From midnight ET on Nov 11 the whole site shows the closed screen, except the
+// link page, the Arcade (with every game in it), and the current Adventure vote. On those pages the menus are gone and a slim bar
+// links only the two of them. Set MAINT to false and publish to reopen the site.
+// ?ma-open=1 lets this browser see the site anyway; ?ma-open=0 undoes that. ?ma-maint=1 shows the closed state early.
+var MAINT_AT = Date.parse('2026-11-11T05:00:00Z');
+var MAINT = Date.now() >= MAINT_AT || /[?&]ma-maint=1/.test(location.search);
 (function () {
-  if (!MAINT || window.__maClosed) return;
-  if (/^\/(links|arcade|games|sort-the-shelf|book-icons|crossword|blades-and-brass|matching-auras|crest-quest|sky-mines|airship-runner|thread-the-needle|trench-run|sky-gauntlet|the-levian-30527|master-stacker-32368|hold-the-wall-13212|goma-goons-43216)\/?$/i.test(location.pathname)) return;
+  if (/^\/links\/?$/i.test(location.pathname)) return; // the link page always stays open, as it is
+  var VOTE ='https://www.mauriceafrich.com/the-crew-decides', ARCADE = 'https://www.mauriceafrich.com/arcade';
+  var FONT = '@font-face{font-family:"Cracked Imperia";src:url(https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2) format("woff2");font-weight:100 900;font-display:swap;size-adjust:109.5%}';
+  var kept = /^\/(the-crew-decides|arcade|games|sort-the-shelf|book-icons|crossword|blades-and-brass|matching-auras|crest-quest|sky-mines|airship-runner|thread-the-needle|trench-run|sky-gauntlet|the-levian-30527|master-stacker-32368|hold-the-wall-13212|goma-goons-43216)\/?$/i.test(location.pathname);
+  if (!MAINT) {
+    // a closed page left open reloads itself at midnight; games and the vote are never interrupted
+    var left = MAINT_AT - Date.now();
+    if (!kept && !window.__maMidnight && left > 0 && left < 864e5) { window.__maMidnight = true; setTimeout(function () { location.reload(); }, left + 1500); }
+    return;
+  }
+  if (window.__maClosed || window.__maBare) return;
   var open = false, q = /[?&]ma-open=([01])/.exec(location.search);
   try { if (q) { if (q[1] === '1') localStorage.setItem('ma-open', '1'); else localStorage.removeItem('ma-open'); } open = localStorage.getItem('ma-open') === '1'; } catch (e) {}
   if (open) return;
+  function fonts() { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap'; (document.head || document.documentElement).appendChild(l); }
+  function style(css) { var st = document.createElement('style'); st.textContent = css; (document.head || document.documentElement).appendChild(st); }
+  if (kept) {
+    // the Arcade, its games, and the vote stay open, without any menu
+    window.__maBare = true;
+    var here = /^\/the-crew-decides\/?$/i.test(location.pathname) ? 'vote' : /^\/arcade\/?$/i.test(location.pathname) ? 'arcade' : '';
+    fonts();
+    style('header#header,.header-menu,#hunt-nav,#hunt-nav-ov,#ma-chapters{display:none!important}' +
+      '#ma-bare{position:fixed;top:0;left:0;right:0;z-index:2147483000;box-sizing:border-box;min-height:56px;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 16px;background:#0b170f;border-bottom:2px solid #1a5e41}' +
+      '#ma-bare a{box-sizing:border-box;display:inline-block;padding:10px 18px;border:1.5px solid #f3ead9;border-radius:0;background:transparent;color:#fffffe;font-family:Almarai,sans-serif;font-weight:800;font-size:14px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;text-align:center}' +
+      '#ma-bare a:hover,#ma-bare a:focus-visible{background:#f3ead9;color:#0b170f;outline:none}' +
+      '#ma-bare a[aria-current]{background:#1a5e41;border-color:#1a5e41;color:#fffffe}' +
+      '@media (max-width:480px){#ma-bare{gap:12px;padding:8px 12px}#ma-bare a{font-size:12px;padding:10px 12px;letter-spacing:.05em}}');
+    var bar = function () {
+      if (document.getElementById('ma-bare') || !document.body) return;
+      var n = document.createElement('nav'); n.id = 'ma-bare'; n.setAttribute('aria-label', 'Open pages');
+      [[ARCADE, 'The Arcade', 'arcade'], [VOTE, 'Vote in the Adventure', 'vote']].forEach(function (x) {
+        var l = document.createElement('a'); l.href = x[0]; l.textContent = x[1]; if (x[2] === here) l.setAttribute('aria-current', 'page'); n.appendChild(l);
+      });
+      document.body.appendChild(n);
+    };
+    if (document.body) bar(); else document.addEventListener('DOMContentLoaded', bar);
+    return;
+  }
   window.__maClosed = true;
-  var HEAD = 'Laying The Golden Bricks, Be Patient, You Heathens!';
-  var css = '@font-face{font-family:"Cracked Imperia";src:url(https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2) format("woff2");font-weight:100 900;font-display:swap;size-adjust:109.5%}' +
+  var HEAD = 'The Hunt Is Over';
+  var css = FONT +
     'html,body{overflow:hidden!important;background:#0b170f!important}' +
     'body>*{visibility:hidden!important}' +
-    '#ma-closed{position:fixed;inset:0;z-index:2147483647;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;padding:24px;box-sizing:border-box;background:#0b170f;text-align:center}' +
-    '#ma-closed h1{margin:0;max-width:960px;font-family:"Cracked Imperia",Impact,sans-serif;font-weight:400;font-size:clamp(36px,7vw,84px);line-height:1.2;letter-spacing:.03em;text-transform:uppercase;color:#f2cf5b;text-wrap:balance;text-shadow:0 0 28px rgba(242,207,91,.4)}' +
-    '#ma-closed .b{display:grid;grid-template-columns:repeat(4,clamp(52px,11vw,104px));gap:8px}' +
-    '#ma-closed .b i{display:block;height:clamp(20px,4vw,38px);background:#f2cf5b;border:2px solid #912501}' +
-    '#ma-closed .b i:nth-child(n+5){transform:translateX(50%)}';
+    '#ma-closed{position:fixed;inset:0;z-index:2147483647;overflow-y:auto;box-sizing:border-box;background:#0b170f;text-align:center}' +
+    '#ma-closed .in{box-sizing:border-box;min-height:100%;max-width:820px;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:48px 24px}' +
+    '#ma-closed h1{margin:0;font-family:"Cracked Imperia",Impact,sans-serif;font-weight:400;font-size:clamp(40px,7vw,84px);line-height:1.2;letter-spacing:.03em;text-transform:uppercase;color:#f2cf5b;text-wrap:balance;text-shadow:0 0 28px rgba(242,207,91,.4)}' +
+    '#ma-closed p{margin:0;font-family:Almarai,sans-serif;font-weight:400;font-size:clamp(17px,2vw,21px);line-height:1.6;letter-spacing:.01em;color:#fffffe;text-wrap:pretty}' +
+    '#ma-closed .go{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:8px}' +
+    '#ma-closed .go a{box-sizing:border-box;display:inline-block;padding:16px 28px;border:1.5px solid #f3ead9;border-radius:0;background:#c1330a;color:#fffffe;font-family:Almarai,sans-serif;font-weight:800;font-size:16px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;box-shadow:4px 5px 0 rgba(0,0,0,.35)}' +
+    '#ma-closed .go a:hover,#ma-closed .go a:focus-visible{background:#f3ead9;color:#0b170f;outline:none}' +
+    '@media (max-width:480px){#ma-closed .go{flex-direction:column;align-self:stretch}#ma-closed .go a{width:100%}}';
   function paint() {
     if (document.getElementById('ma-closed')) return;
-    var st = document.createElement('style'); st.textContent = css; (document.head || document.documentElement).appendChild(st);
+    fonts(); style(css);
     var o = document.createElement('div'); o.id = 'ma-closed'; o.style.visibility = 'visible';
-    o.innerHTML = '<div class="b" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><h1></h1>';
-    o.querySelector('h1').textContent = HEAD; document.documentElement.appendChild(o);
+    o.innerHTML = '<div class="in"><h1></h1><p></p><p></p><div class="go"><a></a><a></a></div></div>';
+    var p = o.querySelectorAll('p'), a = o.querySelectorAll('a');
+    o.querySelector('h1').textContent = HEAD;
+    p[0].textContent = 'Thank you all so much for making the insane amount of work this required so worth it. Go sleep now. You deserve it.';
+    p[1].textContent = 'But also, don\u2019t forget to vote in the Adventure! Where are the crew of the Second Wind going next? And the Arcade is still open for your enjoyment!';
+    a[0].href = VOTE; a[0].textContent = 'Vote in the Adventure';
+    a[1].href = ARCADE; a[1].textContent = 'Visit the Arcade';
+    document.documentElement.appendChild(o);
     document.title = HEAD;
   }
   paint();
