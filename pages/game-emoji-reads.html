@@ -989,7 +989,8 @@ var HG_GAME = {"key":"emoji_reads","label":"Book Icons","points":25,"startDate":
   var g = HG.start(HG_GAME);
   if (!g) return;
   var P = JSON.parse(HG.b64(g.puzzle)), st = g.state, TRIES = 3; st.guesses = st.guesses || [];
-  var noThe = function (s) { return s.replace(/^(the|a|an) /, ''); };
+  // "a wizard of the earth sea" counts for A Wizard of Earthsea: the, a, and an are dropped wherever they sit, and spacing is ignored
+  var noThe = function (s) { return (' ' + s + ' ').replace(/ (the|a|an)(?= )/g, '').replace(/ /g, '') || s.replace(/ /g, ''); };
   var ok = [HG.norm(P.title)].concat((P.accept || []).map(HG.norm)).map(noThe);
   document.getElementById('er-emoji').textContent = P.emoji;
   function paint() {
