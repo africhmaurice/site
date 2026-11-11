@@ -16,7 +16,7 @@ var MAINT = Date.now() >= MAINT_AT || /[?&]ma-maint=1/.test(location.search);
   if (/^\/links\/?$/i.test(location.pathname)) return; // the link page always stays open, as it is
   var VOTE ='https://www.mauriceafrich.com/the-crew-decides', ARCADE = 'https://www.mauriceafrich.com/arcade';
   var FONT = '@font-face{font-family:"Cracked Imperia";src:url(https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2) format("woff2");font-weight:100 900;font-display:swap;size-adjust:109.5%}';
-  var kept = /^\/(the-crew-decides|arcade|games|sort-the-shelf|book-icons|crossword|blades-and-brass|matching-auras|crest-quest|sky-mines|airship-runner|thread-the-needle|trench-run|sky-gauntlet|the-levian-30527|master-stacker-32368|hold-the-wall-13212|goma-goons-43216)\/?$/i.test(location.pathname);
+  var kept = /^\/(the-crew-decides|arcade|games|sort-the-shelf|book-icons|blades-and-brass|matching-auras|crest-quest|sky-mines|airship-runner|thread-the-needle|trench-run|sky-gauntlet|the-levian-30527|master-stacker-32368|hold-the-wall-13212|goma-goons-43216)\/?$/i.test(location.pathname);
   if (!MAINT) {
     // a closed page left open reloads itself at midnight; games and the vote are never interrupted
     var left = MAINT_AT - Date.now();

@@ -285,7 +285,6 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <a href="https://www.mauriceafrich.com/games" data-k="skyword">SKYWORD</a>
       <a href="https://www.mauriceafrich.com/sort-the-shelf" data-k="shelf_sort">SORT THE SHELF</a>
       <a href="https://www.mauriceafrich.com/book-icons" data-k="emoji_reads">BOOK ICONS</a>
-      <a href="https://www.mauriceafrich.com/crossword" data-k="crossword">CROSSWORD</a>
       <a href="https://www.mauriceafrich.com/blades-and-brass" data-k="blades_brass" data-unlock="50000" data-act="two" hidden>BLADES &amp; BRASS</a><a href="https://www.mauriceafrich.com/matching-auras" data-k="matching_auras" data-unlock="100000" data-act="two" hidden>MATCHING AURAS</a><a href="https://www.mauriceafrich.com/crest-quest" data-k="crest_quest" data-unlock="150000" data-act="two" hidden>CREST QUEST</a><a href="https://www.mauriceafrich.com/sky-mines" data-k="sky_mines">SKY MINES</a>
       <a href="https://www.mauriceafrich.com/airship-runner" data-k="airship_runner">AIRSHIP RUNNER</a>
       <a href="https://www.mauriceafrich.com/thread-the-needle" data-k="thread_needle">THREAD THE NEEDLE</a>
@@ -838,7 +837,58 @@ var HGBoard = (function () {
     { w: 'VEVNUExF', hint: '' }, // #48 Nov 07, 6 letters
     { w: 'RFJBQ09OSUM=', hint: '' }, // #49 Nov 08, 8 letters
     { w: 'T1JBQ0xF', hint: '' }, // #50 Nov 09, 6 letters
-    { w: 'U1RPTkU=', hint: '' }  // #51 Nov 10, 5 letters
+    { w: 'U1RPTkU=', hint: '' },  // #51 Nov 10, 5 letters
+    { w: 'U1BFTEw=', hint: '' }, // #52 Nov 11, 5 letters
+    { w: 'Q1VUTEFTUw==', hint: '' }, // #53 Nov 12, 7 letters
+    { w: 'S05JR0hU', hint: '' }, // #54 Nov 13, 6 letters
+    { w: 'Uk9DS0VU', hint: '' }, // #55 Nov 14, 6 letters
+    { w: 'QU1VTEVU', hint: '' }, // #56 Nov 15, 6 letters
+    { w: 'VFJPTEw=', hint: '' }, // #57 Nov 16, 5 letters
+    { w: 'R09MRA==', hint: '' }, // #58 Nov 17, 4 letters
+    { w: 'Q09NRVQ=', hint: '' }, // #59 Nov 18, 5 letters
+    { w: 'RFVOR0VPTg==', hint: '' }, // #60 Nov 19, 7 letters
+    { w: 'SFlEUkE=', hint: '' }, // #61 Nov 20, 5 letters
+    { w: 'QkFSRA==', hint: '' }, // #62 Nov 21, 4 letters
+    { w: 'UExBU01B', hint: '' }, // #63 Nov 22, 6 letters
+    { w: 'U0NST0xM', hint: '' }, // #64 Nov 23, 6 letters
+    { w: 'Q0FTVExF', hint: '' }, // #65 Nov 24, 6 letters
+    { w: 'QU5DSE9S', hint: '' }, // #66 Nov 25, 6 letters
+    { w: 'RkVBU1Q=', hint: '' }, // #67 Nov 26, 5 letters
+    { w: 'QUxJRU4=', hint: '' }, // #68 Nov 27, 5 letters
+    { w: 'Uk9HVUU=', hint: '' }, // #69 Nov 28, 5 letters
+    { w: 'UE9USU9O', hint: '' }, // #70 Nov 29, 6 letters
+    { w: 'VEhST05F', hint: '' }, // #71 Nov 30, 6 letters
+    { w: 'T1JCSVQ=', hint: '' }, // #72 Dec 01, 5 letters
+    { w: 'RlJPU1Q=', hint: '' }, // #73 Dec 02, 5 letters
+    { w: 'RFJVSUQ=', hint: '' }, // #74 Dec 03, 5 letters
+    { w: 'Q09NUEFTUw==', hint: '' }, // #75 Dec 04, 7 letters
+    { w: 'R1JJTU9JUkU=', hint: '' }, // #76 Dec 05, 8 letters
+    { w: 'R0VNUw==', hint: '' }, // #77 Dec 06, 4 letters
+    { w: 'VU5JQ09STg==', hint: '' }, // #78 Dec 07, 7 letters
+    { w: 'T0dSRQ==', hint: '' }, // #79 Dec 08, 4 letters
+    { w: 'UEFSUk9U', hint: '' }, // #80 Dec 09, 6 letters
+    { w: 'TEFTRVI=', hint: '' }, // #81 Dec 10, 5 letters
+    { w: 'UEFMQURJTg==', hint: '' }, // #82 Dec 11, 7 letters
+    { w: 'UkVMSUM=', hint: '' }, // #83 Dec 12, 5 letters
+    { w: 'U1BSSVRF', hint: '' }, // #84 Dec 13, 6 letters
+    { w: 'TUVURU9S', hint: '' }, // #85 Dec 14, 6 letters
+    { w: 'Q1VSU0U=', hint: '' }, // #86 Dec 15, 5 letters
+    { w: 'UVVJVkVS', hint: '' }, // #87 Dec 16, 6 letters
+    { w: 'Q0FOT04=', hint: '' }, // #88 Dec 17, 5 letters
+    { w: 'U0hJRUxE', hint: '' }, // #89 Dec 18, 6 letters
+    { w: 'QUxDSEVNWQ==', hint: '' }, // #90 Dec 19, 7 letters
+    { w: 'VE9SQ0g=', hint: '' }, // #91 Dec 20, 5 letters
+    { w: 'TFVOQQ==', hint: '' }, // #92 Dec 21, 4 letters
+    { w: 'U0xFSUdI', hint: '' }, // #93 Dec 22, 6 letters
+    { w: 'VElOU0VM', hint: '' }, // #94 Dec 23, 6 letters
+    { w: 'WVVMRQ==', hint: '' }, // #95 Dec 24, 4 letters
+    { w: 'Q1JJTkdMRQ==', hint: '' }, // #96 Dec 25, 7 letters
+    { w: 'RklSRQ==', hint: '' }, // #97 Dec 26, 4 letters
+    { w: 'TUVDSA==', hint: '' }, // #98 Dec 27, 4 letters
+    { w: 'VE9XRVI=', hint: '' }, // #99 Dec 28, 5 letters
+    { w: 'RFdBUkY=', hint: '' }, // #100 Dec 29, 5 letters
+    { w: 'U0hBTUFO', hint: '' }, // #101 Dec 30, 6 letters
+    { w: 'Q1JPV04=', hint: '' }  // #102 Dec 31, 5 letters
   ];
   var SUBMIT_URL = 'https://www.mauriceafrich.com/points';
   var TRIES = 6;
