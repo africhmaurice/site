@@ -380,9 +380,9 @@ window.TrenchXP = window.TrenchXP || (function () {
 /* TRENCH-XP:END */
 </script>
     <script>(function(){function fit(){var t=document.querySelectorAll('.hg-tag');for(var i=0;i<t.length;i++){var e=t[i],w=e.parentNode.clientWidth,r=document.createRange();e.style.fontSize='';r.selectNodeContents(e);var fs=parseFloat(getComputedStyle(e).fontSize);while(r.getBoundingClientRect().width>w-4&&fs>10){fs-=.5;e.style.fontSize=fs+'px';}}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fit);else setTimeout(fit,0);window.addEventListener('load',fit);window.addEventListener('resize',fit);})();</script>
-    <div class="hg-eyebrow">The Treasure Hunt</div>
+    <div class="hg-eyebrow">Cello's Gate</div>
     <h1 class="hg-h1">SORT THE SHELF</h1>
-    <p class="hg-tag">Sixteen books, four hidden shelves. New every midnight EDT.</p>
+    <p class="hg-tag">Sixteen books, four hidden shelves. New every midnight ET.</p>
   </div>
   <main class="hg-card">
     <div class="hg-stamp" id="hg-stamp">&nbsp;</div>
@@ -588,7 +588,7 @@ var HG = (function () {
         function form() {
           resultEl.innerHTML = head + '<p>' + (over ? 'Tell the Captain who you are and your streak is saved.' : 'Tell the Captain who you are and your ' + points + ' points go straight to the leaderboard.') + ' Only the first time &mdash; after this it is one click.</p>' +
             '<div class="hg-form"><label for="hg-first">First name</label><input id="hg-first" autocomplete="given-name">' +
-            '<label for="hg-email">Email you use for the hunt</label><input id="hg-email" type="email" autocomplete="email" inputmode="email">' +
+            '<label for="hg-email">Your email</label><input id="hg-email" type="email" autocomplete="email" inputmode="email">' +
             '<label for="hg-handle">Social handle</label><input id="hg-handle" placeholder="@yourname" autocomplete="off">' +
             '<label for="hg-platform">Where that handle lives</label><select id="hg-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select>' +
             '<label for="hg-country">Country</label><select id="hg-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select>' +
@@ -603,7 +603,7 @@ var HG = (function () {
               country: c.value === '__other' ? other.value.trim() : c.value };
             if (!person.first_name) return (err.textContent = 'A first name, please.');
             if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(person.email)) return (err.textContent = 'That email does not look right.');
-            if (!person.country) return (err.textContent = 'Which country are you hunting from?');
+            if (!person.country) return (err.textContent = 'Which country are you playing from?');
             err.textContent = ''; me = person; saveMe(me); claim();
           };
         }
@@ -622,10 +622,10 @@ var HG = (function () {
           send(payload, function (res) {
             if (res && res.ok) { state.claimed = res.status || 'new'; save(); if (board) board.claimed(res); return claimed(state.claimed); }
             btn.disabled = false; btn.textContent = 'TRY AGAIN';
-            var why = { stale: 'That puzzle has closed &mdash; only today\'s pays out.', closed: 'That puzzle has closed.',
+            var why = { stale: 'That puzzle has closed &mdash; only today\'s counts.', closed: 'That puzzle has closed.',
               email: 'That email does not look right.', unsolved: 'The Captain could not match your answer to today\'s puzzle.',
-              nogame: 'This game is not open for points yet.' }[res && res.error] || 'The ship is slow today. Give it another go in a moment.';
-            err.innerHTML = why + ' Or <a href="' + SUBMIT_URL + '" style="color:inherit">submit a screenshot</a> instead.';
+              nogame: 'This game is not open yet.' }[res && res.error] || 'The ship is slow today. Give it another go in a moment.';
+            err.innerHTML = why;
           });
         }
         function claimed(status) {
@@ -676,7 +676,7 @@ var HG = (function () {
       resultEl.className = 'hg-result lose'; resultEl.style.display = 'block';
       resultEl.innerHTML = index < 0
         ? '<div class="hg-bang">NOT YET!</div><p>The first puzzle unlocks on <span class="hg-answer">' + esc(pretty(o.startDate)) + '</span>.</p>'
-        : '<div class="hg-bang">THAT IS ALL OF THEM!</div><p>Every puzzle has been played. Keep an eye on the hunt &mdash; more are coming.</p>';
+        : '<div class="hg-bang">THAT IS ALL OF THEM!</div><p>Every puzzle has been played. More are coming soon.</p>';
       stampEl.innerHTML = '&nbsp;';
       return null;
     }
@@ -811,7 +811,7 @@ var HGShare = (function () {
       x.strokeStyle = T.frame; x.lineWidth = 2; x.strokeRect(40, 54, W - 80, H - 108);
       x.textBaseline = 'alphabetic';
       // left: the game, the puzzle, the day, then its icons or its guess grid
-      x.fillStyle = T.soft; x.font = '800 22px Almarai, sans-serif'; spaced(x, "CELLO'S GATE TREASURE HUNT", 80, 122, 3);
+      x.fillStyle = T.soft; x.font = '800 22px Almarai, sans-serif'; spaced(x, "CELLO'S GATE", 80, 122, 3);
       if (o.streak) { x.textAlign = 'right'; x.fillStyle = T.stat; x.font = '800 30px Almarai, sans-serif'; spaced(x, o.streak + '-DAY STREAK', 1120, 124, 3); x.textAlign = 'left'; }
       x.fillStyle = T.text; x.font = '84px "Atomic Marker", cursive'; fit(x, o.game.toUpperCase(), 80, 236, 600);
       x.fillStyle = T.text; x.font = '700 26px Almarai, sans-serif'; spaced(x, o.board.toUpperCase(), 80, 300, 2);
@@ -1108,7 +1108,7 @@ var HGBoard = (function () {
         var who0 = (o.me && o.me()) || {}, ask = !rec && (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(myEmail()) || !String(who0.first_name || '').trim());
         cover.innerHTML = '<h2>' + esc(o.label) + '</h2>' + (ask ? '<div class="dbd-who"><p>Who\u2019s playing? Pressing START puts you on this week\u2019s board, and solving ' + (o.day > '2026-11-10' ? 'saves your streak' : 'claims your points') + '.</p>' +
           '<label>First name<input class="dbd-first" autocomplete="given-name" value="' + esc(who0.first_name || '') + '"></label>' +
-          '<label>Email you use for the hunt<input class="dbd-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" value="' + esc(myEmail()) + '"></label></div><p class="dbd-whoerr" aria-live="polite"></p>' : '') +
+          '<label>Your email<input class="dbd-email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" value="' + esc(myEmail()) + '"></label></div><p class="dbd-whoerr" aria-live="polite"></p>' : '') +
           '<button type="button">START</button><p>The clock starts the moment you press START and keeps running until you solve it.</p>';
         box.appendChild(cover);
         // the questions can be taller than a short puzzle: the box grows to fit them

@@ -533,7 +533,7 @@ var ArcadeCard = (function () {
       x.strokeStyle = T.frame; x.lineWidth = 2; x.strokeRect(40, 54, W - 80, H - 108);
       x.textBaseline = 'alphabetic'; x.textAlign = 'left';
       // left: whose run, which game, which week, and their ship
-      x.fillStyle = T.soft; x.font = '800 22px Almarai, sans-serif'; spaced(x, "THE ARCADE · CELLO'S GATE TREASURE HUNT", 80, 122, 3, o.streak ? 560 : 620);
+      x.fillStyle = T.soft; x.font = '800 22px Almarai, sans-serif'; spaced(x, "THE ARCADE · CELLO'S GATE", 80, 122, 3, o.streak ? 560 : 620);
       if (o.streak) { x.textAlign = 'right'; x.fillStyle = T.stat; x.font = '800 30px Almarai, sans-serif'; spaced(x, o.streak + '-DAY STREAK', 1120, 124, 3, 340); x.textAlign = 'left'; }
       x.fillStyle = T.text; x.font = '84px "Cracked Imperia", Impact, sans-serif'; spaced(x, o.game.toUpperCase(), 80, 230, 2, 600);
       if (o.name) { x.fillStyle = T.text; x.font = '700 28px Almarai, sans-serif'; spaced(x, String(o.name).toUpperCase(), 80, 292, 2, 600); }
@@ -1050,7 +1050,7 @@ var ArcadeCard = (function () {
     msg('Put your score on the board:');
     whoEl.hidden=false;
     whoEl.innerHTML='<div class="ar-form"><label for="ar-first">First name</label><input id="ar-first" autocomplete="given-name">'+
-      '<label for="ar-email">Email you use for the hunt</label><input id="ar-email" type="email" autocomplete="email" inputmode="email">'+
+      '<label for="ar-email">Your email</label><input id="ar-email" type="email" autocomplete="email" inputmode="email">'+
       '<label for="ar-handle">Social handle (shown on the board)</label><input id="ar-handle" placeholder="@yourname" autocomplete="off">'+
       '<label for="ar-platform">Where that handle lives</label><select id="ar-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select>'+
       '<label for="ar-country">Country</label><select id="ar-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select>'+
@@ -1063,7 +1063,7 @@ var ArcadeCard = (function () {
         platform:whoEl.querySelector('#ar-platform').value,country:c.value==='__other'?other.value.trim():c.value};
       if(!p.first_name)return msg('A first name, please.',1);
       if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email))return msg('That email does not look right.',1);
-      if(!p.country)return msg('Which country are you hunting from?',1);
+      if(!p.country)return msg('Which country are you playing from?',1);
       me=p;store(ME,me);whoEl.hidden=true;whoEl.innerHTML='';submit(run);
     };
   }
@@ -1088,7 +1088,7 @@ var ArcadeCard = (function () {
       if(e==='slow'){msg('Easy, captain. Logging it in a few seconds...');return setTimeout(function(){submit(run);},6000);}
       if(e==='landed'){msg('Logged! Check the board for your place.');setTimeout(refreshBoard,10000);setTimeout(refreshBoard,40000);return;}
       if(e==='wait'){msg('The ship’s log is not answering right now. Check the board in a minute. If your run is not there, tap TRY AGAIN.');setTimeout(refreshBoard,10000);setTimeout(refreshBoard,40000);whoEl.hidden=false;whoEl.innerHTML='<button type="button" class="ar-btn ghost">TRY AGAIN</button>';whoEl.querySelector('button').onclick=function(){whoEl.hidden=true;submit(run);};return;}
-      msg(({email:'That email does not look right.',closed:'The hunt is over, so runs no longer go on the board.',ticket:'This run took too long to check in, so it cannot go on the board.',
+      msg(({email:'That email does not look right.',closed:'The board is closed for now.',ticket:'This run took too long to check in, so it cannot go on the board.',
         check:'The Captain could not verify this run.',limit:'That is a lot of flying for one day. Come back tomorrow!'})[e]||'The ship is slow today. Give it another go in a moment.',1);
       if(!e||e==='network'||e==='server'||e==='empty'){whoEl.hidden=false;whoEl.innerHTML='<button type="button" class="ar-btn ghost">TRY AGAIN</button>';whoEl.querySelector('button').onclick=function(){whoEl.hidden=true;submit(run);};}
     });
@@ -1115,7 +1115,7 @@ var ArcadeCard = (function () {
     var c=document.createElement('canvas'),Wc=1200,Hc=600;c.width=Wc;c.height=Hc;var x=c.getContext('2d');
     x.fillStyle='#0b170f';x.fillRect(0,0,Wc,Hc);x.fillStyle='#2d1c53';x.fillRect(0,0,Wc,14);x.fillRect(0,Hc-14,Wc,14);
     x.strokeStyle='rgba(162,245,144,.35)';x.lineWidth=2;x.strokeRect(40,54,Wc-80,Hc-108);
-    x.fillStyle='#607667';x.font='800 22px Almarai, sans-serif';x.fillText("CELLO'S GATE TREASURE HUNT",80,122);
+    x.fillStyle='#607667';x.font='800 22px Almarai, sans-serif';x.fillText("CELLO'S GATE",80,122);
     x.fillStyle='#fffffe';x.font='84px "Cracked Imperia", cursive';fit(x,'AIRSHIP RUNNER',80,236,620);
     x.font='700 26px Almarai, sans-serif';x.fillText('LEVEL '+S.level+'  ·  TIME '+clock(S.t),80,300);
     x.fillStyle='#607667';x.fillText('WEEK ENDING '+new Date(weekId()+'T12:00:00Z').toLocaleDateString('en-US',{timeZone:'UTC',month:'long',day:'numeric'}).toUpperCase(),80,342);

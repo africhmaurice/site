@@ -527,7 +527,7 @@ var ArcadeCard = (function () {
       x.strokeStyle = T.frame; x.lineWidth = 2; x.strokeRect(40, 54, W - 80, H - 108);
       x.textBaseline = 'alphabetic'; x.textAlign = 'left';
       // left: whose run, which game, which week, and their ship
-      x.fillStyle = T.soft; x.font = '800 22px Almarai, sans-serif'; spaced(x, "THE ARCADE · CELLO'S GATE TREASURE HUNT", 80, 122, 3, o.streak ? 560 : 620);
+      x.fillStyle = T.soft; x.font = '800 22px Almarai, sans-serif'; spaced(x, "THE ARCADE · CELLO'S GATE", 80, 122, 3, o.streak ? 560 : 620);
       if (o.streak) { x.textAlign = 'right'; x.fillStyle = T.stat; x.font = '800 30px Almarai, sans-serif'; spaced(x, o.streak + '-DAY STREAK', 1120, 124, 3, 340); x.textAlign = 'left'; }
       x.fillStyle = T.text; x.font = '84px "Cracked Imperia", Impact, sans-serif'; spaced(x, o.game.toUpperCase(), 80, 230, 2, 600);
       if (o.name) { x.fillStyle = T.text; x.font = '700 28px Almarai, sans-serif'; spaced(x, String(o.name).toUpperCase(), 80, 292, 2, 600); }
@@ -1309,7 +1309,7 @@ if(/[?&]test=1/.test(location.search))window.__ss={G:function(){return G;},deplo
   function who(run){
     msg('Put your score on the board below.');postEl.hidden=false;whoEl.hidden=false;
     whoEl.innerHTML='<div class="hw-form"><label for="hw-first">First name</label><input id="hw-first" autocomplete="given-name">'+
-      '<label for="hw-email">Email you use for the hunt</label><input id="hw-email" type="email" autocomplete="email" inputmode="email">'+
+      '<label for="hw-email">Your email</label><input id="hw-email" type="email" autocomplete="email" inputmode="email">'+
       '<label for="hw-handle">Social handle (shown on the board)</label><input id="hw-handle" placeholder="@yourname" autocomplete="off">'+
       '<label for="hw-platform">Where that handle lives</label><select id="hw-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select>'+
       '<label for="hw-country">Country</label><select id="hw-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select>'+
@@ -1321,7 +1321,7 @@ if(/[?&]test=1/.test(location.search))window.__ss={G:function(){return G;},deplo
       var p={first_name:$('first').value.trim(),email:$('email').value.trim(),handle:$('handle').value.trim(),platform:$('platform').value,country:c.value==='__other'?other.value.trim():c.value};
       if(!p.first_name)return msg('A first name, please.',1);
       if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email))return msg('That email does not look right.',1);
-      if(!p.country)return msg('Which country are you hunting from?',1);
+      if(!p.country)return msg('Which country are you playing from?',1);
       me=p;storeJ(ME,me);whoEl.hidden=true;whoEl.innerHTML='';submit(run);
     };
   }
@@ -1345,7 +1345,7 @@ if(/[?&]test=1/.test(location.search))window.__ss={G:function(){return G;},deplo
       if(e==='slow'){msg('Easy, captain. Logging it in a few seconds...');return setTimeout(function(){submit(run);},6000);}
       if(e==='landed'){msg('Logged! Check the board for your place.');setTimeout(refreshBoard,10000);setTimeout(refreshBoard,40000);return;}
       if(e==='wait'){msg('The ship’s log is not answering right now. Check the board in a minute. If your game is not there, tap TRY AGAIN.');setTimeout(refreshBoard,10000);setTimeout(refreshBoard,40000);whoEl.hidden=false;whoEl.innerHTML='<button type="button" class="sm">TRY AGAIN</button>';whoEl.querySelector('button').onclick=function(){whoEl.hidden=true;submit(run);};return;}
-      msg(({email:'That email does not look right.',closed:'The hunt is over, so games no longer go on the board.',ticket:'This game took too long to check in, so it cannot go on the board.',
+      msg(({email:'That email does not look right.',closed:'The board is closed for now.',ticket:'This game took too long to check in, so it cannot go on the board.',
         check:'The Captain could not verify this game.',limit:'That is a lot of defending for one day. Come back tomorrow!'})[e]||'The ship is slow today. Give it another go in a moment.',1);
       if(!e||e==='network'||e==='server'||e==='empty'){whoEl.hidden=false;whoEl.innerHTML='<button type="button" class="sm">TRY AGAIN</button>';whoEl.querySelector('button').onclick=function(){whoEl.hidden=true;submit(run);};}
     });

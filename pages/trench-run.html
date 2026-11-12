@@ -773,7 +773,7 @@ window.TrenchXP = window.TrenchXP || (function () {
   function trWho(r){
     trMsg('Put your score on the board below.');trPostEl.hidden=false;trWhoEl.hidden=false;
     trWhoEl.innerHTML='<div class="tr-form"><label for="tr-first">First name</label><input id="tr-first" autocomplete="given-name">'+
-      '<label for="tr-email">Email you use for the hunt</label><input id="tr-email" type="email" autocomplete="email" inputmode="email">'+
+      '<label for="tr-email">Your email</label><input id="tr-email" type="email" autocomplete="email" inputmode="email">'+
       '<label for="tr-handle">Social handle (shown on the board)</label><input id="tr-handle" placeholder="@yourname" autocomplete="off">'+
       '<label for="tr-platform">Where that handle lives</label><select id="tr-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select>'+
       '<label for="tr-country">Country</label><select id="tr-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select>'+
@@ -786,7 +786,7 @@ window.TrenchXP = window.TrenchXP || (function () {
         platform:trWhoEl.querySelector('#tr-platform').value,country:c.value==='__other'?other.value.trim():c.value};
       if(!p.first_name)return trMsg('A first name, please.',1);
       if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email))return trMsg('That email does not look right.',1);
-      if(!p.country)return trMsg('Which country are you hunting from?',1);
+      if(!p.country)return trMsg('Which country are you playing from?',1);
       trMe=p;trStore(TR_ME,trMe);trWhoEl.hidden=true;trWhoEl.innerHTML='';trSubmit(r);
     };
   }
@@ -807,7 +807,7 @@ window.TrenchXP = window.TrenchXP || (function () {
       if(e==='slow'){trMsg('Easy, captain. Logging it in a few seconds...');return setTimeout(function(){trSubmit(r);},6000);}
       if(e==='landed'){trMsg('Logged! Check the board for your place.');setTimeout(trRefresh,10000);setTimeout(trRefresh,40000);return;}
       if(e==='wait'){trMsg('The ship’s log is not answering right now. Check the board in a minute. If your run is not there, tap TRY AGAIN.');setTimeout(trRefresh,10000);setTimeout(trRefresh,40000);trPostEl.hidden=false;trWhoEl.hidden=false;trWhoEl.innerHTML='<button type="button" class="ch-btn ghost">TRY AGAIN</button>';trWhoEl.querySelector('button').onclick=function(){trWhoEl.hidden=true;trSubmit(r);};return;}
-      trMsg(({email:'That email does not look right.',closed:'The hunt is over, so runs no longer go on the board.',ticket:'This run took too long to check in, so it cannot go on the board.',
+      trMsg(({email:'That email does not look right.',closed:'The board is closed for now.',ticket:'This run took too long to check in, so it cannot go on the board.',
         check:'The Captain could not verify this run.',limit:'That is a lot of flying for one day. Come back tomorrow!'})[e]||'The ship is slow today. Give it another go in a moment.',1);
       if(!e||e==='network'||e==='server'||e==='empty'){trPostEl.hidden=false;trWhoEl.hidden=false;trWhoEl.innerHTML='<button type="button" class="ch-btn ghost">TRY AGAIN</button>';trWhoEl.querySelector('button').onclick=function(){trWhoEl.hidden=true;trSubmit(r);};}
     });
