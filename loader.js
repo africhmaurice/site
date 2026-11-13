@@ -32,18 +32,18 @@ var MAINT = Date.now() >= MAINT_AT || /[?&]ma-maint=1/.test(location.search);
   if (kept) {
     // the Arcade, its games, and the vote stay open, without any menu
     window.__maBare = true;
-    var here = /^\/through-the-mountains\/?$/i.test(location.pathname) ? 'vote' : /^\/arcade\/?$/i.test(location.pathname) ? 'arcade' : '';
+    var here = /^\/through-the-mountains\/?$/i.test(location.pathname) ? 'vote' : /^\/arcade\/?$/i.test(location.pathname) ? 'arcade' : /^\/adventure\/?$/i.test(location.pathname) ? 'adventure' : '';
     fonts();
     style('header#header,.header-menu,#hunt-nav,#hunt-nav-ov,#ma-chapters{display:none!important}' +
       '#ma-bare{position:fixed;top:0;left:0;right:0;z-index:2147483000;box-sizing:border-box;min-height:56px;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 16px;background:#0b170f;border-bottom:2px solid #1a5e41}' +
       '#ma-bare a{box-sizing:border-box;display:inline-block;padding:10px 18px;border:1.5px solid #f3ead9;border-radius:0;background:transparent;color:#fffffe;font-family:Almarai,sans-serif;font-weight:800;font-size:14px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;text-align:center}' +
       '#ma-bare a:hover,#ma-bare a:focus-visible{background:#f3ead9;color:#0b170f;outline:none}' +
       '#ma-bare a[aria-current]{background:#1a5e41;border-color:#1a5e41;color:#fffffe}' +
-      '@media (max-width:480px){#ma-bare{gap:12px;padding:8px 12px}#ma-bare a{font-size:12px;padding:10px 12px;letter-spacing:.05em}}');
+      '@media (max-width:600px){#ma-bare{gap:8px;padding:8px 10px}#ma-bare a{flex:1 1 0;min-width:0;align-self:stretch;display:flex;align-items:center;justify-content:center;font-size:12px;padding:8px 6px;letter-spacing:.04em}}');
     var bar = function () {
       if (document.getElementById('ma-bare') || !document.body) return;
       var n = document.createElement('nav'); n.id = 'ma-bare'; n.setAttribute('aria-label', 'Open pages');
-      [[ARCADE, 'The Arcade', 'arcade'], [VOTE, 'Vote in the Adventure', 'vote']].forEach(function (x) {
+      [[ARCADE, 'The Arcade', 'arcade'], ['https://www.mauriceafrich.com/adventure', 'The Adventure So Far', 'adventure'], [VOTE, 'Vote in the Adventure', 'vote']].forEach(function (x) {
         var l = document.createElement('a'); l.href = x[0]; l.textContent = x[1]; if (x[2] === here) l.setAttribute('aria-current', 'page'); n.appendChild(l);
       });
       document.body.appendChild(n);
