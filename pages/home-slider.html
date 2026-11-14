@@ -105,31 +105,30 @@ a{color:#fff}
 
 @media (max-width:760px){
   #ma-slider{aspect-ratio:3/5}
-  /* Release slide: five books and the audiobook, three and three, under the heading */
-  /* more room top and bottom, and smaller books (Maurice, 2026-11-13: "we need more padding on top and bottom and these need to shrink a little") */
-  /* captions never run into each other (2026-11-14): each book keeps its caption's full width (no squeezing) with
-     14px+ between books (2026-11-14) */
-  #ma-track>div[data-screen-label="ED"]{padding:13cqw 6cqw 15cqw !important;gap:0 !important}
-  #ma-track>div[data-screen-label="ED"] .ed-head{font-size:8cqw !important}
-  #ma-track>div[data-screen-label="ED"] .ed-row{flex-wrap:wrap;gap:3.5cqw max(14px,4cqw) !important;margin-top:4cqw !important;max-width:88cqw}
-  /* 12px+ between the eyebrow and the heading, and between a caption and the covers under it, even at the ends of the
-     books' 5px bob (QA 2026-11-14) */
-  #ma-track>div[data-screen-label="ED"]>div:first-child{margin-bottom:max(14px,3.6cqw) !important}
-  #ma-track>div[data-screen-label="ED"] .ed-row{row-gap:max(24px,6cqw) !important}
-  #ma-track>div[data-screen-label="ED"] .ed-book{flex:0 0 auto;max-width:100%}
-  /* two books to a line on every phone, so the middle arrows stay 12px+ clear of the captions (2026-11-14) */
-  #ma-track>div[data-screen-label="ED"] .ed-row{max-width:min(88cqw,calc(100cqw - 112px))}
-  #ma-track>div[data-screen-label="ED"] .ed-book img{height:21cqw !important}
-  #ma-track>div[data-screen-label="ED"] .ed-label{font-size:max(11px,2.6cqw) !important;line-height:1.3 !important;overflow-wrap:normal;word-break:normal;hyphens:none}
-  /* the whole slide fits on every phone, even when the browser holds text at 16px or more (2026-11-14): edFit() below
-     sets --edk/--edke to draw the captions and eyebrow back at their designed size, and --edf to shrink the covers when a
-     short screen needs it; spacing inside the row is divided by the same scale so the gaps stay as designed */
-  #ma-track>div[data-screen-label="ED"]>div:first-child{scale:var(--edke,1);transform-origin:50% 0;flex:none;max-width:none;width:calc(88cqw / var(--edke,1));margin-bottom:calc(max(14px,3.6cqw) - var(--edeh,0px)) !important}
-  #ma-track>div[data-screen-label="ED"] .ed-row{scale:var(--edk,1);transform-origin:50% 0;flex:none;max-width:none;width:calc((100cqw - 112px) / var(--edk,1));column-gap:calc(max(14px,4cqw) / var(--edk,1)) !important;row-gap:calc(max(24px,6cqw) / var(--edk,1)) !important;margin-bottom:calc(0px - var(--edrh,0px))}
-  #ma-track>div[data-screen-label="ED"] .ed-book{gap:calc(1cqw / var(--edk,1)) !important}
-  #ma-track>div[data-screen-label="ED"] .ed-book img{height:calc(21cqw * var(--edf,1) / var(--edk,1)) !important}
-  #ma-track>div[data-screen-label="ED"] .ed-label>span{margin-top:calc(12px / var(--edk,1))}
-  #ma-track>div[data-screen-label="ED"] a[style*="display:inline-block"]{margin-top:5cqw !important}
+  /* Cello's Gate slide on phones (2026-11-14, after Maurice's 300px screenshot): everything on the slide sits in one
+     block (.ed-fit, added by the script below) that is scaled as a whole, so it always fits between the header and the
+     dots and stays 12px+ clear of the side arrows, with two books to a line on every phone. Sizes inside the block are
+     divided by --eds, so where the browser holds text at 16px or more the text is laid out large and drawn back down
+     to its designed size (never under 11px) by the block's scale --edt; gaps are divided by --edt so they stay as
+     designed (12px+) at any scale. Only screens narrower than about 340px draw the whole block smaller. */
+  #ma-track>div[data-screen-label="ED"]{padding:var(--edpt,13cqw) 0 var(--edpb,15cqw) !important;gap:0 !important}
+  #ma-track>div[data-screen-label="ED"]>.ed-fit{display:flex;flex-direction:column;align-items:center;flex:none;box-sizing:border-box;width:calc(var(--edw,calc(100cqw - 124px)) / var(--edt,1));scale:var(--edt,1);transform-origin:50% 50%;margin:calc(0px - var(--edmy,0px)) calc(0px - var(--edmx,0px))}
+  #ma-track>div[data-screen-label="ED"]>.ed-fit>div:first-child{flex:none;box-sizing:border-box;width:calc(min(88cqw,100cqw - 40px) / var(--edt,1));max-width:none;font-size:calc(max(11px,2.4cqw) / var(--eds,1)) !important;margin:0 0 calc(max(14px,3.6cqw) / var(--edt,1)) !important}
+  #ma-track>div[data-screen-label="ED"] .ed-head{flex:none;box-sizing:border-box;width:calc(min(88cqw,100cqw - 40px) / var(--edt,1));max-width:none;font-size:calc(8cqw / var(--eds,1)) !important}
+  #ma-track>div[data-screen-label="ED"] .ed-row{display:grid !important;grid-template-columns:repeat(2,max-content);justify-content:center;justify-items:center;align-items:start;flex:none;width:100%;max-width:none;column-gap:calc(max(14px,4cqw) / var(--edt,1)) !important;row-gap:calc(max(24px,6cqw) / var(--edt,1)) !important;margin:calc(max(18px,4cqw) / var(--edt,1)) 0 0 !important}
+  #ma-track>div[data-screen-label="ED"] .ed-book{max-width:none;gap:calc(1cqw / var(--edt,1)) !important}
+  #ma-track>div[data-screen-label="ED"] .ed-book:nth-child(5){grid-column:1 / -1}
+  #ma-track>div[data-screen-label="ED"] .ed-book img{height:calc(21cqw * var(--edf,1) / var(--eds,1)) !important}
+  #ma-track>div[data-screen-label="ED"] .ed-label{font-size:calc(max(11px,2.6cqw) / var(--eds,1)) !important;line-height:1.3 !important;white-space:nowrap}
+  #ma-track>div[data-screen-label="ED"] .ed-label>span{margin-top:calc(12px / var(--edt,1))}
+  #ma-track>div[data-screen-label="ED"] a.hv0{font-size:calc(max(11px,3.6cqw) / var(--eds,1)) !important;padding:calc(2.4cqw / var(--eds,1)) calc(7cqw / var(--eds,1)) !important;margin-top:calc(max(18px,5cqw) / var(--edt,1)) !important}
+  /* the pieces still rise in one after another inside the block */
+  #ma-track .ma-enter>.ed-fit{animation:none}
+  #ma-track .ma-enter>.ed-fit>*{animation:maUp .8s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--d,0s) + .05s)}
+  #ma-track .ma-enter>.ed-fit>*:nth-child(2){animation-delay:calc(var(--d,0s) + .15s)}
+  #ma-track .ma-enter>.ed-fit>*:nth-child(3){animation-delay:calc(var(--d,0s) + .25s)}
+  #ma-track .ma-enter>.ed-fit>*:nth-child(n+4){animation-delay:calc(var(--d,0s) + .35s)}
+  @media (prefers-reduced-motion:reduce){#ma-track .ma-enter>.ed-fit>*{animation:none}}
   /* Collider slide: the three articles stacked, the logo on top */
   #ma-track>div[data-screen-label="CO"]{flex-direction:column !important;padding:0 !important;gap:0 !important}
   #ma-track>div[data-screen-label="CO"] .co-col{padding:4cqw 8cqw !important;flex:1 1 0 !important;justify-content:center !important}
@@ -505,36 +504,47 @@ maStart();
   var rt=0;
   addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(setMode,150);});
 })();
-/* Cello's Gate slide on phones: keep everything inside the slide (2026-11-14). Where the browser enforces a minimum font
-   size, the captions and eyebrow are drawn back down to their designed size (never under 11px), and if the slide is
-   still too short, the covers shrink until the heading and the last line sit 18px+ inside it (12px plus the 5px bob). */
+/* Cello's Gate slide on phones: everything fits inside the slide at any width and height (2026-11-14). On phones the
+   slide's pieces go into one block; the block is laid out with two books to a line and scaled as a whole so it sits
+   18px+ under the top of the slide, 18px+ above the dots, and 12px+ clear of the arrows' 44px tap areas. Where the
+   browser holds text at a minimum size, --eds lays the text out larger and the scale draws it back to its designed
+   size. When only the width holds the block back, the covers keep their designed size; if the slide is short, the
+   covers shrink first (to 60%), then the whole block. */
 (function(){
-  var s=document.querySelector('#ma-track>[data-screen-label="ED"]');if(!s)return;
-  var mq=window.matchMedia&&matchMedia('(max-width:760px)'),st=s.style,P=['--edk','--edke','--edf','--edeh','--edrh'];
+  var s=document.querySelector('#ma-track [data-screen-label="ED"]');if(!s)return;
+  var mq=window.matchMedia&&matchMedia('(max-width:760px)'),st=s.style,P=['--eds','--edt','--edf','--edw','--edmx','--edmy','--edpt','--edpb'];
   function fit(){
     P.forEach(function(p){st.removeProperty(p);});
-    if(!mq||!mq.matches)return;
-    var cq=sl.clientWidth/100;if(!cq)return;
-    var eye=s.firstElementChild,row=s.querySelector('.ed-row'),lab=s.querySelector('.ed-label'),dots=sl.querySelector('.ma-dots');
-    var cta=s.querySelector('a.hv0');if(cta&&!cta.offsetHeight)cta=null;
-    var la=parseFloat(getComputedStyle(lab).fontSize),ea=parseFloat(getComputedStyle(eye).fontSize);
-    var k=Math.min(1,Math.max(11,2.6*cq)/la),ke=Math.min(1,Math.max(11,2.4*cq)/ea),kMin=Math.min(1,11/la),f=1;
-    st.setProperty('--edke',ke);
-    for(var i=0;i<20;i++){
-      st.setProperty('--edk',k);st.setProperty('--edf',f);
-      st.setProperty('--edeh',eye.offsetHeight*(1-ke)+'px');
-      st.setProperty('--edrh',row.offsetHeight*(1-k)+'px');
-      var top=eye.offsetTop,bot=cta?cta.offsetTop+cta.offsetHeight:row.offsetTop+row.offsetHeight*k;
-      var floor=dots?dots.offsetTop:s.offsetHeight;
-      if(top>=18&&bot<=floor-18)break;
-      if(f>.6)f=Math.max(.6,f-.05);else if(k>kMin)k=Math.max(kMin,k-.03);else break;
+    var w=s.querySelector(':scope>.ed-fit');
+    if(!mq||!mq.matches){if(w){while(w.firstChild)s.insertBefore(w.firstChild,w);s.removeChild(w);}return;}
+    // the wide-screen strips hold each slide in a panel until the switch to phones lets go of it: wait for that
+    if(s.parentNode!==sl.querySelector('#ma-track')){later(250);return;}
+    if(!w){w=document.createElement('div');w.className='ed-fit';while(s.firstChild)w.appendChild(s.firstChild);s.appendChild(w);}
+    var W=sl.clientWidth,H=s.offsetHeight,cq=W/100;if(!W||!H)return;
+    var dots=sl.querySelector('.ma-dots'),dt=H;
+    if(dots&&dots.offsetHeight)dt=Math.min(H,dots.getBoundingClientRect().top-sl.getBoundingClientRect().top);
+    var TOP=18,BOT=18,aH=dt-BOT-TOP,aW=W-124,gap=Math.max(14,4*cq);
+    st.setProperty('--edpt',TOP+'px');st.setProperty('--edpb',(H-dt+BOT)+'px');st.setProperty('--edw',aW+'px');
+    var eye=w.firstElementChild,head=w.querySelector('.ed-head'),lab=w.querySelector('.ed-label'),cta=w.querySelector('a.hv0');
+    function fs(e){return parseFloat(getComputedStyle(e).fontSize)||1;}
+    var k=1;[[eye,Math.max(11,2.4*cq)],[head,8*cq],[lab,Math.max(11,2.6*cq)],[cta,Math.max(11,3.6*cq)]].forEach(function(p){if(p[0])k=Math.min(k,p[1]/fs(p[0]));});
+    st.setProperty('--eds',k);
+    var b=[].slice.call(w.querySelectorAll('.ed-book')),g=1,f=1,T=k;
+    for(var i=0;i<60;i++){
+      T=k*g;st.setProperty('--edt',T);st.setProperty('--edf',f);
+      var bw=b.map(function(e){return e.offsetWidth*T;});
+      var need=Math.max(Math.max(bw[0]||0,bw[2]||0)+Math.max(bw[1]||0,bw[3]||0)+gap,bw[4]||0);
+      if(need>aW-1){var g2=g*(aW-1-gap)/(need-gap);f*=g/g2;g=g2;continue;}
+      if(w.offsetHeight*T<=aH)break;
+      if(f*g>.601)f=Math.max(.6/g,f-.05);else g*=.97;
     }
+    st.setProperty('--edmx',w.offsetWidth*(1-T)/2+'px');st.setProperty('--edmy',w.offsetHeight*(1-T)/2+'px');
   }
-  var t=0;function later(){clearTimeout(t);t=setTimeout(fit,60);}
+  var t=0;function later(d){clearTimeout(t);t=setTimeout(fit,typeof d==='number'?d:60);}
   fit();
   addEventListener('resize',later);
-  if(window.ResizeObserver)new ResizeObserver(later).observe(sl);
-  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(later);
+  if(window.ResizeObserver){var ro=new ResizeObserver(function(){later();});ro.observe(sl);ro.observe(s);}
+  if(document.fonts){if(document.fonts.ready)document.fonts.ready.then(later);if(document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',later);}
   [].forEach.call(s.querySelectorAll('img'),function(im){if(!im.complete)im.addEventListener('load',later);});
 })();
 </script>
