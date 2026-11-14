@@ -192,11 +192,18 @@
   <section class="card" id="px-captain" hidden>
     <p class="kick">CAPTAIN ONLY</p>
     <h2>Paraxis&rsquo;s Rolls</h2>
-    <p>Bank 100 D20 rolls for Paraxis. Every fren&rsquo;s battle uses them in order. Once the first battle starts, they&rsquo;re locked.</p>
+    <p>Bank Paraxis&rsquo;s rolls: 100 D20s to hit, and 200 D4s for who he swings at. Every fren&rsquo;s battle uses them in order. A D4 that lands on someone who is down moves on to the next one. Once the first battle starts, they&rsquo;re locked.</p>
+    <h3>To Hit: D20s</h3>
     <p class="packs" id="px-bank-n">Banked: …</p>
     <div class="acts"><button type="button" class="btn" id="px-bank1">ROLL ONE</button><button type="button" class="btn alt" id="px-bank10">ROLL TEN</button></div>
     <div class="bank" id="px-bank"></div>
     <p class="msg" id="px-bank-msg"></p>
+    <h3>Who He Swings At: D4s</h3>
+    <p class="quiet">1 Rune · 2 Sparrow · 3 Hale · 4 Scarlett</p>
+    <p class="packs" id="px-bank4-n">Banked: …</p>
+    <div class="acts"><button type="button" class="btn" id="px-bank41">ROLL ONE D4</button><button type="button" class="btn alt" id="px-bank410">ROLL TEN D4S</button></div>
+    <div class="bank" id="px-bank4"></div>
+    <p class="msg" id="px-bank4-msg"></p>
   </section>
 </div></div>
 <script>
@@ -894,16 +901,19 @@
   // ---- the Captain banks Paraxis's rolls ----
   if (CAPTAIN) {
     $('px-captain').hidden = false; $('px-captain').scrollIntoView();
-    var showBank = function (res) {
-      if (!res || !res.ok) { $('px-bank-msg').textContent = ({ key: 'That captain link isn’t right.', locked: 'The battles have started, so the rolls are locked.' })[res && res.error] || 'The ship is slow. Try again.'; if (res && res.bank) showBank({ ok: true, bank: res.bank, added: [] }); return; }
-      $('px-bank-n').textContent = 'Banked: ' + res.bank.length + ' of 100';
-      $('px-bank').innerHTML = res.bank.map(function (n, i) { return '<span title="Roll ' + (i + 1) + '">' + n + '</span>'; }).join('');
-      $('px-bank1').disabled = $('px-bank10').disabled = res.bank.length >= 100;
-      $('px-bank-msg').textContent = res.added && res.added.length ? 'You rolled ' + res.added.join(', ') + '.' : res.bank.length >= 100 ? 'All 100 rolls are banked. Paraxis is ready.' : '';
+    // one panel per bank: the D20s (ids px-bank...) and the D4s (px-bank4...)
+    var showBank = function (die, res) {
+      var id = die === 'd4' ? 'px-bank4' : 'px-bank', size = die === 'd4' ? 200 : 100, what = die === 'd4' ? 'D4s' : 'rolls';
+      if (!res || !res.ok) { $(id + '-msg').textContent = ({ key: 'That captain link isn’t right.', locked: 'The battles have started, so the rolls are locked.' })[res && res.error] || 'The ship is slow. Try again.'; if (res && res.bank) { var m = $(id + '-msg').textContent; showBank(die, { ok: true, bank: res.bank, added: [] }); $(id + '-msg').textContent = m; } return; }
+      $(id + '-n').textContent = 'Banked: ' + res.bank.length + ' of ' + size;
+      $(id).innerHTML = res.bank.map(function (n, i) { return '<span title="' + (i + 1) + (die === 'd4' ? ': ' + NAMES[n - 1] : '') + '">' + n + '</span>'; }).join('');
+      $(id + '1').disabled = $(id + '10').disabled = res.bank.length >= size;
+      $(id + '-msg').textContent = res.added && res.added.length ? 'You rolled ' + res.added.join(', ') + '.' : res.bank.length >= size ? 'All ' + size + ' ' + what + ' are banked.' : '';
     };
-    var bank = function (n) { $('px-bank-msg').textContent = n ? 'Rolling…' : ''; send({ action: 'pxbank', captain: CAPTAIN, n: n }).then(showBank); };
-    $('px-bank1').onclick = function () { bank(1); }; $('px-bank10').onclick = function () { bank(10); };
-    bank(0);
+    var bank = function (die, n) { $((die === 'd4' ? 'px-bank4' : 'px-bank') + '-msg').textContent = n ? 'Rolling…' : ''; send({ action: 'pxbank', captain: CAPTAIN, n: n, die: die }).then(function (res) { showBank(die, res); }); };
+    $('px-bank1').onclick = function () { bank('d20', 1); }; $('px-bank10').onclick = function () { bank('d20', 10); };
+    $('px-bank41').onclick = function () { bank('d4', 1); }; $('px-bank410').onclick = function () { bank('d4', 10); };
+    bank('d20', 0); bank('d4', 0);
   }
 })();
 </script>
