@@ -96,6 +96,9 @@
 #px{--cream:#f3ead9;--lime:#a2f590}
 #px .rc-die{grid-row:auto!important}
 #px .dice2{display:flex;align-items:center;gap:16px}
+#px .pxdice{display:flex;flex-direction:column;align-items:center;gap:8px}
+#px .pxres{min-height:2.6em;display:flex;flex-direction:column;justify-content:flex-end;gap:2px}
+#px .pxres .mres{margin:0;font-size:14px}
 /* the target die (a D12 since 11/13; the ids still say d4): a 3D canvas once three.js is in; until then (or without it) the name it landed on */
 #px .pxd4{position:relative;width:88px;height:88px;display:grid;place-items:center;flex:none}
 #px .pxd4 canvas{position:absolute;inset:0;width:100%;height:100%;display:none}
@@ -240,7 +243,7 @@
     </div>
     <div class="crew" id="px-crew"></div>
     <div class="turnbox">
-      <div class="dice2"><div class="rc-die" id="rc-die-px" aria-hidden="true"></div><div class="pxd4" id="px-d4" aria-hidden="true"><canvas></canvas><span class="d4lab">D12</span></div></div>
+      <div class="pxdice"><div class="pxres" id="px-pxres" aria-live="polite"></div><div class="dice2"><div class="rc-die" id="rc-die-px" aria-hidden="true"></div><div class="pxd4" id="px-d4" aria-hidden="true"><canvas></canvas><span class="d4lab">D12</span></div></div></div>
       <div class="turntxt">
         <p class="kick" id="px-turnk">ROUND 1</p>
         <p class="say" id="px-say" aria-live="polite"></p>
@@ -1101,7 +1104,7 @@
           return (fast || landed ? Promise.resolve() : cardDie(e.who, e.roll)).then(function () { markRes(e.who, e.crit ? 'HIT TWICE' : e.hit ? 'HIT' : 'MISS', e.hit ? 'hit' : 'miss'); view.px = e.px; if (e.fumble) { view.hp[e.who] = e.hp; if (!fast) shake(e.who); } say(line); log(line, e.hit ? 'good' : e.fumble ? 'bad' : ''); paint(); return fast ? null : wait(650); });
         }
         if (e.t === 'heal') { markRes(e.who, 'MEDPACK', 'heal'); view.hp[e.target] = e.hp; view.packs = e.packs; var hl = NAMES[e.who] + ' uses a medpack on ' + (e.target === e.who ? (e.who === 1 || e.who === 3 ? 'herself' : 'himself') : NAMES[e.target]) + (e.from <= 0 ? ' and brings ' + NAMES[e.target] + ' back.' : '.') ; say(hl); log(hl, 'good'); paint(); return fast ? null : wait(700); }
-        if (e.t === 'pxturn') { busy = true; say('Paraxis attacks!'); if (!fast) paint(); return fast ? null : wait(700); }
+        if (e.t === 'pxturn') { pxRes(null); busy = true; say('Paraxis attacks!'); if (!fast) paint(); return fast ? null : wait(700); }
         if (e.t === 'px') {
           var pl = 'Paraxis swings at ' + NAMES[e.who] + ' and rolls ' + e.roll + '. ' + (e.hit ? (e.crit ? 'A natural 20! He hits twice. ' : 'A hit! ') + NAMES[e.who] + (e.hp <= 0 ? ' is down.' : ' has ' + e.hp + ' left.') : 'He needed ' + e.need + '. A miss.') + (e.fumble ? ' A 1! Paraxis takes a hit himself.' : '');
           // the D4 first: who he swings at (one that lands on someone who is down moves on to the next)
@@ -1109,7 +1112,7 @@
           if (!fast) e.d4.forEach(function (v, i) {
             d4chain = d4chain.then(function () { say(i ? NAMES[e.d4[i - 1] - 1] + ' is down. Paraxis rolls the twelve-sided die again…' : 'Paraxis rolls the twelve-sided die to pick his target…'); return rollD4(d4Battle, v); }).then(function () { return wait(350); });
           });
-          return d4chain.then(function () { return fast ? null : (say('Paraxis swings at ' + NAMES[e.who] + '…'), die(e.roll)); }).then(function () { view.hp[e.who] = e.hp; if (e.fumble) view.px = e.px; if (e.hit && !fast) shake(e.who); say(pl); log(pl, e.hit ? 'bad' : e.fumble ? 'good' : ''); paint(); return fast ? null : wait(700); });
+          return d4chain.then(function () { return fast ? null : (say('Paraxis swings at ' + NAMES[e.who] + '…'), die(e.roll)); }).then(function () { pxRes(e); view.hp[e.who] = e.hp; if (e.fumble) view.px = e.px; if (e.hit && !fast) shake(e.who); say(pl); log(pl, e.hit ? 'bad' : e.fumble ? 'good' : ''); paint(); return fast ? null : wait(700); });
         }
         if (e.t === 'round') { view.round = e.round; log('Round ' + e.round + '.'); return null; }
       });
@@ -1131,6 +1134,14 @@
   // HIT / MISS under each crew die once it lands, kept up through Paraxis's turn (Maurice, 2026-11-13)
   function markRes(i, text, cls) { var el = $('px-res' + i); if (el) { el.textContent = text; el.className = 'mres ' + cls; } }
   function clearRes() { for (var i = 0; i < 4; i++) markRes(i, '', ''); }
+  // Paraxis's swings, above his dice: his HIT is bad news for the crew (red), his MISS good (green); null clears them
+  function pxRes(e) {
+    var box = $('px-pxres'); if (!box) return;
+    if (!e) { box.innerHTML = ''; return; }
+    var p = document.createElement('p'); p.className = 'mres ' + (e.hit ? 'miss' : 'hit');
+    p.textContent = (e.hit ? (e.crit ? 'HIT TWICE' : 'HIT') : 'MISS') + ' ' + NAMES[e.who].toUpperCase();
+    box.appendChild(p);
+  }
   // a crew card's d20: tumbling in the card while the rolls are on their way, then three bounces onto n
   function cardDie(i, n) {
     return new Promise(function (res) {
