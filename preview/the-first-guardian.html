@@ -86,7 +86,8 @@
 #px .hearts i{width:22px;height:22px;background:var(--emer7);border:2px solid var(--ink)}
 #px .hearts i.off{background:transparent}
 #px .mate .need{font-size:14px;line-height:1.5}
-#px .mate.turn{border-color:var(--ember);box-shadow:0 0 0 3px var(--ember)}
+/* every crew member still standing wears a white stroke; the one Paraxis is swinging at turns scarlet (Maurice, 2026-11-13) */
+#px .mate.turn{border-color:#fffffe;box-shadow:0 0 0 3px #fffffe}
 /* the one Paraxis is swinging at: a bright ember stroke with a glow, on top of any other state */
 #px .mate.aimed{border-color:#ff4c0f!important;box-shadow:0 0 0 4px #ff4c0f,0 0 22px 6px rgba(255,76,15,.55)!important;position:relative;z-index:1}
 #px .mate.down{background:#d9cfbd}
@@ -1074,7 +1075,7 @@
   function paint() {
     $('px-hp').textContent = view.px; $('px-bar').style.width = (view.px / 30 * 100) + '%';
     NAMES.forEach(function (n, i) {
-      var m = $('px-m' + i); m.classList.toggle('down', view.hp[i] <= 0); m.classList.toggle('turn', !view.over && view.hp[i] > 0 && !busy);
+      var m = $('px-m' + i); m.classList.toggle('down', view.hp[i] <= 0); m.classList.toggle('turn', !view.over && view.hp[i] > 0);
       m.querySelector('.hearts').innerHTML = [0, 1, 2, 3].map(function (k) { return '<i' + (k < view.hp[i] ? '' : ' class="off"') + '></i>'; }).join('');
       m.querySelector('.hearts').setAttribute('aria-label', Math.max(0, view.hp[i]) + ' of 4 hit points');
     });
