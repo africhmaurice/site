@@ -9,8 +9,7 @@
   var CAT_ORDER = ['stickers', 'apparel', 'hats', 'beanies', 'pins', 'mugs', 'puzzles', 'art-prints'];
   var ALL = '/collections/merch', AURA = SITE + '/oracles-gift/aura-spectrum', QUIZ = SITE + '/sky-pirate-quiz-61748';   // the quiz under Aura Spectrum (Maurice, 2026-10-24)
   var ORDER_URL = SITE + '/order', ORDER_TEXT = "ORDER CELLO'S GATE";
-  var HUNT = [['TREASURE HUNTER PROFILE', SITE + '/profile'], ['LEADERBOARD', SITE + '/leaderboard'], ['ACT ONE', SITE + '/act-one-winners'], ['ACT TWO', SITE + '/act-two-winners'],
-    ['ACT THREE', SITE + '/act-three-winners'], ['ACT FOUR', SITE + '/act-four-winners'], ['THE TREASURE', SITE + '/the-treasure']];
+  var HUNT = [['TREASURE HUNTER PROFILE', SITE + '/profile']];
   // Maurice, 2026-11-12: Arcade and Adventure under Games, Bookshelf under Extras, then Contests moved to Extras
   var GAMES = [['ARCADE', SITE + '/arcade'], ['ADVENTURE', SITE + '/adventure']];
   var EXTRAS = [['AURA SPECTRUM', AURA], ['TAKE THE QUIZ!', QUIZ], ['CREW DOSSIERS', SITE + '/crew-dossier'], ['BOOKSHELF', SITE + '/bookshelf'], ['CONTESTS', SITE + '/contests']];

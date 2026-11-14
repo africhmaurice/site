@@ -76,12 +76,6 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
         <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">THE HUNT<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
         <div class="mn-dd"><div class="mn-dd-in">
           <a href="https://www.mauriceafrich.com/profile">TREASURE HUNTER PROFILE</a>
-          <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
-          <a href="https://www.mauriceafrich.com/act-one-winners">ACT ONE</a>
-          <a href="https://www.mauriceafrich.com/act-two-winners">ACT TWO</a>
-          <a href="https://www.mauriceafrich.com/act-three-winners">ACT THREE</a>
-          <a href="https://www.mauriceafrich.com/act-four-winners">ACT FOUR</a>
-          <a href="https://www.mauriceafrich.com/the-treasure">THE TREASURE</a>
         </div></div>
       </div>
       <a href="https://shop.mauriceafrich.com/" class="mn-link">TRENCH MARKET</a>
@@ -125,12 +119,6 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   <a href="https://www.mauriceafrich.com" class="mn-ovlogo" aria-label="Maurice Africh home"><img loading="lazy" decoding="async" src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
   <div class="mn-ovgroup"><span>THE HUNT</span>
     <a href="https://www.mauriceafrich.com/profile">TREASURE HUNTER PROFILE</a>
-    <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
-    <a href="https://www.mauriceafrich.com/act-one-winners">ACT ONE</a>
-    <a href="https://www.mauriceafrich.com/act-two-winners">ACT TWO</a>
-    <a href="https://www.mauriceafrich.com/act-three-winners">ACT THREE</a>
-    <a href="https://www.mauriceafrich.com/act-four-winners">ACT FOUR</a>
-    <a href="https://www.mauriceafrich.com/the-treasure">THE TREASURE</a>
   </div>
   <a href="https://shop.mauriceafrich.com/">TRENCH MARKET</a>
   <a href="https://www.mauriceafrich.com/links">LINKS</a>
@@ -290,8 +278,8 @@ html,body{margin:0 !important;padding:0 !important}
     if (reg && reg.top && reg.top[2]) third = reg.top[2].points;
     var race = !p.rank ? 'You played as crew staff, so you weren’t ranked on the public board. Every point you earned still counted toward the crew’s rewards!'
       : !p.tr ? 'Every point you earned helped the whole crew unlock rewards.'
-      : p.rank <= 3 ? '<b>You finished in Treasure position!</b> The top 3 at the end of the hunt won <a href="' + U + '/the-treasure">The Treasure</a>.'
-      : 'You finished #' + p.rank + ' of ' + fmt(p.of) + '. The top 3 at the end of the hunt won <a href="' + U + '/the-treasure">The Treasure</a>.';
+      : p.rank <= 3 ? '<b>You finished in Treasure position!</b> The top 3 at the end of the hunt won The Treasure.'
+      : 'You finished #' + p.rank + ' of ' + fmt(p.of) + '. The top 3 at the end of the hunt won The Treasure.';
     var pct = third ? Math.min(100, p.pts / third * 100) : 100;
     var days = '';
     for (var i = 0; i < 51; i++) days += '<div class="hp-day' + (p.days.charAt(i) === '1' ? ' on' : '') + (i === idx ? ' today' : '') + (i > idx ? ' later' : '') + '" title="' + day(new Date(Date.UTC(2026, 8, 21 + i)).toISOString().slice(0, 10)) + '"></div>';
@@ -324,7 +312,7 @@ html,body{margin:0 !important;padding:0 !important}
       '<h2>LATEST LOOT</h2><ul class="hp-recent">' + p.recent.map(function (r) { return '<li><time>' + esc(day(r[0])) + '</time><span>' + esc(r[1]) + '</span><b>+' + fmt(r[2]) + '</b></li>'; }).join('') + '</ul>' +
       '<p class="hp-crew">You earned <b>' + (crewTotal ? (p.pts / crewTotal * 100).toFixed(1) : '0') + '%</b> of the crew’s ' + fmt(crewTotal) + ' points. Every one of them helped unlock rewards for everyone!</p>' +
       '<div class="hp-colors" id="hp-colors" role="radiogroup" aria-label="Card color"><span>CARD COLOR</span></div>' +
-      '<div class="hp-more"><button type="button" class="hp-btn" id="hp-share">SHARE MY CARD</button><a class="hp-btn alt" href="' + U + '/leaderboard">LEADERBOARD</a></div>' +
+      '<div class="hp-more"><button type="button" class="hp-btn" id="hp-share">SHARE MY CARD</button></div>' +
       (EXAMPLE ? '' : '<p class="hp-foot">Not you? <a id="hp-switch">Use a different email</a></p>');
     card.hidden = false; find.hidden = true;
     // Act Two points count up from zero.

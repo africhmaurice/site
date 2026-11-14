@@ -28,15 +28,9 @@
     },
     {
       "slug": "hunt-menu",
-      "url": "/points /solve /leaderboard",
+      "url": "/points /solve",
       "title": "Hunt header menu",
       "source": "pages/hunt-menu.html"
-    },
-    {
-      "slug": "leaderboard",
-      "url": "/leaderboard",
-      "title": "Leaderboard embed",
-      "source": "pages/leaderboard.html"
     },
     {
       "slug": "contests",
@@ -67,12 +61,6 @@
       "url": "(preview only: the next loot box scorecard, not live)",
       "title": "Loot box scorecard (next version, preview)",
       "source": "bot:squarespace-lootbox.next.html"
-    },
-    {
-      "slug": "rules",
-      "url": "/rules",
-      "title": "Official Rules",
-      "source": "pages/rules.html"
     },
     {
       "slug": "privacy-policy",
@@ -303,12 +291,6 @@
       "source": "bot:squarespace-hunt.next.html"
     },
     {
-      "slug": "the-treasure",
-      "url": "/the-treasure",
-      "title": "The Treasure (moved off the Hunt page)",
-      "source": "pages/the-treasure.html"
-    },
-    {
       "slug": "questions",
       "url": "/questions",
       "title": "Questions? (hunt question form)",
@@ -355,36 +337,6 @@
       "url": "(preview only, not on Squarespace yet)",
       "title": "Profile preview",
       "source": "pages/profile-next.html"
-    },
-    {
-      "slug": "act-one-winners",
-      "url": "/act-one-winners",
-      "title": "Act One Winners (sweepstakes wheels)",
-      "source": "pages/act-one-winners.html"
-    },
-    {
-      "slug": "act-two-winners",
-      "url": "/act-two-winners",
-      "title": "Act Two Winners (sweepstakes wheels)",
-      "source": "pages/act-two-winners.html"
-    },
-    {
-      "slug": "act-four-winners",
-      "url": "/act-four-winners",
-      "title": "Act Four (final standings)",
-      "source": "pages/act-four-winners.html"
-    },
-    {
-      "slug": "act-one-other-countries",
-      "url": "/act-one-other-countries",
-      "title": "Act One Other Countries (for fun)",
-      "source": "pages/act-one-other-countries.html"
-    },
-    {
-      "slug": "act-two-other-countries",
-      "url": "/act-two-other-countries",
-      "title": "Act Two Other Countries (sent to winners)",
-      "source": "pages/act-two-other-countries.html"
     },
     {
       "slug": "aura-spectrum",
