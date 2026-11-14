@@ -13,10 +13,10 @@
 var MAINT_AT = Date.parse('2026-11-11T05:00:00Z');
 var MAINT = Date.now() >= MAINT_AT || /[?&]ma-maint=1/.test(location.search);
 (function () {
-  if (/^\/links\/?$/i.test(location.pathname)) return; // the link page always stays open, as it is
+  // Locked down 2026-11-14 (Maurice: "Lock everything"): every page shows the closed screen while the new site goes up behind it.
   var VOTE ='https://www.mauriceafrich.com/the-first-guardian', ARCADE = 'https://www.mauriceafrich.com/arcade';
   var FONT = '@font-face{font-family:"Cracked Imperia";src:url(https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2) format("woff2");font-weight:100 900;font-display:swap;size-adjust:109.5%}';
-  var kept = /^\/(the-first-guardian|through-the-mountains|adventure|order|preorder|the-crew-decides|arcade|games|sort-the-shelf|book-icons|blades-and-brass|matching-auras|crest-quest|sky-mines|airship-runner|thread-the-needle|trench-run|sky-gauntlet|the-levian-30527|master-stacker-32368|hold-the-wall-13212|goma-goons-43216)\/?$/i.test(location.pathname);
+  var kept = false && /^\/(the-first-guardian|through-the-mountains|adventure|order|preorder|the-crew-decides|arcade|games|sort-the-shelf|book-icons|blades-and-brass|matching-auras|crest-quest|sky-mines|airship-runner|thread-the-needle|trench-run|sky-gauntlet|the-levian-30527|master-stacker-32368|hold-the-wall-13212|goma-goons-43216)\/?$/i.test(location.pathname);
   if (!MAINT) {
     // a closed page left open reloads itself at midnight; games and the vote are never interrupted
     var left = MAINT_AT - Date.now();
@@ -75,16 +75,17 @@ var MAINT = Date.now() >= MAINT_AT || /[?&]ma-maint=1/.test(location.search);
     if (document.getElementById('ma-closed')) return;
     fonts(); style(css);
     var o = document.createElement('div'); o.id = 'ma-closed'; o.style.visibility = 'visible';
-    o.innerHTML = '<div class="in"><h1></h1><p></p><p></p><div class="go"><a></a><a></a><a></a><a></a><a></a></div></div>';
-    var p = o.querySelectorAll('p'), a = o.querySelectorAll('a');
+    // fully locked (2026-11-14): only the heading and his first paragraph; the vote, Arcade, Order, and Links buttons pointed at closed pages
+    o.innerHTML = '<div class="in"><h1></h1><p></p></div>';
+    var p = o.querySelectorAll('p'), a = [];
     o.querySelector('h1').textContent = HEAD;
     p[0].textContent = 'Thank you all so much for making the insane amount of work this required so worth it. Go sleep now. You deserve it.';
-    p[1].textContent = 'But also, don\u2019t forget to vote in the Adventure! Where are the crew of the Second Wind going next? And the Arcade is still open for your enjoyment!';
-    a[0].href = VOTE; a[0].textContent = 'Vote in the Adventure';
-    a[1].href = 'https://www.mauriceafrich.com/adventure'; a[1].textContent = 'The Adventure So Far';
-    a[2].href = ARCADE; a[2].textContent = 'Visit the Arcade';
-    a[3].href = 'https://www.mauriceafrich.com/order'; a[3].textContent = 'Order Cello’s Gate';
-    a[4].href = 'https://www.mauriceafrich.com/links'; a[4].textContent = 'Links';
+    if (p[1]) p[1].textContent = 'But also, don\u2019t forget to vote in the Adventure! Where are the crew of the Second Wind going next? And the Arcade is still open for your enjoyment!';
+    if (a[0]) { a[0].href = VOTE; a[0].textContent = 'Vote in the Adventure'; }
+    if (a[1]) { a[1].href = 'https://www.mauriceafrich.com/adventure'; a[1].textContent = 'The Adventure So Far'; }
+    if (a[2]) { a[2].href = ARCADE; a[2].textContent = 'Visit the Arcade'; }
+    if (a[3]) { a[3].href = 'https://www.mauriceafrich.com/order'; a[3].textContent = 'Order Cello’s Gate'; }
+    if (a[4]) { a[4].href = 'https://www.mauriceafrich.com/links'; a[4].textContent = 'Links'; }
     document.documentElement.appendChild(o);
     document.title = HEAD;
   }
