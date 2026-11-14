@@ -689,6 +689,7 @@
         }).catch(function () {});
       },
       ready: function (id) { return !!dice[id]; },
+      parts: function () { return T ? { T: T, geometry: dieGeometry, materials: dieMaterials, pose: pose, studio: studio, clack: clack } : null; },
       // Throw straight away, before the number is known; set it with number() when it arrives.
       throwNow: function (id) { if (calm || !dice[id]) return false; try { return throwIt(id, null, null); } catch (e) { dropThrow(id); return false; } },
       number: function (id, n, done) { try { return setNumber(id, n, done); } catch (e) { dropThrow(id); return false; } },
@@ -1048,7 +1049,7 @@
     var lead = []; if (!fast) for (var k = 0; k < events.length && (events[k].t === 'atk' || events[k].t === 'heal'); k++) lead.push(events[k]);
     if (lead.length) chain = chain.then(function () {
       say('The crew attacks!');
-      return Promise.all(lead.filter(function (e) { return e.t === 'atk'; }).map(function (e) { return cardDie(e.who, e.roll); }));
+      return crewToss(lead.filter(function (e) { return e.t === 'atk'; }));
     });
     events.forEach(function (e) {
       var landed = lead.indexOf(e) >= 0;
@@ -1092,6 +1093,78 @@
       var id = 'c' + i;
       if (!Dice.ready(id)) { var dn = $('rc-dn-' + id); if (dn) dn.textContent = n; return setTimeout(res, 500); }
       Dice.landCard(id, n, function () { res(); });
+    });
+  }
+  // ---- the crew's dice thrown together across the screen (Maurice, 2026-11-13) ----
+  // Each die leaps out of its card, tumbles and bounces, and they land side by side in the middle with their numbers up,
+  // hold so you can read them, then fade back into the cards. Same die as the vote pages (Dice.parts()); drawn path, not physics.
+  var crewOv = null;
+  function crewOverlay(P) {
+    if (crewOv) return crewOv;
+    var T = P.T, cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
+    cv.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147481900;display:none';
+    document.body.appendChild(cv);
+    var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); r.outputEncoding = T.sRGBEncoding; r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    var scene = new T.Scene(), cam = new T.OrthographicCamera(-1, 1, 1, -1, -1000, 1000); cam.position.set(0, 0, 500); cam.lookAt(0, 0, 0);
+    var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(P.studio()).texture; pm.dispose();
+    scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35)); var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-300, 500, 500); scene.add(sun);
+    var sc = document.createElement('canvas'); sc.width = sc.height = 128; var sg = sc.getContext('2d'), rg = sg.createRadialGradient(64, 64, 0, 64, 64, 64);
+    rg.addColorStop(0, 'rgba(0,0,0,.5)'); rg.addColorStop(1, 'rgba(0,0,0,0)'); sg.fillStyle = rg; sg.fillRect(0, 0, 128, 128);
+    var shTex = new T.CanvasTexture(sc), geo = P.geometry(), mats = P.materials(), dice = [];
+    for (var k = 0; k < 4; k++) {
+      var m = new T.Mesh(geo, mats); m.visible = false; scene.add(m);
+      var s = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: shTex, transparent: true, depthWrite: false })); s.position.z = -200; s.visible = false; scene.add(s);
+      dice.push({ mesh: m, shadow: s });
+    }
+    crewOv = { T: T, cv: cv, r: r, scene: scene, cam: cam, dice: dice, raf: 0 };
+    function size() { var w = window.innerWidth, h = window.innerHeight; r.setSize(w, h, false); cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2; cam.bottom = -h / 2; cam.updateProjectionMatrix(); crewOv.w = w; crewOv.h = h; crewOv.R = Math.max(36, Math.min(58, Math.min(w, h) * 0.072)); }
+    size(); window.addEventListener('resize', size);
+    return crewOv;
+  }
+  function crewToss(list) {
+    var P = Dice.parts && Dice.parts();
+    var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!P || calm || !list.length) return Promise.all(list.map(function (e) { return cardDie(e.who, e.roll); }));
+    return new Promise(function (done) {
+      var T = P.T, o = crewOverlay(P), R = o.R, n = list.length;
+      // landing spots: side by side across the middle, never closer than two dice apart and never off the edge
+      var gap = Math.min(R * 3.1, (o.w - R * 2.6) / Math.max(1, n - 1 || 1)), y0 = o.h * 0.07;
+      var runs = list.map(function (e, k) {
+        var node = $('rc-die-c' + e.who), b = node.getBoundingClientRect();
+        Dice.stop('c' + e.who); node.style.visibility = 'hidden';
+        var d = o.dice[k];
+        return { e: e, d: d, node: node, sx: b.left + b.width / 2 - o.w / 2, sy: o.h / 2 - (b.top + b.height / 2),
+          ex: (k - (n - 1) / 2) * gap + (Math.random() - 0.5) * R * 0.4, ey: y0 + (Math.random() - 0.5) * R * 0.6,
+          q0: new T.Quaternion().setFromEuler(new T.Euler(Math.random() * 6.3, Math.random() * 6.3, Math.random() * 6.3)), q1: P.pose(e.roll),
+          axis: new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), delay: k * 60, hits: 0 };
+      });
+      o.dice.forEach(function (d, k) { d.mesh.visible = d.shadow.visible = k < n; });
+      o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
+      try { P.clack(0.3); } catch (err) {}
+      var dur = 1500, t0 = performance.now();
+      (function frame(now) {
+        var all = true;
+        runs.forEach(function (u) {
+          var t = Math.max(0, Math.min(1, (now - t0 - u.delay) / dur)), e = 1 - Math.pow(1 - t, 3); if (t < 1) all = false;
+          var x = u.sx + (u.ex - u.sx) * e, y = u.sy + (u.ey - u.sy) * e;
+          var hop = Math.abs(Math.sin(Math.PI * 3.5 * t)) * Math.pow(1 - t, 1.6) * R * 2.4;
+          // a clack each time it comes down
+          var bounce = Math.floor(t * 3.5 + 0.5); if (bounce > u.hits && bounce <= 3) { u.hits = bounce; try { P.clack([0.32, 0.18, 0.09][bounce - 1] / Math.sqrt(n)); } catch (err) {} }
+          var q = u.q0.clone().slerp(u.q1, e); q.premultiply(new T.Quaternion().setFromAxisAngle(u.axis, (1 - e) * 14));
+          u.d.mesh.quaternion.copy(q); u.d.mesh.position.set(x, y + hop, 0); u.d.mesh.scale.setScalar(R * (1 + hop / R * 0.07));
+          u.d.shadow.position.set(x + 4 + hop * 0.08, y - R * 0.85, -200); u.d.shadow.scale.set(R * 2 * (1 - Math.min(0.4, hop / R * 0.1)), R * 0.6 * (1 - Math.min(0.4, hop / R * 0.1)), 1);
+        });
+        o.r.render(o.scene, o.cam);
+        if (!all) { o.raf = requestAnimationFrame(frame); return; }
+        o.raf = 0;
+        // hold so everyone can read all four, then they go back into their cards
+        setTimeout(function () {
+          runs.forEach(function (u) { Dice.show('c' + u.e.who, u.e.roll); u.node.style.visibility = ''; var dn = $('rc-dn-c' + u.e.who); if (dn) dn.textContent = u.e.roll; });
+          o.cv.style.transition = 'opacity .4s ease'; o.cv.style.opacity = '0';
+          setTimeout(function () { o.cv.style.display = 'none'; }, 420);
+          done();
+        }, 1300);
+      })(t0);
     });
   }
   var plan = ['a', 'a', 'a', 'a'];
