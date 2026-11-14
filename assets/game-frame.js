@@ -39,7 +39,7 @@
     'airship-runner':      { phoneJoin: [['.ar-ctrls', '.ar-hud']], root: '#ma-runner', zoom: '.ar-wrap', box: ['.ar-hud', '.ar-stage'], snug: true, beside: { host: '.ar-game', items: ['.ar-hud', '.ar-ctrls'] },
                              how: ['.ar-side > .ar-panel:has(.ar-how)'], parts: ['.ar-side > .ar-panel:has(.ar-board)', '.ar-key'] },
     'thread-the-needle':   { root: '#ma-flappy', zoom: '.fl-stage', fit: ['.fl-ctl', '.fl-bar'], parts: ['.fl-panel'] },
-    'trench-run':          { phoneLift: ['.ch-hud'], root: '#ma-chase', zoom: '.ch-game', box: ['.ch-hud', '.ch-board'],
+    'trench-run':          { presize: true, phoneLift: ['.ch-hud'], root: '#ma-chase', zoom: '.ch-game', box: ['.ch-hud', '.ch-board'],
                              how: ['.ch-howp'], parts: ['.ch-side > .tr-panel:not(.ch-howp)', 'section.tk'] },
     // phones: Normal/Easy on a screen of their own just before the game and the score row lifted out of the scaled game, so the board gets the screen and
     // the score reads at full size (QA 2026-11-14: the game was scaled to 62% on a 360x640 screen, its score row at 8px)
@@ -125,11 +125,25 @@
   var aboutIn = document.createElement('div'); aboutIn.className = 'gs-col'; about.appendChild(aboutIn);
   var howBox = document.createElement('div'); howBox.className = 'gs-how'; aboutIn.appendChild(howBox);
   function emptyOut(from) {   // a column left with nothing in it steps aside so the game can center
+    // (never a box that holds the game itself: a daily puzzle's card can be empty for a moment while it starts, and hiding it then
+    // hid the game for good; QA 2026-11-14)
+    var zr = cfg.zoom && q(cfg.zoom, game);
     for (var p = from; p && p !== game; p = p.parentElement) {
+      if (zr && (p === zr || p.contains(zr))) break;
+      if (p.matches && p.matches('canvas, .hg-card, main, [class*="board"], [class*="stage"]')) break;
       var any = Array.prototype.some.call(p.children, function (c) { return !/^(STYLE|SCRIPT)$/.test(c.tagName) && getComputedStyle(c).display !== 'none'; });
       if (any) break;
       p.classList.add('gs-empty'); if (p.parentElement) p.parentElement.classList.add('gs-solo');
     }
+  }
+  function unEmpty() {
+    var back = false;
+    qa('.gs-empty', game).forEach(function (p) {
+      var any = Array.prototype.some.call(p.children, function (c) { return !/^(STYLE|SCRIPT)$/.test(c.tagName) && getComputedStyle(c).display !== 'none'; });
+      if (any) { p.classList.remove('gs-empty'); back = true; }
+    });
+    if (back) qa('.gs-solo', game).forEach(function (s) { if (!s.querySelector(':scope > .gs-empty')) s.classList.remove('gs-solo'); });
+    return back;
   }
   function adopt() {
     var moved = false;
@@ -561,6 +575,12 @@
       i = j + 1;
     }
   }
+  function setLen() {
+    var vh = window.innerHeight;
+    root.style.setProperty('height', (total + vh) + 'px', 'important');
+    var fe = root.closest('.fluid-engine');
+    if (fe) { fe.style.setProperty('grid-template-rows', 'none', 'important'); fe.style.setProperty('grid-auto-rows', 'auto', 'important'); fe.style.setProperty('min-height', (total + vh) + 'px', 'important'); }
+  }
   function layout() {
     screens();
     lefts = []; widthsOf = []; W = 0;
@@ -580,6 +600,7 @@
       starts[k] = acc; holds[k] = k === stops.length - 1 ? HOLD_END : 0;   // no pauses along the way, only at the Arcade (Maurice, 2026-11-13: 'it still pauses on the game')
     });
     total = stops.length ? starts[stops.length - 1] + holds[stops.length - 1] : 0;
+    setLen();   // the page is always as long as the row needs, whichever path laid it out (QA 2026-11-14: Sort the Shelf at 1920 grew a screen on START and the arrows ran into the footer)
   }
   function size(keep) {
     keep = keep === true;   // the game keeps its size and place: its result is on the way (Goma Goons' Pause jumped at game over; QA 2026-11-14)
@@ -625,9 +646,7 @@
     stage.classList.remove('gs-measure');
     if (!keep) gameTop = topIn();
     layout();
-    root.style.setProperty('height', (total + vh) + 'px', 'important');
-    var fe = root.closest('.fluid-engine');
-    if (fe) { fe.style.setProperty('grid-template-rows', 'none', 'important'); fe.style.setProperty('grid-auto-rows', 'auto', 'important'); fe.style.setProperty('min-height', (total + vh) + 'px', 'important'); }
+    setLen();
     y0 = Math.round(root.getBoundingClientRect().top + window.scrollY);   // (whole pixels, as the scroll lands)
     steadyPause(); fitLabels(); alignChamp(); setTimeout(function () { fitLabels(); alignChamp(); }, 400);
     shown = null; arcFar = 0; placeArrows(); paint();
@@ -636,6 +655,7 @@
     // screen it was resting on instead of being left partway between two
     else if (restK >= 0 && Date.now() - userAt > 400 && !touching) { var rk = Math.min(restK, stops.length - 1); if (Math.abs(stops[rk] - x) > 1) wTo(0, stopY(rk)); }
     if (window.maCiRelines) window.maCiRelines();   // the 3D headings measure again in their new panels
+    presize();
   }
   // where the scroll puts the row exactly on stop k (the last stop a pixel into its hold)
   function stopY(k) { return y0 + (starts[k] || 0) + (k === stops.length - 1 ? 1 : 0); }
@@ -715,7 +735,14 @@
   var pressAt = 0, pressY = 0, userAt = 0;
   ['pointerdown', 'click', 'keydown'].forEach(function (ev) { game.addEventListener(ev, function () { if (Date.now() - pressAt > 300 || ev !== 'click') pressY = window.scrollY; pressAt = Date.now(); }, true); });
   addEventListener('wheel', function () { userAt = Date.now(); }, { passive: true, capture: true });
-  addEventListener('touchmove', function (e) { if (!inGame(e.target)) userAt = Date.now(); }, { passive: true, capture: true });
+  // a finger that moves the page is the visitor scrolling, never the game: the hold lets it through, and the row no longer
+  // keeps the game centered for it (Maurice, 2026-11-14: a phone screen filled by the game left no way to scroll on)
+  var fy = null;
+  addEventListener('touchstart', function (e) { fy = e.touches.length === 1 ? e.touches[0].clientY : null; }, { passive: true, capture: true });
+  addEventListener('touchmove', function (e) {
+    if (!inGame(e.target)) { userAt = Date.now(); return; }
+    if (fy !== null && e.touches.length === 1 && Math.abs(e.touches[0].clientY - fy) > 10 && pans(e.target, 'y')) { userAt = Date.now(); gameTouch = 0; }
+  }, { passive: true, capture: true });
   addEventListener('keydown', function (e) { if (!game.contains(e.target) && /^(Arrow|Page|Home|End| )/.test(e.key)) userAt = Date.now(); }, true);
   function held() { return Date.now() - pressAt < 1500 && userAt < pressAt && Date.now() - ownAt > 150; }
   try {
@@ -755,10 +782,23 @@
     while (k + d >= 0 && k + d < n && at[k + d] === at[k]) k += d;
     e.preventDefault(); goTo(Math.max(0, Math.min(n - 1, k + d)));
   });
-  // the game's own screens on a phone (the Bookcase, Hold the Wall!'s fighters) are the game too: a drag there is the game's
+  // can the page pan this way from here? Each game claims the gestures it plays with in its own CSS (touch-action: none on a
+  // live board or canvas, on Sort the Shelf's books), so whatever it leaves free belongs to the page
+  function pans(t, ax) {
+    for (var e = t; e && e !== stage && e.nodeType === 1; e = e.parentElement) {
+      var ta = getComputedStyle(e).touchAction || 'auto';
+      if (ta === 'auto' || ta === 'manipulation') continue;
+      if (ta.indexOf('none') >= 0 || ta.indexOf('pan-' + ax) < 0) return false;
+    }
+    return true;
+  }
+  // a sideways swipe moves the row unless it starts on something that needs it: a field, a button, or a part the game has
+  // claimed for its own drags and swipes (Maurice, 2026-11-14: the banner, the title, the start card's margins, and empty space
+  // all move the row now); a daily board's tiles only take taps, so a swipe across them moves the row
   function inPlay(t) {
-    if (inGame(t)) return true;
-    return (cfg.phoneParts || []).some(function (p) { if (!p.fit) return false; var e = q(p.sel); return e && e.contains(t); });
+    if (!t || !t.closest) return false;
+    if (t.closest('input, textarea, select, button, [contenteditable], [role="button"], [role="slider"]')) return true;
+    return !pans(t, 'x');
   }
   // smooth and snapping at once (Maurice, 2026-11-14: 'I like snapping to section, but I don't want to lose the smoothness for
   // it. So can we have both?'): the row follows a finger, a wheel, or a trackpad exactly, and once the input stops it eases onto
@@ -766,13 +806,13 @@
   // was going. Sideways swipes move the row the same way ('scroll up/down & left/right'); up and down scroll as before.
   // One glide at a time: any new wheel, touch, key, or press stops it.
   // o: stage, x() where the row is, stops() its stops in order, yOf(rowX) the page's scroll for a spot on the row, on() the row
-  //    is in play, set(y) scroll there at once, skip(target) a touch the row leaves alone, wait() something else is moving it,
+  //    is in play, set(y) scroll there at once, skip(target, 'wheel' or 'touch') an input the row leaves alone, wait() something else is moving it,
   //    still reduced motion, took() a swipe or a settle took over, prefer() a stop that wins over the nearest
   function snapRow(o) {
     var R = { tok: 0, busy: false, ownAt: 0, idleT: 0, wheelAt: 0, down: false, eat: 0 };
     function now() { return performance.now(); }
     function set(y) { R.ownAt = now(); o.set(y); }
-    R.stop = function () { R.tok++; R.busy = false; };
+    R.stop = function () { R.tok++; R.busy = false; R.exiting = 0; };
     // a curve from here to the stop that starts at speed v0 (page px per ms) and comes to rest without passing it
     R.glide = function (ty, v0, T) {
       var ys = window.scrollY, d = ty - ys, my = ++R.tok;
@@ -786,7 +826,7 @@
         if (my !== R.tok) return;
         var k = Math.min(1, (now() - t0) / T), k2 = k * k, k3 = k2 * k;
         set(ys + m * (k3 - 2 * k2 + k) + d * (3 * k2 - 2 * k3));
-        if (k < 1) requestAnimationFrame(step); else R.busy = false;
+        if (k < 1) requestAnimationFrame(step); else { R.busy = false; R.exiting = 0; }
       })();
     };
     // the stop nearest a spot on the row; with a direction, the nearest one past it that way
@@ -795,6 +835,24 @@
       o.stops().forEach(function (v) { if (dir > 0 ? v > px + 2 : dir < 0 ? v < px - 2 : true) if (b === null || Math.abs(v - px) < Math.abs(b - px)) b = v; });
       return b;
     };
+    // past the ends (Maurice, 2026-11-14: 'scrolling right on the horizontal pages should scroll down when you get to the end as
+    // well'): going on from the last stop glides the page down to what comes after the row, as if scrolled down; going back from
+    // the first stop glides up to what's above it, if anything is
+    R.exiting = 0;
+    R.exit = function (dir, v0) {
+      var st = o.stops(); if (!st.length) return false;
+      // (the box the stage stays pinned in: the first one around it that is taller than the stage)
+      var top = parseFloat(getComputedStyle(o.stage).top) || 0, bx = o.stage.parentElement, ty;
+      while (bx && bx.parentElement && bx.offsetHeight < o.stage.offsetHeight + 50) bx = bx.parentElement;
+      var box = bx.getBoundingClientRect();
+      if (dir > 0) ty = Math.min(document.documentElement.scrollHeight - window.innerHeight, box.bottom + window.scrollY - top);
+      else { var y0 = o.yOf(st[0]); if (y0 < 2) return false; ty = Math.max(0, y0 - (window.innerHeight - top)); }
+      if ((ty - window.scrollY) * dir < 2) return false;
+      if (o.took) o.took();
+      R.glide(ty, v0 || 0, 520); R.exiting = dir;
+      return true;
+    };
+    function atEnd(dir, x) { var st = o.stops(); return st.length > 0 && (dir > 0 ? x >= st[st.length - 1] - 2 : x <= st[0] + 2); }
     R.go = function (tx) { if (tx === null || tx === undefined) return; R.glide(o.yOf(tx)); };
     // ease onto a stop; v is the row's speed (row px per ms, more than zero going on); a swipe of 40px or more that is still
     // moving when the finger lifts goes on to the next stop that way, a drag that stopped first settles on the nearest
@@ -824,7 +882,14 @@
     function soon() { clearTimeout(R.idleT); R.idleT = setTimeout(idle, now() - R.wheelAt < 300 ? 220 : 150); }
     addEventListener('scroll', function () { if (R.busy || now() - R.ownAt < 40) return; if (R.gx === null) R.gx = R.lx; soon(); }, { passive: true });
     ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (ev) {
-      addEventListener(ev, function () { R.stop(); clearTimeout(R.idleT); if (ev === 'wheel') { R.wheelAt = now(); if (R.gx !== null) soon(); } }, { passive: true, capture: true });
+      addEventListener(ev, function (e) {
+        if (ev === 'wheel') {
+          R.newWheel = now() - R.wheelAt > 250; R.wheelAt = now();
+          // the rest of a sideways wheel that already sent the page past the row doesn't stop that glide
+          if (R.exiting && (Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey)) return;
+        }
+        R.stop(); clearTimeout(R.idleT); if (ev === 'wheel' && R.gx !== null) soon();
+      }, { passive: true, capture: true });
     });
     addEventListener('touchstart', function () { R.down = true; }, { passive: true, capture: true });
     ['touchend', 'touchcancel'].forEach(function (ev) { addEventListener(ev, function (e) { if (!e.touches || !e.touches.length) { R.down = false; if (sw.on !== 1) soon(); } }, { passive: true }); });
@@ -840,11 +905,15 @@
       });
     }
     addEventListener('wheel', function (e) {
-      if (e.defaultPrevented || e.ctrlKey || !o.stage.contains(e.target) || (o.skip && o.skip(e.target))) return;
+      if (e.defaultPrevented || e.ctrlKey || !o.stage.contains(e.target) || (o.skip && o.skip(e.target, 'wheel'))) return;
       var ax = Math.abs(e.deltaX), ay = Math.abs(e.deltaY), d = ax > ay ? e.deltaX : e.shiftKey ? e.deltaY : 0;
       if (!d) return;
       if (e.deltaMode === 1) d *= 16; else if (e.deltaMode === 2) d *= window.innerHeight;
       e.preventDefault(); e.lenisStopPropagation = true;   // (the page's smooth scrolling leaves this one to the row)
+      if (R.exiting) return;
+      // a sideways wheel that starts with the row at its end goes on past it
+      if (R.newWheel) R.wEdge = atEnd(d > 0 ? 1 : -1, o.x()) ? (d > 0 ? 1 : -1) : 0;
+      if (R.wEdge && R.wEdge * d > 0 && R.exit(R.wEdge)) return;
       var lo = o.yOf(o.stops()[0] || 0), hi = o.yOf(o.stops()[o.stops().length - 1] || 0), L = window.maLenis;
       if (L && L.isScrolling === 'smooth' && L.scrollTo && wt === null) L.scrollTo(Math.max(lo, Math.min(hi, L.targetScroll + d)));
       else follow(d, lo, hi);
@@ -854,7 +923,7 @@
     // touch: a drag more sideways than up or down moves the row with the finger; letting go eases it onto a stop
     var sw = { on: -1, x: 0, y: 0, lx: 0, rx: 0, pts: [] };
     o.stage.addEventListener('touchstart', function (e) {
-      sw.on = e.touches.length === 1 && !(o.skip && o.skip(e.target)) ? 0 : -1;
+      sw.on = e.touches.length === 1 && !(o.skip && o.skip(e.target, 'touch')) ? 0 : -1;
       if (sw.on < 0) return;
       sw.x = sw.lx = e.touches[0].clientX; sw.y = e.touches[0].clientY;
     }, { passive: true });
@@ -866,20 +935,24 @@
         if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
         sw.on = Math.abs(dx) > Math.abs(dy) * 1.2 ? 1 : -1;
         if (sw.on < 0) return;
-        R.stop(); sw.rx = sw.rx0 = o.x(); sw.pts = []; sw.lx = sw.x;   // (from where the finger went down: the row stays under it) if (o.took) o.took();
+        R.stop(); sw.rx = sw.rx0 = o.x(); sw.pts = []; sw.edge = 0; sw.lx = sw.x; if (o.took) o.took();   // (from where the finger went down: the row stays under it)
       }
       if (e.cancelable) e.preventDefault();
       var st = o.stops(), lo = st[0] || 0, hi = st[st.length - 1] || 0;
       sw.rx = Math.max(lo, Math.min(hi, sw.rx - (cx - sw.lx))); sw.lx = cx;
       set(o.yOf(sw.rx));
-      var t = now(); sw.pts.push([t, sw.rx]); while (sw.pts.length > 2 && t - sw.pts[0][0] > 100) sw.pts.shift();
+      var t = now(); sw.pts.push([t, sw.rx, cx]); while (sw.pts.length > 2 && t - sw.pts[0][0] > 100) sw.pts.shift();
     }, { passive: false });
-    o.stage.addEventListener('touchend', function () {
+    o.stage.addEventListener('touchend', function (e) {
       var was = sw.on; sw.on = -1;
       if (was !== 1) return;
       R.eat = now(); R.down = false;
       var p = sw.pts, v = 0;
       if (p.length > 1 && now() - p[p.length - 1][0] < 80) v = (p[p.length - 1][1] - p[0][1]) / Math.max(8, p[p.length - 1][0] - p[0][0]);
+      // a swipe that started with the row at its end and went on that way: past the row
+      var fx = e.changedTouches && e.changedTouches.length ? e.changedTouches[0].clientX - sw.x : 0, fv = 0, dir = fx < 0 ? 1 : -1;
+      if (p.length > 1 && now() - p[p.length - 1][0] < 80) fv = -(p[p.length - 1][2] - p[0][2]) / Math.max(8, p[p.length - 1][0] - p[0][0]);
+      if (atEnd(dir, sw.rx0) && atEnd(dir, sw.rx) && (Math.abs(fx) >= 40 || Math.abs(fv) > 0.3) && R.exit(dir, Math.abs(fv) > 0.05 && fv * dir > 0 ? fv : 0)) return;
       R.settle(v, sw.rx, sw.rx - sw.rx0);
     }, { passive: true });
     o.stage.addEventListener('touchcancel', function () { if (sw.on === 1) R.settle(0, sw.rx); sw.on = -1; }, { passive: true });
@@ -894,7 +967,7 @@
     yOf: rowY,
     on: function () { return stops.length > 0 && window.scrollY >= y0 - 1 && window.scrollY <= stopY(stops.length - 1) + 1; },
     set: function (y) { wTo(0, y); },
-    skip: inPlay,
+    skip: function (t, how) { return how === 'wheel' ? inGame(t) : inPlay(t); },
     wait: function () { return held(); },
     took: function () { gameTouch = 0; userAt = Date.now(); },
     // a game just pressed stays centered (Maurice: 'I pressed play and the screen went off center')
@@ -1198,6 +1271,18 @@
   game.addEventListener('keydown', function (e) { if (e.key === 'Enter') refitSoon(); });
 
   adopt();
+  // a game that sizes its board from its box when the page loads (Trench Run) is told once the row has laid the box out, so the
+  // board waiting for Set sail is already its playing size and nothing jumps when the run starts (QA 2026-11-14: 278 to 326px)
+  var psT = 0, psN = 0, psW = -1;
+  function presize() {
+    if (!cfg.presize) return;
+    clearTimeout(psT); psT = setTimeout(function () {
+      var ov = q('.ch-ov', game), w = (q(cfg.zoom, game) || game).clientWidth;
+      if (!ov || getComputedStyle(ov).display === 'none' || w === psW || psN > 5) return;   // (only while the start card shows)
+      psW = w; psN = (psN || 0) + 1; window.dispatchEvent(new Event('resize'));
+    }, 200);
+  }
+  presize(); addEventListener('load', presize);
   // phones: a score row lifted out of the scaled game, so its words keep their size (Maurice, 2026-11-13)
   if (cfg.phoneLift && window.innerWidth < 700) cfg.phoneLift.forEach(function (sel) { var e = q(sel, game); if (e) { game.insertBefore(e, game.firstChild); e.classList.add('gs-lifted'); } });
   // phones, daily puzzles: the date line goes over the champion banner at full size, out of the scaled card (QA 2026-11-14:
@@ -1210,6 +1295,10 @@
       var due = resultsIn(game).length || qa(ABOUT, game).length || (cfg.how || []).some(function (s) { return qa(s, game).length; }) || (cfg.parts || []).some(function (s) { return qa(s.sel || s, game).length; }) || q('.ma-arcade', game) || q('.hg-tabs', game);
       if (due) adopt(); else if (hadCover) refitSoon();   // (never refits mid-game: a new piece must not move the board)
     }, 60); }).observe(game, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
+    // a box that was stepped aside comes back as soon as something in it shows again (checked at most every 200ms, so a game
+    // that changes its looks every frame never holds this up)
+    var ueT = 0; new MutationObserver(function () { if (ueT || !game.querySelector('.gs-empty')) return; ueT = setTimeout(function () { ueT = 0; if (unEmpty()) size(true); }, 200); })
+      .observe(game, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'class', 'style'] });
   }
   if (window.ResizeObserver) { var el0 = cfg.zoom && q(cfg.zoom, game); if (el0) new ResizeObserver(later(soon)).observe(el0); }
   // the board changes size when its start screen gives way (Trench Run on phones grew from 233 to 365 wide): the champion
@@ -1231,6 +1320,18 @@
         if (off) size();
       }, 400);
     }).observe(track, { childList: true, subtree: true });
+  }
+  // a panel that changes size (Sort the Shelf's game widens once it starts) lays the row out again, as a resize would, but the
+  // game keeps its size and place; the page's scroll length follows, so the arrows never run past the row (QA 2026-11-14)
+  if (window.ResizeObserver) {
+    var pzT = 0, pro = new ResizeObserver(later(function () {
+      clearTimeout(pzT); pzT = setTimeout(function () {
+        var ch = panels.some(function (p, i) { return Math.abs(p.getBoundingClientRect().width - (widthsOf[i] || 0)) > 2; });
+        if (ch) size(true);
+      }, 150);
+    }));
+    var watchPanels = function () { panels.forEach(function (p) { if (!p.__pro) { p.__pro = 1; pro.observe(p); } }); };
+    watchPanels(); setInterval(watchPanels, 2000);
   }
   // the menu bar settles after the page (the logo loads, its padding is set): the row sits under it again when it does
   if (window.ResizeObserver) { var hh = -1, ht = 0, ro = new ResizeObserver(later(function () { var h2 = header(); if (h2 !== hh) { hh = h2; clearTimeout(ht); ht = setTimeout(size, 200); } }));

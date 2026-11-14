@@ -632,13 +632,13 @@
   // was going. Sideways swipes move the row the same way ('scroll up/down & left/right'); up and down scroll as before.
   // One glide at a time: any new wheel, touch, key, or press stops it.
   // o: stage, x() where the row is, stops() its stops in order, yOf(rowX) the page's scroll for a spot on the row, on() the row
-  //    is in play, set(y) scroll there at once, skip(target) a touch the row leaves alone, wait() something else is moving it,
+  //    is in play, set(y) scroll there at once, skip(target, 'wheel' or 'touch') an input the row leaves alone, wait() something else is moving it,
   //    still reduced motion, took() a swipe or a settle took over, prefer() a stop that wins over the nearest
   function snapRow(o) {
     var R = { tok: 0, busy: false, ownAt: 0, idleT: 0, wheelAt: 0, down: false, eat: 0 };
     function now() { return performance.now(); }
     function set(y) { R.ownAt = now(); o.set(y); }
-    R.stop = function () { R.tok++; R.busy = false; };
+    R.stop = function () { R.tok++; R.busy = false; R.exiting = 0; };
     // a curve from here to the stop that starts at speed v0 (page px per ms) and comes to rest without passing it
     R.glide = function (ty, v0, T) {
       var ys = window.scrollY, d = ty - ys, my = ++R.tok;
@@ -652,7 +652,7 @@
         if (my !== R.tok) return;
         var k = Math.min(1, (now() - t0) / T), k2 = k * k, k3 = k2 * k;
         set(ys + m * (k3 - 2 * k2 + k) + d * (3 * k2 - 2 * k3));
-        if (k < 1) requestAnimationFrame(step); else R.busy = false;
+        if (k < 1) requestAnimationFrame(step); else { R.busy = false; R.exiting = 0; }
       })();
     };
     // the stop nearest a spot on the row; with a direction, the nearest one past it that way
@@ -661,6 +661,24 @@
       o.stops().forEach(function (v) { if (dir > 0 ? v > px + 2 : dir < 0 ? v < px - 2 : true) if (b === null || Math.abs(v - px) < Math.abs(b - px)) b = v; });
       return b;
     };
+    // past the ends (Maurice, 2026-11-14: 'scrolling right on the horizontal pages should scroll down when you get to the end as
+    // well'): going on from the last stop glides the page down to what comes after the row, as if scrolled down; going back from
+    // the first stop glides up to what's above it, if anything is
+    R.exiting = 0;
+    R.exit = function (dir, v0) {
+      var st = o.stops(); if (!st.length) return false;
+      // (the box the stage stays pinned in: the first one around it that is taller than the stage)
+      var top = parseFloat(getComputedStyle(o.stage).top) || 0, bx = o.stage.parentElement, ty;
+      while (bx && bx.parentElement && bx.offsetHeight < o.stage.offsetHeight + 50) bx = bx.parentElement;
+      var box = bx.getBoundingClientRect();
+      if (dir > 0) ty = Math.min(document.documentElement.scrollHeight - window.innerHeight, box.bottom + window.scrollY - top);
+      else { var y0 = o.yOf(st[0]); if (y0 < 2) return false; ty = Math.max(0, y0 - (window.innerHeight - top)); }
+      if ((ty - window.scrollY) * dir < 2) return false;
+      if (o.took) o.took();
+      R.glide(ty, v0 || 0, 520); R.exiting = dir;
+      return true;
+    };
+    function atEnd(dir, x) { var st = o.stops(); return st.length > 0 && (dir > 0 ? x >= st[st.length - 1] - 2 : x <= st[0] + 2); }
     R.go = function (tx) { if (tx === null || tx === undefined) return; R.glide(o.yOf(tx)); };
     // ease onto a stop; v is the row's speed (row px per ms, more than zero going on); a swipe of 40px or more that is still
     // moving when the finger lifts goes on to the next stop that way, a drag that stopped first settles on the nearest
@@ -690,7 +708,14 @@
     function soon() { clearTimeout(R.idleT); R.idleT = setTimeout(idle, now() - R.wheelAt < 300 ? 220 : 150); }
     addEventListener('scroll', function () { if (R.busy || now() - R.ownAt < 40) return; if (R.gx === null) R.gx = R.lx; soon(); }, { passive: true });
     ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (ev) {
-      addEventListener(ev, function () { R.stop(); clearTimeout(R.idleT); if (ev === 'wheel') { R.wheelAt = now(); if (R.gx !== null) soon(); } }, { passive: true, capture: true });
+      addEventListener(ev, function (e) {
+        if (ev === 'wheel') {
+          R.newWheel = now() - R.wheelAt > 250; R.wheelAt = now();
+          // the rest of a sideways wheel that already sent the page past the row doesn't stop that glide
+          if (R.exiting && (Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey)) return;
+        }
+        R.stop(); clearTimeout(R.idleT); if (ev === 'wheel' && R.gx !== null) soon();
+      }, { passive: true, capture: true });
     });
     addEventListener('touchstart', function () { R.down = true; }, { passive: true, capture: true });
     ['touchend', 'touchcancel'].forEach(function (ev) { addEventListener(ev, function (e) { if (!e.touches || !e.touches.length) { R.down = false; if (sw.on !== 1) soon(); } }, { passive: true }); });
@@ -706,11 +731,15 @@
       });
     }
     addEventListener('wheel', function (e) {
-      if (e.defaultPrevented || e.ctrlKey || !o.stage.contains(e.target) || (o.skip && o.skip(e.target))) return;
+      if (e.defaultPrevented || e.ctrlKey || !o.stage.contains(e.target) || (o.skip && o.skip(e.target, 'wheel'))) return;
       var ax = Math.abs(e.deltaX), ay = Math.abs(e.deltaY), d = ax > ay ? e.deltaX : e.shiftKey ? e.deltaY : 0;
       if (!d) return;
       if (e.deltaMode === 1) d *= 16; else if (e.deltaMode === 2) d *= window.innerHeight;
       e.preventDefault(); e.lenisStopPropagation = true;   // (the page's smooth scrolling leaves this one to the row)
+      if (R.exiting) return;
+      // a sideways wheel that starts with the row at its end goes on past it
+      if (R.newWheel) R.wEdge = atEnd(d > 0 ? 1 : -1, o.x()) ? (d > 0 ? 1 : -1) : 0;
+      if (R.wEdge && R.wEdge * d > 0 && R.exit(R.wEdge)) return;
       var lo = o.yOf(o.stops()[0] || 0), hi = o.yOf(o.stops()[o.stops().length - 1] || 0), L = window.maLenis;
       if (L && L.isScrolling === 'smooth' && L.scrollTo && wt === null) L.scrollTo(Math.max(lo, Math.min(hi, L.targetScroll + d)));
       else follow(d, lo, hi);
@@ -720,7 +749,7 @@
     // touch: a drag more sideways than up or down moves the row with the finger; letting go eases it onto a stop
     var sw = { on: -1, x: 0, y: 0, lx: 0, rx: 0, pts: [] };
     o.stage.addEventListener('touchstart', function (e) {
-      sw.on = e.touches.length === 1 && !(o.skip && o.skip(e.target)) ? 0 : -1;
+      sw.on = e.touches.length === 1 && !(o.skip && o.skip(e.target, 'touch')) ? 0 : -1;
       if (sw.on < 0) return;
       sw.x = sw.lx = e.touches[0].clientX; sw.y = e.touches[0].clientY;
     }, { passive: true });
@@ -732,20 +761,24 @@
         if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
         sw.on = Math.abs(dx) > Math.abs(dy) * 1.2 ? 1 : -1;
         if (sw.on < 0) return;
-        R.stop(); sw.rx = sw.rx0 = o.x(); sw.pts = []; sw.lx = sw.x;   // (from where the finger went down: the row stays under it) if (o.took) o.took();
+        R.stop(); sw.rx = sw.rx0 = o.x(); sw.pts = []; sw.edge = 0; sw.lx = sw.x; if (o.took) o.took();   // (from where the finger went down: the row stays under it)
       }
       if (e.cancelable) e.preventDefault();
       var st = o.stops(), lo = st[0] || 0, hi = st[st.length - 1] || 0;
       sw.rx = Math.max(lo, Math.min(hi, sw.rx - (cx - sw.lx))); sw.lx = cx;
       set(o.yOf(sw.rx));
-      var t = now(); sw.pts.push([t, sw.rx]); while (sw.pts.length > 2 && t - sw.pts[0][0] > 100) sw.pts.shift();
+      var t = now(); sw.pts.push([t, sw.rx, cx]); while (sw.pts.length > 2 && t - sw.pts[0][0] > 100) sw.pts.shift();
     }, { passive: false });
-    o.stage.addEventListener('touchend', function () {
+    o.stage.addEventListener('touchend', function (e) {
       var was = sw.on; sw.on = -1;
       if (was !== 1) return;
       R.eat = now(); R.down = false;
       var p = sw.pts, v = 0;
       if (p.length > 1 && now() - p[p.length - 1][0] < 80) v = (p[p.length - 1][1] - p[0][1]) / Math.max(8, p[p.length - 1][0] - p[0][0]);
+      // a swipe that started with the row at its end and went on that way: past the row
+      var fx = e.changedTouches && e.changedTouches.length ? e.changedTouches[0].clientX - sw.x : 0, fv = 0, dir = fx < 0 ? 1 : -1;
+      if (p.length > 1 && now() - p[p.length - 1][0] < 80) fv = -(p[p.length - 1][2] - p[0][2]) / Math.max(8, p[p.length - 1][0] - p[0][0]);
+      if (atEnd(dir, sw.rx0) && atEnd(dir, sw.rx) && (Math.abs(fx) >= 40 || Math.abs(fv) > 0.3) && R.exit(dir, Math.abs(fv) > 0.05 && fv * dir > 0 ? fv : 0)) return;
       R.settle(v, sw.rx, sw.rx - sw.rx0);
     }, { passive: true });
     o.stage.addEventListener('touchcancel', function () { if (sw.on === 1) R.settle(0, sw.rx); sw.on = -1; }, { passive: true });
