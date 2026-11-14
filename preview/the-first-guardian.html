@@ -27,6 +27,8 @@
 #px .card{background:rgba(255,255,255,.72);border:2px solid var(--ink);padding:clamp(20px,3vw,32px);display:flex;flex-direction:column;gap:14px}
 #px .story p+p{margin-top:0}
 #px .story{gap:16px}
+#px .listen{display:flex;flex-direction:column;gap:10px;padding:16px 20px;background:var(--bone);border-left:4px solid var(--ember)}
+#px .listen audio{width:100%;display:block}
 #px .rules ul{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
 #px .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 26px;border:2px solid var(--ink);background:var(--ink);color:#fff;font:800 15px/1.2 Almarai,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-align:center}
 #px .btn:hover,#px .btn:focus-visible{background:var(--ember);border-color:var(--ember);outline:none}
@@ -62,6 +64,11 @@
 #px .mate{background:#fff;border:2px solid var(--ink);padding:20px;display:flex;flex-direction:column;gap:10px;transition:background .2s,border-color .2s}
 #px .mate .nm{font-family:"Cracked Imperia",Impact,sans-serif;font-size:clamp(22px,2.4vw,26px);letter-spacing:.03em;line-height:1.2;text-transform:uppercase}
 #px .mate .role{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4)}
+#px .mhead{display:flex;align-items:center;gap:14px}
+#px .mhead>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+#px .ico{flex:none;width:60px;height:60px;background:var(--ink);display:grid;place-items:center}
+#px .ico img{width:48px;height:48px;display:block}
+#px .mate.down .ico{opacity:.45}
 #px .hearts{display:flex;gap:6px}
 #px .hearts i{width:22px;height:22px;background:var(--emer7);border:2px solid var(--ink)}
 #px .hearts i.off{background:transparent}
@@ -72,11 +79,32 @@
 #px .mate.hit{animation:pxhit .5s}
 @keyframes pxhit{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 #px .turnbox{background:#fff;border:2px solid var(--ink);padding:clamp(20px,3vw,28px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center}
-#px .die{width:112px;height:112px;display:grid;place-items:center;position:relative}
-#px .die svg{position:absolute;inset:0;width:100%;height:100%}
-#px .die b{position:relative;font-family:"Cracked Imperia",Impact,sans-serif;font-size:40px;letter-spacing:.03em;line-height:1.2;color:#fff}
-#px .die.roll{animation:pxspin .7s linear}
-@keyframes pxspin{to{transform:rotate(360deg)}}
+/* the die: the same 3D d20 as every vote page (games/redcity.template.html, pulled in by the build) */
+#px{--cream:#f3ead9;--lime:#a2f590}
+#px .rc-die{grid-row:auto!important}
+#px .rc-die .face{fill:#0b170f!important}
+#px .rc-die{grid-row:1/4;position:relative;width:88px;height:88px}
+#px .rc-die .rc-die-cv,#px .rc-die .rc-die-shadow{display:none}
+#px .rc-die.is3d{width:120px;height:120px}
+#px .rc-die.is3d>svg,#px .rc-die.is3d .rc-dn{display:none}
+#px .rc-die.is3d .rc-die-cv{display:block;position:relative;z-index:1;width:100%;height:100%}
+#px .rc-die.is3d .rc-die-shadow{display:block;position:absolute;left:50%;bottom:6px;width:62%;height:13%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),transparent)}
+#px .rc-die.is3d.rolling,#px .rc-die.is3d.landed{animation:none}
+#px .rc-die.is3d.crit .rc-die-cv{filter:drop-shadow(0 0 12px rgba(162,245,144,.85))}
+#px .rc-die.is3d.fumble .rc-die-cv{filter:drop-shadow(0 0 12px rgba(255,76,15,.8))}
+#px .rc-die svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 6px 8px rgba(0,0,0,.45))}
+#px .rc-die .face{fill:rgba(12,26,8,.7);stroke:var(--cream);stroke-width:2.5;stroke-linejoin:round}
+#px .rc-die .edge{fill:none;stroke:rgba(243,234,217,.45);stroke-width:1.5;stroke-linejoin:round}
+#px .rc-dn{position:absolute;left:0;right:0;top:42%;text-align:center;font-family:"Cracked Imperia",Impact,sans-serif;font-size:22px;line-height:1;color:#fff}
+#px .rc-die.rolling svg{animation:rc-tumble .45s linear infinite}
+#px .rc-die.rolling{animation:rc-hop .45s ease-in-out infinite}
+#px .rc-die.landed{animation:rc-land .5s cubic-bezier(.2,1.8,.4,1)}
+#px .rc-die.crit .face{fill:#1a5e41;stroke:var(--lime)}
+#px .rc-die.fumble .face{fill:#912501;stroke:var(--ember)}
+@keyframes rc-tumble{to{transform:rotate(360deg)}}
+@keyframes rc-hop{50%{transform:translateY(-8px) scale(1.06)}}
+@keyframes rc-land{0%{transform:scale(1.35)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){#px .rc-die.rolling,#px .rc-die.rolling svg,#px .rc-die.landed{animation:none}}
 #px .turntxt{display:flex;flex-direction:column;gap:12px}
 #px .turntxt .say{font-size:clamp(17px,1.8vw,19px);min-height:3.2em}
 #px .acts{display:flex;flex-wrap:wrap;gap:12px}
@@ -114,6 +142,7 @@
       <li>On the crew&rsquo;s turn, each of them attacks or uses a medpack. An attack rolls a D20, and 15 or higher hits for 1. Hale hits for 2.</li>
       <li>The crew has 3 medpacks. Each one heals 2 hit points, and it can bring someone back from 0.</li>
       <li>Paraxis attacks twice a turn. A D4 picks who he swings at, and he hits for 1 if he meets their number: Rune 12, Sparrow 14, Hale 15, Scarlett 11.</li>
+      <li>Anyone who rolls a 1 takes a hit: the crew member who rolled it loses 1 hit point, and so does Paraxis.</li>
       <li>Win or lose, the result counts. If more than half the frens beat him, the crew wins. If one of the crew falls in more than half the battles, they fall in the story.</li>
     </ul>
   </section>
@@ -148,7 +177,7 @@
     </div>
     <div class="crew" id="px-crew"></div>
     <div class="turnbox">
-      <div class="die" id="px-die"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,3 93,27 93,73 50,97 7,73 7,27" fill="#0b170f" stroke="#c53200" stroke-width="4"/></svg><b id="px-dieN">20</b></div>
+      <div class="rc-die" id="rc-die-px" aria-hidden="true"></div>
       <div class="turntxt">
         <p class="kick" id="px-turnk">ROUND 1</p>
         <p class="say" id="px-say" aria-live="polite"></p>
@@ -171,7 +200,7 @@
 </div></div>
 <script>
 (function () {
-  var DATA = {"key":"paraxis_vote","opens":"2026-11-14T20:00:00Z","closes":"2026-11-15T21:00:00Z","lede":"The first guardian stands between the crew and the stone. Every fren fights Paraxis once: flip the crest coin, take the crew's turns, and see who is still standing at the end.","storyKick":"LAST TIME","storyTitle":"At the Sword","story":"The frens sent the crew to the sword, and the walk was an easy one. No beasts, no traps, no surprises. Just a quiet path down the valley to the giant blade standing in the rock.\n\nThen something beside the sword stood up.\n\n\"Tell me that's a building. Please tell me that's a building.\"\n\n\"Buildings don't have knees, love.\"\n\nIt was a machine, huge and ancient, and it looked down at the crew like they were late for an appointment.\n\n\"You've come for the stone. You are not the first, and you will not be the last. I am but one of three guardians who protect this land. You must defeat all of us before you can find what you seek. I am the first guardian. My name is Paraxis. You will not meet my siblings.\"","coin":{"crest":"https://africhmaurice.github.io/site/assets/paraxis/crest-coin-crest.webp","swords":"https://africhmaurice.github.io/site/assets/paraxis/crest-coin-swords.webp"}};
+  var DATA = {"key":"paraxis_vote","opens":"2026-11-14T20:00:00Z","closes":"2026-11-15T21:00:00Z","lede":"The first guardian stands between the crew and the stone. Every fren fights Paraxis once: flip the crest coin, take the crew's turns, and see who is still standing at the end.","storyKick":"LAST TIME","storyTitle":"At the Sword","story":"The frens sent the crew to the sword, and the walk was an easy one. No beasts, no traps, no surprises. Just a quiet path down the valley to the giant blade standing in the rock.\n\nThen something beside the sword stood up.\n\n\"Tell me that's a building. Please tell me that's a building.\"\n\n\"Buildings don't have knees, love.\"\n\nIt was a machine, huge and ancient, and it looked down at the crew like they were late for an appointment.\n\n\"You've come for the stone. You are not the first, and you will not be the last. I am but one of three guardians who protect this land. You must defeat all of us before you can find what you seek. I am the first guardian. My name is Paraxis. You will not meet my siblings.\"","coin":{"crest":"https://africhmaurice.github.io/site/assets/paraxis/crest-coin-crest.webp","swords":"https://africhmaurice.github.io/site/assets/paraxis/crest-coin-swords.webp"},"audio":{"label":"LISTEN: GARY FURLONG AS PARAXIS","src":"https://africhmaurice.github.io/site/assets/audio/guardians-2-paraxis.m4a"},"icons":{"rune":"https://africhmaurice.github.io/site/assets/paraxis/icon-rune.webp","sparrow":"https://africhmaurice.github.io/site/assets/paraxis/icon-sparrow.webp","hale":"https://africhmaurice.github.io/site/assets/paraxis/icon-hale.webp","scarlett":"https://africhmaurice.github.io/site/assets/paraxis/icon-scarlett.webp"}};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var PREVIEW = /github\.io$/.test(location.hostname) || /[?&]pxpreview/.test(location.search);
   var CAPTAIN = (location.hash.match(/captain=([a-f0-9]+)/) || [])[1] || '';
@@ -183,10 +212,481 @@
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function when(iso) { return new Date(iso).toLocaleString('en-US', { timeZone: 'America/New_York', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).replace(':00', '') + ' ET'; }
   var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+  var D20 = '<svg viewBox="0 0 100 100"><polygon class="face" points="50,3 91,26 91,74 50,97 9,74 9,26"/><polygon class="edge" points="50,22 78,68 22,68"/><path class="edge" d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68"/></svg>';
+  function rollText(r) {
+    if (r === 20) return 'NATURAL 20! It counts as two 20s.';
+    if (r === 1) return 'NATURAL 1. It counts as two 0s.';
+    return 'You rolled ' + r + '.' + (PREVIEW ? ' (Preview roll, not recorded.)' : '');
+  }
+  // ---- the 3D d20 ------------------------------------------------------
+  // A real twenty-sided die in red metal (three.js, MIT license, from cdnjs), numbered like a table die: opposite
+  // faces add up to 21. It tumbles while the roll is on its way, then bounces and settles with the
+  // rolled face up. The clatter is made on the spot with Web Audio, so there is no sound file.
+  // If three.js cannot load, the flat die (D20 above) stays and everything else works the same.
+  var Dice = (function () {
+    var URL3 = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    var T = null, loading = null, faces = null, numbers = null, faceOf = null, targets = {}, TILT = null, dice = {};
+    var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var muted = false;
+    try { muted = localStorage.getItem('thDice:muted') === '1'; } catch (e) {}
+
+    function load() {
+      if (T) return Promise.resolve(T);
+      if (loading) return loading;
+      loading = new Promise(function (ok, no) {
+        if (window.THREE) return ok(window.THREE);
+        var s = document.createElement('script');
+        s.src = URL3; s.async = true;
+        s.onload = function () { window.THREE ? ok(window.THREE) : no(); };
+        s.onerror = no;
+        document.head.appendChild(s);
+      }).then(function (three) { T = three; setup(); return T; });
+      return loading;
+    }
+
+    // The icosahedron's 20 faces, which number each one shows, and the turn that brings it face up.
+    function setup() {
+      var g = new T.IcosahedronGeometry(1, 0), p = g.getAttribute('position');
+      faces = [];
+      for (var f = 0; f < 20; f++) {
+        var a = new T.Vector3().fromBufferAttribute(p, f * 3), b = new T.Vector3().fromBufferAttribute(p, f * 3 + 1), c = new T.Vector3().fromBufferAttribute(p, f * 3 + 2);
+        var mid = a.clone().add(b).add(c).divideScalar(3);
+        faces.push({ a: a, b: b, c: c, mid: mid, n: mid.clone().normalize() });
+      }
+      numbers = new Array(20);
+      var next = 1;
+      for (var i = 0; i < 20; i++) {
+        if (numbers[i]) continue;
+        var opp = 0, best = 2;
+        for (var j = 0; j < 20; j++) { var dot = faces[i].n.dot(faces[j].n); if (dot < best) { best = dot; opp = j; } }
+        numbers[i] = next; numbers[opp] = 21 - next; next++;
+      }
+      for (var k = 0; k < 20; k++) {
+        var z = faces[k].n, y = faces[k].a.clone().sub(faces[k].mid).normalize(), x = new T.Vector3().crossVectors(y, z);
+        var m = new T.Matrix4().makeBasis(x, y, z).transpose();
+        targets[numbers[k]] = new T.Quaternion().setFromRotationMatrix(m);
+      }
+      faceOf = {}; for (var q = 0; q < 20; q++) faceOf[numbers[q]] = q;
+      TILT = new T.Quaternion().setFromEuler(new T.Euler(-0.42, 0.3, 0.06));
+    }
+
+    function faceTexture(n) {
+      var c = document.createElement('canvas'); c.width = c.height = 256;
+      var g = c.getContext('2d');
+      var grad = g.createLinearGradient(0, 0, 0, 256);
+      grad.addColorStop(0, '#d23a12'); grad.addColorStop(1, '#8e1a06');
+      g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
+      g.fillStyle = '#ffe2a8'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.font = '700 ' + (n > 9 ? 78 : 92) + 'px Almarai, Arial, sans-serif';
+      g.fillText(n === 6 || n === 9 ? n + '.' : String(n), 128, 150);
+      var t = new T.CanvasTexture(c);
+      t.encoding = T.sRGBEncoding;
+      return t;
+    }
+
+    function studio() {
+      var c = document.createElement('canvas'); c.width = 512; c.height = 256;
+      var g = c.getContext('2d'), sky = g.createLinearGradient(0, 0, 0, 256);
+      sky.addColorStop(0, '#fff6e8'); sky.addColorStop(0.45, '#8c6a58'); sky.addColorStop(0.55, '#3a2418'); sky.addColorStop(1, '#0c0706');
+      g.fillStyle = sky; g.fillRect(0, 0, 512, 256);
+      [[110, 70, 70], [360, 60, 55], [250, 30, 40]].forEach(function (s) {
+        var l = g.createRadialGradient(s[0], s[1], 0, s[0], s[1], s[2]);
+        l.addColorStop(0, 'rgba(255,255,255,1)'); l.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = l; g.fillRect(0, 0, 512, 256);
+      });
+      var tex = new T.CanvasTexture(c);
+      tex.mapping = T.EquirectangularReflectionMapping; tex.encoding = T.sRGBEncoding;
+      return tex;
+    }
+
+    // A rolled number sits flat, facing the viewer square-on. Only a die still waiting to be rolled is tilted.
+    function pose(n) { return targets[n].clone(); }
+    function idle() { return targets[20].clone().premultiply(TILT); }
+
+    function dieGeometry() {
+      var geo = new T.IcosahedronGeometry(1, 0), uv = [];
+      geo.clearGroups();
+      for (var f = 0; f < 20; f++) { uv.push(0.5, 0.95, 0.05, 0.2, 0.95, 0.2); geo.addGroup(f * 3, 3, f); }
+      geo.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+      return geo;
+    }
+    function dieMaterials() {
+      var mats = [];
+      for (var k = 0; k < 20; k++) mats.push(new T.MeshStandardMaterial({ map: faceTexture(numbers[k]), roughness: 0.3, metalness: 0.85, envMapIntensity: 1.2, flatShading: true }));
+      return mats;
+    }
+
+    // One WebGL renderer draws every card die and each frame is copied onto that die's own 2D canvas.
+    // Browsers keep only about 16 WebGL canvases alive per page, so a vote with 20 dice (the Cerunine
+    // Attack, 2026-10-15) lost its first dice when each had its own.
+    var shared = null;
+    function sharedRenderer() {
+      if (shared) return shared;
+      shared = new T.WebGLRenderer({ antialias: true, alpha: true });
+      shared.outputEncoding = T.sRGBEncoding;
+      shared.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      shared.setSize(120, 120, false);
+      return shared;
+    }
+    function build(id, node) {
+      var cv = node.querySelector('canvas');
+      var r = sharedRenderer(), px = Math.round(120 * Math.min(window.devicePixelRatio || 1, 2));
+      cv.width = px; cv.height = px;
+      var c2 = cv.getContext('2d');
+      var scene = new T.Scene(), cam = new T.PerspectiveCamera(30, 1, 0.1, 50);
+      cam.position.set(0, 0, 6.4); cam.lookAt(0, 0, 0);
+      var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
+      scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
+      var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-3, 5, 5); scene.add(sun);
+      var mesh = new T.Mesh(dieGeometry(), dieMaterials());
+      mesh.quaternion.copy(idle());
+      scene.add(mesh);
+      var d = { r: r, c2: c2, scene: scene, cam: cam, mesh: mesh, node: node, shadow: node.querySelector('.rc-die-shadow'), raf: 0, y: 0 };
+      dice[id] = d;
+      return d;
+    }
+
+    function draw(d) {
+      d.mesh.position.y = d.y;
+      if (d.shadow) { d.shadow.style.transform = 'translateX(-50%) scale(' + (1 - d.y * 0.45).toFixed(3) + ')'; d.shadow.style.opacity = (0.9 - d.y * 0.6).toFixed(2); }
+      d.r.render(d.scene, d.cam);
+      var cv = d.c2.canvas; d.c2.clearRect(0, 0, cv.width, cv.height); d.c2.drawImage(d.r.domElement, 0, 0, cv.width, cv.height);
+    }
+
+    // ---- sound: a hard little knock plus a burst of clatter, a bit different every time
+    var ctx = null;
+    function audio() {
+      if (muted) return null;
+      var A = window.AudioContext || window.webkitAudioContext;
+      if (!A) return null;
+      if (!ctx) ctx = new A();
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }
+    function clack(vol) {
+      var a = audio(); if (!a) return;
+      var t = a.currentTime, len = Math.floor(a.sampleRate * 0.045), buf = a.createBuffer(1, len, a.sampleRate), ch = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 5);
+      var src = a.createBufferSource(); src.buffer = buf;
+      var bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2400 + Math.random() * 2200; bp.Q.value = 3;
+      var g = a.createGain(); g.gain.value = vol;
+      src.connect(bp); bp.connect(g); g.connect(a.destination); src.start(t);
+      var o = a.createOscillator(), og = a.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(380 + Math.random() * 300, t);
+      o.frequency.exponentialRampToValueAtTime(160, t + 0.07);
+      og.gain.setValueAtTime(vol * 0.7, t);
+      og.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+      o.connect(og); og.connect(a.destination); o.start(t); o.stop(t + 0.1);
+    }
+
+    function stopLoop(d) { if (d.raf) cancelAnimationFrame(d.raf); d.raf = 0; }
+
+    // ---- the throw: a real physics roll (cannon.js, MIT license, from cdnjs) -----------------
+    // The die is thrown from its card with a random force, spin and angle, and the physics decides
+    // everything after that: the tumbling, the bounces off the table and the screen edges, and where
+    // it comes to rest. Nothing steers it. Every face of a d20 is the same shape, so the numbers can
+    // be painted on to match the roll before it is thrown (the sheet's random number generator has
+    // already chosen it); that changes which number is on the face it lands on, not how it moves.
+    // A few throws are worked out in a blink and the one whose number lands most upright is shown.
+    var URLP = 'https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js', P = null, loadingP = null;
+    function loadPhysics() {
+      if (P) return Promise.resolve(P);
+      if (loadingP) return loadingP;
+      loadingP = new Promise(function (ok, no) {
+        if (window.CANNON) return ok(window.CANNON);
+        var s = document.createElement('script');
+        s.src = URLP; s.async = true;
+        s.onload = function () { window.CANNON ? ok(window.CANNON) : no(); };
+        s.onerror = no;
+        document.head.appendChild(s);
+      }).then(function (c) { P = c; return P; });
+      return loadingP;
+    }
+
+    var ov = null;
+    function overlay() {
+      if (ov) return ov;
+      var cv = document.createElement('canvas');
+      cv.setAttribute('aria-hidden', 'true');
+      cv.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147482000;display:none';
+      document.body.appendChild(cv);
+      var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+      r.outputEncoding = T.sRGBEncoding;
+      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      var scene = new T.Scene(), cam = new T.OrthographicCamera(-1, 1, 1, -1, -1000, 1000);
+      cam.position.set(0, 0, 500); cam.lookAt(0, 0, 0);
+      var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
+      scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
+      var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-300, 500, 500); scene.add(sun);
+      var mesh = new T.Mesh(dieGeometry(), dieMaterials()); scene.add(mesh);
+      var sc = document.createElement('canvas'); sc.width = sc.height = 128;
+      var sg = sc.getContext('2d'), rg = sg.createRadialGradient(64, 64, 0, 64, 64, 64);
+      rg.addColorStop(0, 'rgba(0,0,0,.55)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
+      sg.fillStyle = rg; sg.fillRect(0, 0, 128, 128);
+      var shadow = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: new T.CanvasTexture(sc), transparent: true, depthWrite: false }));
+      shadow.position.z = -200; scene.add(shadow);
+      ov = { cv: cv, r: r, scene: scene, cam: cam, mesh: mesh, shadow: shadow, raf: 0, st: null };
+      function size() {
+        var w = window.innerWidth, h = window.innerHeight;
+        r.setSize(w, h, false);
+        cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2; cam.bottom = -h / 2; cam.updateProjectionMatrix();
+        ov.w = w; ov.h = h; ov.R = Math.max(34, Math.min(62, Math.min(w, h) * 0.075));
+      }
+      size(); window.addEventListener('resize', size);
+      return ov;
+    }
+    function slotCenter(id) {
+      var b = dice[id].node.getBoundingClientRect();
+      return { x: b.left + b.width / 2 - window.innerWidth / 2, y: window.innerHeight / 2 - (b.top + b.height / 2) };
+    }
+
+    var hull = null;
+    function hullShape() {
+      if (!hull) {
+        var pts = [], idx = [], seen = {};
+        faces.forEach(function (f) {
+          idx.push([f.a, f.b, f.c].map(function (v) {
+            var k = v.x.toFixed(4) + ',' + v.y.toFixed(4) + ',' + v.z.toFixed(4);
+            if (!(k in seen)) { seen[k] = pts.length; pts.push([v.x, v.y, v.z]); }
+            return seen[k];
+          }));
+        });
+        hull = { pts: pts, idx: idx };
+      }
+      return new P.ConvexPolyhedron(hull.pts.map(function (p) { return new P.Vec3(p[0], p[1], p[2]); }), hull.idx.map(function (f) { return f.slice(); }));
+    }
+
+    // One throw, worked out ahead at 60 steps a second: where the die is at every step, and when it hits something.
+    function simulate(start, Wu, Hu) {
+      var world = new P.World();
+      world.gravity.set(0, 0, -40);
+      world.broadphase = new P.NaiveBroadphase();
+      world.solver.iterations = 12;
+      world.allowSleep = true;
+      world.defaultContactMaterial.friction = 0.28;
+      world.defaultContactMaterial.restitution = 0.38;
+      function wall(x, y, axis, ang) {
+        var b = new P.Body({ mass: 0 }); b.addShape(new P.Plane()); b.position.set(x, y, 0);
+        if (axis) b.quaternion.setFromAxisAngle(axis, ang);
+        world.addBody(b);
+      }
+      wall(0, 0);                                                    // the table
+      wall(-Wu, 0, new P.Vec3(0, 1, 0), Math.PI / 2); wall(Wu, 0, new P.Vec3(0, 1, 0), -Math.PI / 2);
+      wall(0, -Hu, new P.Vec3(1, 0, 0), -Math.PI / 2); wall(0, Hu, new P.Vec3(1, 0, 0), Math.PI / 2);
+      var die = new P.Body({ mass: 1 });
+      die.addShape(hullShape());
+      die.linearDamping = 0.1; die.angularDamping = 0.1;
+      die.allowSleep = true; die.sleepSpeedLimit = 0.15; die.sleepTimeLimit = 0.25;
+      die.position.set(start.x, start.y, 2.2 + Math.random() * 1.5);
+      die.quaternion.setFromEuler(Math.random() * 6.283, Math.random() * 6.283, Math.random() * 6.283);
+      var ang = Math.atan2(-start.y, -start.x) + (Math.random() - 0.5) * 1.6, sp = 14 + Math.random() * 12;
+      die.velocity.set(Math.cos(ang) * sp, Math.sin(ang) * sp, 2 + Math.random() * 5);
+      die.angularVelocity.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 30);
+      world.addBody(die);
+      var frames = [], hits = [], stepNo = 0, lastHit = -9;
+      die.addEventListener('collide', function (e) {
+        var v = Math.abs(e.contact.getImpactVelocityAlongNormal());
+        if (v > 1.2 && stepNo - lastHit > 3) { hits.push([stepNo, Math.min(0.55, v * 0.035)]); lastHit = stepNo; }
+      });
+      for (stepNo = 0; stepNo < 540; stepNo++) {
+        world.step(1 / 60);
+        frames.push([die.position.x, die.position.y, die.position.z, die.quaternion.x, die.quaternion.y, die.quaternion.z, die.quaternion.w]);
+        if (stepNo > 40 && die.sleepState === P.Body.SLEEPING) break;
+      }
+      return { frames: frames, hits: hits };
+    }
+
+    // Which face ended up facing the viewer.
+    function topFace(f) {
+      var q = new T.Quaternion(f[3], f[4], f[5], f[6]), best = -2, k = 0;
+      for (var i = 0; i < 20; i++) { var z = faces[i].n.clone().applyQuaternion(q).z; if (z > best) { best = z; k = i; } }
+      return { k: k, q: q, flat: best };
+    }
+    function frameOf(face, v) {
+      var z = face.n, y = v.clone().sub(face.mid).normalize(), x = new T.Vector3().crossVectors(y, z);
+      return new T.Matrix4().makeBasis(x, y, z);
+    }
+    // The turn of the die onto itself that puts number n on the face that landed up. Of the three
+    // ways to do it, the one that reads most upright.
+    function relabel(n, top) {
+      var ft = faces[faceOf[n]], f = faces[top.k], toCanon = frameOf(ft, ft.a).transpose(), best = null;
+      [f.a, f.b, f.c].forEach(function (v) {
+        var g = new T.Quaternion().setFromRotationMatrix(new T.Matrix4().multiplyMatrices(frameOf(f, v), toCanon));
+        var up = v.clone().sub(f.mid).normalize().applyQuaternion(top.q), ang = Math.atan2(up.x, up.y), tilt = Math.abs(ang);
+        if (!best || tilt < best.tilt) best = { g: g, tilt: tilt, ang: ang };
+      });
+      return best;
+    }
+
+    function throwIt(id, n, done) {
+      if (!P) return false;
+      // Never a table smaller than a few dice wide, even if the window reports no size (a hidden tab).
+      var d = dice[id], o = overlay(), s = slotCenter(id), Wu = Math.max(5, o.w / 2 / o.R), Hu = Math.max(4, o.h / 2 / o.R);
+      var start = { x: Math.max(-Wu + 1.3, Math.min(Wu - 1.3, s.x / o.R)), y: Math.max(-Hu + 1.3, Math.min(Hu - 1.3, s.y / o.R)) };
+      var best = null, t0 = performance.now();
+      for (var i = 0; i < 8; i++) {
+        var sim = simulate(start, Wu, Hu), top = topFace(sim.frames[sim.frames.length - 1]);
+        if (top.flat < 0.97) continue;                               // still moving when time ran out: throw again
+        sim.top = top;
+        if (n == null) { sim.g = new T.Quaternion(); sim.tilt = 0; best = sim; break; }   // number not in yet: set later
+        var rl = relabel(n, top);
+        sim.g = rl.g; sim.tilt = rl.tilt; sim.ang = rl.ang;
+        if (!best || rl.tilt < best.tilt) best = sim;
+        if (rl.tilt < 0.35 || performance.now() - t0 > 150) break;
+      }
+      if (!best) return false;
+      if (ov.raf) cancelAnimationFrame(ov.raf);
+      stopLoop(d); d.y = 0; d.node.style.visibility = 'hidden';
+      o.st = { id: id, n: n, sim: best, done: done, start: performance.now(), hit: 0, fixFrom: 0, fix: n == null ? 0 : -(best.ang || 0) };
+      o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
+      clack(0.3);
+      o.raf = requestAnimationFrame(play);
+      return true;
+    }
+    // The sheet's number arrives while the die is already in the air: paint it on the face that will land up,
+    // and turn the die a little over the rest of the flight so the number ends up upright.
+    function setNumber(id, n, done) {
+      var st = ov && ov.st; if (!st || st.id !== id || st.n != null) return false;
+      var rl = relabel(n, st.sim.top), fr = st.sim.frames;
+      st.sim.g = rl.g; st.n = n; st.done = done;
+      st.fixFrom = Math.max(0, Math.min(fr.length - 1, Math.floor((performance.now() - st.start) / (1000 / 60))));
+      st.fix = -rl.ang;
+      return true;
+    }
+    // Safety net: if a frame ever fails, the die drops back into its card with the number, never stuck.
+    function play(now) {
+      try { playFrame(now); }
+      catch (e) {
+        var st = ov && ov.st; if (!st) return;
+        dropThrow(st.id);
+        var d = dice[st.id]; if (d) { d.y = 0; d.mesh.quaternion.copy(pose(st.n)); draw(d); }
+        if (st.done) st.done();
+      }
+    }
+    function playFrame(now) {
+      var o = ov, st = o.st;
+      if (!st) return;
+      // A frame can be stamped a moment before the throw began, so never ask for a step before the first.
+      var fr = st.sim.frames, i = Math.max(0, Math.min(fr.length - 1, Math.floor((now - st.start) / (1000 / 60))));
+      while (st.hit < st.sim.hits.length && st.sim.hits[st.hit][0] <= i) { clack(st.sim.hits[st.hit][1]); st.hit++; }
+      var span = Math.max(1, fr.length - 1 - st.fixFrom), k = Math.max(0, Math.min(1, (i - st.fixFrom) / span));
+      paintFrame(fr[i], st.sim.g, st.n == null ? 0 : st.fix * k * k * (3 - 2 * k));
+      if (i < fr.length - 1 || st.n == null) { o.raf = requestAnimationFrame(play); return; }   // at rest but no number yet: wait
+      // At rest. Hold it so everyone can read it, then the table fades and the card has the number.
+      o.raf = 0;
+      if (PREVIEW || window.__diceDebug) {   // preview/testing only: which number really ended up facing the viewer
+        var lf = fr[fr.length - 1], qq = new T.Quaternion(lf[3], lf[4], lf[5], lf[6]).multiply(st.sim.g), bk = 0, bz = -2;
+        for (var i2 = 0; i2 < 20; i2++) { var zz = faces[i2].n.clone().applyQuaternion(qq).z; if (zz > bz) { bz = zz; bk = i2; } }
+        (window.__diceLog = window.__diceLog || []).push({ rolled: st.n, showing: numbers[bk], flat: +bz.toFixed(3), tiltDeg: Math.round(st.sim.tilt * 57.3), seconds: +(fr.length / 60).toFixed(2), bounces: st.sim.hits.length });
+      }
+      setTimeout(function () {
+        if (o.st !== st) return;
+        var d = dice[st.id];
+        if (d) { d.y = 0; d.mesh.quaternion.copy(pose(st.n)); draw(d); d.node.style.visibility = ''; }
+        o.cv.style.transition = 'opacity .45s ease'; o.cv.style.opacity = '0';
+        setTimeout(function () { if (o.st === st) { o.cv.style.display = 'none'; o.st = null; } }, 480);
+        if (st.done) st.done();
+      }, 1400);
+    }
+    function paintFrame(f, g, turn) {
+      var o = ov, z = Math.max(0, f[2] - 0.8), sc = 1 + z * 0.07;
+      o.mesh.position.set(f[0] * o.R, f[1] * o.R, 0);
+      o.mesh.quaternion.set(f[3], f[4], f[5], f[6]).multiply(g);
+      if (turn) o.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 0, 1), turn));
+      o.mesh.scale.setScalar(o.R * sc);
+      o.shadow.position.set(f[0] * o.R + 6 + z * 10, f[1] * o.R - 8 - z * 10, -200);
+      o.shadow.scale.setScalar(o.R * 2.4 * (1 - Math.min(0.5, z * 0.08)));
+      o.shadow.material.opacity = 0.9 - Math.min(0.6, z * 0.1);
+      o.r.render(o.scene, o.cam);
+    }
+    function dropThrow(id) {
+      if (!ov || !ov.st || ov.st.id !== id) return;
+      if (ov.raf) cancelAnimationFrame(ov.raf);
+      ov.raf = 0; ov.st = null; ov.cv.style.display = 'none';
+      if (dice[id]) dice[id].node.style.visibility = '';
+    }
+
+    return {
+      // Builds the die in this node once three.js is in; the node shows the flat die until then.
+      attach: function (id, node, n) {
+        load().then(function () {
+          if (dice[id]) return;
+          if (!calm) loadPhysics().catch(function () {});
+          var d = build(id, node);
+          node.classList.add('is3d');
+          if (n) d.mesh.quaternion.copy(pose(n));
+          draw(d);
+        }).catch(function () {});
+      },
+      ready: function (id) { return !!dice[id]; },
+      // Throw straight away, before the number is known; set it with number() when it arrives.
+      throwNow: function (id) { if (calm || !dice[id]) return false; try { return throwIt(id, null, null); } catch (e) { dropThrow(id); return false; } },
+      number: function (id, n, done) { try { return setNumber(id, n, done); } catch (e) { dropThrow(id); return false; } },
+      drop: function (id) { dropThrow(id); },
+      show: function (id, n) { var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(pose(n)); draw(d); },
+      // Shaken in the card (like dice in a cupped hand) until the sheet's number is in, then thrown
+      // across the screen with physics. In the card instead when motion is reduced or physics won't load.
+      spin: function (id) { this.spinCard(id); },
+      land: function (id, n, done) {
+        if (!calm && dice[id]) { try { if (throwIt(id, n, done)) return; } catch (e) { dropThrow(id); } }
+        this.landCard(id, n, done);
+      },
+      // Tumbling in the card until the number is known.
+      spinCard: function (id) {
+        var d = dice[id]; if (!d) return;
+        stopLoop(d);
+        var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), last = performance.now(), start = last, tick = 0;
+        d.axis = axis;
+        (function frame(now) {
+          var dt = Math.min(0.05, (now - last) / 1000); last = now;
+          if (!calm) d.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(axis, 13 * dt));
+          d.y = calm ? 0 : Math.abs(Math.sin((now - start) / 110)) * 0.35;
+          if (now - tick > 95) { tick = now; clack(0.05 + Math.random() * 0.06); }
+          draw(d);
+          d.raf = requestAnimationFrame(frame);
+        })(last);
+      },
+      // In the card: three bounces, a clack on each, and it settles on n.
+      landCard: function (id, n, done) {
+        var d = dice[id]; if (!d) return done();
+        stopLoop(d);
+        var q0 = d.mesh.quaternion.clone(), q1 = pose(n), axis = d.axis || new T.Vector3(1, 0, 0), dur = calm ? 1 : 1150, t0 = performance.now(), hits = [0.286, 0.571, 0.857], hit = 0;
+        (function frame(now) {
+          var t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3);
+          var q = q0.clone().slerp(q1, e);
+          q.premultiply(new T.Quaternion().setFromAxisAngle(axis, (1 - e) * 7));
+          d.mesh.quaternion.copy(q);
+          d.y = Math.abs(Math.sin(Math.PI * 3.5 * t)) * 0.85 * Math.pow(1 - t, 2);
+          while (hit < hits.length && t >= hits[hit]) { clack([0.5, 0.28, 0.14][hit]); hit++; }
+          draw(d);
+          if (t < 1) d.raf = requestAnimationFrame(frame);
+          else { d.raf = 0; d.mesh.quaternion.copy(q1); d.y = 0; draw(d); done(); }
+        })(t0);
+      },
+      stop: function (id) { dropThrow(id); var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(idle()); draw(d); },
+      muted: function () { return muted; },
+      setMuted: function (m) { muted = !!m; try { localStorage.setItem('thDice:muted', muted ? '1' : '0'); } catch (e) {} }
+    };
+  })();
+
+  $('rc-die-px').innerHTML = D20 + '<span class="rc-dn" id="rc-dn-px">20</span><i class="rc-die-shadow"></i><canvas class="rc-die-cv" width="240" height="240"></canvas>';
+  Dice.attach('px', $('rc-die-px'), 20);
+  // A roll on the die: 'thrown' means it left the card when the button was pressed and only needs its number,
+  // 'spun' means it is tumbling in the card; otherwise (Paraxis's rolls) it is thrown and lands on n.
+  function rollDie(n, pre) {
+    return new Promise(function (res) {
+      var done = function () { res(); };
+      if (pre === 'thrown') { if (Dice.number('px', n, done)) return; Dice.drop('px'); }
+      if (Dice.ready('px')) { Dice.land('px', n, done); return; }
+      $('rc-dn-px').textContent = n; setTimeout(done, 600);
+    });
+  }
 
   // ---- the words ----
   $('px-lede').textContent = DATA.lede || '';
-  $('px-story').innerHTML = '<p class="kick">' + esc(DATA.storyKick || 'LAST TIME') + '</p><h2>' + esc(DATA.storyTitle || '') + '</h2>' + String(DATA.story || '').split(/\n\s*\n/).map(function (t) { return '<p>' + esc(t.trim()) + '</p>'; }).join('');
+  $('px-story').innerHTML = '<p class="kick">' + esc(DATA.storyKick || 'LAST TIME') + '</p><h2>' + esc(DATA.storyTitle || '') + '</h2>' +
+    (DATA.audio ? '<div class="listen"><p class="kick" style="color:var(--ink)">' + esc(DATA.audio.label) + '</p><audio controls preload="none" src="' + esc(DATA.audio.src) + '"></audio></div>' : '') + String(DATA.story || '').split(/\n\s*\n/).map(function (t) { return '<p>' + esc(t.trim()) + '</p>'; }).join('');
   var closed = Date.now() > Date.parse(DATA.closes), notYet = Date.now() < Date.parse(DATA.opens);
   $('px-close').textContent = when(notYet ? DATA.opens : DATA.closes).toUpperCase();
   if (notYet) { $('px-close-k').textContent = 'THE FIGHT OPENS'; }
@@ -216,7 +716,9 @@
       if (!st.hp.some(function (h) { return h > 0; })) break;
       var d4s = [], t; do { t = d(4) - 1; d4s.push(t + 1); } while (st.hp[t] <= 0);
       var roll = fake.bank[st.bi++ % 100], hit = roll >= GUARD[t]; if (hit) st.hp[t] = Math.max(0, st.hp[t] - 1);
-      ev.push({ t: 'px', d4: d4s, who: t, roll: roll, need: GUARD[t], hit: hit, hp: st.hp[t] });
+      if (roll === 1) st.px = Math.max(0, st.px - 1);
+      ev.push({ t: 'px', d4: d4s, who: t, roll: roll, need: GUARD[t], hit: hit, hp: st.hp[t], fumble: roll === 1, px: st.px });
+      if (st.px <= 0) { st.over = 'win'; return; }
     }
     if (!st.hp.some(function (h) { return h > 0; })) st.over = 'loss';
   }
@@ -237,7 +739,8 @@
     if (payload.action === 'pxact') {
       var who = st.next;
       if (payload.act === 'heal') { var t = +payload.target, was = st.hp[t]; st.hp[t] = Math.min(4, st.hp[t] + 2); st.packs--; ev.push({ t: 'heal', who: who, target: t, from: was, hp: st.hp[t], packs: st.packs }); }
-      else { var r = d(20), hit = r >= 15, dmg = hit ? POWER[who] : 0; st.px = Math.max(0, st.px - dmg); ev.push({ t: 'atk', who: who, roll: r, hit: hit, dmg: dmg, px: st.px }); if (st.px <= 0) st.over = 'win'; }
+      else { var r = d(20), hit = r >= 15, dmg = hit ? POWER[who] : 0; st.px = Math.max(0, st.px - dmg); if (r === 1) st.hp[who] = Math.max(0, st.hp[who] - 1);
+        ev.push({ t: 'atk', who: who, roll: r, hit: hit, dmg: dmg, px: st.px, fumble: r === 1, hp: st.hp[who] }); if (st.px <= 0) st.over = 'win'; else if (!st.hp.some(function (h) { return h > 0; })) st.over = 'loss'; }
       if (!st.over) {
         var nx = -1; for (var i = who + 1; i < 4; i++) if (st.hp[i] > 0) { nx = i; break; }
         if (nx < 0) { ev.push({ t: 'pxturn', round: st.round }); fakeParaxis(st, ev); if (!st.over) { st.round++; for (var j = 0; j < 4; j++) if (st.hp[j] > 0) { nx = j; break; } ev.push({ t: 'round', round: st.round }); } }
@@ -275,7 +778,8 @@
   var view = null, busy = false;
   function crewHTML() {
     $('px-crew').innerHTML = NAMES.map(function (n, i) {
-      return '<article class="mate" id="px-m' + i + '"><p class="role">' + ROLES[i] + '</p><p class="nm">' + n + '</p><div class="hearts" aria-label="hit points"></div>' +
+      var icon = (DATA.icons || {})[n.toLowerCase()];
+      return '<article class="mate" id="px-m' + i + '"><div class="mhead">' + (icon ? '<span class="ico"><img src="' + esc(icon) + '" alt=""></span>' : '') + '<div><p class="role">' + ROLES[i] + '</p><p class="nm">' + n + '</p></div></div><div class="hearts" aria-label="hit points"></div>' +
         '<p class="need">Paraxis needs <b>' + GUARD[i] + '</b> to hit ' + (i === 1 || i === 3 ? 'her' : 'him') + '. Hits for <b>' + POWER[i] + '</b>.</p></article>';
     }).join('');
   }
@@ -291,11 +795,8 @@
   }
   function log(text, cls) { var li = document.createElement('li'); li.className = cls || ''; li.textContent = text; $('px-log').insertBefore(li, $('px-log').firstChild); }
   function say(t) { $('px-say').textContent = t; }
-  function die(n) {
-    var el = $('px-die'); el.classList.remove('roll'); void el.offsetWidth; el.classList.add('roll');
-    var k = 0, iv = setInterval(function () { $('px-dieN').textContent = d(20); if (++k > 8) { clearInterval(iv); $('px-dieN').textContent = n; } }, 70);
-    return wait(800);
-  }
+  var pending = '';   // how the die left the card when the crew's button was pressed (see move)
+  function die(n) { var pre = pending; pending = ''; return rollDie(n, pre); }
   function shake(i) { var m = $('px-m' + i); m.classList.remove('hit'); void m.offsetWidth; m.classList.add('hit'); }
   // replay what happened, one beat at a time
   function play(events, fast) {
@@ -304,14 +805,14 @@
       chain = chain.then(function () {
         if (e.t === 'coin') return fast ? null : flip(e.coin);
         if (e.t === 'atk') {
-          var line = NAMES[e.who] + ' rolls ' + e.roll + (e.hit ? ' and hits Paraxis for ' + e.dmg + '.' : '. A miss.');
-          return (fast ? Promise.resolve() : (say(NAMES[e.who] + ' attacks…'), die(e.roll))).then(function () { view.px = e.px; say(line); log(line, e.hit ? 'good' : ''); paint(); return fast ? null : wait(500); });
+          var line = NAMES[e.who] + ' rolls ' + e.roll + (e.hit ? ' and hits Paraxis for ' + e.dmg + '.' : e.fumble ? '. A 1! ' + NAMES[e.who] + ' takes a hit' + (e.hp <= 0 ? ' and is down.' : ' and has ' + e.hp + ' left.') : '. A miss.');
+          return (fast ? Promise.resolve() : (pending || say(NAMES[e.who] + ' attacks…'), die(e.roll))).then(function () { view.px = e.px; if (e.fumble) { view.hp[e.who] = e.hp; if (!fast) shake(e.who); } say(line); log(line, e.hit ? 'good' : e.fumble ? 'bad' : ''); paint(); return fast ? null : wait(500); });
         }
         if (e.t === 'heal') { view.hp[e.target] = e.hp; view.packs = e.packs; var hl = NAMES[e.who] + ' uses a medpack on ' + (e.target === e.who ? (e.who === 1 || e.who === 3 ? 'herself' : 'himself') : NAMES[e.target]) + (e.from <= 0 ? ' and brings ' + NAMES[e.target] + ' back.' : '.') ; say(hl); log(hl, 'good'); paint(); return fast ? null : wait(700); }
         if (e.t === 'pxturn') { busy = true; say('Paraxis attacks!'); if (!fast) paint(); return fast ? null : wait(700); }
         if (e.t === 'px') {
-          var pl = 'Paraxis swings at ' + NAMES[e.who] + ' (D4: ' + e.d4.join(', then ') + ') and rolls ' + e.roll + '. ' + (e.hit ? 'A hit! ' + NAMES[e.who] + (e.hp <= 0 ? ' is down.' : ' has ' + e.hp + ' left.') : 'He needed ' + e.need + '. A miss.');
-          return (fast ? Promise.resolve() : (say('Paraxis swings at ' + NAMES[e.who] + '…'), die(e.roll))).then(function () { view.hp[e.who] = e.hp; if (e.hit && !fast) shake(e.who); say(pl); log(pl, e.hit ? 'bad' : ''); paint(); return fast ? null : wait(700); });
+          var pl = 'Paraxis swings at ' + NAMES[e.who] + ' (D4: ' + e.d4.join(', then ') + ') and rolls ' + e.roll + '. ' + (e.hit ? 'A hit! ' + NAMES[e.who] + (e.hp <= 0 ? ' is down.' : ' has ' + e.hp + ' left.') : 'He needed ' + e.need + '. A miss.') + (e.fumble ? ' A 1! Paraxis takes a hit himself.' : '');
+          return (fast ? Promise.resolve() : (say('Paraxis swings at ' + NAMES[e.who] + '…'), die(e.roll))).then(function () { view.hp[e.who] = e.hp; if (e.fumble) view.px = e.px; if (e.hit && !fast) shake(e.who); say(pl); log(pl, e.hit ? 'bad' : e.fumble ? 'good' : ''); paint(); return fast ? null : wait(700); });
         }
         if (e.t === 'round') { view.round = e.round; log('Round ' + e.round + '.'); return null; }
       });
@@ -349,9 +850,12 @@
   }
   function move(m) {
     if (busy) return; busy = true; $('px-acts').innerHTML = ''; paint();
+    // the die leaves the card the moment Attack is pressed, like on the vote pages; the number lands when the roll is in
+    if (m.act === 'attack') { say(NAMES[view.next] + ' attacks…'); pending = Dice.throwNow('px') ? 'thrown' : ''; if (!pending && Dice.ready('px')) { Dice.spin('px'); pending = 'spun'; } }
     api({ action: 'pxact', email: me.email, step: view.step, act: m.act, target: m.target }).then(function (res) {
-      if (!res || !res.ok) { busy = false; say(({ closed: 'The fight is over.', network: 'The ship is slow. Try that again in a moment.' })[res && res.error] || 'Something went wrong. Try that again.'); actions(); paint(); return; }
+      if (!res || !res.ok) { if (pending) Dice.stop('px'); pending = ''; busy = false; say(({ closed: 'The fight is over.', network: 'The ship is slow. Try that again in a moment.' })[res && res.error] || 'Something went wrong. Try that again.'); actions(); paint(); return; }
       var target = res.state;
+      if (res.status === 'stale' && pending) { Dice.stop('px'); pending = ''; }
       return play(res.events, res.status === 'stale').then(function () { view = target; busy = false; paint(); actions(); });
     });
   }
