@@ -952,6 +952,20 @@
     });
   }
 
+  // Stretch edge to edge over the Squarespace section, the same fit as the vote pages (without it the section's own color
+  // showed around the page on the live site, 2026-11-13)
+  function fit() {
+    var root = $('px'); if (!root) return;
+    var sec = root.closest('section');
+    if (sec) {
+      Array.prototype.forEach.call(sec.querySelectorAll('.content-wrapper, .fluid-engine'), function (x) { x.style.setProperty('padding-top', '0', 'important'); x.style.setProperty('padding-bottom', '0', 'important'); });
+      sec.style.setProperty('padding-top', '0', 'important'); sec.style.setProperty('padding-bottom', '0', 'important');
+    }
+    root.style.marginLeft = '0px';
+    root.style.marginLeft = -root.getBoundingClientRect().left + 'px';
+    root.style.width = document.documentElement.clientWidth + 'px';
+  }
+  fit(); addEventListener('resize', fit); addEventListener('load', fit); setTimeout(fit, 600);
   // ---- the words ----
   $('px-lede').textContent = DATA.lede || '';
   $('px-story').innerHTML = '<p class="kick">' + esc(DATA.storyKick || 'LAST TIME') + '</p><h2>' + esc(DATA.storyTitle || '') + '</h2>' +
