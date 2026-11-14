@@ -1,0 +1,405 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>DRAFT: The First Guardian</title></head><body style="margin:0"><!-- ============================================================
+     THE FIRST GUARDIAN - chapter 23: every fren fights Paraxis, one full turn-based battle each.
+     Built by scripts/build-paraxis.mjs from config/paraxis-vote.json and this file. Edit those and
+     rebuild, never the built page. Every roll is made by the hunt's web app (pxstart / pxact);
+     on a github.io preview the page plays a pretend battle in the browser and saves nothing.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"Cracked Imperia";src:url(https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2) format("woff2");font-weight:100 900;font-display:swap;size-adjust:109.5%}
+#px{--ink:#0b170f;--ink7:#213226;--ink4:#607667;--bone:#f3ead9;--bone2:#e6dbc4;--ember:#c53200;--ember4:#ff4c0f;--emer:#1a5e41;--emer7:#268e62;--emer4:#3adb97;--arc:#482d85;
+  box-sizing:border-box;color:var(--ink);font:400 17px/1.6 Almarai,sans-serif;background:linear-gradient(rgba(243,234,217,.86),rgba(243,234,217,.93)),url('https://africhmaurice.github.io/site/assets/bg/dome-city-mist-as159145789.webp') center/cover fixed;padding:clamp(72px,9vw,120px) 0 clamp(56px,7vw,96px)}
+#px *,#px *::before,#px *::after{box-sizing:border-box;border-radius:0}
+#px .w{max-width:1040px;margin:0 auto;padding:0 clamp(16px,4vw,32px);display:flex;flex-direction:column;gap:clamp(28px,4vw,44px)}
+#px h1,#px h2,#px h3{font-family:"Cracked Imperia",Impact,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.03em;line-height:1.05;margin:0;color:var(--ink)}
+#px h1{font-size:clamp(46px,8vw,92px)}#px h1 span{color:var(--ember)}
+#px h2{font-size:clamp(30px,4.4vw,46px)}#px h3{font-size:clamp(22px,3vw,28px)}
+#px p{margin:0}
+#px .kick{font-weight:800;font-size:13px;line-height:1.4;letter-spacing:.14em;text-transform:uppercase;color:var(--ember)}
+#px .hero{display:flex;flex-direction:column;gap:16px}
+#px .lede{max-width:760px;font-size:clamp(17px,1.8vw,20px)}
+#px .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+#px .stat{background:var(--ink);color:#fff;padding:20px;display:flex;flex-direction:column;gap:8px}
+#px .stat .k{font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--emer4)}
+#px .stat .v{font-family:"Cracked Imperia",Impact,sans-serif;font-size:clamp(26px,3.4vw,36px);line-height:1.2;letter-spacing:.03em}
+#px .stat small{font-size:14px;line-height:1.5;color:#d9e6dc}
+#px .card{background:rgba(255,255,255,.72);border:2px solid var(--ink);padding:clamp(20px,3vw,32px);display:flex;flex-direction:column;gap:14px}
+#px .story p+p{margin-top:0}
+#px .story{gap:16px}
+#px .rules ul{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+#px .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 26px;border:2px solid var(--ink);background:var(--ink);color:#fff;font:800 15px/1.2 Almarai,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-align:center}
+#px .btn:hover,#px .btn:focus-visible{background:var(--ember);border-color:var(--ember);outline:none}
+#px .btn.alt{background:transparent;color:var(--ink)}
+#px .btn.alt:hover,#px .btn.alt:focus-visible{background:var(--ink);color:#fff}
+#px .btn[disabled]{opacity:.4;cursor:default;background:var(--ink4);border-color:var(--ink4);color:#fff}
+#px .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}
+#px label{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+#px input,#px select{font:400 16px/1.4 Almarai,sans-serif;padding:12px 14px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+#px .msg{min-height:1.6em;font-weight:700;color:var(--ember)}
+#px .quiet{font-size:15px;color:#34453a}
+/* the crest coin: two faces of the real coin, flipped in 3D */
+#px .coinwrap{display:flex;flex-direction:column;align-items:center;gap:18px;padding:56px 0 12px}
+#px .coin.toss{animation:pxtoss 2.6s cubic-bezier(.3,.6,.4,1)}
+@keyframes pxtoss{0%{transform:translateY(0)}40%{transform:translateY(-44px)}100%{transform:translateY(0)}}
+#px .coin{width:min(220px,56vw);aspect-ratio:1;perspective:900px}
+#px .coin .c{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 2.6s cubic-bezier(.2,.75,.25,1)}
+#px .coin .f{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#3a2d0c center/cover no-repeat}
+#px .coin .f.a{transform:translateZ(7px)}
+#px .coin .f.b{transform:rotateY(180deg) translateZ(7px)}
+/* the coin's thickness: stacked rims of struck gold between the two faces */
+#px .coin .rim{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 50%,#8a6a1c 0 62%,#c9a24a 63% 80%,#6b5214 81%)}
+#px .coinshadow{width:min(180px,46vw);height:18px;margin-top:-6px;border-radius:50%;background:radial-gradient(closest-side,rgba(11,23,15,.35),transparent)}
+#px .coinsay{font-family:"Cracked Imperia",Impact,sans-serif;font-size:clamp(24px,3.4vw,34px);letter-spacing:.03em;line-height:1.2;text-transform:uppercase;text-align:center;min-height:1.2em}
+/* the battle */
+#px .foe{background:var(--ink);color:#fff;padding:clamp(20px,3vw,28px);display:flex;flex-direction:column;gap:12px}
+#px .foe h3{color:#fff}
+#px .foe .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+#px .foe .hpnum{font-family:"Cracked Imperia",Impact,sans-serif;font-size:clamp(24px,3vw,32px);letter-spacing:.03em;line-height:1.2;color:var(--ember4)}
+#px .bar{height:18px;background:#2b1a12;border:2px solid #fff;position:relative;overflow:hidden}
+#px .bar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--ember),var(--ember4));transition:width .5s}
+#px .crew{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+#px .mate{background:#fff;border:2px solid var(--ink);padding:20px;display:flex;flex-direction:column;gap:10px;transition:background .2s,border-color .2s}
+#px .mate .nm{font-family:"Cracked Imperia",Impact,sans-serif;font-size:clamp(22px,2.4vw,26px);letter-spacing:.03em;line-height:1.2;text-transform:uppercase}
+#px .mate .role{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4)}
+#px .hearts{display:flex;gap:6px}
+#px .hearts i{width:22px;height:22px;background:var(--emer7);border:2px solid var(--ink)}
+#px .hearts i.off{background:transparent}
+#px .mate .need{font-size:14px;line-height:1.5}
+#px .mate.turn{border-color:var(--ember);box-shadow:0 0 0 3px var(--ember)}
+#px .mate.down{background:#d9cfbd}
+#px .mate.down .nm{text-decoration:line-through}
+#px .mate.hit{animation:pxhit .5s}
+@keyframes pxhit{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#px .turnbox{background:#fff;border:2px solid var(--ink);padding:clamp(20px,3vw,28px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center}
+#px .die{width:112px;height:112px;display:grid;place-items:center;position:relative}
+#px .die svg{position:absolute;inset:0;width:100%;height:100%}
+#px .die b{position:relative;font-family:"Cracked Imperia",Impact,sans-serif;font-size:40px;letter-spacing:.03em;line-height:1.2;color:#fff}
+#px .die.roll{animation:pxspin .7s linear}
+@keyframes pxspin{to{transform:rotate(360deg)}}
+#px .turntxt{display:flex;flex-direction:column;gap:12px}
+#px .turntxt .say{font-size:clamp(17px,1.8vw,19px);min-height:3.2em}
+#px .acts{display:flex;flex-wrap:wrap;gap:12px}
+#px .packs{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:14px}
+#px .log{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;max-height:340px;overflow:auto}
+#px .log li{padding:10px 14px;background:rgba(255,255,255,.7);border-left:4px solid var(--ink4);font-size:15px;line-height:1.5}
+#px .log li.good{border-left-color:var(--emer7)}#px .log li.bad{border-left-color:var(--ember)}
+#px .end{background:var(--ink);color:#fff;padding:clamp(24px,4vw,40px);display:flex;flex-direction:column;gap:14px;text-align:center;align-items:center}
+#px .end h2{color:#fff}#px .end.win h2{color:var(--emer4)}#px .end.loss h2{color:var(--ember4)}
+#px .badge{display:inline-block;padding:6px 12px;background:var(--ember);color:#fff;font-weight:800;font-size:12px;letter-spacing:.12em}
+#px .bank{display:flex;flex-wrap:wrap;gap:8px}
+#px .bank span{display:inline-grid;place-items:center;width:44px;height:44px;background:var(--ink);color:#fff;font-weight:800}
+#px [hidden]{display:none!important}
+@media (max-width:820px){#px .crew{grid-template-columns:repeat(2,minmax(0,1fr))}#px .stats{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){#px .form{grid-template-columns:minmax(0,1fr)}#px .turnbox{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}#px .acts{justify-content:center}#px .mate{padding:16px 14px}#px .hearts i{width:18px;height:18px}}
+</style>
+<div id="px"><div class="w">
+  <header class="hero">
+    <p class="kick">THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE</p>
+    <h1>The First <span>Guardian</span></h1>
+    <p class="lede" id="px-lede"></p>
+    <div class="stats">
+      <div class="stat"><span class="k">BATTLES FOUGHT</span><span class="v" id="px-count">…</span><small>Every fren fights Paraxis once.</small></div>
+      <div class="stat"><span class="k">TRENCH XP</span><span class="v">1,000 / 500</span><small>1,000 XP if your crew wins, 500 if Paraxis does.</small></div>
+      <div class="stat"><span class="k" id="px-close-k">THE FIGHT CLOSES</span><span class="v" id="px-close">…</span><small id="px-close-s"></small></div>
+    </div>
+  </header>
+  <section class="card story" id="px-story"></section>
+  <section class="card rules">
+    <p class="kick">HOW THE FIGHT WORKS</p>
+    <h2>Fight Paraxis</h2>
+    <ul>
+      <li>The crest coin decides who goes first: the crest for the crew, the crossed swords for Paraxis.</li>
+      <li>Paraxis has 30 hit points. Rune, Sparrow, Hale, and Scarlett have 4 each.</li>
+      <li>On the crew&rsquo;s turn, each of them attacks or uses a medpack. An attack rolls a D20, and 15 or higher hits for 1. Hale hits for 2.</li>
+      <li>The crew has 3 medpacks. Each one heals 2 hit points, and it can bring someone back from 0.</li>
+      <li>Paraxis attacks twice a turn. A D4 picks who he swings at, and he hits for 1 if he meets their number: Rune 12, Sparrow 14, Hale 15, Scarlett 11.</li>
+      <li>Win or lose, the result counts. If more than half the frens beat him, the crew wins. If one of the crew falls in more than half the battles, they fall in the story.</li>
+    </ul>
+  </section>
+  <section class="card" id="px-who">
+    <p class="kick">BEFORE YOU FIGHT</p>
+    <h2>Who Is Fighting?</h2>
+    <p class="quiet" id="px-who-note">Tell the Captain who you are. You fight one battle, and it&rsquo;s saved under your email, so you can come back and finish it.</p>
+    <div class="form" id="px-form">
+      <label>First name<input id="px-first" autocomplete="given-name"></label>
+      <label>Email you use for the hunt<input id="px-email" type="email" autocomplete="email" inputmode="email"></label>
+      <label>Social handle<input id="px-handle" placeholder="@yourname" autocomplete="off"></label>
+      <label>Where that handle lives<select id="px-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select></label>
+      <label>Country<select id="px-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select></label>
+      <label id="px-otherl" hidden>Which country?<input id="px-other"></label>
+      <label>Discord username (for your XP)<input id="px-discord" placeholder="yourname" autocomplete="off"></label>
+    </div>
+    <p class="quiet" id="px-me" hidden></p>
+    <div class="acts"><button type="button" class="btn" id="px-go">FLIP THE CREST COIN</button></div>
+    <p class="msg" id="px-msg" aria-live="polite"></p>
+  </section>
+  <section class="card" id="px-coin" hidden>
+    <div class="coinwrap">
+      <div class="coin" aria-hidden="true"><div class="c" id="px-c"><div class="f a"></div><div class="f b"></div></div></div>
+      <div class="coinshadow" aria-hidden="true"></div>
+      <p class="coinsay" id="px-coinsay" aria-live="polite">Flipping…</p>
+    </div>
+  </section>
+  <section id="px-battle" hidden style="display:flex;flex-direction:column;gap:18px">
+    <div class="foe">
+      <div class="row"><h3>Paraxis, the First Guardian</h3><span class="hpnum"><span id="px-hp">30</span> / 30</span></div>
+      <div class="bar"><i id="px-bar" style="width:100%"></i></div>
+    </div>
+    <div class="crew" id="px-crew"></div>
+    <div class="turnbox">
+      <div class="die" id="px-die"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,3 93,27 93,73 50,97 7,73 7,27" fill="#0b170f" stroke="#c53200" stroke-width="4"/></svg><b id="px-dieN">20</b></div>
+      <div class="turntxt">
+        <p class="kick" id="px-turnk">ROUND 1</p>
+        <p class="say" id="px-say" aria-live="polite"></p>
+        <div class="acts" id="px-acts"></div>
+        <p class="packs" id="px-packs">Medpacks left: 3</p>
+      </div>
+    </div>
+    <div class="card"><p class="kick">THE BATTLE SO FAR</p><ol class="log" id="px-log"></ol></div>
+  </section>
+  <section class="end" id="px-end" hidden></section>
+  <section class="card" id="px-captain" hidden>
+    <p class="kick">CAPTAIN ONLY</p>
+    <h2>Paraxis&rsquo;s Rolls</h2>
+    <p>Bank 100 D20 rolls for Paraxis. Every fren&rsquo;s battle uses them in order. Once the first battle starts, they&rsquo;re locked.</p>
+    <p class="packs" id="px-bank-n">Banked: …</p>
+    <div class="acts"><button type="button" class="btn" id="px-bank1">ROLL ONE</button><button type="button" class="btn alt" id="px-bank10">ROLL TEN</button></div>
+    <div class="bank" id="px-bank"></div>
+    <p class="msg" id="px-bank-msg"></p>
+  </section>
+</div></div>
+<script>
+(function () {
+  var DATA = {"key":"paraxis_vote","opens":"2026-11-14T20:00:00Z","closes":"2026-11-15T21:00:00Z","lede":"The first guardian stands between the crew and the stone. Every fren fights Paraxis once: flip the crest coin, take the crew's turns, and see who is still standing at the end.","storyKick":"LAST TIME","storyTitle":"At the Sword","story":"The frens sent the crew to the sword, and the walk was an easy one. No beasts, no traps, no surprises. Just a quiet path down the valley to the giant blade standing in the rock.\n\nThen something beside the sword stood up.\n\n\"Tell me that's a building. Please tell me that's a building.\"\n\n\"Buildings don't have knees, love.\"\n\nIt was a machine, huge and ancient, and it looked down at the crew like they were late for an appointment.\n\n\"You've come for the stone. You are not the first, and you will not be the last. I am but one of three guardians who protect this land. You must defeat all of us before you can find what you seek. I am the first guardian. My name is Paraxis. You will not meet my siblings.\"","coin":{"crest":"https://africhmaurice.github.io/site/assets/paraxis/crest-coin-crest.webp","swords":"https://africhmaurice.github.io/site/assets/paraxis/crest-coin-swords.webp"}};
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var PREVIEW = /github\.io$/.test(location.hostname) || /[?&]pxpreview/.test(location.search);
+  var CAPTAIN = (location.hash.match(/captain=([a-f0-9]+)/) || [])[1] || '';
+  var ME = 'thLoot:me', NAMES = ['Rune', 'Sparrow', 'Hale', 'Scarlett'], ROLES = ['Techtailor', 'Intangible', 'Crest Knight', 'Gunslinger'];
+  var GUARD = [12, 14, 15, 11], POWER = [1, 1, 2, 1];
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function load(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function when(iso) { return new Date(iso).toLocaleString('en-US', { timeZone: 'America/New_York', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).replace(':00', '') + ' ET'; }
+  var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+
+  // ---- the words ----
+  $('px-lede').textContent = DATA.lede || '';
+  $('px-story').innerHTML = '<p class="kick">' + esc(DATA.storyKick || 'LAST TIME') + '</p><h2>' + esc(DATA.storyTitle || '') + '</h2>' + String(DATA.story || '').split(/\n\s*\n/).map(function (t) { return '<p>' + esc(t.trim()) + '</p>'; }).join('');
+  var closed = Date.now() > Date.parse(DATA.closes), notYet = Date.now() < Date.parse(DATA.opens);
+  $('px-close').textContent = when(notYet ? DATA.opens : DATA.closes).toUpperCase();
+  if (notYet) { $('px-close-k').textContent = 'THE FIGHT OPENS'; }
+  if (closed) { $('px-close-k').textContent = 'THE FIGHT IS OVER'; $('px-close-s').textContent = 'The battles are in.'; }
+  else $('px-close-s').textContent = 'Finish your battle before then.';
+  (function () { var c = $('px-c'), h = ''; for (var z = -6; z <= 6; z++) h += '<div class="rim" style="transform:translateZ(' + z + 'px)"></div>'; c.insertAdjacentHTML('afterbegin', h); })();
+  var A = DATA.coin || {};
+  document.querySelector('#px .f.a').style.backgroundImage = 'url(' + A.crest + ')';
+  document.querySelector('#px .f.b').style.backgroundImage = 'url(' + A.swords + ')';
+
+  // ---- the server, or a pretend one on a preview ----
+  function send(payload) {
+    return new Promise(function (done) {
+      var name = 'pxcb' + Math.random().toString(36).slice(2), q = ['callback=' + name];
+      for (var k in payload) if (payload[k] != null && payload[k] !== '') q.push(encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]));
+      var s = document.createElement('script'), timer = setTimeout(function () { end({ ok: false, error: 'network' }); }, 30000);
+      function end(res) { clearTimeout(timer); try { delete window[name]; } catch (e) {} if (s.parentNode) s.parentNode.removeChild(s); done(res); }
+      window[name] = end; s.onerror = function () { end({ ok: false, error: 'network' }); };
+      s.src = ENDPOINT + '?' + q.join('&'); document.body.appendChild(s);
+    });
+  }
+  // On a preview the same rules run here, with a pretend bank of Paraxis rolls. Nothing is saved anywhere.
+  var fake = null;
+  function d(n) { return Math.floor(Math.random() * n) + 1; }
+  function fakeParaxis(st, ev) {
+    for (var a = 0; a < 2; a++) {
+      if (!st.hp.some(function (h) { return h > 0; })) break;
+      var d4s = [], t; do { t = d(4) - 1; d4s.push(t + 1); } while (st.hp[t] <= 0);
+      var roll = fake.bank[st.bi++ % 100], hit = roll >= GUARD[t]; if (hit) st.hp[t] = Math.max(0, st.hp[t] - 1);
+      ev.push({ t: 'px', d4: d4s, who: t, roll: roll, need: GUARD[t], hit: hit, hp: st.hp[t] });
+    }
+    if (!st.hp.some(function (h) { return h > 0; })) st.over = 'loss';
+  }
+  function api(payload) {
+    if (!PREVIEW) return send(payload);
+    if (!fake) fake = { bank: Array.apply(null, Array(100)).map(function () { return d(20); }), st: null };
+    var st = fake.st, ev = [];
+    if (payload.action === 'pxstate') return Promise.resolve({ ok: true, state: st && JSON.parse(JSON.stringify(st)) });
+    if (payload.action === 'pxstart') {
+      if (st) return Promise.resolve({ ok: true, status: 'resume', state: JSON.parse(JSON.stringify(st)), events: [] });
+      var coin = Math.random() < .5 ? 'crest' : 'swords';
+      st = fake.st = { hp: [4, 4, 4, 4], px: 30, packs: 3, round: 1, next: 0, bi: 0, step: 0, coin: coin, over: null, log: [] };
+      ev.push({ t: 'coin', coin: coin, first: coin === 'crest' ? 'crew' : 'paraxis' });
+      if (coin === 'swords') fakeParaxis(st, ev);
+      st.log = st.log.concat(ev);
+      return wait(400).then(function () { return { ok: true, status: 'new', state: JSON.parse(JSON.stringify(st)), events: ev }; });
+    }
+    if (payload.action === 'pxact') {
+      var who = st.next;
+      if (payload.act === 'heal') { var t = +payload.target, was = st.hp[t]; st.hp[t] = Math.min(4, st.hp[t] + 2); st.packs--; ev.push({ t: 'heal', who: who, target: t, from: was, hp: st.hp[t], packs: st.packs }); }
+      else { var r = d(20), hit = r >= 15, dmg = hit ? POWER[who] : 0; st.px = Math.max(0, st.px - dmg); ev.push({ t: 'atk', who: who, roll: r, hit: hit, dmg: dmg, px: st.px }); if (st.px <= 0) st.over = 'win'; }
+      if (!st.over) {
+        var nx = -1; for (var i = who + 1; i < 4; i++) if (st.hp[i] > 0) { nx = i; break; }
+        if (nx < 0) { ev.push({ t: 'pxturn', round: st.round }); fakeParaxis(st, ev); if (!st.over) { st.round++; for (var j = 0; j < 4; j++) if (st.hp[j] > 0) { nx = j; break; } ev.push({ t: 'round', round: st.round }); } }
+        st.next = st.over ? -1 : nx;
+      } else st.next = -1;
+      st.step++; st.log = st.log.concat(ev);
+      return wait(300).then(function () { return { ok: true, status: 'ok', state: JSON.parse(JSON.stringify(st)), events: ev }; });
+    }
+    return Promise.resolve({ ok: false, error: 'preview' });
+  }
+
+  // ---- who is fighting ----
+  var me = load(ME) || {};
+  function showMe() {
+    var known = me.email && me.first_name && me.country;
+    $('px-form').hidden = !!known; $('px-me').hidden = !known;
+    if (known) $('px-me').innerHTML = 'Fighting as <b>' + esc(me.first_name) + '</b> (' + esc(me.email) + ')' + (me.discord ? ', Discord <b>' + esc(me.discord) + '</b>' : '') + '. <button type="button" class="btn alt" id="px-notme" style="min-height:0;padding:6px 12px;margin-left:6px">NOT YOU?</button>';
+    if (known) $('px-notme').onclick = function () { me = {}; save(ME, me); showMe(); };
+    else { $('px-first').value = me.first_name || ''; $('px-email').value = me.email || ''; $('px-handle').value = me.handle || ''; $('px-discord').value = me.discord || ''; }
+  }
+  $('px-country').onchange = function () { $('px-otherl').hidden = this.value !== '__other'; };
+  function readWho() {
+    if (me.email && me.first_name && me.country) { return me; }
+    var c = $('px-country').value, p = { first_name: $('px-first').value.trim(), email: $('px-email').value.trim(), handle: $('px-handle').value.trim(), platform: $('px-platform').value,
+      country: c === '__other' ? $('px-other').value.trim() : c, discord: $('px-discord').value.trim().replace(/^@+/, '') };
+    if (!p.first_name) return 'A first name, please.';
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email)) return 'That email does not look right.';
+    if (!p.country) return 'Which country are you fighting from?';
+    return p;
+  }
+  showMe();
+  if (!PREVIEW && (closed || notYet)) { $('px-go').disabled = true; $('px-msg').textContent = closed ? 'The fight is over.' : 'The fight opens ' + when(DATA.opens) + '.'; }
+
+  // ---- the battle on screen ----
+  var view = null, busy = false;
+  function crewHTML() {
+    $('px-crew').innerHTML = NAMES.map(function (n, i) {
+      return '<article class="mate" id="px-m' + i + '"><p class="role">' + ROLES[i] + '</p><p class="nm">' + n + '</p><div class="hearts" aria-label="hit points"></div>' +
+        '<p class="need">Paraxis needs <b>' + GUARD[i] + '</b> to hit ' + (i === 1 || i === 3 ? 'her' : 'him') + '. Hits for <b>' + POWER[i] + '</b>.</p></article>';
+    }).join('');
+  }
+  function paint() {
+    $('px-hp').textContent = view.px; $('px-bar').style.width = (view.px / 30 * 100) + '%';
+    NAMES.forEach(function (n, i) {
+      var m = $('px-m' + i); m.classList.toggle('down', view.hp[i] <= 0); m.classList.toggle('turn', !view.over && view.next === i && !busy);
+      m.querySelector('.hearts').innerHTML = [0, 1, 2, 3].map(function (k) { return '<i' + (k < view.hp[i] ? '' : ' class="off"') + '></i>'; }).join('');
+      m.querySelector('.hearts').setAttribute('aria-label', Math.max(0, view.hp[i]) + ' of 4 hit points');
+    });
+    $('px-packs').textContent = 'Medpacks left: ' + view.packs;
+    $('px-turnk').textContent = 'ROUND ' + view.round;
+  }
+  function log(text, cls) { var li = document.createElement('li'); li.className = cls || ''; li.textContent = text; $('px-log').insertBefore(li, $('px-log').firstChild); }
+  function say(t) { $('px-say').textContent = t; }
+  function die(n) {
+    var el = $('px-die'); el.classList.remove('roll'); void el.offsetWidth; el.classList.add('roll');
+    var k = 0, iv = setInterval(function () { $('px-dieN').textContent = d(20); if (++k > 8) { clearInterval(iv); $('px-dieN').textContent = n; } }, 70);
+    return wait(800);
+  }
+  function shake(i) { var m = $('px-m' + i); m.classList.remove('hit'); void m.offsetWidth; m.classList.add('hit'); }
+  // replay what happened, one beat at a time
+  function play(events, fast) {
+    var chain = Promise.resolve();
+    events.forEach(function (e) {
+      chain = chain.then(function () {
+        if (e.t === 'coin') return fast ? null : flip(e.coin);
+        if (e.t === 'atk') {
+          var line = NAMES[e.who] + ' rolls ' + e.roll + (e.hit ? ' and hits Paraxis for ' + e.dmg + '.' : '. A miss.');
+          return (fast ? Promise.resolve() : (say(NAMES[e.who] + ' attacks…'), die(e.roll))).then(function () { view.px = e.px; say(line); log(line, e.hit ? 'good' : ''); paint(); return fast ? null : wait(500); });
+        }
+        if (e.t === 'heal') { view.hp[e.target] = e.hp; view.packs = e.packs; var hl = NAMES[e.who] + ' uses a medpack on ' + (e.target === e.who ? (e.who === 1 || e.who === 3 ? 'herself' : 'himself') : NAMES[e.target]) + (e.from <= 0 ? ' and brings ' + NAMES[e.target] + ' back.' : '.') ; say(hl); log(hl, 'good'); paint(); return fast ? null : wait(700); }
+        if (e.t === 'pxturn') { busy = true; say('Paraxis attacks!'); if (!fast) paint(); return fast ? null : wait(700); }
+        if (e.t === 'px') {
+          var pl = 'Paraxis swings at ' + NAMES[e.who] + ' (D4: ' + e.d4.join(', then ') + ') and rolls ' + e.roll + '. ' + (e.hit ? 'A hit! ' + NAMES[e.who] + (e.hp <= 0 ? ' is down.' : ' has ' + e.hp + ' left.') : 'He needed ' + e.need + '. A miss.');
+          return (fast ? Promise.resolve() : (say('Paraxis swings at ' + NAMES[e.who] + '…'), die(e.roll))).then(function () { view.hp[e.who] = e.hp; if (e.hit && !fast) shake(e.who); say(pl); log(pl, e.hit ? 'bad' : ''); paint(); return fast ? null : wait(700); });
+        }
+        if (e.t === 'round') { view.round = e.round; log('Round ' + e.round + '.'); return null; }
+      });
+    });
+    return chain;
+  }
+  function flip(coin) {
+    $('px-coin').hidden = false; $('px-coin').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    var c = $('px-c'); c.style.transition = 'none'; c.style.transform = 'rotateY(0deg)'; void c.offsetWidth;
+    var cw = document.querySelector('#px .coin'); cw.classList.remove('toss'); void cw.offsetWidth; cw.classList.add('toss');
+    c.style.transition = ''; c.style.transform = 'rotateY(' + (1800 + (coin === 'swords' ? 180 : 0)) + 'deg)';
+    $('px-coinsay').textContent = 'Flipping…';
+    return wait(2800).then(function () {
+      $('px-coinsay').textContent = coin === 'crest' ? 'The crest! The crew goes first.' : 'Crossed swords! Paraxis goes first.';
+      log(coin === 'crest' ? 'The crest coin lands on the crest. The crew goes first.' : 'The crest coin lands on the crossed swords. Paraxis goes first.');
+      return wait(1400);
+    });
+  }
+  function actions() {
+    var box = $('px-acts'); box.innerHTML = '';
+    if (view.over) return finish();
+    var who = view.next; say(NAMES[who] + '’s turn. Attack, or use a medpack?');
+    var atk = document.createElement('button'); atk.type = 'button'; atk.className = 'btn'; atk.textContent = NAMES[who] + ': ATTACK';
+    atk.onclick = function () { move({ act: 'attack' }); }; box.appendChild(atk);
+    var hurt = [0, 1, 2, 3].filter(function (i) { return view.hp[i] < 4; });
+    if (view.packs && hurt.length) {
+      var med = document.createElement('button'); med.type = 'button'; med.className = 'btn alt'; med.textContent = 'USE A MEDPACK';
+      med.onclick = function () {
+        box.innerHTML = ''; say('Who gets the medpack?');
+        hurt.forEach(function (i) { var b = document.createElement('button'); b.type = 'button'; b.className = 'btn alt'; b.textContent = NAMES[i] + (view.hp[i] <= 0 ? ' (down)' : ' (' + view.hp[i] + ' HP)'); b.onclick = function () { move({ act: 'heal', target: i }); }; box.appendChild(b); });
+        var back = document.createElement('button'); back.type = 'button'; back.className = 'btn alt'; back.textContent = 'BACK'; back.onclick = actions; box.appendChild(back);
+      };
+      box.appendChild(med);
+    }
+  }
+  function move(m) {
+    if (busy) return; busy = true; $('px-acts').innerHTML = ''; paint();
+    api({ action: 'pxact', email: me.email, step: view.step, act: m.act, target: m.target }).then(function (res) {
+      if (!res || !res.ok) { busy = false; say(({ closed: 'The fight is over.', network: 'The ship is slow. Try that again in a moment.' })[res && res.error] || 'Something went wrong. Try that again.'); actions(); paint(); return; }
+      var target = res.state;
+      return play(res.events, res.status === 'stale').then(function () { view = target; busy = false; paint(); actions(); });
+    });
+  }
+  function finish() {
+    var win = view.over === 'win', dead = NAMES.filter(function (n, i) { return view.hp[i] <= 0; });
+    $('px-acts').innerHTML = ''; say(win ? 'Paraxis falls!' : 'The crew is down.');
+    var end = $('px-end'); end.hidden = false; end.className = 'end ' + view.over;
+    end.innerHTML = '<p class="kick" style="color:#fd7547">' + (win ? 'VICTORY' : 'DEFEAT') + '</p><h2>' + (win ? 'You Beat Paraxis' : 'Paraxis Wins') + '</h2>' +
+      '<p>' + (win ? 'Your crew brought down the first guardian in ' + view.round + ' rounds.' : 'Paraxis was left with ' + view.px + ' of 30 hit points.') + ' ' + (dead.length ? 'Fallen: ' + dead.join(', ') + '.' : 'Nobody fell.') + '</p>' +
+      '<p>' + (PREVIEW ? '<span class="badge">PREVIEW</span> Nothing was saved. On the live page, this battle counts toward the story.' : 'Your battle counts toward the story.' + (me.discord ? ' Your ' + (win ? '1,000' : '500') + ' XP lands in the Trench Discord within a few minutes if <b>' + esc(me.discord) + '</b> is your username there.' : ' Add your Discord username next time to get the XP.')) + '</p>';
+    end.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function enter(state, events, fresh) {
+    $('px-battle').hidden = false; crewHTML();
+    view = { hp: [4, 4, 4, 4], px: 30, packs: 3, round: 1, next: 0, step: 0, over: null };
+    paint();
+    // a fresh battle plays everything; a battle coming back is caught up at once
+    return play(fresh ? events : state.log, !fresh).then(function () { view = state; busy = false; paint(); $('px-battle').scrollIntoView({ behavior: 'smooth', block: 'start' }); actions(); });
+  }
+  $('px-go').onclick = function () {
+    var who = readWho(); if (typeof who === 'string') { $('px-msg').textContent = who; return; }
+    me = who; save(ME, me); showMe();
+    var btn = this; btn.disabled = true; btn.textContent = 'FLIPPING…'; $('px-msg').textContent = '';
+    api({ action: 'pxstart', email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country, discord: me.discord }).then(function (res) {
+      if (!res || !res.ok) { btn.disabled = false; btn.textContent = 'FLIP THE CREST COIN'; $('px-msg').textContent = ({ closed: 'The fight is over.', notopen: 'The fight opens ' + when(DATA.opens) + '.', bank: 'Paraxis isn’t ready yet. Check back soon.', email: 'That email does not look right.' })[res && res.error] || 'The ship is slow today. Give it another go in a moment.'; return; }
+      $('px-who').hidden = true;
+      enter(res.state, res.events, res.status === 'new');
+    });
+  };
+  // coming back to a battle already started
+  if (me.email && !PREVIEW && !CAPTAIN) api({ action: 'pxstate', email: me.email }).then(function (res) { if (res && res.ok && res.state) { $('px-who').hidden = true; enter(res.state, [], false); } });
+  if (!PREVIEW) send({ action: 'pxcount' }).then(function (res) { $('px-count').textContent = res && res.ok ? Number(res.count).toLocaleString('en-US') : '—'; });
+  else $('px-count').textContent = '0';
+
+  // ---- the Captain banks Paraxis's rolls ----
+  if (CAPTAIN) {
+    $('px-captain').hidden = false; $('px-captain').scrollIntoView();
+    var showBank = function (res) {
+      if (!res || !res.ok) { $('px-bank-msg').textContent = ({ key: 'That captain link isn’t right.', locked: 'The battles have started, so the rolls are locked.' })[res && res.error] || 'The ship is slow. Try again.'; if (res && res.bank) showBank({ ok: true, bank: res.bank, added: [] }); return; }
+      $('px-bank-n').textContent = 'Banked: ' + res.bank.length + ' of 100';
+      $('px-bank').innerHTML = res.bank.map(function (n, i) { return '<span title="Roll ' + (i + 1) + '">' + n + '</span>'; }).join('');
+      $('px-bank1').disabled = $('px-bank10').disabled = res.bank.length >= 100;
+      if (res.added && res.added.length) $('px-bank-msg').textContent = 'You rolled ' + res.added.join(', ') + '.';
+    };
+    var bank = function (n) { $('px-bank-msg').textContent = 'Rolling…'; send({ action: 'pxbank', captain: CAPTAIN, n: n }).then(showBank); };
+    $('px-bank1').onclick = function () { bank(1); }; $('px-bank10').onclick = function () { bank(10); };
+    bank(0);
+  }
+})();
+</script>
+</body></html>
