@@ -869,6 +869,7 @@
       var q0 = new T.Quaternion().setFromEuler(new T.Euler(Math.random() * 6.3, Math.random() * 6.3, Math.random() * 6.3)), q1 = pose(faceFor(n));
       var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), dur = 1200, t0 = performance.now(), R = o.R;
       d.node.style.visibility = 'hidden';
+      var tok = o.tok = (o.tok || 0) + 1;
       o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
       (function frame(now) {
         var t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3);
@@ -883,8 +884,8 @@
         // hold so everyone can see who it landed on, then it goes back into its slot
         setTimeout(function () {
           d.mesh.quaternion.copy(q1); d.y = 0; draw(d); d.node.style.visibility = '';
-          o.cv.style.transition = 'opacity .4s ease'; o.cv.style.opacity = '0';
-          setTimeout(function () { o.cv.style.display = 'none'; }, 420);
+          if (o.tok === tok) { o.cv.style.transition = 'opacity .4s ease'; o.cv.style.opacity = '0'; }
+          setTimeout(function () { if (o.tok === tok) o.cv.style.display = 'none'; }, 420);
           if (done) done();
         }, 1000);
       })(t0);
@@ -1194,6 +1195,7 @@
           axis: new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), delay: k * 60, hits: 0 };
       });
       o.dice.forEach(function (d, k) { d.mesh.visible = d.shadow.visible = list.some(function (e) { return e.who === k; }); });
+      var tok = o.tok = (o.tok || 0) + 1;
       o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
       try { P.clack(0.3); } catch (err) {}
       var dur = 1200, t0 = performance.now();
@@ -1215,8 +1217,8 @@
         // hold so everyone can read all four, then they go back into their cards
         setTimeout(function () {
           runs.forEach(function (u) { Dice.show('c' + u.e.who, u.e.roll); u.node.style.visibility = ''; var dn = $('rc-dn-c' + u.e.who); if (dn) dn.textContent = u.e.roll; });
-          o.cv.style.transition = 'opacity .4s ease'; o.cv.style.opacity = '0';
-          setTimeout(function () { o.cv.style.display = 'none'; }, 420);
+          if (o.tok === tok) { o.cv.style.transition = 'opacity .4s ease'; o.cv.style.opacity = '0'; }
+          setTimeout(function () { if (o.tok === tok) o.cv.style.display = 'none'; }, 420);
           done();
         }, 1300);
       })(t0);
@@ -1334,6 +1336,8 @@
       var pool = o.d20.slice(), used = [];
       best.forEach(function (u) { u.d = u.it.kind === 'd12' ? o.d12 : u.it.who != null ? o.d20[u.it.who] : pool.shift(); used.push(u.d); u.d.mesh.visible = u.d.shadow.visible = true; u.it.node.style.visibility = 'hidden'; if (!u.rl) u.rl = { g: new T.Quaternion(), ang: 0 }; });
       [o.d12].concat(o.d20).forEach(function (d) { if (d && used.indexOf(d) < 0) d.mesh.visible = d.shadow.visible = false; });
+      var tok = o.tok = (o.tok || 0) + 1;
+      if (o.raf) cancelAnimationFrame(o.raf);
       o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
       try { P.clack(0.3); } catch (err) {}
       return new Promise(function (done) {
@@ -1356,8 +1360,9 @@
           // at rest: hold so everyone can read them, then each goes back to its card or slot
           setTimeout(function () {
             best.forEach(function (u) { if (u.it.done) u.it.done(u); u.it.node.style.visibility = ''; });
+            if (o.tok !== tok) { done(); return; }
             o.cv.style.transition = 'opacity .4s ease'; o.cv.style.opacity = '0';
-            setTimeout(function () { o.cv.style.display = 'none'; }, 420);
+            setTimeout(function () { if (o.tok === tok) o.cv.style.display = 'none'; }, 420);
             done();
           }, 1100);
         })(t0);
