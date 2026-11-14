@@ -899,9 +899,9 @@
       $('px-bank-n').textContent = 'Banked: ' + res.bank.length + ' of 100';
       $('px-bank').innerHTML = res.bank.map(function (n, i) { return '<span title="Roll ' + (i + 1) + '">' + n + '</span>'; }).join('');
       $('px-bank1').disabled = $('px-bank10').disabled = res.bank.length >= 100;
-      if (res.added && res.added.length) $('px-bank-msg').textContent = 'You rolled ' + res.added.join(', ') + '.';
+      $('px-bank-msg').textContent = res.added && res.added.length ? 'You rolled ' + res.added.join(', ') + '.' : res.bank.length >= 100 ? 'All 100 rolls are banked. Paraxis is ready.' : '';
     };
-    var bank = function (n) { $('px-bank-msg').textContent = 'Rolling…'; send({ action: 'pxbank', captain: CAPTAIN, n: n }).then(showBank); };
+    var bank = function (n) { $('px-bank-msg').textContent = n ? 'Rolling…' : ''; send({ action: 'pxbank', captain: CAPTAIN, n: n }).then(showBank); };
     $('px-bank1').onclick = function () { bank(1); }; $('px-bank10').onclick = function () { bank(10); };
     bank(0);
   }
