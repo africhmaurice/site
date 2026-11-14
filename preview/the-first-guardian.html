@@ -94,7 +94,7 @@
 #px{--cream:#f3ead9;--lime:#a2f590}
 #px .rc-die{grid-row:auto!important}
 #px .dice2{display:flex;align-items:center;gap:16px}
-/* the D4: a 3D canvas once three.js is in; until then (or without it) the name it landed on */
+/* the target die (a D12 since 11/13; the ids still say d4): a 3D canvas once three.js is in; until then (or without it) the name it landed on */
 #px .pxd4{position:relative;width:120px;height:120px;display:grid;place-items:center;flex:none}
 #px .pxd4 canvas{position:absolute;inset:0;width:100%;height:100%;display:none}
 #px .pxd4.is3d canvas{display:block}
@@ -201,7 +201,7 @@
       <li>Paraxis has 30 hit points. Rune, Sparrow, Hale, and Scarlett have 4 each.</li>
       <li>On the crew&rsquo;s turn, pick each crew member&rsquo;s move on their card, then roll them all at once. Each one attacks or uses a medpack. An attack rolls a D20, and 15 or higher hits for 1. Hale hits for 2.</li>
       <li>The crew has 3 medpacks. Each one heals 2 hit points, and it can bring someone back from 0.</li>
-      <li>Paraxis attacks twice a turn. A D4 picks who he swings at, and he hits for 1 if he meets their number: Rune 12, Sparrow 14, Hale 15, Scarlett 11.</li>
+      <li>Paraxis attacks twice a turn. A twelve-sided die with each of the crew on three of its faces picks who he swings at, and he hits for 1 if he meets their number: Rune 12, Sparrow 14, Hale 15, Scarlett 11.</li>
       <li>Anyone who rolls a natural 20 hits twice.</li>
       <li>Anyone who rolls a 1 takes a hit: the crew member who rolled it loses 1 hit point, and so does Paraxis.</li>
       <li>Win or lose, the result counts. If more than half the frens beat him, the crew wins. If one of the crew falls in more than half the battles, they fall in the story.</li>
@@ -238,7 +238,7 @@
     </div>
     <div class="crew" id="px-crew"></div>
     <div class="turnbox">
-      <div class="dice2"><div class="rc-die" id="rc-die-px" aria-hidden="true"></div><div class="pxd4" id="px-d4" aria-hidden="true"><canvas></canvas><span class="d4lab">D4</span></div></div>
+      <div class="dice2"><div class="rc-die" id="rc-die-px" aria-hidden="true"></div><div class="pxd4" id="px-d4" aria-hidden="true"><canvas></canvas><span class="d4lab">D12</span></div></div>
       <div class="turntxt">
         <p class="kick" id="px-turnk">ROUND 1</p>
         <p class="say" id="px-say" aria-live="polite"></p>
@@ -252,17 +252,17 @@
   <section class="card" id="px-captain" hidden>
     <p class="kick">CAPTAIN ONLY</p>
     <h2>Paraxis&rsquo;s Rolls</h2>
-    <p>Bank Paraxis&rsquo;s rolls: 100 D20s to hit, and 200 D4s for who he swings at. Every fren&rsquo;s battle uses them in order. A D4 that lands on someone who is down moves on to the next one. Once the first battle starts, they&rsquo;re locked.</p>
+    <p>Bank Paraxis&rsquo;s rolls: 100 D20s to hit, and 200 rolls of his twelve-sided die (each of the crew is on three of its faces) for who he swings at. Every fren&rsquo;s battle uses them in order. A roll that lands on someone who is down moves on to the next one. Once the first battle starts, they&rsquo;re locked.</p>
     <h3>To Hit: D20s</h3>
     <p class="packs" id="px-bank-n">Banked: …</p>
     <div class="acts"><button type="button" class="btn" id="px-bank1">ROLL ONE</button><button type="button" class="btn alt" id="px-bank10">ROLL TEN</button></div>
     <div class="bank" id="px-bank"></div>
     <p class="msg" id="px-bank-msg"></p>
-    <h3>Who He Swings At: D4s</h3>
+    <h3>Who He Swings At: the Twelve-Sided Die</h3>
     <p class="quiet">1 Rune · 2 Sparrow · 3 Hale · 4 Scarlett</p>
     <p class="packs" id="px-bank4-n">Banked: …</p>
-    <div class="pxd4" id="px-d4cap" aria-hidden="true"><canvas></canvas><span class="d4lab">D4</span></div>
-    <div class="acts"><button type="button" class="btn" id="px-bank41">ROLL ONE D4</button><button type="button" class="btn alt" id="px-bank410">ROLL TEN D4S</button></div>
+    <div class="pxd4" id="px-d4cap" aria-hidden="true"><canvas></canvas><span class="d4lab">D12</span></div>
+    <div class="acts"><button type="button" class="btn" id="px-bank41">ROLL IT ONCE</button><button type="button" class="btn alt" id="px-bank410">ROLL IT TEN TIMES</button></div>
     <div class="bank" id="px-bank4"></div>
     <p class="msg" id="px-bank4-msg"></p>
   </section>
@@ -742,7 +742,7 @@
 
   $('rc-die-px').innerHTML = D20 + '<span class="rc-dn" id="rc-dn-px">20</span><i class="rc-die-shadow"></i><canvas class="rc-die-cv" width="240" height="240"></canvas>';
   Dice.attach('px', $('rc-die-px'), 20);
-  // ---- the D4: Paraxis's target die, a metal tetrahedron with the crew's four icons (Maurice, 2026-11-13) ----
+  // ---- Paraxis's target die: a metal twelve-sided die with each of the crew on three faces (Maurice, 2026-11-13; it was a D4) ----
   // Same red metal and studio light as the d20 above; it tumbles, then bounces and settles with the rolled face to the viewer.
   var D4 = (function () {
     var T = null, ready = false, nodes = [], targets = [], TILT = null, mats = null, geo = null;
@@ -761,14 +761,14 @@
       var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d');
       var grad = g.createLinearGradient(0, 0, 0, 256); grad.addColorStop(0, '#d23a12'); grad.addColorStop(1, '#8e1a06');
       g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
-      // the icon sits in the middle of the face's triangle (top 128,13; bottom corners 13,205 and 243,205)
-      if (icon) g.drawImage(icon, 66, 86, 124, 124);
+      // the icon sits in the middle of the pentagon (the face spans the texture's center, point up)
+      if (icon) g.drawImage(icon, 63, 66, 130, 130);
       else { g.fillStyle = '#ffe2a8'; g.textAlign = 'center'; g.font = '800 30px Almarai, Arial, sans-serif'; g.fillText(label, 128, 160); }
       var t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; return t;
     }
     function glow(icon) {
       var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d'); g.fillStyle = '#000'; g.fillRect(0, 0, 256, 256);
-      if (icon) g.drawImage(icon, 66, 86, 124, 124);
+      if (icon) g.drawImage(icon, 63, 66, 130, 130);
       var t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; return t;
     }
     function studio() {
@@ -778,20 +778,38 @@
       [[110, 70, 70], [360, 60, 55], [250, 30, 40]].forEach(function (s) { var l = g.createRadialGradient(s[0], s[1], 0, s[0], s[1], s[2]); l.addColorStop(0, 'rgba(255,255,255,1)'); l.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = l; g.fillRect(0, 0, 512, 256); });
       var tex = new T.CanvasTexture(c); tex.mapping = T.EquirectangularReflectionMapping; tex.encoding = T.sRGBEncoding; return tex;
     }
+    // A twelve-sided die (Maurice, 2026-11-13): each of the crew on three of its pentagon faces. The model splits each
+    // pentagon into three triangles, so triangles are grouped by the way they face; each pentagon gets its own frame
+    // (point up) for its picture and for the turn that shows it square to the viewer.
+    var faceIcon = [], facesOf = [[], [], [], []];
     function setup(icons) {
-      geo = new T.TetrahedronGeometry(1, 0);
-      var p = geo.getAttribute('position'), uv = [];
-      geo.clearGroups();
-      for (var f = 0; f < 4; f++) {
-        uv.push(0.5, 0.95, 0.05, 0.2, 0.95, 0.2); geo.addGroup(f * 3, 3, f);
-        var a = new T.Vector3().fromBufferAttribute(p, f * 3), b = new T.Vector3().fromBufferAttribute(p, f * 3 + 1), c = new T.Vector3().fromBufferAttribute(p, f * 3 + 2);
-        var mid = a.clone().add(b).add(c).divideScalar(3), z = mid.clone().normalize(), y = a.clone().sub(mid).normalize(), x = new T.Vector3().crossVectors(y, z);
-        targets[f] = new T.Quaternion().setFromRotationMatrix(new T.Matrix4().makeBasis(x, y, z).transpose());
+      geo = new T.DodecahedronGeometry(1, 0);
+      var p = geo.getAttribute('position'), tris = p.count / 3, groups = [], uv = new Array(p.count * 2);
+      for (var t = 0; t < tris; t++) {
+        var v = [0, 1, 2].map(function (i) { return new T.Vector3().fromBufferAttribute(p, t * 3 + i); });
+        var nrm = v[1].clone().sub(v[0]).cross(v[2].clone().sub(v[0])).normalize(), g = -1;
+        for (var k = 0; k < groups.length; k++) if (groups[k].n.dot(nrm) > 0.99) { g = k; break; }
+        if (g < 0) { groups.push({ n: nrm, tris: [], pts: [] }); g = groups.length - 1; }
+        groups[g].tris.push(t); v.forEach(function (x) { if (!groups[g].pts.some(function (q) { return q.distanceTo(x) < 1e-4; })) groups[g].pts.push(x); });
       }
+      geo.clearGroups();
+      groups.forEach(function (gr, f) {
+        var c = gr.pts.reduce(function (a, q) { return a.add(q); }, new T.Vector3()).divideScalar(gr.pts.length);
+        var z = gr.n, y = gr.pts[0].clone().sub(c).normalize(), x = new T.Vector3().crossVectors(y, z), rad = gr.pts[0].distanceTo(c);
+        targets[f] = new T.Quaternion().setFromRotationMatrix(new T.Matrix4().makeBasis(x, y, z).transpose());
+        // three faces each: Rune, Sparrow, Hale, Scarlett, around and around
+        var who = f % 4; faceIcon[f] = who; facesOf[who].push(f);
+        gr.tris.forEach(function (t) {
+          geo.addGroup(t * 3, 3, who);
+          for (var i = 0; i < 3; i++) { var q = new T.Vector3().fromBufferAttribute(p, t * 3 + i).sub(c); uv[(t * 3 + i) * 2] = 0.5 + q.dot(x) / rad * 0.49; uv[(t * 3 + i) * 2 + 1] = 0.5 + q.dot(y) / rad * 0.49; }
+        });
+      });
       geo.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
       mats = icons.map(function (im, k) { return new T.MeshStandardMaterial({ map: face(im, NAMES[k]), emissive: 0xffffff, emissiveMap: glow(im), emissiveIntensity: 0.75, roughness: 0.3, metalness: 0.85, envMapIntensity: 1.2, flatShading: true }); });
-      TILT = new T.Quaternion().setFromEuler(new T.Euler(-0.5, 0.42, 0.05));
+      TILT = new T.Quaternion().setFromEuler(new T.Euler(-0.16, 0.13, 0.02));
     }
+    // a face showing crew member n (1 Rune .. 4 Scarlett), one of their three, at random
+    function faceFor(n) { var l = facesOf[n - 1]; return l.length ? l[Math.floor(Math.random() * l.length)] : 0; }
     function build(node) {
       var cv = node.querySelector('canvas'), r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
       r.outputEncoding = T.sRGBEncoding; r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); r.setSize(cv.clientWidth || 120, cv.clientHeight || 120, false);
@@ -805,7 +823,7 @@
     function draw(d) { d.mesh.position.y = d.y; d.r.render(d.scene, d.cam); }
     function stop(d) { if (d.raf) cancelAnimationFrame(d.raf); d.raf = 0; }
     // ---- thrown across the page: out of its slot, three bounces, settles mid-screen with face n toward you,
-    // holds, then fades back into the slot (the d20's physics is built for its 20 faces; a D4 rests point-up, so this path is drawn by hand)
+    // holds, then fades back into the slot (the d20's physics is built for its 20 faces, so this path is drawn by hand)
     var ov = null;
     function overlay() {
       if (ov) return ov;
@@ -832,7 +850,7 @@
       var sx = b.left + b.width / 2 - o.w / 2, sy = o.h / 2 - (b.top + b.height / 2);
       // it lands somewhere near the middle of the screen, never off the edge
       var ex = (Math.random() - 0.5) * o.w * 0.35, ey = (Math.random() - 0.5) * o.h * 0.2;
-      var q0 = new T.Quaternion().setFromEuler(new T.Euler(Math.random() * 6.3, Math.random() * 6.3, Math.random() * 6.3)), q1 = pose(n - 1);
+      var q0 = new T.Quaternion().setFromEuler(new T.Euler(Math.random() * 6.3, Math.random() * 6.3, Math.random() * 6.3)), q1 = pose(faceFor(n));
       var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), dur = 1500, t0 = performance.now(), R = o.R;
       d.node.style.visibility = 'hidden';
       o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
@@ -875,7 +893,7 @@
       // three bounces and it settles with face n (1 Rune .. 4 Scarlett) toward the viewer
       land: function (rec, n, done) {
         var d = rec && rec.d; if (!d) return done && done(); stop(d);
-        var q0 = d.mesh.quaternion.clone(), q1 = pose(n - 1), axis = d.axis || new T.Vector3(1, 0, 0), t0 = performance.now(), dur = 1000;
+        var q0 = d.mesh.quaternion.clone(), q1 = pose(faceFor(n)), axis = d.axis || new T.Vector3(1, 0, 0), t0 = performance.now(), dur = 1000;
         (function frame(now) { var t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3), q = q0.clone().slerp(q1, e);
           q.premultiply(new T.Quaternion().setFromAxisAngle(axis, (1 - e) * 7)); d.mesh.quaternion.copy(q);
           d.y = Math.abs(Math.sin(Math.PI * 3.5 * t)) * 0.7 * Math.pow(1 - t, 2); draw(d);
@@ -1062,11 +1080,11 @@
         if (e.t === 'heal') { view.hp[e.target] = e.hp; view.packs = e.packs; var hl = NAMES[e.who] + ' uses a medpack on ' + (e.target === e.who ? (e.who === 1 || e.who === 3 ? 'herself' : 'himself') : NAMES[e.target]) + (e.from <= 0 ? ' and brings ' + NAMES[e.target] + ' back.' : '.') ; say(hl); log(hl, 'good'); paint(); return fast ? null : wait(700); }
         if (e.t === 'pxturn') { busy = true; say('Paraxis attacks!'); if (!fast) paint(); return fast ? null : wait(700); }
         if (e.t === 'px') {
-          var pl = 'Paraxis swings at ' + NAMES[e.who] + ' (D4: ' + e.d4.join(', then ') + ') and rolls ' + e.roll + '. ' + (e.hit ? (e.crit ? 'A natural 20! He hits twice. ' : 'A hit! ') + NAMES[e.who] + (e.hp <= 0 ? ' is down.' : ' has ' + e.hp + ' left.') : 'He needed ' + e.need + '. A miss.') + (e.fumble ? ' A 1! Paraxis takes a hit himself.' : '');
+          var pl = 'Paraxis swings at ' + NAMES[e.who] + ' and rolls ' + e.roll + '. ' + (e.hit ? (e.crit ? 'A natural 20! He hits twice. ' : 'A hit! ') + NAMES[e.who] + (e.hp <= 0 ? ' is down.' : ' has ' + e.hp + ' left.') : 'He needed ' + e.need + '. A miss.') + (e.fumble ? ' A 1! Paraxis takes a hit himself.' : '');
           // the D4 first: who he swings at (one that lands on someone who is down moves on to the next)
           var d4chain = Promise.resolve();
           if (!fast) e.d4.forEach(function (v, i) {
-            d4chain = d4chain.then(function () { say(i ? NAMES[e.d4[i - 1] - 1] + ' is down. Paraxis rolls the D4 again…' : 'Paraxis rolls the D4 to pick his target…'); return rollD4(d4Battle, v); }).then(function () { return wait(350); });
+            d4chain = d4chain.then(function () { say(i ? NAMES[e.d4[i - 1] - 1] + ' is down. Paraxis rolls the twelve-sided die again…' : 'Paraxis rolls the twelve-sided die to pick his target…'); return rollD4(d4Battle, v); }).then(function () { return wait(350); });
           });
           return d4chain.then(function () { return fast ? null : (say('Paraxis swings at ' + NAMES[e.who] + '…'), die(e.roll)); }).then(function () { view.hp[e.who] = e.hp; if (e.fumble) view.px = e.px; if (e.hit && !fast) shake(e.who); say(pl); log(pl, e.hit ? 'bad' : e.fumble ? 'good' : ''); paint(); return fast ? null : wait(700); });
         }
@@ -1251,7 +1269,7 @@
     $('px-captain').hidden = false; $('px-captain').scrollIntoView();
     // one panel per bank: the D20s (ids px-bank...) and the D4s (px-bank4...)
     var showBank = function (die, res) {
-      var id = die === 'd4' ? 'px-bank4' : 'px-bank', size = die === 'd4' ? 200 : 100, what = die === 'd4' ? 'D4s' : 'rolls';
+      var id = die === 'd4' ? 'px-bank4' : 'px-bank', size = die === 'd4' ? 200 : 100, what = die === 'd4' ? 'target rolls' : 'rolls';
       if (!res || !res.ok) { $(id + '-msg').textContent = ({ key: 'That captain link isn’t right.', locked: 'The battles have started, so the rolls are locked.' })[res && res.error] || 'The ship is slow. Try again.'; if (res && res.bank) { var m = $(id + '-msg').textContent; showBank(die, { ok: true, bank: res.bank, added: [] }); $(id + '-msg').textContent = m; } return; }
       $(id + '-n').textContent = 'Banked: ' + res.bank.length + ' of ' + size;
       $(id).innerHTML = res.bank.map(function (n, i) { return '<span title="' + (i + 1) + (die === 'd4' ? ': ' + NAMES[n - 1] : '') + '">' + n + '</span>'; }).join('');
