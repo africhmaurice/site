@@ -74,6 +74,8 @@ var ArcadeCard = (function () {
     panel.querySelector('.ac-copy').addEventListener('click', function () { copy(this); });
     draw();
     lookStreak(o);
+    // after the hunt a day's play pays 100 XP in the Trench Discord (Maurice, 2026-11-11); the box asks where to send it
+    if (window.TrenchXP) TrenchXP.after(panel);
     return panel;
   }
   // Streaks (Maurice, 2026-11-09): days in a row this player has played the game, counted back through every day they've

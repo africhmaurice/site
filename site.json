@@ -279,6 +279,18 @@
       "source": "bot:squarespace-decide.html"
     },
     {
+      "slug": "through-the-mountains",
+      "url": "/through-the-mountains",
+      "title": "Through the Mountains Vote (Chapter 22, the route to the Temple on the map)",
+      "source": "bot:squarespace-paths.html"
+    },
+    {
+      "slug": "the-first-guardian",
+      "url": "/the-first-guardian",
+      "title": "The First Guardian (Chapter 23, every fren fights Paraxis)",
+      "source": "bot:squarespace-paraxis.html"
+    },
+    {
       "slug": "adventure",
       "url": "/adventure",
       "title": "The Adventure So Far (every Choose Your Own Adventure beat)",

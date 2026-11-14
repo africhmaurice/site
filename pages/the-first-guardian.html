@@ -1,0 +1,1504 @@
+<!-- Generated copy of squarespace-paraxis.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
+<!-- ============================================================
+     THE FIRST GUARDIAN - chapter 23: every fren fights Paraxis, one full turn-based battle each.
+     Built by scripts/build-paraxis.mjs from config/paraxis-vote.json and this file. Edit those and
+     rebuild, never the built page. Every roll is made by the hunt's web app (pxstart / pxact);
+     on a github.io preview the page plays a pretend battle in the browser and saves nothing.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"Cracked Imperia";src:url(https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2) format("woff2");font-weight:100 900;font-display:swap;size-adjust:109.5%}
+#px{--ink:#0b170f;--ink7:#213226;--ink4:#607667;--bone:#f3ead9;--bone2:#e6dbc4;--ember:#c53200;--ember4:#ff4c0f;--emer:#1a5e41;--emer7:#268e62;--emer4:#3adb97;--arc:#482d85;
+  box-sizing:border-box;color:var(--ink);font:400 17px/1.6 Almarai,sans-serif;background:linear-gradient(rgba(243,234,217,.86),rgba(243,234,217,.93)),url('https://africhmaurice.github.io/site/assets/bg/dome-city-mist-as159145789.webp') center/cover fixed;padding:clamp(72px,9vw,120px) 0 clamp(56px,7vw,96px)}
+#px *,#px *::before,#px *::after{box-sizing:border-box;border-radius:0}
+#px .w{max-width:1040px;margin:0 auto;padding:0 clamp(16px,4vw,32px);display:flex;flex-direction:column;gap:clamp(28px,4vw,44px)}
+#px h1,#px h2,#px h3{font-family:"Cracked Imperia",Impact,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.03em;line-height:1.05;margin:0;color:var(--ink)}
+#px h1{font-size:clamp(46px,8vw,92px)}#px h1 span{color:var(--ember)}
+#px h2{font-size:clamp(30px,4.4vw,46px)}#px h3{font-size:clamp(22px,3vw,28px)}
+#px p{margin:0}
+#px .kick{font-weight:800;font-size:13px;line-height:1.4;letter-spacing:.14em;text-transform:uppercase;color:var(--ember)}
+#px .hero{display:flex;flex-direction:column;gap:16px}
+#px .lede{max-width:760px;font-size:clamp(17px,1.8vw,20px)}
+#px .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+#px .stat{background:var(--ink);color:#fff;padding:20px;display:flex;flex-direction:column;gap:8px}
+#px .stat .k{font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--emer4)}
+#px .stat .v{font-family:"Cracked Imperia",Impact,sans-serif;font-size:clamp(26px,3.4vw,36px);line-height:1.2;letter-spacing:.03em}
+#px .stat small{font-size:14px;line-height:1.5;color:#d9e6dc}
+#px .card{background:rgba(255,255,255,.72);border:2px solid var(--ink);padding:clamp(20px,3vw,32px);display:flex;flex-direction:column;gap:14px}
+#px .story p+p{margin-top:0}
+#px .story{gap:16px}
+#px .listen{display:flex;flex-direction:column;gap:10px;padding:16px 20px;background:var(--bone);border-left:4px solid var(--ember)}
+#px .listen audio{width:100%;display:block}
+#px .rules ul{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+#px .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 26px;border:2px solid var(--ink);background:var(--ink);color:#fff;font:800 15px/1.2 Almarai,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-align:center}
+#px .btn:hover,#px .btn:focus-visible{background:var(--ember);border-color:var(--ember);outline:none}
+#px .btn.alt{background:transparent;color:var(--ink)}
+#px .btn.alt:hover,#px .btn.alt:focus-visible{background:var(--ink);color:#fff}
+#px .btn[disabled]{opacity:.4;cursor:default;background:var(--ink4);border-color:var(--ink4);color:#fff}
+#px .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}
+#px label{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+#px input,#px select{font:400 16px/1.4 Almarai,sans-serif;padding:12px 14px;border:2px solid var(--ink);background:#fff;color:var(--ink);width:100%}
+#px .msg{min-height:1.6em;font-weight:700;color:var(--ember)}
+#px .quiet{font-size:15px;color:#34453a}
+/* the crest coin: two faces of the real coin, flipped in 3D */
+#px .coinwrap{display:flex;flex-direction:column;align-items:center;gap:18px;padding:56px 0 12px}
+#px .coin.toss{animation:pxtoss 2.6s cubic-bezier(.3,.6,.4,1)}
+@keyframes pxtoss{0%{transform:translateY(0)}40%{transform:translateY(-44px)}100%{transform:translateY(0)}}
+#px .coin{width:min(220px,56vw);aspect-ratio:1;perspective:900px}
+#px .coin .c{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 2.6s cubic-bezier(.2,.75,.25,1)}
+#px .coin .f{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#3a2d0c center/cover no-repeat}
+#px .coin .f.a{transform:translateZ(7px)}
+#px .coin .f.b{transform:rotateY(180deg) translateZ(7px)}
+/* the coin's thickness: stacked rims of struck gold between the two faces */
+#px .coin .rim{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 50%,#8a6a1c 0 62%,#c9a24a 63% 80%,#6b5214 81%)}
+#px .coinshadow{width:min(180px,46vw);height:18px;margin-top:-6px;border-radius:50%;background:radial-gradient(closest-side,rgba(11,23,15,.35),transparent)}
+#px .coinsay{font-family:"Cracked Imperia",Impact,sans-serif;font-size:clamp(24px,3.4vw,34px);letter-spacing:.03em;line-height:1.2;text-transform:uppercase;text-align:center;min-height:1.2em}
+/* the battle */
+#px .foe{background:var(--ink);color:#fff;padding:clamp(20px,3vw,28px);display:flex;flex-direction:column;gap:12px}
+#px .foe h3{color:#fff}
+#px .foe .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+#px .foe .hpnum{font-family:"Cracked Imperia",Impact,sans-serif;font-size:clamp(24px,3vw,32px);letter-spacing:.03em;line-height:1.2;color:var(--ember4)}
+#px .bar{height:18px;background:#2b1a12;border:2px solid #fff;position:relative;overflow:hidden}
+#px .bar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--ember),var(--ember4));transition:width .5s}
+#px .crew{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+#px .mate{background:#fff;border:2px solid var(--ink);padding:20px;display:flex;flex-direction:column;gap:10px;transition:background .2s,border-color .2s}
+#px .mate .nm{font-family:"Cracked Imperia",Impact,sans-serif;font-size:clamp(22px,2.4vw,26px);letter-spacing:.03em;line-height:1.2;text-transform:uppercase}
+#px .mate .role{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink4);white-space:nowrap}
+#px .mhead{display:flex;align-items:center;gap:14px}
+#px .mhead>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+#px .ico{flex:none;width:60px;height:60px;background:var(--ink);display:grid;place-items:center}
+#px .ico img{width:48px;height:48px;display:block}
+#px .mate.down .ico{opacity:.45}
+#px .mrow{display:flex;flex-direction:column;align-items:stretch;gap:12px}
+#px .mate .rc-die,#px .mate .rc-die.is3d{width:120px;height:120px;flex:none;align-self:center}
+#px .mate .rc-dn{font-size:22px}
+#px .mres{margin:-4px 0 0;min-height:1.3em;text-align:center;font:800 15px/1.3 Almarai,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+#px .mres.hit{color:#3adb97}#px .mres.miss{color:#fd7547}#px .mres.heal{color:#ede9dc}
+#px .mpick:empty{display:none}
+#px .mbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#px .mb,#px .mt{min-height:40px;padding:8px 6px;border:2px solid var(--ink);background:#fff;color:var(--ink);font:800 12px/1.2 Almarai,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+#px .mb.on,#px .mt.on{background:var(--ink);color:#fff}
+#px .mb[disabled]{opacity:.35;cursor:default}
+#px .mwho{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+#px .mwho span{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink4);width:100%}
+#px .mdown{font-size:14px;line-height:1.5;color:#5b4a3a}
+#px .hearts{display:flex;gap:6px}
+#px .hearts i{width:22px;height:22px;background:var(--emer7);border:2px solid var(--ink)}
+#px .hearts i.off{background:transparent}
+#px .mate .need{font-size:14px;line-height:1.5}
+/* every crew member still standing wears a white stroke; the one Paraxis is swinging at turns scarlet (Maurice, 2026-11-13) */
+#px .mate.turn{border-color:#fffffe;box-shadow:0 0 0 3px #fffffe}
+/* the one Paraxis is swinging at: a bright ember stroke with a glow, on top of any other state */
+#px .mate.aimed{border-color:#ff4c0f!important;box-shadow:0 0 0 4px #ff4c0f,0 0 22px 6px rgba(255,76,15,.55)!important;position:relative;z-index:1}
+#px .mate.down{background:#d9cfbd}
+#px .mate.down .nm{text-decoration:line-through}
+#px .mate.hit{animation:pxhit .5s}
+@keyframes pxhit{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#px .turnbox{background:#fff;border:2px solid var(--ink);padding:clamp(20px,3vw,28px);display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center}
+/* the die: the same 3D d20 as every vote page (games/redcity.template.html, pulled in by the build) */
+#px{--cream:#f3ead9;--lime:#a2f590}
+#px .rc-die{grid-row:auto!important}
+#px .dice2{display:flex;align-items:center;gap:16px}
+#px .pxdice{display:flex;flex-direction:column;align-items:center;gap:8px}
+#px .pxres{min-height:2.6em;display:flex;flex-direction:column;justify-content:flex-end;gap:2px}
+#px .pxres .mres{margin:0;font-size:14px}
+/* the target die (a D12 since 11/13; the ids still say d4): a 3D canvas once three.js is in; until then (or without it) the name it landed on */
+#px .pxd4{position:relative;width:88px;height:88px;display:grid;place-items:center;flex:none}
+#px .pxd4 canvas{position:absolute;inset:0;width:100%;height:100%;display:none}
+#px .pxd4.is3d canvas{display:block}
+#px .pxd4 .d4lab{font-weight:800;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4)}
+#px .pxd4.is3d .d4lab{display:none}
+#px .pxd4.is3d::after{content:"";position:absolute;left:50%;bottom:6px;width:58%;height:12%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.45),transparent);z-index:-1}
+#px .pxd4{z-index:0}
+#px .rc-die .face{fill:#0b170f!important}
+#px .rc-die{grid-row:1/4;position:relative;width:88px;height:88px}
+#px .rc-die .rc-die-cv,#px .rc-die .rc-die-shadow{display:none}
+#px .rc-die.is3d{width:120px;height:120px}
+#px .rc-die.is3d>svg,#px .rc-die.is3d .rc-dn{display:none}
+#px .rc-die.is3d .rc-die-cv{display:block;position:relative;z-index:1;width:100%;height:100%}
+#px .rc-die.is3d .rc-die-shadow{display:block;position:absolute;left:50%;bottom:6px;width:62%;height:13%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),transparent)}
+#px .rc-die.is3d.rolling,#px .rc-die.is3d.landed{animation:none}
+#px .rc-die.is3d.crit .rc-die-cv{filter:drop-shadow(0 0 12px rgba(162,245,144,.85))}
+#px .rc-die.is3d.fumble .rc-die-cv{filter:drop-shadow(0 0 12px rgba(255,76,15,.8))}
+#px .rc-die svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 6px 8px rgba(0,0,0,.45))}
+#px .rc-die .face{fill:rgba(12,26,8,.7);stroke:var(--cream);stroke-width:2.5;stroke-linejoin:round}
+#px .rc-die .edge{fill:none;stroke:rgba(243,234,217,.45);stroke-width:1.5;stroke-linejoin:round}
+#px .rc-dn{position:absolute;left:0;right:0;top:42%;text-align:center;font-family:"Cracked Imperia",Impact,sans-serif;font-size:22px;line-height:1;color:#fff}
+#px .rc-die.rolling svg{animation:rc-tumble .45s linear infinite}
+#px .rc-die.rolling{animation:rc-hop .45s ease-in-out infinite}
+#px .rc-die.landed{animation:rc-land .5s cubic-bezier(.2,1.8,.4,1)}
+#px .rc-die.crit .face{fill:#1a5e41;stroke:var(--lime)}
+#px .rc-die.fumble .face{fill:#912501;stroke:var(--ember)}
+@keyframes rc-tumble{to{transform:rotate(360deg)}}
+@keyframes rc-hop{50%{transform:translateY(-8px) scale(1.06)}}
+@keyframes rc-land{0%{transform:scale(1.35)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){#px .rc-die.rolling,#px .rc-die.rolling svg,#px .rc-die.landed{animation:none}}
+#px .turntxt{display:flex;flex-direction:column;gap:12px}
+#px .turntxt .say{font-size:clamp(17px,1.8vw,19px);min-height:3.2em}
+#px .acts{display:flex;flex-wrap:wrap;gap:12px}
+#px .packs{font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:14px}
+#px .log{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;max-height:340px;overflow:auto}
+#px .log li{padding:10px 14px;background:rgba(255,255,255,.7);border-left:4px solid var(--ink4);font-size:15px;line-height:1.5}
+#px .log li.good{border-left-color:var(--emer7)}#px .log li.bad{border-left-color:var(--ember)}
+#px .end{background:var(--ink);color:#fff;padding:clamp(24px,4vw,40px);display:flex;flex-direction:column;gap:14px;text-align:center;align-items:center}
+#px .end h2{color:#fff}#px .end.win h2{color:var(--emer4)}#px .end.loss h2{color:var(--ember4)}
+#px .badge{display:inline-block;padding:6px 12px;background:var(--ember);color:#fff;font-weight:800;font-size:12px;letter-spacing:.12em}
+#px .bank{display:flex;flex-wrap:wrap;gap:8px}
+#px .bank span{display:inline-grid;place-items:center;width:44px;height:44px;background:var(--ink);color:#fff;font-weight:800}
+#px [hidden]{display:none!important}
+@media (max-width:820px){#px .crew{grid-template-columns:repeat(2,minmax(0,1fr))}#px .stats{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:374px){#px .hearts i{width:13px!important;height:13px!important}#px .mate .rc-die,#px .mate .rc-die.is3d{width:88px!important;height:88px!important}}
+@media (max-width:560px){#px .crew{gap:10px}#px .mhead{flex-direction:column;align-items:flex-start;gap:10px}#px .ico{width:42px;height:42px}#px .ico img{width:34px;height:34px}#px .mate .role{font-size:11px;letter-spacing:.04em}#px .mate .nm{font-size:20px}#px .mrow{gap:10px}#px .mate .rc-die,#px .mate .rc-die.is3d{width:100px;height:100px}#px .hearts{gap:4px}#px .mbtns{grid-template-columns:minmax(0,1fr)}#px .mb,#px .mt{letter-spacing:.04em;min-height:38px}#px .mate .need{font-size:13px}#px .form{grid-template-columns:minmax(0,1fr)}#px .turnbox{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}#px .acts{justify-content:center}#px .mate{padding:16px 14px}#px .hearts i{width:15px;height:15px}}
+/* the color story (Maurice, 2026-11-13): not parchment, the next one in the line after Chapter 22's purple and the bone-white:
+   charcoal and dark olive over the monolith canyon, the same olive the Adventure page uses */
+#px{color:#ede9dc;background:linear-gradient(rgba(11,23,15,.80),rgba(11,23,15,.90)),url('https://africhmaurice.github.io/site/assets/bg/monolith-canyon-as444233611.webp') center/cover fixed}
+#px h1,#px h2,#px h3{color:#fffffe}
+#px h1 span{color:#ff4c0f}
+#px .kick{color:#fd7547}
+#px .stat{background:rgba(33,50,38,.92);border:2px solid rgba(237,233,220,.28)}
+#px .stat small{color:#d6d2c4}
+#px .card{background:rgba(33,50,38,.86);border-color:rgba(237,233,220,.38)}
+#px .listen{background:rgba(11,23,15,.65)}
+#px .listen .kick{color:#ede9dc!important}
+#px .btn{background:#ede9dc;color:#0b170f;border-color:#ede9dc}
+#px .btn:hover,#px .btn:focus-visible{background:#ff4c0f;border-color:#ff4c0f;color:#fffffe}
+#px .btn.alt{background:transparent;color:#ede9dc;border-color:#ede9dc}
+#px .btn.alt:hover,#px .btn.alt:focus-visible{background:#ede9dc;color:#0b170f}
+#px .btn[disabled]{background:#607667;border-color:#607667;color:#fffffe}
+#px input,#px select{background:#0b170f;color:#fffffe;border-color:#7d9283}
+#px .quiet{color:rgba(237,233,220,.78)}
+#px .msg{color:#fd7547}
+#px .coinsay{color:#fffffe}
+#px .coinshadow{background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent)}
+#px .foe{background:#0b170f;border:2px solid rgba(237,233,220,.28)}
+#px .mate{background:rgba(33,50,38,.94);border-color:rgba(237,233,220,.38)}
+#px .mate .role{color:#a9b8ad}
+#px .ico{background:#0b170f}
+#px .mb,#px .mt{background:transparent;color:#ede9dc;border-color:#ede9dc}
+#px .mb.on,#px .mt.on{background:#ede9dc;color:#0b170f}
+#px .mwho span{color:#a9b8ad}
+#px .mdown{color:#d6d2c4}
+#px .hearts i{border-color:#ede9dc}
+#px .mate.down{background:rgba(11,23,15,.8)}
+#px .turnbox{background:rgba(33,50,38,.94);border-color:rgba(237,233,220,.38)}
+#px .log li{background:rgba(11,23,15,.55)}
+#px .end{background:#0b170f;border:2px solid rgba(237,233,220,.38)}
+#px .bank span{background:#0b170f;border:1px solid rgba(237,233,220,.3)}
+#px .pxd4 .d4lab{color:#a9b8ad}
+/* job titles stay on one line: where four cards get narrow, the icon sits above the name (as on phones) */
+@media (max-width:1100px) and (min-width:821px){#px .mhead{flex-direction:column;align-items:flex-start;gap:10px}}
+@media (max-width:960px) and (min-width:821px){#px .mbtns{grid-template-columns:minmax(0,1fr)}#px .mate{padding:18px 14px}}
+</style>
+<div id="px"><div class="w">
+  <header class="hero">
+    <p class="kick">THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE</p>
+    <h1>The First <span>Guardian</span></h1>
+    <p class="lede" id="px-lede"></p>
+    <div class="stats">
+      <div class="stat"><span class="k">BATTLES FOUGHT</span><span class="v" id="px-count">…</span><small>Every fren fights Paraxis once.</small></div>
+      <div class="stat"><span class="k">TRENCH XP</span><span class="v">1,000 / 500</span><small>1,000 XP if your crew wins, 500 if Paraxis does.</small></div>
+      <div class="stat"><span class="k" id="px-close-k">THE FIGHT CLOSES</span><span class="v" id="px-close">…</span><small id="px-close-s"></small></div>
+    </div>
+  </header>
+  <section class="card story" id="px-story"></section>
+  <section class="card rules">
+    <p class="kick">HOW THE FIGHT WORKS</p>
+    <h2>Fight Paraxis</h2>
+    <ul>
+      <li>The crest coin decides who goes first: the crest for the crew, the crossed swords for Paraxis.</li>
+      <li>Paraxis has 30 hit points. Rune, Sparrow, Hale, and Scarlett have 4 each.</li>
+      <li>On the crew&rsquo;s turn, pick each crew member&rsquo;s move on their card, then roll them all at once. Each one attacks or uses a medpack. An attack rolls a D20, and 15 or higher hits for 1. Hale hits for 2.</li>
+      <li>The crew has 3 medpacks. Each one heals 2 hit points, and it can bring someone back from 0.</li>
+      <li>Paraxis attacks twice a turn. A twelve-sided die with each of the crew on three of its faces picks who he swings at, and he hits for 1 if he meets their number: Rune 12, Sparrow 14, Hale 15, Scarlett 11.</li>
+      <li>Anyone who rolls a natural 20 hits twice.</li>
+      <li>Anyone who rolls a 1 takes a hit: the crew member who rolled it loses 1 hit point, and so does Paraxis.</li>
+      <li>Win or lose, the result counts. If more than half the frens beat him, the crew wins. If one of the crew falls in more than half the battles, they fall in the story.</li>
+    </ul>
+  </section>
+  <section class="card" id="px-who">
+    <p class="kick">BEFORE YOU FIGHT</p>
+    <h2>Who Is Fighting?</h2>
+    <p class="quiet" id="px-who-note">Tell the Captain who you are. You fight one battle, and it&rsquo;s saved under your email, so you can come back and finish it.</p>
+    <div class="form" id="px-form">
+      <label>First name<input id="px-first" autocomplete="given-name"></label>
+      <label>Email you use for the hunt<input id="px-email" type="email" autocomplete="email" inputmode="email"></label>
+      <label>Social handle<input id="px-handle" placeholder="@yourname" autocomplete="off"></label>
+      <label>Where that handle lives<select id="px-platform"><option value="">Pick one</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>X</option><option>Threads</option><option>Facebook</option><option>Discord</option><option>Bluesky</option><option>Substack</option></select></label>
+      <label>Country<select id="px-country"><option value="">Pick one</option><option>United States</option><option>United Kingdom</option><option value="__other">Somewhere else</option></select></label>
+      <label id="px-otherl" hidden>Which country?<input id="px-other"></label>
+      <label>Discord username (for your XP)<input id="px-discord" placeholder="yourname" autocomplete="off"></label>
+    </div>
+    <p class="quiet" id="px-me" hidden></p>
+    <div class="acts"><button type="button" class="btn" id="px-go">FLIP THE CREST COIN</button></div>
+    <p class="msg" id="px-msg" aria-live="polite"></p>
+  </section>
+  <section class="card" id="px-coin" hidden>
+    <div class="coinwrap">
+      <div class="coin" aria-hidden="true"><div class="c" id="px-c"><div class="f a"></div><div class="f b"></div></div></div>
+      <div class="coinshadow" aria-hidden="true"></div>
+      <p class="coinsay" id="px-coinsay" aria-live="polite">Flipping…</p>
+    </div>
+  </section>
+  <section id="px-battle" hidden style="display:flex;flex-direction:column;gap:18px">
+    <div class="foe">
+      <div class="row"><h3>Paraxis, the First Guardian</h3><span class="hpnum"><span id="px-hp">30</span> / 30</span></div>
+      <div class="bar"><i id="px-bar" style="width:100%"></i></div>
+    </div>
+    <div class="crew" id="px-crew"></div>
+    <div class="turnbox">
+      <div class="pxdice"><div class="pxres" id="px-pxres" aria-live="polite"></div><div class="dice2"><div class="rc-die" id="rc-die-px" aria-hidden="true"></div><div class="pxd4" id="px-d4" aria-hidden="true"><canvas></canvas><span class="d4lab">D12</span></div></div></div>
+      <div class="turntxt">
+        <p class="kick" id="px-turnk">ROUND 1</p>
+        <p class="say" id="px-say" aria-live="polite"></p>
+        <div class="acts" id="px-acts"></div>
+        <p class="packs" id="px-packs">Medpacks left: 3</p>
+      </div>
+    </div>
+    <div class="card"><p class="kick">THE BATTLE SO FAR</p><ol class="log" id="px-log"></ol></div>
+  </section>
+  <section class="end" id="px-end" hidden></section>
+  <section class="card" id="px-captain" hidden>
+    <p class="kick">CAPTAIN ONLY</p>
+    <h2>Paraxis&rsquo;s Rolls</h2>
+    <p>Bank Paraxis&rsquo;s rolls: 100 D20s to hit, and 200 rolls of his twelve-sided die (each of the crew is on three of its faces) for who he swings at. Every fren&rsquo;s battle uses them in order. A roll that lands on someone who is down moves on to the next one. Once the first battle starts, they&rsquo;re locked.</p>
+    <h3>To Hit: D20s</h3>
+    <p class="packs" id="px-bank-n">Banked: …</p>
+    <div class="acts"><button type="button" class="btn" id="px-bank1">ROLL ONE</button><button type="button" class="btn alt" id="px-bank10">ROLL TEN</button></div>
+    <div class="bank" id="px-bank"></div>
+    <p class="msg" id="px-bank-msg"></p>
+    <h3>Who He Swings At: the Twelve-Sided Die</h3>
+    <p class="quiet">1 Rune · 2 Sparrow · 3 Hale · 4 Scarlett</p>
+    <p class="packs" id="px-bank4-n">Banked: …</p>
+    <div class="pxd4" id="px-d4cap" aria-hidden="true"><canvas></canvas><span class="d4lab">D12</span></div>
+    <div class="acts"><button type="button" class="btn" id="px-bank41">ROLL IT ONCE</button><button type="button" class="btn alt" id="px-bank410">ROLL IT TEN TIMES</button></div>
+    <div class="bank" id="px-bank4"></div>
+    <p class="msg" id="px-bank4-msg"></p>
+  </section>
+</div></div>
+<script>
+(function () {
+  var DATA = {"key":"paraxis_vote","opens":"2026-11-14T04:10:00Z","closes":"2026-11-15T10:30:00Z","lede":"The first guardian stands between the crew and the stone. Every fren fights Paraxis once: flip the crest coin, take the crew's turns, and see who is still standing at the end.","storyKick":"LAST TIME","storyTitle":"At the Sword","story":"The frens sent the crew to the sword, and the walk was an easy one. No beasts, no traps, no surprises. Just a quiet path down the valley to a platform with a sword carved into its face. And as they approach, something rises up from the center of the platform.\n\nA mech, huge and whirring with mechanical brilliance, and with that mech, a man. He looks down at the crew as if they're late for an appointment.\n\nMeet Paraxis. The first of three guardians.","coin":{"crest":"https://africhmaurice.github.io/site/assets/paraxis/crest-coin-crest.webp","swords":"https://africhmaurice.github.io/site/assets/paraxis/crest-coin-swords.webp"},"audio":{"label":"LISTEN: GARY FURLONG AS PARAXIS","src":"https://africhmaurice.github.io/site/assets/audio/guardians-2-paraxis.m4a"},"icons":{"rune":"https://africhmaurice.github.io/site/assets/paraxis/icon-rune.webp","sparrow":"https://africhmaurice.github.io/site/assets/paraxis/icon-sparrow.webp","hale":"https://africhmaurice.github.io/site/assets/paraxis/icon-hale.webp","scarlett":"https://africhmaurice.github.io/site/assets/paraxis/icon-scarlett.webp"}};
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var PREVIEW = /github\.io$/.test(location.hostname) || /[?&]pxpreview/.test(location.search);
+  var CAPTAIN = (location.hash.match(/captain=([a-f0-9]+)/) || [])[1] || '';
+  var ME = 'thLoot:me', NAMES = ['Rune', 'Sparrow', 'Hale', 'Scarlett'], ROLES = ['Techtailor', 'Intangible', 'Crest Knight', 'Gunslinger'];
+  var GUARD = [12, 14, 15, 11], POWER = [1, 1, 2, 1];
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function load(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function when(iso) { return new Date(iso).toLocaleString('en-US', { timeZone: 'America/New_York', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).replace(':00', '') + ' ET'; }
+  var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+  var D20 = '<svg viewBox="0 0 100 100"><polygon class="face" points="50,3 91,26 91,74 50,97 9,74 9,26"/><polygon class="edge" points="50,22 78,68 22,68"/><path class="edge" d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68"/></svg>';
+  function rollText(r) {
+    if (r === 20) return 'NATURAL 20! It counts as two 20s.';
+    if (r === 1) return 'NATURAL 1. It counts as two 0s.';
+    return 'You rolled ' + r + '.' + (PREVIEW ? ' (Preview roll, not recorded.)' : '');
+  }
+  // ---- the 3D d20 ------------------------------------------------------
+  // A real twenty-sided die in red metal (three.js, MIT license, from cdnjs), numbered like a table die: opposite
+  // faces add up to 21. It tumbles while the roll is on its way, then bounces and settles with the
+  // rolled face up. The clatter is made on the spot with Web Audio, so there is no sound file.
+  // If three.js cannot load, the flat die (D20 above) stays and everything else works the same.
+  var Dice = (function () {
+    var URL3 = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    var T = null, loading = null, faces = null, numbers = null, faceOf = null, targets = {}, TILT = null, dice = {};
+    var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var muted = false;
+    try { muted = localStorage.getItem('thDice:muted') === '1'; } catch (e) {}
+
+    function load() {
+      if (T) return Promise.resolve(T);
+      if (loading) return loading;
+      loading = new Promise(function (ok, no) {
+        if (window.THREE) return ok(window.THREE);
+        var s = document.createElement('script');
+        s.src = URL3; s.async = true;
+        s.onload = function () { window.THREE ? ok(window.THREE) : no(); };
+        s.onerror = no;
+        document.head.appendChild(s);
+      }).then(function (three) { T = three; setup(); return T; });
+      return loading;
+    }
+
+    // The icosahedron's 20 faces, which number each one shows, and the turn that brings it face up.
+    function setup() {
+      var g = new T.IcosahedronGeometry(1, 0), p = g.getAttribute('position');
+      faces = [];
+      for (var f = 0; f < 20; f++) {
+        var a = new T.Vector3().fromBufferAttribute(p, f * 3), b = new T.Vector3().fromBufferAttribute(p, f * 3 + 1), c = new T.Vector3().fromBufferAttribute(p, f * 3 + 2);
+        var mid = a.clone().add(b).add(c).divideScalar(3);
+        faces.push({ a: a, b: b, c: c, mid: mid, n: mid.clone().normalize() });
+      }
+      numbers = new Array(20);
+      var next = 1;
+      for (var i = 0; i < 20; i++) {
+        if (numbers[i]) continue;
+        var opp = 0, best = 2;
+        for (var j = 0; j < 20; j++) { var dot = faces[i].n.dot(faces[j].n); if (dot < best) { best = dot; opp = j; } }
+        numbers[i] = next; numbers[opp] = 21 - next; next++;
+      }
+      for (var k = 0; k < 20; k++) {
+        var z = faces[k].n, y = faces[k].a.clone().sub(faces[k].mid).normalize(), x = new T.Vector3().crossVectors(y, z);
+        var m = new T.Matrix4().makeBasis(x, y, z).transpose();
+        targets[numbers[k]] = new T.Quaternion().setFromRotationMatrix(m);
+      }
+      faceOf = {}; for (var q = 0; q < 20; q++) faceOf[numbers[q]] = q;
+      TILT = new T.Quaternion().setFromEuler(new T.Euler(-0.42, 0.3, 0.06));
+    }
+
+    function faceTexture(n, col) {
+      var c = document.createElement('canvas'); c.width = c.height = 256;
+      var g = c.getContext('2d');
+      var grad = g.createLinearGradient(0, 0, 0, 256);
+      grad.addColorStop(0, col ? col[0] : '#d23a12'); grad.addColorStop(1, col ? col[1] : '#8e1a06');
+      g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
+      g.fillStyle = col ? col[2] : '#ffe2a8'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.font = '700 ' + (n > 9 ? 78 : 92) + 'px Almarai, Arial, sans-serif';
+      g.fillText(n === 6 || n === 9 ? n + '.' : String(n), 128, 150);
+      var t = new T.CanvasTexture(c);
+      t.encoding = T.sRGBEncoding;
+      return t;
+    }
+
+    function studio() {
+      var c = document.createElement('canvas'); c.width = 512; c.height = 256;
+      var g = c.getContext('2d'), sky = g.createLinearGradient(0, 0, 0, 256);
+      sky.addColorStop(0, '#fff6e8'); sky.addColorStop(0.45, '#8c6a58'); sky.addColorStop(0.55, '#3a2418'); sky.addColorStop(1, '#0c0706');
+      g.fillStyle = sky; g.fillRect(0, 0, 512, 256);
+      [[110, 70, 70], [360, 60, 55], [250, 30, 40]].forEach(function (s) {
+        var l = g.createRadialGradient(s[0], s[1], 0, s[0], s[1], s[2]);
+        l.addColorStop(0, 'rgba(255,255,255,1)'); l.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = l; g.fillRect(0, 0, 512, 256);
+      });
+      var tex = new T.CanvasTexture(c);
+      tex.mapping = T.EquirectangularReflectionMapping; tex.encoding = T.sRGBEncoding;
+      return tex;
+    }
+
+    // A rolled number sits flat, facing the viewer square-on. Only a die still waiting to be rolled is tilted.
+    function pose(n) { return targets[n].clone(); }
+    function idle() { return targets[20].clone().premultiply(TILT); }
+
+    function dieGeometry() {
+      var geo = new T.IcosahedronGeometry(1, 0), uv = [];
+      geo.clearGroups();
+      for (var f = 0; f < 20; f++) { uv.push(0.5, 0.95, 0.05, 0.2, 0.95, 0.2); geo.addGroup(f * 3, 3, f); }
+      geo.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+      return geo;
+    }
+    function dieMaterials(col) {
+      var mats = [];
+      for (var k = 0; k < 20; k++) mats.push(new T.MeshStandardMaterial({ map: faceTexture(numbers[k], col), roughness: col && col[4] != null ? col[4] : 0.3, metalness: col && col[3] != null ? col[3] : 0.85, envMapIntensity: 1.2, flatShading: true }));
+      return mats;
+    }
+
+    // One WebGL renderer draws every card die and each frame is copied onto that die's own 2D canvas.
+    // Browsers keep only about 16 WebGL canvases alive per page, so a vote with 20 dice (the Cerunine
+    // Attack, 2026-10-15) lost its first dice when each had its own.
+    var shared = null;
+    function sharedRenderer() {
+      if (shared) return shared;
+      shared = new T.WebGLRenderer({ antialias: true, alpha: true });
+      shared.outputEncoding = T.sRGBEncoding;
+      shared.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      shared.setSize(120, 120, false);
+      return shared;
+    }
+    function build(id, node) {
+      var cv = node.querySelector('canvas');
+      var r = sharedRenderer(), px = Math.round(120 * Math.min(window.devicePixelRatio || 1, 2));
+      cv.width = px; cv.height = px;
+      var c2 = cv.getContext('2d');
+      var scene = new T.Scene(), cam = new T.PerspectiveCamera(30, 1, 0.1, 50);
+      cam.position.set(0, 0, 6.4); cam.lookAt(0, 0, 0);
+      var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
+      scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
+      var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-3, 5, 5); scene.add(sun);
+      var mesh = new T.Mesh(dieGeometry(), dieMaterials(COL[id]));
+      mesh.quaternion.copy(idle());
+      scene.add(mesh);
+      var d = { r: r, c2: c2, scene: scene, cam: cam, mesh: mesh, node: node, shadow: node.querySelector('.rc-die-shadow'), raf: 0, y: 0 };
+      dice[id] = d;
+      return d;
+    }
+
+    function draw(d) {
+      d.mesh.position.y = d.y;
+      if (d.shadow) { d.shadow.style.transform = 'translateX(-50%) scale(' + (1 - d.y * 0.45).toFixed(3) + ')'; d.shadow.style.opacity = (0.9 - d.y * 0.6).toFixed(2); }
+      d.r.render(d.scene, d.cam);
+      var cv = d.c2.canvas; d.c2.clearRect(0, 0, cv.width, cv.height); d.c2.drawImage(d.r.domElement, 0, 0, cv.width, cv.height);
+    }
+
+    // ---- sound: a hard little knock plus a burst of clatter, a bit different every time
+    var ctx = null;
+    function audio() {
+      if (muted) return null;
+      var A = window.AudioContext || window.webkitAudioContext;
+      if (!A) return null;
+      if (!ctx) ctx = new A();
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }
+    function clack(vol) {
+      var a = audio(); if (!a) return;
+      var t = a.currentTime, len = Math.floor(a.sampleRate * 0.045), buf = a.createBuffer(1, len, a.sampleRate), ch = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 5);
+      var src = a.createBufferSource(); src.buffer = buf;
+      var bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2400 + Math.random() * 2200; bp.Q.value = 3;
+      var g = a.createGain(); g.gain.value = vol;
+      src.connect(bp); bp.connect(g); g.connect(a.destination); src.start(t);
+      var o = a.createOscillator(), og = a.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(380 + Math.random() * 300, t);
+      o.frequency.exponentialRampToValueAtTime(160, t + 0.07);
+      og.gain.setValueAtTime(vol * 0.7, t);
+      og.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+      o.connect(og); og.connect(a.destination); o.start(t); o.stop(t + 0.1);
+    }
+
+    function stopLoop(d) { if (d.raf) cancelAnimationFrame(d.raf); d.raf = 0; }
+
+    // ---- the throw: a real physics roll (cannon.js, MIT license, from cdnjs) -----------------
+    // The die is thrown from its card with a random force, spin and angle, and the physics decides
+    // everything after that: the tumbling, the bounces off the table and the screen edges, and where
+    // it comes to rest. Nothing steers it. Every face of a d20 is the same shape, so the numbers can
+    // be painted on to match the roll before it is thrown (the sheet's random number generator has
+    // already chosen it); that changes which number is on the face it lands on, not how it moves.
+    // A few throws are worked out in a blink and the one whose number lands most upright is shown.
+    var URLP = 'https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js', P = null, loadingP = null;
+    function loadPhysics() {
+      if (P) return Promise.resolve(P);
+      if (loadingP) return loadingP;
+      loadingP = new Promise(function (ok, no) {
+        if (window.CANNON) return ok(window.CANNON);
+        var s = document.createElement('script');
+        s.src = URLP; s.async = true;
+        s.onload = function () { window.CANNON ? ok(window.CANNON) : no(); };
+        s.onerror = no;
+        document.head.appendChild(s);
+      }).then(function (c) { P = c; return P; });
+      return loadingP;
+    }
+
+    var ov = null;
+    function overlay() {
+      if (ov) return ov;
+      var cv = document.createElement('canvas');
+      cv.setAttribute('aria-hidden', 'true');
+      cv.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147482000;display:none';
+      document.body.appendChild(cv);
+      var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+      r.outputEncoding = T.sRGBEncoding;
+      r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      var scene = new T.Scene(), cam = new T.OrthographicCamera(-1, 1, 1, -1, -1000, 1000);
+      cam.position.set(0, 0, 500); cam.lookAt(0, 0, 0);
+      var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
+      scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
+      var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-300, 500, 500); scene.add(sun);
+      var mesh = new T.Mesh(dieGeometry(), dieMaterials()); scene.add(mesh);
+      var sc = document.createElement('canvas'); sc.width = sc.height = 128;
+      var sg = sc.getContext('2d'), rg = sg.createRadialGradient(64, 64, 0, 64, 64, 64);
+      rg.addColorStop(0, 'rgba(0,0,0,.55)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
+      sg.fillStyle = rg; sg.fillRect(0, 0, 128, 128);
+      var shadow = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: new T.CanvasTexture(sc), transparent: true, depthWrite: false }));
+      shadow.position.z = -200; scene.add(shadow);
+      ov = { cv: cv, r: r, scene: scene, cam: cam, mesh: mesh, shadow: shadow, raf: 0, st: null };
+      function size() {
+        var w = window.innerWidth, h = window.innerHeight;
+        r.setSize(w, h, false);
+        cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2; cam.bottom = -h / 2; cam.updateProjectionMatrix();
+        ov.w = w; ov.h = h; ov.R = Math.max(34, Math.min(62, Math.min(w, h) * 0.075));
+      }
+      size(); window.addEventListener('resize', size);
+      return ov;
+    }
+    function slotCenter(id) {
+      var b = dice[id].node.getBoundingClientRect();
+      return { x: b.left + b.width / 2 - window.innerWidth / 2, y: window.innerHeight / 2 - (b.top + b.height / 2) };
+    }
+
+    var hull = null;
+    function hullShape() {
+      if (!hull) {
+        var pts = [], idx = [], seen = {};
+        faces.forEach(function (f) {
+          idx.push([f.a, f.b, f.c].map(function (v) {
+            var k = v.x.toFixed(4) + ',' + v.y.toFixed(4) + ',' + v.z.toFixed(4);
+            if (!(k in seen)) { seen[k] = pts.length; pts.push([v.x, v.y, v.z]); }
+            return seen[k];
+          }));
+        });
+        hull = { pts: pts, idx: idx };
+      }
+      return new P.ConvexPolyhedron(hull.pts.map(function (p) { return new P.Vec3(p[0], p[1], p[2]); }), hull.idx.map(function (f) { return f.slice(); }));
+    }
+
+    // One throw, worked out ahead at 60 steps a second: where the die is at every step, and when it hits something.
+    function simulate(start, Wu, Hu) {
+      var world = new P.World();
+      world.gravity.set(0, 0, -40);
+      world.broadphase = new P.NaiveBroadphase();
+      world.solver.iterations = 12;
+      world.allowSleep = true;
+      world.defaultContactMaterial.friction = 0.28;
+      world.defaultContactMaterial.restitution = 0.38;
+      function wall(x, y, axis, ang) {
+        var b = new P.Body({ mass: 0 }); b.addShape(new P.Plane()); b.position.set(x, y, 0);
+        if (axis) b.quaternion.setFromAxisAngle(axis, ang);
+        world.addBody(b);
+      }
+      wall(0, 0);                                                    // the table
+      wall(-Wu, 0, new P.Vec3(0, 1, 0), Math.PI / 2); wall(Wu, 0, new P.Vec3(0, 1, 0), -Math.PI / 2);
+      wall(0, -Hu, new P.Vec3(1, 0, 0), -Math.PI / 2); wall(0, Hu, new P.Vec3(1, 0, 0), Math.PI / 2);
+      var die = new P.Body({ mass: 1 });
+      die.addShape(hullShape());
+      die.linearDamping = 0.1; die.angularDamping = 0.1;
+      die.allowSleep = true; die.sleepSpeedLimit = 0.15; die.sleepTimeLimit = 0.25;
+      die.position.set(start.x, start.y, 2.2 + Math.random() * 1.5);
+      die.quaternion.setFromEuler(Math.random() * 6.283, Math.random() * 6.283, Math.random() * 6.283);
+      var ang = Math.atan2(-start.y, -start.x) + (Math.random() - 0.5) * 1.6, sp = 14 + Math.random() * 12;
+      die.velocity.set(Math.cos(ang) * sp, Math.sin(ang) * sp, 2 + Math.random() * 5);
+      die.angularVelocity.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 30);
+      world.addBody(die);
+      var frames = [], hits = [], stepNo = 0, lastHit = -9;
+      die.addEventListener('collide', function (e) {
+        var v = Math.abs(e.contact.getImpactVelocityAlongNormal());
+        if (v > 1.2 && stepNo - lastHit > 3) { hits.push([stepNo, Math.min(0.55, v * 0.035)]); lastHit = stepNo; }
+      });
+      for (stepNo = 0; stepNo < 540; stepNo++) {
+        world.step(1 / 60);
+        frames.push([die.position.x, die.position.y, die.position.z, die.quaternion.x, die.quaternion.y, die.quaternion.z, die.quaternion.w]);
+        if (stepNo > 40 && die.sleepState === P.Body.SLEEPING) break;
+      }
+      return { frames: frames, hits: hits };
+    }
+
+    // Which face ended up facing the viewer.
+    function topFace(f) {
+      var q = new T.Quaternion(f[3], f[4], f[5], f[6]), best = -2, k = 0;
+      for (var i = 0; i < 20; i++) { var z = faces[i].n.clone().applyQuaternion(q).z; if (z > best) { best = z; k = i; } }
+      return { k: k, q: q, flat: best };
+    }
+    function frameOf(face, v) {
+      var z = face.n, y = v.clone().sub(face.mid).normalize(), x = new T.Vector3().crossVectors(y, z);
+      return new T.Matrix4().makeBasis(x, y, z);
+    }
+    // The turn of the die onto itself that puts number n on the face that landed up. Of the three
+    // ways to do it, the one that reads most upright.
+    function relabel(n, top) {
+      var ft = faces[faceOf[n]], f = faces[top.k], toCanon = frameOf(ft, ft.a).transpose(), best = null;
+      [f.a, f.b, f.c].forEach(function (v) {
+        var g = new T.Quaternion().setFromRotationMatrix(new T.Matrix4().multiplyMatrices(frameOf(f, v), toCanon));
+        var up = v.clone().sub(f.mid).normalize().applyQuaternion(top.q), ang = Math.atan2(up.x, up.y), tilt = Math.abs(ang);
+        if (!best || tilt < best.tilt) best = { g: g, tilt: tilt, ang: ang };
+      });
+      return best;
+    }
+
+    var COL = {}, MATS2 = {};
+    function throwIt(id, n, done) {
+      var o0 = overlay(), ck = COL[id] ? id : '_';
+      if (o0.colKey !== ck) { o0.mesh.material = MATS2[ck] || (MATS2[ck] = dieMaterials(COL[id])); o0.colKey = ck; }
+      if (!P) return false;
+      // Never a table smaller than a few dice wide, even if the window reports no size (a hidden tab).
+      var d = dice[id], o = overlay(), s = slotCenter(id), Wu = Math.max(5, o.w / 2 / o.R), Hu = Math.max(4, o.h / 2 / o.R);
+      var start = { x: Math.max(-Wu + 1.3, Math.min(Wu - 1.3, s.x / o.R)), y: Math.max(-Hu + 1.3, Math.min(Hu - 1.3, s.y / o.R)) };
+      var best = null, t0 = performance.now();
+      for (var i = 0; i < 8; i++) {
+        var sim = simulate(start, Wu, Hu), top = topFace(sim.frames[sim.frames.length - 1]);
+        if (top.flat < 0.97) continue;                               // still moving when time ran out: throw again
+        sim.top = top;
+        if (n == null) { sim.g = new T.Quaternion(); sim.tilt = 0; best = sim; break; }   // number not in yet: set later
+        var rl = relabel(n, top);
+        sim.g = rl.g; sim.tilt = rl.tilt; sim.ang = rl.ang;
+        if (!best || rl.tilt < best.tilt) best = sim;
+        if (rl.tilt < 0.35 || performance.now() - t0 > 150) break;
+      }
+      if (!best) return false;
+      if (ov.raf) cancelAnimationFrame(ov.raf);
+      stopLoop(d); d.y = 0; d.node.style.visibility = 'hidden';
+      o.st = { id: id, n: n, sim: best, done: done, start: performance.now(), hit: 0, fixFrom: 0, fix: n == null ? 0 : -(best.ang || 0) };
+      o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
+      clack(0.3);
+      o.raf = requestAnimationFrame(play);
+      return true;
+    }
+    // The sheet's number arrives while the die is already in the air: paint it on the face that will land up,
+    // and turn the die a little over the rest of the flight so the number ends up upright.
+    function setNumber(id, n, done) {
+      var st = ov && ov.st; if (!st || st.id !== id || st.n != null) return false;
+      var rl = relabel(n, st.sim.top), fr = st.sim.frames;
+      st.sim.g = rl.g; st.n = n; st.done = done;
+      st.fixFrom = Math.max(0, Math.min(fr.length - 1, Math.floor((performance.now() - st.start) / (1000 / 75))));
+      st.fix = -rl.ang;
+      return true;
+    }
+    // Safety net: if a frame ever fails, the die drops back into its card with the number, never stuck.
+    function play(now) {
+      try { playFrame(now); }
+      catch (e) {
+        var st = ov && ov.st; if (!st) return;
+        dropThrow(st.id);
+        var d = dice[st.id]; if (d) { d.y = 0; d.mesh.quaternion.copy(pose(st.n)); draw(d); }
+        if (st.done) st.done();
+      }
+    }
+    function playFrame(now) {
+      var o = ov, st = o.st;
+      if (!st) return;
+      // A frame can be stamped a moment before the throw began, so never ask for a step before the first.
+      var fr = st.sim.frames, i = Math.max(0, Math.min(fr.length - 1, Math.floor((now - st.start) / (1000 / 75))));
+      while (st.hit < st.sim.hits.length && st.sim.hits[st.hit][0] <= i) { clack(st.sim.hits[st.hit][1]); st.hit++; }
+      var span = Math.max(1, fr.length - 1 - st.fixFrom), k = Math.max(0, Math.min(1, (i - st.fixFrom) / span));
+      paintFrame(fr[i], st.sim.g, st.n == null ? 0 : st.fix * k * k * (3 - 2 * k));
+      if (i < fr.length - 1 || st.n == null) { o.raf = requestAnimationFrame(play); return; }   // at rest but no number yet: wait
+      // At rest. Hold it so everyone can read it, then the table fades and the card has the number.
+      o.raf = 0;
+      if (PREVIEW || window.__diceDebug) {   // preview/testing only: which number really ended up facing the viewer
+        var lf = fr[fr.length - 1], qq = new T.Quaternion(lf[3], lf[4], lf[5], lf[6]).multiply(st.sim.g), bk = 0, bz = -2;
+        for (var i2 = 0; i2 < 20; i2++) { var zz = faces[i2].n.clone().applyQuaternion(qq).z; if (zz > bz) { bz = zz; bk = i2; } }
+        (window.__diceLog = window.__diceLog || []).push({ rolled: st.n, showing: numbers[bk], flat: +bz.toFixed(3), tiltDeg: Math.round(st.sim.tilt * 57.3), seconds: +(fr.length / 60).toFixed(2), bounces: st.sim.hits.length });
+      }
+      setTimeout(function () {
+        if (o.st !== st) return;
+        var d = dice[st.id];
+        if (d) { d.y = 0; d.mesh.quaternion.copy(pose(st.n)); draw(d); d.node.style.visibility = ''; }
+        o.cv.style.transition = 'opacity .45s ease'; o.cv.style.opacity = '0';
+        setTimeout(function () { if (o.st === st) { o.cv.style.display = 'none'; o.st = null; } }, 480);
+        if (st.done) st.done();
+      }, 1100);
+    }
+    function paintFrame(f, g, turn) {
+      var o = ov, z = Math.max(0, f[2] - 0.8), sc = 1 + z * 0.07;
+      o.mesh.position.set(f[0] * o.R, f[1] * o.R, 0);
+      o.mesh.quaternion.set(f[3], f[4], f[5], f[6]).multiply(g);
+      if (turn) o.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 0, 1), turn));
+      o.mesh.scale.setScalar(o.R * sc);
+      o.shadow.position.set(f[0] * o.R + 6 + z * 10, f[1] * o.R - 8 - z * 10, -200);
+      o.shadow.scale.setScalar(o.R * 2.4 * (1 - Math.min(0.5, z * 0.08)));
+      o.shadow.material.opacity = 0.9 - Math.min(0.6, z * 0.1);
+      o.r.render(o.scene, o.cam);
+    }
+    function dropThrow(id) {
+      if (!ov || !ov.st || ov.st.id !== id) return;
+      if (ov.raf) cancelAnimationFrame(ov.raf);
+      ov.raf = 0; ov.st = null; ov.cv.style.display = 'none';
+      if (dice[id]) dice[id].node.style.visibility = '';
+    }
+
+    return {
+      // Builds the die in this node once three.js is in; the node shows the flat die until then.
+      attach: function (id, node, n) {
+        load().then(function () {
+          if (dice[id]) return;
+          if (!calm) loadPhysics().catch(function () {});
+          var d = build(id, node);
+          node.classList.add('is3d');
+          if (n) d.mesh.quaternion.copy(pose(n));
+          draw(d);
+        }).catch(function () {});
+      },
+      ready: function (id) { return !!dice[id]; },
+      colors: function (id, col) { COL[id] = col; },
+      parts: function () { return T ? { T: T, geometry: dieGeometry, materials: dieMaterials, pose: pose, studio: studio, clack: clack, loadPhysics: loadPhysics, hullShape: hullShape, topFace: topFace, relabel: relabel } : null; },
+      // Throw straight away, before the number is known; set it with number() when it arrives.
+      throwNow: function (id) { if (calm || !dice[id]) return false; try { return throwIt(id, null, null); } catch (e) { dropThrow(id); return false; } },
+      number: function (id, n, done) { try { return setNumber(id, n, done); } catch (e) { dropThrow(id); return false; } },
+      drop: function (id) { dropThrow(id); },
+      show: function (id, n) { var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(pose(n)); draw(d); },
+      // Shaken in the card (like dice in a cupped hand) until the sheet's number is in, then thrown
+      // across the screen with physics. In the card instead when motion is reduced or physics won't load.
+      spin: function (id) { this.spinCard(id); },
+      land: function (id, n, done) {
+        if (!calm && dice[id]) { try { if (throwIt(id, n, done)) return; } catch (e) { dropThrow(id); } }
+        this.landCard(id, n, done);
+      },
+      // Tumbling in the card until the number is known.
+      spinCard: function (id) {
+        var d = dice[id]; if (!d) return;
+        stopLoop(d);
+        var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), last = performance.now(), start = last, tick = 0;
+        d.axis = axis;
+        (function frame(now) {
+          var dt = Math.min(0.05, (now - last) / 1000); last = now;
+          if (!calm) d.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(axis, 13 * dt));
+          d.y = calm ? 0 : Math.abs(Math.sin((now - start) / 110)) * 0.35;
+          if (now - tick > 95) { tick = now; clack(0.05 + Math.random() * 0.06); }
+          draw(d);
+          d.raf = requestAnimationFrame(frame);
+        })(last);
+      },
+      // In the card: three bounces, a clack on each, and it settles on n.
+      landCard: function (id, n, done) {
+        var d = dice[id]; if (!d) return done();
+        stopLoop(d);
+        var q0 = d.mesh.quaternion.clone(), q1 = pose(n), axis = d.axis || new T.Vector3(1, 0, 0), dur = calm ? 1 : 920, t0 = performance.now(), hits = [0.286, 0.571, 0.857], hit = 0;
+        (function frame(now) {
+          var t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3);
+          var q = q0.clone().slerp(q1, e);
+          q.premultiply(new T.Quaternion().setFromAxisAngle(axis, (1 - e) * 7));
+          d.mesh.quaternion.copy(q);
+          d.y = Math.abs(Math.sin(Math.PI * 3.5 * t)) * 0.85 * Math.pow(1 - t, 2);
+          while (hit < hits.length && t >= hits[hit]) { clack([0.5, 0.28, 0.14][hit]); hit++; }
+          draw(d);
+          if (t < 1) d.raf = requestAnimationFrame(frame);
+          else { d.raf = 0; d.mesh.quaternion.copy(q1); d.y = 0; draw(d); done(); }
+        })(t0);
+      },
+      stop: function (id) { dropThrow(id); var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(idle()); draw(d); },
+      muted: function () { return muted; },
+      setMuted: function (m) { muted = !!m; try { localStorage.setItem('thDice:muted', muted ? '1' : '0'); } catch (e) {} }
+    };
+  })();
+
+  // each character's dice (Maurice, 2026-11-13): metal top, metal bottom, numbers. Brand colors: Rune teal, Sparrow violet,
+  // Hale parchment (his pick), Scarlett scarlet; Paraxis (his d20 and the twelve-sided die) dark ink with parchment numbers.
+  var CREW_COL = [['#3adb97', '#1a5e41', '#0b170f'], ['#8a5cf0', '#2d1c53', '#f1eaff'], ['#fffffe', '#ebe6da', '#0b170f', 0.12, 0.38], ['#ff4c0f', '#912501', '#ffe2a8']];
+  var PX_COL = ['#4a5a4f', '#0b170f', '#f3ead9'];
+  Dice.colors('px', PX_COL);
+  $('rc-die-px').innerHTML = D20 + '<span class="rc-dn" id="rc-dn-px">20</span><i class="rc-die-shadow"></i><canvas class="rc-die-cv" width="240" height="240"></canvas>';
+  Dice.attach('px', $('rc-die-px'), 20);
+  // ---- Paraxis's target die: a metal twelve-sided die with each of the crew on three faces (Maurice, 2026-11-13; it was a D4) ----
+  // Same red metal and studio light as the d20 above; it tumbles, then bounces and settles with the rolled face to the viewer.
+  var D4 = (function () {
+    var T = null, ready = false, nodes = [], targets = [], TILT = null, mats = null, geo = null;
+    function three() {
+      if (window.THREE) return Promise.resolve(window.THREE);
+      return new Promise(function (ok, no) {
+        var had = document.querySelector('script[src*="three.min.js"]');
+        var s = had || document.createElement('script');
+        var t = setInterval(function () { if (window.THREE) { clearInterval(t); ok(window.THREE); } }, 150);
+        setTimeout(function () { clearInterval(t); window.THREE ? ok(window.THREE) : no(); }, 15000);
+        if (!had) { s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'; s.async = true; document.head.appendChild(s); }
+      });
+    }
+    function img(src) { return new Promise(function (ok) { if (!src) return ok(null); var i = new Image(); i.crossOrigin = 'anonymous'; i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
+    function face(icon, label) {
+      var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d');
+      // Paraxis's die: dark ink metal like his d20
+      var grad = g.createLinearGradient(0, 0, 0, 256); grad.addColorStop(0, '#4a5a4f'); grad.addColorStop(1, '#0b170f');
+      g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
+      // the icon sits in the middle of the pentagon (the face spans the texture's center, point up)
+      if (icon) g.drawImage(icon, 63, 66, 130, 130);
+      else { g.fillStyle = '#ffe2a8'; g.textAlign = 'center'; g.font = '800 30px Almarai, Arial, sans-serif'; g.fillText(label, 128, 160); }
+      var t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; return t;
+    }
+    function glow(icon) {
+      var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d'); g.fillStyle = '#000'; g.fillRect(0, 0, 256, 256);
+      if (icon) g.drawImage(icon, 63, 66, 130, 130);
+      var t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; return t;
+    }
+    function studio() {
+      var c = document.createElement('canvas'); c.width = 512; c.height = 256; var g = c.getContext('2d'), sky = g.createLinearGradient(0, 0, 0, 256);
+      sky.addColorStop(0, '#fff6e8'); sky.addColorStop(0.45, '#8c6a58'); sky.addColorStop(0.55, '#3a2418'); sky.addColorStop(1, '#0c0706');
+      g.fillStyle = sky; g.fillRect(0, 0, 512, 256);
+      [[110, 70, 70], [360, 60, 55], [250, 30, 40]].forEach(function (s) { var l = g.createRadialGradient(s[0], s[1], 0, s[0], s[1], s[2]); l.addColorStop(0, 'rgba(255,255,255,1)'); l.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = l; g.fillRect(0, 0, 512, 256); });
+      var tex = new T.CanvasTexture(c); tex.mapping = T.EquirectangularReflectionMapping; tex.encoding = T.sRGBEncoding; return tex;
+    }
+    // A twelve-sided die (Maurice, 2026-11-13): each of the crew on three of its pentagon faces. The model splits each
+    // pentagon into three triangles, so triangles are grouped by the way they face; each pentagon gets its own frame
+    // (point up) for its picture and for the turn that shows it square to the viewer.
+    var faceIcon = [], facesOf = [[], [], [], []], faceInfo = [];
+    function setup(icons) {
+      geo = new T.DodecahedronGeometry(1, 0);
+      var p = geo.getAttribute('position'), tris = p.count / 3, groups = [], uv = new Array(p.count * 2);
+      for (var t = 0; t < tris; t++) {
+        var v = [0, 1, 2].map(function (i) { return new T.Vector3().fromBufferAttribute(p, t * 3 + i); });
+        var nrm = v[1].clone().sub(v[0]).cross(v[2].clone().sub(v[0])).normalize(), g = -1;
+        for (var k = 0; k < groups.length; k++) if (groups[k].n.dot(nrm) > 0.99) { g = k; break; }
+        if (g < 0) { groups.push({ n: nrm, tris: [], pts: [] }); g = groups.length - 1; }
+        groups[g].tris.push(t); v.forEach(function (x) { if (!groups[g].pts.some(function (q) { return q.distanceTo(x) < 1e-4; })) groups[g].pts.push(x); });
+      }
+      geo.clearGroups();
+      groups.forEach(function (gr, f) {
+        var c = gr.pts.reduce(function (a, q) { return a.add(q); }, new T.Vector3()).divideScalar(gr.pts.length);
+        var z = gr.n, y = gr.pts[0].clone().sub(c).normalize(), x = new T.Vector3().crossVectors(y, z), rad = gr.pts[0].distanceTo(c);
+        targets[f] = new T.Quaternion().setFromRotationMatrix(new T.Matrix4().makeBasis(x, y, z).transpose());
+        faceInfo[f] = { n: z.clone(), c: c.clone(), pts: gr.pts.map(function (q) { return q.clone(); }) };
+        // three faces each: Rune, Sparrow, Hale, Scarlett, around and around
+        var who = f % 4; faceIcon[f] = who; facesOf[who].push(f);
+        gr.tris.forEach(function (t) {
+          geo.addGroup(t * 3, 3, who);
+          for (var i = 0; i < 3; i++) { var q = new T.Vector3().fromBufferAttribute(p, t * 3 + i).sub(c); uv[(t * 3 + i) * 2] = 0.5 + q.dot(x) / rad * 0.49; uv[(t * 3 + i) * 2 + 1] = 0.5 + q.dot(y) / rad * 0.49; }
+        });
+      });
+      geo.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+      mats = icons.map(function (im, k) { return new T.MeshStandardMaterial({ map: face(im, NAMES[k]), emissive: 0xffffff, emissiveMap: glow(im), emissiveIntensity: 0.75, roughness: 0.3, metalness: 0.85, envMapIntensity: 1.2, flatShading: true }); });
+      TILT = new T.Quaternion().setFromEuler(new T.Euler(-0.16, 0.13, 0.02));
+    }
+    // a face showing crew member n (1 Rune .. 4 Scarlett), one of their three, at random
+    function faceFor(n) { var l = facesOf[n - 1]; return l.length ? l[Math.floor(Math.random() * l.length)] : 0; }
+    function build(node) {
+      var cv = node.querySelector('canvas'), r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+      r.outputEncoding = T.sRGBEncoding; r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); r.setSize(cv.clientWidth || 120, cv.clientHeight || 120, false);
+      var scene = new T.Scene(), cam = new T.PerspectiveCamera(30, 1, 0.1, 50); cam.position.set(0, 0, 4.6); cam.lookAt(0, 0, 0);
+      var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
+      scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35)); var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-3, 5, 5); scene.add(sun);
+      var mesh = new T.Mesh(geo, mats); mesh.quaternion.copy(pose(0)); scene.add(mesh);
+      var d = { r: r, scene: scene, cam: cam, mesh: mesh, node: node, raf: 0, y: 0 }; draw(d); return d;
+    }
+    function pose(k) { return targets[k].clone().premultiply(TILT); }
+    function draw(d) { d.mesh.position.y = d.y; d.r.render(d.scene, d.cam); }
+    function stop(d) { if (d.raf) cancelAnimationFrame(d.raf); d.raf = 0; }
+    // ---- thrown across the page: out of its slot, three bounces, settles mid-screen with face n toward you,
+    // holds, then fades back into the slot (the d20's physics is built for its 20 faces, so this path is drawn by hand)
+    var ov = null;
+    function overlay() {
+      if (ov) return ov;
+      var cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
+      cv.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147482000;display:none';
+      document.body.appendChild(cv);
+      var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); r.outputEncoding = T.sRGBEncoding; r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      var scene = new T.Scene(), cam = new T.OrthographicCamera(-1, 1, 1, -1, -1000, 1000); cam.position.set(0, 0, 500); cam.lookAt(0, 0, 0);
+      var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
+      scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35)); var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-300, 500, 500); scene.add(sun);
+      var mesh = new T.Mesh(geo, mats); scene.add(mesh);
+      var sc = document.createElement('canvas'); sc.width = sc.height = 128; var sg = sc.getContext('2d'), rg = sg.createRadialGradient(64, 64, 0, 64, 64, 64);
+      rg.addColorStop(0, 'rgba(0,0,0,.5)'); rg.addColorStop(1, 'rgba(0,0,0,0)'); sg.fillStyle = rg; sg.fillRect(0, 0, 128, 128);
+      var shadow = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: new T.CanvasTexture(sc), transparent: true, depthWrite: false })); shadow.position.z = -200; scene.add(shadow);
+      ov = { cv: cv, r: r, scene: scene, cam: cam, mesh: mesh, shadow: shadow, raf: 0 };
+      function size() { var w = window.innerWidth, h = window.innerHeight; r.setSize(w, h, false); cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2; cam.bottom = -h / 2; cam.updateProjectionMatrix(); ov.w = w; ov.h = h; ov.R = Math.max(52, Math.min(88, Math.min(w, h) * 0.11)); }
+      size(); window.addEventListener('resize', size);
+      return ov;
+    }
+    var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function toss(rec, n, done) {
+      var d = rec.d, o = overlay(); if (o.raf) cancelAnimationFrame(o.raf); stop(d);
+      var b = rec.node.getBoundingClientRect();
+      var sx = b.left + b.width / 2 - o.w / 2, sy = o.h / 2 - (b.top + b.height / 2);
+      // it lands somewhere near the middle of the screen, never off the edge
+      var ex = (Math.random() - 0.5) * o.w * 0.35, ey = (Math.random() - 0.5) * o.h * 0.2;
+      var q0 = new T.Quaternion().setFromEuler(new T.Euler(Math.random() * 6.3, Math.random() * 6.3, Math.random() * 6.3)), q1 = pose(faceFor(n));
+      var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), dur = 1200, t0 = performance.now(), R = o.R;
+      d.node.style.visibility = 'hidden';
+      var tok = o.tok = (o.tok || 0) + 1;
+      o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
+      (function frame(now) {
+        var t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3);
+        var x = sx + (ex - sx) * e, y = sy + (ey - sy) * e;
+        var hop = Math.abs(Math.sin(Math.PI * 3.5 * t)) * Math.pow(1 - t, 1.6) * R * 2.6;
+        var q = q0.clone().slerp(q1, e); q.premultiply(new T.Quaternion().setFromAxisAngle(axis, (1 - e) * 14));
+        o.mesh.quaternion.copy(q); o.mesh.position.set(x, y + hop, 0); o.mesh.scale.setScalar(R * (1 + hop / R * 0.08));
+        o.shadow.position.set(x + 4 + hop * 0.08, y - R * 0.62, -200); o.shadow.scale.set(R * 1.7 * (1 - Math.min(0.4, hop / R * 0.1)), R * 0.55 * (1 - Math.min(0.4, hop / R * 0.1)), 1);
+        o.r.render(o.scene, o.cam);
+        if (t < 1) { o.raf = requestAnimationFrame(frame); return; }
+        o.raf = 0;
+        // hold so everyone can see who it landed on, then it goes back into its slot
+        setTimeout(function () {
+          d.mesh.quaternion.copy(q1); d.y = 0; draw(d); d.node.style.visibility = '';
+          if (o.tok === tok) { o.cv.style.transition = 'opacity .4s ease'; o.cv.style.opacity = '0'; }
+          setTimeout(function () { if (o.tok === tok) o.cv.style.display = 'none'; }, 420);
+          if (done) done();
+        }, 1000);
+      })(t0);
+    }
+    var api = {
+      // what the physics throw needs: the shape, its faces, and which faces show whom
+      parts: function () { return geo ? { T: T, geo: geo, mats: mats, faces: faceInfo, facesOf: facesOf, faceIcon: faceIcon, studio: studio } : null; },
+      // after a throw: the die back in its slot showing face k
+      show: function (rec, k) { var d = rec && rec.d; if (!d) return; stop(d); d.mesh.quaternion.copy(pose(k)); d.y = 0; draw(d); d.node.style.visibility = ''; },
+      toss: function (rec, n, done) { if (calm || !rec || !rec.d) return api.land(rec, n, done); try { toss(rec, n, done); } catch (e) { if (rec.d) rec.d.node.style.visibility = ''; api.land(rec, n, done); } },
+      attach: function (node, iconSrcs) {
+        var rec = { node: node, d: null }; nodes.push(rec);
+        three().then(function (t) { T = t; return Promise.all(iconSrcs.map(img)); }).then(function (icons) {
+          if (!geo) setup(icons); rec.d = build(node); node.classList.add('is3d'); ready = true;
+        }).catch(function () {});
+        return rec;
+      },
+      ready: function (rec) { return !!(rec && rec.d); },
+      // tumbling until the number is known
+      spin: function (rec) {
+        var d = rec && rec.d; if (!d) return; stop(d);
+        var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), last = performance.now(), start = last; d.axis = axis;
+        (function frame(now) { var dt = Math.min(0.05, (now - last) / 1000); last = now;
+          d.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(axis, 12 * dt)); d.y = Math.abs(Math.sin((now - start) / 110)) * 0.3; draw(d); d.raf = requestAnimationFrame(frame); })(last);
+      },
+      // three bounces and it settles with face n (1 Rune .. 4 Scarlett) toward the viewer
+      land: function (rec, n, done) {
+        var d = rec && rec.d; if (!d) return done && done(); stop(d);
+        var q0 = d.mesh.quaternion.clone(), q1 = pose(faceFor(n)), axis = d.axis || new T.Vector3(1, 0, 0), t0 = performance.now(), dur = 800;
+        (function frame(now) { var t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3), q = q0.clone().slerp(q1, e);
+          q.premultiply(new T.Quaternion().setFromAxisAngle(axis, (1 - e) * 7)); d.mesh.quaternion.copy(q);
+          d.y = Math.abs(Math.sin(Math.PI * 3.5 * t)) * 0.7 * Math.pow(1 - t, 2); draw(d);
+          if (t < 1) d.raf = requestAnimationFrame(frame); else { d.raf = 0; d.mesh.quaternion.copy(q1); d.y = 0; draw(d); if (done) done(); } })(t0);
+      }
+    };
+    return api;
+  })();
+  var ICONS = ['rune', 'sparrow', 'hale', 'scarlett'].map(function (k) { return (DATA.icons || {})[k]; });
+  var d4Battle = D4.attach($('px-d4'), ICONS);
+  if (PREVIEW) window.__pxD4 = function (n) { return rollD4(d4Battle, n); };   // for checking each face on a preview
+  // roll the D4 to n; without 3D it just shows the name
+  function rollD4(rec, n) {
+    return new Promise(function (res) {
+      var lab = rec.node.querySelector('.d4lab'); if (lab) lab.textContent = NAMES[n - 1];
+      if (!D4.ready(rec)) return setTimeout(res, 500);
+      // a real physics throw like the d20; the drawn path if physics can't load
+      var thrown = physThrow([{ kind: 'd12', n: n, node: rec.node, done: function (u) { var Q = D4.parts(); D4.show(rec, u.rl && u.rl.face != null ? u.rl.face : Q.facesOf[n - 1][0]); } }]);
+      if (!thrown) return D4.toss(rec, n, res);
+      thrown.then(function (r) { if (r === null) D4.toss(rec, n, res); else res(); });
+    });
+  }
+  // A roll on the die: 'thrown' means it left the card when the button was pressed and only needs its number,
+  // 'spun' means it is tumbling in the card; otherwise (Paraxis's rolls) it is thrown and lands on n.
+  function rollDie(n, pre) {
+    return new Promise(function (res) {
+      var done = function () { res(); };
+      if (pre === 'thrown') { if (Dice.number('px', n, done)) return; Dice.drop('px'); }
+      if (Dice.ready('px')) { Dice.land('px', n, done); return; }
+      $('rc-dn-px').textContent = n; setTimeout(done, 600);
+    });
+  }
+
+  // Stretch edge to edge over the Squarespace section, the same fit as the vote pages (without it the section's own color
+  // showed around the page on the live site, 2026-11-13)
+  function fit() {
+    var root = $('px'); if (!root) return;
+    var sec = root.closest('section');
+    if (sec) {
+      Array.prototype.forEach.call(sec.querySelectorAll('.content-wrapper, .fluid-engine'), function (x) { x.style.setProperty('padding-top', '0', 'important'); x.style.setProperty('padding-bottom', '0', 'important'); });
+      sec.style.setProperty('padding-top', '0', 'important'); sec.style.setProperty('padding-bottom', '0', 'important');
+      // the section's own leftover space under the page takes the page's ink, not the site's red (as the vote pages do)
+      sec.style.setProperty('background', '#0b170f', 'important');
+      var sbg = sec.querySelector('.section-background'); if (sbg) sbg.style.setProperty('background', '#0b170f', 'important');
+    }
+    root.style.marginLeft = '0px';
+    root.style.marginLeft = -root.getBoundingClientRect().left + 'px';
+    root.style.width = document.documentElement.clientWidth + 'px';
+  }
+  fit(); addEventListener('resize', fit); addEventListener('load', fit); setTimeout(fit, 600);
+  // ---- the words ----
+  $('px-lede').textContent = DATA.lede || '';
+  $('px-story').innerHTML = '<p class="kick">' + esc(DATA.storyKick || 'LAST TIME') + '</p><h2>' + esc(DATA.storyTitle || '') + '</h2>' +
+    (DATA.audio ? '<div class="listen"><p class="kick" style="color:var(--ink)">' + esc(DATA.audio.label) + '</p><audio controls preload="none" src="' + esc(DATA.audio.src) + '"></audio></div>' : '') + String(DATA.story || '').split(/\n\s*\n/).map(function (t) { return '<p>' + esc(t.trim()) + '</p>'; }).join('');
+  var closed = Date.now() > Date.parse(DATA.closes), notYet = Date.now() < Date.parse(DATA.opens);
+  $('px-close').textContent = when(notYet ? DATA.opens : DATA.closes).toUpperCase();
+  if (notYet) { $('px-close-k').textContent = 'THE FIGHT OPENS'; }
+  if (closed) { $('px-close-k').textContent = 'THE FIGHT IS OVER'; $('px-close-s').textContent = 'The battles are in.'; }
+  else $('px-close-s').textContent = 'Finish your battle before then.';
+  (function () { var c = $('px-c'), h = ''; for (var z = -6; z <= 6; z++) h += '<div class="rim" style="transform:translateZ(' + z + 'px)"></div>'; c.insertAdjacentHTML('afterbegin', h); })();
+  var A = DATA.coin || {};
+  document.querySelector('#px .f.a').style.backgroundImage = 'url(' + A.crest + ')';
+  document.querySelector('#px .f.b').style.backgroundImage = 'url(' + A.swords + ')';
+
+  // ---- the server, or a pretend one on a preview ----
+  function send(payload) {
+    return new Promise(function (done) {
+      var name = 'pxcb' + Math.random().toString(36).slice(2), q = ['callback=' + name];
+      for (var k in payload) if (payload[k] != null && payload[k] !== '') q.push(encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]));
+      var s = document.createElement('script'), timer = setTimeout(function () { end({ ok: false, error: 'network' }); }, 30000);
+      function end(res) { clearTimeout(timer); try { delete window[name]; } catch (e) {} if (s.parentNode) s.parentNode.removeChild(s); done(res); }
+      window[name] = end; s.onerror = function () { end({ ok: false, error: 'network' }); };
+      s.src = ENDPOINT + '?' + q.join('&'); document.body.appendChild(s);
+    });
+  }
+  // On a preview the same rules run here, with a pretend bank of Paraxis rolls. Nothing is saved anywhere.
+  var fake = null;
+  function d(n) { return Math.floor(Math.random() * n) + 1; }
+  function fakeParaxis(st, ev) {
+    for (var a = 0; a < 2; a++) {
+      if (!st.hp.some(function (h) { return h > 0; })) break;
+      var d4s = [], t; do { t = d(4) - 1; d4s.push(t + 1); } while (st.hp[t] <= 0);
+      var roll = fake.bank[st.bi++ % 100], hit = roll >= GUARD[t]; if (hit) st.hp[t] = Math.max(0, st.hp[t] - (roll === 20 ? 2 : 1));
+      if (roll === 1) st.px = Math.max(0, st.px - 1);
+      ev.push({ t: 'px', d4: d4s, who: t, roll: roll, need: GUARD[t], hit: hit, hp: st.hp[t], fumble: roll === 1, crit: roll === 20, px: st.px });
+      if (st.px <= 0) { st.over = 'win'; return; }
+    }
+    if (!st.hp.some(function (h) { return h > 0; })) st.over = 'loss';
+  }
+  function api(payload) {
+    if (!PREVIEW) return send(payload);
+    if (!fake) fake = { bank: Array.apply(null, Array(100)).map(function () { return d(20); }), st: null };
+    var st = fake.st, ev = [];
+    if (payload.action === 'pxstate') return Promise.resolve({ ok: true, state: st && JSON.parse(JSON.stringify(st)) });
+    if (payload.action === 'pxstart') {
+      if (st) return Promise.resolve({ ok: true, status: 'resume', state: JSON.parse(JSON.stringify(st)), events: [] });
+      var coin = Math.random() < .5 ? 'crest' : 'swords';
+      st = fake.st = { hp: [4, 4, 4, 4], px: 30, packs: 3, round: 1, next: 0, bi: 0, step: 0, coin: coin, over: null, log: [] };
+      ev.push({ t: 'coin', coin: coin, first: coin === 'crest' ? 'crew' : 'paraxis' });
+      if (coin === 'swords') fakeParaxis(st, ev);
+      st.log = st.log.concat(ev);
+      return wait(400).then(function () { return { ok: true, status: 'new', state: JSON.parse(JSON.stringify(st)), events: ev }; });
+    }
+    if (payload.action === 'pxact') {
+      var who = st.next;
+      if (payload.act === 'heal') { var t = +payload.target, was = st.hp[t]; st.hp[t] = Math.min(4, st.hp[t] + 2); st.packs--; ev.push({ t: 'heal', who: who, target: t, from: was, hp: st.hp[t], packs: st.packs }); }
+      else { var r = d(20), hit = r >= 15, dmg = hit ? POWER[who] * (r === 20 ? 2 : 1) : 0; st.px = Math.max(0, st.px - dmg); if (r === 1) st.hp[who] = Math.max(0, st.hp[who] - 1);
+        ev.push({ t: 'atk', who: who, roll: r, hit: hit, dmg: dmg, px: st.px, fumble: r === 1, crit: r === 20, hp: st.hp[who] }); if (st.px <= 0) st.over = 'win'; else if (!st.hp.some(function (h) { return h > 0; })) st.over = 'loss'; }
+      if (!st.over) {
+        var nx = -1; for (var i = who + 1; i < 4; i++) if (st.hp[i] > 0) { nx = i; break; }
+        if (nx < 0) { ev.push({ t: 'pxturn', round: st.round }); fakeParaxis(st, ev); if (!st.over) { st.round++; for (var j = 0; j < 4; j++) if (st.hp[j] > 0) { nx = j; break; } ev.push({ t: 'round', round: st.round }); } }
+        st.next = st.over ? -1 : nx;
+      } else st.next = -1;
+      st.step++; st.log = st.log.concat(ev);
+      return wait(300).then(function () { return { ok: true, status: 'ok', state: JSON.parse(JSON.stringify(st)), events: ev }; });
+    }
+    if (payload.action === 'pxround') {
+      var acts = String(payload.acts || '').split(',');
+      for (var w = 0; w < 4 && !st.over; w++) {
+        if (st.hp[w] <= 0) continue;
+        var a = acts[w] || 'a', ht = /^h[0-3]$/.test(a) ? +a.charAt(1) : -1;
+        if (ht >= 0 && st.packs > 0 && st.hp[ht] < 4) { var was2 = st.hp[ht]; st.hp[ht] = Math.min(4, st.hp[ht] + 2); st.packs--; ev.push({ t: 'heal', who: w, target: ht, from: was2, hp: st.hp[ht], packs: st.packs }); continue; }
+        var r2 = d(20), hit2 = r2 >= 15, dmg2 = hit2 ? POWER[w] * (r2 === 20 ? 2 : 1) : 0; st.px = Math.max(0, st.px - dmg2); if (r2 === 1) st.hp[w] = Math.max(0, st.hp[w] - 1);
+        ev.push({ t: 'atk', who: w, roll: r2, hit: hit2, dmg: dmg2, px: st.px, fumble: r2 === 1, crit: r2 === 20, hp: st.hp[w] });
+        if (st.px <= 0) st.over = 'win'; else if (!st.hp.some(function (h) { return h > 0; })) st.over = 'loss';
+      }
+      if (!st.over) { ev.push({ t: 'pxturn', round: st.round }); fakeParaxis(st, ev); if (!st.over) { st.round++; ev.push({ t: 'round', round: st.round }); } }
+      st.next = -1; if (!st.over) for (var j2 = 0; j2 < 4; j2++) if (st.hp[j2] > 0) { st.next = j2; break; }
+      st.step++; st.log = st.log.concat(ev);
+      return wait(300).then(function () { return { ok: true, status: 'ok', state: JSON.parse(JSON.stringify(st)), events: ev }; });
+    }
+    return Promise.resolve({ ok: false, error: 'preview' });
+  }
+
+  // ---- who is fighting ----
+  var me = load(ME) || {};
+  function showMe() {
+    var known = me.email && me.first_name && me.country;
+    $('px-form').hidden = !!known; $('px-me').hidden = !known;
+    if (known) $('px-me').innerHTML = 'Fighting as <b>' + esc(me.first_name) + '</b> (' + esc(me.email) + ')' + (me.discord ? ', Discord <b>' + esc(me.discord) + '</b>' : '') + '. <button type="button" class="btn alt" id="px-notme" style="min-height:0;padding:6px 12px;margin-left:6px">NOT YOU?</button>';
+    if (known) $('px-notme').onclick = function () { me = {}; save(ME, me); showMe(); };
+    else { $('px-first').value = me.first_name || ''; $('px-email').value = me.email || ''; $('px-handle').value = me.handle || ''; $('px-discord').value = me.discord || ''; }
+  }
+  $('px-country').onchange = function () { $('px-otherl').hidden = this.value !== '__other'; };
+  function readWho() {
+    if (me.email && me.first_name && me.country) { return me; }
+    var c = $('px-country').value, p = { first_name: $('px-first').value.trim(), email: $('px-email').value.trim(), handle: $('px-handle').value.trim(), platform: $('px-platform').value,
+      country: c === '__other' ? $('px-other').value.trim() : c, discord: $('px-discord').value.trim().replace(/^@+/, '') };
+    if (!p.first_name) return 'A first name, please.';
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email)) return 'That email does not look right.';
+    if (!p.country) return 'Which country are you fighting from?';
+    return p;
+  }
+  showMe();
+  if (!PREVIEW && (closed || notYet)) { $('px-go').disabled = true; $('px-msg').textContent = closed ? 'The fight is over.' : 'The fight opens ' + when(DATA.opens) + '.'; }
+
+  // ---- the battle on screen ----
+  var view = null, busy = false;
+  function crewHTML() {
+    $('px-crew').innerHTML = NAMES.map(function (n, i) {
+      var icon = (DATA.icons || {})[n.toLowerCase()];
+      return '<article class="mate" id="px-m' + i + '"><div class="mhead">' + (icon ? '<span class="ico"><img src="' + esc(icon) + '" alt=""></span>' : '') + '<div><p class="role">' + ROLES[i] + '</p><p class="nm">' + n + '</p></div></div><div class="mrow"><div class="hearts" aria-label="hit points"></div><div class="rc-die mdie" id="rc-die-c' + i + '" aria-hidden="true"></div><p class="mres" id="px-res' + i + '" aria-live="polite"></p></div>' +
+        '<div class="mpick" id="px-pick' + i + '"></div>' +
+        '<p class="need">Paraxis needs <b>' + GUARD[i] + '</b> to hit ' + (i === 1 || i === 3 ? 'her' : 'him') + '. Hits for <b>' + POWER[i] + '</b>.</p></article>';
+    }).join('');
+    // every card's die is the same 3D d20 as the vote pages
+    NAMES.forEach(function (n, i) {
+      var el = $('rc-die-c' + i); el.innerHTML = D20 + '<span class="rc-dn" id="rc-dn-c' + i + '">20</span><i class="rc-die-shadow"></i><canvas class="rc-die-cv" width="240" height="240"></canvas>';
+      Dice.colors('c' + i, CREW_COL[i]); Dice.attach('c' + i, el, 20);
+    });
+  }
+  function paint() {
+    $('px-hp').textContent = view.px; $('px-bar').style.width = (view.px / 30 * 100) + '%';
+    NAMES.forEach(function (n, i) {
+      var m = $('px-m' + i); m.classList.toggle('down', view.hp[i] <= 0); m.classList.toggle('turn', !view.over && view.hp[i] > 0);
+      m.querySelector('.hearts').innerHTML = [0, 1, 2, 3].map(function (k) { return '<i' + (k < view.hp[i] ? '' : ' class="off"') + '></i>'; }).join('');
+      m.querySelector('.hearts').setAttribute('aria-label', Math.max(0, view.hp[i]) + ' of 4 hit points');
+    });
+    $('px-packs').textContent = 'Medpacks left: ' + view.packs;
+    $('px-turnk').textContent = 'ROUND ' + view.round;
+  }
+  function log(text, cls) { var li = document.createElement('li'); li.className = cls || ''; li.textContent = text; $('px-log').insertBefore(li, $('px-log').firstChild); }
+  function say(t) { $('px-say').textContent = t; }
+  var pending = '';   // how the die left the card when the crew's button was pressed (see move)
+  function die(n) { var pre = pending; pending = ''; return rollDie(n, pre); }
+  function shake(i) { var m = $('px-m' + i); m.classList.remove('hit'); void m.offsetWidth; m.classList.add('hit'); }
+  // replay what happened, one beat at a time
+  function play(events, fast) {
+    var chain = Promise.resolve();
+    // the crew's rolls at the start of a round all land at once, each on its own card
+    var lead = []; if (!fast) for (var k = 0; k < events.length && (events[k].t === 'atk' || events[k].t === 'heal'); k++) lead.push(events[k]);
+    if (lead.length) chain = chain.then(function () {
+      say('The crew attacks!');
+      var atk = lead.filter(function (e) { return e.t === 'atk'; });
+      // a real physics throw, all four in random directions; the drawn path if physics can't load
+      var thrown = physThrow(atk.map(function (e) { return { kind: 'd20', who: e.who, n: e.roll, node: $('rc-die-c' + e.who), done: function () { Dice.show('c' + e.who, e.roll); var dn = $('rc-dn-c' + e.who); if (dn) dn.textContent = e.roll; } }; }));
+      return thrown ? thrown.then(function (r) { return r === null ? crewToss(atk) : r; }) : crewToss(atk);
+    });
+    events.forEach(function (e) {
+      var landed = lead.indexOf(e) >= 0;
+      chain = chain.then(function () {
+        if (e.t === 'coin') return fast ? null : flip(e.coin);
+        if (e.t === 'atk') {
+          var line = NAMES[e.who] + ' rolls ' + e.roll + (e.crit ? '. A natural 20! ' + NAMES[e.who] + ' hits twice, for ' + e.dmg + '.' : e.hit ? ' and hits Paraxis for ' + e.dmg + '.' : e.fumble ? '. A 1! ' + NAMES[e.who] + ' takes a hit' + (e.hp <= 0 ? ' and is down.' : ' and has ' + e.hp + ' left.') : '. A miss.');
+          return (fast || landed ? Promise.resolve() : cardDie(e.who, e.roll)).then(function () { markRes(e.who, e.crit ? 'HIT TWICE' : e.hit ? 'HIT' : 'MISS', e.hit ? 'hit' : 'miss'); view.px = e.px; if (e.fumble) { view.hp[e.who] = e.hp; if (!fast) shake(e.who); } say(line); log(line, e.hit ? 'good' : e.fumble ? 'bad' : ''); paint(); return fast ? null : wait(650); });
+        }
+        if (e.t === 'heal') { markRes(e.who, 'MEDPACK', 'heal'); view.hp[e.target] = e.hp; view.packs = e.packs; var hl = NAMES[e.who] + ' uses a medpack on ' + (e.target === e.who ? (e.who === 1 || e.who === 3 ? 'herself' : 'himself') : NAMES[e.target]) + (e.from <= 0 ? ' and brings ' + NAMES[e.target] + ' back.' : '.') ; say(hl); log(hl, 'good'); paint(); return fast ? null : wait(700); }
+        if (e.t === 'pxturn') { pxRes(null); busy = true; say('Paraxis attacks!'); if (!fast) paint(); return fast ? null : wait(700); }
+        if (e.t === 'px') {
+          var pl = 'Paraxis swings at ' + NAMES[e.who] + ' and rolls ' + e.roll + '. ' + (e.hit ? (e.crit ? 'A natural 20! He hits twice. ' : 'A hit! ') + NAMES[e.who] + (e.hp <= 0 ? ' is down.' : ' has ' + e.hp + ' left.') : 'He needed ' + e.need + '. A miss.') + (e.fumble ? ' A 1! Paraxis takes a hit himself.' : '');
+          // the D4 first: who he swings at (one that lands on someone who is down moves on to the next)
+          var d4chain = Promise.resolve();
+          if (!fast) e.d4.forEach(function (v, i) {
+            d4chain = d4chain.then(function () { say(i ? NAMES[e.d4[i - 1] - 1] + ' is down. Paraxis rolls the twelve-sided die again…' : 'Paraxis rolls the twelve-sided die to pick his target…'); return rollD4(d4Battle, v); }).then(function () { return wait(350); });
+          });
+          // the crew member he is swinging at gets a stroke around their card until the swing is done (Maurice, 2026-11-13)
+          return d4chain.then(function () { if (!fast) aim(e.who); return fast ? null : (say('Paraxis swings at ' + NAMES[e.who] + '…'), die(e.roll)); }).then(function () { pxRes(e); view.hp[e.who] = e.hp; if (e.fumble) view.px = e.px; if (e.hit && !fast) shake(e.who); say(pl); log(pl, e.hit ? 'bad' : e.fumble ? 'good' : ''); paint(); return fast ? null : wait(700); }).then(function () { aim(-1); });
+        }
+        if (e.t === 'round') { view.round = e.round; log('Round ' + e.round + '.'); return null; }
+      });
+    });
+    return chain;
+  }
+  function flip(coin) {
+    $('px-coin').hidden = false; $('px-coin').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    var c = $('px-c'); c.style.transition = 'none'; c.style.transform = 'rotateY(0deg)'; void c.offsetWidth;
+    var cw = document.querySelector('#px .coin'); cw.classList.remove('toss'); void cw.offsetWidth; cw.classList.add('toss');
+    c.style.transition = ''; c.style.transform = 'rotateY(' + (1800 + (coin === 'swords' ? 180 : 0)) + 'deg)';
+    $('px-coinsay').textContent = 'Flipping…';
+    return wait(2800).then(function () {
+      $('px-coinsay').textContent = coin === 'crest' ? 'The crest! The crew goes first.' : 'Crossed swords! Paraxis goes first.';
+      log(coin === 'crest' ? 'The crest coin lands on the crest. The crew goes first.' : 'The crest coin lands on the crossed swords. Paraxis goes first.');
+      return wait(1400);
+    });
+  }
+  // HIT / MISS under each crew die once it lands, kept up through Paraxis's turn (Maurice, 2026-11-13)
+  function markRes(i, text, cls) { var el = $('px-res' + i); if (el) { el.textContent = text; el.className = 'mres ' + cls; } }
+  // the card Paraxis is swinging at (-1: none)
+  function aim(i) { for (var k = 0; k < 4; k++) { var m = $("px-m" + k); if (m) m.classList.toggle("aimed", k === i); } }
+  function clearRes() { for (var i = 0; i < 4; i++) markRes(i, '', ''); }
+  // Paraxis's swings, above his dice: his HIT is bad news for the crew (red), his MISS good (green); null clears them
+  function pxRes(e) {
+    var box = $('px-pxres'); if (!box) return;
+    if (!e) { box.innerHTML = ''; return; }
+    var p = document.createElement('p'); p.className = 'mres ' + (e.hit ? 'miss' : 'hit');
+    p.textContent = (e.hit ? (e.crit ? 'HIT TWICE' : 'HIT') : 'MISS') + ' ' + NAMES[e.who].toUpperCase();
+    box.appendChild(p);
+  }
+  // a crew card's d20: tumbling in the card while the rolls are on their way, then three bounces onto n
+  function cardDie(i, n) {
+    return new Promise(function (res) {
+      var id = 'c' + i;
+      if (!Dice.ready(id)) { var dn = $('rc-dn-' + id); if (dn) dn.textContent = n; return setTimeout(res, 500); }
+      Dice.landCard(id, n, function () { res(); });
+    });
+  }
+  // ---- the crew's dice thrown together across the screen (Maurice, 2026-11-13) ----
+  // Each die leaps out of its card, tumbles and bounces, and they land side by side in the middle with their numbers up,
+  // hold so you can read them, then fade back into the cards. Same die as the vote pages (Dice.parts()); drawn path, not physics.
+  var crewOv = null;
+  function crewOverlay(P) {
+    if (crewOv) return crewOv;
+    var T = P.T, cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
+    cv.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147481900;display:none';
+    document.body.appendChild(cv);
+    var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); r.outputEncoding = T.sRGBEncoding; r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    var scene = new T.Scene(), cam = new T.OrthographicCamera(-1, 1, 1, -1, -1000, 1000); cam.position.set(0, 0, 500); cam.lookAt(0, 0, 0);
+    var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(P.studio()).texture; pm.dispose();
+    scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35)); var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-300, 500, 500); scene.add(sun);
+    var sc = document.createElement('canvas'); sc.width = sc.height = 128; var sg = sc.getContext('2d'), rg = sg.createRadialGradient(64, 64, 0, 64, 64, 64);
+    rg.addColorStop(0, 'rgba(0,0,0,.5)'); rg.addColorStop(1, 'rgba(0,0,0,0)'); sg.fillStyle = rg; sg.fillRect(0, 0, 128, 128);
+    var shTex = new T.CanvasTexture(sc), geo = P.geometry(), dice = [];
+    for (var k = 0; k < 4; k++) {
+      var m = new T.Mesh(geo, P.materials(CREW_COL[k])); m.visible = false; scene.add(m);
+      var s = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: shTex, transparent: true, depthWrite: false })); s.position.z = -200; s.visible = false; scene.add(s);
+      dice.push({ mesh: m, shadow: s });
+    }
+    crewOv = { T: T, cv: cv, r: r, scene: scene, cam: cam, dice: dice, raf: 0 };
+    function size() { var w = window.innerWidth, h = window.innerHeight; r.setSize(w, h, false); cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2; cam.bottom = -h / 2; cam.updateProjectionMatrix(); crewOv.w = w; crewOv.h = h; crewOv.R = Math.max(36, Math.min(58, Math.min(w, h) * 0.072)); }
+    size(); window.addEventListener('resize', size);
+    return crewOv;
+  }
+  function crewToss(list) {
+    var P = Dice.parts && Dice.parts();
+    var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!P || calm || !list.length) return Promise.all(list.map(function (e) { return cardDie(e.who, e.roll); }));
+    return new Promise(function (done) {
+      var T = P.T, o = crewOverlay(P), R = o.R, n = list.length;
+      // landing spots: side by side across the middle, never closer than two dice apart and never off the edge
+      var gap = Math.min(R * 3.1, (o.w - R * 2.6) / Math.max(1, n - 1 || 1)), y0 = o.h * 0.07;
+      var runs = list.map(function (e, k) {
+        var node = $('rc-die-c' + e.who), b = node.getBoundingClientRect();
+        Dice.stop('c' + e.who); node.style.visibility = 'hidden';
+        var d = o.dice[e.who];
+        return { e: e, d: d, node: node, sx: b.left + b.width / 2 - o.w / 2, sy: o.h / 2 - (b.top + b.height / 2),
+          ex: (k - (n - 1) / 2) * gap + (Math.random() - 0.5) * R * 0.4, ey: y0 + (Math.random() - 0.5) * R * 0.6,
+          q0: new T.Quaternion().setFromEuler(new T.Euler(Math.random() * 6.3, Math.random() * 6.3, Math.random() * 6.3)), q1: P.pose(e.roll),
+          axis: new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), delay: k * 60, hits: 0 };
+      });
+      o.dice.forEach(function (d, k) { d.mesh.visible = d.shadow.visible = list.some(function (e) { return e.who === k; }); });
+      var tok = o.tok = (o.tok || 0) + 1;
+      o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
+      try { P.clack(0.3); } catch (err) {}
+      var dur = 1200, t0 = performance.now();
+      (function frame(now) {
+        var all = true;
+        runs.forEach(function (u) {
+          var t = Math.max(0, Math.min(1, (now - t0 - u.delay) / dur)), e = 1 - Math.pow(1 - t, 3); if (t < 1) all = false;
+          var x = u.sx + (u.ex - u.sx) * e, y = u.sy + (u.ey - u.sy) * e;
+          var hop = Math.abs(Math.sin(Math.PI * 3.5 * t)) * Math.pow(1 - t, 1.6) * R * 2.4;
+          // a clack each time it comes down
+          var bounce = Math.floor(t * 3.5 + 0.5); if (bounce > u.hits && bounce <= 3) { u.hits = bounce; try { P.clack([0.32, 0.18, 0.09][bounce - 1] / Math.sqrt(n)); } catch (err) {} }
+          var q = u.q0.clone().slerp(u.q1, e); q.premultiply(new T.Quaternion().setFromAxisAngle(u.axis, (1 - e) * 14));
+          u.d.mesh.quaternion.copy(q); u.d.mesh.position.set(x, y + hop, 0); u.d.mesh.scale.setScalar(R * (1 + hop / R * 0.07));
+          u.d.shadow.position.set(x + 4 + hop * 0.08, y - R * 0.85, -200); u.d.shadow.scale.set(R * 2 * (1 - Math.min(0.4, hop / R * 0.1)), R * 0.6 * (1 - Math.min(0.4, hop / R * 0.1)), 1);
+        });
+        o.r.render(o.scene, o.cam);
+        if (!all) { o.raf = requestAnimationFrame(frame); return; }
+        o.raf = 0;
+        // hold so everyone can read all four, then they go back into their cards
+        setTimeout(function () {
+          runs.forEach(function (u) { Dice.show('c' + u.e.who, u.e.roll); u.node.style.visibility = ''; var dn = $('rc-dn-c' + u.e.who); if (dn) dn.textContent = u.e.roll; });
+          if (o.tok === tok) { o.cv.style.transition = 'opacity .4s ease'; o.cv.style.opacity = '0'; }
+          setTimeout(function () { if (o.tok === tok) o.cv.style.display = 'none'; }, 420);
+          done();
+        }, 1300);
+      })(t0);
+    });
+  }
+  // ---- real physics throws (Maurice, 2026-11-13: "roll all over the place like when you do just one") ----
+  // Every die in a throw goes into one cannon.js world (the screen's edges are the walls, the page is the table), the same
+  // physics the vote pages' single d20 uses. Each leaves from its own card or slot in a random direction, they can knock
+  // into each other, and the throw is worked out ahead; then each die is turned on itself (a turn of the solid onto
+  // itself, so the motion is unchanged) so the face that ends up on top shows its rolled number, or for the target die
+  // one of that crew member's three faces. The twelve-sided die is smaller than the d20s. Played back 25% faster
+  // than real time (Maurice: "speed up the rolls by 25%").
+  var D12_SCALE = 0.72, PLAY_MS = 1000 / 75;
+  var phys = null;
+  function physOverlay(P, Q) {
+    if (phys) return phys;
+    var T = P.T, cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
+    cv.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147481950;display:none';
+    document.body.appendChild(cv);
+    var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); r.outputEncoding = T.sRGBEncoding; r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    var scene = new T.Scene(), cam = new T.OrthographicCamera(-1, 1, 1, -1, -1000, 1000); cam.position.set(0, 0, 500); cam.lookAt(0, 0, 0);
+    var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(P.studio()).texture; pm.dispose();
+    scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35)); var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-300, 500, 500); scene.add(sun);
+    var sc = document.createElement('canvas'); sc.width = sc.height = 128; var sg = sc.getContext('2d'), rg = sg.createRadialGradient(64, 64, 0, 64, 64, 64);
+    rg.addColorStop(0, 'rgba(0,0,0,.55)'); rg.addColorStop(1, 'rgba(0,0,0,0)'); sg.fillStyle = rg; sg.fillRect(0, 0, 128, 128);
+    var shTex = new T.CanvasTexture(sc);
+    function slot(geo, mats) {
+      var m = new T.Mesh(geo, mats); m.visible = false; scene.add(m);
+      var s = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: shTex, transparent: true, depthWrite: false })); s.position.z = -200; s.visible = false; scene.add(s);
+      return { mesh: m, shadow: s };
+    }
+    var g20 = P.geometry(), d20 = [];
+    for (var k = 0; k < 4; k++) d20.push(slot(g20, P.materials(CREW_COL[k])));
+    phys = { T: T, cv: cv, r: r, scene: scene, cam: cam, d20: d20, d12: Q ? slot(Q.geo, Q.mats) : null, raf: 0 };
+    function size() { var w = window.innerWidth, h = window.innerHeight; r.setSize(w, h, false); cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2; cam.bottom = -h / 2; cam.updateProjectionMatrix(); phys.w = w; phys.h = h; phys.R = Math.max(34, Math.min(62, Math.min(w, h) * 0.075)); }
+    size(); window.addEventListener('resize', size);
+    return phys;
+  }
+  // the twelve-sided die's collision shape: its 20 corners and 12 pentagons (each listed counterclockwise from outside)
+  var d12Hull = null;
+  function d12Shape(C, Q) {
+    if (!d12Hull) {
+      var pts = [], idx = [];
+      var at = function (v) { for (var i = 0; i < pts.length; i++) if (pts[i].distanceTo(v) < 1e-4) return i; pts.push(v.clone()); return pts.length - 1; };
+      Q.faces.forEach(function (f) {
+        var z = f.n, y = f.pts[0].clone().sub(f.c).normalize(), x = new Q.T.Vector3().crossVectors(y, z);
+        var ring = f.pts.slice().sort(function (a, b) { var A = a.clone().sub(f.c), B = b.clone().sub(f.c); return Math.atan2(A.dot(y), A.dot(x)) - Math.atan2(B.dot(y), B.dot(x)); });
+        idx.push(ring.map(at));
+      });
+      d12Hull = { pts: pts, idx: idx };
+    }
+    return new C.ConvexPolyhedron(d12Hull.pts.map(function (p) { return new C.Vec3(p.x * D12_SCALE, p.y * D12_SCALE, p.z * D12_SCALE); }), d12Hull.idx.map(function (f) { return f.slice(); }));
+  }
+  // which twelve-sided face ended up on top, and the turn of the die onto itself that puts crew member n there, upright
+  function d12Top(T, Q, f) {
+    var q = new T.Quaternion(f[3], f[4], f[5], f[6]), best = -2, k = 0;
+    Q.faces.forEach(function (fc, i) { var z = fc.n.clone().applyQuaternion(q).z; if (z > best) { best = z; k = i; } });
+    return { k: k, q: q, flat: best };
+  }
+  function d12Relabel(T, Q, n, top) {
+    var frame = function (fc, v) { var z = fc.n, y = v.clone().sub(fc.c).normalize(), x = new T.Vector3().crossVectors(y, z); return new T.Matrix4().makeBasis(x, y, z); };
+    var f = Q.faces[top.k], best = null;
+    Q.facesOf[n - 1].forEach(function (t) {
+      var ft = Q.faces[t], toCanon = frame(ft, ft.pts[0]).transpose();
+      f.pts.forEach(function (v) {
+        var g = new T.Quaternion().setFromRotationMatrix(new T.Matrix4().multiplyMatrices(frame(f, v), toCanon));
+        var up = v.clone().sub(f.c).normalize().applyQuaternion(top.q), ang = Math.atan2(up.x, up.y);
+        if (!best || Math.abs(ang) < best.tilt) best = { g: g, tilt: Math.abs(ang), ang: ang, face: t };
+      });
+    });
+    return best;
+  }
+  // items: [{ kind: 'd20' | 'd12', n, node, done(run) }]; resolves when every die is back in place, or null if it can't throw
+  function physThrow(items) {
+    var P = Dice.parts && Dice.parts(), Q = D4.parts && D4.parts();
+    var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!P || calm || !items.length || items.some(function (it) { return it.kind === 'd12' && !Q; })) return null;
+    return P.loadPhysics().then(function (C) {
+      var T = P.T, o = physOverlay(P, Q), R = o.R, Wu = Math.max(5, o.w / 2 / R), Hu = Math.max(4, o.h / 2 / R);
+      var best = null, step = 0;
+      for (var attempt = 0; attempt < 6; attempt++) {
+        var world = new C.World(); world.gravity.set(0, 0, -40); world.broadphase = new C.NaiveBroadphase(); world.solver.iterations = 12; world.allowSleep = true;
+        world.defaultContactMaterial.friction = 0.28; world.defaultContactMaterial.restitution = 0.38;
+        var wall = function (x, y, axis, ang) { var b = new C.Body({ mass: 0 }); b.addShape(new C.Plane()); b.position.set(x, y, 0); if (axis) b.quaternion.setFromAxisAngle(axis, ang); world.addBody(b); };
+        wall(0, 0); wall(-Wu, 0, new C.Vec3(0, 1, 0), Math.PI / 2); wall(Wu, 0, new C.Vec3(0, 1, 0), -Math.PI / 2); wall(0, -Hu, new C.Vec3(1, 0, 0), -Math.PI / 2); wall(0, Hu, new C.Vec3(1, 0, 0), Math.PI / 2);
+        var runs = items.map(function (it) {
+          var b = it.node.getBoundingClientRect(), sx = (b.left + b.width / 2 - o.w / 2) / R, sy = (o.h / 2 - (b.top + b.height / 2)) / R;
+          var body = new C.Body({ mass: 1 }); body.addShape(it.kind === 'd12' ? d12Shape(C, Q) : P.hullShape());
+          body.linearDamping = 0.1; body.angularDamping = 0.1; body.allowSleep = true; body.sleepSpeedLimit = 0.15; body.sleepTimeLimit = 0.25;
+          body.position.set(Math.max(-Wu + 1.3, Math.min(Wu - 1.3, sx)), Math.max(-Hu + 1.3, Math.min(Hu - 1.3, sy)), 2.2 + Math.random() * 1.5);
+          body.quaternion.setFromEuler(Math.random() * 6.283, Math.random() * 6.283, Math.random() * 6.283);
+          // any direction at all, a little faster than the single throw so the dice spread over the screen
+          var ang = Math.random() * Math.PI * 2, sp = 16 + Math.random() * 12;
+          body.velocity.set(Math.cos(ang) * sp, Math.sin(ang) * sp, 2 + Math.random() * 5);
+          body.angularVelocity.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 30);
+          world.addBody(body);
+          var run = { it: it, body: body, frames: [], hits: [], lastHit: -9 };
+          body.addEventListener('collide', function (e) { var v = Math.abs(e.contact.getImpactVelocityAlongNormal()); if (v > 1.2 && step - run.lastHit > 3) { run.hits.push([step, Math.min(0.5, v * 0.032)]); run.lastHit = step; } });
+          return run;
+        });
+        for (step = 0; step < 600; step++) {
+          world.step(1 / 60);
+          runs.forEach(function (u) { var p = u.body.position, q = u.body.quaternion; u.frames.push([p.x, p.y, p.z, q.x, q.y, q.z, q.w]); });
+          if (step > 40 && runs.every(function (u) { return u.body.sleepState === C.Body.SLEEPING; })) break;
+        }
+        // every die has to come to rest flat on a face, or the whole throw is worked out again
+        var ok = runs.every(function (u) {
+          var f = u.frames[u.frames.length - 1];
+          if (u.it.kind === 'd12') { var t12 = d12Top(T, Q, f); if (t12.flat < 0.97) return false; u.rl = d12Relabel(T, Q, u.it.n, t12); return !!u.rl; }
+          var t20 = P.topFace(f); if (t20.flat < 0.97) return false; u.rl = P.relabel(u.it.n, t20); return !!u.rl;
+        });
+        best = runs; if (ok) break;
+      }
+      // play it back
+      var pool = o.d20.slice(), used = [];
+      best.forEach(function (u) { u.d = u.it.kind === 'd12' ? o.d12 : u.it.who != null ? o.d20[u.it.who] : pool.shift(); used.push(u.d); u.d.mesh.visible = u.d.shadow.visible = true; u.it.node.style.visibility = 'hidden'; if (!u.rl) u.rl = { g: new T.Quaternion(), ang: 0 }; });
+      [o.d12].concat(o.d20).forEach(function (d) { if (d && used.indexOf(d) < 0) d.mesh.visible = d.shadow.visible = false; });
+      var tok = o.tok = (o.tok || 0) + 1;
+      if (o.raf) cancelAnimationFrame(o.raf);
+      o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
+      try { P.clack(0.3); } catch (err) {}
+      return new Promise(function (done) {
+        var t0 = performance.now(), last = Math.max.apply(null, best.map(function (u) { return u.frames.length; })) - 1;
+        (function frame(now) {
+          var i = Math.max(0, Math.floor((now - t0) / PLAY_MS));
+          best.forEach(function (u) {
+            var fr = u.frames, j = Math.min(fr.length - 1, i), f = fr[j], z = Math.max(0, f[2] - 0.8), sz = u.it.kind === 'd12' ? D12_SCALE : 1, s = sz * (1 + z * 0.07);
+            while (u.hits.length && u.hits[0][0] <= j) { try { P.clack(u.hits.shift()[1] / Math.sqrt(best.length)); } catch (err) {} }
+            var k = Math.min(1, j / Math.max(1, fr.length - 1)), turn = -(u.rl.ang || 0) * k * k * (3 - 2 * k);
+            u.d.mesh.position.set(f[0] * R, f[1] * R, 0); u.d.mesh.quaternion.set(f[3], f[4], f[5], f[6]).multiply(u.rl.g);
+            if (turn) u.d.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 0, 1), turn));
+            u.d.mesh.scale.setScalar(R * s);
+            u.d.shadow.position.set(f[0] * R + 6 + z * 10, f[1] * R - 8 - z * 10, -200); u.d.shadow.scale.setScalar(R * 2.4 * sz * (1 - Math.min(0.5, z * 0.08)));
+            u.d.shadow.material.opacity = 0.9 - Math.min(0.6, z * 0.1);
+          });
+          o.r.render(o.scene, o.cam);
+          if (i < last) { o.raf = requestAnimationFrame(frame); return; }
+          o.raf = 0;
+          // at rest: hold so everyone can read them, then each goes back to its card or slot
+          setTimeout(function () {
+            best.forEach(function (u) { if (u.it.done) u.it.done(u); u.it.node.style.visibility = ''; });
+            if (o.tok !== tok) { done(); return; }
+            o.cv.style.transition = 'opacity .4s ease'; o.cv.style.opacity = '0';
+            setTimeout(function () { if (o.tok === tok) o.cv.style.display = 'none'; }, 420);
+            done();
+          }, 1100);
+        })(t0);
+      });
+    }).catch(function () { return null; });
+  }
+  var plan = ['a', 'a', 'a', 'a'];
+  function pickHTML() {
+    var used = plan.filter(function (p) { return p !== 'a'; }).length, hurt = [0, 1, 2, 3].filter(function (i) { return view.hp[i] < 4; });
+    NAMES.forEach(function (n, i) {
+      var box = $('px-pick' + i); if (!box) return;
+      if (view.over || busy || view.hp[i] <= 0) { box.innerHTML = view.hp[i] <= 0 && !view.over ? '<p class="mdown">Down. A medpack brings ' + (i === 1 || i === 3 ? 'her' : 'him') + ' back.</p>' : ''; return; }
+      var heal = plan[i] !== 'a', canHeal = heal || (view.packs - used > 0 && hurt.length);
+      var h = '<div class="mbtns"><button type="button" class="mb' + (heal ? '' : ' on') + '" data-i="' + i + '" data-a="a">ATTACK</button>' +
+        '<button type="button" class="mb' + (heal ? ' on' : '') + '" data-i="' + i + '" data-a="h"' + (canHeal ? '' : ' disabled') + '>MEDPACK</button></div>';
+      if (heal) h += '<div class="mwho"><span>Heal who?</span>' + hurt.map(function (t) { return '<button type="button" class="mt' + (plan[i] === 'h' + t ? ' on' : '') + '" data-i="' + i + '" data-t="' + t + '">' + NAMES[t] + (view.hp[t] <= 0 ? ' (down)' : '') + '</button>'; }).join('') + '</div>';
+      box.innerHTML = h;
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#px .mb'), function (b) { b.onclick = function () {
+      var i = +b.getAttribute('data-i');
+      if (b.getAttribute('data-a') === 'a') plan[i] = 'a';
+      else if (plan[i] === 'a') { var hurt2 = [0, 1, 2, 3].filter(function (t) { return view.hp[t] < 4; }); plan[i] = 'h' + (hurt2.indexOf(i) >= 0 ? i : hurt2[0]); }
+      pickHTML(); rollBtn();
+    }; });
+    Array.prototype.forEach.call(document.querySelectorAll('#px .mt'), function (b) { b.onclick = function () { plan[+b.getAttribute('data-i')] = 'h' + b.getAttribute('data-t'); pickHTML(); rollBtn(); }; });
+  }
+  function rollBtn() {
+    var box = $('px-acts'); box.innerHTML = '';
+    var atk = [0, 1, 2, 3].filter(function (i) { return view.hp[i] > 0 && plan[i] === 'a'; }).length, med = [0, 1, 2, 3].filter(function (i) { return view.hp[i] > 0 && plan[i] !== 'a'; }).length;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'btn';
+    b.textContent = atk ? 'ROLL FOR THE CREW' : 'USE THE MEDPACK' + (med > 1 ? 'S' : '');
+    b.onclick = move; box.appendChild(b);
+  }
+  function actions() {
+    if (view.over) { pickHTML(); return finish(); }
+    clearRes();
+    // a fresh turn: everyone attacks unless you change it; a medpack plan only stays if it still makes sense
+    plan = plan.map(function (p, i) { var t = p === 'a' ? -1 : +p.charAt(1); return view.hp[i] > 0 && t >= 0 && view.hp[t] < 4 ? p : 'a'; });
+    var used = 0; plan = plan.map(function (p) { if (p === 'a') return p; if (used < view.packs) { used++; return p; } return 'a'; });
+    say('The crew’s turn. Pick each one’s move on their card, then roll them all at once.');
+    pickHTML(); rollBtn();
+  }
+  function move() {
+    if (busy) return; busy = true; $('px-acts').innerHTML = ''; pickHTML(); paint();
+    var acts = plan.map(function (p, i) { return view.hp[i] > 0 ? p : 'a'; });
+    // every attacker's die starts tumbling on its card the moment Roll is pressed
+    acts.forEach(function (p, i) { if (view.hp[i] > 0 && p === 'a' && Dice.ready('c' + i)) Dice.spinCard('c' + i); });
+    say('The crew rolls…');
+    api({ action: 'pxround', email: me.email, step: view.step, acts: acts.join(',') }).then(function (res) {
+      if (!res || !res.ok) { [0, 1, 2, 3].forEach(function (i) { Dice.stop('c' + i); }); busy = false; say(({ closed: 'The fight is over.', network: 'The ship is slow. Try that again in a moment.' })[res && res.error] || 'Something went wrong. Try that again.'); paint(); actions(); return; }
+      var target = res.state;
+      if (res.status === 'stale') [0, 1, 2, 3].forEach(function (i) { Dice.stop('c' + i); });
+      return play(res.events, res.status === 'stale').then(function () { view = target; busy = false; paint(); actions(); });
+    });
+  }
+  function finish() {
+    var win = view.over === 'win', dead = NAMES.filter(function (n, i) { return view.hp[i] <= 0; });
+    $('px-acts').innerHTML = ''; say(win ? 'Paraxis falls!' : 'The crew is down.');
+    var end = $('px-end'); end.hidden = false; end.className = 'end ' + view.over;
+    end.innerHTML = '<p class="kick" style="color:#fd7547">' + (win ? 'VICTORY' : 'DEFEAT') + '</p><h2>' + (win ? 'You Beat Paraxis' : 'Paraxis Wins') + '</h2>' +
+      '<p>' + (win ? 'Your crew brought down the first guardian in ' + view.round + ' rounds.' : 'Paraxis was left with ' + view.px + ' of 30 hit points.') + ' ' + (dead.length ? 'Fallen: ' + dead.join(', ') + '.' : 'Nobody fell.') + '</p>' +
+      '<p>' + (PREVIEW ? '<span class="badge">PREVIEW</span> Nothing was saved. On the live page, this battle counts toward the story.' : 'Your battle counts toward the story.' + (me.discord ? ' Your ' + (win ? '1,000' : '500') + ' XP lands in the Trench Discord within a few minutes if <b>' + esc(me.discord) + '</b> is your username there.' : ' Add your Discord username next time to get the XP.')) + '</p>';
+    end.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function enter(state, events, fresh) {
+    $('px-battle').hidden = false; crewHTML();
+    view = { hp: [4, 4, 4, 4], px: 30, packs: 3, round: 1, next: 0, step: 0, over: null };
+    paint();
+    // a fresh battle plays everything; a battle coming back is caught up at once
+    return play(fresh ? events : state.log, !fresh).then(function () { view = state; busy = false; paint(); $('px-battle').scrollIntoView({ behavior: 'smooth', block: 'start' }); actions(); });
+  }
+  $('px-go').onclick = function () {
+    var who = readWho(); if (typeof who === 'string') { $('px-msg').textContent = who; return; }
+    me = who; save(ME, me); showMe();
+    var btn = this; btn.disabled = true; btn.textContent = 'FLIPPING…'; $('px-msg').textContent = '';
+    api({ action: 'pxstart', email: me.email, first_name: me.first_name, handle: me.handle, platform: me.platform, country: me.country, discord: me.discord }).then(function (res) {
+      if (!res || !res.ok) { btn.disabled = false; btn.textContent = 'FLIP THE CREST COIN'; $('px-msg').textContent = ({ closed: 'The fight is over.', notopen: 'The fight opens ' + when(DATA.opens) + '.', bank: 'Paraxis isn’t ready yet. Check back soon.', email: 'That email does not look right.' })[res && res.error] || 'The ship is slow today. Give it another go in a moment.'; return; }
+      $('px-who').hidden = true;
+      enter(res.state, res.events, res.status === 'new');
+    });
+  };
+  // coming back to a battle already started
+  if (me.email && !PREVIEW && !CAPTAIN) api({ action: 'pxstate', email: me.email }).then(function (res) { if (res && res.ok && res.state) { $('px-who').hidden = true; enter(res.state, [], false); } });
+  if (!PREVIEW) send({ action: 'pxcount' }).then(function (res) { $('px-count').textContent = res && res.ok ? Number(res.count).toLocaleString('en-US') : '—'; });
+  else $('px-count').textContent = '0';
+
+  // ---- the Captain banks Paraxis's rolls ----
+  if (CAPTAIN) {
+    $('px-captain').hidden = false; $('px-captain').scrollIntoView();
+    // one panel per bank: the D20s (ids px-bank...) and the D4s (px-bank4...)
+    var showBank = function (die, res) {
+      var id = die === 'd4' ? 'px-bank4' : 'px-bank', size = die === 'd4' ? 200 : 100, what = die === 'd4' ? 'target rolls' : 'rolls';
+      if (!res || !res.ok) { $(id + '-msg').textContent = ({ key: 'That captain link isn’t right.', locked: 'The battles have started, so the rolls are locked.' })[res && res.error] || 'The ship is slow. Try again.'; if (res && res.bank) { var m = $(id + '-msg').textContent; showBank(die, { ok: true, bank: res.bank, added: [] }); $(id + '-msg').textContent = m; } return; }
+      $(id + '-n').textContent = 'Banked: ' + res.bank.length + ' of ' + size;
+      $(id).innerHTML = res.bank.map(function (n, i) { return '<span title="' + (i + 1) + (die === 'd4' ? ': ' + NAMES[n - 1] : '') + '">' + n + '</span>'; }).join('');
+      $(id + '1').disabled = $(id + '10').disabled = res.bank.length >= size;
+      $(id + '-msg').textContent = res.added && res.added.length ? 'You rolled ' + res.added.join(', ') + '.' : res.bank.length >= size ? 'All ' + size + ' ' + what + ' are banked.' : '';
+    };
+    var d4Cap = D4.attach($('px-d4cap'), ICONS);
+    var bank = function (die, n) {
+      $((die === 'd4' ? 'px-bank4' : 'px-bank') + '-msg').textContent = n ? 'Rolling…' : '';
+      // the D4 tumbles while the roll is on its way, then lands on the last one rolled
+      if (die === 'd4' && n && D4.ready(d4Cap)) D4.spin(d4Cap);
+      send({ action: 'pxbank', captain: CAPTAIN, n: n, die: die }).then(function (res) {
+        var last = die === 'd4' && res && res.ok && res.added && res.added[res.added.length - 1];
+        if (!last) { showBank(die, res); return; }
+        rollD4(d4Cap, last).then(function () { showBank(die, res); });
+      });
+    };
+    $('px-bank1').onclick = function () { bank('d20', 1); }; $('px-bank10').onclick = function () { bank('d20', 10); };
+    $('px-bank41').onclick = function () { bank('d4', 1); }; $('px-bank410').onclick = function () { bank('d4', 10); };
+    bank('d20', 0); bank('d4', 0);
+  }
+})();
+</script>

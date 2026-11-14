@@ -13,10 +13,10 @@
 var MAINT_AT = Date.parse('2026-11-11T05:00:00Z');
 var MAINT = Date.now() >= MAINT_AT || /[?&]ma-maint=1/.test(location.search);
 (function () {
-  if (/^\/links\/?$/i.test(location.pathname)) return; // the link page always stays open, as it is
-  var VOTE ='https://www.mauriceafrich.com/the-crew-decides', ARCADE = 'https://www.mauriceafrich.com/arcade';
+  // Locked down 2026-11-14 (Maurice: "Lock everything"): every page shows the closed screen while the new site goes up behind it.
+  var VOTE ='https://www.mauriceafrich.com/the-first-guardian', ARCADE = 'https://www.mauriceafrich.com/arcade';
   var FONT = '@font-face{font-family:"Cracked Imperia";src:url(https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2) format("woff2");font-weight:100 900;font-display:swap;size-adjust:109.5%}';
-  var kept = /^\/(the-crew-decides|arcade|games|sort-the-shelf|book-icons|blades-and-brass|matching-auras|crest-quest|sky-mines|airship-runner|thread-the-needle|trench-run|sky-gauntlet|the-levian-30527|master-stacker-32368|hold-the-wall-13212|goma-goons-43216)\/?$/i.test(location.pathname);
+  var kept = false && /^\/(the-first-guardian|through-the-mountains|adventure|order|preorder|the-crew-decides|arcade|games|sort-the-shelf|book-icons|blades-and-brass|matching-auras|crest-quest|sky-mines|airship-runner|thread-the-needle|trench-run|sky-gauntlet|the-levian-30527|master-stacker-32368|hold-the-wall-13212|goma-goons-43216)\/?$/i.test(location.pathname);
   if (!MAINT) {
     // a closed page left open reloads itself at midnight; games and the vote are never interrupted
     var left = MAINT_AT - Date.now();
@@ -32,21 +32,28 @@ var MAINT = Date.now() >= MAINT_AT || /[?&]ma-maint=1/.test(location.search);
   if (kept) {
     // the Arcade, its games, and the vote stay open, without any menu
     window.__maBare = true;
-    var here = /^\/the-crew-decides\/?$/i.test(location.pathname) ? 'vote' : /^\/arcade\/?$/i.test(location.pathname) ? 'arcade' : '';
+    var here = /^\/the-first-guardian\/?$/i.test(location.pathname) ? 'vote' : /^\/arcade\/?$/i.test(location.pathname) ? 'arcade' : /^\/adventure\/?$/i.test(location.pathname) ? 'adventure' : /^\/(pre)?order\/?$/i.test(location.pathname) ? 'order' : /^\/links\/?$/i.test(location.pathname) ? 'links' : '';
     fonts();
     style('header#header,.header-menu,#hunt-nav,#hunt-nav-ov,#ma-chapters{display:none!important}' +
-      '#ma-bare{position:fixed;top:0;left:0;right:0;z-index:2147483000;box-sizing:border-box;min-height:56px;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 16px;background:#0b170f;border-bottom:2px solid #1a5e41}' +
+      '#ma-bare{position:fixed;top:0;left:0;right:0;z-index:2147483000;box-sizing:border-box;min-height:56px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;padding:8px 16px;background:#0b170f;border-bottom:2px solid #1a5e41}' +
       '#ma-bare a{box-sizing:border-box;display:inline-block;padding:10px 18px;border:1.5px solid #f3ead9;border-radius:0;background:transparent;color:#fffffe;font-family:Almarai,sans-serif;font-weight:800;font-size:14px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;text-align:center}' +
       '#ma-bare a:hover,#ma-bare a:focus-visible{background:#f3ead9;color:#0b170f;outline:none}' +
       '#ma-bare a[aria-current]{background:#1a5e41;border-color:#1a5e41;color:#fffffe}' +
-      '@media (max-width:480px){#ma-bare{gap:12px;padding:8px 12px}#ma-bare a{font-size:12px;padding:10px 12px;letter-spacing:.05em}}');
+      '@media (max-width:1100px){#ma-bare{gap:8px 10px;padding:8px 12px}#ma-bare a{padding:9px 14px}}' +
+      // phones: the three story buttons on the first row, Order and Links on the second
+      '@media (max-width:600px){#ma-bare{gap:8px;padding:8px 10px}#ma-bare a{flex:1 1 calc(33% - 8px);min-width:0;align-self:stretch;display:flex;align-items:center;justify-content:center;font-size:12px;padding:8px 6px;letter-spacing:.04em}#ma-bare a:nth-child(n+4){flex-basis:calc(50% - 8px)}}' +
+      '#ma-bare-pad{display:block;width:100%;pointer-events:none}');
     var bar = function () {
       if (document.getElementById('ma-bare') || !document.body) return;
       var n = document.createElement('nav'); n.id = 'ma-bare'; n.setAttribute('aria-label', 'Open pages');
-      [[ARCADE, 'The Arcade', 'arcade'], [VOTE, 'Vote in the Adventure', 'vote']].forEach(function (x) {
+      [[ARCADE, 'The Arcade', 'arcade'], ['https://www.mauriceafrich.com/adventure', 'The Adventure So Far', 'adventure'], [VOTE, 'Vote in the Adventure', 'vote'], ['https://www.mauriceafrich.com/order', 'Order Cello’s Gate', 'order'], ['https://www.mauriceafrich.com/links', 'Links', 'links']].forEach(function (x) {
         var l = document.createElement('a'); l.href = x[0]; l.textContent = x[1]; if (x[2] === here) l.setAttribute('aria-current', 'page'); n.appendChild(l);
       });
       document.body.appendChild(n);
+      // when the bar wraps taller than one row (57px), push the page down by the difference so nothing sits under it
+      var pad = document.createElement('div'); pad.id = 'ma-bare-pad'; pad.setAttribute('aria-hidden', 'true'); document.body.insertBefore(pad, document.body.firstChild);
+      var fit = function () { pad.style.height = Math.max(0, n.offsetHeight - 57) + 'px'; };
+      fit(); window.addEventListener('resize', fit); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
     };
     if (document.body) bar(); else document.addEventListener('DOMContentLoaded', bar);
     return;
@@ -60,7 +67,7 @@ var MAINT = Date.now() >= MAINT_AT || /[?&]ma-maint=1/.test(location.search);
     '#ma-closed .in{box-sizing:border-box;min-height:100%;max-width:820px;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:48px 24px}' +
     '#ma-closed h1{margin:0;font-family:"Cracked Imperia",Impact,sans-serif;font-weight:400;font-size:clamp(40px,7vw,84px);line-height:1.2;letter-spacing:.03em;text-transform:uppercase;color:#f2cf5b;text-wrap:balance;text-shadow:0 0 28px rgba(242,207,91,.4)}' +
     '#ma-closed p{margin:0;font-family:Almarai,sans-serif;font-weight:400;font-size:clamp(17px,2vw,21px);line-height:1.6;letter-spacing:.01em;color:#fffffe;text-wrap:pretty}' +
-    '#ma-closed .go{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:8px}' +
+    '#ma-closed .go{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:8px;max-width:760px}' +
     '#ma-closed .go a{box-sizing:border-box;display:inline-block;padding:16px 28px;border:1.5px solid #f3ead9;border-radius:0;background:#c1330a;color:#fffffe;font-family:Almarai,sans-serif;font-weight:800;font-size:16px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;box-shadow:4px 5px 0 rgba(0,0,0,.35)}' +
     '#ma-closed .go a:hover,#ma-closed .go a:focus-visible{background:#f3ead9;color:#0b170f;outline:none}' +
     '@media (max-width:480px){#ma-closed .go{flex-direction:column;align-self:stretch}#ma-closed .go a{width:100%}}';
@@ -68,13 +75,17 @@ var MAINT = Date.now() >= MAINT_AT || /[?&]ma-maint=1/.test(location.search);
     if (document.getElementById('ma-closed')) return;
     fonts(); style(css);
     var o = document.createElement('div'); o.id = 'ma-closed'; o.style.visibility = 'visible';
-    o.innerHTML = '<div class="in"><h1></h1><p></p><p></p><div class="go"><a></a><a></a></div></div>';
-    var p = o.querySelectorAll('p'), a = o.querySelectorAll('a');
+    // fully locked (2026-11-14): only the heading and his first paragraph; the vote, Arcade, Order, and Links buttons pointed at closed pages
+    o.innerHTML = '<div class="in"><h1></h1><p></p></div>';
+    var p = o.querySelectorAll('p'), a = [];
     o.querySelector('h1').textContent = HEAD;
     p[0].textContent = 'Thank you all so much for making the insane amount of work this required so worth it. Go sleep now. You deserve it.';
-    p[1].textContent = 'But also, don\u2019t forget to vote in the Adventure! Where are the crew of the Second Wind going next? And the Arcade is still open for your enjoyment!';
-    a[0].href = VOTE; a[0].textContent = 'Vote in the Adventure';
-    a[1].href = ARCADE; a[1].textContent = 'Visit the Arcade';
+    if (p[1]) p[1].textContent = 'But also, don\u2019t forget to vote in the Adventure! Where are the crew of the Second Wind going next? And the Arcade is still open for your enjoyment!';
+    if (a[0]) { a[0].href = VOTE; a[0].textContent = 'Vote in the Adventure'; }
+    if (a[1]) { a[1].href = 'https://www.mauriceafrich.com/adventure'; a[1].textContent = 'The Adventure So Far'; }
+    if (a[2]) { a[2].href = ARCADE; a[2].textContent = 'Visit the Arcade'; }
+    if (a[3]) { a[3].href = 'https://www.mauriceafrich.com/order'; a[3].textContent = 'Order Cello’s Gate'; }
+    if (a[4]) { a[4].href = 'https://www.mauriceafrich.com/links'; a[4].textContent = 'Links'; }
     document.documentElement.appendChild(o);
     document.title = HEAD;
   }
@@ -825,7 +836,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   // Chapter buttons (2026-10-09): Previous chapter / See the map / Next chapter at the foot of each chapter page.
   function chapterNav() {
     if (window.__chapterNavLoaded) return; window.__chapterNavLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=17'; s.async = true; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=19'; s.async = true; document.head.appendChild(s);
   }
   // "Cello's Gate" is out (Maurice, 2026-11-02): every menu says ORDER, not PRE-ORDER. The Squarespace folder keeps
   // its old name, so the text is swapped in the header, the green hunt menu, its phone menu, and the footer.

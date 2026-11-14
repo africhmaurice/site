@@ -1,0 +1,1232 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>DRAFT: The Adventure So Far, Chapter 22 results</title></head><body style="margin:0"><!-- ============================================================
+     THE ADVENTURE SO FAR - every choice in the hunt, in order.
+     Built by scripts/build-adventure.mjs from config/red-city.json and config/crew.json.
+     Edit those (or the chapters in the script) and rebuild, never this file.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* ---- site header menu ---- */
+#hunt-nav{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(12,35,8,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:18px 16px}
+#hunt-nav .mn-row{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;gap:clamp(12px,1.8vw,30px)}
+#hunt-nav .mn-link{white-space:nowrap;color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.07em;text-decoration:none;text-shadow:0 1px 6px rgba(0,0,0,.55);transition:color .15s ease}
+#hunt-nav .mn-link:hover{color:#a2f590}
+#hunt-nav .mn-cta{border:2px solid #f3ead9;padding:8px clamp(10px,1.4vw,20px);background:rgba(12,26,8,.35);transition:transform .15s ease,background .15s ease}
+#hunt-nav .mn-cta:hover{background:#c1330a;color:#fff;transform:scale(1.04)}
+#hunt-nav .mn-drop{position:relative;display:flex}
+#hunt-nav .mn-dd{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:14px}
+#hunt-nav .mn-dd-in{background:rgba(9,23,7,.95);border:1px solid rgba(243,234,217,.25);min-width:170px;display:flex;flex-direction:column}
+#hunt-nav .mn-dd-in a{display:block;padding:13px 18px;color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(11px,1vw,15px);letter-spacing:.07em;text-decoration:none;white-space:nowrap}
+#hunt-nav .mn-dd-in a:hover{color:#a2f590;background:rgba(255,255,255,.06)}
+#hunt-nav .mn-drop:hover .mn-dd,#hunt-nav .mn-drop:focus-within .mn-dd{display:block}
+#hunt-nav .mn-drop-cta .mn-dd{left:auto;right:0;transform:none}
+#hunt-nav .mn-dd-in a.mn-all{border-top:1px solid rgba(243,234,217,.25)}
+#hunt-nav .mn-burger{display:none;width:46px;height:46px;margin:0 auto;align-items:center;justify-content:center;cursor:pointer}
+#hunt-nav-ov{display:none;position:fixed;inset:0;background:rgba(9,23,7,.97);z-index:10000;flex-direction:column;align-items:center;justify-content:center;gap:30px;padding:32px}
+#hunt-nav-ov a{color:#fff;font-family:'Almarai',sans-serif;font-weight:700;font-size:20px;letter-spacing:.08em;text-decoration:none}
+#hunt-nav-ov .mn-cta{border:2px solid #f3ead9;padding:12px 26px;background:rgba(12,26,8,.35);text-align:center}
+#hunt-nav-ov .mn-x{position:absolute;top:16px;right:16px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* ---- the page ---- */
+.hg-page{font-family:'Almarai',sans-serif;letter-spacing:0;color:#111;position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow-x:hidden}
+.hg-page *{box-sizing:border-box}
+@media (max-width:900px){
+  #hunt-nav{padding:10px 0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  #hunt-nav .mn-row{display:none}
+  #hunt-nav .mn-burger{display:flex}
+}
+html body{text-wrap:pretty}
+h1,h2,h3{text-wrap:balance}
+/* Date endings (21st, 30th) small and tucked up, not as big as the numbers */
+sup{font-size:.6em !important;line-height:0 !important;display:inline-block !important;transform:scale(.72) !important;transform-origin:left 30% !important;vertical-align:.7em !important;letter-spacing:.02em;margin-right:-.12em}
+/* The hunt menu matches the main site header: same green, logo size, type, spacing and outlined pre-order button */
+#hunt-nav{background:#1a5e41;backdrop-filter:none;-webkit-backdrop-filter:none;padding:9px clamp(24px,4vw,58px)}
+#hunt-nav .mn-row{max-width:none;display:flex;align-items:center;justify-content:space-between;gap:24px}
+#hunt-nav .mn-logo{display:flex;align-items:center;flex:none}
+#hunt-nav .mn-logo img{width:clamp(88px,8.3vw,120px);height:auto;display:block}
+#hunt-nav .mn-right{display:flex;align-items:center;gap:clamp(14px,1.9vw,32px)}
+#hunt-nav .mn-links{display:flex;align-items:center;gap:clamp(9px,1.2vw,29px)}
+#hunt-nav .mn-link{font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(10.5px,.88vw,14.4px);letter-spacing:.07em;line-height:48px;text-shadow:none;color:#fff;white-space:nowrap}
+#hunt-nav .mn-vote,#hunt-nav-ov .mn-vote{color:#a2f590 !important;transition:color .15s ease}
+#hunt-nav .mn-vote:hover,#hunt-nav-ov .mn-vote:hover{color:#ff4c0f !important}
+#hunt-nav .mn-link:hover,#hunt-nav .mn-drop:hover>.mn-link{color:#a2f590}
+#hunt-nav .mn-caret{display:inline-block;width:11px;height:11px;margin-left:8px;vertical-align:1px;transition:transform .15s ease}
+#hunt-nav .mn-drop:hover .mn-caret,#hunt-nav .mn-drop:focus-within .mn-caret{transform:rotate(180deg)}
+#hunt-nav .mn-cta{line-height:17px;padding:8px clamp(12px,1.3vw,20px);border:2px solid #f3ead9;background:rgba(12,26,8,.35)}
+#hunt-nav .mn-drop-cta>.mn-link.mn-cta:hover,#hunt-nav .mn-drop-cta:hover>.mn-link.mn-cta{color:#a2f590;background:rgba(12,26,8,.35);transform:none}
+#hunt-nav .mn-dd{padding-top:6px}
+#hunt-nav .mn-dd-in a{font-size:clamp(12px,.92vw,14.4px);letter-spacing:.07em;padding:13px 18px}
+#hunt-nav .mn-dd-in a.mn-profile{background:#c1330a;color:#fff;border-bottom:1px solid rgba(243,234,217,.35);display:flex;align-items:center;gap:10px}
+#hunt-nav .mn-dd-in a.mn-profile:hover{background:#e04a12;color:#fff}
+#hunt-nav .mn-dd-in a.mn-profile svg{width:16px;height:16px;flex:none}
+@media (max-width:1240px){
+  #hunt-nav{padding:10px 0;background:none}
+  #hunt-nav .mn-row{display:none}
+  #hunt-nav .mn-burger{display:flex}
+}
+#hunt-nav-ov{gap:14px;overflow-y:auto;justify-content:flex-start;padding-top:88px}
+#hunt-nav-ov a{font-size:17px}
+#hunt-nav-ov .mn-ovlogo{position:absolute;top:16px;left:20px}
+#hunt-nav-ov .mn-ovlogo img{width:96px;height:auto;display:block}
+#hunt-nav-ov .mn-ovgroup{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(243,234,217,.3);padding:14px 26px 16px}
+#hunt-nav-ov .mn-ovgroup span{font-family:'Almarai',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590}
+#hunt-nav-ov .mn-ovgroup a{font-size:15px}
+#hunt-nav-ov .mn-ovgroup a.mn-profile{background:#c1330a;border:1.5px solid #f3ead9;padding:9px 16px}
+@media (min-height:860px){#hunt-nav-ov{justify-content:center;padding-top:32px}}
+
+/* this page carries the hunt menu, so the main Squarespace header stays out of the way */
+#header,.header-announcement-bar-wrapper{display:none !important}
+</style>
+<nav id="hunt-nav">
+  <div class="mn-row">
+    <a href="https://www.mauriceafrich.com" class="mn-logo" aria-label="Maurice Africh home"><img src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
+    <div class="mn-right">
+      <div class="mn-links">
+      <a href="https://www.mauriceafrich.com/the-hunt" class="mn-link">THE HUNT</a>
+      <a href="https://shop.mauriceafrich.com/" class="mn-link mn-merch">MARKET</a>
+      <a href="https://www.mauriceafrich.com/the-hunt#tasks" class="mn-link">TASKS</a>
+      <a href="https://www.mauriceafrich.com/the-hunt#riddles" class="mn-link">RIDDLES &amp; PUZZLES</a>
+      <a href="https://www.mauriceafrich.com/lootbox-clue" class="mn-link">CLUES</a>
+      <a href="https://www.mauriceafrich.com/games" class="mn-link">GAMES</a>
+      <a href="https://www.mauriceafrich.com/contests" class="mn-link">CONTESTS</a>
+      <div class="mn-drop">
+        <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">SUBMIT<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+        </div></div>
+      </div>
+      <div class="mn-drop">
+        <a href="javascript:void(0)" class="mn-link" aria-haspopup="true">CURRENT PROGRESS<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.mauriceafrich.com/profile" class="mn-profile"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"></path></svg>TREASURE HUNTER PROFILE</a>
+          <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
+          <a href="https://www.mauriceafrich.com/loot">LOOT BOX SCORECARD</a>
+          <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+        </div></div>
+      </div>
+      <a href="https://www.mauriceafrich.com/questions" class="mn-link">QUESTIONS?</a>
+      <div class="mn-drop">
+        <a href="https://www.mauriceafrich.com/adventure" class="mn-link mn-vote" aria-haspopup="true">ADVENTURE<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.mauriceafrich.com/red-city">RED CITY</a>
+          <a href="https://www.mauriceafrich.com/the-crew">MEET THE CREW</a>
+          <a href="https://www.mauriceafrich.com/the-crash">CRASH LANDING</a>
+        </div></div>
+      </div>
+      </div>
+      <div class="mn-drop mn-drop-cta">
+        <a href="https://www.mauriceafrich.com/preorder" class="mn-link mn-cta" aria-haspopup="true">PRE-ORDER CELLO'S GATE<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg></a>
+        <div class="mn-dd"><div class="mn-dd-in">
+          <a href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399763073" target="_blank" rel="noopener">WATERSTONES</a>
+          <a href="https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834" target="_blank" rel="noopener">BARNES &amp; NOBLE</a>
+          <a href="https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834/ref=sr_1_1?crid=279A8MV3ZYP0T&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;dib_tag=se&amp;keywords=cellos+gate&amp;qid=1770340593&amp;sprefix=cellos%27+gate%2Caps%2C179&amp;sr=8-1&amp;ascsubtag=srctok-f7d285c3c39c18b3&amp;btn_ref=srctok-f7d285c3c39c18b3" target="_blank" rel="noopener">AMAZON</a>
+          <a href="https://www.amazon.com/Audible-Cellos-Gate/dp/B0GKZWW416/ref=tmm_aud_swatch_0?_encoding=UTF8&amp;dib_tag=se&amp;dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&amp;qid=1770340593&amp;sr=8-1&amp;ascsubtag=srctok-d4f496760f7c524a&amp;btn_ref=srctok-d4f496760f7c524a" target="_blank" rel="noopener">AUDIBLE</a>
+          <a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener">WALMART EXCLUSIVE SPECIAL EDITION</a>
+          <a href="https://www.mauriceafrich.com/preorder" class="mn-all">ALL RETAILERS &rarr;</a>
+        </div></div>
+      </div>
+    </div>
+  </div>
+  <div class="mn-burger" role="button" aria-label="Open menu" onclick="var o=document.getElementById('hunt-nav-ov');if(o.parentNode!==document.body){document.body.appendChild(o);}o.style.display='flex'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M3 6h18"></path><path d="M3 12h18"></path><path d="M3 18h18"></path></svg>
+  </div>
+</nav>
+<div id="hunt-nav-ov" onclick="if(event.target.tagName==='A'||event.target.closest('.mn-x'))this.style.display='none'">
+  <div class="mn-x" role="button" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" style="width:30px;height:30px"><path d="M5 5l14 14"></path><path d="M19 5L5 19"></path></svg>
+  </div>
+  <a href="https://www.mauriceafrich.com" class="mn-ovlogo" aria-label="Maurice Africh home"><img src="https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w" alt="Maurice Africh"></a>
+  <a href="https://www.mauriceafrich.com/the-hunt">THE HUNT</a>
+  <a href="https://shop.mauriceafrich.com/" class="mn-merch">MARKET</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#tasks">TASKS</a>
+  <a href="https://www.mauriceafrich.com/the-hunt#riddles">RIDDLES &amp; PUZZLES</a>
+  <a href="https://www.mauriceafrich.com/lootbox-clue">CLUES</a>
+  <a href="https://www.mauriceafrich.com/games">GAMES</a>
+  <a href="https://www.mauriceafrich.com/contests">CONTESTS</a>
+  <div class="mn-ovgroup"><span>SUBMIT</span>
+    <a href="https://www.mauriceafrich.com/points">SUBMIT POINTS</a>
+  </div>
+  <div class="mn-ovgroup"><span>CURRENT PROGRESS</span>
+    <a href="https://www.mauriceafrich.com/profile" class="mn-profile">TREASURE HUNTER PROFILE</a>
+    <a href="https://www.mauriceafrich.com/leaderboard">LEADERBOARD</a>
+    <a href="https://www.mauriceafrich.com/loot">LOOT BOX SCORECARD</a>
+    <a href="https://www.mauriceafrich.com/the-hunt#rewards">REWARDS</a>
+  </div>
+  <a href="https://www.mauriceafrich.com/questions">QUESTIONS?</a>
+  <div class="mn-ovgroup"><span>ADVENTURE</span>
+    <a href="https://www.mauriceafrich.com/adventure">THE ADVENTURE SO FAR</a>
+    <a href="https://www.mauriceafrich.com/red-city">RED CITY</a>
+    <a href="https://www.mauriceafrich.com/the-crew">MEET THE CREW</a>
+    <a href="https://www.mauriceafrich.com/the-crash">CRASH LANDING</a>
+  </div>
+  <a href="https://www.mauriceafrich.com/preorder" class="mn-cta">PRE-ORDER CELLO'S GATE</a>
+</div>
+<script>
+(function () {
+  var nav = document.getElementById('hunt-nav'), ov = document.getElementById('hunt-nav-ov');
+  if (nav && nav.parentNode !== document.body) document.body.appendChild(nav);
+  if (ov && ov.parentNode !== document.body) document.body.appendChild(ov);
+})();
+</script>
+<style>
+.av-next-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+@font-face{font-family:'Atomic Marker';src:url('https://static1.squarespace.com/static/68f0178dd88a7e52ec46ae7e/t/6aa9db35bc4f704c9378c402/1789516598919/Set+Sail+Studios+-+Atomic+Marker+Regular.otf') format('opentype');font-display:block}
+#av{box-sizing:border-box;position:relative;width:100vw;overflow-x:clip;color:#fffffe;font-family:'Almarai',sans-serif;letter-spacing:.03em;font-size:16px;line-height:1.6;text-align:left;background:#0b170f}
+#av *,#av *::before,#av *::after{box-sizing:border-box}
+#av [hidden]{display:none!important}
+#av .av-wrap{max-width:1000px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+#av h1,#av h2{font-family:'Atomic Marker',cursive;font-weight:400;margin:0;text-transform:none;letter-spacing:.02em;line-height:1.08}
+
+/* the top of the page */
+#av .av-hero{background:linear-gradient(rgba(11,23,15,.62),rgba(11,23,15,.92)),url('https://africhmaurice.github.io/site/assets/bg/city-skyline-panorama-as348070597.webp') center/cover no-repeat;padding:clamp(140px,12vw,180px) 0 clamp(56px,6vw,80px)}
+#av h1{font-size:clamp(46px,7.5vw,96px);color:#fffffe}
+#av h1 span{color:#a2f590}
+#av .av-top{font-weight:800;font-size:13px;letter-spacing:.16em;color:#a2f590;margin:0 0 14px}
+#av .av-intro{font-size:clamp(17px,1.6vw,20px);line-height:1.6;color:#ede9dc;max-width:760px;margin:22px 0 0}
+#av .av-chips{display:flex;flex-wrap:wrap;gap:10px;margin:32px 0 0}
+#av .av-chip{color:#fffffe;text-decoration:none;font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;border:1.5px solid rgba(243,234,217,.55);padding:9px 16px;transition:border-color .15s ease,color .15s ease}
+#av .av-chip:hover{border-color:#a2f590;color:#a2f590}
+
+/* The color stories. Each band sets its own; everything below reads them. */
+#av .av-band[data-theme="green"]{--shade:27,59,21;--deep:11,23,15;--accent:#a2f590;--accent2:#57bb41;--cta:#2c6021;--cta-hover:#57bb41;--cta-ink:#fffffe;--cta-hover-ink:#0b170f;--ink:#fffffe;--body:#ede9dc;--muted:rgba(237,233,220,.7);--line:#fffffe}
+#av .av-band[data-theme="red"]{--shade:145,37,1;--deep:48,12,0;--accent:#fd7547;--accent2:#ff4c0f;--cta:#c53200;--cta-hover:#ff4c0f;--cta-ink:#fffffe;--cta-hover-ink:#fffffe;--ink:#fffffe;--body:#f3ead9;--muted:rgba(243,234,217,.72);--line:#fffffe}
+#av .av-band[data-theme="teal"]{--shade:26,94,65;--deep:6,32,21;--accent:#89fbcb;--accent2:#3adb97;--cta:#268e62;--cta-hover:#3adb97;--cta-ink:#fffffe;--cta-hover-ink:#0b170f;--ink:#fffffe;--body:#ede9dc;--muted:rgba(237,233,220,.72);--line:#fffffe}
+#av .av-band[data-theme="purple"]{--shade:45,28,83;--deep:21,13,40;--accent:#9e74fd;--accent2:#7b4ee1;--cta:#482d85;--cta-hover:#7b4ee1;--cta-ink:#fffffe;--cta-hover-ink:#fffffe;--ink:#fffffe;--body:#ede9dc;--muted:rgba(237,233,220,.72);--line:#fffffe}
+#av .av-band[data-theme="bone"]{--shade:243,234,217;--deep:237,233,220;--accent:#1a5e41;--accent2:#268e62;--cta:#0b170f;--cta-hover:#213226;--cta-ink:#fffffe;--cta-hover-ink:#fffffe;--ink:#0b170f;--body:#213226;--muted:#607667;--line:#0b170f}
+#av .av-band[data-theme="olive"]{--shade:33,50,38;--deep:11,23,15;--accent:#ede9dc;--accent2:#607667;--cta:#607667;--cta-hover:#213226;--cta-ink:#fffffe;--cta-hover-ink:#fffffe;--ink:#fffffe;--body:#ede9dc;--muted:rgba(237,233,220,.66);--line:#ede9dc}
+#av .av-band{position:relative;color:var(--ink);padding:clamp(48px,6vw,80px) 0;
+  background:linear-gradient(rgba(var(--shade),.8),rgba(var(--deep),.93)),var(--img) center/cover no-repeat}
+#av .av-band[data-theme="bone"]{background:linear-gradient(rgba(var(--shade),.86),rgba(var(--deep),.94)),var(--img) center/cover no-repeat}
+
+/* the route: the map's dotted line down the left, through every band, a marker on each chapter */
+#av .av-line{position:relative;padding-left:clamp(44px,7vw,78px)}
+#av .av-line::before{content:'';position:absolute;left:calc(clamp(44px,7vw,78px) / 2 - 3px);top:calc(-1 * clamp(48px,6vw,80px));bottom:calc(-1 * clamp(48px,6vw,80px));width:6px;
+  background:radial-gradient(circle,var(--line) 2.6px,transparent 3px) center top/6px 16px repeat-y;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+#av .av-hero + .av-band .av-line::before{top:30px}
+#av .av-ch{position:relative;scroll-margin-top:120px}
+#av .av-dot{position:absolute;left:calc(clamp(44px,7vw,78px) / -2);top:18px;width:clamp(34px,4.4vw,52px);height:clamp(34px,4.4vw,52px);transform:translateX(-50%);filter:drop-shadow(0 4px 4px rgba(0,0,0,.5))}
+#av .av-dot svg{width:100%;height:100%;overflow:visible;display:block}
+#av .av-dot .core{fill:var(--line)}
+#av .av-dot .ring{fill:none;stroke:var(--line);stroke-width:5;stroke-linecap:round;stroke-dasharray:62 38;transform-origin:50px 50px;animation:av-spin 8s linear infinite}
+#av .av-dot .glow{fill:var(--line);opacity:0}
+#av .av-ch[data-status="vote"] .av-dot .glow{transform-origin:50px 50px;animation:av-pulse 2.4s ease-out infinite}
+@keyframes av-spin{to{transform:rotate(360deg)}}
+@keyframes av-pulse{0%{transform:scale(.4);opacity:.55}100%{transform:scale(1.3);opacity:0}}
+@media (prefers-reduced-motion:reduce){#av .av-dot .ring,#av .av-dot .glow{animation:none}}
+
+#av .av-card{background:rgba(var(--shade),.62);border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);padding:clamp(24px,3.4vw,40px);box-shadow:0 18px 40px rgba(0,0,0,.3);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+#av .av-ch[data-status="vote"] .av-card{border-color:var(--accent)}
+#av .av-kick{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;font-weight:800;font-size:12px;letter-spacing:.16em;color:var(--accent);margin:0 0 12px}
+#av .av-pill{font-size:11px;letter-spacing:.14em;padding:5px 10px;border:1.5px solid var(--accent);color:var(--accent)}
+#av .av-ch[data-status="vote"] .av-pill{background:var(--cta);border-color:var(--cta);color:var(--cta-ink)}
+#av h2{font-size:clamp(32px,4.4vw,52px);color:var(--ink);margin-bottom:14px}
+#av .av-lede{font-size:17px;line-height:1.65;color:var(--body);margin:0 0 20px;max-width:720px}
+
+#av .av-player{display:flex;align-items:center;gap:16px;background:rgba(45,28,83,.78);border:1px solid rgba(158,116,253,.45);padding:14px 18px;max-width:620px;color:#fffffe}
+#av .av-pbtn{flex:none;width:52px;height:52px;border-radius:50%;background:#482d85;border:0;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
+#av .av-pbtn svg{width:22px;height:22px;fill:#9e74fd}
+#av .av-pbtn svg.p{margin-left:3px}
+#av .av-pmid{flex:1;min-width:0}
+#av .av-plabel{font-weight:700;font-size:13px;letter-spacing:.1em;color:#9e74fd;margin-bottom:10px}
+#av .av-ptrack{position:relative;height:10px;background:rgba(158,116,253,.22);cursor:pointer}
+#av .av-pfill{position:absolute;top:0;bottom:0;left:0;width:0;background:#9e74fd}
+#av .av-ptime{flex:none;font-weight:700;font-size:15px;color:#9e74fd;font-variant-numeric:tabular-nums}
+#av .av-band[data-theme="purple"] .av-player{background:rgba(11,23,15,.5)}
+/* the bone-white band: ink players with green controls */
+#av .av-band[data-theme="bone"] .av-player{background:rgba(11,23,15,.9);border-color:rgba(11,23,15,.9)}
+#av .av-band[data-theme="bone"] .av-pbtn{background:#1a5e41}
+#av .av-band[data-theme="bone"] .av-plabel{color:#89fbcb}
+#av .av-band[data-theme="bone"] .av-ptrack{background:rgba(137,251,203,.22)}
+#av .av-band[data-theme="bone"] .av-pfill{background:#3adb97}
+#av .av-band[data-theme="bone"] .av-pbtn svg{fill:#89fbcb}
+#av .av-band[data-theme="bone"] .av-ptime{color:#89fbcb}
+#av .av-tx{margin-top:12px;max-width:620px}
+#av .av-tx summary{cursor:pointer;width:max-content;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+#av .av-tx summary:hover{color:var(--ink)}
+#av .av-tx div{margin-top:10px;display:grid;gap:8px;font-size:14px;line-height:1.6;color:var(--body);border-left:2px solid var(--accent);padding-left:14px}
+#av .av-tx p{margin:0}
+#av .av-tx b{font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-right:6px}
+#av .av-tx i{color:var(--muted)}
+
+#av .av-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:26px}
+#av .av-box{background:rgba(var(--deep),.55);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);padding:18px 20px}
+#av .av-box.wide{grid-column:1/-1}
+#av .av-box h4{margin:0 0 10px;font-family:'Almarai',sans-serif!important;text-transform:none;line-height:1.4;font-weight:800;font-size:12px;letter-spacing:.16em;color:var(--accent)}
+#av .av-box ol{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+#av .av-box ol li{display:flex;justify-content:space-between;gap:12px;font-weight:700;font-size:15px}
+#av .av-box ol li span{color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
+#av .av-note{margin:10px 0 0;font-size:13px;color:var(--muted)}
+#av .av-big{margin:6px 0 0;font-family:'Atomic Marker',cursive;font-size:clamp(28px,3vw,36px);line-height:1.2;letter-spacing:.03em;color:var(--accent)}
+#av .av-box h4 small{float:right;font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:800}
+#av .av-box .av-plan{clear:both}
+#av .av-plan{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px}
+#av .av-enc{display:flex;align-items:center;gap:16px}
+#av .av-die{position:relative;flex:none;width:92px;height:92px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}
+#av .av-die svg{width:100%;height:100%;display:block}
+#av .av-die span{position:absolute;left:0;right:0;top:43%;text-align:center;font-family:'Atomic Marker',cursive;font-size:22px;line-height:1;color:#fffffe}
+#av .av-enc p{margin:0}
+#av .av-enc .q{font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+#av .av-enc .a{font-family:'Atomic Marker',cursive;font-size:clamp(24px,2.6vw,30px);line-height:1.15;margin:2px 0 4px}
+#av .av-enc .v{font-size:14px;color:var(--body)}
+#av .av-enc .v+.v{margin-top:8px}
+#av .av-enc .by{font-size:13px;color:var(--muted);margin:4px 0 6px}
+#av .av-enc .by b{color:var(--ink);overflow-wrap:anywhere}
+#av .av-draws .av-enc{align-items:flex-start}
+#av .av-story{margin:8px 0 0;font-size:17px;line-height:1.6;color:var(--body);max-width:65ch}
+#av .av-big.av-plain{font-family:'Almarai',sans-serif;font-weight:800;line-height:1.25;letter-spacing:.01em}
+#av .av-enc .crit{font-size:12px;letter-spacing:.1em;margin-top:2px}
+#av .av-enc .c20{color:#a2f590}
+#av .av-enc .c1{color:#fd7547}
+#av .av-crew{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px}
+#av .av-mem{display:flex;align-items:center;gap:14px}
+#av .av-mem p{margin:0}
+#av .av-mem .q{font-weight:800;font-size:12px;letter-spacing:.14em;color:var(--muted)}
+#av .av-mem .a{font-family:'Atomic Marker',cursive;font-size:clamp(22px,2.4vw,28px);line-height:1.15;margin:2px 0 3px}
+#av .av-mem .v{font-size:14px;color:var(--body)}
+#av .av-mem .v span,#av .av-color span{display:block;font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-top:3px}
+#av .av-pron{flex:none;width:62px;display:flex;flex-direction:column;align-items:center;gap:2px;background:rgba(var(--deep),.6);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);padding:7px 0}
+#av .av-pron b{font-family:'Segoe UI Symbol','Noto Sans Symbols 2','Apple Symbols',sans-serif;font-weight:400;font-size:26px;line-height:1;color:var(--accent)}
+#av .av-pron span{font-family:'Atomic Marker',cursive;font-size:16px}
+#av .av-color{display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;margin:0 0 18px;font-size:24px}
+#av .av-color .av-cname{font-family:'Atomic Marker',cursive;font-weight:400;line-height:1.2;letter-spacing:.03em}
+#av .av-color i{width:26px;height:26px;border:1.5px solid #f3ead9;flex:none;position:relative}
+#av .av-color .av-mark{position:absolute;inset:0;display:block;cursor:default}#av .av-color .av-mark img{width:100%;height:100%;display:block;opacity:.05}
+#av .av-color span{flex-basis:100%;font-family:'Almarai',sans-serif;margin-top:0}
+#av .av-band[data-theme="red"] .av-enc .c1{color:#f3ead9}
+#av .av-band[data-theme="bone"] .av-enc .c20{color:#1a5e41}
+#av .av-band[data-theme="bone"] .av-enc .c1{color:#c53200}
+#av .av-marks{display:flex;flex-wrap:wrap;gap:10px;margin:0}
+#av .av-marks span{font-weight:800;font-size:14px;letter-spacing:.06em;border:1.5px solid var(--accent);padding:7px 14px}
+
+#av .av-live{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:4px 0 0}
+#av .av-live>div{background:rgba(var(--deep),.55);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);padding:14px 16px}
+#av .av-live .k{font-weight:800;font-size:11px;letter-spacing:.14em;color:var(--accent);margin-bottom:6px}
+#av .av-live .v{font-family:'Atomic Marker',cursive;font-size:clamp(28px,3.2vw,40px);line-height:1.1}
+#av .av-live .v.sm{font-size:clamp(18px,1.9vw,24px);line-height:1.25}
+#av .av-cta{display:inline-block;margin-top:24px;color:var(--cta-ink)!important;text-decoration:none!important;font-weight:800;font-size:15px;letter-spacing:.1em;border:1.5px solid var(--cta);background:var(--cta);padding:14px 26px;transition:transform .15s ease,background .15s ease,color .15s ease}
+#av .av-cta:hover{transform:scale(1.04);background:var(--cta-hover);border-color:var(--cta-hover);color:var(--cta-hover-ink)!important}
+
+/* the last band: what comes next */
+#av .av-next{text-align:center}
+#av .av-next .av-wrap{padding-top:clamp(8px,2vw,20px);padding-bottom:clamp(8px,2vw,20px)}
+#av .av-next h2{font-size:clamp(28px,3.6vw,44px);margin-bottom:12px}
+#av .av-next p{color:var(--body);margin:0 auto;max-width:620px}
+
+@media (max-width:700px){
+  #av .av-draws .av-enc{flex-direction:column;gap:12px}
+  #av .av-grid,#av .av-plan,#av .av-crew{grid-template-columns:1fr}
+  #av .av-die{width:80px;height:80px}
+  #av .av-die span{font-size:19px}
+  #av .av-box h4 small{float:none;display:block;margin-top:4px}
+  #av .av-live{grid-template-columns:1fr 1fr}
+  #av .av-live>div:last-child{grid-column:1/-1}
+  #av .av-player{gap:12px;padding:12px}
+  #av .av-pbtn{width:44px;height:44px}
+}
+</style>
+<div id="av">
+  <div class="av-hero">
+    <div class="av-wrap">
+      <p class="av-top">THE SKY PIRATES OF IMPERIA · CHOOSE YOUR OWN ADVENTURE</p>
+      <h1>The Adventure <span>So Far</span></h1>
+      <p class="av-intro">Every choice in the hunt so far, in order. I post a choice, the frens vote together, and majority rules. Where the crew goes next is up to you, and every vote you seal earns 1,000 Trench XP.</p>
+      <nav class="av-chips" aria-label="Chapters"><a class="av-chip" href="#av-fenna">A New Transmission</a><a class="av-chip" href="#av-red-city">Shopping in the Red City</a><a class="av-chip" href="#av-the-crew">Meet the Crew</a><a class="av-chip" href="#av-the-crash">Crash Landing</a><a class="av-chip" href="#av-the-river">Fight the Levian</a><a class="av-chip" href="#av-the-raft">Cross the River</a><a class="av-chip" href="#av-river-mayhem">River Mayhem</a><a class="av-chip" href="#av-washed-ashore">Washed Ashore</a><a class="av-chip" href="#av-cerunine-attack">Cerunine Attack</a><a class="av-chip" href="#av-the-reunion">The Reunion</a><a class="av-chip" href="#av-the-energy-wave">The Energy Wave</a><a class="av-chip" href="#av-finding-scarlett">Finding Scarlett</a><a class="av-chip" href="#av-light-on-her-feet">Light on Her Feet</a><a class="av-chip" href="#av-pull-her-out">Pull Her Out</a><a class="av-chip" href="#av-the-source">The Source of the Wave</a><a class="av-chip" href="#av-the-break-in">The Break-⁠In Gone Wrong</a><a class="av-chip" href="#av-search-the-building">Search the Building</a><a class="av-chip" href="#av-the-captains-request">The Captain’s Request</a><a class="av-chip" href="#av-saving-scarlett">Saving Scarlett</a><a class="av-chip" href="#av-back-to-the-hunt">Back to the Hunt</a><a class="av-chip" href="#av-the-crew-decides">The Crew Decides</a><a class="av-chip" href="#av-through-the-mountains">Through the Mountains</a></nav>
+    </div>
+  </div>
+  <div class="av-band" data-theme="green" style="--img:url('https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-fenna" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 1 · FENNA'S SOUL<span class="av-pill">DECIDED</span></p>
+            <h2>A New Transmission</h2>
+            <p class="av-lede">Grey had a job for the crew before anyone set sail for the island: go shopping in the Red City and find a one-eyed sewer rat.</p>
+      <div class="av-player" data-audio>
+        <button type="button" class="av-pbtn" aria-label="Play INCOMING TRANSMISSION · CPT. GREY SHIMADA"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+        <div class="av-pmid"><div class="av-plabel">INCOMING TRANSMISSION · CPT. GREY SHIMADA</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
+        <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/red-city-grey.m4a"></audio>
+      </div>
+      <details class="av-tx"><summary>Read the transcript</summary><div><p><b>Grey</b>First stop, we’ve got a date with a one-eyed sewer rat. Put together your inventory list. Buckle up, frens. We’re settin’ sail for the Red City. I hope you brought sunblock.</p></div></details>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="red" style="--img:url('https://africhmaurice.github.io/site/assets/bg/red-sun-ruins-as360866146.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-red-city" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 2 · PONTUNE · THE RED CITY<span class="av-pill">DECIDED</span></p>
+            <h2>Shopping in the Red City</h2>
+            <p class="av-lede">Benji was expecting you. Felix wasn't. 42 frens voted on who to recruit, which kits to buy, and how to take the island.</p>
+      <div class="av-player" data-audio>
+        <button type="button" class="av-pbtn" aria-label="Play BENJI'S BARGAIN SHOP"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+        <div class="av-pmid"><div class="av-plabel">BENJI'S BARGAIN SHOP</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
+        <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/red-city-felix-benji.m4a"></audio>
+      </div>
+      <details class="av-tx"><summary>Read the transcript</summary><div><p><b>Felix</b>No fuckin’ way! Grey sent you? What is this, some kind of shopping trip? I don’t even know your names… The boss ain’t gonna like him sendin’ people his way without a word or nothing. Tell him the next time it happens, I’ll send their heads back in a box. Now get the fu—</p><p><b>Benji (far away)</b>Felix, who is it?!</p><p><b>Felix (calling back)</b>Sky pirates! From the redcoat!</p><p><b>Benji (far away)</b><i>Laughs</i> Let em in, let em in!</p><p><i>Door creaking</i></p><p><b>Benji</b>Hello, hello. Welcome to the Red City. I hope you’re good and lubed up, cause Sola don’t give a shit what backwater city you call home, it’ll burn your ass and charge a cover fee. Grey told me you were comin’. I forgot to tell Felix. That’s on me. What can I getcha?</p></div></details>
+      
+          <div class="av-grid">
+            <div class="av-box"><h4>THE CREW</h4><ol><li>Crest Knight <span>34</span></li><li>Gunslinger <span>25</span></li><li>Oracle <span>19</span></li><li>Techtailor <span>14</span></li><li>Intangible <span>11</span></li></ol></div>
+            <div class="av-box"><h4>THE CARGO BAY</h4><ol><li>Survival Kit <span>6,000</span></li><li>Field Medic Kit <span>15,000</span></li><li>Breach Kit <span>10,000</span></li><li>Defense Kit <span>20,000</span></li><li>Climbing Kit <span>20,000</span></li></ol>
+              <p class="av-note">71,000 of the 91,720-credit purse spent. 20,720 left over.</p></div>
+            <div class="av-box wide"><h4>THE PLAN <small>THE CREW'S AVERAGE D20</small></h4><div class="av-plan">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-split" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4c0f"/><stop offset="1" stop-color="#912501"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-split)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>11.22</span></div><div>
+              <p class="q">On the island</p><p class="a">Stick Together</p>
+              <p class="v">31 votes to 11</p>
+              <p class="crit"><b class="c20">3 NAT 20s</b> · <b class="c1">1 NAT 1</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-approach" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4c0f"/><stop offset="1" stop-color="#912501"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-approach)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9.57</span></div><div>
+              <p class="q">The approach</p><p class="a">Recon First</p>
+              <p class="v">25 votes to 17</p>
+              <p class="crit"><b class="c20">3 NAT 20s</b> · <b class="c1">6 NAT 1s</b></p></div></div>
+            </div></div>
+            <div class="av-box wide"><h4>LANDMARKS TO SEARCH</h4><p class="av-marks"><span>Temple</span><span>Goma Skull</span><span>Sword</span></p></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="teal" style="--img:url('https://africhmaurice.github.io/site/assets/bg/crystal-towers-lake-as395045722.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-the-crew" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 3 · THE GRESNICK OCEAN<span class="av-pill">DECIDED</span></p>
+            <h2>Meet the Crew</h2>
+            <p class="av-lede">33 frens rolled for the crew and voted on their names, specialties, and weapons, and on the ship that carries them. Two ties went to the Captain's Roll.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE CREW <small>ONE ROLL DRAWN AT RANDOM DECIDED WHO</small></h4><div class="av-crew">
+            <div class="av-mem"><div class="av-pron"><b>♂</b><span>He</span></div><div>
+              <p class="q">CREST KNIGHT</p><p class="a">Hale</p>
+              <p class="v">Sapphire (Water) · Twin Torches</p></div></div>
+            <div class="av-mem"><div class="av-pron"><b>♀</b><span>She</span></div><div>
+              <p class="q">GUNSLINGER</p><p class="a">Scarlett Holster</p>
+              <p class="v">Deadeye · Elia Noma T11 + Morton M8</p></div></div>
+            <div class="av-mem"><div class="av-pron"><b>♂</b><span>He</span></div><div>
+              <p class="q">ORACLE</p><p class="a">Orion Squints</p>
+              <p class="v">Seer · Bolt Staff</p></div></div>
+            <div class="av-mem"><div class="av-pron"><b>♂</b><span>He</span></div><div>
+              <p class="q">TECHTAILOR</p><p class="a">Rune Overclock</p>
+              <p class="v">Stitcher · Gunner Drone + Prismblade</p></div></div>
+            <div class="av-mem"><div class="av-pron"><b>♀</b><span>She</span></div><div>
+              <p class="q">INTANGIBLE</p><p class="a">Sparrow Zipmeister</p>
+              <p class="v">Ghost · Twin Vibroblades <span>Won the Captain's Roll (7)</span></p></div></div>
+            </div></div>
+            <div class="av-box wide"><h4>THE SECOND WIND <small>THE CREW'S AVERAGE D20</small></h4>
+              <p class="av-color"><i style="background:#482d85"><a class="av-mark" href="#" data-k="TktKVkM2UEI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo" aria-label="Violet" onclick="location.href=atob(this.dataset.k).split('').reverse().join('');return false"><img src="https://africhmaurice.github.io/site/assets/img/av-mark.webp" alt=""></a></i><b class="av-cname">Violet</b> <span>Won the Captain's Roll (14)</span></p>
+              <div class="av-plan">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ship-ship_type" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ship-ship_type)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10.41</span></div><div>
+              <p class="q">Ship type</p><p class="a">FINE</p>
+              <p class="v">Corvette</p>
+              <p class="crit"><b class="c20">1 NAT 20</b> · <b class="c1">0 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ship-weapon_systems" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ship-weapon_systems)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9.14</span></div><div>
+              <p class="q">Weapon systems</p><p class="a">WORST</p>
+              <p class="v">Rail Guns That Only Work Half the Time</p>
+              <p class="crit"><b class="c20">1 NAT 20</b> · <b class="c1">2 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ship-top_speed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ship-top_speed)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9.86</span></div><div>
+              <p class="q">Top speed</p><p class="a">BAD</p>
+              <p class="v">Commercial Jetliner Speeds</p>
+              <p class="crit"><b class="c20">1 NAT 20</b> · <b class="c1">2 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ship-stealth" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ship-stealth)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10.24</span></div><div>
+              <p class="q">Stealth</p><p class="a">FINE</p>
+              <p class="v">Hums</p>
+              <p class="crit"><b class="c20">2 NAT 20s</b> · <b class="c1">2 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ship-housing" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ship-housing)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9.77</span></div><div>
+              <p class="q">Housing</p><p class="a">BAD</p>
+              <p class="v">Bunk Room</p>
+              <p class="crit"><b class="c20">1 NAT 20</b> · <b class="c1">1 NAT 1</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ship-shields" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ship-shields)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9.51</span></div><div>
+              <p class="q">Shields</p><p class="a">BAD</p>
+              <p class="v">Repurposed Kinetic Shielding</p>
+              <p class="crit"><b class="c20">0 NAT 20s</b> · <b class="c1">2 NAT 1s</b></p></div></div>
+              </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="purple" style="--img:url('https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-the-crash" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 4 · DE'GATÉ · THE GATE OF DEATH<span class="av-pill">DECIDED</span></p>
+            <h2>Crash Landing</h2>
+            <p class="av-lede">Missile defense systems embedded in the mountains—who'd have thought? The Second Wind comes down hard half a kilometer south of the Goma Skull. The crew makes it, but the ship doesn't. Now the crew needs a plan, and the frens get to decide what that plan is going to be. Majority rules.</p>
+      <div class="av-player" data-audio>
+        <button type="button" class="av-pbtn" aria-label="Play ARRIVAL AT DE'GATÉ · THE CAPTAIN"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+        <div class="av-pmid"><div class="av-plabel">ARRIVAL AT DE'GATÉ · THE CAPTAIN</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
+        <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/degate-1-arrival.m4a"></audio>
+      </div>
+      <details class="av-tx"><summary>Read the transcript</summary><div><p>[Intercom chime]</p><p>This is your captain speaking. Grey is busy with his real crew, so I'm taking over the captain's spot. You can call me Captain. Or hey fuckface! I don't fuckin' care...</p><p>Before we start, I should add--none of this is canon. Ah'right? This is made-up gobble-dy gook for the sake of tellin' a good story without spoiling anything. That's a little fourth wall break for ya'.</p><p>Right now, we're on <i>Second Wind</i>, bound for De'gaté. Just found this out: De'gaté means the Gate of Death, so that's fun. Hope you all found your bunks. Yes, I said bunks. I know you requested individual apartments with en-suite bathrooms, but listen, those things don't come cheap.</p><p>We cleared the Gresnick about an hour ago. If you felt a little shudder over open water, that was us flying off the edge of the map and coming back in on the other side. Don't think about it too hard. Rune says it's fine. He's our resident techtailor. Rune also says the rail guns work half the time, so, you know, take his word with a grain of salt.</p><p>Local time is none of your business, the weather on the island is hot, and the in-flight meal is whatever Scarlett didn't eat.</p><p>Here's the plan, which you numbskulls concocted in the Red City. Recon first. We fly low, we fly quiet. Ah'right? Well... I mean, we hum. This ship ain't quiet, but she ain't loud neither. And we stick together. Nobody wanders off. I'm looking at you, Sparrow. None of that shadow jumping out the airship. I swear to Ghan, I'll leave you behind this time.</p><p>Hale, you've got the window. Orion, tell me if the island starts looking back at us.</p><p>Buckle up, frens. De'gaté is dead ahead.</p></div></details>
+      <div class="av-player" data-audio>
+        <button type="button" class="av-pbtn" aria-label="Play STOP 1 · THE CATHEDRAL"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+        <div class="av-pmid"><div class="av-plabel">STOP 1 · THE CATHEDRAL</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
+        <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/degate-2-cathedral.m4a"></audio>
+      </div>
+      <details class="av-tx"><summary>Read the transcript</summary><div><p>Ah'right, first pass...</p><p>It's the temple.</p><p>We fly in over the north shore, and the first thing we see is the well. But we don't stop there because... I mean, why would we stop at a well? There's probably snakes in it.</p><p>Anyway, we head to the temple. But truth told, it's a fuckin' cathedral. I don't know what the cartographer was thinking. I mean, who builds a cathedral out here, on an island nobody lives on? Stone walls are crumbling, a bell tower with no bell, the mark of the crest on the door, and ivy crawling up the whole west side, like the imperia is trying to take this thing and slowly break it down to its finite parts and consume them.</p><p>We don't see much in the way of action, not at first. It's graveyard silent down there. Of course, if Rune could get his ghandamn parabolics to work, but ugh, nevermind.</p><p>Orion, he... goes quiet as we pass over it. With a haunted voice more like a ghost than a person, he says it feels &quot;occupied.&quot; Whatever that means. I tell him nobody's been here in a thousand years. Then Hale points at the path up to the front door. It's trampled. Fresh.</p><p>So either this island has very tidy ghosts, or we're not the only ones here. That could be good news. It could also be bad news.</p><p>We're not landing. We're just looking. But at least we know we're on the right track. Marking it on the map and heading south, toward the sword.</p></div></details>
+      <div class="av-player" data-audio>
+        <button type="button" class="av-pbtn" aria-label="Play STOP 2 · THE SWORD"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+        <div class="av-pmid"><div class="av-plabel">STOP 2 · THE SWORD</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
+        <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/degate-3-sword.m4a"></audio>
+      </div>
+      <details class="av-tx"><summary>Read the transcript</summary><div><p>The Sword, first pass. Or what we think is the sword?</p><p>Listen. These landmarks ain't one-for-one. Not by a long shot. We expect a giant sword sticking out of the ground. What we find is a platform made of alien metal. A <i>lot</i> of it. A sword is etched into its surface.</p><p>Rune runs a scan but we already know we won't see through it. The jungle is thick around here. Sparrow is convinced she saw something crawlin' in the trees, but I didn't see it, so...</p><p>Who knows?</p></div></details>
+      <div class="av-player" data-audio>
+        <button type="button" class="av-pbtn" aria-label="Play STOP 3 · THE GOMA SKULL"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+        <div class="av-pmid"><div class="av-plabel">STOP 3 · THE GOMA SKULL</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
+        <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/degate-4-goma-skull.m4a"></audio>
+      </div>
+      <details class="av-tx"><summary>Read the transcript</summary><div><p>First pass, the goma skull.</p><p>It's a mountain. Well, okay, it's not a mountain, it's a ghandamn skull. The goma that made it must've been huge. I've never seen one this big. And guess what, there are gomas all over it. Dozens of 'em sunning themselves on the teeth like it's a beach day.</p><p>Sparrow wants to name one. No, she can't. I'm not jokin'.</p><p>Rune, keep us high. Don't spook 'em.</p><p>Orion, what's that on the ridge down there? Is that--</p><p>[ALARM: a low klaxon, then faster, red hues flashing on the screen while this is happening]</p><p>What is that? Rune?</p><p>[ROBOTIC VOICE, flat, echoing] Warning. You have entered restricted airspace. This island is closed by order of... [static] ...Turn back. This is your only warning.</p><p>I thought she said this island was empty!?</p><p>[ROBOTIC VOICE] Target acquired.</p><p>Shields! Rune, shields!</p><p><b>Rune</b>Our shields can't block a missile, cap. They're repurposed kinetics!</p><p>What do you mean, our shields can't block a missile? We got shields, don't we? What the fuck are shields good for if we can't--</p><p>[Impact. The alarm cuts out. Rushing air.]</p><p>Hold on, frens! We're goin' down!</p><p>CRASH!</p></div></details>
+      <div class="av-player" data-audio>
+        <button type="button" class="av-pbtn" aria-label="Play SHOT DOWN"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+        <div class="av-pmid"><div class="av-plabel">SHOT DOWN</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
+        <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/degate-5-shot-down.m4a"></audio>
+      </div>
+      <details class="av-tx"><summary>Read the transcript</summary><div><p>[Ringing ears. Metal groaning. A long exhale.]</p><p>Everybody sound off.</p><p><b>Hale</b>here</p><p><b>Scarlett</b>shit</p><p><b>Orion</b>I am here</p><p><b>Rune</b>aye</p><p><b>Captain</b>Where's Sparrow?</p><p>Sparrow (muffled): I'm outside the ship!</p><p><b>Captain</b>SIGH Good. Good. Nobody's dead.</p><p>The Second Wind is less good. We're down, hard, in the gomas' valley, half a kilometer south of the skull. Stick together, you said. Well... (laughs) lucky for you, we don't got a choice. We're together. Right smack dab in the middle of the shit.</p><p>Nobody move until we talk this out and make a plan.</p></div></details>
+      <p class="av-lede">30 frens rolled for the supplies and voted on the plan. The vote to stay together or split up tied, and went to the Captain's Roll.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE SUPPLIES <small>THE CREW'S AVERAGE D20</small></h4><div class="av-plan">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-kit-kit_survival" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-kit-kit_survival)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9.12</span></div><div>
+              <p class="q">Survival Kit</p><p class="a">Took the worst of it</p><p class="v">The Survival Kit was resting over the captain's fish tank for some reason and fell in. The rations are soaked and half-eaten, and the water filter was torn apart by the captain's chemically altered piranhas that he insists are safe. Based on the kit, you'd disagree. When you ask if he'll get the kit from the fish tank, he says, &quot;I'm not stickin' my hands in there!&quot;</p>
+              <p class="crit"><b class="c20">0 NAT 20s</b> · <b class="c1">4 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-kit-kit_medic" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-kit-kit_medic)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10.91</span></div><div>
+              <p class="q">Field Medic Kit</p><p class="a">Held up</p><p class="v">The Field Medic Kit is dented, but all the contents were protected. Thank Ghan for steel cases!</p>
+              <p class="crit"><b class="c20">1 NAT 20</b> · <b class="c1">2 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-kit-kit_breach" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-kit-kit_breach)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10.53</span></div><div>
+              <p class="q">Breach Kit</p><p class="a">Held up</p><p class="v">You lost a couple of charges, but it's fine.</p>
+              <p class="crit"><b class="c20">2 NAT 20s</b> · <b class="c1">2 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-kit-kit_defense" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-kit-kit_defense)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>14.24</span></div><div>
+              <p class="q">Defense Kit</p><p class="a">Best of the bunch</p><p class="v">The Defense Kit comes through without a scratch. Every shield belt still holds a charge.</p>
+              <p class="crit"><b class="c20">4 NAT 20s</b> · <b class="c1">0 NAT 1s</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-kit-kit_climbing" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-kit-kit_climbing)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>11.77</span></div><div>
+              <p class="q">Climbing Kit</p><p class="a">Held up</p><p class="v">The Climbing Kit is scuffed but whole. Ropes, grapples, hooks. Sick!</p>
+              <p class="crit"><b class="c20">1 NAT 20</b> · <b class="c1">0 NAT 1s</b></p></div></div>
+            </div></div>
+            <div class="av-box"><h4>WHICH DIRECTION?</h4><p class="av-big">West</p><p class="av-note">Head to the Sword to see what's up with that platform. 10 of 30 votes.</p></div>
+            <div class="av-box"><h4>STAY TOGETHER, OR SPLIT UP?</h4><p class="av-big">Stay Together</p><p class="av-note">Everyone moves as one crew. 15 votes to 15. Won the Captain's Roll (3).</p></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="bone" style="--img:url('https://africhmaurice.github.io/site/assets/bg/dome-city-mist-as159145789.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-the-river" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 5 · DE'GATÉ · THE RIVER<span class="av-pill">DECIDED</span></p>
+            <h2>Fight the Levian</h2>
+            <p class="av-lede">The crew sets out west on foot, across the valley toward the Sword, and reaches a river with no bridge. The Levian rises out of the river and lunges, and Hale’s torches are already lit.</p>
+      <div class="av-player" data-audio>
+        <button type="button" class="av-pbtn" aria-label="Play THE CAPTAIN · SETTING OUT"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+        <div class="av-pmid"><div class="av-plabel">THE CAPTAIN · SETTING OUT</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
+        <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/river-1-orders.m4a"></audio>
+      </div>
+      <details class="av-tx"><summary>Read the transcript</summary><div><p>[Radio static. Metal clanks against metal, blow torch sounds.]</p><p><b>Captain</b>Ah'right, you ghanforsaken shit kabobs, listen up. You're headin' west to the Sword, and you're stickin' together. Good. I ain't got the patience to lose any of yous.</p><p><b>Captain</b>Supply check. Defense Kit, which you're probably gonna need, is in perfect working condition. Shield belts are fully charged, we got a couple of plates, a shield dome, <i>clicks tongue</i>. Climbing Kit, it's been better. Med kit's fine, thank Ghan for steel cases. Breach Kit, we're down a couple of charges, but that's fine. Don't breach nothin' bigger than a hovertank. And the Survival Kit...</p><p><b>Rune</b>It's in the fish tank, Cap.</p><p><b>Captain</b>I know where it is!!</p><p>[audibly gets himself together]</p><p><b>Captain</b>Point is, you got no clean water and no food that ain't been chewed on by my sweet girls--and I won't hear no shit about 'em, you understand me? Missy, Elliot, Nelly, and The Piranha That Could So I Dare You To Fuckin' Try are SWEET girls! So keep your eyes open for water. And the stone. Mostly the stone. You can survive 24 hours without water. A week without food, or somethin'.</p><p><b>Captain</b>I'm stayin' with the Second Wind. Somebody's gotta fix her, it ain't gonna be Rune. Hit the comms if you find somethin'. Hit the comms if you die, so I know to stop waitin'.</p></div></details>
+      <div class="av-player" data-audio>
+        <button type="button" class="av-pbtn" aria-label="Play THE CREW · THROUGH THE VALLEY"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+        <div class="av-pmid"><div class="av-plabel">THE CREW · THROUGH THE VALLEY</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
+        <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/river-2-valley.m4a"></audio>
+      </div>
+      <details class="av-tx"><summary>Read the transcript</summary><div><p>[Footsteps in tall grass. Insects. Something big calls out in the distance.]</p><p><b>Sparrow</b>What was that? Was that a goma? That sounded like a goma.</p><p><b>Hale</b>Keep walkin'.</p><p><b>Rune</b>Oi, Captain, you still there? I've got the comms on loop, so if you go quiet I'm assumin' the worst.</p><p><b>Captain</b>I'm under the engine, you little muff diver. Keep walkin'.</p><p><b>Scarlett</b>Lord, I would kill for a slice of pie right now. Peach. Warm. Little bit of cream on top.</p><p><b>Orion</b>Water. I can hear water. Ahead of us, and something old ... nestled into the depths beneath it.</p><p><b>Sparrow</b>Like in the ground beneath the water?</p><p><b>Orion</b>In it. Around it. Among it. Beside it. A part of it. The water itself is anathema by the masquerade of its concoction. We are but travelers treading on lonely ground once walked but never--</p><p><b>Rune</b>Captain, are you hearin' this?</p><p><b>Captain</b>...No.</p><p><b>Hale</b>Keep. Walkin'.</p></div></details>
+      <div class="av-player" data-audio>
+        <button type="button" class="av-pbtn" aria-label="Play THE CREW · THE RIVER"><svg class="p" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg class="s" viewBox="0 0 24 24" hidden><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg></button>
+        <div class="av-pmid"><div class="av-plabel">THE CREW · THE RIVER</div><div class="av-ptrack"><div class="av-pfill"></div></div></div>
+        <div class="av-ptime">0:00</div><audio preload="none" src="https://africhmaurice.github.io/site/assets/audio/river-3-the-river.m4a"></audio>
+      </div>
+      <details class="av-tx"><summary>Read the transcript</summary><div><p>[Rushing water, loud and close.]</p><p><b>Rune</b>Well, there's the water, innit.</p><p><b>Scarlett</b>That ain't a river, sugar. That's a stampede.</p><p><b>Hale</b>Too deep to wade. Current'll take you.</p><p><b>Sparrow</b>I could blink across. Probably. Maybe. If I can see the other side.</p><p><b>Orion</b>The Sword is just beyond it... [creepy music score] but that is nothing compared to the endless tribulations of the water we must first--</p><p><b>Captain</b>You're at a river? Perfect. Fill your canteens. Then get across it. And whatever you do, don't fall in.</p><p><b>Rune</b>Why? What's in it, bruv?</p><p><b>Captain</b>How should I know? I'm not there, you fuckin' clink-stain. That's why you don't fall in!</p><p><b>Orion</b>Something is moving beneath the surface.</p><p><b>Rune</b>Where?</p><p><b>Hale</b>There! [draws torch, hums as it glows]</p><p>[Monster roar! A Levian, a giant sea serpent trapped in the river, rises from the water and lunges.]</p></div></details>
+      <p class="av-lede">30 frens rolled for the Levian, the plan, and every member of the crew, and picked each one’s priority.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE LEVIAN FIASCO</h4><p class="av-story">A series of mishaps on this merry misadventure leads to an unlikely outcome...</p></div>
+            <div class="av-box wide"><h4>THE PLAN</h4><p class="av-big av-plain">After the First Round of Combat, Try to Befriend the Levian</p><p class="av-note">11 of 30 votes.</p></div>
+            <div class="av-box wide"><h4>THE ROLLS <small>ONE ROLL DRAWN FROM THE FRENS' ROLLS FOR EACH DIE</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-levian" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-levian)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>2</span></div><div>
+              <p class="q">The Levian</p><p class="by">Rolled by <b>@aliciathebookdragon</b></p><p class="v">Oh, thank Ghan for Alicia, the Book Dragon! This Levian is the opposite of formidable. It's an old Levian with no teeth, so the worst it can do is fall on you.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-approach" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-approach)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>8</span></div><div>
+              <p class="q">The plan</p><p class="by">Rolled by <b>Nadia</b></p><p class="v">After getting the Levian's measure, Sparrow pops up in front of the giant creature, holding out her hand. I think she's forgotten what just happened because...</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-hale" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-hale)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>5</span></div><div>
+              <p class="q">Hale · Crest Knight</p><p class="by">Rolled by <b>@redheadsreadingsmut</b> · Priority: Attacking</p><p class="v">Hale draws his twin torches and tries to attack the beast, but trips over Rune's drones, which Rune sent over to protect the knight. He hits the water, his torches boiling the immediate area. Steam rises.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-scarlett" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-scarlett)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>18</span></div><div>
+              <p class="q">Scarlett Holster · Gunslinger</p><p class="by">Rolled by <b>@hellojolleyo</b> · Priority: Attacking</p><p class="v">Scarlett, the southern belle, drops to the ground, rifle scope to her eye, and fills this thing with button holes up its exposed belly. It roars in pain!</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-orion" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-orion)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>4</span></div><div>
+              <p class="q">Orion Squints · Oracle</p><p class="by">Rolled by <b>@dearthedays</b> · Priority: Healing</p><p class="v">In a sudden panic, Orion stabs Rune with a stim pack, sending him into a manic spree.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-rune" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-rune)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10</span></div><div>
+              <p class="q">Rune Overclock · Techtailor</p><p class="by">Rolled by <b>@dearthedays</b> · Priority: Defending</p><p class="v">Two shield plates and a shield dome deployment later, Rune passes out from the adrenaline, and his gunner drone, twitching, flies away from the fallen Crest Knight, worried it might be in trouble.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-river-sparrow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-river-sparrow)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>4</span></div><div>
+              <p class="q">Sparrow Zipmeister · Intangible</p><p class="by">Rolled by <b>@chris.varen</b> · Priority: Evading</p><p class="v">So when Sparrow pops up in front of the Levian, holding out a hand, the big serpent goes down to get a sniff. Sparrow giggles, but then, fast as lightning, the serpent snaps down on Sparrow, closing the Intangible inside its old, wrinkly, scaled mouth.</p><p class="v">Sparrow appears about ten meters back, cursing as she exits her portal. The Levian opens its now empty mouth to reveal wisps of black smoke but no dinner. And, confused, it dives back into the water and swims away.</p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="olive" style="--img:url('https://africhmaurice.github.io/site/assets/bg/monolith-canyon-as444233611.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-the-raft" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 6 · DE'GATÉ · THE RIVER<span class="av-pill">DECIDED</span></p>
+            <h2>Cross the River</h2>
+            <p class="av-lede">The Levian is gone (probably), but the river is still too fast to swim. The frens hunt down all 100 pieces of a raft, hidden all over this website, and roll for the crossing.</p>
+      <p class="av-lede">24 frens rolled for the raft, the crossing, and the Levian, and every one of them earned the 500-point bonus for finding the raft so fast.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>WHAT HAPPENS</h4><p class="av-story">The frens find all 100 pieces, and the crew lashes together a raft. It floats ... for a while. About halfway across, it breaks apart, and the river sweeps the crew downstream. Now they’re stuck in the water.</p><p class="av-story">Fortunately, the Levian doesn’t come back. But there are other things in this river...</p></div>
+            <div class="av-box wide"><h4>THE ROLLS <small>ONE ROLL DRAWN FROM THE FRENS' ROLLS FOR EACH DIE</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-raft-integrity" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-raft-integrity)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9</span></div><div>
+              <p class="q">The Raft · How well it holds together</p><p class="by">Rolled by <b>@queen_0f_ink</b></p><p class="v">The raft breaks apart about halfway through the crossing.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-raft-crossing" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-raft-crossing)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>11</span></div><div>
+              <p class="q">The Crossing · How well the crew makes it across</p><p class="by">Rolled by <b>@dennisreadslitrpg</b></p><p class="v">The crew gets swept down the river, so they’re stuck in the water.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-raft-levian" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-raft-levian)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>17</span></div><div>
+              <p class="q">The Levian · Does it come back with frens?</p><p class="by">Rolled by <b>@4eyedgoonie</b></p><p class="v">Fortunately, the Levian doesn’t come back.</p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="green" style="--img:url('https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-river-mayhem" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 7 · DE'GATÉ · THE RIVER<span class="av-pill">DECIDED</span></p>
+            <h2>River Mayhem</h2>
+            <p class="av-lede">The raft breaks apart halfway across, and the crew is swept down the river. The frens roll for the water, for how each member of the crew fares, and for every kit they're hauling.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE ROLLS <small>ONE ROLL DRAWN FROM THE FRENS' ROLLS FOR EACH DIE</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-mayhem-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-mayhem-water)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>3</span></div><div>
+              <p class="q">The Water</p><p class="by">Rolled by <b>@k.e.andrews</b></p><p class="v">Roiling, spitting white foam, full of danger.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-mayhem-orion" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-mayhem-orion)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>1</span></div><div>
+              <p class="q">Orion Squints · Oracle</p><p class="by">Rolled by <b>@Vintage_book_journal</b></p><p class="v">As the raft cracks, the wood separating slowly, Orion turns to Hale, his eyes wide, and time slows around them...</p><p class="v">He says, &quot;They always said I would die in the water. That is why I never learned to swim. I thought ... why prepare a skill that I would never need?&quot;</p><p class="v">And then a Levian pops out of the churning surface of the river, arcs high into the sky, and falls onto the raft, its mouth open wide as it consumes the oracle right before Hale’s eyes.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-mayhem-scarlett" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-mayhem-scarlett)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>2</span></div><div>
+              <p class="q">Scarlett Holster · Gunslinger</p><p class="by">Rolled by <b>@Yarnbombcrochet</b></p><p class="v">Scarlett has never been a great swimmer. And so, when the river takes her, she decides that it’d be better to just let it. Surely, it’ll spit her out somewhere nice. Ghan-willin’, she’ll live. But if not, she’s had a good life.</p><p class="v">So the water takes her...</p><p class="v">Some say she’s still drifting through the split streams, lost in the Meridian. Some say she now haunts the river, a demigoddess with twin revolvers. Of course, you all know different...</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-mayhem-hale" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-mayhem-hale)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>6</span></div><div>
+              <p class="q">Hale · Crest Knight</p><p class="by">Rolled by <b>@Vintage_book_journal</b></p><p class="v">As the Levian swallows Orion, Hale plunges his torches into the beast and rides it down into the river. Holding onto his torches, he wraps his legs around the Levian’s sinuous body (as best he can; it’s way too big, so he barely gets a grip) and he begins to cut the Levian open. Heedless of his lack of oxygen. Hale can hold his breath for three minutes. More than long enough to gut a Levian...</p><p class="v">Well, almost long enough. He gets pretty close to the line, but when he emerges onto the shore, dragging the top half of Orion’s corpse behind him, he realizes with some horror that none of his companions are near him. And to make matters worse, he lost his comm and his wrist display shattered in the struggle.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-mayhem-sparrow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-mayhem-sparrow)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9</span></div><div>
+              <p class="q">Sparrow Zipmeister · Intangible</p><p class="by">Rolled by <b>@UnfortunateOwl14</b></p><p class="v">Sparrow falls beneath the water, gets lost in a tumble, hits her head on a rock, but ends up teleporting to shore. She’s close to where Rune lands, but now she has a head wound.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-mayhem-rune" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-mayhem-rune)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>19</span></div><div>
+              <p class="q">Rune Overclock · Techtailor</p><p class="by">Rolled by <b>@lovelisyda</b></p><p class="v">Rune’s armor inflates into an emergency raft fit for five people (he’d forgotten he had this). He makes it to the other side without issue.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-mayhem-kit_defense" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-mayhem-kit_defense)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>7</span></div><div>
+              <p class="q">Defense Kit</p><p class="by">Rolled by <b>@seannyv</b></p><p class="v">As Hale turns back to check the damage on Orion (oh, he’s dead. He did think the oracle was a little lighter than he should’ve been, that explains it), he sees a supply crate in the distance. He jumps into the water to retrieve it.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-mayhem-kit_climbing" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-mayhem-kit_climbing)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>5</span></div><div>
+              <p class="q">Climbing Kit</p><p class="by">Rolled by <b>@spine.breakerbooks</b></p><p class="v">Lost at sea.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-mayhem-kit_medic" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-mayhem-kit_medic)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>12</span></div><div>
+              <p class="q">Field Medic Kit</p><p class="by">Rolled by <b>@Redhead_reader</b></p><p class="v">Rune was able to grab this and toss it onto his raft.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-mayhem-kit_breach" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-mayhem-kit_breach)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9</span></div><div>
+              <p class="q">Breach Kit</p><p class="by">Rolled by <b>@jordanbivs</b></p><p class="v">When Sparrow teleports onto the shore, she lands on the breach kit, the metal case digging into her back.</p></div></div>
+            </div></div>
+            <div class="av-box wide"><h4>WHAT HAPPENS</h4><p class="av-story">The river is roiling, spitting white foam. As the raft cracks, the wood separating beneath them, Orion turns to Hale, his eyes wide, and time slows as he sees his death—a death he has always known would come, just not here, not now.</p><p class="av-story">A Levian erupts from the churning surface of the river, arcs high, and falls onto the raft, its mouth open wide as it consumes the oracle right before Hale’s eyes.</p><p class="av-story">Hale plunges his torches into the beast, rides it down into the river, and cuts it open. He drags himself onto the shore with the top half of Orion, but his comm is gone, his wrist display is shattered, and none of the crew is anywhere near him. Then he spots a supply crate out in the water, the Defense Kit, and jumps back in after it.</p><p class="av-story">Scarlett was never a great swimmer, so when the Levian splinters the raft, she lets the river take her. Some say she is still drifting through the split streams of the Meridian.</p><p class="av-story">Rune’s armor inflates into an emergency raft, and he makes it across with the Field Medic Kit. Sparrow tumbles under the water, hits her head on a rock, and teleports to the shore near Rune, landing hard on the Breach Kit. The Climbing Kit is lost.</p></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="red" style="--img:url('https://africhmaurice.github.io/site/assets/bg/red-sun-ruins-as360866146.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-washed-ashore" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 8 · DE'GATÉ · THE RIVERBANK<span class="av-pill">DECIDED</span></p>
+            <h2>Washed Ashore</h2>
+            <p class="av-lede">The crew is out of the river, but scattered along the bank. The frens roll for Hale's dive after the Defense Kit, choose where he goes next, and roll for the shore where Rune and Sparrow land.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE RESULTS <small>ONE ROLL DRAWN FROM THE FRENS' ROLLS FOR EACH DIE</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ashore-kit_dive" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4c0f"/><stop offset="1" stop-color="#912501"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ashore-kit_dive)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>12</span></div><div>
+              <p class="q">Hale’s Dive</p><p class="by">Rolled by <b>@alauraslibrary_</b></p><p class="v">Hale succeeds on the dive, retrieving the case.</p></div></div>
+            <div class="av-enc"><div><p class="q">After Hale gets back on shore, what does he do?</p><p class="by">The frens chose <b>A. Follow the river</b> · 19 of 32 votes</p><p class="v">He grabs Orion’s top half, throws it over a shoulder, and begins jogging in the direction of his frens.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-ashore-shore" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4c0f"/><stop offset="1" stop-color="#912501"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-ashore-shore)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>8</span></div><div>
+              <p class="q">The Shore</p><p class="by">Rolled by <b>@Gnomienaut</b></p><p class="v">The real trouble is what happens when the other two land on shore. They are set upon by a pack of Cerunines (giant mastiffs about the size of ponies), and they are attacked!</p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="teal" style="--img:url('https://africhmaurice.github.io/site/assets/bg/crystal-towers-lake-as395045722.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-cerunine-attack" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 9 · DE'GATÉ · THE RIVERBANK<span class="av-pill">DECIDED</span></p>
+            <h2>Cerunine Attack</h2>
+            <p class="av-lede">Rune and Sparrow are set upon by five Cerunines, giant mastiffs the size of ponies. The frens roll for both of them in all ten rounds, and the Captain rolls for the Cerunines.</p>
+      <p class="av-lede">The crew wins 7 of 10 rounds, and all five Cerunines go down.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE ROUNDS <small>ONE ROLL DRAWN FOR RUNE AND FOR SPARROW · THE CAPTAIN ROLLED FOR THE CERUNINES</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-fight-0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-fight-0)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>12</span></div><div><p class="q">ROUND 1 · LOSE</p><p class="by">Rune <b>8</b> (@grizspins) · Sparrow <b>8</b> (@jay.Rodriguez.621) · the Cerunines <b>12</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-fight-1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-fight-1)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>20</span></div><div><p class="q">ROUND 2 · LOSE</p><p class="by">Rune <b>8</b> (@Gnomienaut) · Sparrow <b>9</b> (@dennisreadslitrpg) · the Cerunines <b>20</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-fight-2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-fight-2)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>2</span></div><div><p class="q">ROUND 3 · WIN</p><p class="by">Rune <b>20</b> (@Tylers_bookshelf) · Sparrow <b>18</b> (@jay.Rodriguez.621) · the Cerunines <b>2</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-fight-3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-fight-3)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>11</span></div><div><p class="q">ROUND 4 · WIN</p><p class="by">Rune <b>3</b> (@Vintage_book_journal) · Sparrow <b>19</b> (@grizspins) · the Cerunines <b>11</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-fight-4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-fight-4)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9</span></div><div><p class="q">ROUND 5 · WIN</p><p class="by">Rune <b>15</b> (@Vintage_book_journal) · Sparrow <b>2</b> (@earlybirdbooks) · the Cerunines <b>9</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-fight-5" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-fight-5)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>20</span></div><div><p class="q">ROUND 6 · LOSE</p><p class="by">Rune <b>4</b> (@chris.varen) · Sparrow <b>5</b> (@littleboopboops) · the Cerunines <b>20</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-fight-6" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-fight-6)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>5</span></div><div><p class="q">ROUND 7 · WIN</p><p class="by">Rune <b>16</b> (@Becks.and.books) · Sparrow <b>16</b> (@topherdauthor) · the Cerunines <b>5</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-fight-7" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-fight-7)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10</span></div><div><p class="q">ROUND 8 · WIN</p><p class="by">Rune <b>12</b> (@lovelisyda) · Sparrow <b>13</b> (@bbeatson) · the Cerunines <b>10</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-fight-8" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-fight-8)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>14</span></div><div><p class="q">ROUND 9 · WIN</p><p class="by">Rune <b>17</b> (@amkarweick) · Sparrow <b>13</b> (@lizzieb) · the Cerunines <b>14</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-fight-9" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-fight-9)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>2</span></div><div><p class="q">ROUND 10 · WIN</p><p class="by">Rune <b>20</b> (@nova_for_words) · Sparrow <b>10</b> (@grizspins) · the Cerunines <b>2</b></p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="purple" style="--img:url('https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-the-reunion" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 10 · DE'GATÉ · THE RIVERBANK<span class="av-pill">DECIDED</span></p>
+            <h2>The Reunion</h2>
+            <p class="av-lede">The last Cerunine drops, and the shore goes quiet. Rune patches Sparrow’s head wound with the Field Medic Kit while she sits on the Breach Kit, still complaining about the ache it left in her back.</p><p class="av-lede">A proximity alarm from one of Rune’s drones, followed by heavy footsteps on the rocks. They jump up, turn, blades bared.</p><p class="av-lede">It’s Hale, jogging up the riverbank with the Defense Kit in one hand and Orion’s top half slung over his shoulder. Three of them made it out of the river. Scarlett is missing, Orion’s legs are still in the Levian. The sun is in the middle of the sky. It’s still early.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE FRENS CHOSE</h4><p class="av-story">Call the Captain + Try to Find Scarlett</p></div>
+            <div class="av-box wide"><h4>THE SECRET ROLLS <small>ONE ROLL DRAWN FROM THE FRENS' ROLLS FOR EACH</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-reunion-secret_1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-reunion-secret_1)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9</span></div><div>
+              <p class="q">Secret Roll 1 · FAILED</p><p class="by">Rolled by <b>@poppa_squatch</b></p><p class="v">Island-Wide EMP Attack</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-reunion-secret_2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-reunion-secret_2)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>7</span></div><div>
+              <p class="q">Secret Roll 2 · FAILED</p><p class="by">Rolled by <b>Nadia</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-reunion-secret_3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-reunion-secret_3)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>17</span></div><div>
+              <p class="q">Secret Roll 3 · PASSED</p><p class="by">Rolled by <b>@grizspins</b></p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="bone" style="--img:url('https://africhmaurice.github.io/site/assets/bg/dome-city-mist-as159145789.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-the-energy-wave" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 11 · DE'GATÉ · THE RIVERBANK<span class="av-pill">DECIDED</span></p>
+            <h2>The Energy Wave</h2>
+            <p class="av-lede">The crew starts to send a transmission to the Captain, but as soon as they do, a white wave of energy passes through them, and all of their tech starts to overload. Everything is seconds from exploding.</p><p class="av-lede">Roll for Rune’s EMP Dampener, Hale and Sparrow’s Reflex Speed (w/Advantage for Hale--roll 2, take the higher of the 2), and two secret things that might could happen.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE ROLLS <small>ONE ROLL DRAWN FROM THE FRENS' ROLLS FOR EACH DIE</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-wave-dampener" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-wave-dampener)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10</span></div><div>
+              <p class="q">Rune’s Dampener</p><p class="by">Rolled by <b>@Redhead_reader</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-wave-gear_hale" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-wave-gear_hale)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>13</span></div><div>
+              <p class="q">Hale · ADVANTAGE</p><p class="by">Rolled <b>11</b> (@lovelisyda) and <b>13</b> (@heathers_endless_tbr). The higher one counts.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-wave-gear_sparrow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-wave-gear_sparrow)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>3</span></div><div>
+              <p class="q">Sparrow Zipmeister</p><p class="by">Rolled by <b>@Tylers_bookshelf</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-wave-hidden_1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-wave-hidden_1)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9</span></div><div>
+              <p class="q">Secret Roll 1 · FAILED</p><p class="by">Rolled by <b>@Katnyp</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-wave-hidden_2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-wave-hidden_2)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>1</span></div><div>
+              <p class="q">Secret Roll 2 · FAILED</p><p class="by">Rolled by <b>@dearthedays</b></p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="olive" style="--img:url('https://africhmaurice.github.io/site/assets/bg/monolith-canyon-as444233611.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-finding-scarlett" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 12 · DE'GATÉ · THE SOUTHERN SHORE<span class="av-pill">DECIDED</span></p>
+            <h2>Finding Scarlett</h2>
+            <p class="av-lede">Meanwhile, on the southern shore, west of where the river spills into the sea, a body washes up on the sand. It’s Scarlett. She’s alive, but that’s about all we know. What made it to shore with her? Did the energy wave reach her? And how safe is the spot where she landed?</p><p class="av-lede">Roll for Scarlett’s Supplies, her Weapons (w/Advantage: roll 2, take the higher of the 2), the EMP Blast, and how safe the spot is where she lands.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE ROLLS <small>ONE ROLL DRAWN FROM THE FRENS' ROLLS FOR EACH DIE</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-shore-supplies" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-shore-supplies)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>4</span></div><div>
+              <p class="q">Scarlett’s Supplies</p><p class="by">Rolled by <b>@4eyedgoonie</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-shore-weapons" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-shore-weapons)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>16</span></div><div>
+              <p class="q">Scarlett’s Weapons · ADVANTAGE</p><p class="by">Rolled <b>16</b> (@topherdauthor) and <b>8</b> (@lauren.e.books). The higher one counts.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-shore-emp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-shore-emp)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>18</span></div><div>
+              <p class="q">EMP Blast</p><p class="by">Rolled by <b>@Spacefoxy9</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-shore-safe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-shore-safe)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>11</span></div><div>
+              <p class="q">How Safe Is It? · Patches of Quicksand</p><p class="by">Rolled by <b>@earlybirdbooks</b></p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="green" style="--img:url('https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-light-on-her-feet" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 13 · DE'GATÉ · THE SOUTHERN SHORE<span class="av-pill">DECIDED</span></p>
+            <h2>Light on Her Feet</h2>
+            <p class="av-lede">Scarlett washed up with her revolvers and not much else, and the beach is full of quicksand. She has to get past it without getting stuck. And past the quicksand, there’s a crevice with a running river between her and the mainland. It’s much smaller than the last time, but still, the water is scary. She needs to figure out how to get across.</p><p class="av-lede">Roll for the Quicksand (w/Advantage: roll 2, take the higher of the 2), decide how she gets across the crevice, and roll for the outcome.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE FRENS CHOSE <small>Swim across 11 · Find another way 14</small></h4><p class="av-story">Find another way</p></div>
+            <div class="av-box wide"><h4>THE ROLLS <small>ONE ROLL DRAWN FROM THE FRENS' ROLLS FOR EACH DIE</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-feet-quick" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-feet-quick)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>7</span></div><div>
+              <p class="q">Past the Quicksand · ADVANTAGE</p><p class="by">Rolled <b>4</b> (@chris.varen) and <b>7</b> (@amkarweick). The higher one counts.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-feet-crossing" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#268e62"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-feet-crossing)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>13</span></div><div>
+              <p class="q">The Crossing</p><p class="by">Rolled by <b>@thenerdynoveller</b></p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="red" style="--img:url('https://africhmaurice.github.io/site/assets/bg/red-sun-ruins-as360866146.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-pull-her-out" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 14 · DE'GATÉ · THE SOUTHERN SHORE<span class="av-pill">DECIDED</span></p>
+            <h2>Pull Her Out</h2>
+            <p class="av-lede">All 100 strands were found, and the rolls are in! Here’s how the rescue went.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE ROPE <small>ALL 100 STRANDS FOUND</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-rope-pull" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4c0f"/><stop offset="1" stop-color="#912501"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-rope-pull)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>13</span></div><div>
+              <p class="q">The Rescue · ADVANTAGE</p><p class="by">Rolled <b>13</b> (@4eyedgoonie) and <b>11</b> (@queen_0f_ink). The higher one counts.</p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="teal" style="--img:url('https://africhmaurice.github.io/site/assets/bg/crystal-towers-lake-as395045722.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-the-source" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 15 · DE'GATÉ · DEEP IN THE JUNGLE<span class="av-pill">DECIDED</span></p>
+            <h2>The Source of the Wave</h2>
+            <p class="av-lede">The rolls are in! 23 frens rolled for how Rune, Sparrow, and Hale get into the building. Here’s how it went.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE ROLLS <small>ONE ROLL DRAWN PER DIE</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-source-scout" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-source-scout)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>11</span></div><div>
+              <p class="q">Is there a better way in?</p><p class="by">Rolled by <b>@amkarweick</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-source-stealth" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-source-stealth)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>8</span></div><div>
+              <p class="q">How stealthy are they?</p><p class="by">Rolled by <b>@lauren.e.books</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-source-security" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-source-security)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>6</span></div><div>
+              <p class="q">How locked down is it?</p><p class="by">Rolled by <b>@queen_0f_ink</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-source-spot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-source-spot)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>8</span></div><div>
+              <p class="q">Do they spot them?</p><p class="by">Rolled by <b>@Spacefoxy9</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-source-guards" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-source-guards)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>12</span></div><div>
+              <p class="q">How many prism guards?</p><p class="by">Rolled by <b>@spine.breakerbooks</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-source-infiltrate" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-source-infiltrate)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>4</span></div><div>
+              <p class="q">Do they get inside?</p><p class="by">Rolled by <b>@queen_0f_ink</b></p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="purple" style="--img:url('https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-the-break-in" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 16 · DE'GATÉ · INSIDE THE BUILDING<span class="av-pill">DECIDED</span></p>
+            <h2>The Break-⁠In Gone Wrong</h2>
+            <p class="av-lede">Rune trips an alarm, and five prism guards come running. The frens roll for Rune, Sparrow, and Hale in all ten rounds, and the Captain rolls for the prism guards.</p>
+      <p class="av-lede">The crew wins 7 of 10 rounds. They handle the prism guards pretty well, in fact, and all five go down.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE ROUNDS <small>ONE ROLL DRAWN FOR RUNE, SPARROW, AND HALE · THE CAPTAIN ROLLED FOR THE PRISM GUARDS</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-breakin-0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-breakin-0)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9</span></div><div><p class="q">ROUND 1 · WIN</p><p class="by">Rune <b>4</b> (@Tylers_bookshelf) · Sparrow <b>20</b> (@4eyedgoonie) · Hale <b>11</b> (@jay.Rodriguez.621) · the prism guards <b>9</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-breakin-1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-breakin-1)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>14</span></div><div><p class="q">ROUND 2 · LOSE</p><p class="by">Rune <b>1</b> (@spine.breakerbooks) · Sparrow <b>13</b> (@featherandinkbooks) · Hale <b>12</b> (@grizspins) · the prism guards <b>14</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-breakin-2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-breakin-2)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>11</span></div><div><p class="q">ROUND 3 · WIN</p><p class="by">Rune <b>17</b> (@exclaimbooks) · Sparrow <b>13</b> (@Tylers_bookshelf) · Hale <b>6</b> (@exclaimbooks) · the prism guards <b>11</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-breakin-3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-breakin-3)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>13</span></div><div><p class="q">ROUND 4 · WIN</p><p class="by">Rune <b>14</b> (@brandibuystoomanybooks) · Sparrow <b>1</b> (@becks.and.books) · Hale <b>8</b> (@lovelisyda) · the prism guards <b>13</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-breakin-4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-breakin-4)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>16</span></div><div><p class="q">ROUND 5 · LOSE</p><p class="by">Rune <b>5</b> (@Redhead_reader) · Sparrow <b>14</b> (@exclaimbooks) · Hale <b>16</b> (@featherandinkbooks) · the prism guards <b>16</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-breakin-5" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-breakin-5)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10</span></div><div><p class="q">ROUND 6 · WIN</p><p class="by">Rune <b>6</b> (@spine.breakerbooks) · Sparrow <b>12</b> (@earlybirdbooks) · Hale <b>13</b> (@heathers_endless_tbr) · the prism guards <b>10</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-breakin-6" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-breakin-6)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9</span></div><div><p class="q">ROUND 7 · WIN</p><p class="by">Rune <b>3</b> (@Redhead_reader) · Sparrow <b>14</b> (@queen_0f_ink) · Hale <b>4</b> (Reagan) · the prism guards <b>9</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-breakin-7" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-breakin-7)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>10</span></div><div><p class="q">ROUND 8 · WIN</p><p class="by">Rune <b>18</b> (@lovelisyda) · Sparrow <b>16</b> (@Tylers_bookshelf) · Hale <b>16</b> (@becks.and.books) · the prism guards <b>10</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-breakin-8" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-breakin-8)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>15</span></div><div><p class="q">ROUND 9 · WIN</p><p class="by">Rune <b>14</b> (@amkarweick) · Sparrow <b>17</b> (@heathers_endless_tbr) · Hale <b>2</b> (Chrystal) · the prism guards <b>15</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-breakin-9" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b4ee1"/><stop offset="1" stop-color="#2d1c53"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-breakin-9)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>18</span></div><div><p class="q">ROUND 10 · LOSE</p><p class="by">Rune <b>15</b> (@featherandinkbooks) · Sparrow <b>10</b> (@chris.varen) · Hale <b>12</b> (@nova_for_words) · the prism guards <b>18</b></p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="bone" style="--img:url('https://africhmaurice.github.io/site/assets/bg/dome-city-mist-as159145789.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-search-the-building" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 17 · DE'GATÉ · INSIDE THE BUILDING<span class="av-pill">DECIDED</span></p>
+            <h2>Search the Building</h2>
+            <p class="av-lede">The crew shuts down the EMP and the island’s aerial defense systems.</p><p class="av-lede">Rune finds everything on his own, while Sparrow and Hale accidentally lock themselves in the basement and spend the entire time trying to get out.</p><p class="av-lede">There are no guards in the building.</p><p class="av-lede">Then Rune discovers the comm system, and on the crew’s private channel, a transmission from the Captain, on a loop.</p><p class="av-lede">Sparrow and Hale make it out of the basement just in time to hear it with him.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE ROLLS <small>ONE ROLL DRAWN PER DIE</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-search-search_rune" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-search-search_rune)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>12</span></div><div>
+              <p class="q">What do they find?</p><p class="by">Rolled by <b>@ryan_reads_big_books</b></p><p class="v">Rune finds everything on his own.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-search-search_sparrow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-search-search_sparrow)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>3</span></div><div>
+              <p class="q">What do they find?</p><p class="by">Rolled by <b>@seannyv</b></p><p class="v">Sparrow accidentally locks herself in the basement with Hale.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-search-search_hale" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-search-search_hale)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>2</span></div><div>
+              <p class="q">What do they find?</p><p class="by">Rolled by <b>@jordanbivs</b></p><p class="v">Hale spends the entire time trying to get out of the basement with Sparrow.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-search-defense" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-search-defense)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>13</span></div><div>
+              <p class="q">What defenses are in place?</p><p class="by">Rolled by <b>@dearthedays</b></p><p class="v">The crew shuts down the island’s aerial defense systems.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-search-emp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-search-emp)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>14</span></div><div>
+              <p class="q">Can they shut down the EMP?</p><p class="by">Rolled by <b>@dearthedays</b></p><p class="v">The crew shuts down the EMP.</p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-search-emp_2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-search-emp_2)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>6</span></div><div>
+              <p class="q">Can they shut down the EMP?</p><p class="by">Rolled by <b>@heathers_endless_tbr</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-search-guards" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-search-guards)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>9</span></div><div>
+              <p class="q">Are there more guards?</p><p class="by">Rolled by <b>@jordanbivs</b></p><p class="v">No guards in the building.</p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="olive" style="--img:url('https://africhmaurice.github.io/site/assets/bg/monolith-canyon-as444233611.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-the-captains-request" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 18 · DE'GATÉ · INSIDE THE BUILDING<span class="av-pill">DECIDED</span></p>
+            <h2>The Captain’s Request</h2>
+            <p class="av-lede">The frens chose to keep searching for Scarlett, so Rune, Sparrow, and Hale head south.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE ROLLS <small>ONE ROLL DRAWN PER DIE</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-request-hear_rune" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-request-hear_rune)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>15</span></div><div>
+              <p class="q">Rune Overclock · Techtailor</p><p class="by">Rolled by <b>@jordanbivs</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-request-hear_sparrow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-request-hear_sparrow)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>3</span></div><div>
+              <p class="q">Sparrow Zipmeister · Intangible</p><p class="by">Rolled by <b>@chris.varen</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-request-hear_hale" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-request-hear_hale)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>18</span></div><div>
+              <p class="q">Hale · Crest Knight</p><p class="by">Rolled by <b>@topherdauthor</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-request-hear_hale_2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-request-hear_hale_2)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>14</span></div><div>
+              <p class="q">Hale (Advantage)</p><p class="by">Rolled by <b>@tylers_bookshelf</b></p></div></div>
+            <div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-request-secret_d100" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-request-secret_d100)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>35</span></div><div>
+              <p class="q">Secret Roll</p><p class="by">Rolled by <b>@jay.Rodriguez.621</b></p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="green" style="--img:url('https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-saving-scarlett" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 19 · DE'GATÉ · THE SOUTHERN WOODS<span class="av-pill">DECIDED</span></p>
+            <h2>Saving Scarlett</h2>
+            <p class="av-lede">The crew beat the bull goma! Rune, Sparrow, Hale, and Scarlett took six of the ten rounds. In round 9 the bull goma rolled a natural 1 and stumbled, and the round went to the crew.</p>
+      
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE FIGHT <small>ONE ROLL DRAWN PER DIE</small></h4><div class="av-plan av-draws">
+            <div class="av-enc"><div>
+              <p class="q">ROUND 1 · LOSE</p><p class="by">Crew 19, 13, 11, 19 · Bull goma 4 and 20</p></div></div>
+            <div class="av-enc"><div>
+              <p class="q">ROUND 2 · WIN</p><p class="by">Crew 5, 5, 4, 20 · Bull goma 2 and 4</p></div></div>
+            <div class="av-enc"><div>
+              <p class="q">ROUND 3 · WIN</p><p class="by">Crew 16, 15, 7, 1 · Bull goma 8 and 3</p></div></div>
+            <div class="av-enc"><div>
+              <p class="q">ROUND 4 · LOSE</p><p class="by">Crew 15, 16, 18, 10 · Bull goma 18 and 10</p></div></div>
+            <div class="av-enc"><div>
+              <p class="q">ROUND 5 · WIN</p><p class="by">Crew 17, 5, 1, 14 · Bull goma 8 and 12</p></div></div>
+            <div class="av-enc"><div>
+              <p class="q">ROUND 6 · LOSE</p><p class="by">Crew 5, 17, 2, 2 · Bull goma 8 and 18</p></div></div>
+            <div class="av-enc"><div>
+              <p class="q">ROUND 7 · LOSE</p><p class="by">Crew 5, 5, 1, 12 · Bull goma 18 and 15</p></div></div>
+            <div class="av-enc"><div>
+              <p class="q">ROUND 8 · WIN</p><p class="by">Crew 9, 18, 5, 15 · Bull goma 1 and 10</p></div></div>
+            <div class="av-enc"><div>
+              <p class="q">ROUND 9 · WIN</p><p class="by">Crew 9, 8, 8, 9 · Bull goma 9 and 1 · a natural 1, and the Captain gave the crew the round</p></div></div>
+            <div class="av-enc"><div>
+              <p class="q">ROUND 10 · WIN</p><p class="by">Crew 20, 12, 15, 11 · Bull goma 1 and 4</p></div></div>
+            </div></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="red" style="--img:url('https://africhmaurice.github.io/site/assets/bg/red-sun-ruins-as360866146.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-back-to-the-hunt" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 20 · DE'GATÉ · THE SOUTHERN WOODS<span class="av-pill">DECIDED</span></p>
+            <h2>Back to the Hunt</h2>
+            <p class="av-lede">Most of the frens want the Temple. The crew also heard every idea the frens sent, and I combined them into four plans for the next vote.</p>
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE FRENS CHOSE <small>Head to the Sword Landmark 1 · Head to the Cave Mouth 2 · Head to the Temple 7 · Avenge Orion 2 · Something else 1</small></h4><p class="av-story">Head to the Temple</p></div>
+            <div class="av-box wide"><h4>THE SECRET ROLL <small>THE NUMBER STAYS A SECRET</small></h4><p class="av-story">The frens rolled high, and it saved the crew from a night attack.</p></div>
+          </div>
+      
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="teal" style="--img:url('https://africhmaurice.github.io/site/assets/bg/crystal-towers-lake-as395045722.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-the-crew-decides" data-status="vote" data-closes="2026-11-12T04:59:00Z" data-count-action="advcount&vote=decide_vote" data-after="SEE THE VOTE PAGE">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 21 · DE'GATÉ · THE SOUTHERN WOODS<span class="av-pill">VOTING NOW</span></p>
+            <h2>The Crew Decides</h2>
+            <p class="av-lede">The crew heard every idea the frens sent. Most of you want the Temple, and the rest of the ideas came down to four plans.</p><p class="av-lede">Roll for each of the crew as they investigate the building. Then pick the plan you want them to follow, and roll to see how well it starts.</p>
+      <div class="av-live">
+        <div><div class="k">FRENS WHO HAVE VOTED</div><div class="v" data-count>…</div></div>
+        <div><div class="k">FOR VOTING</div><div class="v">+100</div></div>
+        <div><div class="k" data-when-k>VOTING CLOSES</div><div class="v sm" data-when>Wednesday, November 11 at 11:59 PM ET</div></div>
+      </div>
+      <a class="av-cta" data-vote-cta href="https://www.mauriceafrich.com/the-crew-decides">THE CREW DECIDES</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band" data-theme="purple" style="--img:url('https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp')">
+    <div class="av-wrap">
+      <div class="av-line">
+        <section class="av-ch" id="av-through-the-mountains" data-status="done">
+          <div class="av-dot" aria-hidden="true"><svg viewBox="0 0 100 100"><circle class="glow" cx="50" cy="50" r="40"/><circle class="ring" cx="50" cy="50" r="30" pathLength="100"/><circle class="core" cx="50" cy="50" r="14"/></svg></div>
+          <div class="av-card">
+            <p class="av-kick">CHAPTER 22 · DE'GATÉ · THE MOUNTAINS<span class="av-pill">DECIDED</span></p>
+            <h2>Through the Mountains</h2>
+            <p class="av-lede">The frens sent the crew to the sword, and the walk was an easy one. A 12 on the roll. No beasts, no traps, no surprises. Just a quiet path down the valley to the giant blade standing in the rock.</p><p class="av-lede">Then something beside the sword stood up.</p><p class="av-lede">&quot;Tell me that’s a building. Please tell me that’s a building.&quot;</p><p class="av-lede">&quot;Buildings don’t have knees, love.&quot;</p><p class="av-lede">It was a machine, huge and ancient, and it looked down at the crew like they were late for an appointment.</p><p class="av-lede">&quot;You’ve come for the stone. You are not the first, and you will not be the last. I am but one of three guardians who protect this land. You must defeat all of us before you can find what you seek. I am the first guardian. My name is Paraxis. You will not meet my siblings.&quot;</p>
+          <div class="av-grid">
+            <div class="av-box wide"><h4>THE FRENS CHOSE <small>To the Sword 11 · Through the Pass 6 · Tunnels in the Northern Cave 4 · Around the Northern Ridge 4 · Tunnels in the Southern Cave 1 · Around the Southern Ridge 1</small></h4><p class="av-story">To the Sword</p></div>
+            <div class="av-box wide"><h4>THE ROLL <small>ONE ROLL DRAWN</small></h4><div class="av-plan av-draws"><div class="av-enc"><div class="av-die"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="av-g-paths-route" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3adb97"/><stop offset="1" stop-color="#1a5e41"/></linearGradient></defs><polygon points="50,3 91,26 91,74 50,97 9,74 9,26" fill="url(#av-g-paths-route)" stroke="#f3ead9" stroke-width="2.5" stroke-linejoin="round"/><polygon points="50,22 78,68 22,68" fill="rgba(255,255,255,.08)" stroke="rgba(243,234,217,.6)" stroke-width="1.5" stroke-linejoin="round"/><path d="M50 3L50 22M91 26L50 22M9 26L50 22M91 26L78 68M9 26L22 68M91 74L78 68M9 74L22 68M50 97L78 68M50 97L22 68" stroke="rgba(243,234,217,.5)" stroke-width="1.5" fill="none"/></svg><span>12</span></div><div>
+              <p class="q">Roll for the route</p><p class="by">Rolled by <b>Monk</b></p><p class="v">The crew reached the sword without a scratch.</p></div></div></div></div>
+          </div>
+      <a class="av-cta" href="https://www.mauriceafrich.com/through-the-mountains">SEE THE FULL RESULTS</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  <div class="av-band av-next" data-theme="bone" style="--img:url('https://africhmaurice.github.io/site/assets/bg/dome-city-mist-as159145789.webp')">
+    <div class="av-wrap">
+      <h2>What Happens Next?</h2>
+      <div class="av-next-open">
+        <p>The crew found nothing in the building, and the Temple is on the other side of the mountains. The frens pick the route on the map and roll to see how it goes. The map updates as the crew moves.</p>
+        <div class="av-next-btns"><a class="av-cta" href="https://www.mauriceafrich.com/through-the-mountains">VOTE: THROUGH THE MOUNTAINS</a></div>
+      </div>
+      <div class="av-next-shut" hidden>
+        <p>The crew made it to the sword, and now they have to fight the first guardian, Paraxis. What happens next is coming soon!</p>
+        <div class="av-next-btns"><a class="av-cta" href="https://www.mauriceafrich.com/games">PLAY A GAME</a></div>
+      </div>
+      <script>(function(){var c=Date.parse("2026-11-13T21:00:00Z");function flip(){var o=document.querySelector('.av-next-open'),s=document.querySelector('.av-next-shut');if(o&&s){o.hidden=true;s.hidden=false;}}
+      // When the Crash Landing vote closes (midnight ET), the bottom band switches to its after-the-vote words (Maurice, 2026-10-01).
+      if(Date.now()>=c)flip();else if(c-Date.now()<2147483647)setTimeout(flip,c-Date.now()+500);})();</script>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var root = document.getElementById('av'); if (!root) return;
+  var API = "" || 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  // Stretch edge to edge, wherever the Squarespace block sits (the same fit as the vote pages).
+  function fit() {
+    var sec = root.closest('section');
+    if (sec) {
+      Array.prototype.forEach.call(sec.querySelectorAll('.content-wrapper, .fluid-engine'), function (x) {
+        x.style.setProperty('padding-top', '0', 'important'); x.style.setProperty('padding-bottom', '0', 'important');
+      });
+      sec.style.setProperty('padding-top', '0', 'important'); sec.style.setProperty('padding-bottom', '0', 'important');
+    }
+    root.style.marginLeft = '0px';
+    root.style.marginLeft = -root.getBoundingClientRect().left + 'px';
+    root.style.width = document.documentElement.clientWidth + 'px';
+  }
+  fit(); addEventListener('resize', fit); addEventListener('load', fit); setTimeout(fit, 600);
+  // The Squarespace section keeps its own (red) background and runs a little past the page; paint it the
+  // color of the last band so nothing shows below.
+  function paintSection() {
+    var sec = root.closest('section'); if (!sec) return;
+    var bg = sec.querySelector('.section-background'), color = getComputedStyle(root.querySelector('.av-band:last-child') || root).getPropertyValue('--deep') ? 'rgb(' + getComputedStyle(root.querySelector('.av-band:last-child')).getPropertyValue('--deep').trim() + ')' : '#0b170f';
+    sec.style.setProperty('background', color, 'important'); if (bg) bg.style.setProperty('background', color, 'important');
+  }
+  paintSection(); addEventListener('load', paintSection); setTimeout(paintSection, 800);
+
+  // The recordings: one plays at a time.
+  var players = root.querySelectorAll('[data-audio]');
+  function clock(s){s=Math.floor(s||0);return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
+  function stopAll(){Array.prototype.forEach.call(players,function(p){p.querySelector('audio').pause();});}
+  Array.prototype.forEach.call(players, function (p) {
+    var a = p.querySelector('audio'), btn = p.querySelector('.av-pbtn'), fill = p.querySelector('.av-pfill'), t = p.querySelector('.av-ptime'),
+        ip = p.querySelector('svg.p'), is = p.querySelector('svg.s'), label = p.querySelector('.av-plabel').textContent;
+    function paint(){fill.style.width=(a.duration?a.currentTime/a.duration*100:0)+'%';t.textContent=clock(a.paused&&!a.currentTime?a.duration:a.currentTime);
+      ip.hidden=!a.paused;is.hidden=a.paused;btn.setAttribute('aria-label',(a.paused?'Play ':'Pause ')+label);}
+    ['timeupdate','loadedmetadata','play','pause'].forEach(function(ev){a.addEventListener(ev,paint);});
+    a.addEventListener('ended',function(){a.currentTime=0;paint();});
+    btn.addEventListener('click',function(){if(a.paused){stopAll();a.play();}else a.pause();});
+    p.querySelector('.av-ptrack').addEventListener('click',function(e){if(!a.duration)return;var r=this.getBoundingClientRect();a.currentTime=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*a.duration;});
+  });
+
+  // The chapter being voted on: the live count, and a closed state once time is up.
+  Array.prototype.forEach.call(root.querySelectorAll('.av-ch[data-closes]'), function (ch) {
+    var closes = Date.parse(ch.getAttribute('data-closes'));
+    function shut() {
+      ch.setAttribute('data-status', 'closed');
+      ch.querySelector('.av-pill').textContent = 'VOTING CLOSED';
+      var k = ch.querySelector('[data-when-k]'); if (k) k.textContent = 'VOTING CLOSED';
+      var cta = ch.querySelector('[data-vote-cta]'); if (cta) cta.textContent = ch.getAttribute('data-after') || 'SEE THE CREW PAGE';
+    }
+    if (Date.now() >= closes) shut();
+    else if (closes - Date.now() < 2147483647) setTimeout(shut, closes - Date.now() + 500);
+    var out = ch.querySelector('[data-count]'); if (!out) return;
+    var cb = 'avCount' + Math.random().toString(36).slice(2), s = document.createElement('script');
+    window[cb] = function (res) { out.textContent = res && res.ok ? Number(res.count).toLocaleString('en-US') : '—'; try { delete window[cb]; } catch (e) {} s.remove(); };
+    s.src = API + '?action=' + (ch.getAttribute('data-count-action') || 'crewcount') + '&callback=' + cb;
+    s.onerror = function () { out.textContent = '—'; };
+    document.head.appendChild(s);
+  });
+})();
+</script>
+<!-- LOOT BOX 124 on The Adventure So Far (Maurice, 2026-10-27): the same hidden "torches" link as on /the-river, in Hale's
+     Chapter 5 roll ("He hits the water, his torches boiling the immediate area."). Same color, no underline, no pointer, same claim.
+     build-adventure.mjs adds this file to the end of the page. -->
+<style>#av .lb124{color:inherit;font:inherit;text-decoration:none;cursor:auto}</style>
+<script>(function(){
+  var K='N1lCN0pEM1M9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
+  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
+    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
+  function setup(){
+    var root=document.getElementById("av");if(!root)return false;
+    if(root.querySelector('.lb124'))return true;
+    var it=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),n,m;
+    while((n=it.nextNode())){m=n.nodeValue.indexOf('torches boiling');if(m>=0)break;}
+    if(!n)return false;
+    var after=n.splitText(m),rest=after.splitText(7),s=document.createElement('span');
+    s.className='lb124';s.textContent=after.nodeValue;after.parentNode.replaceChild(s,after);
+    s.addEventListener('click',claim);
+    return true;
+  }
+  if(!setup()){var t=0,iv=setInterval(function(){if(setup()||++t>40)clearInterval(iv);},250);}
+})();</script>
+<script>
+/* Golden Trail spots (Maurice 10/31). They run only for hunters with all 151 loot boxes (golden.js); everyone else
+   sees this page exactly as before.
+   Slot 3 "Find Orion.": clicking "the top half of Orion's corpse" gives the golden character (Maurice 11/4: nothing shows it can be clicked).
+   Slot 11 "Male Honey Bees": every "drone" on this page hides one of the four strokes of a golden 0. Each tap shows its
+   stroke and "N of 4 pieces"; the fourth gives the golden character. Pieces are kept in localStorage thGolden:drones.
+   DRAFT copy: "of 4 pieces". */
+(window.maGoldenQ = window.maGoldenQ || []).push(function (G) {
+  var GOLD = '#f2cf5b', W = [[12, 4, 28, 4], [28, 4, 28, 26], [28, 26, 12, 26], [12, 26, 12, 4]];
+  var st = document.createElement('style');
+  st.textContent = '.gd-hit{cursor:pointer;-webkit-tap-highlight-color:transparent}.gd-orion{-webkit-tap-highlight-color:transparent}' +
+    '.gd-chip{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:12px;padding:12px 20px;background:#0b170f;border:2px solid ' + GOLD + ';color:#f3ead9;font:800 13px/1.4 Almarai,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;border-radius:0;pointer-events:none;transition:opacity .4s ease}' +
+    '.gd-chip svg{width:40px;height:30px;flex:none}.gd-chip span{white-space:nowrap}' +
+ '';
+  document.head.appendChild(st);
+
+  // wrap matches of re inside root's text in spans (skipping scripts and anything already wrapped)
+  function wrap(root, re, cls) {
+    var out = [], tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: function (n) {
+      var p = n.parentNode; return !p || /SCRIPT|STYLE/.test(p.nodeName) || p.classList.contains(cls) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT; } }), list = [];
+    while (tw.nextNode()) list.push(tw.currentNode);
+    list.forEach(function (n) {
+      var m; re.lastIndex = 0;
+      while ((m = re.exec(n.nodeValue))) {
+        var mid = n.splitText(m.index), rest = mid.splitText(m[0].length), s = document.createElement('span');
+        s.className = cls + ' gd-hit'; s.textContent = mid.nodeValue; mid.parentNode.replaceChild(s, mid); out.push(s);
+        n = rest; re.lastIndex = 0;
+      }
+    });
+    return out;
+  }
+
+  function setup() {
+    var mayhem = document.querySelector('#av-river-mayhem .av-story'); if (!mayhem) return false;
+    // ---- slot 3: the top half of Orion's corpse (nothing shows it can be clicked) ----
+    var PHRASE = 'the top half of Orion\u2019s corpse', root = document.getElementById('av') || document.body;
+    var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), n, spots = [];
+    while ((n = tw.nextNode())) if (n.nodeValue.indexOf(PHRASE) >= 0 && !(n.parentNode.closest && n.parentNode.closest('script,style'))) spots.push(n);
+    spots.forEach(function (node) {
+      var mid = node.splitText(node.nodeValue.indexOf(PHRASE)); mid.splitText(PHRASE.length);
+      var orion = document.createElement('span'); orion.className = 'gd-orion'; orion.textContent = PHRASE; mid.parentNode.replaceChild(orion, mid);
+      orion.addEventListener('click', function () { G.found(3); });
+    });
+    // ---- slot 11: the drones ----
+    var KEY = 'thGolden:drones', got = []; try { got = JSON.parse(localStorage.getItem(KEY) || '[]') || []; } catch (e) {}
+    var drones = [];
+    Array.prototype.forEach.call(document.querySelectorAll('.av-ch'), function (ch) { drones = drones.concat(wrap(ch, /\bdrones?\b/gi, 'gd-drone')); });
+    var total = drones.length, chip = null, chipT = 0;
+    function svgW() {
+      return '<svg viewBox="0 0 40 30" aria-hidden="true">' + W.map(function (l, k) {
+        var on = got.indexOf(k) >= 0;
+        return '<line x1="' + l[0] + '" y1="' + l[1] + '" x2="' + l[2] + '" y2="' + l[3] + '" stroke="' + (on ? GOLD : 'rgba(243,234,217,.22)') + '" stroke-width="4" stroke-linecap="square"/>';
+      }).join('') + '</svg>';
+    }
+    drones.forEach(function (d, k) {
+      d.addEventListener('click', function () {
+        var piece = k % W.length;   // four strokes, one per drone
+        if (got.indexOf(piece) < 0) { got.push(piece); try { localStorage.setItem(KEY, JSON.stringify(got)); } catch (e) {} }
+        if (!chip) { chip = document.createElement('div'); chip.className = 'gd-chip'; chip.setAttribute('role', 'status'); document.body.appendChild(chip); }
+        chip.innerHTML = svgW() + '<span>' + got.length + ' of ' + W.length + ' pieces</span>'; chip.style.opacity = '1';
+        clearTimeout(chipT); chipT = setTimeout(function () { if (chip) chip.style.opacity = '0'; }, 2600);
+        if (got.length >= W.length) setTimeout(function () { G.found(11); }, 900);
+      });
+    });
+    return true;
+  }
+  if (!setup()) { var t = 0, iv = setInterval(function () { if (setup() || ++t > 40) clearInterval(iv); }, 250); }
+});
+</script>
+</body></html>

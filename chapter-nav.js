@@ -25,7 +25,9 @@
     ['/the-captains-request', 'The Captain’s Request', ['rgba(11,23,15,.88)', '#a2f590', '#607667']],
     ['/saving-scarlett', 'Saving Scarlett', ['rgba(11,23,15,.88)', '#a2f590', '#2c6021']],
     ['/back-to-the-hunt', 'Back to the Hunt', ['rgba(26,9,4,.88)', '#fd7547', '#c53200']],
-    ['/the-crew-decides', 'The Crew Decides', ['rgba(7,24,20,.88)', '#89fbcb', '#268e62']]
+    ['/the-crew-decides', 'The Crew Decides', ['rgba(7,24,20,.88)', '#89fbcb', '#268e62']],
+    ['/through-the-mountains', 'Through the Mountains', ['rgba(21,13,40,.78)', '#c3a6ff', '#7b4ee1']],
+    ['/the-first-guardian', 'The First Guardian', ['rgba(11,23,15,.86)', '#ede9dc', '#607667']]
   ];
   var path = (window.CHAPTER_PATH || location.pathname).replace(/\/+$/, '');
   var at = -1;

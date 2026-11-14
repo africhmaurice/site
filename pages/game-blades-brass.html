@@ -247,11 +247,123 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <a href="https://www.mauriceafrich.com/hold-the-wall-13212" data-k="hold_wall">HOLD THE WALL!</a>
       <a href="https://www.mauriceafrich.com/goma-goons-43216" data-k="goma_goons">GOMA GOONS</a>
     </nav>
-    <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++){var act=lk[j].getAttribute('data-act'),n=act?+((d.acts||{})[act])||0:+d.crewTotal||0;if(n>=+lk[j].getAttribute('data-unlock'))lk[j].hidden=false;}}).catch(function(){});})();</script>
+    <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++){var act=lk[j].getAttribute('data-act'),n=act?+((d.acts||{})[act])||0:+d.crewTotal||0;if(n>=+lk[j].getAttribute('data-unlock'))lk[j].hidden=false;}}).catch(function(){});})();
+/* TRENCH-XP:BEGIN */
+/* Trench XP (Maurice, 2026-11-11): the hunt is over, so there are no more hunt points; every game pays 100 XP a day in the
+   Trench Discord. TrenchXP.mount(host, before) puts the XP box in a win box or under a run: it asks for a Discord username
+   once (optional; typing shows matching members to pick from), keeps it on this device, and sends it to the web app against the player's email. Source: games/trenchxp.js,
+   pasted into games/_tabs.html by scripts/paste-trenchxp.mjs, so every game page carries it. */
+window.TrenchXP = window.TrenchXP || (function () {
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
+  var DISCORD = 'https://discord.gg/d36Xnj4umU', KEY = 'thLoot:discord';
+  // the Trench bot's member lookup: three letters or more bring back up to five members whose names match
+  var NAMES = 'https://industrious-forgiveness-production-c0cb.up.railway.app/api/names';
+  var css = document.createElement('style');
+  css.textContent = '.txp{width:100%;max-width:540px;margin:20px auto 0;padding:22px 20px;display:flex;flex-direction:column;align-items:center;gap:14px;background:#0b170f;border:2px solid rgba(162,245,144,.35);color:#fffffe;text-align:center;box-sizing:border-box;font-family:"Almarai",sans-serif}' +
+    '.txp *{box-sizing:border-box;border-radius:0}' +
+    '.txp p.txp-h{font-family:"Almarai",sans-serif;font-weight:800;font-size:clamp(18px,2.6vw,22px);line-height:1.3;letter-spacing:.08em;color:#a2f590;margin:0;max-width:none}' +
+    '.txp p.txp-p{font-family:"Almarai",sans-serif;font-weight:400;font-size:clamp(15px,1.9vw,17px);line-height:1.55;letter-spacing:0;color:#f3ead9;margin:0;max-width:460px}' +
+    '.txp p.txp-p a{color:#a2f590;text-decoration:underline}.txp p.txp-p b{color:#fffffe;overflow-wrap:anywhere}' +
+    '.txp-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;width:100%;margin:0}' +
+    '.txp-row input{flex:1 1 200px;min-width:0;margin:0;font-family:"Almarai",sans-serif;font-size:17px;font-weight:700;line-height:1.3;padding:12px 14px;border:2px solid #fffffe;background:#fffffe;color:#111}' +
+    '.txp button{flex:0 0 auto;margin:0;font-family:"Almarai",sans-serif;font-weight:800;font-size:15px;line-height:1.3;letter-spacing:.08em;color:#fffffe;background:#c53200;border:2px solid #fffffe;padding:12px 22px;cursor:pointer;transition:background .15s ease}' +
+    '.txp button:hover,.txp button:focus-visible{background:#ff4c0f;outline:none}.txp button:disabled{opacity:.7;cursor:default}' +
+    '.txp button.txp-change{background:transparent;border-color:rgba(255,255,254,.55);font-size:13px;padding:9px 16px}.txp button.txp-change:hover,.txp button.txp-change:focus-visible{background:#213226}' +
+    '.txp-list{list-style:none;width:100%;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}.txp-list:empty{display:none}.txp-list li{margin:0;padding:0}' +
+    '.txp .txp-list button{width:100%;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;text-align:left;font-size:16px;letter-spacing:0;background:#213226;border-color:rgba(255,255,254,.55);padding:12px 14px;overflow-wrap:anywhere}.txp .txp-list button:hover,.txp .txp-list button:focus-visible{background:#2f4736;border-color:#a2f590}' +
+    '.txp-list button span{font-weight:400;font-size:14px;color:#cfd8c9}' +
+    '.txp p.txp-note{font-family:"Almarai",sans-serif;font-weight:400;font-size:14px;line-height:1.5;color:#cfd8c9;margin:0;max-width:460px}.txp p.txp-note:empty{display:none}' +
+    '.txp p.txp-err{font-family:"Almarai",sans-serif;font-weight:700;font-size:15px;line-height:1.4;color:#ffb199;margin:0;max-width:460px}.txp p.txp-err:empty{display:none}' +
+    '.txp-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}' +
+    '@media (prefers-reduced-motion:reduce){.txp button{transition:none}}';
+  document.head.appendChild(css);
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function read(k) { try { return JSON.parse(localStorage.getItem(k) || 'null') || {}; } catch (e) { return {}; } }
+  function post(payload, done) {
+    var settled = false, finish = function (r) { if (settled) return; settled = true; done(r); };
+    var jsonp = function () {
+      var name = 'txpcb' + Math.random().toString(36).slice(2), q = ['callback=' + name], s = document.createElement('script');
+      for (var k in payload) q.push(encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]));
+      var timer = setTimeout(function () { clean(); finish(null); }, 30000);
+      function clean() { clearTimeout(timer); delete window[name]; if (s.parentNode) s.parentNode.removeChild(s); }
+      window[name] = function (r) { clean(); finish(r); };
+      s.onerror = function () { clean(); finish(null); };
+      s.src = ENDPOINT + '?' + q.join('&'); document.body.appendChild(s);
+    };
+    try { fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(payload) }).then(function (r) { return r.json(); }).then(finish).catch(jsonp); } catch (e) { jsonp(); }
+  }
+  function paint(box, email, edit) {
+    var head = '<p class="txp-h">' + esc(box.getAttribute('data-head') || '+100 XP IN THE TRENCH') + '</p>';
+    var kept = read(KEY), name = kept.email === email ? kept.name : '';
+    if (name && !edit) {
+      box.innerHTML = head +
+        '<p class="txp-p">Your XP goes to <b>' + esc(name) + '</b> on the <a href="' + DISCORD + '" target="_blank" rel="noopener">Trench Community Discord</a>: 100 XP a day for each game you play. It lands within a few minutes.</p>' +
+        '<button type="button" class="txp-change">CHANGE MY USERNAME</button>';
+      box.querySelector('.txp-change').onclick = function () { paint(box, email, true); };
+      return;
+    }
+    var me = read('thLoot:me'), guess = name || (/^discord$/i.test(me.platform || '') ? String(me.handle || '').replace(/^@/, '') : '');
+    box.innerHTML = head +
+      '<p class="txp-p">Every game you play pays 100 XP a day in the <a href="' + DISCORD + '" target="_blank" rel="noopener">Trench Community Discord</a>. Start typing your Discord username and pick yourself from the list, so I know where to send it.</p>' +
+      '<form class="txp-row" autocomplete="off"><label class="txp-sr" for="txp-in">Discord username</label>' +
+      '<input id="txp-in" placeholder="Discord username" value="' + esc(guess) + '" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="40">' +
+      '<button type="submit">SAVE</button></form><ul class="txp-list" aria-label="Matching Discord members"></ul><p class="txp-note" role="status"></p><p class="txp-err" role="status"></p>';
+    var form = box.querySelector('form'), input = box.querySelector('input'), btn = form.querySelector('button'), err = box.querySelector('.txp-err');
+    var list = box.querySelector('.txp-list'), note = box.querySelector('.txp-note'), timer = 0, asked = 0;
+    // members whose names match what is typed so far; picking one saves it. If the lookup is down, typing and SAVE still work.
+    function look() {
+      var q = input.value.trim().replace(/^@+/, ''), mine = ++asked;
+      if (q.length < 3) { list.innerHTML = ''; note.textContent = ''; return; }
+      fetch(NAMES + '?q=' + encodeURIComponent(q)).then(function (r) { return r.ok ? r.json() : null; }).then(function (found) {
+        if (mine !== asked) return;
+        if (!Array.isArray(found)) { list.innerHTML = ''; note.textContent = ''; return; }
+        list.innerHTML = found.map(function (m) {
+          var u = String(m.username || ''), n = String(m.name || '');
+          return '<li><button type="button" data-u="' + esc(u) + '">' + esc(u) + (n && n.toLowerCase() !== u.toLowerCase() ? '<span>' + esc(n) + '</span>' : '') + '</button></li>';
+        }).join('');
+        note.textContent = found.length ? '' : 'No one in the Trench Discord matches that yet. You can still save it, and your XP lands once you join.';
+      }).catch(function () { if (mine === asked) { list.innerHTML = ''; note.textContent = ''; } });
+    }
+    input.oninput = function () { clearTimeout(timer); err.textContent = ''; timer = setTimeout(look, 250); };
+    list.onclick = function (e) {
+      var pick = e.target.closest ? e.target.closest('button[data-u]') : null;
+      if (!pick || btn.disabled) return;
+      input.value = pick.getAttribute('data-u'); asked++; list.innerHTML = ''; note.textContent = '';
+      if (form.requestSubmit) form.requestSubmit(); else btn.click();
+    };
+    form.onsubmit = function (e) {
+      e.preventDefault();
+      var typed = input.value.trim();
+      if (!typed) { err.textContent = 'Type your Discord username first.'; return; }
+      err.textContent = ''; btn.disabled = true; btn.textContent = 'SAVING...';
+      post({ action: 'discordname', email: email, discord: typed }, function (r) {
+        if (r && r.ok) { try { localStorage.setItem(KEY, JSON.stringify({ email: email, name: r.discord || typed })); } catch (er) {} if (read(KEY).name) return paint(box, email); btn.textContent = 'SAVED!'; return; }
+        btn.disabled = false; btn.textContent = 'SAVE';
+        err.textContent = r && r.error === 'name' ? 'That username does not look right.' : 'The ship is slow today. Give it another go in a moment.';
+      });
+    };
+  }
+  // host: the element the box goes into; before: an element inside host to put it ahead of (optional); head: the box's
+  // heading, when the page wants its own (the arcade games pay once a day, so theirs reads 100 XP A DAY). One box a page.
+  function mount(host, before, head) {
+    var email = String(read('thLoot:me').email || '').trim().toLowerCase();
+    if (!host || !email) return null;
+    var old = document.querySelector('.txp'); if (old && old.parentNode) old.parentNode.removeChild(old);
+    var box = document.createElement('div'); box.className = 'txp'; if (head) box.setAttribute('data-head', head);
+    if (before && before.parentNode === host) host.insertBefore(box, before); else host.appendChild(box);
+    paint(box, email);
+    return box;
+  }
+  // the box straight after an element, for the arcade games
+  function after(el, head) { return el && el.parentNode ? mount(el.parentNode, el.nextSibling, head || '100 XP A DAY IN THE TRENCH') : null; }
+  return { mount: mount, after: after };
+})();
+/* TRENCH-XP:END */
+</script>
     <script>(function(){function fit(){var t=document.querySelectorAll('.hg-tag');for(var i=0;i<t.length;i++){var e=t[i],w=e.parentNode.clientWidth,r=document.createRange();e.style.fontSize='';r.selectNodeContents(e);var fs=parseFloat(getComputedStyle(e).fontSize);while(r.getBoundingClientRect().width>w-4&&fs>10){fs-=.5;e.style.fontSize=fs+'px';}}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fit);else setTimeout(fit,0);window.addEventListener('load',fit);window.addEventListener('resize',fit);})();</script>
     <div class="hg-eyebrow">Cello&rsquo;s Gate</div>
     <h1 class="hg-h1">BLADES &amp; BRASS</h1>
-    <p class="hg-tag">Swords and brass, perfectly balanced. New every midnight EDT.</p>
+    <p class="hg-tag">Swords and brass, perfectly balanced. New every midnight ET.</p>
   </div>
   <main class="hg-card">
     <div class="hg-stamp" id="hg-stamp">&nbsp;</div>
@@ -454,7 +566,7 @@ var HG = (function () {
               country: c.value === '__other' ? other.value.trim() : c.value };
             if (!person.first_name) return (err.textContent = 'A first name, please.');
             if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(person.email)) return (err.textContent = 'That email does not look right.');
-            if (!person.country) return (err.textContent = 'Which country are you hunting from?');
+            if (!person.country) return (err.textContent = 'Which country are you playing from?');
             err.textContent = ''; me = person; saveMe(me); claim();
           };
         }
@@ -489,6 +601,8 @@ var HG = (function () {
             (NEXT_GAME[o.key] ? '<a class="hg-claim hg-go" href="' + NEXT_GAME[o.key][1] + '">' + NEXT_GAME[o.key][0] + '</a>' : '');
           // the streak, counted from this player's claims, goes on the share panel and the card
           if (window.HGShare && HGShare.streak && me.email) HGShare.streak(o.key, me.email);
+          // after the hunt a solve pays 100 XP in the Trench Discord (Maurice, 2026-11-11); the box asks where to send it
+          if (over && window.TrenchXP) TrenchXP.mount(resultEl, resultEl.querySelector('.hg-go'));
         }
       },
       lose: function (html, title) {
