@@ -63,7 +63,7 @@
 #px .crew{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 #px .mate{background:#fff;border:2px solid var(--ink);padding:20px;display:flex;flex-direction:column;gap:10px;transition:background .2s,border-color .2s}
 #px .mate .nm{font-family:"Cracked Imperia",Impact,sans-serif;font-size:clamp(22px,2.4vw,26px);letter-spacing:.03em;line-height:1.2;text-transform:uppercase}
-#px .mate .role{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4)}
+#px .mate .role{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink4);white-space:nowrap}
 #px .mhead{display:flex;align-items:center;gap:14px}
 #px .mhead>div{display:flex;flex-direction:column;gap:6px;min-width:0}
 #px .ico{flex:none;width:60px;height:60px;background:var(--ink);display:grid;place-items:center}
@@ -177,6 +177,9 @@
 #px .end{background:#0b170f;border:2px solid rgba(237,233,220,.38)}
 #px .bank span{background:#0b170f;border:1px solid rgba(237,233,220,.3)}
 #px .pxd4 .d4lab{color:#a9b8ad}
+/* job titles stay on one line: where four cards get narrow, the icon sits above the name (as on phones) */
+@media (max-width:1100px) and (min-width:821px){#px .mhead{flex-direction:column;align-items:flex-start;gap:10px}}
+@media (max-width:960px) and (min-width:821px){#px .mbtns{grid-template-columns:minmax(0,1fr)}#px .mate{padding:18px 14px}}
 </style>
 <div id="px"><div class="w">
   <header class="hero">
