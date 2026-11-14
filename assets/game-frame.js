@@ -39,7 +39,9 @@
     'airship-runner':      { phoneJoin: [['.ar-ctrls', '.ar-hud']], root: '#ma-runner', zoom: '.ar-wrap', box: ['.ar-hud', '.ar-stage'], snug: true, beside: { host: '.ar-game', items: ['.ar-hud', '.ar-ctrls'] },
                              how: ['.ar-side > .ar-panel:has(.ar-how)'], parts: ['.ar-side > .ar-panel:has(.ar-board)', '.ar-key'] },
     'thread-the-needle':   { root: '#ma-flappy', zoom: '.fl-stage', fit: ['.fl-ctl', '.fl-bar'], parts: ['.fl-panel'] },
-    'trench-run':          { presize: true, phoneLift: ['.ch-hud'], root: '#ma-chase', zoom: '.ch-game', box: ['.ch-hud', '.ch-board'],
+    // phones: the arrow pad lifted out of the scaled game too, under the board at a size a thumb can use (Maurice, 2026-11-14:
+    // it was drawn at 24px inside the scaled game)
+    'trench-run':          { presize: true, phoneLift: ['.ch-hud'], phoneDrop: ['.ch-pad'], phoneSnug: true, root: '#ma-chase', zoom: '.ch-game', box: ['.ch-hud', '.ch-board'],
                              how: ['.ch-howp'], parts: ['.ch-side > .tr-panel:not(.ch-howp)', 'section.tk'] },
     // phones: Normal/Easy on a screen of their own just before the game and the score row lifted out of the scaled game, so the board gets the screen and
     // the score reads at full size (QA 2026-11-14: the game was scaled to 62% on a 360x640 screen, its score row at 8px)
@@ -1002,6 +1004,9 @@
       var extra = Math.max(0, (b0 - t0) - r.height);
       // anything poking out past its right edge counts too (Master Stacker's Pause ran 4px off the screen; QA 2026-11-14)
       var rw = Math.max(r.width, el.scrollWidth * (r.width / Math.max(1, el.offsetWidth)));
+      // a game box that is always the panel's full width (Trench Run's) is measured by its board, so it is not shrunk again
+      // and again for the 4px it is wider than the room (QA 2026-11-14: Trench Run's board at 85% of a 390 screen)
+      var bd = cfg.phoneSnug && q(BOARD, el); if (bd && bd.offsetWidth) rw = Math.max(bd.getBoundingClientRect().width, bd.scrollWidth * (r.width / Math.max(1, el.offsetWidth)));
       return { w: rw, h: r.height, z: Math.min(innerW / rw, (roomH - extra) / r.height) };
     }
     var m = measure();
@@ -1308,6 +1313,11 @@
   presize(); addEventListener('load', presize);
   // phones: a score row lifted out of the scaled game, so its words keep their size (Maurice, 2026-11-13)
   if (cfg.phoneLift && window.innerWidth < 700) cfg.phoneLift.forEach(function (sel) { var e = q(sel, game); if (e) { game.insertBefore(e, game.firstChild); e.classList.add('gs-lifted'); } });
+  // phones: an arrow pad lifted out of the scaled game to just under it, so its buttons keep their size (Trench Run's were 24px)
+  if (cfg.phoneDrop && window.innerWidth < 700) {
+    var zTop = cfg.zoom && q(cfg.zoom, game); while (zTop && zTop.parentElement !== game) zTop = zTop.parentElement;
+    if (zTop) cfg.phoneDrop.slice().reverse().forEach(function (sel) { var e = q(sel, game); if (e) { game.insertBefore(e, zTop.nextSibling); e.classList.add('gs-dropped'); } });
+  }
   // phones, daily puzzles: the date line goes over the champion banner at full size, out of the scaled card (QA 2026-11-14:
   // 12px words drawn at 7 to 10.5px inside the card, and its two lines took room from the board)
   if (window.innerWidth < 700) { var stp = q('#hg-stamp, #thw-stamp', game), crd = q('.hg-card, #daily-word main', game); if (stp && crd && crd.parentElement === game) { var chp = q('.dbd-champ, .wk-champ', game); game.insertBefore(stp, chp && chp.parentElement === game ? chp : crd); stp.classList.add('gs-stamp'); } }

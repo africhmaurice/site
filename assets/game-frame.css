@@ -597,6 +597,20 @@ html.gs-page [data-ma-page] .gs-game .dbd-cover:has(.dbd-who){padding:28px 24px 
   html.gs-page [data-ma-page] #ma-levian .lv-pad button{width:40px!important;height:40px!important}
   html.gs-page [data-ma-page] #ma-levian .lv-pad svg{width:20px;height:20px}
 }
+/* Trench Run on phones (Maurice, 2026-11-14: the arrow pad was drawn at 24px inside the scaled game): the pad lifted out of the
+   scaled game (game-frame.js) to sit centered under the board in its cross, small but a thumb's size, 16px at the sides, so the
+   board gets the room */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-chase .gs-game{padding:12px 16px 84px!important;gap:0!important}   /* (12px on screen over the banner and under the board: set below and by game-frame.js) */
+  html.gs-page [data-ma-page] #ma-chase .ch-hud.gs-lifted{margin-bottom:0!important}
+  html.gs-page [data-ma-page] #ma-chase .gs-game > .ch-pad.gs-dropped{flex:none;grid-template-columns:repeat(3,44px)!important;grid-template-rows:repeat(3,44px)!important;gap:6px!important;margin:12px auto 0!important;zoom:normal!important}
+  html.gs-page [data-ma-page] #ma-chase .ch-pad.gs-dropped button{width:44px!important;height:44px!important}
+}
+/* short phones: the arrows a size smaller still, so the board keeps the height */
+@media (max-width:699px) and (max-height:700px){
+  html.gs-page [data-ma-page] #ma-chase .gs-game > .ch-pad.gs-dropped{grid-template-columns:repeat(3,40px)!important;grid-template-rows:repeat(3,40px)!important}
+  html.gs-page [data-ma-page] #ma-chase .ch-pad.gs-dropped button{width:40px!important;height:40px!important}
+}
 /* daily puzzles on phones: the date line over the champion banner, at full size (game-frame.js lifts it out of the scaled card) */
 @media (max-width:699px){
   html.gs-page [data-ma-page] .gs-game > :is(#hg-stamp,#thw-stamp).gs-stamp{width:100%!important;box-sizing:border-box;margin:0 0 -8px!important;padding:0 4px!important;text-align:center!important;font-size:12px!important;line-height:1.5!important;letter-spacing:.08em!important;color:#f3ead9!important;text-shadow:0 1px 3px rgba(0,0,0,.8)}
