@@ -14,9 +14,9 @@ var MAINT_AT = Date.parse('2026-11-11T05:00:00Z');
 var MAINT = Date.now() >= MAINT_AT || /[?&]ma-maint=1/.test(location.search);
 (function () {
   if (/^\/links\/?$/i.test(location.pathname)) return; // the link page always stays open, as it is
-  var VOTE ='https://www.mauriceafrich.com/through-the-mountains', ARCADE = 'https://www.mauriceafrich.com/arcade';
+  var VOTE ='https://www.mauriceafrich.com/the-first-guardian', ARCADE = 'https://www.mauriceafrich.com/arcade';
   var FONT = '@font-face{font-family:"Cracked Imperia";src:url(https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2) format("woff2");font-weight:100 900;font-display:swap;size-adjust:109.5%}';
-  var kept = /^\/(through-the-mountains|adventure|order|preorder|the-crew-decides|arcade|games|sort-the-shelf|book-icons|blades-and-brass|matching-auras|crest-quest|sky-mines|airship-runner|thread-the-needle|trench-run|sky-gauntlet|the-levian-30527|master-stacker-32368|hold-the-wall-13212|goma-goons-43216)\/?$/i.test(location.pathname);
+  var kept = /^\/(the-first-guardian|through-the-mountains|adventure|order|preorder|the-crew-decides|arcade|games|sort-the-shelf|book-icons|blades-and-brass|matching-auras|crest-quest|sky-mines|airship-runner|thread-the-needle|trench-run|sky-gauntlet|the-levian-30527|master-stacker-32368|hold-the-wall-13212|goma-goons-43216)\/?$/i.test(location.pathname);
   if (!MAINT) {
     // a closed page left open reloads itself at midnight; games and the vote are never interrupted
     var left = MAINT_AT - Date.now();
@@ -32,7 +32,7 @@ var MAINT = Date.now() >= MAINT_AT || /[?&]ma-maint=1/.test(location.search);
   if (kept) {
     // the Arcade, its games, and the vote stay open, without any menu
     window.__maBare = true;
-    var here = /^\/through-the-mountains\/?$/i.test(location.pathname) ? 'vote' : /^\/arcade\/?$/i.test(location.pathname) ? 'arcade' : /^\/adventure\/?$/i.test(location.pathname) ? 'adventure' : /^\/(pre)?order\/?$/i.test(location.pathname) ? 'order' : /^\/links\/?$/i.test(location.pathname) ? 'links' : '';
+    var here = /^\/the-first-guardian\/?$/i.test(location.pathname) ? 'vote' : /^\/arcade\/?$/i.test(location.pathname) ? 'arcade' : /^\/adventure\/?$/i.test(location.pathname) ? 'adventure' : /^\/(pre)?order\/?$/i.test(location.pathname) ? 'order' : /^\/links\/?$/i.test(location.pathname) ? 'links' : '';
     fonts();
     style('header#header,.header-menu,#hunt-nav,#hunt-nav-ov,#ma-chapters{display:none!important}' +
       '#ma-bare{position:fixed;top:0;left:0;right:0;z-index:2147483000;box-sizing:border-box;min-height:56px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;padding:8px 16px;background:#0b170f;border-bottom:2px solid #1a5e41}' +
@@ -1306,7 +1306,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   // Chapter buttons (2026-10-09): Previous chapter / See the map / Next chapter at the foot of each chapter page.
   function chapterNav() {
     if (window.__chapterNavLoaded) return; window.__chapterNavLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=18'; s.async = true; document.head.appendChild(s);
+    var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=19'; s.async = true; document.head.appendChild(s);
   }
   function raftHunt() {
     if (window.__raftLoaded) return; window.__raftLoaded = true;
