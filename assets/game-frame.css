@@ -811,3 +811,40 @@ html.gs-page [data-ma-page] .gs-cardp .gs-cols > * + *{margin-top:20px!important
 @media (max-width:699px){html.gs-page [data-ma-page] .gs-cardp[style*="zoom"] .gs-cols > *{max-width:calc(var(--gsvw,100vw) - 32px)!important;margin-left:auto!important;margin-right:auto!important}}
 /* ...and 12px or more between the start card's title, its line, and SET SAIL as drawn (7px with the maze scaled down) */
 html.gs-page [data-ma-page] #ma-chase#ma-chase .ch-ov{gap:max(12px,calc(12px / var(--gsz,1)))!important}
+/* ---------- 17. QA pass 6 (2026-11-14) ---------- */
+/* Hold the Wall! on phones: the Tower tab's ten upgrades in four columns (three rows), so its screen fits at full size
+   instead of being scaled to 84% (names, costs, and Auto at 9.4-10.9px on a 360x640 screen); on a taller phone, where they sit under
+   the field, the Tower tab no longer scales the whole game down to 62% (9.8px at 390x844) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-holdwall #hw-ctl #hw-ups{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px 4px!important}
+  html.gs-page [data-ma-page] #ma-holdwall #hw-ctl #hw-ups .b{padding-top:4px!important}
+  html.gs-page [data-ma-page] #ma-holdwall #hw-ctl #hw-ups .b .ic{height:22px!important;width:22px!important}
+  html.gs-page [data-ma-page] #ma-holdwall #hw-ctl #hw-ups .b .nm{line-height:1.15!important}
+}
+/* Goma Goons' crew picker: every name on one line inside its box at full size, 4px or more from the box's edges, so no name is
+   scaled on its own (QA 2026-11-14: Galaxy, Pebble, and Goldie scaled to 93-96%, sitting higher than the rest and touching their
+   edges at 1440x900 in a browser that draws text at 16px or more); on phones the names keep 11px or more however far the
+   screen is scaled (13px at 83%: 10.8px) */
+html.gs-page [data-ma-page] :is(#ma-skyduel#ma-skyduel#ma-skyduel,.gs-pre) .sd-goma.sd-goma{letter-spacing:.03em!important;padding-left:3px!important;padding-right:3px!important}
+@media (min-width:700px){html.gs-page [data-ma-page] :is(#ma-skyduel#ma-skyduel#ma-skyduel,.gs-pre) .sd-gomas.sd-gomas{column-gap:8px!important}}
+@media (max-width:699px){html.gs-page [data-ma-page] :is(#ma-skyduel#ma-skyduel#ma-skyduel,.gs-pre) .sd-goma.sd-goma{font-size:max(13px,calc(11.4px / var(--gz,1)))!important}}
+/* Goma Goons on wide screens: each number in the score row keeps a set width (figures of one width, room for the usual counts),
+   so Pause and New run hold their place while the score, coins, and health change (QA 2026-11-14: Pause moved 3-7px sideways) */
+@media (min-width:700px){
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .sd-bar b{display:inline-block;font-variant-numeric:tabular-nums;text-align:left;min-width:2ch}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .sd-bar :is(.sd-score,.sd-best){min-width:5ch}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .sd-bar :is(.sd-coin,.sd-hp0,.sd-hp1){min-width:4ch}
+}
+/* ...and its move buttons keep each word whole: Upgrades broke as UPGRADE / S at 1440x900 */
+html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .sd-pad button{overflow-wrap:normal!important;letter-spacing:.04em!important}
+/* daily puzzles on phones, signed out: 20px inside the sign-in card on every side (14px before) and the same white margin above
+   and below it (19px and 9px before); the room comes from the space over the card, so it still fits at full size */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] .gs-game.gs-game :is(.hg-card,#daily-word main,.thw-wrap):has(> .dbd-gate > .dbd-cover .dbd-who) > .dbd-gate{margin-top:0!important}
+  html.gs-page [data-ma-page] .gs-game.gs-game .dbd-cover:has(.dbd-who){padding:calc(20.2px / var(--gs-cz,1) - 3px)!important}   /* (20px as drawn when the card is scaled) */
+}
+/* the Arcade panel on phones: 12px between the tiles stacked in a column (8px before) */
+@media (max-width:699px){html.gs-page [data-ma-page] .gs-arcade .hg-tabs.hg-tabs{row-gap:12px!important}}
+/* ...and on phones the turn message under the board keeps two lines' room, so the game doesn't move 8px each time it changes
+   between a two-line and a one-line message (Pause and the board dropped 8px at the rival's turn on a 360x640 screen) */
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .sd-msg{min-height:2lh!important}}

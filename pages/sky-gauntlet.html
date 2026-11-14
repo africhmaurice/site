@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
-<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=5" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=4"></script>
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=6" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=5"></script>
 <!-- ============================================================
      THE SKY GAUNTLET (named by Maurice 10/12; replaces The Captain's Cabin, Maurice 10/12).
      An arcade shooter. Maurice's red airship slides along the bottom and its cannons fire on their own,
@@ -1074,7 +1074,7 @@ window.TrenchXP = window.TrenchXP || (function () {
     stage.style.width=w+4+'px';stage.style.height=h+4+'px';
     cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);
     root.querySelector('.sg-hud').style.width=w+4+'px';
-    draw();
+    hudKs=0;draw();
   }
   function sprite(img,x,y,w,ang,alpha){
     if(!img)return;var iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height;if(!iw)return;
@@ -1097,6 +1097,9 @@ window.TrenchXP = window.TrenchXP || (function () {
       var ax=x+22*Math.cos(Math.PI*1.35),ay=y+22*Math.sin(Math.PI*1.35);ctx.beginPath();ctx.moveTo(ax-6,ay-2);ctx.lineTo(ax,ay);ctx.lineTo(ax+1,ay-7);ctx.stroke();ctx.restore();}
     else if(k==='life'||k==='life2'){var lt=k==='life'?'+1':'+2';sprite(IMG.ship,x,y,40);ctx.save();ctx.font="800 15px 'Almarai',sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3;ctx.strokeStyle='#0b170f';ctx.strokeText(lt,x,y+2);ctx.fillStyle='#fffffe';ctx.fillText(lt,x,y+2);ctx.restore();}
   }
+  // the canvas's scale on screen, page zoom included (checked every 30 frames and after each resize)
+  var hudKs=0,hudN=0;
+  function hudK(){if(!hudKs||!(hudN++%30)){var r=cv.getBoundingClientRect();if(r.width)hudKs=r.width/W;}return hudKs||scale||1;}
   function draw(){
     ctx.setTransform(dpr*scale,0,0,dpr*scale,0,0);
     /* the starry sky scrolls down */
@@ -1168,21 +1171,30 @@ window.TrenchXP = window.TrenchXP || (function () {
     /* explosions */
     S.fx.forEach(function(e){var fr=IMG.boom[Math.min(3,Math.floor(e.t/.08))];sprite(fr,e.x,e.y,e.s);});
     /* score pop-ups */
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.font="800 15px 'Almarai',sans-serif";
+    // (the board's words drawn 12px or more on screen, however far the page scales the canvas down: QA 2026-11-14, pass 6, the
+    // weapon and hull lines at 7.9px on a 390 screen and 9.2px at 1440x900; sized up by as much as the canvas is scaled)
+    var hk=hudK(),hf=Math.max(11,Math.ceil(12.2/hk)),pf=Math.max(15,Math.ceil(12.2/hk));
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.font="800 "+pf+"px 'Almarai',sans-serif";
     S.pops.forEach(function(p){ctx.fillStyle='#89fbcb';ctx.fillText(p.txt.toUpperCase(),p.x,p.y-(RM()?0:(1-p.t)*24));});
     /* timers for temporary upgrades, bottom left */
     var row=0;
-    ['torch','bolt','brass','pierce'].forEach(function(k){if(S.temp[k]<=0)return;var y=H-16-row*20;row++;
-      ctx.fillStyle='rgba(11,23,15,.75)';ctx.fillRect(10,y-12,150,18);
-      ctx.fillStyle='rgb('+DROPS[k].glow+')';ctx.fillRect(10,y-12,150*S.temp[k]/DROPS[k].secs,4);
-      ctx.fillStyle='#fffffe';ctx.textAlign='left';ctx.font="800 11px 'Almarai',sans-serif";ctx.fillText((k==='brass'?S.lanes+' MISSILE LANES':DROPS[k].name.toUpperCase()),16,y);});
+    var th=Math.max(18,hf+8);
+    ['torch','bolt','brass','pierce'].forEach(function(k){if(S.temp[k]<=0)return;var y=H-16-row*(th+2);row++;
+      ctx.font="800 "+hf+"px 'Almarai',sans-serif";var tt=(k==='brass'?S.lanes+' MISSILE LANES':DROPS[k].name.toUpperCase()),tw=Math.max(150,Math.ceil(ctx.measureText(tt).width)+12);
+      ctx.fillStyle='rgba(11,23,15,.75)';ctx.fillRect(10,y-th+6,tw,th);
+      ctx.fillStyle='rgb('+DROPS[k].glow+')';ctx.fillRect(10,y-th+6,tw*S.temp[k]/DROPS[k].secs,4);
+      ctx.fillStyle='#fffffe';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(tt,16,y-th/2+8);});
     /* weapon level and crests toward the next one, top left */
-    var lv=level(),nxt=CRESTS[lv+1];ctx.textAlign='left';ctx.font="800 11px 'Almarai',sans-serif";ctx.fillStyle='rgba(11,23,15,.75)';ctx.fillRect(10,10,170,22);
-    ctx.fillStyle='#fffffe';ctx.fillText(('Weapon level '+lv+(nxt?'  ·  crests '+S.crests+'/'+nxt:'  ·  max')).toUpperCase(),16,22);
-    var hm=hullMax(),hn=hullNext(hm);ctx.fillStyle='rgba(11,23,15,.75)';ctx.fillRect(10,36,170,22);
-    ctx.fillStyle='#fffffe';ctx.fillText(('Hull '+S.hull+'/'+hm+(hn?'  ·  next at '+hn+' crests':'  ·  max')).toUpperCase(),16,48);
-    /* the flagship's hull, across the top */
-    if(S.boss){var bw2=W-200,fr=Math.max(0,S.boss.hp/S.boss.max);ctx.fillStyle='rgba(11,23,15,.8)';ctx.fillRect(190,10,W-200,22);ctx.fillStyle='#ff4c0f';ctx.fillRect(194,14,(bw2-8)*fr,14);ctx.strokeStyle='#fffffe';ctx.lineWidth=1;ctx.strokeRect(190.5,10.5,W-201,21);}
+    var lv=level(),nxt=CRESTS[lv+1],hm=hullMax(),hn=hullNext(hm);ctx.textAlign='left';ctx.textBaseline='middle';ctx.font="800 "+hf+"px 'Almarai',sans-serif";
+    // each line in a box as wide as its words; a line too long for the board goes on two, split where its parts meet
+    var hy=10,hw=170,lh=Math.round(hf*1.3),bp=Math.max(5,Math.round(hf*.35));
+    [['Weapon level '+lv,nxt?'crests '+S.crests+'/'+nxt:'max'],['Hull '+S.hull+'/'+hm,hn?'next at '+hn+' crests':'max']].forEach(function(pr){
+      var one=(pr[0]+'  ·  '+pr[1]).toUpperCase(),ls=ctx.measureText(one).width<=W-44?[one]:[pr[0].toUpperCase(),pr[1].toUpperCase()];
+      var bw=Math.max(170,Math.ceil(Math.max.apply(null,ls.map(function(t){return ctx.measureText(t).width;})))+12),bh=Math.max(22,ls.length*lh+2*bp);hw=Math.max(hw,bw);
+      ctx.fillStyle='rgba(11,23,15,.75)';ctx.fillRect(10,hy,bw,bh);ctx.fillStyle='#fffffe';
+      ls.forEach(function(t,i){ctx.fillText(t,16,hy+bh/2+(i-(ls.length-1)/2)*lh+1);});hy+=bh+4;});
+    /* the flagship's hull, across the top (under the two lines when they take the board's width) */
+    if(S.boss){var bx=10+hw+10,by=10;if(W-10-bx<120){bx=10;by=hy+2;}var bw2=W-10-bx,fr=Math.max(0,S.boss.hp/S.boss.max);ctx.fillStyle='rgba(11,23,15,.8)';ctx.fillRect(bx,by,bw2,22);ctx.fillStyle='#ff4c0f';ctx.fillRect(bx+4,by+4,(bw2-8)*fr,14);ctx.strokeStyle='#fffffe';ctx.lineWidth=1;ctx.strokeRect(bx+.5,by+.5,bw2-1,21);}
     /* banner */
     if(S.bannerT>0&&S.banner){
       ctx.font="400 40px 'Cracked Imperia',Impact,sans-serif";ctx.textAlign='center';ctx.textBaseline='middle';

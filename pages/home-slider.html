@@ -43,6 +43,8 @@ a{color:#fff}
 .hv6:hover{opacity:1 !important;transform:scale(1.18) !important}
 /* Slide images grow a little under the pointer (Maurice, 2026-11-11). */
 #ma-track .ed-book img,#ma-track .qz-crew img,#ma-track div[data-screen-label="04"]>img,#ma-track div[data-screen-label="06"]>img{transition:transform .25s ease}
+/* 12px between an edition's name and the line under it (QA pass 6, 2026-11-14) */
+#ma-track .ed-label>span{margin-top:12px}
 @media (hover:hover){#ma-track .ed-book:hover img,#ma-track .qz-crew:hover img,#ma-track div[data-screen-label="04"]>img:hover,#ma-track div[data-screen-label="06"]>img:hover{transform:scale(1.06)}}
 /* Hero modes (Maurice, 2026-11-12). Strips: on wide screens each slide is a numbered strip and the chosen one
    slides open across the slider (after VILDMARK). Stairs: the next slide wipes in as stepped bands (phones). */

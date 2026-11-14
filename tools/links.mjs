@@ -143,8 +143,8 @@ const page = `<!-- ============================================================
 #ma-links .lk-tin{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px;text-align:center}
 #ma-links .lk-logo{display:block;max-width:68%;max-height:44%;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
 #ma-links .lk-five .lk-logo{max-width:56%;max-height:40%}
-#ma-links .lk-five .lk-note{font-size:clamp(9px,2.6vw,11px);letter-spacing:.04em}
-#ma-links .lk-two .lk-note{font-size:clamp(10px,2.6vw,12px);letter-spacing:.02em}
+#ma-links .lk-five .lk-note{font-size:clamp(11px,2.6vw,11px);letter-spacing:.04em}
+#ma-links .lk-two .lk-note{font-size:clamp(11px,2.6vw,12px);letter-spacing:.02em}
 #ma-links .lk-note{max-width:100%;overflow-wrap:normal;word-break:normal;hyphens:none;font-weight:800;font-size:12px;line-height:1.3;letter-spacing:.1em;text-transform:uppercase;text-wrap:balance}
 #ma-links .lk-name{max-width:100%;font-weight:800;font-size:clamp(13px,3.8vw,16px);line-height:1.3;letter-spacing:.08em;text-transform:uppercase;text-wrap:balance;text-shadow:0 2px 8px rgba(0,0,0,.45)}
 #ma-links .lk-feat{aspect-ratio:3/4}

@@ -321,7 +321,12 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     '#rc .cr-res-kits{grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr))!important}#rc .cr-res-kits.cr-wide{grid-template-columns:minmax(0,1fr)!important}' +
     '#rc .cr-res-kit>div,#rc .cr-pair-res,#rc .cr-pair-res>*{min-width:0}#rc .cr-res-kit .by,#rc .cr-pair-res .by,#rc .by b{overflow-wrap:anywhere}' +
     // a roll count stays with its label ("4 NAT 1S" never splits after the 4)
-    '#rc .crit b,#av .crit b{white-space:nowrap}'; (document.head || document.documentElement).appendChild(s); })();
+    '#rc .crit b,#av .crit b{white-space:nowrap}' +
+    // roll cards: 12px between the roll's name, "Rolled by", and what happened (QA pass 6, 2026-11-14)
+    '#rc .q+.by,#av .q+.by{margin-top:12px!important}' +
+    '#rc .by+.a,#rc .by+.prio,#rc .by+.cr-verdict,#rc .by+.cr-chart-hit,#av .by+.v,#av .by+.a,#av .av-enc .v+.v{margin-top:12px!important}' +
+    // and 12px from an eyebrow to its heading, and from that heading to the line under it
+    '#rc .rc-step>header{gap:12px!important}#rc .cr-win .k{margin-bottom:12px!important}#rc .cr-win h3+p{margin-top:12px!important}'; (document.head || document.documentElement).appendChild(s); })();
   // Headings (Maurice, 2026-10-09): heads.js turns every Atomic Marker and Cinzel heading into Cracked Imperia Bold
   // with its 3D (Extrude Flush). Clue and puzzle text keeps its own capitals and line breaks.
   (function () { var s = document.createElement('script'); s.src = BASE + 'heads.js'; (document.head || document.documentElement).appendChild(s); })();
@@ -381,7 +386,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   // 4. Images come from a copy of this site pinned to one publish, cached for a year (GitHub Pages only allows
   // 10 minutes, and every publish makes visitors download everything again). Anything newer than the pin
   // falls back to GitHub Pages by itself. tools/pin-assets.mjs moves the pin after a publish.
-  var PIN = 'bfb88c6a11f8b61c49d62be42fa4605e0e27c067';
+  var PIN = 'fda10920026f91ff2a9126c11a0a7c65c145ab90';
   var GH = 'https://africhmaurice.github.io/site/', CDN = PIN ? 'https://cdn.jsdelivr.net/gh/africhmaurice/site@' + PIN + '/' : '';
   function cdn(u) { return CDN && u.indexOf(GH + 'assets/') === 0 ? CDN + u.slice(GH.length) : u; }
   function prep(html) {

@@ -286,7 +286,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 
 #av .av-live{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:4px 0 0}
 #av .av-live>div{background:rgba(var(--deep),.55);border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);padding:14px 16px}
-#av .av-live .k{font-weight:800;font-size:11px;letter-spacing:.14em;color:var(--accent);margin-bottom:6px}
+#av .av-live .k{font-weight:800;font-size:11px;letter-spacing:.14em;color:var(--accent);margin-bottom:12px}
 #av .av-live .v{font-family:'Atomic Marker',cursive;font-size:clamp(28px,3.2vw,40px);line-height:1.1}
 #av .av-live .v.sm{font-size:clamp(18px,1.9vw,24px);line-height:1.25}
 #av .av-cta{display:inline-block;margin-top:24px;color:var(--cta-ink)!important;text-decoration:none!important;font-weight:800;font-size:15px;letter-spacing:.1em;border:1.5px solid var(--cta);background:var(--cta);padding:14px 26px;transition:transform .15s ease,background .15s ease,color .15s ease}
@@ -1189,7 +1189,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 @media (prefers-reduced-motion:reduce){#av .av-chip.avt{transition:none}#av .av-chip.avt:active{transform:none}}
 /* the chapter rail (2026-11-13): numbers fixed down the left edge, newest at the top; the grid of buttons is hidden */
 #av .av-chips.avt-off{display:none!important}
-#av .avt-rail{position:fixed;left:12px;top:112px;bottom:12px;z-index:20;display:flex;flex-direction:column;justify-content:center;gap:4px;width:56px;transition:opacity .25s ease}
+#av .avt-rail{position:fixed;left:12px;top:112px;bottom:16px;z-index:20;display:flex;flex-direction:column;justify-content:center;gap:4px;width:56px;transition:opacity .25s ease}
 #av .avt-rail.avt-gone{opacity:0;pointer-events:none}
 #av .avt-r{flex:1 1 0;max-height:44px;min-height:0;display:flex;align-items:center;justify-content:center;
   font-family:'CI Face','Cracked Imperia',Impact,sans-serif;font-size:clamp(14px,2.4vh,22px);line-height:1.05;letter-spacing:.03em;
@@ -1199,6 +1199,12 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #av .avt-r:hover,#av .avt-r:focus-visible,#av .avt-r.on{opacity:1}
 #av .avt-r:focus-visible{outline:2px solid #fff;outline-offset:2px}
 #av.avt-railed .av-wrap{padding-left:max(var(--av-pad,20px),88px)}
+/* short screens (QA pass 6, 2026-11-14): the numbers shrink to keep 12px between them (never under 11px), and when
+   one column would need smaller numbers than that, they sit in two columns, 16px from the screen's edges */
+#av .avt-rail[style*="--avt-fs"] .avt-r{font-size:var(--avt-fs)!important}
+#av .avt-rail.avt-two{display:grid;grid-template-columns:repeat(2,auto);grid-auto-rows:var(--avt-row,32px);align-content:center;justify-content:start;column-gap:14px;row-gap:0;left:16px;width:auto}
+#av .avt-rail.avt-two .avt-r{max-height:none;justify-content:flex-start}
+#av.avt-railed.avt-two .av-wrap{padding-left:var(--avt-pad,76px)!important}
 /* words never break mid-word (2026-11-14): player titles wrap at spaces only */
 #av .av-plabel,#av .av-enc .a,#av .av-enc .q,#av .av-enc .v{overflow-wrap:normal;word-break:normal;hyphens:none}
 /* a roll's die sits above its words once the card is too narrow for both side by side (the words wrap under the die
@@ -1216,7 +1222,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   #av .av-ptime{grid-area:time}
 }
 @media (max-width:760px){
-  #av .avt-rail{left:6px;width:38px;gap:3px}
+  #av .avt-rail{left:8px;width:38px;gap:3px}
   #av .avt-r{font-size:clamp(12px,2.1vh,17px)}
   #av.avt-railed .av-wrap{padding-left:56px}
   /* phones (QA 2026-11-14): a slimmer route lane leaves the cards more room */
@@ -1310,12 +1316,33 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     var hb = 0;
     ['header', 'hunt-nav'].forEach(function (id) { var e = document.getElementById(id); if (!e) return; var r = e.getBoundingClientRect(), c = getComputedStyle(e); if (r.height && r.top < 40 && c.display !== 'none' && (c.position === 'fixed' || c.position === 'sticky')) hb = Math.max(hb, r.bottom); });
     rail.style.top = (Math.round(hb) + 12) + 'px';
+    railFit(Math.round(hb) + 12);
     // gone once the adventure has scrolled away (the footer), and the chapter on screen is outlined
     var rb = root.getBoundingClientRect();
     rail.classList.toggle('avt-gone', rb.bottom < innerHeight * 0.6);
     var on = null;
     tiles.forEach(function (t, i) { if (t[1].getBoundingClientRect().top < innerHeight * 0.45) on = rail.children[i]; });
     Array.prototype.forEach.call(rail.children, function (c) { c.classList.toggle('on', c === on); });
+  }
+  // 12px between the numbers and 16px under the last one on every screen (QA pass 6, 2026-11-14): a number's
+  // 3D face stands about 1.1 times its size, so the numbers get smaller when the screen is short, never under 11px;
+  // below that they split into two columns
+  var fitKey = '';
+  function railFit(top) {
+    var n = rail.children.length, key = innerWidth + 'x' + innerHeight + ':' + top + ':' + n;
+    if (!n || key === fitKey) return; fitKey = key;
+    rail.classList.remove('avt-two'); root.classList.remove('avt-two');
+    rail.style.removeProperty('--avt-fs'); rail.style.removeProperty('--avt-row'); root.style.removeProperty('--avt-pad');
+    var K = 1.1, MIN = 11, GAP = 12, avail = innerHeight - top - 16;
+    var css = parseFloat(getComputedStyle(rail.children[0]).fontSize), gap = parseFloat(getComputedStyle(rail).rowGap) || 0;
+    var pitch = Math.min((avail + gap) / n, 44 + gap), fs = Math.min(css, (pitch - GAP) / K);
+    if (fs >= MIN) { if (fs < css) rail.style.setProperty('--avt-fs', fs.toFixed(2) + 'px'); return; }
+    var rows = Math.ceil(n / 2), row = Math.min(44, avail / rows);
+    fs = Math.max(MIN, Math.min(css, (row - GAP) / K));
+    rail.classList.add('avt-two'); root.classList.add('avt-two');
+    rail.style.setProperty('--avt-row', row.toFixed(2) + 'px');
+    if (fs < css) rail.style.setProperty('--avt-fs', fs.toFixed(2) + 'px');
+    root.style.setProperty('--avt-pad', Math.ceil(rail.getBoundingClientRect().right - root.getBoundingClientRect().left + 12) + 'px');
   }
   railPlace();
   addEventListener('scroll', railPlace, { passive: true });

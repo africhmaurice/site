@@ -175,7 +175,8 @@
         // crosses the heading above the group on its way in
         if (side) { var cx = (r.left + r.width / 2 - gr.left) / Math.max(1, gr.width); dir = cx < 0.47 ? -1 : cx > 0.53 ? 1 : (i % 2 ? 1 : -1); }
         // already on screen when the page opens: it starts in place (Maurice, 2026-11-13: 'make the aura cards at the top in place')
-        var home = window.scrollY < 10 && r.top + r.height / 2 < innerHeight;
+        // (QA pass 6, 2026-11-14: anything whose top is on the first screen, not just its middle)
+        var home = window.scrollY < 10 && r.top < innerHeight && r.bottom > 0;
         items.push({ type: 'fly', el: c, ref: c, dir: dir, i: i, x: side, home: home });
       });
     });
@@ -692,5 +693,9 @@
   var later = 0;
   addEventListener('resize', function () { clearTimeout(later); later = setTimeout(scan, 120); kick(); });
   addEventListener('load', scan);
+  // the first screen settles again whenever the page's layout shifts before the reader scrolls (a font or picture
+  // arriving moves a piece up onto the first screen, and it shows in place there too) (QA pass 6, 2026-11-14)
+  if (window.ResizeObserver) new ResizeObserver(function () { if (untouched) kick(); }).observe(document.body || document.documentElement);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (untouched) kick(); });
   scan();
 })();

@@ -244,8 +244,21 @@
   var gameTop = null;
   function topIn() { var t = 1e9, gr = game.getBoundingClientRect(); Array.prototype.forEach.call(game.children, function (c) { if (!c.offsetParent || bgLayer(c)) return; var b = c.getBoundingClientRect(); if (b.height) t = Math.min(t, b.top); }); return t < 1e9 ? (t - gr.top) / (gr.height / Math.max(1, game.offsetHeight) || 1) : null; }
   function letGo() { game.style.removeProperty('justify-content'); game.style.removeProperty('padding-top'); }
+  // (where the game sat a moment before its result came in: the top it was fitted at goes stale when the game changes its own
+  // height once play starts; QA 2026-11-14, pass 6: Goma Goons' Free-for-All dropped 17px at START, so holding it at the fitted
+  // top lifted the whole game 17px at game over)
+  var topLog = [];
+  setInterval(function () {
+    if (game.style.justifyContent || resultsIn(game).length) return;
+    var t = topIn(); if (t === null) return; topLog.push({ at: Date.now(), t: t }); if (topLog.length > 8) topLog.shift();
+  }, 150);
+  function topBefore() {
+    for (var i = topLog.length - 1; i >= 0; i--) if (Date.now() - topLog[i].at >= 300) return topLog[i].t;
+    return gameTop;
+  }
   function holdGame() {
     var gi = panels.indexOf(game); if (gi < 0) return; gameTouch = 0; glideTok++; wTo(0, stopY(at[gi] || 0)); paint(); draw();
+    var tb = topBefore(); if (tb !== null && tb !== undefined) gameTop = tb;
     var t = topIn(); if (gameTop === null || t === null || Math.abs(t - gameTop) < 1) return;
     game.style.setProperty('justify-content', 'flex-start', 'important');
     var t2 = topIn(), pt = parseFloat(getComputedStyle(game).paddingTop) || 0;
@@ -494,9 +507,11 @@
   }
   function shrink(p, need, room) {
     if (need <= room + 1) return room;
-    var z = Math.max(wide ? 0.55 : 0.4, room / need), h = p.getBoundingClientRect().height;
+    var z = +Math.max(wide ? 0.55 : 0.4, room / need).toFixed(3), h = p.getBoundingClientRect().height;   // (the scale as set, so the width below matches it)
     p.style.zoom = z.toFixed(3); p.style.height = (h / z).toFixed(1) + 'px'; p.style.setProperty('--gz', z.toFixed(3));
-    if (!wide) p.style.width = (vw / z).toFixed(1) + 'px';   // a phone panel still fills the screen's width
+    // a phone panel still fills the screen's width, exactly (QA 2026-11-14, pass 6: 390.11px wide at 98%, so each stop after it
+    // showed a 0.1px sliver of the panel before)
+    if (!wide) p.style.width = (vw / z).toFixed(4) + 'px';
     return p.clientHeight - pad(p).y;
   }
   // the phones' pinned background (loader.js puts an .ma-pfx layer over the whole panel) is not part of the game: it never counts
@@ -611,7 +626,7 @@
     root.style.setProperty('height', (total + vh) + 'px', 'important');
     var fe = root.closest('.fluid-engine');
     if (fe) { fe.style.setProperty('grid-template-rows', 'none', 'important'); fe.style.setProperty('grid-auto-rows', 'auto', 'important'); fe.style.setProperty('min-height', (total + vh) + 'px', 'important'); }
-    y0 = root.getBoundingClientRect().top + window.scrollY;
+    y0 = Math.round(root.getBoundingClientRect().top + window.scrollY);   // (whole pixels, as the scroll lands)
     steadyPause(); fitLabels(); alignChamp(); setTimeout(function () { fitLabels(); alignChamp(); }, 400);
     shown = null; arcFar = 0; placeArrows(); paint();
     if (!wide) setTimeout(snapNow, 250);   // the menu bar changing height moves the row's start: settle back onto a whole screen
@@ -652,6 +667,9 @@
       if (k + 1 < stops.length && s < starts[k + 1]) { x = stops[k] + (s - starts[k] - holds[k]); break; }
       x = stops[k];
     }
+    // a row within a pixel of a stop rests exactly on it (QA 2026-11-14, pass 6: phones stopped 0.2-0.6px past a whole screen,
+    // a sliver of the next panel showing and the text at the edge 15.4px in): the scroll lands on whole pixels, the page's top may not
+    for (var sk = 0; sk < stops.length; sk++) if (Math.abs(x - stops[sk]) < 1) { x = stops[sk]; break; }
     // the Scroll Bar: fills while the row holds on a section; gone while the row is moving
     sbar.style.opacity = fill > 0.01 && fill < 1 ? '1' : '0';
     sbarIn.style.transform = 'scaleX(' + Math.min(1, fill).toFixed(3) + ')';
@@ -892,21 +910,62 @@
     });
     return m < 1e9 ? m : 0;
   }
+  // the browser's smallest-text setting (Maurice's Chrome: 16px), 0 when there is none (QA 2026-11-14, pass 6)
+  var textFloor = -1;
+  function floorPx() {
+    if (textFloor < 0) { var t = document.createElement('span'); t.style.cssText = 'position:absolute;visibility:hidden;font-size:1px'; t.textContent = 'x'; document.body.appendChild(t); textFloor = parseFloat(getComputedStyle(t).fontSize) || 0; document.body.removeChild(t); if (textFloor < 2) textFloor = 0; }
+    return textFloor;
+  }
+  // a row of names that belong together (Goma Goons' crew) is fitted as one: the longest name sets one scale for every name, so
+  // they line up and each stays 4px or more inside its box (QA 2026-11-14, pass 6: Galaxy, Pebble, and Goldie each scaled on
+  // their own sat higher than the rest and touched their edges; only in a browser that draws text at 16px or more)
+  function fitGroups() {
+    qa('.sd-gomas', document).forEach(function (g) {
+      var bs = qa('.sd-goma', g).filter(function (b) { return b.offsetParent && b.clientWidth; }), z = 1, F = floorPx();
+      bs.forEach(function (b) { b.style.zoom = ''; Array.prototype.forEach.call(b.querySelectorAll('span'), function (s) { s.style.zoom = ''; s.style.removeProperty('font-size'); }); });
+      bs.forEach(function (b) {
+        var s = b.querySelector('span'); if (!s) return;
+        var rg = document.createRange(); rg.selectNodeContents(s); var k = zOf(s) || 1, tw = rg.getBoundingClientRect().width / k;
+        if (tw) z = Math.min(z, (b.clientWidth - 8) / tw);
+      });
+      if (z >= 0.995) return;
+      var s0 = bs[0] && bs[0].querySelector('span'), d = s0 ? parseFloat(getComputedStyle(s0).fontSize) * (zOf(s0) || 1) : 0;
+      z = Math.max(d ? Math.min(1, 11.2 / d) : 0.5, z);
+      bs.forEach(function (b) {
+        var s = b.querySelector('span'); if (!s) return; s.style.zoom = z.toFixed(3);
+        // (its own size set to 11px or more as scaled, below the browser's floor, so nothing on screen moves)
+        var need = 11.2 / (zOf(s) || 1); if (F && need <= F && parseFloat(getComputedStyle(s).fontSize) <= F + 0.01) s.style.setProperty('font-size', need.toFixed(2) + 'px', 'important');
+      });
+    });
+  }
   function fitLabels() {
+    qa('[data-gs-ff]', game).forEach(function (x) { x.style.removeProperty('font-size'); x.removeAttribute('data-gs-ff'); });
+    var F = floorPx();
+    fitGroups();
     qa('button, .ms-hud > *, .ar-cell, .sg-stat, .tabs > *, .ch-hud, .sd-bar', game).forEach(function (e) {
-      if (!e.offsetParent || !e.clientWidth) return;
+      if (!e.offsetParent || !e.clientWidth || e.classList.contains('sd-goma')) return;
       if (e.classList.contains('gs-lifted')) { e.style.fontSize = ''; e.style.zoom = ''; return; }   // a lifted score row wraps instead of shrinking (frame CSS)
       e.style.fontSize = ''; e.style.zoom = ''; e.style.removeProperty('white-space'); e.classList.remove('gs-wrap');
       var over = function () { return e.scrollWidth > e.clientWidth + 1 || Array.prototype.some.call(e.children, function (c) { return c.clientWidth && c.scrollWidth > c.clientWidth + 1 && getComputedStyle(c).overflowX === 'visible'; }); };   // (a word running past its own line inside the label counts too)
       if (!over()) return;
       var f = parseFloat(getComputedStyle(e).fontSize), n = 0, k = zOf(e) || 1;
-      while (over() && f > 10 && f * k > 11.6 && n++ < 30) { f -= 0.5; e.style.fontSize = f + 'px'; }
+      // (never under the browser's own smallest size: there a smaller size draws nothing smaller, it only reads smaller)
+      while (over() && f > 10 && f - 0.5 >= F && f * k > 11.6 && n++ < 30) { f -= 0.5; e.style.fontSize = f + 'px'; }
       if (!over()) return;
       // two lines, broken between words (a name like Crest Knight), when the label has a space to break at
       if (/\s/.test(e.textContent.trim())) { e.classList.add('gs-wrap'); if (!over()) return; }
       // a browser that won't draw text that small (a smallest-text setting) gets the label scaled to fit instead, never past 11px
       var s = smallestText(e), zMin = s ? Math.min(1, 11.2 / s) : 0.5;
       e.style.zoom = Math.max(zMin, e.clientWidth / e.scrollWidth).toFixed(3);
+      // ...and there each word's own size is set to 11px or more as scaled (Hold the Wall!'s Gunslinger: set at 12px, scaled to 87%,
+      // read as 10.1px though Chrome drew it at its 16px floor, 13.3px): below the floor, so nothing on screen moves
+      if (F && parseFloat(e.style.zoom) < 1) [e].concat(Array.prototype.slice.call(e.querySelectorAll('*'))).forEach(function (x) {
+        if (!x.getClientRects().length || !Array.prototype.some.call(x.childNodes, function (nd) { return nd.nodeType === 3 && nd.textContent.trim(); })) return;
+        var need = 11.2 / (zOf(x) || 1), cur = parseFloat(getComputedStyle(x).fontSize), own = parseFloat(x.style.fontSize) || 0;
+        if (need > F + 0.25 || cur > F + 0.01 || own >= need) return;
+        var w0 = x.getBoundingClientRect().width; x.style.setProperty('font-size', need.toFixed(2) + 'px', 'important'); x.setAttribute('data-gs-ff', '');
+        if (Math.abs(x.getBoundingClientRect().width - w0) > 0.5) { x.style.removeProperty('font-size'); x.removeAttribute('data-gs-ff'); if (x === e && f) e.style.fontSize = f + 'px'; }
+      });
     });
   }
   function steadyPause() {
@@ -989,7 +1048,9 @@
     }
   }
   var ft = 0;
-  function soon() { clearTimeout(ft); ft = setTimeout(fit, 120); }
+  // (the labels are measured again with it: a game scaled further down after a tab switch left Hold the Wall!'s Shield sized for
+  // the old scale, at 10.9px; QA 2026-11-14, pass 6)
+  function soon() { clearTimeout(ft); ft = setTimeout(function () { fit(); fitLabels(); }, 120); }
   // the start card gives way to the board: scale the game and its panel again for what's showing now
   function refit() {
     letGo();

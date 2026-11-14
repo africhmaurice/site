@@ -23,10 +23,10 @@
 .ac-h2{margin:0;font-family:'CI Face','Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(20px,3svh,28px);line-height:1.2;letter-spacing:.04em;text-transform:uppercase;color:#fff}
 .ac-sub{margin:0 0 3px;font-weight:700;font-size:14px;line-height:1.4;letter-spacing:.06em;color:#a2f590}
 /* four rows of square units; tiles in sizes medium (2x2), tall (2x4), and large (4x4) */
-.ac-gg{position:relative;z-index:1;clip-path:inset(0 -200vw);display:grid;grid-template-rows:repeat(4,var(--u));grid-auto-columns:var(--u);grid-auto-flow:column dense;gap:8px}
+.ac-gg{position:relative;z-index:1;clip-path:inset(0 -200vw);display:grid;grid-template-rows:repeat(4,var(--u));grid-auto-columns:var(--u);grid-auto-flow:column dense;gap:12px}
 .ac-card.m{grid-column:span 2;grid-row:span 2}.ac-card.t{grid-column:span 2;grid-row:span 4}.ac-card.l{grid-column:span 4;grid-row:span 4}
 /* the opening fills the screen with no tile around it */
-.ac-gg.ac-full{display:flex;align-items:center;justify-content:center;width:calc(var(--acw,100vw) - 2 * max(24px,6vw));min-height:calc(var(--u) * 4 + 24px)}
+.ac-gg.ac-full{display:flex;align-items:center;justify-content:center;width:calc(var(--acw,100vw) - 2 * max(24px,6vw));min-height:calc(var(--u) * 4 + 36px)}
 .ac-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;width:100%;max-width:880px;padding:20px;text-align:center}
 .ac-eyebrow{margin:0;font-family:'Almarai',sans-serif;font-weight:800;font-size:13px;line-height:1.5;letter-spacing:.18em;text-transform:uppercase;color:#a2f590}
 .ac-h1{margin:0;font-family:'CI Face','Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(52px,min(13svh,12.5vw),140px);line-height:1.05;letter-spacing:.03em;text-transform:uppercase;color:#fff}
@@ -443,13 +443,13 @@
     heads.forEach(function (h) { h.style.minHeight = headH + 'px'; });   // every group's tiles start at the same height
     var room = vh - hdr - 120, gridH = Math.min(room, 700) - headH - 14, side = 2 * Math.max(24, cw * 0.06);
     // never so big that a large tile (four units across) is wider than the screen on a phone
-    var fit = Math.floor((cw - side - 24) / 4), u = Math.max(64, Math.min(fit, Math.floor((gridH - 24) / 4)));
+    var fit = Math.floor((cw - side - 36) / 4), u = Math.max(64, Math.min(fit, Math.floor((gridH - 36) / 4)));   // (12px between tiles; QA 2026-11-14, pass 6: 8px)
     track.style.setProperty('--u', u + 'px');
     // and on wide screens every group fits the screen's width, so a whole group (its name and all its tiles, Skyword through
     // Sky Mines) is on screen at once and the last one is never cut at the left at the end of the row (QA 2026-11-14)
     if (cw >= 700) q('.ac-gg', track).forEach(function (gg) {
       if (gg.classList.contains('ac-full')) return;
-      var cols = Math.round((gg.scrollWidth + 8) / (u + 8)), max = Math.floor((cw - side - 8 * (cols - 1)) / Math.max(1, cols));
+      var cols = Math.round((gg.scrollWidth + 12) / (u + 12)), max = Math.floor((cw - side - 12 * (cols - 1)) / Math.max(1, cols));
       if (cols > 0 && max < u) u = Math.max(48, max);
     });
     track.style.setProperty('--u', u + 'px');

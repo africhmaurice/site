@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
-<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=5" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=4"></script>
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=6" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=5"></script>
 <!-- ============================================================
      GOMA GOONS (was Sky Duel, then Mortar Mayhem / Mortar Madness; renamed 11/2) - a turn-based artillery game.
      Lives at /sky-fishing (page address kept so the Act Three riddle card link still works;
@@ -1550,7 +1550,8 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
     // the words on the board never drawn under 11.6px on screen, however far the page scales the canvas down (QA 2026-11-14: the
     // HP tags, FREE-FOR-ALL, and MOVES at 7-10px): sized up by as much as the canvas is scaled
     if(!(drawN++%30)||!KS){var cr=cv.getBoundingClientRect();if(cr.width)KS=cr.width/VW;}
-    var fs0=FS,hfs0=HFS;MINF=KS?Math.ceil(11.6/KS):0;FS=Math.max(fs0,Math.ceil(12/(KS||1)));HFS=Math.max(hfs0,MINF);
+    // (12px or more: QA 2026-11-14, pass 6, the HP tags and FREE-FOR-ALL at 10-11px on a 390 screen)
+    var fs0=FS,hfs0=HFS;MINF=KS?Math.ceil(12.4/KS):0;FS=Math.max(fs0,Math.ceil(12.4/(KS||1)));HFS=Math.max(hfs0,MINF);
     drawLabels();
     if(phase!=='panel'&&!overview)drawMini();
     drawHud();
