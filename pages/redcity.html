@@ -402,6 +402,22 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   #rc .rc-chip{padding:8px 14px;font-size:13px}
   #rc .rc-step{margin:28px 16px 0;padding:32px 20px 24px}
   #rc .rc-grid{grid-template-columns:1fr}
+  /* QA pass 8 (2026-11-14): the hero's one column is never wider than the screen (the player and the lines in it
+     shrink to fit, with or without a minimum font size) */
+  #rc .rc-hero{grid-template-columns:minmax(0,1fr)}
+  #rc .rc-hero>*,#rc .rc-player,#rc .rc-pmid{min-width:0}
+  #rc .rc-kick{overflow-wrap:normal}
+}
+/* the results on a phone: each name and its count share a line, and the bar runs the full width under them */
+@media (max-width:480px){
+  #rc .rc-rrow{grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:8px;font-size:15px;letter-spacing:.04em}
+  #rc .rc-rrow>span:first-child{grid-column:1;grid-row:1;min-width:0}
+  #rc .rc-rrow>.rc-num{grid-column:2;grid-row:1}
+  #rc .rc-rrow>.rc-rbar{grid-column:1/-1;grid-row:2}
+  #rc .rc-lm{grid-template-columns:minmax(0,1fr)}
+  /* the player's title on its own line, over the button, track, and time */
+  #rc .rc-player{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"lab lab lab" "btn trk time";align-items:center;row-gap:12px}
+  #rc .rc-pmid{display:contents}#rc .rc-plabel{grid-area:lab;margin-bottom:0}#rc .rc-pbtn{grid-area:btn}#rc .rc-ptrack{grid-area:trk}#rc .rc-ptime{grid-area:time}
 }
 @media (prefers-reduced-motion:reduce){#rc *{transition:none!important}#rc .rc-cta:hover:not(:disabled){transform:none}}
 </style>

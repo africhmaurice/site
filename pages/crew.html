@@ -510,6 +510,23 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cw-stat>div{display:flex;flex-direction:column;gap:14px}
 #rc .cw-stat .t{line-height:1.2}
 #rc .cw-stat .crit{margin-top:0}
+/* QA pass 8 (2026-11-14): the result cards fit a 280px phone, with or without a minimum font size */
+#rc .cw-res-grid,#rc .cw-stats{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+#rc .cw-res,#rc .cw-res-name,#rc .cw-res dd,#rc .cw-tie,#rc .cw-stat>div{min-width:0}
+#rc .cw-res dl{grid-template-columns:auto minmax(0,1fr)}
+@media (max-width:400px){
+  #rc .cw-res{padding:20px}
+  #rc .cw-res-top{gap:12px}
+  #rc .cw-res-pron{width:56px}
+  #rc .cw-res-name h3{font-size:clamp(22px,7.6vw,30px)!important}
+  #rc .cw-res-name p{letter-spacing:.06em}
+  #rc .cw-res-color b{font-size:clamp(20px,6.8vw,26px)}
+  #rc .cw-tie{padding:14px}
+  #rc .cw-tie-out,#rc .cw-tie-opts,#rc .cw-res dd{overflow-wrap:break-word}
+  /* each label sits above its answer, so the answer gets the card's full width */
+  #rc .cw-res dl{grid-template-columns:minmax(0,1fr);gap:12px}
+  #rc .cw-res dd+dt{margin-top:8px}
+}
 </style>
 
 <div id="rc" class="cw">

@@ -75,6 +75,9 @@
 .hx-row.hx-won{background:rgba(255,76,15,.16)}
 .hx-row.hx-won .hx-rank{color:#ffd45c}
 .hx-star{width:16px;height:16px;flex:none;fill:#ffd45c}
+/* QA pass 8 (2026-11-14): a name wraps (or trims with an ellipsis) inside its own column, so it never runs into the star or the score */
+.hx-nm{min-width:0;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}
+.hx-pts{text-align:right;white-space:nowrap}
 .hx-key{display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;line-height:1.5;color:rgba(255,255,255,.85)}
 .hx-draws{display:grid;gap:16px;width:100%;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 .hx-draw{display:flex;flex-direction:column;gap:10px;text-align:left}
@@ -105,6 +108,8 @@
 @media (max-width:760px){#hx-goma{width:28px;height:28px}.hx-x path{stroke-width:6}#hx-trail .hx-dots,#hx-trail .hx-done{stroke-width:4;stroke-dasharray:0 12}.hx-panel{padding:24px 20px}.hx-row{padding:10px 4px;gap:10px;grid-template-columns:30px minmax(0,1fr) auto}.hx-handle{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
   /* phones: the handle runs under the name and the points, so long handles fit without breaking mid-word */
   .hx-row{row-gap:2px}.hx-who{display:contents}.hx-rank{grid-column:1;grid-row:1/3}.hx-name{grid-column:2;grid-row:1;min-width:0}.hx-pts{grid-column:3;grid-row:1}.hx-handle{grid-column:2/4;grid-row:2;min-width:0}}
+/* the narrowest phones (280px): the score moves under the name, so the name keeps the row's full width */
+@media (max-width:340px){.hx-row{grid-template-columns:30px minmax(0,1fr);row-gap:6px}.hx-name{grid-column:2;grid-row:1}.hx-pts{grid-column:2;grid-row:2;text-align:left}.hx-handle{grid-column:2;grid-row:3}.hx-rank{grid-row:1/4}}
 /* the page menu: a rail on the left on wide screens, a strip along the bottom otherwise */
 #hx-nav{position:fixed;z-index:40;opacity:0;pointer-events:none;transition:opacity .35s ease}
 #hx-nav.hx-show{opacity:1;pointer-events:auto}
@@ -289,7 +294,7 @@
     var el = root.querySelector('[data-board="' + key + '"]');
     el.insertAdjacentHTML('beforeend', rows.map(function (r, i) {
       var w = r[0] <= won;
-      return '<div class="hx-row' + (w ? ' hx-won' : '') + '" style="transition-delay:' + (i * 0.06).toFixed(2) + 's"><span class="hx-rank">' + r[0] + '</span><span class="hx-who"><span class="hx-name">' + esc(r[1]) + (w ? STAR : '') + '</span>' +
+      return '<div class="hx-row' + (w ? ' hx-won' : '') + '" style="transition-delay:' + (i * 0.06).toFixed(2) + 's"><span class="hx-rank">' + r[0] + '</span><span class="hx-who"><span class="hx-name"><span class="hx-nm">' + esc(r[1]) + '</span>' + (w ? STAR : '') + '</span>' +
         '<span class="hx-handle">' + esc([r[2], withCountry ? r[4] : ''].filter(Boolean).join(' · ')) + '</span></span><span class="hx-pts">' + fmt(r[3]) + '</span></div>';
     }).join(''));
   }
@@ -314,7 +319,7 @@
   choose(mine);
 
   // the page menu
-  var secs = Array.prototype.slice.call(root.querySelectorAll('.hx-sec')), nav = root.querySelector('#hx-nav');
+  var secs = Array.prototype.slice.call(root.querySelectorAll('.hx-sec')), nav = root.querySelector('#hx-nav'), navH = -1;
   nav.querySelector('ol').innerHTML = secs.map(function (s, i) {
     return '<li><a href="#' + s.id + '" data-label="' + esc(s.getAttribute('data-nav')) + '"><i>' + (i < 9 ? '0' : '') + (i + 1) + '</i>' + esc(s.getAttribute('data-nav')) + '</a></li>';
   }).join('');
@@ -529,6 +534,9 @@
     links.forEach(function (a) { a.classList.toggle('hx-here', a.getAttribute('href') === '#' + on.id); });
     var foot = document.querySelector('#footer-sections'), fr = foot ? foot.getBoundingClientRect() : null;
     nav.classList.toggle('hx-show', rr.top < vh * 0.6 && rr.bottom > vh * 0.5 && !(fr && fr.top < vh - 10 && innerWidth < 1180));
+    // the strip's height, so the site's back-to-the-top button (loader.js) can sit clear above it on tablets
+    var nh = innerWidth < 1180 ? nav.offsetHeight : 0;
+    if (nh !== navH) { navH = nh; document.documentElement.style.setProperty('--hx-nav-h', nh + 'px'); }
     // the crest window: the dome drifts behind it
     var cw = root.querySelector('.hx-crest'), cr = cw.getBoundingClientRect(), cp = clamp((vh - cr.top) / (vh + cr.height)) - 0.5;
     cw.firstElementChild.style.transform = 'translate3d(0,' + (-50 + cp * -40).toFixed(2) + '%,0) scale(' + (1.05 + Math.abs(cp) * 0.12).toFixed(3) + ')';

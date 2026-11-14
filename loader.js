@@ -155,6 +155,10 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
       // game pages (QA 2026-11-14): wide screens: down beside the bar, which ends short of it, so it never covers a panel's corner;
       // phones: not shown (the row has its own arrows, and it sat on the Key's border and over the bar)
       '@media (min-width:700px){body:has(.gs-prog) #ma-top{bottom:20px}}@media (max-width:699px){body:has(.gs-prog) #ma-top{display:none!important}}' +
+      // The Hunt (QA pass 8, 2026-11-14): its section strip along the bottom already moves around the page, so on phones the
+      // button stays out of the way while the strip shows; on tablets it sits 12px above the strip (the page sets --hx-nav-h)
+      '@media (max-width:699px){body:has(#hx-nav.hx-show) #ma-top{display:none!important}}' +
+      '@media (min-width:700px) and (max-width:1179px){body:has(#hx-nav.hx-show) #ma-top{bottom:calc(var(--hx-nav-h,90px) + 12px)}}' +
       '@media (prefers-reduced-motion:reduce){#ma-top{transition:none}}';
     document.head.appendChild(css);
     var b = document.createElement('button');
@@ -321,6 +325,15 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     '@media (min-width:768px){html.ma-hnm:not(.ma-hn0) body #hunt-nav{padding-top:.6vw!important;padding-bottom:1.22vw!important;padding-left:4vw!important}html.ma-hnm:not(.ma-hn0) body #hunt-nav:not(.mn-compact){padding-right:4vw!important}}' +
     '@media (min-width:768px) and (max-width:1100px){html.ma-hnm:not(.ma-hn0) body #hunt-nav .mn-burger{position:relative;top:.31vw}html.ma-hnm:not(.ma-hn0) body #hunt-nav{padding-right:4vw!important}}' +
     '@media (min-width:768px) and (max-width:999px){html.ma-hnm:not(.ma-hn0) body #hunt-nav .mn-logo img{width:auto!important;height:80px!important}}' +
+    // (QA pass 8, 2026-11-14) from 768 to 799px Squarespace switches to its phone layout with a 6vw band all round, a bar
+    // 218 to 224px tall; there it keeps the tablet band (.6vw over and under an 80px logo, 4vw in from each side), so the
+    // bar is the same 94px as the green one at every tablet width, with the logo and menu button in the same places
+    '@media (min-width:768px) and (max-width:799px){html body #header .header-announcement-bar-wrapper{padding:.6vw 4vw!important}' +
+    'html body #header .header-display-mobile .header-title-logo{padding-bottom:5px!important}' +
+    'html body #header .header-display-mobile .header-title-nav-wrapper>div{width:auto!important}html body #header .header-display-mobile .header-burger{align-items:center!important}}' +
+    // and from 1000px up, when the links don't fit and the bar shows its menu button instead (#header.ma-burger, e.g. with
+    // a large minimum font size), the logo keeps the wide-screen size (8.3vw, 88 to 120px), as on the green bar
+    '@media (min-width:1000px){html body #header.ma-burger .header-display-mobile .header-title-logo img{width:clamp(88px,8.3vw,120px)!important;height:auto!important;max-width:none!important;max-height:none!important}}' +
     '@media (min-width:1000px){html.ma-hnm:not(.ma-hn0) body #hunt-nav .mn-logo img{width:clamp(88px,8.3vw,120px)!important;height:auto!important}}'; (document.head || document.documentElement).appendChild(s); })();
   // No strip above the footer (Maurice, 2026-11-12): on wide screens Squarespace stretches a page's one code block
   // taller than the page inside it, and the section color showed as a band above the footer. The block now ends
@@ -344,7 +357,13 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     // chapter roll boxes: a long @handle wraps inside its box instead of running off the screen, and the boxes never
     // ask for more width than a phone has (QA 2026-11-14)
     '#rc .cr-res-kits{grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr))!important}#rc .cr-res-kits.cr-wide{grid-template-columns:minmax(0,1fr)!important}' +
-    '#rc .cr-res-kit>div,#rc .cr-pair-res,#rc .cr-pair-res>*{min-width:0}#rc .cr-res-kit .by,#rc .cr-pair-res .by,#rc .by b{overflow-wrap:anywhere}' +
+    // (QA pass 8, 2026-11-14: only the @handle itself may break anywhere; the roll's name and what happened wrap at spaces)
+    '#rc .cr-res-kit>div,#rc .cr-pair-res,#rc .cr-pair-res>*{min-width:0}#rc .by b,#rc .handle{overflow-wrap:anywhere}' +
+    // on the narrowest phones (280px) the die sits above the words, so the words get the card's full width
+    '@media (max-width:340px){#rc .cr-res-kit{flex-direction:column;align-items:flex-start!important;gap:12px}#rc .cr-res-kit>div:not(.cr-d20){width:100%}' +
+    // and a chapter's audio player puts its title on its own line, over the button, track, and time
+    'html body #rc .cr-player{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"lab lab lab" "btn trk time";align-items:center;row-gap:12px}' +
+    'html body #rc .cr-pmid{display:contents}html body #rc .cr-plabel{grid-area:lab;overflow-wrap:normal}html body #rc .cr-pbtn{grid-area:btn}html body #rc .cr-ptrack{grid-area:trk}html body #rc .cr-ptime{grid-area:time}}' +
     // a roll count stays with its label ("4 NAT 1S" never splits after the 4)
     '#rc .crit b,#av .crit b{white-space:nowrap}' +
     // roll cards: 12px between the roll's name, "Rolled by", and what happened (QA pass 6, 2026-11-14)

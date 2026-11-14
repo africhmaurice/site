@@ -193,6 +193,29 @@ a{color:#fff}
   .ma-arrow svg{width:28px !important;height:28px !important}
   .ma-arrow[style*="left"]{left:6px !important}
   .ma-arrow[style*="right"]{right:6px !important}
+  /* QA pass 8 (2026-11-14): every word and button 11px or larger at 280px; the quiz slide's eyebrow, heading, words,
+     and button 12px+ apart; and on a short phone (360x640) the slider ends above the bottom of the first screen, under
+     the 88px menu bar, so each slide's button shows without scrolling (the script below fits each slide inside it) */
+  #ma-slider{max-height:calc(100svh - 96px)}
+  #ma-track p{font-size:max(11px,3.6cqw) !important}
+  #ma-track a[style*="display:inline-block"]{font-size:max(11px,3.6cqw) !important}
+  #ma-track>div[data-screen-label="CO"] a,#ma-track>div[data-screen-label="SR"] a{font-size:max(11px,3.2cqw) !important}
+  #ma-track>div[data-screen-label="QZ"] div[style*="letter-spacing:.18em"]{margin-bottom:max(16px,4.4cqw) !important}
+  #ma-track>div[data-screen-label="QZ"] p{margin-top:max(16px,4.4cqw) !important}
+  #ma-track>div[data-screen-label="QZ"] a{margin-top:max(16px,4.4cqw) !important}
+  /* and every stacked eyebrow, heading, and line 12px+ apart on the other slides too */
+  #ma-track p{margin-top:max(14px,3cqw) !important}
+  #ma-track>div[data-screen-label="06"] div[style*="letter-spacing:.18em"]{margin-bottom:max(14px,3cqw) !important}
+  #ma-track>div[data-screen-label="SR"] .sr-t{margin-top:max(14px,3cqw) !important}
+  #ma-track>div[data-screen-label="CO"] .co-t{margin-top:max(22px,4.6cqw) !important}
+  /* the last column's words and button sit above the dots */
+  #ma-track>div[data-screen-label="CO"] .co-col:nth-child(3),#ma-track>div[data-screen-label="SR"] .sr-col:nth-child(2){padding-bottom:max(30px,8cqw) !important}
+  /* the words keep 12px+ clear of the side arrows' 44px tap areas (6px in from each edge) */
+  #ma-track>div:not([data-screen-label="ED"]):not([data-screen-label="CO"]):not([data-screen-label="SR"]){padding-left:max(62px,12cqw) !important;padding-right:max(62px,12cqw) !important}
+  #ma-track>div[data-screen-label="CO"] .co-col,#ma-track>div[data-screen-label="SR"] .sr-col{padding-left:max(62px,8cqw) !important;padding-right:max(62px,8cqw) !important}
+}
+@media (max-width:340px){
+  #ma-track>div[data-screen-label="CO"] .co-t,#ma-track>div[data-screen-label="SR"] .sr-t{max-width:none !important}
 }
 </style>
 </head>
@@ -360,9 +383,11 @@ maStart();
 (function(){
   var st=null,eat=0;
   function cancel(){st=null;sl.classList.remove('ma-drag');}
+  // (QA pass 8, 2026-11-14) a swipe may start on a side arrow too: there it needs a full 40px sideways, and anything
+  // less stays a tap on the arrow
   sl.addEventListener('pointerdown',function(e){
-    if(!e.isPrimary||(e.pointerType==='mouse'&&e.button!==0)||e.target.closest('.ma-arrow,.ma-dots')){st=null;return;}
-    st={x:e.clientX,y:e.clientY,t:e.timeStamp,id:e.pointerId,moved:false};
+    if(!e.isPrimary||(e.pointerType==='mouse'&&e.button!==0)||e.target.closest('.ma-dots')){st=null;return;}
+    st={x:e.clientX,y:e.clientY,t:e.timeStamp,id:e.pointerId,moved:false,arrow:!!e.target.closest('.ma-arrow')};
   });
   addEventListener('pointermove',function(e){
     if(!st||e.pointerId!==st.id)return;
@@ -371,9 +396,10 @@ maStart();
   });
   addEventListener('pointerup',function(e){
     if(!st||e.pointerId!==st.id)return;
-    var dx=e.clientX-st.x,dy=e.clientY-st.y,dt=Math.max(1,e.timeStamp-st.t),moved=st.moved;
+    var dx=e.clientX-st.x,dy=e.clientY-st.y,dt=Math.max(1,e.timeStamp-st.t),moved=st.moved,arrow=st.arrow;
     cancel();
     if(!moved||Math.abs(dx)<=Math.abs(dy)*1.2)return;
+    if(arrow&&Math.abs(dx)<40)return;
     eat=Date.now()+600;
     if(Math.abs(dx)>=40||(Math.abs(dx)>=20&&Math.abs(dx)/dt>0.35))maGo(dx<0?maI+1:maI-1);
   });
@@ -567,6 +593,35 @@ maStart();
   if(window.ResizeObserver){var ro=new ResizeObserver(function(){later();});ro.observe(sl);ro.observe(s);}
   if(document.fonts){if(document.fonts.ready)document.fonts.ready.then(later);if(document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',later);}
   [].forEach.call(s.querySelectorAll('img'),function(im){if(!im.complete)im.addEventListener('load',later);});
+})();
+/* The other slides on phones (QA pass 8, 2026-11-14): when a slide's pieces need more height than the slider has (a
+   short phone, or a browser that holds text at 16px or more), they are drawn smaller together, just enough to sit 8px+
+   inside the slide and clear of the dots, and never so small that any text drops under 11px. */
+(function(){
+  var mq=window.matchMedia&&matchMedia('(max-width:760px)');if(!mq)return;
+  var slides=[].slice.call(document.querySelectorAll('#ma-track [data-screen-label]')).filter(function(s){return s.getAttribute('data-screen-label')!=='ED';});
+  function parts(s){return [].slice.call(s.querySelectorAll(/^(CO|SR)$/.test(s.getAttribute('data-screen-label'))?':scope>.co-col>*,:scope>.sr-col>*':':scope>*'));}
+  function fitOne(s){
+    var ps=parts(s);ps.forEach(function(p){p.style.zoom='';});
+    if(!mq.matches)return;
+    var r=s.getBoundingClientRect();if(!r.height)return;
+    var dots=sl.querySelector('.ma-dots'),bot=r.bottom-8;
+    if(dots&&dots.offsetHeight)bot=Math.min(bot,dots.getBoundingClientRect().top-8);
+    var top=r.top+8,logo=s.querySelector('img[alt="Collider"],.sr-logo');
+    if(logo)top=Math.max(top,logo.getBoundingClientRect().bottom+8);
+    ps=ps.filter(function(p){return getComputedStyle(p).position!=='absolute';});
+    // each piece stops shrinking where its own smallest text would drop under 11px, so a big heading or a picture can go
+    // further than a button (and nothing goes under half size)
+    var mins=ps.map(function(p){var m=99;[p].concat([].slice.call(p.querySelectorAll('*'))).forEach(function(e){if([].some.call(e.childNodes,function(c){return c.nodeType===3&&c.textContent.trim();}))m=Math.min(m,parseFloat(getComputedStyle(e).fontSize)||99);});return Math.max(.5,Math.min(1,11/m));});
+    var zmin=Math.min.apply(null,mins.concat([1]));
+    function over(){var hi=1e9,lo=-1e9;ps.forEach(function(p){var q=p.getBoundingClientRect();if(!q.height)return;hi=Math.min(hi,q.top);lo=Math.max(lo,q.bottom);});return hi<top||lo>bot;}
+    for(var z=1;over()&&z>zmin+.001;){z=Math.max(zmin,z-.03);ps.forEach(function(p,i){p.style.zoom=Math.max(z,mins[i]);});}
+  }
+  var t=0;function all(){clearTimeout(t);t=setTimeout(function(){slides.forEach(fitOne);},80);}
+  all();addEventListener('resize',all);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(all);
+  if(window.ResizeObserver)new ResizeObserver(all).observe(sl);
+  [].forEach.call(sl.querySelectorAll('#ma-track img'),function(im){if(!im.complete)im.addEventListener('load',all);});
 })();
 </script>
 <div id="ma-row">

@@ -108,6 +108,13 @@
   #preorder .or-edcta{padding:9px 12px;font-size:11px}
   #preorder .or-foot{padding:44px 16px 72px}
 }
+/* the narrowest phones (QA pass 8, 2026-11-14): one retailer to a row, so every name fits its tile whole (with or
+   without a minimum font size), wrapping only at a space */
+@media (max-width:340px){
+  #preorder .or-tile{flex-basis:100%;aspect-ratio:auto}
+  #preorder .or-tin{position:relative;inset:auto;min-height:96px}
+  #preorder .or-logo{max-height:40px;max-width:60%}
+}
 @media (prefers-reduced-motion:reduce){
   #preorder .or-book{animation:none}
   #preorder .or-art,#preorder .or-tile,#preorder .or-ed,#preorder .or-jump a{transition:none}
