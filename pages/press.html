@@ -124,6 +124,23 @@
 @media (max-width:600px){#press .pp-event{grid-template-columns:minmax(0,1fr);padding:20px}#press .pp-ev-date{grid-row:auto;min-width:0;margin-bottom:4px}}
 
 #press .pr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+/* a lone card (or a pair) on the last row sits in the middle (Maurice, 2026-11-14: "center it"). The grid keeps its
+   columns (two at 518px wide, three at 786px, every card 250px+) but runs on two tracks per column; each card takes
+   two tracks, and the cards on a short last row move in by a track, so the rule holds whatever the card count */
+#press .pp-section:has(> .pr-grid){container-type:inline-size}
+@media (min-width:861px){
+  @container (min-width:518px){
+    #press .pr-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    #press .pr-grid>*{grid-column:span 2}
+    #press .pr-grid>:last-child:nth-child(2n+1){grid-column:2 / 4}
+  }
+  @container (min-width:786px){
+    #press .pr-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+    #press .pr-grid>:last-child:nth-child(2n+1){grid-column:span 2}
+    #press .pr-grid>:last-child:nth-child(3n+1){grid-column:3 / 5}
+    #press .pr-grid>:nth-last-child(2):nth-child(3n+1){grid-column:2 / 4}
+  }
+}
 #press .pr-card{display:flex;flex-direction:column;gap:10px;padding:22px 22px 20px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);color:#fffffe;text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}
 #press .pr-card:hover{transform:translateY(-4px);border-color:#3adb97;background:rgba(26,94,65,.55)}
 #press .pr-meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,254,.6)}

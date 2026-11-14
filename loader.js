@@ -305,11 +305,19 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     'html body #hunt-nav .mn-row{display:flex!important;flex:none;max-width:none;margin:0!important;justify-content:flex-start!important}html body #hunt-nav .mn-row .mn-logo{margin:0!important}html body #hunt-nav .mn-row .mn-right{display:none!important}' +
     'html body #hunt-nav .mn-logo img{width:clamp(93.6px,24vw,112px)!important}html body #hunt-nav .mn-burger{display:flex!important;margin:0!important}}' +
     // The green menu bar matches the Squarespace menu bar on every other page to the pixel, so the logo, the menu button,
-    // and the bar's height never jump when switching pages (QA pass 7, 2026-11-14). Squarespace's own measures: phones
-    // 6vw around a 75px logo with 12vw under it; tablets a .6vw / 1.22vw band around an 80px logo; 1000px and up the
-    // same band around a logo 8.3vw wide (88 to 120px), 4vw in from each side.
-    '@media (max-width:767px){html.ma-hnm:not(.ma-hn0) body #hunt-nav{align-items:flex-start!important;padding:6vw 6vw 12vw!important}html.ma-hnm:not(.ma-hn0) body #hunt-nav .mn-logo img{width:auto!important;height:75px!important}' +
-    'html.ma-hnm:not(.ma-hn0) body #hunt-nav .mn-burger{align-self:center!important;position:relative;top:3vw}}' +
+    // and the bar's height never jump when switching pages (QA pass 7, 2026-11-14). Squarespace's own measures: tablets
+    // a .6vw / 1.22vw band around an 80px logo; 1000px and up the same band around a logo 8.3vw wide (88 to 120px), 4vw in
+    // from each side.
+    // Phones (Maurice, 2026-11-14: "88"): every menu bar, the Squarespace one, the green one, and the game menu, is the game
+    // menu's 88px bar: the logo 93.6px wide, 10px down and 20px in, and the menu button centered 20px from the right edge.
+    '@media (max-width:767px){html body #hunt-nav{height:88px!important;box-sizing:border-box!important;align-items:center!important;padding:10px 20px!important}' +
+    'html body #hunt-nav .mn-row{align-self:flex-start!important}html body #hunt-nav .mn-logo img{width:93.6px!important;height:auto!important}html body #hunt-nav .mn-burger{align-self:center!important}' +
+    'html body #header .header-announcement-bar-wrapper{height:88px!important;box-sizing:border-box!important;padding:10px 20px!important}' +
+    'html body #header .header-inner,html body #header .header-display-mobile{height:68px!important;padding:0!important;align-items:flex-start!important}' +
+    'html body #header .header-display-mobile .header-burger{align-self:center!important}' +
+    'html body #header .header-display-mobile .header-title-logo a{display:block!important}' +
+    'html body #header .header-display-mobile .header-title-logo img{display:block!important;width:93.6px!important;height:auto!important;max-width:none!important;max-height:none!important}' +
+    'html body #header .header-menu{padding-top:88px!important}}' +
     '@media (min-width:768px){html.ma-hnm:not(.ma-hn0) body #hunt-nav{padding-top:.6vw!important;padding-bottom:1.22vw!important;padding-left:4vw!important}html.ma-hnm:not(.ma-hn0) body #hunt-nav:not(.mn-compact){padding-right:4vw!important}}' +
     '@media (min-width:768px) and (max-width:1100px){html.ma-hnm:not(.ma-hn0) body #hunt-nav .mn-burger{position:relative;top:.31vw}html.ma-hnm:not(.ma-hn0) body #hunt-nav{padding-right:4vw!important}}' +
     '@media (min-width:768px) and (max-width:999px){html.ma-hnm:not(.ma-hn0) body #hunt-nav .mn-logo img{width:auto!important;height:80px!important}}' +
@@ -809,6 +817,8 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     if (!sec) return;
     if (sec.__maPad == null) sec.__maPad = sec.style.getPropertyValue('padding-top') || '';
     sec.style.setProperty('padding-top', sec.__maPad);
+    // phones: every bar is the same 88px, so nothing grew and the page keeps its own spacing (Maurice, 2026-11-14)
+    if (window.innerWidth <= 767) return;
     de.classList.add('ma-hn0');
     var h0 = nav.getBoundingClientRect().height;
     de.classList.remove('ma-hn0');

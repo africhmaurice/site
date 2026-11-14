@@ -119,7 +119,12 @@ a{color:#fff}
   #ma-track>div[data-screen-label="ED"] .ed-book{max-width:none;gap:calc(1cqw / var(--edt,1)) !important}
   #ma-track>div[data-screen-label="ED"] .ed-book:nth-child(5){grid-column:1 / -1}
   #ma-track>div[data-screen-label="ED"] .ed-book img{height:calc(21cqw * var(--edf,1) / var(--eds,1)) !important}
-  #ma-track>div[data-screen-label="ED"] .ed-label{font-size:calc(max(11px,2.6cqw) / var(--eds,1)) !important;line-height:1.3 !important;white-space:nowrap}
+  #ma-track>div[data-screen-label="ED"] .ed-label{font-size:calc(var(--edlf,max(11px,2.6cqw)) / var(--eds,1)) !important;letter-spacing:var(--edls,.08em) !important;line-height:1.3 !important;white-space:nowrap}
+  /* very narrow screens (Maurice, 2026-11-14: "tighter caption spacing, smaller fonts, and if necessary, two lines"):
+     a name that still doesn't fit its column breaks at a space ("BROKEN / BINDING"), never inside a word */
+  #ma-track>div[data-screen-label="ED"]>.ed-fit.ed-wrap .ed-label{white-space:normal;overflow-wrap:normal;word-break:normal;max-width:var(--edcw,none);min-width:min-content;text-align:center}
+  #ma-track>div[data-screen-label="ED"]>.ed-fit.ed-wrap .ed-label>span{white-space:nowrap}
+  #ma-track>div[data-screen-label="ED"]>.ed-fit.ed-wrap .ed-book:nth-child(5) .ed-label{max-width:none}
   #ma-track>div[data-screen-label="ED"] .ed-label>span{margin-top:calc(12px / var(--edt,1))}
   #ma-track>div[data-screen-label="ED"] a.hv0{font-size:calc(max(11px,3.6cqw) / var(--eds,1)) !important;padding:calc(2.4cqw / var(--eds,1)) calc(7cqw / var(--eds,1)) !important;margin-top:calc(max(18px,5cqw) / var(--edt,1)) !important}
   /* the pieces still rise in one after another inside the block */
@@ -512,7 +517,7 @@ maStart();
    covers shrink first (to 60%), then the whole block. */
 (function(){
   var s=document.querySelector('#ma-track [data-screen-label="ED"]');if(!s)return;
-  var mq=window.matchMedia&&matchMedia('(max-width:760px)'),st=s.style,P=['--eds','--edt','--edf','--edw','--edmx','--edmy','--edpt','--edpb'];
+  var mq=window.matchMedia&&matchMedia('(max-width:760px)'),st=s.style,P=['--eds','--edt','--edf','--edw','--edmx','--edmy','--edpt','--edpb','--edls','--edlf','--edcw'];
   function fit(){
     P.forEach(function(p){st.removeProperty(p);});
     var w=s.querySelector(':scope>.ed-fit');
@@ -527,14 +532,30 @@ maStart();
     st.setProperty('--edpt',TOP+'px');st.setProperty('--edpb',(H-dt+BOT)+'px');st.setProperty('--edw',aW+'px');
     var eye=w.firstElementChild,head=w.querySelector('.ed-head'),lab=w.querySelector('.ed-label'),cta=w.querySelector('a.hv0');
     function fs(e){return parseFloat(getComputedStyle(e).fontSize)||1;}
-    var k=1;[[eye,Math.max(11,2.4*cq)],[head,8*cq],[lab,Math.max(11,2.6*cq)],[cta,Math.max(11,3.6*cq)]].forEach(function(p){if(p[0])k=Math.min(k,p[1]/fs(p[0]));});
-    st.setProperty('--eds',k);
+    var k0=1;[[eye,Math.max(11,2.4*cq)],[head,8*cq],[cta,Math.max(11,3.6*cq)]].forEach(function(p){if(p[0])k0=Math.min(k0,p[1]/fs(p[0]));});
+    // the captions' own size: the browser's minimum text size (if any) is read once, so a smaller caption is still drawn right
+    w.classList.remove('ed-wrap');
+    var lf=Math.max(11,2.6*cq),ls=.08,LF=W<340?10:11,mf=0;
+    if(lab){st.setProperty('--edlf','1px');mf=fs(lab);st.removeProperty('--edlf');}
+    function kk(){return Math.min(k0,lf/Math.max(lf,mf));}
+    var k=kk(),half=(aW-1-gap)/2;
+    st.setProperty('--eds',k);st.setProperty('--edcw',half/k+'px');
     var b=[].slice.call(w.querySelectorAll('.ed-book')),g=1,f=1,T=k;
+    function need(T){var bw=b.map(function(e){return e.offsetWidth*T;});return Math.max(Math.max(bw[0]||0,bw[2]||0)+Math.max(bw[1]||0,bw[3]||0)+gap,bw[4]||0);}
+    // Very narrow screens (Maurice, 2026-11-14): before the block is drawn smaller, the captions' letter-spacing closes up
+    // (.08em down to .02em), then their type steps down (to 10px under 340px wide), then a caption that still doesn't
+    // fit its column breaks onto two lines at a space. Only then does the whole block scale.
+    for(var j=0;j<40&&need(k)>aW-1;j++){
+      if(ls>.0201)ls=Math.max(.02,Math.round((ls-.01)*100)/100);
+      else if(lf>LF+.001)lf=Math.max(LF,lf-.25);
+      else if(!w.classList.contains('ed-wrap'))w.classList.add('ed-wrap');
+      else break;
+      k=kk();st.setProperty('--edls',ls+'em');st.setProperty('--edlf',lf+'px');st.setProperty('--eds',k);st.setProperty('--edcw',half/k+'px');
+    }
     for(var i=0;i<60;i++){
-      T=k*g;st.setProperty('--edt',T);st.setProperty('--edf',f);
-      var bw=b.map(function(e){return e.offsetWidth*T;});
-      var need=Math.max(Math.max(bw[0]||0,bw[2]||0)+Math.max(bw[1]||0,bw[3]||0)+gap,bw[4]||0);
-      if(need>aW-1){var g2=g*(aW-1-gap)/(need-gap);f*=g/g2;g=g2;continue;}
+      T=k*g;st.setProperty('--edt',T);st.setProperty('--edf',f);st.setProperty('--edcw',half/T+'px');
+      var nd=need(T);
+      if(nd>aW-1){var g2=g*(aW-1-gap)/(nd-gap);f*=g/g2;g=g2;continue;}
       if(w.offsetHeight*T<=aH)break;
       if(f*g>.601)f=Math.max(.6/g,f-.05);else g*=.97;
     }
