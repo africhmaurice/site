@@ -396,6 +396,12 @@ html.gs-page [data-ma-page] .gs-back svg{width:22px;height:22px}
 html.gs-page [data-ma-page] .gs-hint{font-size:0!important;padding:6px!important;border:0!important;background:none!important;gap:0!important;right:auto!important;left:calc(50% + 28px)!important;translate:-50% 0;bottom:40px!important}
 html.gs-page [data-ma-page] .gs-hint svg{width:22px!important;height:22px!important}
 html.gs-page [data-ma-page] .gs-back{left:calc(50% - 28px)!important;translate:-50% 0;bottom:40px!important}
+/* at the last stop a down arrow takes the forward arrow's spot, so people know the page goes on (Maurice, 2026-11-14: 'When you get to the end, add a down arrow so people know') */
+html.gs-page [data-ma-page] .gs-hint.gs-down{padding:11px!important;margin-bottom:-5px;z-index:6;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s}
+html.gs-page [data-ma-page] .gs-hint.gs-down.on{opacity:1;visibility:visible}
+html.gs-page [data-ma-page] .gs-hint.gs-down svg{animation:gs-bob 1.6s ease-in-out infinite}
+@keyframes gs-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+@media (prefers-reduced-motion:reduce){html.gs-page [data-ma-page] .gs-hint.gs-down svg{animation:none}}
 @media (min-width:700px){
   /* more room at the bottom of every panel, so nothing sits on the arrows */
   html.gs-page [data-ma-page] .gs-panel{padding-bottom:calc(100px / var(--gz,1))!important}
@@ -562,19 +568,34 @@ html.gs-page [data-ma-page] .gs-game .dbd-cover:has(.dbd-who){padding:28px 24px 
 }
 
 /* ---------- 14. QA pass 4 (2026-11-14) ---------- */
-/* The Levian on phones: the arrows in one row under the board and the score over Pause/Restart, so the board gets the height
-   (QA 2026-11-14: on a 360x640 screen the board was scaled to 37%, its START at 5.5px, beside full-size arrows) */
+/* The Levian on phones (Maurice, 2026-11-14: 'the top row should stay on one row and adjust ... the game should be as close to full
+   width as possible'; 'make them smaller and in the controller pad sequence like they were before'): the score and Pause/Restart on
+   one row (game-frame.js scales it together if it runs long), 16px at the sides, no empty message line, and the swim buttons small in
+   their old pad shape (Up over Left, Down, Right), so the board gets the room */
 @media (max-width:699px){
-  html.gs-page [data-ma-page] #ma-levian .lv-wrap{gap:10px!important}
-  html.gs-page [data-ma-page] #ma-levian .lv-bar{display:grid!important;grid-template-columns:repeat(2,max-content);justify-content:center;gap:8px 16px!important;font-size:13px!important}
-  html.gs-page [data-ma-page] #ma-levian .lv-bar .lv-btn{padding:9px 14px!important;font-size:13px!important}
-  html.gs-page [data-ma-page] #ma-levian .lv-pad{grid-template-columns:repeat(4,48px)!important;grid-template-rows:48px!important;gap:12px!important}
-  html.gs-page [data-ma-page] #ma-levian .lv-pad :is(.u,.l,.dn,.r){grid-row:1!important}
-  html.gs-page [data-ma-page] #ma-levian .lv-pad .l{grid-column:1!important}
-  html.gs-page [data-ma-page] #ma-levian .lv-pad .u{grid-column:2!important}
-  html.gs-page [data-ma-page] #ma-levian .lv-pad .dn{grid-column:3!important}
-  html.gs-page [data-ma-page] #ma-levian .lv-pad .r{grid-column:4!important}
-  html.gs-page [data-ma-page] #ma-levian .gs-game .lv-pad{margin-top:6px!important}
+  html.gs-page [data-ma-page] #ma-levian .gs-game{padding-left:16px!important;padding-right:16px!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-wrap{gap:8px!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-bar{display:flex!important;flex-wrap:nowrap!important;justify-content:space-between!important;align-items:center;gap:8px!important;max-width:100%;font-size:13px!important;letter-spacing:.06em!important;white-space:nowrap}
+  html.gs-page [data-ma-page] #ma-levian .lv-bar > *{flex:0 0 auto}
+  html.gs-page [data-ma-page] #ma-levian .lv-bar b{font-variant-numeric:tabular-nums}
+  html.gs-page [data-ma-page] #ma-levian .lv-bar .lv-btn{padding:8px 10px!important;font-size:12px!important;letter-spacing:.08em!important;white-space:nowrap}
+  html.gs-page [data-ma-page] #ma-levian .lv-msg{display:none!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad{grid-template-columns:repeat(3,44px)!important;grid-template-rows:repeat(2,44px)!important;gap:6px!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad button{width:44px!important;height:44px!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad svg{width:22px;height:22px}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad .u{grid-column:2!important;grid-row:1!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad .l{grid-column:1!important;grid-row:2!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad .dn{grid-column:2!important;grid-row:2!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad .r{grid-column:3!important;grid-row:2!important}
+  html.gs-page [data-ma-page] #ma-levian .gs-game .lv-pad{margin-top:4px!important}
+  html.gs-page [data-ma-page] #ma-levian .gs-game{padding-top:12px!important;padding-bottom:84px!important}
+  html.gs-page [data-ma-page] #ma-levian .wk-champ{padding-top:8px!important;padding-bottom:8px!important}
+}
+/* short phones: the swim buttons a size smaller still, so the board keeps the height */
+@media (max-width:699px) and (max-height:700px){
+  html.gs-page [data-ma-page] #ma-levian .lv-pad{grid-template-columns:repeat(3,40px)!important;grid-template-rows:repeat(2,40px)!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad button{width:40px!important;height:40px!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad svg{width:20px;height:20px}
 }
 /* daily puzzles on phones: the date line over the champion banner, at full size (game-frame.js lifts it out of the scaled card) */
 @media (max-width:699px){

@@ -45,7 +45,9 @@
     // the score reads at full size (QA 2026-11-14: the game was scaled to 62% on a 360x640 screen, its score row at 8px)
     'sky-gauntlet':        { phoneLift: ['.sg-hud'], phoneParts: [{ sel: '.sg-modes', pre: true, name: 'Normal or Easy' }], root: '#ma-gauntlet', zoom: '.sg-game', box: ['.sg-hud', '.sg-stage'], snug: true, beside: { host: '.sg-main', items: ['.sg-modes', '.sg-hud', '.sgb-post'] },
                              how: ['.sg-howp'], parts: ['.sg-side > .sgb-panel:not(.sg-howp)', 'section.sgk'] },
-    'the-levian':          { root: '#ma-levian', zoom: '.lv-stage', fit: ['.lv-bar', '.wk-champ'],
+    // phones: How to play on a screen of its own after the game, so the row goes the name, the game, How to play (Maurice, 2026-11-14:
+    // one press from the name skipped the game), and the score row fitted on one line over the board
+    'the-levian':          { phoneHowAfter: true, phoneRow: '.lv-bar', root: '#ma-levian', zoom: '.lv-stage', fit: ['.lv-bar', '.wk-champ'],
                              how: ['.lv-side > .lvb-panel:not(.lvb-local):not(.lvb-boardp)'], parts: [{ sel: '.lvb-local, .lvb-boardp', stack: true }] },
     'master-stacker':      { root: '#ms-stack', zoom: '.ms-play', box: ['.ms-hud', '.ms-cv'], how: ['.ms-how'], parts: [{ sel: '.ms-local, .ms-boardp', stack: true }],
                              side: ['.ms-hud', '.ms-ctrls'], snug: true },   // score and buttons sit over Next up, so the board gets the height
@@ -110,6 +112,7 @@
   // phones: some games put their setup (Goma Goons' crew picker) on the screen before the game, so the game gets the screen
   if (cfg.phoneJoin && window.innerWidth < 700) cfg.phoneJoin.forEach(function (j) { var a = q(j[0]), b = q(j[1]); if (a && b) { b.appendChild(a); b.classList.add('gs-joined'); } });
   if (cfg.phoneHow && window.innerWidth < 700) cfg.how = (cfg.how || []).concat(cfg.phoneHow);
+  if (cfg.phoneHowAfter && window.innerWidth < 700 && cfg.how && cfg.how.length) { cfg.parts = [{ sel: cfg.how.join(', '), name: 'How to play' }].concat(cfg.parts || []); cfg.how = []; }
   if (cfg.wideParts && window.innerWidth >= 700) cfg.parts = cfg.wideParts.concat(cfg.parts || []);
   if (cfg.phoneParts && window.innerWidth < 700) cfg.parts = cfg.phoneParts.filter(function (p) { return !p.maxH || window.innerHeight < p.maxH; }).concat(cfg.parts || []);
   // 1. the game: everything the page had, less the parts that get panels of their own
@@ -121,7 +124,7 @@
   });
   root.appendChild(stage);
   // 2. how to play: the name and the lines about the game (they were the page's header)
-  var about = panel('How to play', 'gs-about'); track.insertBefore(about, game);
+  var about = panel(cfg.phoneHowAfter && window.innerWidth < 700 ? 'About' : 'How to play', 'gs-about'); track.insertBefore(about, game);
   var aboutIn = document.createElement('div'); aboutIn.className = 'gs-col'; about.appendChild(aboutIn);
   var howBox = document.createElement('div'); howBox.className = 'gs-how'; aboutIn.appendChild(howBox);
   function emptyOut(from) {   // a column left with nothing in it steps aside so the game can center
@@ -345,6 +348,10 @@
     snap.glide(y0);
   }
   back.addEventListener('click', prevStop);
+  // at the last stop, a down arrow: on past the row, the same glide a forward swipe there makes (Maurice, 2026-11-14)
+  var down = document.createElement('button'); down.type = 'button'; down.className = 'gs-hint gs-down'; down.setAttribute('aria-label', 'Scroll down');
+  down.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>'; stage.appendChild(down);
+  down.addEventListener('click', function () { snap.exit(1); });
   function placeArrows() {
     if (wide) { back.style.left = ''; hint.style.left = ''; return; }
     var sg = qa('.gs-seg', prog), sr = stage.getBoundingClientRect(); if (sg.length < 2) return;
@@ -697,7 +704,7 @@
     sbarIn.style.transform = 'scaleX(' + Math.min(1, fill).toFixed(3) + ')';
     tx = x; if (shown !== null) x = shown;
     // the Scroll button: on to the next section; gone at the end (Maurice, 2026-11-13: 'on horizontal scrolls, add a "scroll" button')
-    var atEnd = !stops.length || tx >= stops[stops.length - 1] - 1; hint.style.opacity = atEnd ? '0' : ''; hint.style.pointerEvents = atEnd ? 'none' : '';
+    var atEnd = !stops.length || tx >= stops[stops.length - 1] - 1; hint.style.opacity = atEnd ? '0' : ''; hint.style.pointerEvents = atEnd ? 'none' : ''; /* (none once the page is at its bottom) */ down.classList.toggle('on', stops.length > 0 && atEnd && document.documentElement.scrollHeight - innerHeight - scrollY > 4);
     var atStart = tx < 4; back.style.opacity = atStart ? '0' : ''; back.style.pointerEvents = atStart ? 'none' : '';
     if (!glide) glide = requestAnimationFrame(draw);
   }
@@ -1057,9 +1064,25 @@
       gt.style.setProperty('--gs-gate-max', Math.max(160, (tr.height - o2 * (j ? 2 : 1)) / kk).toFixed(0) + 'px');
     }
   }
+  // phones: a score row that stays on one line (The Levian's Segments, Best, Pause, Restart; Maurice, 2026-11-14: 'the top row
+  // should stay on one row and adjust'): as wide as the board, its pieces scaled together if they run long, never under 11px on screen
+  function fitRow() {
+    var r = !wide && cfg.phoneRow && q(cfg.phoneRow, game); if (!r || !r.offsetParent) return;
+    Array.prototype.forEach.call(r.children, function (e) { e.style.zoom = ''; });
+    var b = q(BOARD, game), k = zOf(r) || 1;
+    r.style.width = b && b.offsetParent ? (b.getBoundingClientRect().width / k).toFixed(1) + 'px' : '';
+    if (r.scrollWidth <= r.clientWidth + 1) return;
+    var fs = 1e9; qa('span, b, button', r).forEach(function (e) { fs = Math.min(fs, parseFloat(getComputedStyle(e).fontSize) * zOf(e)); });
+    var gap = parseFloat(getComputedStyle(r).columnGap) || 0, n = r.children.length, need = r.scrollWidth - gap * (n - 1), room = r.clientWidth - gap * (n - 1);
+    // (too long for the board's width even at 11px: as wide as the game's own room instead)
+    if (fs < 1e9 && room / Math.max(1, need) < 11.2 / fs) { r.style.width = '100%'; if (r.scrollWidth <= r.clientWidth + 1) return; need = r.scrollWidth - gap * (n - 1); room = r.clientWidth - gap * (n - 1); }
+    var zz = Math.max(fs < 1e9 ? 11.2 / fs : 0.6, room / Math.max(1, need) * 0.995);
+    Array.prototype.forEach.call(r.children, function (e) { e.style.zoom = zz.toFixed(3); });
+  }
   // the Current Champion banner is exactly as wide as the play screen under it and touches it (Maurice, 2026-11-13)
   var BOARD = '.ar-stage,.ch-board,.sg-stage,.ms-stage,.ms-cv,.fl-stage,.lv-stage,.sd-stage,#ma-holdwall .stage,.hg-card,#daily-word main';
   function alignChamp() {
+    fitRow();
     var c = q('.wk-champ, .dbd-champ', game); if (!c || !c.offsetParent || c.closest('.gs-beside')) return;
     var b = null; qa(BOARD, game).forEach(function (e) { if (!b && e.offsetParent && e.getBoundingClientRect().top >= c.getBoundingClientRect().top) b = e; }); if (!b) return;
     var st = function (k, v) { c.style.setProperty(k, v, 'important'); };

@@ -147,7 +147,7 @@
     });
     Array.prototype.forEach.call(document.querySelectorAll('[data-ma-marquee]'), marquee);
     links();
-    if (fine) Array.prototype.forEach.call(document.querySelectorAll('#page .sqs-block-button-element, #page .mrv-btn'), function (a) {
+    if (fine) Array.prototype.forEach.call(document.querySelectorAll('#page .sqs-block-button-element, #page .mrv-btn, #page [data-ma-magnet]'), function (a) {
       if (out(a) || !mark(a)) return;
       magnets.push({ el: a, tx: 0, ty: 0, x: 0, y: 0 });
     });
@@ -189,6 +189,12 @@
     });
     Array.prototype.forEach.call(document.querySelectorAll('#page [data-ma-wipe]'), function (el) {
       if (mark(el)) items.push({ type: 'wipe', el: el, ref: el });
+    });
+    // data-ma-float on a frame: the picture inside it (its first child) floats like the home page's cover, tilting
+    // toward the pointer; the frame stays still and is measured
+    Array.prototype.forEach.call(document.querySelectorAll('#page [data-ma-float]'), function (w) {
+      var inner = w.firstElementChild || w;
+      if (mark(w)) items.push({ type: 'float', sec: w.closest('section'), el: inner, ref: w, tx: 0, ty: 0, x: 0, y: 0 });
     });
   }
 
@@ -407,6 +413,10 @@
     var top = null;
     Array.prototype.forEach.call(h.querySelectorAll('.ma-dw'), function (w) {
       var t = w.getBoundingClientRect().top;
+      // the first word of a line set as its own block (a heading in stacked lines) already starts that line
+      var pv = w.previousSibling;
+      while (pv && pv.nodeType === 3 && !/\S/.test(pv.nodeValue)) pv = pv.previousSibling;
+      if (!pv && w.parentNode !== h && getComputedStyle(w.parentNode).display !== 'inline') { top = t; return; }
       if (top !== null && t > top + 2) {
         var prev = w.previousSibling, br = document.createElement('br');
         if (prev && prev.nodeType === 3 && /^\s+$/.test(prev.nodeValue)) prev.parentNode.replaceChild(br, prev);

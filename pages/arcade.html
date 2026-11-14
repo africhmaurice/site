@@ -87,6 +87,10 @@
 @media (max-width:699px){.ac-head{height:auto;min-height:40px;flex-wrap:wrap;align-items:flex-end;align-content:flex-end;gap:6px 16px;white-space:normal;width:calc(var(--acw,100vw) - 2 * max(24px,6vw));box-sizing:border-box}.ac-sub{white-space:normal}}   /* phones: a group's line wraps under its name, all of it on the screen (QA 2026-11-14) */
 @media (max-width:699px){.ac-back{left:calc(50% - 28px)!important;translate:-50% 0}.ac-hint{left:calc(50% + 28px)!important;translate:-50% 0}}
 .ac-hint{font-size:0!important;padding:6px!important;border:0!important;background:none!important;gap:0!important;right:auto!important;left:calc(50% + 28px)!important;translate:-50% 0}.ac-hint svg{width:22px;height:22px}.ac-back{left:calc(50% - 28px)!important;translate:-50% 0}   /* every width: small arrows, centered (Maurice, 2026-11-14) */
+/* at the last stop a down arrow takes the forward arrow's spot, so people know the page goes on (Maurice, 2026-11-14: 'When you get to the end, add a down arrow so people know') */
+.ac-hint.ac-down{padding:11px!important;margin-bottom:-5px;z-index:6;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s}.ac-hint.ac-down.on{opacity:1;visibility:visible}.ac-hint.ac-down svg{animation:ac-bob 1.6s ease-in-out infinite}
+@keyframes ac-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+@media (prefers-reduced-motion:reduce){.ac-hint.ac-down svg{animation:none}}
 </style>
 <div id="arcade" data-ma-own data-ma-keep-top>
   <div class="ac-stage">
@@ -398,6 +402,10 @@
     if (tx < 0) st.slice().reverse().forEach(function (v) { if (tx < 0 && v < x0 - 8) tx = v; });
     rowTo(Math.max(0, tx));
   });
+  // at the last stop, a down arrow: on past the row, the same glide a forward swipe there makes (Maurice, 2026-11-14)
+  var down = document.createElement('button'); down.type = 'button'; down.className = 'ac-hint ac-down'; down.setAttribute('aria-label', 'Scroll down');
+  down.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>'; hint.parentNode.appendChild(down);
+  down.addEventListener('click', function () { snap.exit(1); });
   // smooth and snapping at once (Maurice, 2026-11-14: 'I like snapping to section, but I don't want to lose the smoothness for
   // it. So can we have both?'): the row follows a finger, a wheel, or a trackpad exactly, and once the input stops it eases onto
   // the nearest stop, starting at the speed it was already going so it never jumps; a flick lands on the next stop the way it
@@ -664,7 +672,7 @@
       var f = sg.b - sg.a > 1 ? clamp01((x - sg.a) / (sg.b - sg.a)) : (x >= sg.b - 1 ? 1 : 0);
       sg.fill.style.transform = 'scaleX(' + f.toFixed(4) + ')';
     });
-    var atEnd = x >= span - 2; hint.style.opacity = atEnd ? '0' : ''; hint.style.pointerEvents = atEnd ? 'none' : ''; var atStart = x < 4; back.style.opacity = atStart ? '0' : ''; back.style.pointerEvents = atStart ? 'none' : '';   // the Scroll button stays until the end (Maurice, 2026-11-13)
+    var atEnd = x >= span - 2; hint.style.opacity = atEnd ? '0' : ''; hint.style.pointerEvents = atEnd ? 'none' : ''; /* (none once the page is at its bottom) */ down.classList.toggle('on', atEnd && span > 0 && document.documentElement.scrollHeight - innerHeight - scrollY > 4); var atStart = x < 4; back.style.opacity = atStart ? '0' : ''; back.style.pointerEvents = atStart ? 'none' : '';   // the Scroll button stays until the end (Maurice, 2026-11-13)
     if (Math.abs(target - x) > 0.4) raf = requestAnimationFrame(function () { paint(false); });
     pick();
   }

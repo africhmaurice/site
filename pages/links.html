@@ -129,6 +129,10 @@
 .lk-back{position:absolute;left:max(24px,6vw);bottom:calc(max(18px,3svh) + 30px);z-index:4;display:flex;padding:6px;border:0;background:none;color:#a2f590;cursor:pointer;transition:opacity .25s ease}.lk-back svg{width:22px;height:22px}
 @media (max-width:699px){.lk-hz .lk-back{left:calc(50% - 28px)!important;translate:-50% 0}.lk-hz .lk-hint{left:calc(50% + 28px)!important;translate:-50% 0}}
 .lk-hz .lk-hint{font-size:0!important;padding:6px!important;border:0!important;background:none!important;gap:0!important;right:auto!important;left:calc(50% + 28px)!important;translate:-50% 0}.lk-hz .lk-hint svg{width:22px;height:22px}.lk-hz .lk-back{left:calc(50% - 28px)!important;translate:-50% 0}   /* every width: small arrows, centered (Maurice, 2026-11-14) */
+/* at the last stop a down arrow takes the forward arrow's spot, so people know the page goes on (Maurice, 2026-11-14: 'When you get to the end, add a down arrow so people know') */
+.lk-hz .lk-hint.lk-down{padding:11px!important;margin-bottom:-5px;z-index:6;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s}.lk-hz .lk-hint.lk-down.on{opacity:1;visibility:visible}.lk-hz .lk-hint.lk-down svg{animation:lk-bob 1.6s ease-in-out infinite}
+@keyframes lk-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+@media (prefers-reduced-motion:reduce){.lk-hz .lk-hint.lk-down svg{animation:none}}
 </style>
 <div id="ma-links">
   <div class="lk-sky" aria-hidden="true"></div><div class="lk-wash" aria-hidden="true"></div>
@@ -506,6 +510,10 @@
   var back = document.createElement('button'); back.type = 'button'; back.className = 'lk-back'; back.setAttribute('aria-label', 'Scroll back');
   back.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>'; hint.parentNode.appendChild(back);
   back.addEventListener('click', function () { step(-1); });
+  // at the last stop, a down arrow: on past the row, the same glide a forward swipe there makes (Maurice, 2026-11-14)
+  var down = document.createElement('button'); down.type = 'button'; down.className = 'lk-hint lk-down'; down.setAttribute('aria-label', 'Scroll down');
+  down.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>'; hint.parentNode.appendChild(down);
+  down.addEventListener('click', function () { snap.exit(1); });
   hint.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); forward(); } });
   var prog = document.createElement('nav');
   prog.className = 'lk-prog'; prog.setAttribute('aria-label', 'Sections');
@@ -606,7 +614,7 @@
       sg.fill.style.transform = 'scaleX(' + f.toFixed(4) + ')';
     });
     // the Scroll button stays until the end of the row (Maurice, 2026-11-13: 'on horizontal scrolls, add a "scroll" button')
-    var atEnd = x >= span - 2; hint.style.opacity = atEnd ? '0' : ''; hint.style.pointerEvents = atEnd ? 'none' : ''; var atStart = x < 4; back.style.opacity = atStart ? '0' : ''; back.style.pointerEvents = atStart ? 'none' : '';
+    var atEnd = x >= span - 2; hint.style.opacity = atEnd ? '0' : ''; hint.style.pointerEvents = atEnd ? 'none' : ''; /* (none once the page is at its bottom) */ down.classList.toggle('on', atEnd && span > 0 && document.documentElement.scrollHeight - innerHeight - scrollY > 4); var atStart = x < 4; back.style.opacity = atStart ? '0' : ''; back.style.pointerEvents = atStart ? 'none' : '';
     if (Math.abs(target - x) > 0.4) raf = requestAnimationFrame(function () { paint(false); });
   }
   function kick() { if (!raf) raf = requestAnimationFrame(function () { paint(false); }); }

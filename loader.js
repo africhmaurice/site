@@ -101,8 +101,8 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   // The new motion style (Maurice, 2026-11-12): motion.js on these pages, in place of the fade-in below.
   // The home page first; more pages join this list as they are checked. The shop never loads loader.js.
   // Maurice, 2026-11-12: then every page under Fun Stuff and Games, the order page, and the adventure chapters. The game
-  // pages get the dark look but no motion, so nothing moves while people play.
-  var NEW_PAGES = ['the-hunt', 'newsletter', 'oracles-gift/aura-spectrum', 'sky-pirate-quiz-61748', 'crew-dossier', 'bookshelf', 'contests', 'arcade',
+  // pages get the dark look but no motion, so nothing moves while people play. The Press Room joined 11/14.
+  var NEW_PAGES = ['the-hunt', 'newsletter', 'oracles-gift/aura-spectrum', 'sky-pirate-quiz-61748', 'crew-dossier', 'bookshelf', 'contests', 'arcade', 'press-kit',
     'order', 'preorder', 'adventure', 'red-city', 'the-crew', 'the-crash', 'the-river', 'the-raft', 'river-mayhem', 'washed-ashore', 'cerunine-attack',
     'the-reunion', 'the-energy-wave', 'finding-scarlett', 'light-on-her-feet', 'pull-her-out', 'the-source', 'the-break-in', 'search-the-building',
     'the-captains-request', 'saving-scarlett', 'back-to-the-hunt', 'the-crew-decides'];
