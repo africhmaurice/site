@@ -228,9 +228,9 @@
     if (legal) Array.prototype.forEach.call(legal.children, function (a, i) { items.push({ type: 'stag', kind: 'wipe', el: a, ref: legal, i: i, step: 0.1 }); });
   }
 
-  // Social icons in the page (Meet Maurice, 2026-11-12): scrolling down into the section, they fly in from the top
-  // of the screen, spinning, and land in their row; scrolling down past it, they scatter down off the bottom of the
-  // screen. Both run backward when scrolling up. Each icon keeps its own random spread and spin.
+  // Social icons in the page (Meet Maurice, 2026-11-12): they drop into their row, spinning, as the row comes up onto
+  // the screen (2026-11-14: in place before the words above them are read, never flying across them). Once in place
+  // they stay. Each icon keeps its own random spread and spin.
   function socials() {
     Array.prototype.forEach.call(document.querySelectorAll('#page .sqs-svg-icon--list'), function (list) {
       Array.prototype.forEach.call(list.children, function (a, i) {
@@ -334,6 +334,8 @@
       var e = ease(clamp((vh - r.top) / (r.height + vh * 0.25)));
       var u = ease(clamp((vh * 0.15 - r.top) / (vh * 0.15 + r.height)));
       var to = cx + (1 - e) * (rw - cx) - u * (cx + w);
+      // once the page stops with the band on screen, the icons sit centered and stay there (QA pass 7, 2026-11-14)
+      if (row.__maRest || (!scrolling && r.bottom > 0 && r.top < vh && r.height > 0)) { row.__maRest = 1; to = cx; }
       x += (to - x) * 0.2;
       if (Math.abs(to - x) < 0.3) x = to;
       track.style.transform = 'translate3d(' + x.toFixed(2) + 'px,0,0)';
@@ -343,6 +345,7 @@
       var go1 = function () { if (!id && on) id = requestAnimationFrame(stepOne); };
       fill();
       addEventListener('scroll', go1, { passive: true });
+      idlers.push(go1);
       addEventListener('resize', function () { gap = parseFloat(getComputedStyle(row).columnGap) || gap; fill(); go1(); });
       addEventListener('load', function () { fill(); go1(); });
       if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { on = es[0].isIntersecting; go1(); }).observe(row);
@@ -379,7 +382,7 @@
   // Headings: letters cycle through random ones and settle left to right, then the original heading comes back.
   var LET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', DIG = '0123456789';
   function decode(h) {
-    var orig = h.innerHTML, style = h.getAttribute('style'), label = h.textContent.replace(/\s+/g, ' ').trim(), cells = [];
+    var orig = h.innerHTML, label = h.textContent.replace(/\s+/g, ' ').trim(), cells = [];
     var walker = document.createTreeWalker(h, NodeFilter.SHOW_TEXT, null), nodes = [], n;
     while ((n = walker.nextNode())) nodes.push(n);
     var held = h.offsetHeight;
@@ -413,17 +416,20 @@
     });
     cells.forEach(function (c) { c.w = c.el.getBoundingClientRect().width; });
     cells.forEach(function (c) { c.el.style.width = c.w + 'px'; });
+    // only these three are put back after: the scroll motion may write the heading's other styles meanwhile
+    var had = [h.style.whiteSpace, h.style.boxSizing, h.style.height];
     h.style.whiteSpace = 'nowrap';
     h.style.boxSizing = 'border-box';
     h.style.height = held + 'px';
     h.classList.add('ma-dlock');
-    var start = performance.now(), span = Math.min(900, 300 + cells.length * 22), last = 0;
+    // all the letters are settled within about half a second, however long the heading (QA pass 7, 2026-11-14)
+    var start = performance.now(), span = Math.min(420, 160 + cells.length * 10), last = 0;
     (function tick(now) {
       var t = now - start, done = true;
-      if (now - last > 45) {
+      if (now - last > 40 || t >= 60 + span) {
         last = now;
         cells.forEach(function (c, i) {
-          if (t >= 120 + (i / Math.max(1, cells.length)) * span) { if (!c.ok) { c.el.textContent = c.ch; c.ok = 1; } return; }
+          if (t >= 60 + (i / Math.max(1, cells.length)) * span) { if (!c.ok) { c.el.textContent = c.ch; c.ok = 1; } return; }
           done = false;
           c.el.textContent = c.set.charAt(Math.floor(Math.random() * c.set.length));
         });
@@ -431,7 +437,8 @@
       if (!done) { requestAnimationFrame(tick); return; }
       h.innerHTML = orig;
       h.removeAttribute('aria-label');
-      if (style === null) h.removeAttribute('style'); else h.setAttribute('style', style);
+      h.style.whiteSpace = had[0]; h.style.boxSizing = had[1]; h.style.height = had[2];
+      if (!h.getAttribute('style')) h.removeAttribute('style');
       h.classList.remove('ma-dec', 'ma-dlock');
       // the scroll motion may have moved this heading meanwhile: forget what it last wrote so it writes again
       for (var k in h) if (k.indexOf('__ma_') === 0) h[k] = null;
@@ -450,20 +457,96 @@
   }
   function put(el, prop, v) { if (el['__ma_' + prop] !== v) { el['__ma_' + prop] = v; el.style[prop] = v; } }
 
-  // Anything already on the first screen when the page opens shows in its place, at rest (QA 2026-11-14: a stat card
-  // at the bottom of a phone screen sat half-way through its entrance, small, tilted, and faded, until the reader
-  // scrolled). It stays put until it has scrolled out of sight above; after that it moves with the scroll like the rest.
-  var untouched = window.scrollY < 10, HOMES = /^(rise|card|panel|pop|wipe|stag|float)$/;
-  addEventListener('scroll', function () { if (window.scrollY > 10) untouched = false; }, { passive: true });
-  function settleHome(it, r, vh) {
-    if (it.type === 'fly' || !HOMES.test(it.type) || (it.type === 'pop' && it.slow)) return false;
-    var box = it.type === 'card' ? it.b.getBoundingClientRect() : r;
-    // a popping piece is drawn smaller around its middle, so its real top is found from its middle and its own height
-    var top = it.type === 'pop' ? (box.top + box.bottom) / 2 - it.el.offsetHeight / 2 : box.top;
-    var bottom = it.type === 'pop' ? top + it.el.offsetHeight : box.bottom;
-    if (untouched && !it.home && box.height > 0 && top < vh && bottom > 0) it.home = true;
-    else if (it.home && bottom < 0) it.home = false;
-    return !!it.home;
+  // Nothing is ever left half-way in (Maurice, 2026-11-14: "nothing half-entered, tilted, faded, or off-screen at rest;
+  // nothing should disappear while scrolling"). While the page scrolls, the pieces still move with it. When the
+  // scrolling stops (120 ms with no real movement), every piece on screen that is part of the way in eases the rest of the
+  // way in (a third of a second) and is done: it stays in place from then on, scrolling up or down. A piece that
+  // comes all the way in while scrolling is done the same way, so nothing ever plays backward out of sight.
+  // Anything already on the first screen when the page opens is done from the start, in its place.
+  var untouched = window.scrollY < 10, scrolling = false, idleT = 0, idlers = [];
+  var SETTLE = /^(rise|card|panel|pop|wipe|stag|fly|float|scatter)$/;
+  // The smooth wheel glide takes a second or more to creep its last few pixels; the page counts as stopped once it
+  // moves slower than about 4 px a frame (240 px a second), so pieces don't wait for that tail.
+  var lastSY = window.scrollY, lastST = 0;
+  addEventListener('scroll', function () {
+    if (window.scrollY > 10) untouched = false;
+    var now = performance.now(), d = Math.abs(window.scrollY - lastSY), v = d * 1000 / Math.max(16, now - lastST);
+    lastSY = window.scrollY;
+    lastST = now;
+    if (v < 240) return;
+    scrolling = true;
+    clearTimeout(idleT);
+    idleT = setTimeout(function () { scrolling = false; kick(); idlers.forEach(function (f) { f(); }); }, 120);
+  }, { passive: true });
+  var EASE_IN = '.36s cubic-bezier(.25,.7,.25,1)';
+  function clean(it) {
+    var el = it.el;
+    if (it.type !== 'float') put(el, 'transform', '');
+    ['opacity', 'clipPath', 'translate', 'rotate', 'scale', 'pointerEvents'].forEach(function (p) { put(el, p, ''); });
+    if (it.kind === 'line') put(el, 'backgroundSize', '100% ' + it.w);
+    if (it.kind === 'trace') put(el, 'backgroundSize', '100% ' + it.w + ',' + it.w + ' 100%,100% ' + it.w + ',' + it.w + ' 100%');
+  }
+  function settle(it, soft) {
+    it.done = 1;
+    var el = it.el;
+    if (!soft) { clean(it); return; }
+    // two moves on one piece (a rise and a wipe) share one saved transition, put back once both are done
+    if (el.__maT0 == null) el.__maT0 = el.style.transition;
+    el.style.transition = ['transform', 'opacity', 'clip-path', 'translate', 'rotate', 'scale', 'background-size'].map(function (p) { return p + ' ' + EASE_IN; }).join(',');
+    // a clip that is switched off can't be eased, so it opens all the way first and is switched off after
+    var cp = el.style.clipPath ? 'inset(0px 0px 0px 0px)' : '';
+    clean(it);
+    if (cp) put(el, 'clipPath', cp);
+    clearTimeout(el.__maTT);
+    el.__maTT = setTimeout(function () { el.style.transition = el.__maT0; el.__maT0 = null; put(el, 'clipPath', ''); }, 420);
+  }
+  // true when the piece is done (now or before) and must not be moved; p is how far in it is, top/bottom its place at rest
+  var gDr = null;
+  function gate(it, p, top, bottom, vh) {
+    if (it.done) return true;
+    if (!SETTLE.test(it.type) || (it.type === 'pop' && it.slow)) return false;
+    // on screen where it rests, or where it is drawn right now (a turned corner can reach in from below the screen)
+    var on = (bottom > top && bottom > 0 && top < vh) || (gDr && gDr.height > 0 && gDr.bottom > 0 && gDr.top < vh);
+    if (p >= 1 && top < vh && bottom > top) { settle(it, false); return true; }
+    if (on && (untouched || !scrolling)) { settle(it, !untouched); return true; }
+    return false;
+  }
+  // where a piece sits when nothing moves it (its own transforms left out)
+  function restBox(el) {
+    var op = el.offsetParent;
+    if (!op || el.offsetWidth == null) return el.getBoundingClientRect();
+    var pr = op.getBoundingClientRect(), l = pr.left + op.clientLeft + el.offsetLeft, t = pr.top + op.clientTop + el.offsetTop;
+    return { left: l, top: t, right: l + el.offsetWidth, bottom: t + el.offsetHeight, width: el.offsetWidth, height: el.offsetHeight };
+  }
+  // A moving piece never goes past the side of the screen (QA pass 7, 2026-11-14: a tilted rule card ran past the right
+  // edge, another sat 12 px off the left). Works out the sideways reach of the piece as drawn (turned by rot degrees and
+  // scaled by s around ox, oy, tipped back by rx degrees under a perspective of per, moved tx sideways) and returns the
+  // shift (dx) that keeps it between the left edge and 16 px from the right edge, turning or shrinking it less only when
+  // it can't fit any other way. A piece that already rests past those lines keeps its own edges as the limit.
+  function fitX(R, ox, oy, s, rot, tx, rx, per) {
+    var cw = document.documentElement.clientWidth || innerWidth;
+    var lo = Math.min(R.left, 0), hi = Math.max(R.right, cw - 16), w = R.right - R.left, h = R.bottom - R.top, mag = 1;
+    if (rx && per) mag = per / Math.max(per * 0.5, per - h * Math.abs(Math.sin(rx * Math.PI / 180)));
+    for (var pass = 0; pass < 3; pass++) {
+      var a = rot * Math.PI / 180, c = Math.cos(a), sn = Math.sin(a), mn = 1e9, mx = -1e9;
+      for (var i = 0; i < 4; i++) {
+        var x0 = (i % 2 ? w : 0) - ox, y0 = (i > 1 ? h : 0) - oy;
+        var x = R.left + ox + (x0 * c - y0 * sn) * s * mag + tx;
+        if (x < mn) mn = x;
+        if (x > mx) mx = x;
+      }
+      if (mx - mn <= hi - lo + 0.5) return { dx: mn < lo ? lo - mn : mx > hi ? hi - mx : 0, rot: rot, s: s };
+      if (rot) rot = 0; else s = s * (hi - lo) / (mx - mn);
+    }
+    return { dx: 0, rot: rot, s: s };
+  }
+  function shift(dx) { return Math.abs(dx) > 0.05 ? 'translate(' + dx.toFixed(1) + 'px,0) ' : ''; }
+  // a drift tied to the scroll (a floating cover, a slower layer) eases back to where it belongs once the page stops
+  function drift(it, target) {
+    if (it.dv == null) it.dv = untouched ? 0 : target;
+    it.dv += (target - it.dv) * (scrolling ? 0.14 : 0.2);
+    if (Math.abs(target - it.dv) < 0.0015) it.dv = target;
+    return it.dv !== target;
   }
 
   // One pass: read every position first, then write, so the page never measures something it just moved.
@@ -471,11 +554,14 @@
     var vh = innerHeight, moving = false, doc = document.documentElement;
     var max = doc.scrollHeight - vh;
     put(bar, 'transform', 'scaleX(' + (max > 0 ? clamp(scrollY / max) : 0).toFixed(4) + ')');
-    var rects = items.map(function (it) { return it.ref.getBoundingClientRect(); }), homeNow = false;
+    // a piece that is done is never measured again (a picture drifting inside its frame and a floating cover still are)
+    var live = items.map(function (it) { return !it.done || it.type === 'float' || !!it.img; });
+    var rects = items.map(function (it, k) { return live[k] ? it.ref.getBoundingClientRect() : null; });
+    var drawn = items.map(function (it, k) { return live[k] && !it.done && SETTLE.test(it.type) ? it.el.getBoundingClientRect() : null; });
+    var rbs = items.map(function (it) { return !it.done && /^(fly|pop|stag|scatter)$/.test(it.type) ? restBox(it.el) : null; });
     // how far something has come in, from s (where it starts) over span; anything that can't scroll that far up
     // (the end of the page) finishes as the page bottoms out
     function prog(r, s, span) {
-      if (homeNow) return 1;
       var end = Math.max(s - span, r.top - (max - scrollY));
       return s - end <= 1 ? 1 : clamp((s - r.top) / (s - end));
     }
@@ -491,58 +577,63 @@
     // a card's picture and the words over it turn around the same center, so they move as one card
     var own = {}, cols = {};
     items.forEach(function (it, k) {
-      if (it.type !== 'card') return;
+      if (it.type !== 'card' || it.done) return;
       var r = own[k] = it.b.getBoundingClientRect(), c = cols[it.key];
       if (!c) cols[it.key] = { l: r.left, t: r.top, r: r.right, b: r.bottom };
       else { c.l = Math.min(c.l, r.left); c.t = Math.min(c.t, r.top); c.r = Math.max(c.r, r.right); c.b = Math.max(c.b, r.bottom); }
     });
     items.forEach(function (it, k) {
-      var r = rects[k], p, q;
-      homeNow = settleHome(it, r, vh);
+      if (!live[k]) return;
+      var r = rects[k], R = rbs[k], p, q, f;
+      gDr = drawn[k];
       if (it.type === 'hero') {
         p = clamp(-r.top / r.height);
         // it used to shrink as the page scrolled, which opened a dark gap around it that looked like a mistake
-        // (Maurice, 2026-11-12: 'remove this separation as you scroll down'); it now only dims a little
+        // (Maurice, 2026-11-12: 'remove this separation as you scroll down'); it now only dims a little, and only while
+        // the page moves: stopped, it is back to full strength (QA pass 7, 2026-11-14: nothing faded at rest)
+        if (drift(it, scrolling ? p : 0)) moving = true;
         put(it.el, 'transform', '');
-        put(it.el, 'opacity', p > 0 ? (1 - 0.3 * p).toFixed(3) : '');
+        put(it.el, 'opacity', it.dv > 0.001 ? (1 - 0.3 * it.dv).toFixed(3) : '');
         return;
       }
       if (it.type === 'scatter') {
-        // they come in over the time the whole section takes to scroll into view, landing as it fills the screen
-        var inn = ease(clamp((window.innerWidth < 768 ? prog(r, vh * 1.0, vh * 0.45) : full(it)) * 1.06 - it.i * 0.006));
+        // they drop into their row from just above it, spinning, while the row is still coming up from below the screen,
+        // and are in place by the time the row is a little way onto the screen (Maurice, 2026-11-14: 'Can we have the
+        // icons already in place at this point in the scroll?'): they never fly across the words above them
+        var inn = ease(clamp((vh * 1.3 - r.top) / (vh * 0.38) - it.i * 0.006));
         var away = ease(clamp((vh * 0.35 - r.top) / (vh * 0.35 + r.height) - it.i * 0.02));
+        if (gate(it, inn >= 1 && away <= 0 ? 1 : 0, r.top, r.bottom, vh)) return;
         var k1 = 1 - inn;
-        // coming in: from just above the top of the screen; going out: to just below the bottom of the screen
-        var sx = it.inX * k1 + it.outX * away, sy = -(r.top + it.inY) * k1 + (vh - r.top + it.outY) * away, sr = it.rotIn * k1 + it.rotOut * away;
-        put(it.el, 'transform', k1 > 0.001 || away > 0.001 ? 'translate3d(' + sx.toFixed(1) + 'px,' + sy.toFixed(1) + 'px,0) rotate(' + sr.toFixed(1) + 'deg)' : '');
+        // coming in: from a little above and to the side of its spot; going out: to just below the bottom of the screen
+        var sx = it.inX * 0.4 * k1 + it.outX * away, sy = -(60 + it.inY * 0.6) * k1 + (vh - r.top + it.outY) * away, sr = it.rotIn * 0.5 * k1 + it.rotOut * away;
+        f = fitX(R, R.width / 2, R.height / 2, 1, sr, sx, 0, 0);
+        put(it.el, 'transform', k1 > 0.001 || away > 0.001 ? 'translate3d(' + (sx + f.dx).toFixed(1) + 'px,' + sy.toFixed(1) + 'px,0) rotate(' + f.rot.toFixed(1) + 'deg)' : '');
         put(it.el, 'opacity', '');
         return;
       }
       if (it.type === 'fly') {
         // comes in from the bottom edge of the screen and is in place by the time it is halfway up
-        // (Maurice, 2026-11-13: 'let's do halfway instead'). A tile on screen
-        // when the page opened stays put until it has scrolled out once; a group marked data-ma-rest (a search showing
-        // its results) holds every tile in place.
+        // (Maurice, 2026-11-13: 'let's do halfway instead'). A tile on screen when the page opened is in place from the
+        // start; a group marked data-ma-rest (a search showing its results) holds every tile in place.
         // a small stagger by column, scaled so every tile still lands exactly in place
         var st = (it.i % 3) * 0.04;
-        // measured where it rests, not where it was last moved to (reading its own offset back made a tile coming in
-        // from above jump between two places every frame)
-        var rest = { top: r.top - (it.cur || 0), height: r.height };
-        if (it.home && rest.top + rest.height < 0) it.home = false;
+        // measured where it rests, not where it was last moved to
         var held = it.home || (it.el.parentElement && it.el.parentElement.hasAttribute('data-ma-rest'));
-        p = held ? 1 : ease(clamp((prog(rest, vh * 1.02, vh * 0.5) - st) / (1 - st)));
+        p = held ? 1 : ease(clamp((prog(R, vh * 1.02, vh * 0.5) - st) / (1 - st)));
+        if (gate(it, p, R.top, R.bottom, vh)) return;
         // it slides out of its own slot and is only ever seen inside that slot (QA 2026-11-14: a tile flying in from 520px
         // away sat over the dice and story above it whenever the reader stopped scrolling), so the travel is its own size
         // and the part outside its slot is cut off
-        // Sideways pieces on wide screens still come in from the screen's edge (left columns from the left, right from
-        // the right, so they never cross each other or the heading); on a phone a sideways piece only fades in where it
-        // rests, so no line of text is ever cut off at the screen's edge.
+        // Sideways pieces on wide screens still come in from the side (left columns from the left, right from the right,
+        // so they never cross each other or the heading), but never from past the screen's edge; on a phone a sideways
+        // piece only fades in where it rests, so no line of text is ever cut off at the screen's edge.
         var wideX = it.x && innerWidth >= 768;
-        var span = it.x ? (wideX ? Math.min(innerWidth * 0.6, 560) : 0) : r.height;
-        var fd = (1 - p) * span * it.dir, cut = Math.min(span, Math.abs(fd)).toFixed(1) + 'px';
-        it.cur = it.x || p >= 1 ? 0 : fd;
+        var span = it.x ? (wideX ? Math.min(innerWidth * 0.6, 560) : 0) : R.height;
+        var fd = (1 - p) * span * it.dir, rot = wideX ? (1 - p) * 5 * it.dir : 0;
+        if (it.x) { f = fitX(R, R.width / 2, R.height / 2, 1, rot, fd, 0, 0); fd += f.dx; rot = f.rot; }
+        var cut = Math.min(span, Math.abs(fd)).toFixed(1) + 'px';
         put(it.el, 'translate', p < 1 ? (it.x ? fd.toFixed(1) + 'px 0' : '0 ' + fd.toFixed(1) + 'px') : '');
-        put(it.el, 'rotate', wideX && p < 1 ? ((1 - p) * 5 * it.dir).toFixed(2) + 'deg' : '');
+        put(it.el, 'rotate', wideX && p < 1 ? rot.toFixed(2) + 'deg' : '');
         put(it.el, 'clipPath', p < 1 && !it.x ? 'inset(' + (fd > 0 ? '0 0 ' + cut + ' 0' : cut + ' 0 0 0') + ')' : '');
         var fp = span ? p : Math.min(1, p * 1.8);   // a phone's fade-only piece is fully there sooner
         put(it.el, 'opacity', fp < 1 ? (0.15 + 0.85 * fp).toFixed(3) : '');
@@ -577,21 +668,27 @@
         return;
       }
       if (it.type === 'pop') {
-        p = ease(clamp((prog(r, vh * 0.98, vh * 0.4) - Math.min(it.i * 0.07, 0.6)) / 0.4));
-        put(it.el, 'scale', p < 1 ? (0.4 + 0.6 * p).toFixed(3) : '');
+        p = ease(clamp((prog(R, vh * 0.98, vh * 0.4) - Math.min(it.i * 0.07, 0.6)) / 0.4));
+        if (gate(it, p, R.top, R.bottom, vh)) return;
         // small pieces turn as they pop; wide ones (bars, rows) barely turn, so they never swing across each other
-        var tw = 18 * Math.min(1, 160 / Math.max(1, r.width));
-        put(it.el, 'rotate', p < 1 ? ((1 - p) * (it.i % 2 ? -tw : tw)).toFixed(2) + 'deg' : '');
+        var tw = 18 * Math.min(1, 160 / Math.max(1, R.width));
+        f = fitX(R, R.width / 2, R.height / 2, 0.4 + 0.6 * p, (1 - p) * (it.i % 2 ? -tw : tw), 0, 0, 0);
+        put(it.el, 'scale', p < 1 ? f.s.toFixed(3) : '');
+        put(it.el, 'rotate', p < 1 ? f.rot.toFixed(2) + 'deg' : '');
+        put(it.el, 'translate', p < 1 && Math.abs(f.dx) > 0.05 ? f.dx.toFixed(1) + 'px 0' : '');
         put(it.el, 'opacity', p < 1 ? p.toFixed(3) : '');
         return;
       }
       if (it.type === 'par') {
+        // drifts with the scroll while the page moves and eases back into its own place when it stops
         q = clamp((vh - r.top) / (vh + r.height)) - 0.5;
-        put(it.el, 'translate', '0 ' + (q * it.k * -2 * Math.min(r.height, vh)).toFixed(1) + 'px');
+        if (drift(it, scrolling ? q : 0)) moving = true;
+        put(it.el, 'translate', it.dv ? '0 ' + (it.dv * it.k * -2 * Math.min(r.height, vh)).toFixed(1) + 'px' : '');
         return;
       }
       if (it.type === 'wipe') {
         p = ease(prog(r, vh * 0.95, vh * 0.45));
+        if (gate(it, p, r.top, r.bottom, vh)) return;
         put(it.el, 'clipPath', p < 1 ? 'inset(0 ' + ((1 - p) * 100).toFixed(1) + '% 0 0)' : '');
         return;
       }
@@ -606,6 +703,7 @@
         p = ease(clamp((prog(r, vh * 0.98, vh * 0.5) - off) / Math.min(0.6, 1 - off)));
         // a short page can't scroll far enough to finish the reveal, so in view at the page's bottom means fully shown (QA 2026-11-14)
         if (p < 1 && r.top < vh && window.scrollY + vh >= document.documentElement.scrollHeight - 4) p = 1;
+        if (gate(it, p, R.top, R.bottom, vh)) return;
         if (it.kind === 'line') { put(it.el, 'backgroundSize', (p * 100).toFixed(1) + '% ' + it.w); return; }
         if (it.kind === 'trace') {
           // four sides drawn in turn: top left to right, right side down, bottom right to left, left side up
@@ -614,16 +712,21 @@
           return;
         }
         if (it.kind === 'wipe') {
+          f = fitX(R, 0, 0, 1, 0, (1 - p) * -10, 0, 0);
           put(it.el, 'clipPath', p < 1 ? 'inset(0 ' + ((1 - p) * 100).toFixed(1) + '% 0 0)' : '');
-          put(it.el, 'transform', p < 1 ? 'translate3d(' + ((1 - p) * -10).toFixed(1) + 'px,0,0)' : '');
+          put(it.el, 'transform', p < 1 ? 'translate3d(' + ((1 - p) * -10 + f.dx).toFixed(1) + 'px,0,0)' : '');
           return;
         }
-        var tf = p >= 1 ? '' :
-          it.kind === 'pop' ? 'translate3d(0,' + ((1 - p) * 26).toFixed(1) + 'px,0) scale(' + (0.6 + 0.4 * p).toFixed(3) + ') rotate(' + ((1 - p) * (it.i % 2 ? -14 : 14)).toFixed(1) + 'deg)' :
-          it.kind === 'tilt' ? 'perspective(1000px) translate3d(0,' + ((1 - p) * 50).toFixed(1) + 'px,0) rotateX(' + ((1 - p) * 14).toFixed(2) + 'deg) scale(' + (0.95 + 0.05 * p).toFixed(4) + ')' :
-          it.kind === 'slide' ? 'translate3d(' + ((1 - p) * -28).toFixed(1) + 'px,0,0)' :
-          it.kind === 'slidein' ? 'translate3d(' + ((1 - p) * -80).toFixed(1) + 'px,0,0)' :
-          it.kind === 'book' ? 'translate3d(' + ((1 - p) * -70).toFixed(1) + 'px,0,0) rotate(' + ((1 - p) * -10).toFixed(2) + 'deg)' : 'translate3d(0,' + ((1 - p) * 18).toFixed(1) + 'px,0)';
+        var tx = 0, ty = 0, sc = 1, rz = 0, rx = 0, per = 0, oy = R.height / 2, u = 1 - p;
+        if (it.kind === 'pop') { ty = u * 26; sc = 0.6 + 0.4 * p; rz = u * (it.i % 2 ? -14 : 14); }
+        else if (it.kind === 'tilt') { ty = u * 50; rx = u * 14; sc = 0.95 + 0.05 * p; per = 1000; oy = 0; }
+        else if (it.kind === 'slide') tx = u * -28;
+        else if (it.kind === 'slidein') tx = u * -80;
+        else if (it.kind === 'book') { tx = u * -70; rz = u * -10; }
+        else ty = u * 18;
+        f = fitX(R, R.width / 2, oy, sc, rz, tx, rx, per);
+        var tf = p >= 1 ? '' : (per ? 'perspective(' + per + 'px) ' : '') + 'translate3d(' + (tx + f.dx).toFixed(1) + 'px,' + ty.toFixed(1) + 'px,0)' +
+          (rx ? ' rotateX(' + rx.toFixed(2) + 'deg)' : '') + (f.s !== 1 ? ' scale(' + f.s.toFixed(4) + ')' : '') + (f.rot ? ' rotate(' + f.rot.toFixed(2) + 'deg)' : '');
         if (it.kind === 'tilt') put(it.el, 'transformOrigin', '50% 0');
         put(it.el, 'transform', tf);
         put(it.el, 'opacity', p < 1 ? p.toFixed(3) : '');
@@ -631,34 +734,54 @@
       }
       if (it.type === 'panel') {
         p = ease(Math.max(prog(r, vh, vh * 0.6), full(it)));
+        if (gate(it, p, r.top, r.bottom, vh)) return;
         put(it.el, 'clipPath', p < 1 ? 'inset(' + ((1 - p) * 100).toFixed(2) + '% 0 0 0)' : '');
         return;
       }
       if (it.type === 'card') {
+        var o = own[k];
         q = Math.max(prog(r, vh * 0.95, vh * 0.45), full(it));
-        p = homeNow ? 1 : ease(clamp((q - it.i * 0.08) / 0.62));
-        var cc = cols[it.key], o = own[k];
-        put(it.el, 'transformOrigin', ((cc.l + cc.r) / 2 - o.left).toFixed(1) + 'px ' + ((cc.t + cc.b) / 2 - o.top).toFixed(1) + 'px');
-        put(it.el, 'transform', p < 1 ? 'perspective(700px) translate3d(0,' + ((1 - p) * 40).toFixed(1) + 'px,0) rotateX(' + ((1 - p) * 18).toFixed(2) +
-          'deg) rotate(' + ((1 - p) * (it.i % 2 ? 8 : -8)).toFixed(2) + 'deg) scale(' + (0.86 + 0.14 * p).toFixed(4) + ')' : '');
+        p = ease(clamp((q - it.i * 0.08) / 0.62));
+        if (gate(it, p, o.top, o.bottom, vh)) return;
+        var cc = cols[it.key], ox = (cc.l + cc.r) / 2 - o.left, oy2 = (cc.t + cc.b) / 2 - o.top;
+        f = fitX(o, ox, oy2, 0.86 + 0.14 * p, (1 - p) * (it.i % 2 ? 8 : -8), 0, (1 - p) * 18, 700);
+        put(it.el, 'transformOrigin', ox.toFixed(1) + 'px ' + oy2.toFixed(1) + 'px');
+        put(it.el, 'transform', p < 1 ? 'perspective(700px) translate3d(' + f.dx.toFixed(1) + 'px,' + ((1 - p) * 40).toFixed(1) + 'px,0) rotateX(' + ((1 - p) * 18).toFixed(2) +
+          'deg) rotate(' + f.rot.toFixed(2) + 'deg) scale(' + f.s.toFixed(4) + ')' : '');
         put(it.el, 'opacity', p < 1 ? p.toFixed(3) : '');
+        return;
+      }
+      if (it.img && it.done) {
+        q = clamp((vh - r.top) / (vh + r.height)) - 0.5;
+        put(it.img, 'transform', 'translate3d(0,' + (q * -7).toFixed(2) + '%,0) scale(1.12)');
         return;
       }
       p = ease(Math.max(prog(r, vh * 0.96, vh * 0.42), full(it)));
-      var rise = p < 1 ? 'perspective(1100px) translate3d(0,' + ((1 - p) * 56).toFixed(1) + 'px,0) rotateX(' + ((1 - p) * 12).toFixed(2) + 'deg) scale(' + (0.94 + 0.06 * p).toFixed(4) + ') ' : '';
       if (it.type === 'float') {
-        // drifts with the scroll and tilts toward the pointer
+        // drifts with the scroll and tilts toward the pointer; once the page stops, the drift eases back to its place
         var c = clamp((vh - r.top) / (vh + r.height)) - 0.5;
+        if (drift(it, scrolling ? c : 0)) moving = true;
+        if (gate(it, p, r.top, r.bottom, vh)) p = 1;
         var near = fine && px > r.left - 80 && px < r.right + 80 && py > r.top - 80 && py < r.bottom + 80;
-        var tx = near ? ((px - (r.left + r.width / 2)) / r.width) * 16 : 0, ty = near ? ((py - (r.top + r.height / 2)) / r.height) * -12 : 0;
-        if (spring(it, tx, ty)) moving = true;
+        var tx2 = near ? ((px - (r.left + r.width / 2)) / r.width) * 16 : 0, ty2 = near ? ((py - (r.top + r.height / 2)) / r.height) * -12 : 0;
+        if (spring(it, tx2, ty2)) moving = true;
+        var rx2 = (1 - p) * 12;
+        f = fitX(r, r.width / 2, r.height / 2, p < 1 ? 0.94 + 0.06 * p : 1, it.dv * -5, 0, rx2 + Math.abs(it.y) + Math.abs(it.x), 1100);
         put(it.el, 'transformOrigin', '50% 50%');
-        put(it.el, 'transform', (rise || 'perspective(1100px) ') + 'translate3d(0,' + (c * -60).toFixed(1) + 'px,0) rotate(' + (c * -5).toFixed(2) + 'deg) rotateY(' + it.x.toFixed(2) + 'deg) rotateX(' + it.y.toFixed(2) + 'deg)');
+        var still = p >= 1 && !it.dv && !it.x && !it.y;
+        put(it.el, 'transform', still ? '' : shift(f.dx) + 'perspective(1100px) ' +
+          (p < 1 ? 'translate3d(0,' + ((1 - p) * 56).toFixed(1) + 'px,0) rotateX(' + rx2.toFixed(2) + 'deg) scale(' + f.s.toFixed(4) + ') ' : '') +
+          'translate3d(0,' + (it.dv * -60).toFixed(1) + 'px,0) rotate(' + f.rot.toFixed(2) + 'deg) rotateY(' + it.x.toFixed(2) + 'deg) rotateX(' + it.y.toFixed(2) + 'deg)');
         put(it.el, 'opacity', p < 1 ? p.toFixed(3) : '');
         return;
       }
+      if (gate(it, p, r.top, r.bottom, vh)) {
+        if (it.img) { q = clamp((vh - r.top) / (vh + r.height)) - 0.5; put(it.img, 'transform', 'translate3d(0,' + (q * -7).toFixed(2) + '%,0) scale(1.12)'); }
+        return;
+      }
+      f = fitX(r, r.width / 2, 0, 0.94 + 0.06 * p, 0, 0, (1 - p) * 12, 1100);
       put(it.el, 'transformOrigin', '50% 0');
-      put(it.el, 'transform', rise);
+      put(it.el, 'transform', p < 1 ? shift(f.dx) + 'perspective(1100px) translate3d(0,' + ((1 - p) * 56).toFixed(1) + 'px,0) rotateX(' + ((1 - p) * 12).toFixed(2) + 'deg) scale(' + f.s.toFixed(4) + ')' : '');
       put(it.el, 'opacity', p < 1 ? p.toFixed(3) : '');
       if (it.img) {
         q = clamp((vh - r.top) / (vh + r.height)) - 0.5;

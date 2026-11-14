@@ -292,6 +292,8 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     if (h.classList.contains('shrink')) h.classList.remove('shrink');
     if (window.MutationObserver) new MutationObserver(function () { if (h.classList.contains('shrink')) h.classList.remove('shrink'); }).observe(h, { attributes: true, attributeFilter: ['class'] });
   })();
+  // game pages keep their own compact bar; every other page's green bar takes the Squarespace bar's measures below
+  if (!ON_GAME) document.documentElement.classList.add('ma-hnm');
   // A game page whose page builder still shows its own menu bar under the game menu (Sky Mines: a 145px bar with the logo
   // peeking out under the 88px menu on phones; QA 2026-11-14) keeps only the game menu, like every other game page
   if (ON_GAME) (function () { var s = document.createElement('style'); s.textContent = 'body:has(#hunt-nav) header#header{display:none!important}'; (document.head || document.documentElement).appendChild(s); })();
@@ -301,7 +303,17 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     'html body #hunt-nav,html body #header,html body #header .header-background,html body #header.shrink .header-background{background:#0b170f!important;background-color:#0b170f!important;opacity:1!important;backdrop-filter:none!important}' +   // the menu bar is ink from the start, on every screen (Maurice, 2026-11-13: 'always active ... easier on the eyes')
     '@media (max-width:1100px){html body #hunt-nav{display:flex!important;align-items:center;justify-content:space-between;padding:10px 20px!important}' +
     'html body #hunt-nav .mn-row{display:flex!important;flex:none;max-width:none;margin:0!important;justify-content:flex-start!important}html body #hunt-nav .mn-row .mn-logo{margin:0!important}html body #hunt-nav .mn-row .mn-right{display:none!important}' +
-    'html body #hunt-nav .mn-logo img{width:clamp(93.6px,24vw,112px)!important}html body #hunt-nav .mn-burger{display:flex!important;margin:0!important}}'; (document.head || document.documentElement).appendChild(s); })();
+    'html body #hunt-nav .mn-logo img{width:clamp(93.6px,24vw,112px)!important}html body #hunt-nav .mn-burger{display:flex!important;margin:0!important}}' +
+    // The green menu bar matches the Squarespace menu bar on every other page to the pixel, so the logo, the menu button,
+    // and the bar's height never jump when switching pages (QA pass 7, 2026-11-14). Squarespace's own measures: phones
+    // 6vw around a 75px logo with 12vw under it; tablets a .6vw / 1.22vw band around an 80px logo; 1000px and up the
+    // same band around a logo 8.3vw wide (88 to 120px), 4vw in from each side.
+    '@media (max-width:767px){html.ma-hnm:not(.ma-hn0) body #hunt-nav{align-items:flex-start!important;padding:6vw 6vw 12vw!important}html.ma-hnm:not(.ma-hn0) body #hunt-nav .mn-logo img{width:auto!important;height:75px!important}' +
+    'html.ma-hnm:not(.ma-hn0) body #hunt-nav .mn-burger{align-self:center!important;position:relative;top:3vw}}' +
+    '@media (min-width:768px){html.ma-hnm:not(.ma-hn0) body #hunt-nav{padding-top:.6vw!important;padding-bottom:1.22vw!important;padding-left:4vw!important}html.ma-hnm:not(.ma-hn0) body #hunt-nav:not(.mn-compact){padding-right:4vw!important}}' +
+    '@media (min-width:768px) and (max-width:1100px){html.ma-hnm:not(.ma-hn0) body #hunt-nav .mn-burger{position:relative;top:.31vw}html.ma-hnm:not(.ma-hn0) body #hunt-nav{padding-right:4vw!important}}' +
+    '@media (min-width:768px) and (max-width:999px){html.ma-hnm:not(.ma-hn0) body #hunt-nav .mn-logo img{width:auto!important;height:80px!important}}' +
+    '@media (min-width:1000px){html.ma-hnm:not(.ma-hn0) body #hunt-nav .mn-logo img{width:clamp(88px,8.3vw,120px)!important;height:auto!important}}'; (document.head || document.documentElement).appendChild(s); })();
   // No strip above the footer (Maurice, 2026-11-12): on wide screens Squarespace stretches a page's one code block
   // taller than the page inside it, and the section color showed as a band above the footer. The block now ends
   // where the page ends.
@@ -315,6 +327,11 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     // run past the screen, with no scrollbar strip on Windows (QA pass 4, 2026-11-14)
     'html body #header .header-menu .header-menu-bg{background:#0b170f!important;opacity:1!important}' +
     'html body #header .header-menu .header-menu-nav-folder{overflow-y:auto!important;scrollbar-width:none}html body #header .header-menu .header-menu-nav-folder::-webkit-scrollbar{display:none}' +
+    // they take a finger drag on phones, and on a short phone (360x640) the links sit closer so a whole folder fits
+    // ("All Retailers" was cut at the bottom of the Order folder, QA pass 7, 2026-11-14)
+    'html body #header .header-menu .header-menu-nav-folder{-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}' +
+    '@media (max-height:760px){html body #header .header-menu .header-menu-nav-folder .header-menu-nav-item a{margin-top:11px!important;margin-bottom:11px!important}' +
+    'html body #header .header-menu .header-menu-nav-folder-content{padding-bottom:16px}}' +
     '#hunt-nav-ov{scrollbar-width:none}#hunt-nav-ov::-webkit-scrollbar{display:none}' +
     // chapter roll boxes: a long @handle wraps inside its box instead of running off the screen, and the boxes never
     // ask for more width than a phone has (QA 2026-11-14)
@@ -326,7 +343,10 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     '#rc .q+.by,#av .q+.by{margin-top:12px!important}' +
     '#rc .by+.a,#rc .by+.prio,#rc .by+.cr-verdict,#rc .by+.cr-chart-hit,#av .by+.v,#av .by+.a,#av .av-enc .v+.v{margin-top:12px!important}' +
     // and 12px from an eyebrow to its heading, and from that heading to the line under it
-    '#rc .rc-step>header{gap:12px!important}#rc .cr-win .k{margin-bottom:12px!important}#rc .cr-win h3+p{margin-top:12px!important}'; (document.head || document.documentElement).appendChild(s); })();
+    // (QA pass 7, 2026-11-14: measured between the letters, the eyebrow over each chapter heading sat 10.4px off it, and the
+    // result cards' labels 6 to 8px off their lines; every one now clears 12px)
+    '#rc .cr-res-kit .q+.t{margin-top:12px!important}#rc .cr-res-kit .q+.a,#rc .cr-res-kit .t+.a{margin-top:14px!important}#rc .cr-res-kit .crit{margin-top:14px!important}#rc .cr-bars>li{row-gap:10px!important}' +
+    '#rc .rc-step>header{gap:14px!important}#rc .cr-win .k{margin-bottom:12px!important}#rc .cr-win h3+p{margin-top:12px!important}'; (document.head || document.documentElement).appendChild(s); })();
   // Headings (Maurice, 2026-10-09): heads.js turns every Atomic Marker and Cinzel heading into Cracked Imperia Bold
   // with its 3D (Extrude Flush). Clue and puzzle text keeps its own capitals and line breaks.
   (function () { var s = document.createElement('script'); s.src = BASE + 'heads.js'; (document.head || document.documentElement).appendChild(s); })();
@@ -387,7 +407,10 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   // 10 minutes, and every publish makes visitors download everything again). Anything newer than the pin
   // falls back to GitHub Pages by itself. tools/pin-assets.mjs moves the pin after a publish.
   var PIN = 'fda10920026f91ff2a9126c11a0a7c65c145ab90';
-  var GH = 'https://africhmaurice.github.io/site/', CDN = PIN ? 'https://cdn.jsdelivr.net/gh/africhmaurice/site@' + PIN + '/' : '';
+  // (QA pass 7, 2026-11-14: the site's repository grew past jsDelivr's 50 MB package limit, so the pinned copy answered
+  // 403 and pictures went missing. Everything comes straight from GitHub Pages now; PIN stays only so the publish
+  // tool can still write it, and it no longer changes where anything loads from.)
+  var GH = 'https://africhmaurice.github.io/site/', CDN = '';
   function cdn(u) { return CDN && u.indexOf(GH + 'assets/') === 0 ? CDN + u.slice(GH.length) : u; }
   function prep(html) {
     html = html.replace(MARKER_OTF, "url('" + MARKER + "') format('woff2')");
@@ -777,6 +800,21 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   // The green menu (#hunt-nav, in every hunt-type page) on a screen too narrow for the whole row: it sits tighter,
   // and if even that does not fit, the phone menu button takes over. It measures whether the row really fits.
   var SITE = 'https://www.mauriceafrich.com';
+  // The page under the green menu bar moves down by as much as the bar grew when it took the Squarespace bar's measures,
+  // so every page keeps the space it was designed with under the bar (QA pass 7, 2026-11-14)
+  function navRoom() {
+    var nav = document.getElementById('hunt-nav'), de = document.documentElement;
+    if (ON_GAME || !nav || !nav.offsetHeight || getComputedStyle(nav).position !== 'fixed') return;
+    var sec = Array.prototype.filter.call(document.querySelectorAll('#page section.page-section, #sections > section'), function (x) { return x.offsetHeight > 0; })[0];
+    if (!sec) return;
+    if (sec.__maPad == null) sec.__maPad = sec.style.getPropertyValue('padding-top') || '';
+    sec.style.setProperty('padding-top', sec.__maPad);
+    de.classList.add('ma-hn0');
+    var h0 = nav.getBoundingClientRect().height;
+    de.classList.remove('ma-hn0');
+    var d = Math.round(nav.getBoundingClientRect().height - h0);
+    if (d > 0) sec.style.setProperty('padding-top', (parseFloat(getComputedStyle(sec).paddingTop) + d) + 'px', 'important');
+  }
   function navCss() {
     if (document.getElementById('ma-nav-fit')) return;
     var st = document.createElement('style'); st.id = 'ma-nav-fit';
@@ -786,7 +824,8 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
       '#hunt-nav .mn-row{display:flex!important}#hunt-nav .mn-burger{display:none!important}}' +
       '#hunt-nav .mn-links>.mn-drop.mn-earn{display:none}#hunt-nav.mn-compact .mn-links>.mn-drop.mn-earn{display:flex}#hunt-nav.mn-compact .mn-links>a.mn-ep{display:none}' +
       // folded, the row also sits a little tighter, so it still fits at larger font sizes
-      '#hunt-nav.mn-compact{padding-left:clamp(16px,2.4vw,40px)!important;padding-right:clamp(16px,2.4vw,40px)!important}' +
+      // (the logo keeps its place on the left, like every other page's menu bar; only the right side tightens)
+      '#hunt-nav.mn-compact{padding-right:clamp(16px,2.4vw,40px)!important}' +
       '#hunt-nav.mn-compact .mn-links{gap:clamp(10px,.8vw,18px)}#hunt-nav.mn-compact .mn-links .mn-link{font-size:clamp(10px,.84vw,14px)!important}#hunt-nav.mn-compact .mn-right{gap:clamp(12px,1.4vw,24px)}#hunt-nav.mn-compact .mn-row{gap:16px}' +
       '#hunt-nav.mn-burgered .mn-row{display:none!important}#hunt-nav.mn-burgered .mn-burger{display:flex!important}';
     document.head.appendChild(st);
@@ -815,7 +854,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     });
   }
   var fitTimer;
-  window.addEventListener('resize', function () { clearTimeout(fitTimer); fitTimer = setTimeout(fitNavs, 120); });
+  window.addEventListener('resize', function () { clearTimeout(fitTimer); fitTimer = setTimeout(function () { fitNavs(); navRoom(); }, 120); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNavs);
   window.maFitNavs = fitNavs;
 
@@ -1032,7 +1071,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
       var links = nav.querySelector('.mn-links');
       if (!links || nav.getAttribute('data-ma-menu')) return;
-      nav.setAttribute('data-ma-menu', '1'); nav.setAttribute('data-fit', '1'); navCss(); menuCss();
+      nav.setAttribute('data-ma-menu', '1'); nav.setAttribute('data-fit', '1'); navCss(); menuCss(); navRoom(); setTimeout(navRoom, 600); if (document.fonts && document.fonts.ready) document.fonts.ready.then(navRoom);
       var cta = nav.querySelector('.mn-drop-cta'), ctaIn = cta && links.contains(cta);
       while (links.firstChild) links.removeChild(links.firstChild);
       MENU.forEach(function (m) {
