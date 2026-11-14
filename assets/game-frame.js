@@ -299,7 +299,7 @@
     var arc = track.querySelector('.gs-arcade'); if (!arc || !tileList.length) return;
     var ai = panels.indexOf(arc), aw = widthsOf[ai] || vw;
     trailers(wide && ai >= 0 && lefts[ai] < x + vw - aw * 0.25 && lefts[ai] + aw > x + aw * 0.25);
-    var i = panels.indexOf(arc), on = wide && !still && i >= 0;
+    var i = panels.indexOf(arc), on = false;   // no fly-in: nothing in the row fades or moves on its own (Maurice, 2026-11-14: 'I don't want the previous modules to disappear')
     var p = on ? Math.max(0, Math.min(1, ((x + vw - lefts[i]) / (widthsOf[i] || vw) - 0.3) / 0.65)) : 1;   // in flight from a third of the way on screen until it's all there
     var far = arcFar || (arcFar = ((arc.querySelector('.hg-tabs') || {}).clientHeight || 545) * 0.55);
     tileList.forEach(function (a) {
@@ -326,21 +326,23 @@
   // a back arrow, so it's clear the row goes both ways (Maurice, 2026-11-14): over the second segment, the forward arrow over the fourth
   var back = document.createElement('button'); back.type = 'button'; back.className = 'gs-back'; back.setAttribute('aria-label', 'Scroll to the previous section');
   back.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>'; stage.appendChild(back);
-  back.addEventListener('click', function () {
-    for (var k = stops.length - 1; k >= 0; k--) if (stops[k] < x - vw * 0.25) { var ty = stopY(k); if (still) wTo(0, ty); else glideTo(ty); return; }
-    if (still) wTo(0, y0); else glideTo(y0);
-  });
+  function prevStop() {
+    for (var k = stops.length - 1; k >= 0; k--) if (stops[k] < x - vw * 0.25) { snap.glide(stopY(k)); return; }
+    snap.glide(y0);
+  }
+  back.addEventListener('click', prevStop);
   function placeArrows() {
     if (wide) { back.style.left = ''; hint.style.left = ''; return; }
     var sg = qa('.gs-seg', prog), sr = stage.getBoundingClientRect(); if (sg.length < 2) return;
     var c = function (i) { var r = sg[Math.min(sg.length - 1, i)].getBoundingClientRect(); return (r.left + r.width / 2 - sr.left) + 'px'; };
     back.style.left = 'calc(50% - 28px)'; hint.style.left = 'calc(50% + 28px)';   // the pair centered at the bottom (Maurice, 2026-11-14)
   }
-  hint.addEventListener('click', function () {
+  function nextStop() {
     // the next stop at least a quarter screen along (a stop a few pixels away would barely move the row)
-    for (var k = 0; k < stops.length; k++) if (stops[k] > x + vw * 0.25) { var ty = stopY(k); if (still) wTo(0, ty); else glideTo(ty); return; }
-    var tl = stops.length - 1; if (tl >= 0) { if (still) wTo(0, stopY(tl)); else glideTo(stopY(tl)); }
-  });
+    for (var k = 0; k < stops.length; k++) if (stops[k] > x + vw * 0.25) { snap.glide(stopY(k)); return; }
+    var tl = stops.length - 1; if (tl >= 0 && stops[tl] > x + 1) snap.glide(stopY(tl));
+  }
+  hint.addEventListener('click', nextStop);
   var sbar = document.createElement('div'), sbarIn = document.createElement('i');
   sbar.className = 'gs-sbar'; sbar.setAttribute('aria-hidden', 'true'); sbar.title = 'Scroll Bar'; sbar.appendChild(sbarIn); stage.appendChild(sbar);
   var panels = [], segs = [];
@@ -693,20 +695,14 @@
   addEventListener('touchstart', function () { touching = true; }, { passive: true });
   ['touchend', 'touchcancel'].forEach(function (ev) { addEventListener(ev, function () { touching = false; window.dispatchEvent(new Event('scroll')); }, { passive: true }); });
   var snapT = 0, snapping = false;
-  addEventListener('scroll', function () {
-    if (wide || still) return;
-    clearTimeout(snapT);
-    snapT = snapT2 = setTimeout(snapNow, 140);
-  }, { passive: true });
-  function snapNow() {
-    {
-      if (wide || still || !stops.length || touching) return;
-      var k = 0; stops.forEach(function (v, i) { if (Math.abs(v - x) < Math.abs(stops[k] - x)) k = i; });
-      if (Date.now() - gameTouch < 1500) k = at[panels.indexOf(game)] || 0;   // a game just pressed stays centered (Maurice: 'I pressed play and the screen went off center')
-      if (Math.abs(stops[k] - x) < 2) return;
-      var ty = y0 + starts[k] + (k === stops.length - 1 ? 1 : 0); glideTo(ty);
-    }
+  function snapNow() { if (!still && stops.length && !touching) snap.settle(0); }
+  function rowY(tx) {   // the page's scroll for a spot on the row
+    var L = stops.length - 1; if (L < 0) return y0;
+    if (tx >= stops[L]) return stopY(L);
+    var k = 0; while (k < L && stops[k + 1] <= tx) k++;
+    return y0 + (starts[k] || 0) + (holds[k] || 0) + (tx - stops[k]);
   }
+
   var rt = 0;
   // crossing between the phone and wide layouts (a desktop window narrowed, a tablet turned) rebuilds the page from
   // scratch, since the wide layout moves pieces around; once a game has been touched it stays put and only resizes
@@ -759,18 +755,151 @@
     while (k + d >= 0 && k + d < n && at[k + d] === at[k]) k += d;
     e.preventDefault(); goTo(Math.max(0, Math.min(n - 1, k + d)));
   });
-  addEventListener('wheel', function (e) {
-    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || e.defaultPrevented || inGame(e.target) || !root.contains(e.target)) return;
-    e.preventDefault(); wBy(0, e.deltaX);
-  }, { passive: false });
-  var tx = null, ty = null;
-  root.addEventListener('touchstart', function (e) { if (inGame(e.target)) { tx = null; return; } tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
-  root.addEventListener('touchmove', function (e) {
-    if (tx === null) return;
-    var dx = e.touches[0].clientX - tx, dy = e.touches[0].clientY - ty;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 6) { e.preventDefault(); wBy(0, -dx * 1.4); tx = e.touches[0].clientX; ty = e.touches[0].clientY; }
-  }, { passive: false });
-  root.addEventListener('touchend', function () { tx = ty = null; }, { passive: true });
+  // the game's own screens on a phone (the Bookcase, Hold the Wall!'s fighters) are the game too: a drag there is the game's
+  function inPlay(t) {
+    if (inGame(t)) return true;
+    return (cfg.phoneParts || []).some(function (p) { if (!p.fit) return false; var e = q(p.sel); return e && e.contains(t); });
+  }
+  // smooth and snapping at once (Maurice, 2026-11-14: 'I like snapping to section, but I don't want to lose the smoothness for
+  // it. So can we have both?'): the row follows a finger, a wheel, or a trackpad exactly, and once the input stops it eases onto
+  // the nearest stop, starting at the speed it was already going so it never jumps; a flick lands on the next stop the way it
+  // was going. Sideways swipes move the row the same way ('scroll up/down & left/right'); up and down scroll as before.
+  // One glide at a time: any new wheel, touch, key, or press stops it.
+  // o: stage, x() where the row is, stops() its stops in order, yOf(rowX) the page's scroll for a spot on the row, on() the row
+  //    is in play, set(y) scroll there at once, skip(target) a touch the row leaves alone, wait() something else is moving it,
+  //    still reduced motion, took() a swipe or a settle took over, prefer() a stop that wins over the nearest
+  function snapRow(o) {
+    var R = { tok: 0, busy: false, ownAt: 0, idleT: 0, wheelAt: 0, down: false, eat: 0 };
+    function now() { return performance.now(); }
+    function set(y) { R.ownAt = now(); o.set(y); }
+    R.stop = function () { R.tok++; R.busy = false; };
+    // a curve from here to the stop that starts at speed v0 (page px per ms) and comes to rest without passing it
+    R.glide = function (ty, v0, T) {
+      var ys = window.scrollY, d = ty - ys, my = ++R.tok;
+      clearTimeout(R.idleT);
+      if (Math.abs(d) < 0.5) { R.busy = false; return; }
+      if (o.still) { set(ty); R.busy = false; return; }
+      T = T || 440;
+      var m = (v0 || 0) * T; if (m * d <= 0) m = 0; else if (Math.abs(m) > Math.abs(3 * d)) m = 3 * d;
+      var t0 = now(); R.busy = true;
+      (function step() {
+        if (my !== R.tok) return;
+        var k = Math.min(1, (now() - t0) / T), k2 = k * k, k3 = k2 * k;
+        set(ys + m * (k3 - 2 * k2 + k) + d * (3 * k2 - 2 * k3));
+        if (k < 1) requestAnimationFrame(step); else R.busy = false;
+      })();
+    };
+    // the stop nearest a spot on the row; with a direction, the nearest one past it that way
+    R.nearest = function (px, dir) {
+      var b = null;
+      o.stops().forEach(function (v) { if (dir > 0 ? v > px + 2 : dir < 0 ? v < px - 2 : true) if (b === null || Math.abs(v - px) < Math.abs(b - px)) b = v; });
+      return b;
+    };
+    R.go = function (tx) { if (tx === null || tx === undefined) return; R.glide(o.yOf(tx)); };
+    // ease onto a stop; v is the row's speed (row px per ms, more than zero going on); a swipe of 40px or more that is still
+    // moving when the finger lifts goes on to the next stop that way, a drag that stopped first settles on the nearest
+    R.settle = function (v, at, moved) {
+      if (!o.on()) return;
+      var x = at === undefined ? o.x() : at, dir = Math.abs(v) > 0.3 || (Math.abs(moved || 0) >= 40 && v * moved > 0 && Math.abs(v) > 0.08) ? (v > 0 ? 1 : -1) : 0, tx = dir ? R.nearest(x, dir) : null;
+      if (tx === null) tx = R.nearest(x, 0);
+      if (!dir && o.prefer) { var pf = o.prefer(); if (pf !== null && pf !== undefined) tx = pf; }
+      if (tx === null || Math.abs(tx - x) < 1) return;
+      var ty = o.yOf(tx), dy = ty - window.scrollY, k = Math.abs(tx - x) > 1 ? dy / (tx - x) : 1;
+      var T = Math.abs(v) > 0.05 ? Math.max(320, Math.min(520, 3 * Math.abs(tx - x) / Math.abs(v))) : 440;
+      if (o.took) o.took();
+      R.glide(ty, v * k, T);
+    };
+    function idle() {
+      if (R.down || R.busy || wraf || (o.wait && o.wait()) || (window.maLenis && window.maLenis.isScrolling === 'smooth')) { R.idleT = setTimeout(idle, 90); return; }
+      // a scroll that went a good way (a quarter of the way to the next stop, or 120px) carries on to that stop; a small one
+      // settles back on the nearest
+      var x = o.x(), g = R.gx; R.gx = null;
+      var near = R.nearest(x, 0);
+      if (g !== null && near !== null && Math.abs(near - x) > 2) { var mv = x - g, nx = R.nearest(x, mv > 0 ? 1 : -1), pv = R.nearest(x, mv > 0 ? -1 : 1);
+        if (nx !== null && Math.abs(mv) >= Math.min(120, 0.25 * Math.abs(nx - (pv === null ? x : pv)))) { R.settle(mv > 0 ? 0.1 : -0.1, x, mv > 0 ? 40 : -40); return; } }
+      R.settle(0, x);
+    }
+    // where the row was when a scroll began, to tell which way it went (R.lx: where it was last seen at rest or under the row's own control)
+    R.gx = null; R.lx = 0; setInterval(function () { if (R.gx === null) R.lx = o.x(); }, 100);
+    function soon() { clearTimeout(R.idleT); R.idleT = setTimeout(idle, now() - R.wheelAt < 300 ? 220 : 150); }
+    addEventListener('scroll', function () { if (R.busy || now() - R.ownAt < 40) return; if (R.gx === null) R.gx = R.lx; soon(); }, { passive: true });
+    ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (ev) {
+      addEventListener(ev, function () { R.stop(); clearTimeout(R.idleT); if (ev === 'wheel') { R.wheelAt = now(); if (R.gx !== null) soon(); } }, { passive: true, capture: true });
+    });
+    addEventListener('touchstart', function () { R.down = true; }, { passive: true, capture: true });
+    ['touchend', 'touchcancel'].forEach(function (ev) { addEventListener(ev, function (e) { if (!e.touches || !e.touches.length) { R.down = false; if (sw.on !== 1) soon(); } }, { passive: true }); });
+    // sideways wheels, trackpads, and shift + wheel move the row as they go, eased a little so a wheel's steps don't jump (the
+    // page's smooth scrolling is told to leave a sideways wheel alone, so the two never pull the page two ways)
+    var wt = null, wraf = 0;
+    function follow(d, lo, hi) {
+      wt = Math.max(lo, Math.min(hi, (wt === null ? window.scrollY : wt) + d));
+      if (!wraf) wraf = requestAnimationFrame(function fl() {
+        var y = window.scrollY, dd = wt - y;
+        if (Math.abs(dd) < 2 || o.still) { set(wt); wt = null; wraf = 0; soon(); return; }
+        set(y + (dd > 0 ? Math.max(1, dd * 0.3) : Math.min(-1, dd * 0.3))); wraf = requestAnimationFrame(fl);
+      });
+    }
+    addEventListener('wheel', function (e) {
+      if (e.defaultPrevented || e.ctrlKey || !o.stage.contains(e.target) || (o.skip && o.skip(e.target))) return;
+      var ax = Math.abs(e.deltaX), ay = Math.abs(e.deltaY), d = ax > ay ? e.deltaX : e.shiftKey ? e.deltaY : 0;
+      if (!d) return;
+      if (e.deltaMode === 1) d *= 16; else if (e.deltaMode === 2) d *= window.innerHeight;
+      e.preventDefault(); e.lenisStopPropagation = true;   // (the page's smooth scrolling leaves this one to the row)
+      var lo = o.yOf(o.stops()[0] || 0), hi = o.yOf(o.stops()[o.stops().length - 1] || 0), L = window.maLenis;
+      if (L && L.isScrolling === 'smooth' && L.scrollTo && wt === null) L.scrollTo(Math.max(lo, Math.min(hi, L.targetScroll + d)));
+      else follow(d, lo, hi);
+      if (R.gx === null) R.gx = R.lx;
+      soon();
+    }, { passive: false, capture: true });
+    // touch: a drag more sideways than up or down moves the row with the finger; letting go eases it onto a stop
+    var sw = { on: -1, x: 0, y: 0, lx: 0, rx: 0, pts: [] };
+    o.stage.addEventListener('touchstart', function (e) {
+      sw.on = e.touches.length === 1 && !(o.skip && o.skip(e.target)) ? 0 : -1;
+      if (sw.on < 0) return;
+      sw.x = sw.lx = e.touches[0].clientX; sw.y = e.touches[0].clientY;
+    }, { passive: true });
+    o.stage.addEventListener('touchmove', function (e) {
+      if (sw.on < 0) return;
+      if (e.touches.length !== 1) { if (sw.on === 1) R.settle(0, sw.rx); sw.on = -1; return; }
+      var cx = e.touches[0].clientX, dx = cx - sw.x, dy = e.touches[0].clientY - sw.y;
+      if (!sw.on) {
+        if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+        sw.on = Math.abs(dx) > Math.abs(dy) * 1.2 ? 1 : -1;
+        if (sw.on < 0) return;
+        R.stop(); sw.rx = sw.rx0 = o.x(); sw.pts = []; sw.lx = sw.x;   // (from where the finger went down: the row stays under it) if (o.took) o.took();
+      }
+      if (e.cancelable) e.preventDefault();
+      var st = o.stops(), lo = st[0] || 0, hi = st[st.length - 1] || 0;
+      sw.rx = Math.max(lo, Math.min(hi, sw.rx - (cx - sw.lx))); sw.lx = cx;
+      set(o.yOf(sw.rx));
+      var t = now(); sw.pts.push([t, sw.rx]); while (sw.pts.length > 2 && t - sw.pts[0][0] > 100) sw.pts.shift();
+    }, { passive: false });
+    o.stage.addEventListener('touchend', function () {
+      var was = sw.on; sw.on = -1;
+      if (was !== 1) return;
+      R.eat = now(); R.down = false;
+      var p = sw.pts, v = 0;
+      if (p.length > 1 && now() - p[p.length - 1][0] < 80) v = (p[p.length - 1][1] - p[0][1]) / Math.max(8, p[p.length - 1][0] - p[0][0]);
+      R.settle(v, sw.rx, sw.rx - sw.rx0);
+    }, { passive: true });
+    o.stage.addEventListener('touchcancel', function () { if (sw.on === 1) R.settle(0, sw.rx); sw.on = -1; }, { passive: true });
+    // a swipe never counts as a tap on what it started on
+    o.stage.addEventListener('click', function (e) { if (now() - R.eat < 450) { e.preventDefault(); e.stopPropagation(); } }, true);
+    return R;
+  }
+  var snap = snapRow({
+    stage: stage, still: still,
+    x: function () { return x; },
+    stops: function () { return stops; },
+    yOf: rowY,
+    on: function () { return stops.length > 0 && window.scrollY >= y0 - 1 && window.scrollY <= stopY(stops.length - 1) + 1; },
+    set: function (y) { wTo(0, y); },
+    skip: inPlay,
+    wait: function () { return held(); },
+    took: function () { gameTouch = 0; userAt = Date.now(); },
+    // a game just pressed stays centered (Maurice: 'I pressed play and the screen went off center')
+    prefer: function () { return Date.now() - gameTouch < 1500 ? stops[at[panels.indexOf(game)] || 0] : null; }
+  });
 
   // the game fills its panel: scaled to fit the panel's width and height, keeping its shape
   var last = 0;

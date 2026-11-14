@@ -73,6 +73,8 @@
 /* ---------- 4. The sideways row (Maurice 2026-11-12: "make the game, leaderboard, everything full width and horizontal scrolling") ----------
    game-frame.js puts each part of the page in a full-width, full-height panel in one row; these are the panels. */
 html.gs-page [data-ma-page] .gs-stage{position:sticky;top:0;width:100%;min-width:100%;max-width:100%;align-self:stretch;flex:none;margin:0;height:100vh;height:100svh;overflow:clip;display:block;background-color:#0b170f;z-index:1}
+/* up and down scroll natively; a sideways swipe is read by game-frame.js and moves the row one stop (Maurice, 2026-11-14) */
+html.gs-page [data-ma-page] .gs-stage{touch-action:pan-y pinch-zoom}
 html.gs-page [data-ma-page] .gs-track{display:flex;height:100%;will-change:transform}
 html.gs-page [data-ma-page] .gs-panel{flex:none;position:relative;height:100%;box-sizing:border-box;overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:auto;
   display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:20px;padding:24px max(16px,4vw) 72px}
