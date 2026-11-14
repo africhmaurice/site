@@ -27,10 +27,13 @@
   // per page: the game's root block, the part to scale and what rides with it, and the page's other parts (each line is one panel)
   var GAMES = {
     'games':               { root: '#daily-word', zoom: '#daily-word main', how: ['#thw-legend'], parts: ['.dbd-panel'] },   // the color key reads with the words, so the board gets the height
-    'game-shelf-sort':     { root: '.hg-section', zoom: '.hg-card', fit: ['.ss-lives', '.ss-tools'], parts: ['.dbd-panel'] },
+    // phones: the four boxes on a screen of their own right after the books, so the books get the screen and every title reads at 11px
+    // or more, a long one too (QA 2026-11-14: 5.6px on a 360x640 screen, 8.8px at 390x844)
+    'game-shelf-sort':     { phoneParts: [{ sel: '.ss-case', name: 'Bookcase', fit: true }], root: '.hg-section', zoom: '.hg-card', fit: ['.ss-lives', '.ss-tools'], parts: ['.dbd-panel'] },
     'game-emoji-reads':    { root: '.hg-section', zoom: '.hg-card', fit: ['.er-form', '.er-tries'], parts: ['.dbd-panel'] },
     'game-blades-brass':   { root: '.hg-section', zoom: '.hg-card', fit: ['.bb-key', '.bb-tools'], parts: ['.dbd-panel'] },
-    'game-matching-auras': { root: '.hg-section', zoom: '.hg-card', fit: ['.ma-tools'], parts: ['.dbd-panel'] },
+    // (phones: the Oracle's Gift line goes to How to play, so the colors and the words get the room; QA 2026-11-14: 55%, words 8.1px)
+    'game-matching-auras': { phoneHow: ['.ma-hint'], root: '.hg-section', zoom: '.hg-card', fit: ['.ma-tools'], parts: ['.dbd-panel'] },
     'game-crest-quest':    { root: '.hg-section', zoom: '.hg-card', fit: ['.cq-key', '.cq-tools'], parts: ['.dbd-panel'] },
     'game-sky-mines':      { root: '.hg-section', zoom: '.hg-card', fit: ['.sm-bar', '.sm-tools'], parts: ['.dbd-panel'] },
     'airship-runner':      { phoneJoin: [['.ar-ctrls', '.ar-hud']], root: '#ma-runner', zoom: '.ar-wrap', box: ['.ar-hud', '.ar-stage'], snug: true, beside: { host: '.ar-game', items: ['.ar-hud', '.ar-ctrls'] },

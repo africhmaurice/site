@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
-<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=3" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=2"></script>
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=4" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=3"></script>
 <!-- Generated copy of squarespace-game-shelf-sort.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
 <!-- ============================================================
      Sort the Shelf - a daily game for the Cello's Gate Treasure Hunt.
@@ -1194,6 +1194,14 @@ var HG_GAME = {"key":"shelf_sort","label":"Sort the Shelf","points":40,"startDat
   }
   // a found box's words always fit inside it: scaled down as far as they need to be (Maurice, 2026-11-14)
   function fitBoxes() {
+    // a title too long for its spine first gets the spine's whole width, then a smaller size, so it is never cut off (phones)
+    Array.prototype.forEach.call(caseEl.querySelectorAll('.ss-sp'), function (p) {
+      p.style.fontSize = ''; p.style.paddingLeft = ''; p.style.paddingRight = '';
+      if (p.scrollWidth <= p.clientWidth + 1) return;
+      p.style.paddingLeft = p.style.paddingRight = '2px';
+      var fs = parseFloat(getComputedStyle(p).fontSize);
+      while (p.scrollWidth > p.clientWidth + 1 && fs > 8) { fs -= 0.5; p.style.fontSize = fs + 'px'; }
+    });
     Array.prototype.forEach.call(caseEl.querySelectorAll('.ss-in'), function (n) {
       n.style.zoom = ''; var b = n.parentNode, w = b.clientWidth - 16, h = b.clientHeight - 12;
       var z = Math.min(1, w / Math.max(1, n.scrollWidth), h / Math.max(1, n.scrollHeight));
@@ -1229,8 +1237,32 @@ var HG_GAME = {"key":"shelf_sort","label":"Sort the Shelf","points":40,"startDat
     document.querySelector('.ss-board').classList.toggle('done', !!st.done);
     g.save();
   }
+  // phones (game pages, three books to a row): a book whose title can't be drawn at 11px or more in its third of the row (a long
+  // word, or three words or more) takes two thirds of the row instead, and a title of three words or more runs two words to a
+  // line there, so every title stays readable (QA 2026-11-14: 7-9px on a 360 screen)
+  function wideBooks() {
+    if (!document.documentElement.classList.contains('gs-page') || window.innerWidth >= 700) return;
+    Array.prototype.forEach.call(gridEl.querySelectorAll('.ss-book:not(.ss-wide) span'), function (s) {
+      var b = s.parentNode; s.style.transform = ''; s.style.left = ''; s.style.right = '';
+      var cw = s.clientWidth; if (!cw) return;
+      var k = s.getBoundingClientRect().width / cw; if (!(k > 0)) k = 1;
+      var words = (b.dataset.item || '').split(' ');
+      var was = s.style.fontSize; s.style.fontSize = '100px';
+      var r = document.createRange(), widest = 0; r.selectNodeContents(s);
+      Array.prototype.forEach.call(r.getClientRects(), function (q) { widest = Math.max(widest, q.width); });
+      s.style.fontSize = was;
+      // the widest word's width on screen drawn at 11.6px, against a third of the row on this screen (the card's edges and the gaps
+      // taken off); measured against the screen, not the card's scale, so a book marked wide never makes the others wide too
+      var need = widest * 11.6 / (100 * k), room = (Math.min(window.innerWidth, 699) - 78) / 3 * 0.88 - 2;
+      if (words.length >= 3 || need > room) {
+        b.classList.add('ss-wide');
+        if (words.length >= 3) s.innerHTML = HG.esc(b.dataset.item);
+      }
+    });
+  }
   // long words shrink until they fit their cover instead of being cut off
   function fit() {
+    wideBooks();
     Array.prototype.forEach.call(gridEl.querySelectorAll('.ss-book span'), function (s) {
       var w = s.parentNode.clientWidth; if (!w) return;
       s.style.transform = ''; s.style.left = ''; s.style.right = '';   // measured at its real size, never at a size it was squeezed to before

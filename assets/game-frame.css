@@ -708,3 +708,51 @@ html.gs-page [data-ma-page] .gs-game :is(.ac-card,.hg-share,#hg-result.win,#hg-r
   html.gs-page [data-ma-page] .gs-game .dbd-cover:has(.dbd-who) button{padding-top:8px!important;padding-bottom:8px!important;margin-top:0!important}
   html.gs-page [data-ma-page] .gs-game .dbd-cover:has(.dbd-who) > p:last-child{line-height:1.3!important;margin:6px 0 0!important}
 }
+/* ---------- 15. Shelf and Auras phones (QA 2026-11-14) ---------- */
+/* Sort the Shelf on phones: the books in three columns (more rows), wider than tall, their titles given most of the cover, so a
+   title reads at 11px or more (QA 2026-11-14: four columns drew them at 5.6px on a 360x640 screen, 8.8px at 390x844); the four
+   boxes get a screen of their own right after the books (game-frame.js), so the books get the whole screen */
+@media (max-width:699px){
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-flow:row dense;gap:6px 8px!important}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-book{min-width:0;aspect-ratio:auto!important;height:46px}   /* a set height: a wider card gives the titles more room without making the rows taller */
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game :is(.hg-card,#gs-none main){padding:12px!important}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .hg-card > .dbd-gate{margin-top:0!important}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game :is(.ss-lives,.ss-tools){margin-top:10px!important}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-book span{top:8%;bottom:8%;left:8%;right:4%;white-space:normal!important}
+  /* a title too long for a third of the row gets two thirds (the page marks it); a last book on a row of its own sits in the middle */
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-book.ss-wide{grid-column:span 2}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-grid:not(:has(.ss-wide)) .ss-book:last-child:nth-child(3n+1){grid-column:2}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-board{gap:12px!important}
+  /* the boxes on their own screen: on the card's white, two by two, square; a found shelf's name wraps instead of shrinking and its
+     four spines run the width of the box, so they read at full size (they were drawn 160px wide and scaled to 8.6px) */
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-part .ss-case{background:rgba(255,255,254,.95)!important;border:3px solid #111;padding:12px;box-sizing:border-box;gap:8px!important;width:min(100%,420px)!important;margin:0 auto!important}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-part .ss-box{aspect-ratio:1/1!important;padding:8px 6px}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-part .ss-in{width:100%;white-space:normal}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-part .ss-box .ss-sticker{white-space:normal!important;text-wrap:balance;line-height:1.2!important}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-part .ss-stack{width:100%}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-part .ss-sp{width:calc(100% - 14px)!important;padding:0 6px;letter-spacing:.02em!important}
+}
+/* Matching Auras on phones: tighter colors (the name in a shorter band, a shorter slot), words, and buttons, and the Oracle's Gift
+   line on How to play (game-frame.js), so the card is scaled down less and its words read at 11px or more (QA 2026-11-14: the
+   card was scaled to 55% on a 360x640 screen, its words 8.1px) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game :is(.hg-card,#gs-none main){padding:12px!important}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game .hg-card > .dbd-gate{margin-top:0!important}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game .ma-colors{gap:8px!important}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game :is(.ma-color,.ma-word){line-height:1.25!important}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game .ma-color{padding:8px 6px!important;gap:6px!important;border-width:2px!important}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game .ma-swatch{height:auto!important;min-height:30px;padding:6px 8px!important;box-sizing:border-box}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game .ma-slot{min-height:32px!important;padding:4px!important;letter-spacing:0!important;white-space:normal!important;text-wrap:balance}   /* clear of the dashed edge: on a narrow card it wraps at a space instead of running past it */
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game .ma-words{gap:6px!important;margin-top:10px!important}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game .ma-word{padding:6px 10px!important}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game .ma-tools{margin-top:12px!important}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game .ma-tries{margin-top:6px!important}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game .hg-card :is(.hg-clock,.ma-tries){line-height:1.3!important}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game .hg-card > .hg-clock{margin-top:8px!important}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game .ma-tools .hg-btn{padding-top:9px!important;padding-bottom:9px!important}
+}
+/* ...and the Oracle's Gift line on How to play reads light on the dark panel, its link in the eyebrow's orange */
+@media (max-width:699px){
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-about .ma-hint{color:rgba(255,255,255,.86)!important;font-size:15px!important;line-height:1.5!important;margin:0 auto!important}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-about .ma-hint a{color:#fd7547!important}
+}
