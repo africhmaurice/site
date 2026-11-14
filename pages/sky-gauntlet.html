@@ -304,10 +304,10 @@ window.TrenchXP = window.TrenchXP || (function () {
   <div class="sg-wrap">
     <h1>The Sky Gauntlet</h1>
     <div class="sg-maint" role="status"><b>Under maintenance</b><p>I’m tuning the Sky Gauntlet. It’ll be back soon!</p></div>
-    <p class="sg-sub" data-normal>Your cannons never stop firing. Slide left and right, shoot down the rival fleet, and catch what the rival ships drop. Survive 25 waves, and something drops in.</p>
-    <p class="sg-sub" data-easy hidden>Easy Mode: no extra ships, the fleet never gets tougher, and more Crests and lives fall. Survive 50 waves, and something drops in.</p>
-    <p class="sg-weekly" data-normal>Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week. Every day you play also earns 50 hunt points (once a day, Normal or Easy Mode), on top of golden chests.</p>
-    <p class="sg-weekly" data-easy hidden>Easy Mode leaderboard: the top score at 11:59 PM ET every Friday wins 250 points. Then the board resets for a new week. Every day you play also earns 50 hunt points (once a day, Normal or Easy Mode), on top of golden chests.</p>
+    <p class="sg-sub" data-normal>Your cannons never stop firing. Slide left and right, shoot down the rival fleet, and catch what the rival ships drop.</p>
+    <p class="sg-sub" data-easy hidden>Easy Mode: no extra ships, the fleet never gets tougher, and more Crests and lives fall.</p>
+    <p class="sg-weekly" data-normal>Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 5,000 Discord XP. Then the board resets for a new week. Every day you play also earns 100 XP in the Trench Community Discord (once a day for each game) and keeps your streak going.</p>
+    <p class="sg-weekly" data-easy hidden>Easy Mode leaderboard: the top score at 11:59 PM ET every Friday wins 2,500 Discord XP. Then the board resets for a new week. Every day you play also earns 100 XP in the Trench Community Discord (once a day for each game) and keeps your streak going.</p>
     <div class="sg-modes" role="tablist" aria-label="Game mode">
       <button type="button" role="tab" class="sg-mode" data-mode="normal" aria-selected="true">Normal</button>
       <button type="button" role="tab" class="sg-mode" data-mode="easy" aria-selected="false">Easy</button>
@@ -407,8 +407,7 @@ window.TrenchXP = window.TrenchXP || (function () {
                 <p class="sgk-h">Grab these</p>
                 <p class="sgk-note">Ships drop upgrades when you shoot them down, and more fall from the sky on their own timers while you fly.</p>
                 <ul>
-                  <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Ruby</b>+250 points.</span></li>
-                  <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/golden-chest.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Golden chest</b>+25 hunt points on the leaderboard, up to 4 a day.</span></li>
+                  <li><span class="sgk-i g" style="--g:255,76,15"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Ruby</b>+250 to your score.</span></li>
                   <li><span class="sgk-i g" style="--g:255,230,90"><img src="https://africhmaurice.github.io/site/assets/games/78-bolt.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Speed boost</b>Faster firing and faster flying for 10 seconds.</span></li>
                   <li><span class="sgk-i g" style="--g:255,214,120"><img src="https://africhmaurice.github.io/site/assets/games/brass-point.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Brass Point</b>One more missile lane for 10 seconds. Catch more while it lasts to stack up to 5 lanes.</span></li>
                   <li><span class="sgk-i g" style="--g:137,251,203"><img src="https://africhmaurice.github.io/site/assets/games/swords.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Twin Torches</b>Slashes fly out to both sides and bounce off the walls for 10 seconds.</span></li>
@@ -427,7 +426,7 @@ window.TrenchXP = window.TrenchXP || (function () {
               <div class="sgk-sec">
                 <p class="sgk-h">Dodge these</p>
                 <ul>
-                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-rival.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Rival ships</b>They loop around, swoop down at you, and drop cannonballs. 100 points a hit to sink one, 200 if it is diving. They drop rubies, golden chests, shields, and lives. The colored ones take more hits and drop shields, rubies, and extra missiles.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/74-rival.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Rival ships</b>They loop around, swoop down at you, and drop cannonballs. Worth 100 a hit to sink one, 200 if it is diving. They drop rubies, shields, and lives. The colored ones take more hits and drop shields, rubies, and extra missiles.</span></li>
                 </ul>
                 <ul class="sgk-tiers" aria-label="Rival colors">
                   <li><i style="background:#3adb97"></i>Teal: 2 hits, wave 3+</li>
@@ -437,11 +436,11 @@ window.TrenchXP = window.TrenchXP || (function () {
                   <li><i style="background:#f1d48a"></i>Gold: 10 hits, wave 25+</li>
                 </ul>
                 <ul>
-                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-gunboat.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Gunboat</b>Crosses from the side, firing darts at you. 300 points. Drops speed boosts, rubies, piercing shots, Twin Torches, and red atomics.</span></li>
-                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-dart.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Dart</b>Dives straight at you from above. 150 points. Drops shields, rubies, and recharging shields.</span></li>
-                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-mine-layer.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Mine-layer</b>Crosses the top, dropping mines. Shoot the mines too. 400 points, 25 a mine. Drops scythes, rubies, waves of energy, red atomics, and lives. Every 19th mine you shoot drops Twin Torches.</span></li>
-                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-freighter.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Freighter</b>Slow and tough, 8 hits, and it bursts into 4 rubies. Every 5th one also drops a life and a recharging shield. 800 points.</span></li>
-                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-flagship.png" alt="" loading="lazy" style="transform:rotate(180deg)"></span><span class="sgk-t"><b>Destroyer</b>Every 5th wave. A boss with a hull bar that fires fans of darts. 5,000 points, and it drops a row of 10 upgrades that fall fast.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-gunboat.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Gunboat</b>Crosses from the side, firing darts at you. Worth 300. Drops speed boosts, rubies, piercing shots, Twin Torches, and red atomics.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-dart.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Dart</b>Dives straight at you from above. Worth 150. Drops shields, rubies, and recharging shields.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-mine-layer.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Mine-layer</b>Crosses the top, dropping mines. Shoot the mines too. Worth 400, 25 a mine. Drops scythes, rubies, waves of energy, red atomics, and lives. Every 19th mine you shoot drops Twin Torches.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-freighter.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Freighter</b>Slow and tough, 8 hits, and it bursts into 4 rubies. Every 5th one also drops a life and a recharging shield. Worth 800.</span></li>
+                  <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-flagship.png" alt="" loading="lazy" style="transform:rotate(180deg)"></span><span class="sgk-t"><b>Destroyer</b>Every 5th wave. A boss with a hull bar that fires fans of darts. Worth 5,000, and it drops a row of 10 upgrades that fall fast.</span></li>
                   <li><span class="sgk-i"><img src="https://africhmaurice.github.io/site/assets/games/78-lightning.png" alt="" loading="lazy"></span><span class="sgk-t"><b>Lightning and wind</b>From wave 6, a flashing stripe warns where lightning will strike. From wave 8, gusts of wind push your ship.</span></li>
                 </ul>
                 <p>Tough ships get angry at half hull: faster, with a Scarlet glow.</p>
@@ -449,7 +448,7 @@ window.TrenchXP = window.TrenchXP || (function () {
             </div>
             <div class="sgk-sec">
               <p class="sgk-h">Scoring</p>
-              <p>Every ship you sink adds its points, and clearing a wave adds 250 times the wave number. The top score at 11:59 PM ET every Friday wins 500 hunt points.</p>
+              <p>Every ship you sink adds to your score, and clearing a wave adds 250 times the wave number. The top score at 11:59 PM ET every Friday wins 5,000 Discord XP.</p>
             </div>
           </section>
           <!-- /SKY GAUNTLET GUIDE -->
@@ -466,10 +465,9 @@ window.TrenchXP = window.TrenchXP || (function () {
               <li>Your cannons fire on their own. Fly anywhere in the lower part of the sky.</li>
               <li>Shoot down the rival fleet and catch what the ships drop.</li>
               <li>Crests raise your weapon level and toughen your hull.</li>
-              <li>Golden chests are worth 25 hunt points each, up to 4 a day.</li>
               <li>Every 5th wave is a Destroyer.</li>
               <li>Check the key for everything else!</li>
-              <li>Top score on the board at 11:59 PM ET Friday wins 500 points. Then a new week starts.</li>
+              <li>Top score on the board at 11:59 PM ET Friday wins 5,000 Discord XP. Then a new week starts.</li>
             </ul>
           </div>
         </aside>
@@ -512,7 +510,7 @@ window.TrenchXP = window.TrenchXP || (function () {
 
   /* what falls: weight (how often), glow color, short label; specials only from wave 3 */
   var DROPS={
-    ruby:{w:26,glow:'255,76,15',name:'+250 points'},
+    ruby:{w:26,glow:'255,76,15',name:'+250'},
     crate:{w:12,glow:'255,214,120',name:'+25 hunt points'},
     bolt:{w:12,glow:'255,230,90',name:'Speed boost',secs:10},
     brass:{w:12,glow:'255,214,120',name:'Extra missile',secs:10},
@@ -903,7 +901,7 @@ window.TrenchXP = window.TrenchXP || (function () {
       if(!cpList.length&&!msg){box.hidden=true;box.innerHTML='';return;}
       box.hidden=false;
       box.innerHTML='<p class="sg-cps-h">Or start after a Destroyer</p>'+cpList.map(function(c){
-        return '<button type="button" class="sg-cp" data-cp="'+c.cp+'"><b>Start at wave '+c.cp+'</b><span>'+sgbFmt(c.score)+' points · weapon level '+cpLevel(c.crests)+' · '+
+        return '<button type="button" class="sg-cp" data-cp="'+c.cp+'"><b>Start at wave '+c.cp+'</b><span>Score '+sgbFmt(c.score)+' · weapon level '+cpLevel(c.crests)+' · '+
           c.lives+' '+(c.lives===1?'life':'lives')+' · '+c.shields+' '+(c.shields===1?'shield':'shields')+'</span><span>The average of '+c.n+' '+(c.n===1?'player':'players')+' this week</span></button>';
       }).join('')+(msg?'<p class="sg-cps-h" role="status">'+sgbEsc(msg)+'</p>':'');
       [].forEach.call(box.querySelectorAll('.sg-cp'),function(b){b.onclick=function(){newGame(+b.getAttribute('data-cp'));};});

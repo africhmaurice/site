@@ -255,10 +255,10 @@ html,body{margin:0 !important;padding:0 !important}
     <h1>TREASURE HUNTER PROFILE</h1>
     <div class="hp-example">EXAMPLE PROFILE: MADE-UP NUMBERS TO SHOW THE DESIGN</div>
     <div class="hp-find" id="hp-find">
-      <p>See your rank, points, and everything you’ve found so far.</p>
-      <form id="hp-form"><input id="hp-email" type="email" inputmode="email" autocomplete="email" placeholder="The email you use for the hunt" required><button type="submit">SHOW MY PROFILE</button></form>
+      <p>See your final rank, points, and everything you found on the hunt.</p>
+      <form id="hp-form"><input id="hp-email" type="email" inputmode="email" autocomplete="email" placeholder="The email you used for the hunt" required><button type="submit">SHOW MY PROFILE</button></form>
       <p class="hp-err" id="hp-err" role="alert"></p>
-      <small>Your stats update at each tally (10 AM and 7 PM ET). I’ll remember your email on this device.</small>
+      <small>The hunt ran from September 21 to November 10, 2026. These are your final stats. I’ll remember your email on this device.</small>
     </div>
     <div class="hp-card" id="hp-card" hidden></div>
   </div>
@@ -285,10 +285,10 @@ html,body{margin:0 !important;padding:0 !important}
     var active = (p.days.match(/1/g) || []).length, sofar = Math.max(1, Math.min(51, idx + 1));
     var third = 0, reg = board && board.regions ? board.regions.filter(function (r) { return r.key === p.r; })[0] : null;
     if (reg && reg.top && reg.top[2]) third = reg.top[2].points;
-    var race = !p.rank ? 'You’re playing as crew staff, so you’re not ranked on the public board. Every point you earn still counts toward the crew’s rewards!'
-      : !p.tr ? 'Keep climbing! The more points you earn, the more rewards the whole crew unlocks.'
-      : p.rank <= 3 ? '<b>You’re in Treasure position!</b> The top 3 at the end of the hunt win <a href="' + U + '/the-treasure">The Treasure</a>. Hold on to it!'
-      : '<b>' + fmt(p.next) + ' points</b> to pass #' + (p.rank - 1) + (third ? ', and ' + fmt(third - p.pts + 1) + ' to crack the top 3' : '') + '. The top 3 at the end of the hunt win <a href="' + U + '/the-treasure">The Treasure</a>!';
+    var race = !p.rank ? 'You played as crew staff, so you weren’t ranked on the public board. Every point you earned still counted toward the crew’s rewards!'
+      : !p.tr ? 'Every point you earned helped the whole crew unlock rewards.'
+      : p.rank <= 3 ? '<b>You finished in Treasure position!</b> The top 3 at the end of the hunt won <a href="' + U + '/the-treasure">The Treasure</a>.'
+      : 'You finished #' + p.rank + ' of ' + fmt(p.of) + '. The top 3 at the end of the hunt won <a href="' + U + '/the-treasure">The Treasure</a>.';
     var pct = third ? Math.min(100, p.pts / third * 100) : 100;
     var days = '';
     for (var i = 0; i < 51; i++) days += '<div class="hp-day' + (p.days.charAt(i) === '1' ? ' on' : '') + (i === idx ? ' today' : '') + (i > idx ? ' later' : '') + '" title="' + day(new Date(Date.UTC(2026, 8, 21 + i)).toISOString().slice(0, 10)) + '"></div>';
@@ -296,17 +296,17 @@ html,body{margin:0 !important;padding:0 !important}
     card.innerHTML =
       '<div class="hp-head"><div><div class="hp-name">' + esc(p.n || p.h) + '</div>' +
       '<div class="hp-sub">' + esc(p.h) + '<b>' + esc(p.rl).toUpperCase() + ' BOARD</b></div></div></div>' +
-      '<p class="hp-when">Points are added at each tally, 10 AM and 7 PM ET. Anything you earned since the last one will show up at the next. Remember: there’s one man running all of this and he’s doing his best. ;)</p>' +
+      '<p class="hp-when">These are your final standings. The hunt ran from September 21 to November 10, 2026.</p>' +
       '<div class="hp-tiles">' +
         (p.rank ? '<div class="hp-tile hp-hot"><i>RANK</i><b>#' + p.rank + '</b><span>of ' + fmt(p.of) + ' on the board</span></div>' : '<div class="hp-tile hp-hot"><i>RANK</i><b>CREW</b><span>not on the public board</span></div>') +
-        '<div class="hp-tile"><i>TOTAL POINTS</i><b>' + fmt(p.pts) + '</b><span>and counting</span></div>' +
+        '<div class="hp-tile"><i>TOTAL POINTS</i><b>' + fmt(p.pts) + '</b><span>final total</span></div>' +
         '<div class="hp-tile"><i>ACT FOUR POINTS</i><b>' + fmt((p.ap || [])[3] || 0) + '</b><span>Nov 2 to Nov 10</span></div>' +
-        '<div class="hp-tile"><i>DAYS ACTIVE</i><b>' + active + '</b><span>of ' + sofar + ' days so far</span></div>' +
+        '<div class="hp-tile"><i>DAYS ACTIVE</i><b>' + active + '</b><span>of ' + sofar + ' days</span></div>' +
       '</div>' +
       // Points per act (Maurice, 2026-10-01): Act One is fixed now that it's over; Act Two counts up from zero.
       (p.ap ? '<div class="hp-acts">' +
         '<div class="hp-tile"><i>ACT ONE POINTS<em>FINAL</em></i><b>' + fmt(p.ap[0]) + '</b><span>Sept 21 to Sept 30</span></div>' +
-        '<div class="hp-tile"><i>ACT TWO POINTS</i><b id="hp-a2" data-to="' + (p.ap[1] || 0) + '">0</b><span>and counting, Oct 1 to Oct 15</span></div>' +
+        '<div class="hp-tile"><i>ACT TWO POINTS</i><b id="hp-a2" data-to="' + (p.ap[1] || 0) + '">0</b><span>Oct 1 to Oct 15</span></div>' +
       '</div>' : '') +
       '<div class="hp-race"><p>' + race + '</p>' + (p.tr && p.rank ? '<div class="hp-bar"><div style="width:' + pct.toFixed(1) + '%"></div></div>' : '') + '</div>' +
       '<div class="hp-grid">' +
@@ -319,7 +319,7 @@ html,body{margin:0 !important;padding:0 !important}
       '</div>' +
       '<h2>DAYS ON THE HUNT</h2><div class="hp-days">' + days + '</div><div class="hp-daykey"><span>One square for each day of the hunt, Sept 21 to Nov 10. <b>Red</b> means you earned points that day.</span></div>' +
       '<h2>LATEST LOOT</h2><ul class="hp-recent">' + p.recent.map(function (r) { return '<li><time>' + esc(day(r[0])) + '</time><span>' + esc(r[1]) + '</span><b>+' + fmt(r[2]) + '</b></li>'; }).join('') + '</ul>' +
-      '<p class="hp-crew">You’ve earned <b>' + (crewTotal ? (p.pts / crewTotal * 100).toFixed(1) : '0') + '%</b> of the crew’s ' + fmt(crewTotal) + ' points. Every one of them helps unlock rewards for everyone!</p>' +
+      '<p class="hp-crew">You earned <b>' + (crewTotal ? (p.pts / crewTotal * 100).toFixed(1) : '0') + '%</b> of the crew’s ' + fmt(crewTotal) + ' points. Every one of them helped unlock rewards for everyone!</p>' +
       '<div class="hp-colors" id="hp-colors" role="radiogroup" aria-label="Card color"><span>CARD COLOR</span></div>' +
       '<div class="hp-more"><button type="button" class="hp-btn" id="hp-share">SHARE MY CARD</button><a class="hp-btn alt" href="' + U + '/leaderboard">LEADERBOARD</a></div>' +
       (EXAMPLE ? '' : '<p class="hp-foot">Not you? <a id="hp-switch">Use a different email</a></p>');
@@ -384,7 +384,7 @@ html,body{margin:0 !important;padding:0 !important}
         t(st[0], px + 217, py + 58, '800 24px Almarai', T.hi, 5);
         t(st[1], px + 217, py + 150, fit(st[1], 380, 84, AM), T.text);
       });
-      t('JOIN ME ON THE HUNT!', W / 2, 1168, fit('JOIN ME ON THE HUNT!', 820, 74, AM), T.hi);
+      t('I JOINED THE HUNT!', W / 2, 1168, fit('I JOINED THE HUNT!', 820, 74, AM), T.hi);
       t('MAURICEAFRICH.COM', W / 2, 1262, '800 30px Almarai', T.text, 4);
       var foot = '@MAURICEAFRICH  ·  #SKYPIRATESHUNT';
       x.font = '800 22px Almarai'; if ('letterSpacing' in x) x.letterSpacing = '4px';
@@ -397,7 +397,7 @@ html,body{margin:0 !important;padding:0 !important}
         var file = new File([b], 'sky-pirate-card.png', { type: 'image/png' });
         var tag = '#contest';
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          navigator.share({ files: [file], text: 'Join me on the hunt! #SkyPiratesHunt ' + tag + ' mauriceafrich.com' }).catch(function () {});
+          navigator.share({ files: [file], text: 'My final card from the Sky Pirates treasure hunt! #SkyPiratesHunt mauriceafrich.com' }).catch(function () {});
         } else {
           var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'sky-pirate-card.png';
           document.body.appendChild(a); a.click(); a.remove();
@@ -410,7 +410,7 @@ html,body{margin:0 !important;padding:0 !important}
     Promise.all([hash(email), get(DATA), get(BOARD)]).then(function (r) {
       if (!r[1]) { err.textContent = 'The ship is slow today. Give it another go in a moment.'; return; }
       var p = r[1].players && r[1].players[r[0]];
-      if (!p) { err.textContent = 'I can’t find that email on the board yet. Points show up after the next tally, so check that it’s the email you used on the forms.'; remember(''); return; }
+      if (!p) { err.textContent = 'I can’t find that email on the board. Check that it’s the email you used on the forms.'; remember(''); return; }
       if (r[1].boxes > BOXES) BOXES = r[1].boxes;
       err.textContent = ''; remember(email); render(p, r[1].crewTotal, r[2]);
     });

@@ -1245,7 +1245,7 @@ var ArcadeCard = (function () {
     pnote.textContent=NOTE[m];goBtn.textContent=startLabel();altBtn.hidden=true;newRun();offerResume();preview();hud();}
   // a saved Campaign run: Continue picks up at the start of the saved level; New run throws the save away
   function offerResume(){resumeSave=mode==='campaign'?readSave():null;if(!resumeSave)return;
-    pnote.textContent='Your run is saved at level '+resumeSave.level+' with '+resumeSave.score+' points. Continue where you left off, or start over.'+(window.GBoard&&resumeSave.runFrom===1&&!resumeSave.ticket?' This run could not check in with the board, so only a new run can go on it.':'');
+    pnote.textContent='Your run is saved at level '+resumeSave.level+' with a score of '+resumeSave.score+'. Continue where you left off, or start over.'+(window.GBoard&&resumeSave.runFrom===1&&!resumeSave.ticket?' This run could not check in with the board, so only a new run can go on it.':'');
     goBtn.textContent='Continue level '+resumeSave.level;altBtn.textContent='New run';altBtn.hidden=false;}
   Array.prototype.forEach.call(modesEl.children,function(b){b.addEventListener('click',function(){if(panelKind==='start')setMode(b.dataset.mode);});});
   // behind the start panel: the next map, zoomed out

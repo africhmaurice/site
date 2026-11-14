@@ -278,7 +278,7 @@ window.TrenchXP = window.TrenchXP || (function () {
     <p class="ar-eye">Highest Score Wins!</p>
     <h1 class="ar-h1">Airship Runner</h1>
     <p class="ar-tag">Five lanes, one airship. Navigate through the obstacles and survive as long as you can! Dodge left, dodge right, and collect extra rewards.</p>
-    <p class="ar-weekly">Top score at 11:59 PM ET every Friday wins 500 points. Every day you play also earns 50 hunt points (once a day), on top of golden chests.</p>
+    <p class="ar-weekly">Top score at 11:59 PM ET every Friday wins 5,000 Discord XP. Every day you play also earns 100 XP in the Trench Community Discord (once a day for each game) and keeps your streak going.</p>
   </header>
   <div class="ar-wrap">
     <div class="ar-game">
@@ -337,8 +337,7 @@ window.TrenchXP = window.TrenchXP || (function () {
           <div class="ar-kgrp">
             <p class="ar-ksub">Grab these</p>
             <ul class="ar-klist">
-        <li><span class="ar-ki glow ruby"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Ruby</b>+100 points to your score.</span></li>
-        <li><span class="ar-ki glow crate"><img src="https://africhmaurice.github.io/site/assets/games/golden-chest.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Prize chest</b>+25 hunt points on the leaderboard, up to 4 a day.</span></li>
+        <li><span class="ar-ki glow ruby"><img src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt="" loading="lazy"></span><span class="ar-kt"><b>Ruby</b>+100 to your score.</span></li>
             </ul>
           </div>
           <div class="ar-kgrp">
@@ -369,10 +368,9 @@ window.TrenchXP = window.TrenchXP || (function () {
         <ul class="ar-how">
           <li>Dodge storm clouds, rival ships, floating islands, and cannon fire.</li>
           <li>Grab rubies for 100 extra score each.</li>
-          <li>Rare prize chests are worth 25 hunt points each, up to 4 a day.</li>
           <li>It starts slow. Every 15 seconds is a new level, and each one flies faster than the last.</li>
           <li>Check the key for tips!</li>
-          <li>Top score on the board at 11:59 PM ET Friday wins 500 points. Then a new week starts.</li>
+          <li>Top score on the board at 11:59 PM ET Friday wins 5,000 Discord XP. Then a new week starts.</li>
         </ul>
       </div>
     </aside>
@@ -826,7 +824,7 @@ var ArcadeCard = (function () {
       if(Math.abs(e.x-S.x)<laneW*.2+e.hw&&Math.abs(e.y-shipY)<SPR.ship.h*.36+e.hh){
         if(bad[e.kind])return crash();
         S.ents.splice(i,1);
-        if(e.kind==='xp'){S.xp++;toast('+100 POINTS','');}
+        if(e.kind==='xp'){S.xp++;toast('+100','');}
         else if(e.kind==='prize'){
           if(prizesToday()+S.prizes<R.prizesPerDay){S.prizes++;toast('+25 HUNT POINTS','gold');}else toast('Prize limit reached for today','hot');
         }
@@ -1060,7 +1058,7 @@ var ArcadeCard = (function () {
     return c.toDataURL('image/png');
   }
   function fit(x,s,px,py,max){var m=/^(.*?)(\d+)px\s*(.*)$/.exec(x.font),size=+m[2];while(x.measureText(s).width>max&&size>12){size--;x.font=m[1]+size+'px '+m[3];}x.fillText(s,px,py);}
-  function shareText(){return 'Airship Runner: '+fmt(S.score)+' points, level '+S.level+'. Beat me at '+SITE;}
+  function shareText(){return 'Airship Runner: score '+fmt(S.score)+', level '+S.level+'. Beat me at '+SITE;}
   $('.ar-save').addEventListener('click',function(){
     var btn=this,url=card();
     fetch(url).then(function(r){return r.blob();}).then(function(b){
