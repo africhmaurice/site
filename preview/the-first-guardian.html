@@ -69,6 +69,17 @@
 #px .ico{flex:none;width:60px;height:60px;background:var(--ink);display:grid;place-items:center}
 #px .ico img{width:48px;height:48px;display:block}
 #px .mate.down .ico{opacity:.45}
+#px .mrow{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:72px}
+#px .mate .rc-die,#px .mate .rc-die.is3d{width:72px;height:72px;flex:none}
+#px .mate .rc-dn{font-size:16px}
+#px .mpick:empty{display:none}
+#px .mbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#px .mb,#px .mt{min-height:40px;padding:8px 6px;border:2px solid var(--ink);background:#fff;color:var(--ink);font:800 12px/1.2 Almarai,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+#px .mb.on,#px .mt.on{background:var(--ink);color:#fff}
+#px .mb[disabled]{opacity:.35;cursor:default}
+#px .mwho{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+#px .mwho span{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink4);width:100%}
+#px .mdown{font-size:14px;line-height:1.5;color:#5b4a3a}
 #px .hearts{display:flex;gap:6px}
 #px .hearts i{width:22px;height:22px;background:var(--emer7);border:2px solid var(--ink)}
 #px .hearts i.off{background:transparent}
@@ -128,7 +139,8 @@
 #px .bank span{display:inline-grid;place-items:center;width:44px;height:44px;background:var(--ink);color:#fff;font-weight:800}
 #px [hidden]{display:none!important}
 @media (max-width:820px){#px .crew{grid-template-columns:repeat(2,minmax(0,1fr))}#px .stats{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:560px){#px .form{grid-template-columns:minmax(0,1fr)}#px .turnbox{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}#px .acts{justify-content:center}#px .mate{padding:16px 14px}#px .hearts i{width:18px;height:18px}}
+@media (max-width:400px){#px .hearts i{width:13px!important;height:13px!important}#px .mate .rc-die,#px .mate .rc-die.is3d{width:48px!important;height:48px!important}#px .mrow{min-height:48px!important}}
+@media (max-width:560px){#px .crew{gap:10px}#px .mhead{flex-direction:column;align-items:flex-start;gap:10px}#px .ico{width:42px;height:42px}#px .ico img{width:34px;height:34px}#px .mate .role{font-size:11px;letter-spacing:.04em}#px .mate .nm{font-size:20px}#px .mrow{gap:6px;min-height:56px}#px .mate .rc-die,#px .mate .rc-die.is3d{width:56px;height:56px}#px .hearts{gap:4px}#px .mbtns{grid-template-columns:minmax(0,1fr)}#px .mb,#px .mt{letter-spacing:.04em;min-height:38px}#px .mate .need{font-size:13px}#px .form{grid-template-columns:minmax(0,1fr)}#px .turnbox{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}#px .acts{justify-content:center}#px .mate{padding:16px 14px}#px .hearts i{width:15px;height:15px}}
 </style>
 <div id="px"><div class="w">
   <header class="hero">
@@ -148,7 +160,7 @@
     <ul>
       <li>The crest coin decides who goes first: the crest for the crew, the crossed swords for Paraxis.</li>
       <li>Paraxis has 30 hit points. Rune, Sparrow, Hale, and Scarlett have 4 each.</li>
-      <li>On the crew&rsquo;s turn, each of them attacks or uses a medpack. An attack rolls a D20, and 15 or higher hits for 1. Hale hits for 2.</li>
+      <li>On the crew&rsquo;s turn, pick each crew member&rsquo;s move on their card, then roll them all at once. Each one attacks or uses a medpack. An attack rolls a D20, and 15 or higher hits for 1. Hale hits for 2.</li>
       <li>The crew has 3 medpacks. Each one heals 2 hit points, and it can bring someone back from 0.</li>
       <li>Paraxis attacks twice a turn. A D4 picks who he swings at, and he hits for 1 if he meets their number: Rune 12, Sparrow 14, Hale 15, Scarlett 11.</li>
       <li>Anyone who rolls a natural 20 hits twice.</li>
@@ -868,6 +880,21 @@
       st.step++; st.log = st.log.concat(ev);
       return wait(300).then(function () { return { ok: true, status: 'ok', state: JSON.parse(JSON.stringify(st)), events: ev }; });
     }
+    if (payload.action === 'pxround') {
+      var acts = String(payload.acts || '').split(',');
+      for (var w = 0; w < 4 && !st.over; w++) {
+        if (st.hp[w] <= 0) continue;
+        var a = acts[w] || 'a', ht = /^h[0-3]$/.test(a) ? +a.charAt(1) : -1;
+        if (ht >= 0 && st.packs > 0 && st.hp[ht] < 4) { var was2 = st.hp[ht]; st.hp[ht] = Math.min(4, st.hp[ht] + 2); st.packs--; ev.push({ t: 'heal', who: w, target: ht, from: was2, hp: st.hp[ht], packs: st.packs }); continue; }
+        var r2 = d(20), hit2 = r2 >= 15, dmg2 = hit2 ? POWER[w] * (r2 === 20 ? 2 : 1) : 0; st.px = Math.max(0, st.px - dmg2); if (r2 === 1) st.hp[w] = Math.max(0, st.hp[w] - 1);
+        ev.push({ t: 'atk', who: w, roll: r2, hit: hit2, dmg: dmg2, px: st.px, fumble: r2 === 1, crit: r2 === 20, hp: st.hp[w] });
+        if (st.px <= 0) st.over = 'win'; else if (!st.hp.some(function (h) { return h > 0; })) st.over = 'loss';
+      }
+      if (!st.over) { ev.push({ t: 'pxturn', round: st.round }); fakeParaxis(st, ev); if (!st.over) { st.round++; ev.push({ t: 'round', round: st.round }); } }
+      st.next = -1; if (!st.over) for (var j2 = 0; j2 < 4; j2++) if (st.hp[j2] > 0) { st.next = j2; break; }
+      st.step++; st.log = st.log.concat(ev);
+      return wait(300).then(function () { return { ok: true, status: 'ok', state: JSON.parse(JSON.stringify(st)), events: ev }; });
+    }
     return Promise.resolve({ ok: false, error: 'preview' });
   }
 
@@ -898,14 +925,20 @@
   function crewHTML() {
     $('px-crew').innerHTML = NAMES.map(function (n, i) {
       var icon = (DATA.icons || {})[n.toLowerCase()];
-      return '<article class="mate" id="px-m' + i + '"><div class="mhead">' + (icon ? '<span class="ico"><img src="' + esc(icon) + '" alt=""></span>' : '') + '<div><p class="role">' + ROLES[i] + '</p><p class="nm">' + n + '</p></div></div><div class="hearts" aria-label="hit points"></div>' +
+      return '<article class="mate" id="px-m' + i + '"><div class="mhead">' + (icon ? '<span class="ico"><img src="' + esc(icon) + '" alt=""></span>' : '') + '<div><p class="role">' + ROLES[i] + '</p><p class="nm">' + n + '</p></div></div><div class="mrow"><div class="hearts" aria-label="hit points"></div><div class="rc-die mdie" id="rc-die-c' + i + '" aria-hidden="true"></div></div>' +
+        '<div class="mpick" id="px-pick' + i + '"></div>' +
         '<p class="need">Paraxis needs <b>' + GUARD[i] + '</b> to hit ' + (i === 1 || i === 3 ? 'her' : 'him') + '. Hits for <b>' + POWER[i] + '</b>.</p></article>';
     }).join('');
+    // every card's die is the same 3D d20 as the vote pages
+    NAMES.forEach(function (n, i) {
+      var el = $('rc-die-c' + i); el.innerHTML = D20 + '<span class="rc-dn" id="rc-dn-c' + i + '">20</span><i class="rc-die-shadow"></i><canvas class="rc-die-cv" width="240" height="240"></canvas>';
+      Dice.attach('c' + i, el, 20);
+    });
   }
   function paint() {
     $('px-hp').textContent = view.px; $('px-bar').style.width = (view.px / 30 * 100) + '%';
     NAMES.forEach(function (n, i) {
-      var m = $('px-m' + i); m.classList.toggle('down', view.hp[i] <= 0); m.classList.toggle('turn', !view.over && view.next === i && !busy);
+      var m = $('px-m' + i); m.classList.toggle('down', view.hp[i] <= 0); m.classList.toggle('turn', !view.over && view.hp[i] > 0 && !busy);
       m.querySelector('.hearts').innerHTML = [0, 1, 2, 3].map(function (k) { return '<i' + (k < view.hp[i] ? '' : ' class="off"') + '></i>'; }).join('');
       m.querySelector('.hearts').setAttribute('aria-label', Math.max(0, view.hp[i]) + ' of 4 hit points');
     });
@@ -920,12 +953,19 @@
   // replay what happened, one beat at a time
   function play(events, fast) {
     var chain = Promise.resolve();
+    // the crew's rolls at the start of a round all land at once, each on its own card
+    var lead = []; if (!fast) for (var k = 0; k < events.length && (events[k].t === 'atk' || events[k].t === 'heal'); k++) lead.push(events[k]);
+    if (lead.length) chain = chain.then(function () {
+      say('The crew attacks!');
+      return Promise.all(lead.filter(function (e) { return e.t === 'atk'; }).map(function (e) { return cardDie(e.who, e.roll); }));
+    });
     events.forEach(function (e) {
+      var landed = lead.indexOf(e) >= 0;
       chain = chain.then(function () {
         if (e.t === 'coin') return fast ? null : flip(e.coin);
         if (e.t === 'atk') {
           var line = NAMES[e.who] + ' rolls ' + e.roll + (e.crit ? '. A natural 20! ' + NAMES[e.who] + ' hits twice, for ' + e.dmg + '.' : e.hit ? ' and hits Paraxis for ' + e.dmg + '.' : e.fumble ? '. A 1! ' + NAMES[e.who] + ' takes a hit' + (e.hp <= 0 ? ' and is down.' : ' and has ' + e.hp + ' left.') : '. A miss.');
-          return (fast ? Promise.resolve() : (pending || say(NAMES[e.who] + ' attacks…'), die(e.roll))).then(function () { view.px = e.px; if (e.fumble) { view.hp[e.who] = e.hp; if (!fast) shake(e.who); } say(line); log(line, e.hit ? 'good' : e.fumble ? 'bad' : ''); paint(); return fast ? null : wait(500); });
+          return (fast || landed ? Promise.resolve() : cardDie(e.who, e.roll)).then(function () { view.px = e.px; if (e.fumble) { view.hp[e.who] = e.hp; if (!fast) shake(e.who); } say(line); log(line, e.hit ? 'good' : e.fumble ? 'bad' : ''); paint(); return fast ? null : wait(650); });
         }
         if (e.t === 'heal') { view.hp[e.target] = e.hp; view.packs = e.packs; var hl = NAMES[e.who] + ' uses a medpack on ' + (e.target === e.who ? (e.who === 1 || e.who === 3 ? 'herself' : 'himself') : NAMES[e.target]) + (e.from <= 0 ? ' and brings ' + NAMES[e.target] + ' back.' : '.') ; say(hl); log(hl, 'good'); paint(); return fast ? null : wait(700); }
         if (e.t === 'pxturn') { busy = true; say('Paraxis attacks!'); if (!fast) paint(); return fast ? null : wait(700); }
@@ -955,31 +995,59 @@
       return wait(1400);
     });
   }
-  function actions() {
-    var box = $('px-acts'); box.innerHTML = '';
-    if (view.over) return finish();
-    var who = view.next; say(NAMES[who] + '’s turn. Attack, or use a medpack?');
-    var atk = document.createElement('button'); atk.type = 'button'; atk.className = 'btn'; atk.textContent = NAMES[who] + ': ATTACK';
-    atk.onclick = function () { move({ act: 'attack' }); }; box.appendChild(atk);
-    var hurt = [0, 1, 2, 3].filter(function (i) { return view.hp[i] < 4; });
-    if (view.packs && hurt.length) {
-      var med = document.createElement('button'); med.type = 'button'; med.className = 'btn alt'; med.textContent = 'USE A MEDPACK';
-      med.onclick = function () {
-        box.innerHTML = ''; say('Who gets the medpack?');
-        hurt.forEach(function (i) { var b = document.createElement('button'); b.type = 'button'; b.className = 'btn alt'; b.textContent = NAMES[i] + (view.hp[i] <= 0 ? ' (down)' : ' (' + view.hp[i] + ' HP)'); b.onclick = function () { move({ act: 'heal', target: i }); }; box.appendChild(b); });
-        var back = document.createElement('button'); back.type = 'button'; back.className = 'btn alt'; back.textContent = 'BACK'; back.onclick = actions; box.appendChild(back);
-      };
-      box.appendChild(med);
-    }
+  // a crew card's d20: tumbling in the card while the rolls are on their way, then three bounces onto n
+  function cardDie(i, n) {
+    return new Promise(function (res) {
+      var id = 'c' + i;
+      if (!Dice.ready(id)) { var dn = $('rc-dn-' + id); if (dn) dn.textContent = n; return setTimeout(res, 500); }
+      Dice.landCard(id, n, function () { res(); });
+    });
   }
-  function move(m) {
-    if (busy) return; busy = true; $('px-acts').innerHTML = ''; paint();
-    // the die leaves the card the moment Attack is pressed, like on the vote pages; the number lands when the roll is in
-    if (m.act === 'attack') { say(NAMES[view.next] + ' attacks…'); pending = Dice.throwNow('px') ? 'thrown' : ''; if (!pending && Dice.ready('px')) { Dice.spin('px'); pending = 'spun'; } }
-    api({ action: 'pxact', email: me.email, step: view.step, act: m.act, target: m.target }).then(function (res) {
-      if (!res || !res.ok) { if (pending) Dice.stop('px'); pending = ''; busy = false; say(({ closed: 'The fight is over.', network: 'The ship is slow. Try that again in a moment.' })[res && res.error] || 'Something went wrong. Try that again.'); actions(); paint(); return; }
+  var plan = ['a', 'a', 'a', 'a'];
+  function pickHTML() {
+    var used = plan.filter(function (p) { return p !== 'a'; }).length, hurt = [0, 1, 2, 3].filter(function (i) { return view.hp[i] < 4; });
+    NAMES.forEach(function (n, i) {
+      var box = $('px-pick' + i); if (!box) return;
+      if (view.over || busy || view.hp[i] <= 0) { box.innerHTML = view.hp[i] <= 0 && !view.over ? '<p class="mdown">Down. A medpack brings ' + (i === 1 || i === 3 ? 'her' : 'him') + ' back.</p>' : ''; return; }
+      var heal = plan[i] !== 'a', canHeal = heal || (view.packs - used > 0 && hurt.length);
+      var h = '<div class="mbtns"><button type="button" class="mb' + (heal ? '' : ' on') + '" data-i="' + i + '" data-a="a">ATTACK</button>' +
+        '<button type="button" class="mb' + (heal ? ' on' : '') + '" data-i="' + i + '" data-a="h"' + (canHeal ? '' : ' disabled') + '>MEDPACK</button></div>';
+      if (heal) h += '<div class="mwho"><span>Heal who?</span>' + hurt.map(function (t) { return '<button type="button" class="mt' + (plan[i] === 'h' + t ? ' on' : '') + '" data-i="' + i + '" data-t="' + t + '">' + NAMES[t] + (view.hp[t] <= 0 ? ' (down)' : '') + '</button>'; }).join('') + '</div>';
+      box.innerHTML = h;
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#px .mb'), function (b) { b.onclick = function () {
+      var i = +b.getAttribute('data-i');
+      if (b.getAttribute('data-a') === 'a') plan[i] = 'a';
+      else if (plan[i] === 'a') { var hurt2 = [0, 1, 2, 3].filter(function (t) { return view.hp[t] < 4; }); plan[i] = 'h' + (hurt2.indexOf(i) >= 0 ? i : hurt2[0]); }
+      pickHTML(); rollBtn();
+    }; });
+    Array.prototype.forEach.call(document.querySelectorAll('#px .mt'), function (b) { b.onclick = function () { plan[+b.getAttribute('data-i')] = 'h' + b.getAttribute('data-t'); pickHTML(); rollBtn(); }; });
+  }
+  function rollBtn() {
+    var box = $('px-acts'); box.innerHTML = '';
+    var atk = [0, 1, 2, 3].filter(function (i) { return view.hp[i] > 0 && plan[i] === 'a'; }).length, med = [0, 1, 2, 3].filter(function (i) { return view.hp[i] > 0 && plan[i] !== 'a'; }).length;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'btn';
+    b.textContent = atk ? 'ROLL FOR THE CREW' : 'USE THE MEDPACK' + (med > 1 ? 'S' : '');
+    b.onclick = move; box.appendChild(b);
+  }
+  function actions() {
+    if (view.over) { pickHTML(); return finish(); }
+    // a fresh turn: everyone attacks unless you change it; a medpack plan only stays if it still makes sense
+    plan = plan.map(function (p, i) { var t = p === 'a' ? -1 : +p.charAt(1); return view.hp[i] > 0 && t >= 0 && view.hp[t] < 4 ? p : 'a'; });
+    var used = 0; plan = plan.map(function (p) { if (p === 'a') return p; if (used < view.packs) { used++; return p; } return 'a'; });
+    say('The crew’s turn. Pick each one’s move on their card, then roll them all at once.');
+    pickHTML(); rollBtn();
+  }
+  function move() {
+    if (busy) return; busy = true; $('px-acts').innerHTML = ''; pickHTML(); paint();
+    var acts = plan.map(function (p, i) { return view.hp[i] > 0 ? p : 'a'; });
+    // every attacker's die starts tumbling on its card the moment Roll is pressed
+    acts.forEach(function (p, i) { if (view.hp[i] > 0 && p === 'a' && Dice.ready('c' + i)) Dice.spinCard('c' + i); });
+    say('The crew rolls…');
+    api({ action: 'pxround', email: me.email, step: view.step, acts: acts.join(',') }).then(function (res) {
+      if (!res || !res.ok) { [0, 1, 2, 3].forEach(function (i) { Dice.stop('c' + i); }); busy = false; say(({ closed: 'The fight is over.', network: 'The ship is slow. Try that again in a moment.' })[res && res.error] || 'Something went wrong. Try that again.'); paint(); actions(); return; }
       var target = res.state;
-      if (res.status === 'stale' && pending) { Dice.stop('px'); pending = ''; }
+      if (res.status === 'stale') [0, 1, 2, 3].forEach(function (i) { Dice.stop('c' + i); });
       return play(res.events, res.status === 'stale').then(function () { view = target; busy = false; paint(); actions(); });
     });
   }
