@@ -79,7 +79,7 @@ a{color:#fff}
 .ma-strip{-webkit-backdrop-filter:grayscale(1) contrast(1.15);backdrop-filter:grayscale(1) contrast(1.15)}
 .ma-strip:hover{filter:brightness(1.18)}
 .ma-strip:focus-visible{outline:2px solid #3adb97;outline-offset:-5px}
-.ma-sn{font-family:'CI Face','Cracked Imperia','Almarai',sans-serif;font-size:clamp(22px,2.1cqw,34px);line-height:1.2;letter-spacing:.03em;transition:translate .3s ease}
+.ma-sn{font-family:'CI Face','Cracked Imperia','Almarai',sans-serif;font-size:clamp(22px,1.7cqw,26px);line-height:1.2;letter-spacing:.03em;transition:translate .3s ease}
 .ma-strip:hover .ma-sn{translate:0 -3px}
 .ma-st{writing-mode:vertical-rl;rotate:180deg;font-weight:800;font-size:11px;line-height:1.2;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;opacity:.85}
 #ma-slider.ma-stairs #ma-track{position:relative}
@@ -106,6 +106,10 @@ a{color:#fff}
   #ma-track>div[data-screen-label="ED"]{padding:13cqw 6cqw 15cqw !important;gap:0 !important}
   #ma-track>div[data-screen-label="ED"] .ed-head{font-size:8cqw !important}
   #ma-track>div[data-screen-label="ED"] .ed-row{flex-wrap:wrap;gap:3.5cqw max(14px,4cqw) !important;margin-top:4cqw !important;max-width:88cqw}
+  /* 12px+ between the eyebrow and the heading, and between a caption and the covers under it, even at the ends of the
+     books' 5px bob (QA 2026-11-14) */
+  #ma-track>div[data-screen-label="ED"]>div:first-child{margin-bottom:max(14px,3.6cqw) !important}
+  #ma-track>div[data-screen-label="ED"] .ed-row{row-gap:max(24px,6cqw) !important}
   #ma-track>div[data-screen-label="ED"] .ed-book{flex:0 0 auto;max-width:100%}
   #ma-track>div[data-screen-label="ED"] .ed-book img{height:21cqw !important}
   #ma-track>div[data-screen-label="ED"] .ed-label{font-size:max(11px,2.6cqw) !important;line-height:1.3 !important;overflow-wrap:normal;word-break:normal;hyphens:none}

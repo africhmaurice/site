@@ -512,15 +512,24 @@
         if (it.home && rest.top + rest.height < 0) it.home = false;
         var held = it.home || (it.el.parentElement && it.el.parentElement.hasAttribute('data-ma-rest'));
         p = held ? 1 : ease(clamp((prog(rest, vh * 1.02, vh * 0.5) - st) / (1 - st)));
-        var fd = (1 - p) * (it.x ? Math.min(innerWidth * 0.6, 560) : Math.min(vh * 0.7, 520)) * it.dir;
+        // it slides out of its own slot and is only ever seen inside that slot (QA 2026-11-14: a tile flying in from 520px
+        // away sat over the dice and story above it whenever the reader stopped scrolling), so the travel is its own size
+        // and the part outside its slot is cut off
+        // Sideways pieces on wide screens still come in from the screen's edge (left columns from the left, right from
+        // the right, so they never cross each other or the heading); on a phone a sideways piece only fades in where it
+        // rests, so no line of text is ever cut off at the screen's edge.
+        var wideX = it.x && innerWidth >= 768;
+        var span = it.x ? (wideX ? Math.min(innerWidth * 0.6, 560) : 0) : r.height;
+        var fd = (1 - p) * span * it.dir, cut = Math.min(span, Math.abs(fd)).toFixed(1) + 'px';
         it.cur = it.x || p >= 1 ? 0 : fd;
         put(it.el, 'translate', p < 1 ? (it.x ? fd.toFixed(1) + 'px 0' : '0 ' + fd.toFixed(1) + 'px') : '');
-        put(it.el, 'rotate', p < 1 ? ((1 - p) * 5 * it.dir).toFixed(2) + 'deg' : '');
-        put(it.el, 'opacity', p < 1 ? (0.15 + 0.85 * p).toFixed(3) : '');
-        // while it's flying it can't take a tap meant for the tile it's passing over
-        // a piece takes taps as soon as it is mostly on screen (Maurice, 2026-11-13: 'make the dossier so you can click on them
-        // when they're visible on the screen'); only while it is still far out can it not
-        put(it.el, 'pointerEvents', p < 0.35 ? 'none' : '');
+        put(it.el, 'rotate', wideX && p < 1 ? ((1 - p) * 5 * it.dir).toFixed(2) + 'deg' : '');
+        put(it.el, 'clipPath', p < 1 && !it.x ? 'inset(' + (fd > 0 ? '0 0 ' + cut + ' 0' : cut + ' 0 0 0') + ')' : '');
+        var fp = span ? p : Math.min(1, p * 1.8);   // a phone's fade-only piece is fully there sooner
+        put(it.el, 'opacity', fp < 1 ? (0.15 + 0.85 * fp).toFixed(3) : '');
+        // a piece takes taps once it is mostly in its slot (Maurice, 2026-11-13: 'make the dossier so you can click on them
+        // when they're visible on the screen'); the cut-off part never takes a tap meant for anything around it
+        put(it.el, 'pointerEvents', p < 0.5 ? 'none' : '');
         return;
       }
       if (it.type === 'pop' && it.slow) {

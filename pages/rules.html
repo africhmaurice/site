@@ -45,6 +45,8 @@ html,body{margin:0 !important;padding:0 !important}
 #rules-body p{font-size:15.5px;line-height:1.75;margin:0 0 14px}
 #rules-body a{color:#c11212;font-weight:700;text-decoration:underline}
 #rules-body a:hover{color:#8f0e0e}
+/* an email address only breaks at the @ or the dot (QA 2026-11-14) */
+#rules-body a[href^="mailto:"]{overflow-wrap:normal;word-break:normal;hyphens:manual}
 #rules-body mark{background:#ffe9a8;font-weight:700;padding:0 3px}
 #rules-body .r-part{margin-top:90px;border-top:3px solid #111;padding-top:60px}
 #rules-body .r-free-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px 40px;text-align:left}
@@ -206,7 +208,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <p class="r-allcaps">ACT FOUR IS A POINTS LEADERBOARD, NOT A SWEEPSTAKES. VOID WHERE PROHIBITED OR RESTRICTED BY LAW.</p>
 
       <h3>1. Sponsor.</h3>
-      <p>Maurice Africh, 125 S Lexington Ave, Suite 101A, PMB 159, Asheville, NC 28801 ("Sponsor"). Questions: <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@secondworldbooks.com</a>. Saga Press and Simon &amp; Schuster, LLC are not the sponsor of this promotion.</p>
+      <p>Maurice Africh, 125 S Lexington Ave, Suite 101A, PMB 159, Asheville, NC 28801 ("Sponsor"). Questions: <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@<wbr>secondworldbooks<wbr>.com</a>. Saga Press and Simon &amp; Schuster, LLC are not the sponsor of this promotion.</p>
 
       <h3>2. What This Is.</h3>
       <p>Act Four of the Sky Pirates Treasure Hunt is a global game with one worldwide leaderboard, open to all participants together, wherever they live. It is separate from Acts One through Three. Part 1 (U.S.) and Part 2 (UK) below still govern Acts One through Three, their sweepstakes and prize draws, and The Treasure, and stay in effect for them.</p>
@@ -243,7 +245,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <p class="r-allcaps">NO PURCHASE NECESSARY TO ENTER OR WIN. A PURCHASE WILL NOT INCREASE YOUR CHANCES OF WINNING A SWEEPSTAKES. VOID WHERE PROHIBITED.</p>
 
       <h3>1. Sponsor.</h3>
-      <p>Maurice Africh, 125 S Lexington Ave, Suite 101A, PMB 159, Asheville, NC 28801 ("Sponsor"). Questions: <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@secondworldbooks.com</a>. Certain physical prizes are fulfilled by Saga Press; Saga Press and Simon &amp; Schuster, LLC are not the sponsor of this promotion.</p>
+      <p>Maurice Africh, 125 S Lexington Ave, Suite 101A, PMB 159, Asheville, NC 28801 ("Sponsor"). Questions: <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@<wbr>secondworldbooks<wbr>.com</a>. Certain physical prizes are fulfilled by Saga Press; Saga Press and Simon &amp; Schuster, LLC are not the sponsor of this promotion.</p>
 
       <h3>2. What This Is.</h3>
       <p>These rules govern the U.S. promotion. Residents of the United Kingdom take part in the separate UK promotion under <a href="#uk">Part 2</a> of these rules. The Treasure Hunt (the "Hunt") has three parts:</p>
@@ -315,13 +317,13 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <p>By participating, you release Sponsor, Maurice Africh, Simon &amp; Schuster, LLC, Saga Press, Instagram, TikTok, YouTube, Facebook, Discord, and each of their affiliates and representatives from any liability arising from your participation or the acceptance or use of any prize, to the fullest extent permitted by law. This promotion is in no way sponsored, endorsed, administered by, or associated with any of those platforms.</p>
 
       <h3>18. Privacy.</h3>
-      <p>Sponsor is based in the United States and your information is processed and stored there. We use it only to run the Hunt, verify submissions, notify winners, and publish winners' details as described in Section 20. Receipts are deleted within 90 days after the Hunt Period ends, or sooner once verification is complete. Other information is kept for 12 months after the Hunt ends, or longer for winners as needed for prize delivery and tax records. We share information only with Saga Press for prize fulfillment and with service providers who host our forms. You will not receive marketing email unless you separately opt in. To access, correct, or delete your information, or to object to its use, email <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@secondworldbooks.com</a>. Full details are in the Privacy Policy. Redact payment information before uploading receipts.</p>
+      <p>Sponsor is based in the United States and your information is processed and stored there. We use it only to run the Hunt, verify submissions, notify winners, and publish winners' details as described in Section 20. Receipts are deleted within 90 days after the Hunt Period ends, or sooner once verification is complete. Other information is kept for 12 months after the Hunt ends, or longer for winners as needed for prize delivery and tax records. We share information only with Saga Press for prize fulfillment and with service providers who host our forms. You will not receive marketing email unless you separately opt in. To access, correct, or delete your information, or to object to its use, email <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@<wbr>secondworldbooks<wbr>.com</a>. Full details are in the Privacy Policy. Redact payment information before uploading receipts.</p>
 
       <h3>19. Governing Law and Disputes.</h3>
       <p>These rules are governed by the laws of North Carolina. Disputes will be resolved individually, not as a class action, in the state or federal courts located in North Carolina. Sponsor's liability is limited to the cost of participating, and in no event includes attorneys' fees or indirect, punitive, or consequential damages.</p>
 
       <h3>20. Winners List.</h3>
-      <p>Sponsor will make winners' surnames and state or county available on request. Email <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@secondworldbooks.com</a> with subject line "Treasure Hunt Winners" within 60 days after November 1, 2026. Winners who object to this disclosure may tell Sponsor when notified, except where a regulator requires the information. Prizes will be dispatched within 30 days of winner confirmation.</p>
+      <p>Sponsor will make winners' surnames and state or county available on request. Email <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@<wbr>secondworldbooks<wbr>.com</a> with subject line "Treasure Hunt Winners" within 60 days after November 1, 2026. Winners who object to this disclosure may tell Sponsor when notified, except where a regulator requires the information. Prizes will be dispatched within 30 days of winner confirmation.</p>
     </div>
 
     <div id="uk" class="r-part" data-screen-label="UK Hunt rules">
@@ -329,7 +331,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <p class="r-allcaps">NO PURCHASE NECESSARY. FREE ENTRY IS AVAILABLE BY POST. OPEN TO UK RESIDENTS AGED 18 OR OVER.</p>
 
       <h3>1. Promoter.</h3>
-      <p>Maurice Africh, 125 S Lexington Ave, Suite 101A, PMB 159, Asheville, NC 28801 (the "Promoter"). Questions: <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@secondworldbooks.com</a>. Certain physical prizes are fulfilled by Hodderscape (Hodder &amp; Stoughton), which is not the Promoter.</p>
+      <p>Maurice Africh, 125 S Lexington Ave, Suite 101A, PMB 159, Asheville, NC 28801 (the "Promoter"). Questions: <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@<wbr>secondworldbooks<wbr>.com</a>. Certain physical prizes are fulfilled by Hodderscape (Hodder &amp; Stoughton), which is not the Promoter.</p>
 
       <h3>2. What This Is.</h3>
       <p>These rules govern the UK promotion. Residents of the United States take part in the separate U.S. promotion under <a href="#us">Part 1</a>. The UK Hunt has three parts:</p>
@@ -398,13 +400,13 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <p>The Promoter, Maurice Africh, Hodderscape (Hodder &amp; Stoughton), Simon &amp; Schuster, LLC, and their affiliates are not liable for any loss or damage arising from participation in the promotion or use of a prize, except where caused by their negligence or fraud, or where liability cannot be excluded by law. This promotion is not sponsored, endorsed, or administered by, or associated with, Instagram, TikTok, YouTube, Facebook, Discord, Amazon, Goodreads, or any retailer.</p>
 
       <h3>18. Privacy.</h3>
-      <p>The Promoter is the data controller. Your information is used only to run the Hunt, verify submissions, notify winners, deliver prizes, and publish winners' details as described in Section 20, on the basis that this is necessary to carry out the promotion you have entered. The Promoter is based in the United States and your information is processed and stored there; this transfer is necessary to run the promotion you have entered. Receipts are deleted within 90 days after the Hunt closes, or sooner once verification is complete. Other information is kept for 12 months after the Hunt closes, or longer for winners as needed for prize delivery and records. Information is shared only with Hodderscape (Hodder &amp; Stoughton) for prize fulfillment and with service providers who host our forms. You will not receive marketing email unless you separately opt in. You may ask to access, correct, or delete your information, or object to its use, by emailing <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@secondworldbooks.com</a>, and you may complain to the Information Commissioner's Office (<a href="https://ico.org.uk" target="_blank" rel="noopener">ico.org.uk</a>). Full details are in the Privacy Policy.</p>
+      <p>The Promoter is the data controller. Your information is used only to run the Hunt, verify submissions, notify winners, deliver prizes, and publish winners' details as described in Section 20, on the basis that this is necessary to carry out the promotion you have entered. The Promoter is based in the United States and your information is processed and stored there; this transfer is necessary to run the promotion you have entered. Receipts are deleted within 90 days after the Hunt closes, or sooner once verification is complete. Other information is kept for 12 months after the Hunt closes, or longer for winners as needed for prize delivery and records. Information is shared only with Hodderscape (Hodder &amp; Stoughton) for prize fulfillment and with service providers who host our forms. You will not receive marketing email unless you separately opt in. You may ask to access, correct, or delete your information, or object to its use, by emailing <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@<wbr>secondworldbooks<wbr>.com</a>, and you may complain to the Information Commissioner's Office (<a href="https://ico.org.uk" target="_blank" rel="noopener">ico.org.uk</a>). Full details are in the Privacy Policy.</p>
 
       <h3>19. Governing Law.</h3>
       <p>These rules and the UK promotion are governed by the law of England and Wales, and the courts of England and Wales have jurisdiction, without affecting your right to bring proceedings in the courts of Scotland or Northern Ireland if you live there.</p>
 
       <h3>20. Winners List.</h3>
-      <p>The surname and county of each winner will be available on request. Email <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@secondworldbooks.com</a> with the subject line "UK Hunt Winners" within 3 months after 1 November 2026. Winners who object to this may tell the Promoter when notified; the Promoter must still provide the information to the Advertising Standards Authority if asked.</p>
+      <p>The surname and county of each winner will be available on request. Email <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@<wbr>secondworldbooks<wbr>.com</a> with the subject line "UK Hunt Winners" within 3 months after 1 November 2026. Winners who object to this may tell the Promoter when notified; the Promoter must still provide the information to the Advertising Standards Authority if asked.</p>
     </div>
 
     <div id="contests" class="r-part" data-screen-label="Fan contest rules">
@@ -412,7 +414,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <p class="r-allcaps">NO PURCHASE OR PAYMENT NECESSARY TO ENTER OR WIN. VOID WHERE PROHIBITED.</p>
 
       <h3>1. Sponsor.</h3>
-      <p>Maurice Africh, 125 S Lexington Ave, Suite 101A, PMB 159, Asheville, NC 28801 ("Sponsor"). Questions: <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@secondworldbooks.com</a>.</p>
+      <p>Maurice Africh, 125 S Lexington Ave, Suite 101A, PMB 159, Asheville, NC 28801 ("Sponsor"). Questions: <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@<wbr>secondworldbooks<wbr>.com</a>.</p>
 
       <h3>2. Eligibility.</h3>
       <p>Open to individuals worldwide who are 18 or older at the time of entry, except residents of Italy, Brazil, the Province of Quebec, and any country or region where U.S. sanctions prevent prize delivery (currently Cuba, Iran, North Korea, Russia, Belarus, Syria, and the Crimea, Donetsk, and Luhansk regions). Void where prohibited or restricted by law. Sponsor's immediate family and household members, and anyone involved in judging, are not eligible. Entrants are responsible for confirming that participation is legal where they live.</p>
@@ -458,13 +460,13 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       <p>By entering, you release Sponsor, Maurice Africh, Simon &amp; Schuster, LLC, Saga Press, Discord, Instagram, TikTok, YouTube, and each of their affiliates and representatives from any liability arising from your participation or from the acceptance or use of a prize, to the fullest extent permitted by law.</p>
 
       <h3>13. Privacy.</h3>
-      <p>Sponsor is based in the United States and your information is processed and stored there. We use it only to run the contests, judge entries, notify winners, publish winning entries with credit, and publish winners' details as described in Section 15. Information is kept for 12 months after winners are announced, or longer for winners and published entries. You will not receive marketing email unless you separately opt in. To access, correct, or delete your information, or to object to its use, email <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@secondworldbooks.com</a>. Full details are in the Privacy Policy.</p>
+      <p>Sponsor is based in the United States and your information is processed and stored there. We use it only to run the contests, judge entries, notify winners, publish winning entries with credit, and publish winners' details as described in Section 15. Information is kept for 12 months after winners are announced, or longer for winners and published entries. You will not receive marketing email unless you separately opt in. To access, correct, or delete your information, or to object to its use, email <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@<wbr>secondworldbooks<wbr>.com</a>. Full details are in the Privacy Policy.</p>
 
       <h3>14. Governing Law.</h3>
       <p>These rules are governed by the laws of North Carolina, without regard to conflict-of-law rules. Disputes will be resolved individually, not as a class action, in the state or federal courts located in North Carolina. Nothing in these rules removes any rights you have as a consumer under the law of the country where you live.</p>
 
       <h3>15. Winners List.</h3>
-      <p>Sponsor will make winners' surnames and state or county available on request. Email <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@secondworldbooks.com</a> with subject line "Fan Contest Winners" within 60 days after November 30, 2026. Winners who object to this disclosure may tell Sponsor when notified, except where a regulator requires the information.</p>
+      <p>Sponsor will make winners' surnames and state or county available on request. Email <a href="mailto:mauriceafrich@secondworldbooks.com">mauriceafrich@<wbr>secondworldbooks<wbr>.com</a> with subject line "Fan Contest Winners" within 60 days after November 30, 2026. Winners who object to this disclosure may tell Sponsor when notified, except where a regulator requires the information.</p>
     </div>
   </div>
 </section>

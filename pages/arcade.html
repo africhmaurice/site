@@ -63,6 +63,9 @@
 @container (max-height:250px){.ac-kind{display:none}}
 @container (max-height:200px){.ac-line{display:none}.ac-body{gap:14px;padding:16px}.ac-play{width:30px;height:30px;right:10px;top:10px}.ac-play svg{width:16px;height:16px}}
 @container (max-width:150px){.ac-btn{min-width:0;padding:10px 14px}}
+@container (min-height:251px){.ac-body{gap:10px;padding:62px 16px 16px}}
+@container (max-height:250px){.ac-body{justify-content:flex-end;gap:10px;padding:58px 14px 14px}}
+@container (max-height:200px){.ac-body{padding:48px 12px 12px}}   /* smaller tiles: the name and Play sit under the trailer button, never beside it */   /* a tall tile's words start under the trailer button, never beside it (QA 2026-11-14: Master Stacker) */
 /* where you are, and a nudge to start */
 .ac-hint{position:absolute;right:max(24px,6vw);bottom:calc(max(18px,3svh) + 30px);display:flex;align-items:center;gap:10px;font-weight:800;font-size:13px;line-height:1.3;letter-spacing:.14em;text-transform:uppercase;color:#a2f590;transition:opacity .4s ease;pointer-events:none}
 .ac-hint svg{width:22px;height:22px;animation:ac-nudge 1.2s ease-in-out infinite alternate}
@@ -81,6 +84,7 @@
 .ac-hint{pointer-events:auto!important;cursor:pointer;padding:10px 14px;border:2px solid currentColor;background:rgba(11,23,15,.85);transition:opacity .25s ease,background-color .2s ease}.ac-hint:hover,.ac-hint:focus-visible{background:#1a5e41}
 @media (max-width:699px){.ac-hint{left:calc(50% + 28px)!important;right:auto!important;translate:-50% 0;font-size:0!important;padding:6px!important;border:0!important;background:none!important;gap:0!important}.ac-hint svg{width:22px;height:22px}}   /* phones: just a small arrow (Maurice, 2026-11-13) */
 .ac-back{position:absolute;left:max(24px,6vw);bottom:calc(max(18px,3svh) + 30px);z-index:4;display:flex;padding:6px;border:0;background:none;color:#a2f590;cursor:pointer;transition:opacity .25s ease}.ac-back svg{width:22px;height:22px}
+@media (max-width:699px){.ac-head{height:auto;min-height:40px;flex-wrap:wrap;align-items:flex-end;align-content:flex-end;gap:6px 16px;white-space:normal;width:calc(var(--acw,100vw) - 2 * max(24px,6vw));box-sizing:border-box}.ac-sub{white-space:normal}}   /* phones: a group's line wraps under its name, all of it on the screen (QA 2026-11-14) */
 @media (max-width:699px){.ac-back{left:calc(50% - 28px)!important;translate:-50% 0}.ac-hint{left:calc(50% + 28px)!important;translate:-50% 0}}
 .ac-hint{font-size:0!important;padding:6px!important;border:0!important;background:none!important;gap:0!important;right:auto!important;left:calc(50% + 28px)!important;translate:-50% 0}.ac-hint svg{width:22px;height:22px}.ac-back{left:calc(50% - 28px)!important;translate:-50% 0}   /* every width: small arrows, centered (Maurice, 2026-11-14) */
 </style>
@@ -364,18 +368,50 @@
     if (Math.abs(d) < 1) return;
     (function step() { if (tok !== glideTok) return; var k = Math.max(0, Math.min(1, (performance.now() - t0) / dur)), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; window.scrollTo(0, y0g + d * e); if (k < 1) requestAnimationFrame(step); })();
   }
-  function forward() {   // about one screen further along the row
-    var tx = Math.min(span, x + cw * 0.75), ty = y0 + (tx / Math.max(1, span)) * (y1 - y0);
-    if (window.maLenis && window.maLenis.scrollTo) window.maLenis.scrollTo(ty); else glideTo(ty);
+  // where the row can stop with no tile cut at the screen's left edge: a group's or a tile's left edge lined up with the row's
+  // side room, where no other tile crosses (QA 2026-11-14: the arrows stopped partway through tiles on phones)
+  function stopsClean() {
+    if (cw >= 700) return [0, span].concat(q('.ac-grp', track).map(function (g) { return Math.round(g.offsetLeft - (parseFloat(g.style.marginLeft) || 0)); }).filter(function (v) { return v > 0 && v < span; })).sort(function (a, b) { return a - b; });
+    var pad = parseFloat(getComputedStyle(track).paddingLeft) || 24, out = [0, span];
+    var edges = q('.ac-grp', track).map(function (g) { return g.offsetLeft; }).concat(tiles.map(function (t) { return t.left; }));
+    edges.forEach(function (e) {
+      var c = Math.round(e - pad); if (c <= 0 || c >= span) return;
+      if (tiles.some(function (t) { return t.left < e - 1 && t.left + t.w > e + 1; })) return;
+      out.push(c);
+    });
+    return out.sort(function (a, b) { return a - b; }).filter(function (v, i, a) { return !i || v - a[i - 1] > 2; });
+  }
+  function rowTo(tx) { var ty = y0 + (tx / Math.max(1, span)) * (y1 - y0); if (window.maLenis && window.maLenis.scrollTo) window.maLenis.scrollTo(ty); else glideTo(ty); }
+  function forward() {   // about one screen further along the row, onto a stop where nothing is cut at the left
+    var pad = parseFloat(getComputedStyle(track).paddingLeft) || 24, reach = x + cw - 2 * pad, st = stopsClean(), tx = -1;
+    st.forEach(function (v) { if (v > x + 8 && v <= reach) tx = v; });
+    if (tx < 0) st.forEach(function (v) { if (tx < 0 && v > x + 8) tx = v; });
+    if (tx >= 0) rowTo(Math.min(span, tx));
   }
   hint.addEventListener('click', forward);
   // a back arrow, so it's clear the row goes both ways (Maurice, 2026-11-14)
   var back = document.createElement('button'); back.type = 'button'; back.className = 'ac-back'; back.setAttribute('aria-label', 'Scroll back');
   back.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>'; hint.parentNode.appendChild(back);
   back.addEventListener('click', function () {
-    var tx = Math.max(0, x - cw * 0.75), ty = y0 + (tx / Math.max(1, span)) * (y1 - y0);
-    if (window.maLenis && window.maLenis.scrollTo) window.maLenis.scrollTo(ty); else glideTo(ty);
+    var pad = parseFloat(getComputedStyle(track).paddingLeft) || 24, reach = x - (cw - 2 * pad), st = stopsClean(), tx = -1;
+    st.slice().reverse().forEach(function (v) { if (v < x - 8 && v >= reach) tx = v; });
+    if (tx < 0) st.slice().reverse().forEach(function (v) { if (tx < 0 && v < x - 8) tx = v; });
+    rowTo(Math.max(0, tx));
   });
+  // phones: when the scrolling stops partway through the row, it settles onto the nearest stop, so no tile is left cut
+  var touching = false, settleT = 0;
+  addEventListener('touchstart', function () { touching = true; clearTimeout(settleT); }, { passive: true });
+  ['touchend', 'touchcancel'].forEach(function (ev) { addEventListener(ev, function () { touching = false; settleSoon(); }, { passive: true }); });
+  function settleSoon() {
+    clearTimeout(settleT);
+    if (cw >= 700 || still) return;
+    settleT = setTimeout(function () {
+      if (touching || window.scrollY < y0 || window.scrollY > y1 || x <= 0 || x >= span) return;
+      var st = stopsClean(), best = 0; st.forEach(function (v) { if (Math.abs(v - x) < Math.abs(best - x)) best = v; });
+      if (Math.abs(best - x) > 2) rowTo(best);
+    }, 180);
+  }
+  addEventListener('scroll', settleSoon, { passive: true });
   hint.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); forward(); } });
   // the Scroll Bar (Maurice, 2026-11-13): at the end of the row the page freezes for about ten scrolls while a bar along
   // the bottom fills, scarlet to teal to violet to green, so it's clear the scroll is still going before the page moves on
@@ -395,7 +431,11 @@
     cw = document.documentElement.clientWidth || window.innerWidth; root.style.setProperty('--acw', cw + 'px');
     // the tiles sit between the menu and the arrows: the stage keeps 16px over them and 104px under them for the arrows and
     // the bar, so no tile (or one flying in) ever covers them (QA 2026-11-14)
-    var room = vh - hdr - 120, gridH = Math.min(room, 700) - 54, side = 2 * Math.max(24, cw * 0.06);
+    // (a group's name and line take their own height: on phones the line wraps under the name instead of running off the screen)
+    var heads = q('.ac-head', track); heads.forEach(function (h) { h.style.minHeight = ''; });
+    var headH = Math.max.apply(null, [40].concat(heads.map(function (h) { return h.offsetHeight; })));
+    heads.forEach(function (h) { h.style.minHeight = headH + 'px'; });   // every group's tiles start at the same height
+    var room = vh - hdr - 120, gridH = Math.min(room, 700) - headH - 14, side = 2 * Math.max(24, cw * 0.06);
     // never so big that a large tile (four units across) is wider than the screen on a phone
     var fit = Math.floor((cw - side - 24) / 4), u = Math.max(64, Math.min(fit, Math.floor((gridH - 24) / 4)));
     track.style.setProperty('--u', u + 'px');
@@ -407,6 +447,16 @@
       if (cols > 0 && max < u) u = Math.max(48, max);
     });
     track.style.setProperty('--u', u + 'px');
+    // wide screens: each group in a screen of its own, centered, so every stop shows one whole group and never the edge of the
+    // next one flying in or the last one cut at the left (QA 2026-11-14)
+    var grps = q('.ac-grp', track);
+    grps.forEach(function (g) { g.style.marginLeft = ''; g.style.marginRight = ''; });
+    track.style.gap = ''; track.style.paddingLeft = ''; track.style.paddingRight = '';
+    if (cw >= 700) {
+      var gpad = parseFloat(getComputedStyle(track).paddingLeft) || 24;
+      track.style.gap = '0px'; track.style.paddingLeft = '0px'; track.style.paddingRight = '0px';
+      grps.forEach(function (g) { var m = Math.max(gpad, (cw - g.offsetWidth) / 2); g.style.marginLeft = m.toFixed(2) + 'px'; g.style.marginRight = m.toFixed(2) + 'px'; });
+    }
     span = Math.max(0, track.scrollWidth - cw);
     root.style.height = (span + vh + END) + 'px';
     var fe = root.closest('.fluid-engine');
@@ -440,8 +490,10 @@
       // are seen together, settled (QA 2026-11-14: the right-hand tiles were still flying in while the left ones were in place)
       if (!ph) k = Math.min(k, clamp01((t.gEnd - x - vw) / (vw * 0.25)));
       k = k * k * (3 - 2 * k) * done;
+      // phones: a tile the screen's edge cuts fades out, so a stop never shows a sliver of a tile or half its name (QA 2026-11-14)
+      var cut = ph ? (Math.max(0, x - t.left) + Math.max(0, t.left + t.w - x - vw)) / Math.max(1, t.w) : 0;
       t.el.style.setProperty('--ty', (t.dir * k * vh * 0.75).toFixed(1) + 'px');
-      t.el.style.setProperty('--op', (1 - k * 0.5).toFixed(3));
+      t.el.style.setProperty('--op', ((1 - k * 0.5) * clamp01(1 - cut * 4)).toFixed(3));
     });
   }
   var lastT = 0;
@@ -472,7 +524,7 @@
   addEventListener('load', size);
   if (window.ResizeObserver) new ResizeObserver(function () { var c = document.documentElement.clientWidth; if (c !== cw) { clearTimeout(rt); rt = setTimeout(size, 120); } }).observe(document.documentElement);
   function goTo(el, smooth) {
-    var pos = Math.min(span, Math.max(0, el.offsetLeft - parseFloat(getComputedStyle(track).paddingLeft)));
+    var pos = Math.min(span, Math.max(0, el.offsetLeft - (el.style.marginLeft ? parseFloat(el.style.marginLeft) : parseFloat(getComputedStyle(track).paddingLeft))));
     window.scrollTo({ top: y0 + (span ? pos / span : 0) * (y1 - y0), behavior: smooth === false || still ? 'auto' : 'smooth' });
   }
   // the opening's jump buttons go to their group

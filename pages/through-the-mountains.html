@@ -553,6 +553,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cr-map-info{box-sizing:border-box;max-width:min(100%,calc(80vh * 760 / 700));margin:14px auto 0;padding:14px 16px;border-left:3px solid #9e74fd;background:rgba(45,28,83,.45);font-size:15px;line-height:1.6;color:#ede9dc;min-height:3.2em}
 #rc .cr-map.is-result .cr-route:not(.on){opacity:.3}
 #rc .rc-opt .cr-swatch{display:inline-block;width:14px;height:14px;margin:0 10px 0 0;border-radius:50%;border:2px solid rgba(255,255,255,.7);vertical-align:-2px}
+#rc .cr-map-you.cr-you-below{transform:translate(-50%,22px)}
 @media (max-width:600px){#rc .cr-map-tip{display:none}#rc .cr-map-you{font-size:10px;padding:5px 8px;letter-spacing:.06em}}
 </style>
 
@@ -1310,6 +1311,16 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     svg += '<g class="cr-map-crew"><circle cx="' + m.start[0] + '" cy="' + m.start[1] + '" r="13"/><circle cx="' + m.start[0] + '" cy="' + m.start[1] + '" r="5"/></g></svg>';
     var info = show ? '' : '<p class="cr-map-info" aria-live="polite"></p>';
     wrap.innerHTML = '<div class="cr-map-frame">' + svg + '<div class="cr-map-tip" hidden></div><p class="cr-map-you" style="left:' + ((m.start[0] - m.view[0]) / m.view[2] * 100).toFixed(2) + '%;top:' + ((m.start[1] - m.view[1]) / m.view[3] * 100).toFixed(2) + '%">' + esc(m.startLabel || 'THE CREW IS HERE') + '</p></div>' + info;
+    // the crew's label sits left of its marker; on a narrow map that runs past the frame's left edge, so it drops under
+    // the marker instead, kept 8px inside the frame (QA 2026-11-14)
+    (function (fr0, you) {
+      function fitYou() { if (!fr0.isConnected) return; you.classList.remove('cr-you-below'); you.style.marginLeft = '';
+        var fr = fr0.getBoundingClientRect(), r = you.getBoundingClientRect(); if (!fr.width || r.left >= fr.left + 8) return;
+        you.classList.add('cr-you-below'); r = you.getBoundingClientRect();
+        var dx = r.left < fr.left + 8 ? fr.left + 8 - r.left : (r.right > fr.right - 8 ? fr.right - 8 - r.right : 0); you.style.marginLeft = dx + 'px'; }
+      if (window.ResizeObserver) new ResizeObserver(fitYou).observe(fr0); else window.addEventListener('resize', fitYou);
+      requestAnimationFrame(fitYou); if (document.fonts) document.fonts.ready.then(fitYou);
+    })(wrap.querySelector('.cr-map-frame'), wrap.querySelector('.cr-map-you'));
     if (show) return wrap;
     var tip = wrap.querySelector('.cr-map-tip'), frame = wrap.querySelector('.cr-map-frame'), infoEl = wrap.querySelector('.cr-map-info');
     function say(o) { infoEl.innerHTML = o ? '<b>' + esc(o[0]) + '</b>' + esc(o[1] || '') : 'Hover over a route to see where it goes, then click the one you want. On a phone, tap a route to read it and tap it again to choose it.'; }

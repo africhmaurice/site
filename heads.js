@@ -209,6 +209,9 @@
       if (el.querySelector('br') && /^H[1-3]$/.test(el.tagName)) { el.style.setProperty('white-space', 'nowrap', 'important'); el.dataset.ciFit = el.style.getPropertyValue('font-size') || ''; fit(el); }
       // One-word headings (the profile's point totals, 10/9) never break inside the word; they shrink to fit instead.
       else if (!keep && cs.display !== 'inline' && /^\S+$/.test((el.textContent || '').trim())) { el.style.setProperty('white-space', 'nowrap', 'important'); el.dataset.ciOne = ''; one(el); }
+      // Longer headings wrap at spaces only; one too-long word ("A NEW TRANSMISSION" on a 360px phone) shrinks the
+      // heading to fit instead of breaking inside the word (QA 2026-11-14).
+      else if (!keep && cs.display === 'block' && /^H[1-3]$/.test(el.tagName)) { el.style.setProperty('overflow-wrap', 'normal', 'important'); el.style.setProperty('word-break', 'normal', 'important'); el.style.setProperty('hyphens', 'none', 'important'); el.dataset.ciOne = ''; one(el); }
       if (cs.display !== 'inline' && (el.innerText || '').trim() && uniform(el, cs.fontSize) && !turned(el)) {
         if (cs.position === 'static') el.style.setProperty('position', 'relative');
         build(el, true); if (ciRO) ciRO.observe(el); } } }

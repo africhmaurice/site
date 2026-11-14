@@ -303,7 +303,17 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   // taller than the page inside it, and the section color showed as a band above the footer. The block now ends
   // where the page ends.
   (function () { var s = document.createElement('style'); s.textContent = '#page .fluid-engine:has(> .fe-block:only-child .sqs-block-code){grid-template-rows:none!important;grid-auto-rows:auto!important}' +
-    '#page .page-section:has(.fluid-engine > .fe-block:only-child .sqs-block-code) > .content-wrapper{padding-bottom:0!important}'; (document.head || document.documentElement).appendChild(s); })();
+    '#page .page-section:has(.fluid-engine > .fe-block:only-child .sqs-block-code) > .content-wrapper{padding-bottom:0!important}' +
+    // Squarespace writes a negative top margin onto a page's code block, which slid the 404 digits and the Contests title under the header (QA 2026-11-14)
+    '#page .fe-block:has([data-ma-page="not-found"],[data-ma-page="contests"]){margin-top:0!important;top:auto!important}' +
+    // the phone menu is fully opaque, so no page heading shows through behind its links (QA 2026-11-14)
+    '#hunt-nav-ov{background:#0b170f!important}' +
+    // chapter roll boxes: a long @handle wraps inside its box instead of running off the screen, and the boxes never
+    // ask for more width than a phone has (QA 2026-11-14)
+    '#rc .cr-res-kits{grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr))!important}#rc .cr-res-kits.cr-wide{grid-template-columns:minmax(0,1fr)!important}' +
+    '#rc .cr-res-kit>div,#rc .cr-pair-res,#rc .cr-pair-res>*{min-width:0}#rc .cr-res-kit .by,#rc .cr-pair-res .by,#rc .by b{overflow-wrap:anywhere}' +
+    // a roll count stays with its label ("4 NAT 1S" never splits after the 4)
+    '#rc .crit b,#av .crit b{white-space:nowrap}'; (document.head || document.documentElement).appendChild(s); })();
   // Headings (Maurice, 2026-10-09): heads.js turns every Atomic Marker and Cinzel heading into Cracked Imperia Bold
   // with its 3D (Extrude Flush). Clue and puzzle text keeps its own capitals and line breaks.
   (function () { var s = document.createElement('script'); s.src = BASE + 'heads.js'; (document.head || document.documentElement).appendChild(s); })();
@@ -1196,7 +1206,9 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   function gapSeen(e, root) {
     for (var a = e; a && a !== root; a = a.parentElement) {
       var c = getComputedStyle(a);
-      if (c.display === 'none' || c.visibility === 'hidden' || c.position === 'fixed' || (c.opacity === '0' && !a.classList.contains('ma-rv'))) return false;
+      // a piece still waiting to rise in (ma-rv, data-ma-rise) counts where it will land (QA 2026-11-14: the Contests title
+      // was skipped while hidden, and the page was pulled up under the menu to the tiles below it)
+      if (c.display === 'none' || c.visibility === 'hidden' || c.position === 'fixed' || (c.opacity === '0' && !a.classList.contains('ma-rv') && !a.hasAttribute('data-ma-rise'))) return false;
     }
     return true;
   }
@@ -1212,13 +1224,16 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     while ((n = tw.nextNode()) && seen < 25) {
       var el = n.nodeType === 3 ? n.parentElement : n, r;
       if (n.nodeType === 3) {
-        if (n.nodeValue.trim().length < 2) continue;
+        if (!n.nodeValue.trim()) continue;
         var rg = document.createRange(); rg.selectNodeContents(n); r = rg.getBoundingClientRect();
+        // a lone character counts when it is big (the 404 digits) or a letter of a heading mid-decode (.ma-dw)
+        if (n.nodeValue.trim().length < 2 && r.height < 40 && !(n.parentElement && n.parentElement.closest('.ma-dw'))) continue;
       } else {
         if (!/^(IMG|IFRAME|VIDEO|CANVAS|INPUT|BUTTON|SELECT|TEXTAREA)$/.test(n.tagName)) continue;
         r = n.getBoundingClientRect(); if (r.height < 24 || r.width < 24) continue;
       }
-      if (!r.height || !r.width || !el || el.closest(GAP_SKIP) || !gapSeen(el, root)) continue;
+      if (!r.height || !r.width || !el || (el.closest(GAP_SKIP) && !el.closest('.ma-dw')) || !gapSeen(el, root)) continue;
+      // (a heading mid-decode hides its letters in aria-hidden .ma-dw spans; they still mark where the heading is, QA 2026-11-14)
       seen++;
       // things waiting to rise into view sit 28px low until they do
       var top = r.top + window.scrollY;

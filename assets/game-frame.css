@@ -457,3 +457,86 @@ html.gs-page [data-ma-page] .gs-about .gs-dup{display:none!important}
 /* Hold the Wall! on phones: the fighters and upgrades three to a row, so each name has room at full size (QA 2026-11-14:
    'Gunslinger' and 'Intangible' were shrunk to about 9px in five narrow columns) */
 @media (max-width:699px){html.gs-page [data-ma-page] #ma-holdwall .btns{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+
+/* ---------- 13. QA pass 3 (2026-11-14) ---------- */
+/* Sky Gauntlet on phones: the score row in a fixed grid, so Pause/Resume holds one spot inside the screen however many lives
+   and score digits fill in (it slid right to the screen's edge): score and wave over the lives, Pause at the right of both */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-gauntlet .sg-hud{display:grid!important;grid-template-columns:max-content minmax(0,1fr) max-content!important;grid-template-rows:auto auto;column-gap:12px!important;row-gap:8px!important;align-items:center!important;box-sizing:border-box}
+  html.gs-page [data-ma-page] #ma-gauntlet .sg-hud > .sg-stat:nth-of-type(1){grid-column:1;grid-row:1}
+  html.gs-page [data-ma-page] #ma-gauntlet .sg-hud > .sg-stat:nth-of-type(2){grid-column:2;grid-row:1}
+  html.gs-page [data-ma-page] #ma-gauntlet .sg-hud > .sg-stat:nth-of-type(3){grid-column:1 / span 2;grid-row:2}
+  html.gs-page [data-ma-page] #ma-gauntlet .sg-hud > .sg-pausebtn{grid-column:3;grid-row:1 / span 2;justify-self:end;align-self:center}
+}
+/* the result panel on phones: a score form and the XP box each stay whole on their screen, never split across two */
+html.gs-page [data-ma-page] .gs-cardp .gs-cols > *{break-inside:avoid}
+/* a score form waiting for the end of a run takes no room (Sky Gauntlet's own display:flex kept its empty box in the game) */
+html.gs-page [data-ma-page] .gs-stage :is(.sgb-post,.tr-post,.lvb-post,.ms-post,.fl-post,.hw-post,.gb-post)[hidden]{display:none!important}
+/* the result panel: the score form keeps room inside its box */
+html.gs-page [data-ma-page] .gs-cardp :is(.sgb-post,.tr-post,.lvb-post,.ms-post,.fl-post,.hw-post,.gb-post).gs-box{padding:20px!important}
+/* Sky Gauntlet on wide screens: the score column beside the board reads at 11px or more after the game is scaled to fit */
+@media (min-width:700px){html.gs-page [data-ma-page] .gs-beside .sg-hud,html.gs-page [data-ma-page] .gs-beside .sg-pausebtn{font-size:14px!important}}
+/* Airship Runner on phones: the score labels read at 11px or more with the game scaled to fit */
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-runner .ar-cell span{font-size:13.5px!important;letter-spacing:.06em!important}}
+/* a box in a panel's column never gets squeezed shorter than its words (Airship Runner's export card: its picture loaded late
+   and the column squeezed the card, so its last line spilled out under the border, onto the arrows) */
+html.gs-page [data-ma-page] .gs-col > *{flex-shrink:0!important}
+@media (max-width:699px){
+  /* phones: everything 16px or more in from the screen's edges, however far a panel is scaled (a scaled panel's padding was
+     scaled with it, so its words sat 10 to 12px in) */
+  html.gs-page [data-ma-page] .gs-panel:not(.gs-game):not(.gs-arcade){padding:calc(24px / var(--gz,1)) calc(16px / var(--gz,1)) calc(88px / var(--gz,1))!important}
+  html.gs-page [data-ma-page] .gs-game{padding-left:16px!important;padding-right:16px!important}
+  /* the Arcade: two tiles to a screen, 16px in from each screen edge and 32px between, so every stop shows whole tiles */
+  html.gs-page [data-ma-page] .gs-arcade{padding-left:16px!important;padding-right:16px!important;padding-top:24px!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs{grid-auto-columns:calc(var(--gsvw,100vw) / 2 - 32px)!important;column-gap:32px!important}
+}
+/* the Key's sections: 12px or more between a section's last line and the dividing line under it (Trench Run: 3px) */
+html.gs-page [data-ma-page] .gs-cols :is(.tk-sec,.sgk-sec){padding-bottom:12px!important}
+/* Goma Goons on phones: the four view buttons two by two, so each label has room inside its button (8px or more at the sides) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-skyduel .sd-view{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  html.gs-page [data-ma-page] #ma-skyduel .sd-view .sd-btn,html.gs-page [data-ma-page] #ma-skyduel .sd-bar .sd-btn{padding-left:10px!important;padding-right:10px!important}
+}
+/* Thread the Needle on phones: the start card covers the ship, so the sprite never shows through behind the title */
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-flappy .fl-ov.fl-start{background:rgba(11,23,15,.97)!important}}
+/* wide screens: the Arcade's tiles stay clear of the back-to-top button in the bottom-right corner (52px, 16px from the
+   edges): 84px of room at each side, so the last tile never runs under it */
+@media (min-width:700px){html.gs-page [data-ma-page] .gs-panel.gs-arcade{padding-left:84px!important;padding-right:84px!important}}
+/* the champion's win count reads at 11px or more */
+html.gs-page [data-ma-page] :is(.wk-champ,.dbd-champ) sup{font-size:max(.75em,11px)!important}
+/* Sky Gauntlet on phones: the score row reads at 11px or more with the game scaled to fit */
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-gauntlet .sg-hud,html.gs-page [data-ma-page] #ma-gauntlet .sg-pausebtn{font-size:13px!important}}
+/* the name panel run on to a second screen on a phone: its parts never split across the two */
+@media (max-width:699px){html.gs-page [data-ma-page] .gs-about .gs-cols > *{break-inside:avoid}}
+/* Hold the Wall! on phones: the start card's line reads at 11px or more with the game scaled to fit */
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-holdwall #hw-oP{font-size:15px!important;line-height:1.45!important}}
+/* Goma Goons on phones: a weapon's name breaks only between words (Barrage split as BARRAG / E) */
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-skyduel .sd-wpn span{overflow-wrap:normal!important;word-break:keep-all!important}}
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-skyduel .sd-pad[class]{grid-template-columns:1fr 1fr 1fr 1.5fr 1fr!important}}   /* Goma Goons: room for UPGRADES at full size */
+/* Goma Goons on phones: the score bar, the buttons, and the weapons read at 11px or more with the game scaled to fit */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-skyduel .sd-bar{font-size:14px!important;row-gap:6px!important}
+  html.gs-page [data-ma-page] #ma-skyduel .sd-bar .sd-btn,html.gs-page [data-ma-page] #ma-skyduel .sd-view .sd-btn,html.gs-page [data-ma-page] #ma-skyduel .sd-pad button{font-size:14px!important}
+  html.gs-page [data-ma-page] #ma-skyduel .sd-wpn,html.gs-page [data-ma-page] #ma-skyduel .sd-wpn small{font-size:13.5px!important}
+  html.gs-page [data-ma-page] #ma-skyduel .sd-msg{font-size:15px!important}
+}
+/* wide screens too, daily puzzles before START: the start card is only as tall as its own words, so its sign-in lines are
+   drawn at full size instead of scaled to the hidden board's height (Sky Mines: 8px); the board comes back with START and
+   the game is fitted again then */
+@media (min-width:700px){
+  html.gs-page [data-ma-page] .gs-game .dbd-gate:has(> .dbd-cover){min-height:0!important;height:auto!important}
+  html.gs-page [data-ma-page] .gs-game .dbd-gate > .dbd-cover{position:relative!important;inset:auto!important;height:auto!important}
+  html.gs-page [data-ma-page] .gs-game .dbd-gate:has(> .dbd-cover) > .dbd-hidden{display:none!important}
+  /* Sky Mines: a narrower card, so the field's height drops and the game is scaled down less; the counts over it a size up */
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game :is(.hg-card,#gs-none main){width:440px!important}
+  html.gs-page [data-ma-page="game-sky-mines"] .sm-bar{font-size:17px!important}
+}
+@media (max-width:699px){html.gs-page [data-ma-page] #ms-stack .ms-pad button{font-size:12px!important}}   /* Master Stacker's pad reads at 11px or more */
+/* Goma Goons' crew picker on phones: smaller pictures and tighter rows, so the screen is scaled down less and the names and
+   buttons read at 11px or more */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] .gs-pre #ma-skyduel .sd-goma,html.gs-page [data-ma-page] .gs-pre .sd-goma{padding:6px 4px 8px!important;gap:6px!important;font-size:13px!important}
+  html.gs-page [data-ma-page] .gs-pre .sd-goma img{height:40px!important;max-width:44px!important}
+  html.gs-page [data-ma-page] .gs-pre .sd-gomas{gap:8px!important}
+  html.gs-page [data-ma-page] .gs-pre .sd-mode{font-size:14px!important}
+}

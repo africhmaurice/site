@@ -1231,6 +1231,23 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   #av .avt-rail{left:6px;width:38px;gap:3px}
   #av .avt-r{font-size:clamp(12px,2.1vh,17px)}
   #av.avt-railed .av-wrap{padding-left:56px}
+  /* phones (QA 2026-11-14): a slimmer route lane leaves the cards more room */
+  #av .av-line{padding-left:36px}
+  #av .av-line::before{left:15px}
+  #av .av-dot{left:-18px;width:28px;height:28px}
+}
+/* every box and stat tile shrinks to its card, never past it (QA 2026-11-14) */
+#av .av-grid>*,#av .av-plan>*,#av .av-crew>*,#av .av-live>*,#av .av-box,#av .av-enc>div{min-width:0}
+#av .av-enc .by{overflow-wrap:anywhere}
+@media (max-width:700px){
+  #av .av-grid,#av .av-plan,#av .av-crew{grid-template-columns:minmax(0,1fr)}
+  #av .av-live{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #av .av-draws .av-enc>div:not(.av-die){flex:1 1 auto;min-width:0}
+}
+@media (max-width:480px){
+  #av .av-card{padding:20px}
+  #av .av-live{grid-template-columns:minmax(0,1fr)}
+  #av .av-live>div:last-child{grid-column:auto}
 }
 @media (prefers-reduced-motion:reduce){#av .avt-rail{transition:none}}
 /* motion (2026-11-12): the art behind the hero and every band is its own layer, so it can drift slower than the page

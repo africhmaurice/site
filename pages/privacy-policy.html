@@ -19,6 +19,10 @@
 .pp .pp-table th,.pp .pp-table td{color:#E6E1D6;border:1px solid #5C554A;padding:.6em .7em;text-align:left;vertical-align:top}
 .pp .pp-table th{background:rgba(255,255,255,.08);color:#F2EDE3;font-weight:600}
 @media (max-width:600px){.pp{font-size:16px}.pp .pp-table{font-size:.85em}}
+/* phones (QA 2026-11-14): the tables keep whole words; a table wider than the screen scrolls sideways inside its own box */
+.pp .pp-scroll{overflow-x:auto;margin:0 0 1.4em;-webkit-overflow-scrolling:touch}.pp .pp-scroll .pp-table{margin:0}
+.pp .pp-table th,.pp .pp-table td{overflow-wrap:normal!important;word-break:normal!important;hyphens:manual!important;-webkit-hyphens:manual!important}
+@media (max-width:600px){.pp .pp-table{table-layout:auto;width:max(100%,520px)}}
 </style>
 <div class="pp">
 <h2 class="pp-title">Privacy Policy</h2>
@@ -56,7 +60,7 @@
 <p>We do not knowingly collect sensitive personal information (such as health, religion, or political opinions) and ask that you do not include it in anything you submit.</p>
 <h3>3. How we use your information and why we are allowed to</h3>
 <p>We use personal information for the purposes below. For readers in the EU, EEA, and UK, the table also shows the legal basis we rely on under GDPR.</p>
-<table class="pp-table">
+<div class="pp-scroll"><table class="pp-table">
 <thead>
 <tr class="header">
 <th>What we do</th>
@@ -106,7 +110,7 @@
 <td>Legal obligation; legitimate interest</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>We do not use your personal information for automated decision-making that produces legal or similarly significant effects, and we do not sell it.</p>
 <h3>4. Newsletter and marketing emails</h3>
 <p>We send our newsletter and marketing emails using
@@ -166,7 +170,7 @@
 </ul>
 <p><strong>Your choices.</strong> In the UK, EU, EEA, and Switzerland, the Meta Pixel does not load until you choose Accept in the cookie banner (we tell where you are from your device's time zone setting). Everywhere else, the Meta Pixel loads when you visit, and you can turn it off at any time. <a href="#cookie-preferences">Cookie Preferences</a>, at the bottom of every page, lets you accept or decline at any time, and your choice is saved in your browser. If your browser sends the Global Privacy Control signal, the Meta Pixel stays off unless you turn it on yourself. You can also block or delete cookies through your browser settings; the Sites will still work, though some features may not.</p>
 <h3>8. How long we keep information</h3>
-<table class="pp-table">
+<div class="pp-scroll"><table class="pp-table">
 <thead>
 <tr class="header">
 <th>Information</th>
@@ -199,7 +203,7 @@
 <td>Aggregated data retained by our analytics provider for 14 months; we do not keep raw logs longer than 90 days</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>We may keep information longer if the law requires it or if it is needed to resolve a dispute or enforce the Official Rules.</p>
 <h3>9. International transfers</h3>
 <p>We are based in the United States, and most of our service providers store data there. If you are in the EU, EEA, UK, or elsewhere outside the US, your information will be transferred to and processed in the United States, which has different data protection laws from your home country. When we transfer data out of the EU/EEA or UK, we rely on the European Commission's Standard Contractual Clauses (and the UK Addendum or International Data Transfer Agreement), on our providers' certification under the EU-US Data Privacy Framework and its UK Extension where they hold it, or on another lawful transfer mechanism. Prize information shared with Hodderscape is transferred from the US to the UK. You can ask us for more detail about the safeguards we use.</p>

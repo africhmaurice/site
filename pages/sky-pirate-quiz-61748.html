@@ -132,6 +132,9 @@
   #ma-quiz .q-back b{display:none}
 }
 @media (max-width:500px){#ma-quiz .q-opts.has-imgs{gap:10px}#ma-quiz .q-ans.has-img .q-row{gap:8px;padding:10px}#ma-quiz .q-ans.has-img .q-l{width:26px;height:26px;font-size:15px}#ma-quiz .q-ans.has-img{font-size:14px}}
+/* small phones (QA 2026-11-14): answers keep whole words; the letter sits above a picture answer's words, and short
+   answers go one to a row */
+@media (max-width:420px){#ma-quiz .q-opts.q-short{grid-template-columns:1fr}#ma-quiz .q-ans.has-img .q-row{flex-direction:column;align-items:flex-start;gap:8px}#ma-quiz .q-ans.has-img .q-row span{max-width:100%}}
 @media (prefers-reduced-motion:reduce){
   #ma-quiz .q-track,#ma-quiz .q-fill,#ma-quiz .q-ans,#ma-quiz .q-start,#ma-quiz .r-make,#ma-quiz .r-again,#ma-quiz .q-card{transition:none}
   #ma-quiz *,#ma-quiz .r-art::before{animation:none!important}

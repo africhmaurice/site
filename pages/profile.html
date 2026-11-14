@@ -246,6 +246,9 @@ html,body{margin:0 !important;padding:0 !important}
 #hp .hp-foot{text-align:center;margin:22px 0 0;font-size:13px;color:rgba(255,255,255,.65)}
 #hp .hp-foot a{color:#fff;cursor:pointer;text-decoration:underline}
 @media (max-width:900px){#hp{background-attachment:scroll}#hp .hp-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}#hp .hp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#hp .hp-days{grid-template-columns:repeat(17,minmax(0,1fr))}}
+/* small phones (QA 2026-11-14): stat labels keep whole words */
+#hp .hp-stat i{overflow-wrap:normal;word-break:normal;hyphens:manual}
+@media (max-width:420px){#hp .hp-stat i{font-size:11px;letter-spacing:.06em}}
 @media (max-width:560px){#hp{padding:110px 16px 56px}#hp .hp-head{gap:16px}#hp .hp-tile b{font-size:36px}#hp .hp-days{grid-template-columns:repeat(7,minmax(0,1fr))}#hp .hp-recent time{width:74px}}
 </style>
 <style>#siteWrapper{display:flex !important;flex-direction:column !important}#siteWrapper>*{flex:none}#siteWrapper>#footer-sections{flex:1 0 auto}</style>

@@ -119,6 +119,9 @@
 #press .pp-ev-title{font-weight:800;font-size:18px;line-height:1.3}
 #press .pp-ev-place{font-size:15px;line-height:1.5;color:rgba(255,255,254,.78)}
 #press .pp-ev-go{font-size:13px;font-weight:700;letter-spacing:.05em;color:#3adb97}
+/* phones (QA 2026-11-14): the date sits above the event, so the words get the card's full width and never break mid-word */
+#press .pp-ev-title,#press .pp-ev-place,#press .pp-ev-go{overflow-wrap:break-word;word-break:normal;hyphens:manual}
+@media (max-width:600px){#press .pp-event{grid-template-columns:minmax(0,1fr);padding:20px}#press .pp-ev-date{grid-row:auto;min-width:0;margin-bottom:6px}}
 
 #press .pr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
 #press .pr-card{display:flex;flex-direction:column;gap:10px;padding:22px 22px 20px;background:rgba(11,23,15,.9);border:1px solid rgba(255,255,254,.16);color:#fffffe;text-decoration:none;transition:transform .18s ease,border-color .18s ease,background .18s ease}

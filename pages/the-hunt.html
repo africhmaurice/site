@@ -8,13 +8,16 @@
 #hx{position:relative;left:50%;width:100vw;margin-left:-50vw;overflow-x:clip;background:#0b170f;color:#fff;font-family:'Almarai',sans-serif;--rail:0px;--lane:136px;--sb:0px;--sbl:0px}
 /* the trail runs in a clear lane beside the words on each side (one lane, on the right, on phones), so it never
    crosses text; --sb keeps the right lane out from under the scrollbar (2026-11-14) */
-#map{position:absolute;top:0;left:0;width:1px;height:1px;pointer-events:none}
+/* #map (the picker, the first section) lands at the top of the page, where the menu leaves room above the heading
+   (QA 2026-11-14: it landed 3px under the menu) */
+#map{position:absolute;top:-200px;left:0;width:1px;height:1px;pointer-events:none}
 /* at the end the goma walks into the footer and hides behind the book (Maurice, 2026-11-12) */
 #ma-foot .ma-foot-book{position:relative;z-index:10}
 #hx *{box-sizing:border-box}
 @media (min-width:1180px){#hx{--rail:250px}}
 .hx-sec{position:relative;padding:120px calc(var(--lane) + var(--sb)) 120px calc(var(--lane) + var(--rail) + var(--sbl));background:#0b170f}
-@media (max-width:760px){#hx{--lane:72px}.hx-sec{padding-left:calc(16px + var(--sbl))}}
+/* phones (QA 2026-11-14): an even 36px lane each side keeps the column centered; the trail runs at the far right edge */
+@media (max-width:760px){#hx{--lane:36px}}
 .hx-sec.hx-map{background:linear-gradient(rgba(11,23,15,.72),rgba(11,23,15,.82)),url(https://africhmaurice.github.io/site/assets/maps/treasure-map-degate.jpg) center/cover}
 .hx-sec[data-bg="violet"]{background:#2d1c53}.hx-sec[data-bg="emerald"]{background:#1a5e41}.hx-sec[data-bg="ember"]{background:#912501}.hx-sec[data-bg="forest"]{background:#1b3b15}
 /* his art under the section color at 90%, drifting slower than the page (Maurice 2026-11-12: "add backgrounds parallax under 90% under a few of the background colors") */
@@ -98,7 +101,7 @@
 #hx-goma{position:absolute;left:0;top:0;width:84px;height:84px;z-index:5;pointer-events:none;will-change:transform;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
 #hx-goma img{width:100%;height:100%;object-fit:contain;animation:hx-bob 1.6s ease-in-out infinite alternate}
 @keyframes hx-bob{from{translate:0 -4px}to{translate:0 4px}}
-@media (max-width:760px){#hx-goma{width:48px;height:48px}}
+@media (max-width:760px){#hx-goma{width:40px;height:40px}.hx-panel{padding:24px 20px}.hx-row{padding:10px 4px;gap:10px;grid-template-columns:30px minmax(0,1fr) auto}.hx-handle{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}}
 /* the page menu: a rail on the left on wide screens, a strip along the bottom otherwise */
 #hx-nav{position:fixed;z-index:40;opacity:0;pointer-events:none;transition:opacity .35s ease}
 #hx-nav.hx-show{opacity:1;pointer-events:auto}
@@ -344,7 +347,7 @@
   var svg = root.querySelector('#hx-trail'), dots = svg.querySelector('.hx-dots'), done = svg.querySelector('.hx-done'), xs = svg.querySelector('#hx-xs'), mrect = svg.querySelector('#hx-mrect');
   var spots = secs.map(function () { return { side: Math.random() < 0.5 ? 0 : 1, fy: 0.25 + Math.random() * 0.5 }; });
   var wig = secs.map(function () { return [(Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2]; });
-  var samples = [], marks = [], W = 0, H = 0, len = 0, cur = -1, endY = 0, endX = 0, startY = 0, startCard = null, startAt = '';
+  var samples = [], marks = [], W = 0, H = 0, len = 0, cur = -1, endY = 0, endX = 0, startY = 0, startCard = null, startAt = '', cardPt = null, wasCard = null;
   var gomaEl = root.querySelector('#hx-goma');
   function offTop(el) { var t = 0; while (el && el !== root) { t += el.offsetTop; el = el.offsetParent; } return t; }
   // where an element sits on the page, measured from #hx, ignoring any animation moving it (the footer book slides in
@@ -369,7 +372,10 @@
     function inBottom(s) { var c = s.querySelector('.hx-in'); return offTop(c) + c.offsetHeight; }
     // start: the middle of the chosen card
     var card = pick.querySelector('[aria-pressed="true"]') || pick.firstElementChild;
-    var start = [offLeft(card) + card.offsetWidth / 2, offTop(card) + card.offsetHeight * 0.42];
+    // the goma rests on its card, but the dotted trail starts just under the picker, so neither the line nor the walking
+    // goma ever runs over the other cards (QA 2026-11-14)
+    cardPt = [offLeft(card) + card.offsetWidth / 2, offTop(card) + card.offsetHeight * 0.42];
+    var start = [cardPt[0], inBottom(secs[0]) + gap + size * 0.8];
     var pts = [start], px = start[0];
     startY = start[1]; startCard = card; startAt = offTop(card) + ',' + offLeft(card);
     marks = [];
@@ -389,6 +395,8 @@
       if (side ? !okR : !okL) side = 1 - side;
       if (!okL && !okR) side = 1;
       var x = side ? (cr + visW) / 2 : (rail + cl) / 2;
+      // no room for a full lane (phones): the trail keeps to the far right edge, the goma fully on screen
+      if (!okL && !okR) x = Math.min(x, visW - size / 2 - 6);
       var y2 = crossTo(x, secs[i - 1], s), y = s.offsetTop + spots[i].fy * s.offsetHeight;
       if (typeof y2 === 'number') y = Math.max(y, y2 + 80);
       pts.push([x, y]);
@@ -494,7 +502,10 @@
     if (gomaEl.parentNode !== host) host.appendChild(gomaEl);
     var ox = 0, oy = 0;
     if (inFoot) { var fr0 = footEl.getBoundingClientRect(); ox = fr0.left - rr.left; oy = fr0.top - rr.top; }
-    gomaEl.style.transform = 'translate3d(' + (s[1] - ox - size / 2).toFixed(1) + 'px,' + (s[2] - oy - size * 0.8).toFixed(1) + 'px,0) scaleX(' + flip + ')';
+    // at the very top it sits on its card; once the page moves it fades in at the start of the trail, under the picker
+    var atCard = !!cardPt && scrollY < 2 && cur < 3, gx = atCard ? cardPt[0] : s[1], gy = atCard ? cardPt[1] : s[2];
+    if (atCard !== wasCard) { if (wasCard !== null && gomaEl.animate && !still) gomaEl.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 320, easing: 'ease-out' }); wasCard = atCard; }
+    gomaEl.style.transform = 'translate3d(' + (gx - ox - size / 2).toFixed(1) + 'px,' + (gy - oy - size * 0.8).toFixed(1) + 'px,0) scaleX(' + flip + ')';
     gomaEl.style.opacity = cur >= len - 3 ? '0' : '';
     mrect.setAttribute('height', Math.max(0, s[2]).toFixed(1));
     marks.forEach(function (m, i) { var g = xs.children[i]; if (g) g.classList.toggle('hx-hit', cur >= m.at - 2); });
@@ -514,8 +525,11 @@
     // things scrolled past fade, fly, or dissolve away as they reach the top of the screen
     if (!still) {
       var top0 = rr.top;
+      // they only start to go once they reach the bottom of the header, so nothing resting in view is ever blurred or
+      // faded (QA 2026-11-14: "Choose Your Goma" sat blurred under the header after the #map jump)
+      var hd = document.querySelector('#hunt-nav, #header'), hb = hd ? Math.max(0, hd.getBoundingClientRect().bottom) : 0;
       exits.forEach(function (x) {
-        var b = top0 + x.top + x.h, e = clamp((vh * 0.3 - b) / (vh * 0.3)), el = x.el;
+        var t = top0 + x.top, e = clamp((hb + 4 - t) / Math.max(120, x.h + 60)), el = x.el;
         if (e <= 0) {
           if (x.on) { x.on = 0; el.style.opacity = el.style.transform = el.style.filter = el.style.transition = ''; }
           return;
