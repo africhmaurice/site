@@ -72,6 +72,8 @@
 #px .mrow{display:flex;flex-direction:column;align-items:stretch;gap:12px}
 #px .mate .rc-die,#px .mate .rc-die.is3d{width:120px;height:120px;flex:none;align-self:center}
 #px .mate .rc-dn{font-size:22px}
+#px .mres{margin:-4px 0 0;min-height:1.3em;text-align:center;font:800 15px/1.3 Almarai,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+#px .mres.hit{color:#3adb97}#px .mres.miss{color:#fd7547}#px .mres.heal{color:#ede9dc}
 #px .mpick:empty{display:none}
 #px .mbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 #px .mb,#px .mt{min-height:40px;padding:8px 6px;border:2px solid var(--ink);background:#fff;color:var(--ink);font:800 12px/1.2 Almarai,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
@@ -381,7 +383,7 @@
     }
     function dieMaterials(col) {
       var mats = [];
-      for (var k = 0; k < 20; k++) mats.push(new T.MeshStandardMaterial({ map: faceTexture(numbers[k], col), roughness: 0.3, metalness: 0.85, envMapIntensity: 1.2, flatShading: true }));
+      for (var k = 0; k < 20; k++) mats.push(new T.MeshStandardMaterial({ map: faceTexture(numbers[k], col), roughness: col && col[4] != null ? col[4] : 0.3, metalness: col && col[3] != null ? col[3] : 0.85, envMapIntensity: 1.2, flatShading: true }));
       return mats;
     }
 
@@ -746,7 +748,7 @@
 
   // each character's dice (Maurice, 2026-11-13): metal top, metal bottom, numbers. Brand colors: Rune teal, Sparrow violet,
   // Hale parchment (his pick), Scarlett scarlet; Paraxis (his d20 and the twelve-sided die) dark ink with parchment numbers.
-  var CREW_COL = [['#3adb97', '#1a5e41', '#0b170f'], ['#8a5cf0', '#2d1c53', '#f1eaff'], ['#f3ead9', '#b9a984', '#0b170f'], ['#ff4c0f', '#912501', '#ffe2a8']];
+  var CREW_COL = [['#3adb97', '#1a5e41', '#0b170f'], ['#8a5cf0', '#2d1c53', '#f1eaff'], ['#fffffe', '#ebe6da', '#0b170f', 0.12, 0.38], ['#ff4c0f', '#912501', '#ffe2a8']];
   var PX_COL = ['#4a5a4f', '#0b170f', '#f3ead9'];
   Dice.colors('px', PX_COL);
   $('rc-die-px').innerHTML = D20 + '<span class="rc-dn" id="rc-dn-px">20</span><i class="rc-die-shadow"></i><canvas class="rc-die-cv" width="240" height="240"></canvas>';
@@ -1053,7 +1055,7 @@
   function crewHTML() {
     $('px-crew').innerHTML = NAMES.map(function (n, i) {
       var icon = (DATA.icons || {})[n.toLowerCase()];
-      return '<article class="mate" id="px-m' + i + '"><div class="mhead">' + (icon ? '<span class="ico"><img src="' + esc(icon) + '" alt=""></span>' : '') + '<div><p class="role">' + ROLES[i] + '</p><p class="nm">' + n + '</p></div></div><div class="mrow"><div class="hearts" aria-label="hit points"></div><div class="rc-die mdie" id="rc-die-c' + i + '" aria-hidden="true"></div></div>' +
+      return '<article class="mate" id="px-m' + i + '"><div class="mhead">' + (icon ? '<span class="ico"><img src="' + esc(icon) + '" alt=""></span>' : '') + '<div><p class="role">' + ROLES[i] + '</p><p class="nm">' + n + '</p></div></div><div class="mrow"><div class="hearts" aria-label="hit points"></div><div class="rc-die mdie" id="rc-die-c' + i + '" aria-hidden="true"></div><p class="mres" id="px-res' + i + '" aria-live="polite"></p></div>' +
         '<div class="mpick" id="px-pick' + i + '"></div>' +
         '<p class="need">Paraxis needs <b>' + GUARD[i] + '</b> to hit ' + (i === 1 || i === 3 ? 'her' : 'him') + '. Hits for <b>' + POWER[i] + '</b>.</p></article>';
     }).join('');
@@ -1096,9 +1098,9 @@
         if (e.t === 'coin') return fast ? null : flip(e.coin);
         if (e.t === 'atk') {
           var line = NAMES[e.who] + ' rolls ' + e.roll + (e.crit ? '. A natural 20! ' + NAMES[e.who] + ' hits twice, for ' + e.dmg + '.' : e.hit ? ' and hits Paraxis for ' + e.dmg + '.' : e.fumble ? '. A 1! ' + NAMES[e.who] + ' takes a hit' + (e.hp <= 0 ? ' and is down.' : ' and has ' + e.hp + ' left.') : '. A miss.');
-          return (fast || landed ? Promise.resolve() : cardDie(e.who, e.roll)).then(function () { view.px = e.px; if (e.fumble) { view.hp[e.who] = e.hp; if (!fast) shake(e.who); } say(line); log(line, e.hit ? 'good' : e.fumble ? 'bad' : ''); paint(); return fast ? null : wait(650); });
+          return (fast || landed ? Promise.resolve() : cardDie(e.who, e.roll)).then(function () { markRes(e.who, e.crit ? 'HIT TWICE' : e.hit ? 'HIT' : 'MISS', e.hit ? 'hit' : 'miss'); view.px = e.px; if (e.fumble) { view.hp[e.who] = e.hp; if (!fast) shake(e.who); } say(line); log(line, e.hit ? 'good' : e.fumble ? 'bad' : ''); paint(); return fast ? null : wait(650); });
         }
-        if (e.t === 'heal') { view.hp[e.target] = e.hp; view.packs = e.packs; var hl = NAMES[e.who] + ' uses a medpack on ' + (e.target === e.who ? (e.who === 1 || e.who === 3 ? 'herself' : 'himself') : NAMES[e.target]) + (e.from <= 0 ? ' and brings ' + NAMES[e.target] + ' back.' : '.') ; say(hl); log(hl, 'good'); paint(); return fast ? null : wait(700); }
+        if (e.t === 'heal') { markRes(e.who, 'MEDPACK', 'heal'); view.hp[e.target] = e.hp; view.packs = e.packs; var hl = NAMES[e.who] + ' uses a medpack on ' + (e.target === e.who ? (e.who === 1 || e.who === 3 ? 'herself' : 'himself') : NAMES[e.target]) + (e.from <= 0 ? ' and brings ' + NAMES[e.target] + ' back.' : '.') ; say(hl); log(hl, 'good'); paint(); return fast ? null : wait(700); }
         if (e.t === 'pxturn') { busy = true; say('Paraxis attacks!'); if (!fast) paint(); return fast ? null : wait(700); }
         if (e.t === 'px') {
           var pl = 'Paraxis swings at ' + NAMES[e.who] + ' and rolls ' + e.roll + '. ' + (e.hit ? (e.crit ? 'A natural 20! He hits twice. ' : 'A hit! ') + NAMES[e.who] + (e.hp <= 0 ? ' is down.' : ' has ' + e.hp + ' left.') : 'He needed ' + e.need + '. A miss.') + (e.fumble ? ' A 1! Paraxis takes a hit himself.' : '');
@@ -1126,6 +1128,9 @@
       return wait(1400);
     });
   }
+  // HIT / MISS under each crew die once it lands, kept up through Paraxis's turn (Maurice, 2026-11-13)
+  function markRes(i, text, cls) { var el = $('px-res' + i); if (el) { el.textContent = text; el.className = 'mres ' + cls; } }
+  function clearRes() { for (var i = 0; i < 4; i++) markRes(i, '', ''); }
   // a crew card's d20: tumbling in the card while the rolls are on their way, then three bounces onto n
   function cardDie(i, n) {
     return new Promise(function (res) {
@@ -1377,6 +1382,7 @@
   }
   function actions() {
     if (view.over) { pickHTML(); return finish(); }
+    clearRes();
     // a fresh turn: everyone attacks unless you change it; a medpack plan only stays if it still makes sense
     plan = plan.map(function (p, i) { var t = p === 'a' ? -1 : +p.charAt(1); return view.hp[i] > 0 && t >= 0 && view.hp[t] < 4 ? p : 'a'; });
     var used = 0; plan = plan.map(function (p) { if (p === 'a') return p; if (used < view.packs) { used++; return p; } return 'a'; });
