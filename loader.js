@@ -308,6 +308,11 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     '#page .fe-block:has([data-ma-page="not-found"],[data-ma-page="contests"]){margin-top:0!important;top:auto!important}' +
     // the phone menu is fully opaque, so no page heading shows through behind its links (QA 2026-11-14)
     '#hunt-nav-ov{background:#0b170f!important}' +
+    // the Squarespace phone menu too: its backdrop layer is solid #0b170f, and its panels scroll only when their links
+    // run past the screen, with no scrollbar strip on Windows (QA pass 4, 2026-11-14)
+    'html body #header .header-menu .header-menu-bg{background:#0b170f!important;opacity:1!important}' +
+    'html body #header .header-menu .header-menu-nav-folder{overflow-y:auto!important;scrollbar-width:none}html body #header .header-menu .header-menu-nav-folder::-webkit-scrollbar{display:none}' +
+    '#hunt-nav-ov{scrollbar-width:none}#hunt-nav-ov::-webkit-scrollbar{display:none}' +
     // chapter roll boxes: a long @handle wraps inside its box instead of running off the screen, and the boxes never
     // ask for more width than a phone has (QA 2026-11-14)
     '#rc .cr-res-kits{grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr))!important}#rc .cr-res-kits.cr-wide{grid-template-columns:minmax(0,1fr)!important}' +

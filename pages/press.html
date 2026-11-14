@@ -155,6 +155,11 @@
   #press .pp-kit{grid-template-columns:1fr;gap:32px}
   #press .pp-contacts{grid-template-columns:1fr}
   #press .pp-addr,#press .pp-facts dt,#press .pp-facts dd{white-space:normal;overflow-wrap:anywhere}
+  /* contact cards fit a phone (QA pass 4, 2026-11-14): the button fills the card instead of forcing 260px, and each
+     address sits on one line, breaking only at the @ if a large minimum font size makes it too wide */
+  #press .pp-contact{padding:24px 20px}
+  #press .pp-contact .pp-btn{min-width:0;width:100%;box-sizing:border-box}
+  #press .pp-addr{font-size:max(11px,min(14px,3.4vw));overflow-wrap:break-word}
   #press .pr-grid{grid-template-columns:1fr}
 }
 @media (max-width:600px){
@@ -202,28 +207,28 @@
         <p class="pp-name">Merrilee Heifetz</p>
         <p class="pp-org">Writers House</p>
         <p class="pp-note">Rights, film and TV, and foreign editions.</p>
-        <a class="pp-btn" href="mailto:mheifetz@writershouse.com?subject=Press%20inquiry%3A%20Cello%E2%80%99s%20Gate">Email Merrilee</a><span class="pp-addr">mheifetz@writershouse.com</span>
+        <a class="pp-btn" href="mailto:mheifetz@writershouse.com?subject=Press%20inquiry%3A%20Cello%E2%80%99s%20Gate">Email Merrilee</a><span class="pp-addr">mheifetz<wbr>@writershouse.com</span>
       </div>
       <div class="pp-contact">
         <p class="pp-role">Publicity, U.S.</p>
         <p class="pp-name">Christine Calella</p>
         <p class="pp-org">Simon &amp; Schuster</p>
         <p class="pp-note">Review copies, interviews, and events in North America.</p>
-        <a class="pp-btn" href="mailto:christine.calella@simonandschuster.com?subject=Press%20inquiry%3A%20Cello%E2%80%99s%20Gate">Email Christine</a><span class="pp-addr">christine.calella@simonandschuster.com</span>
+        <a class="pp-btn" href="mailto:christine.calella@simonandschuster.com?subject=Press%20inquiry%3A%20Cello%E2%80%99s%20Gate">Email Christine</a><span class="pp-addr">christine.calella<wbr>@simonandschuster.com</span>
       </div>
       <div class="pp-contact">
         <p class="pp-role">Publicity, UK</p>
         <p class="pp-name">George Biggs</p>
         <p class="pp-org">Hodderscape</p>
         <p class="pp-note">Review copies, interviews, and events in the UK and Commonwealth.</p>
-        <a class="pp-btn" href="mailto:George.Biggs@hodder.co.uk?subject=Press%20inquiry%3A%20Cello%E2%80%99s%20Gate">Email George</a><span class="pp-addr">George.Biggs@hodder.co.uk</span>
+        <a class="pp-btn" href="mailto:George.Biggs@hodder.co.uk?subject=Press%20inquiry%3A%20Cello%E2%80%99s%20Gate">Email George</a><span class="pp-addr">George.Biggs<wbr>@hodder.co.uk</span>
       </div>
       <div class="pp-contact">
         <p class="pp-role">Maurice</p>
         <p class="pp-name">Maurice Africh</p>
         <p class="pp-org">Author</p>
         <p class="pp-note">Podcasts, blogs, BookTok, and everything else.</p>
-        <a class="pp-btn" href="mailto:mauriceafrich@secondworldbooks.com?subject=Press%20inquiry%3A%20Cello%E2%80%99s%20Gate">Email me</a><span class="pp-addr">mauriceafrich@secondworldbooks.com</span>
+        <a class="pp-btn" href="mailto:mauriceafrich@secondworldbooks.com?subject=Press%20inquiry%3A%20Cello%E2%80%99s%20Gate">Email me</a><span class="pp-addr">mauriceafrich<wbr>@secondworldbooks.com</span>
       </div>
       </div>
     </section>

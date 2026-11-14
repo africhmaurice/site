@@ -558,3 +558,153 @@ html.gs-page [data-ma-page] .gs-game .dbd-cover:has(.dbd-who){padding:28px 24px 
   html.gs-page [data-ma-page] .gs-game .dbd-cover:has(.dbd-who) button{padding:12px 40px!important}
   html.gs-page [data-ma-page] .gs-game .dbd-who input{padding:10px 12px!important}
 }
+
+/* ---------- 14. QA pass 4 (2026-11-14) ---------- */
+/* The Levian on phones: the arrows in one row under the board and the score over Pause/Restart, so the board gets the height
+   (QA 2026-11-14: on a 360x640 screen the board was scaled to 37%, its START at 5.5px, beside full-size arrows) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-levian .lv-wrap{gap:10px!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-bar{display:grid!important;grid-template-columns:repeat(2,max-content);justify-content:center;gap:8px 16px!important;font-size:13px!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-bar .lv-btn{padding:9px 14px!important;font-size:13px!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad{grid-template-columns:repeat(4,48px)!important;grid-template-rows:48px!important;gap:12px!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad :is(.u,.l,.dn,.r){grid-row:1!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad .l{grid-column:1!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad .u{grid-column:2!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad .dn{grid-column:3!important}
+  html.gs-page [data-ma-page] #ma-levian .lv-pad .r{grid-column:4!important}
+  html.gs-page [data-ma-page] #ma-levian .gs-game .lv-pad{margin-top:6px!important}
+}
+/* daily puzzles on phones: the date line over the champion banner, at full size (game-frame.js lifts it out of the scaled card) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] .gs-game > :is(#hg-stamp,#thw-stamp).gs-stamp{width:100%!important;box-sizing:border-box;margin:0 0 -8px!important;padding:0 4px!important;text-align:center!important;font-size:12px!important;line-height:1.5!important;letter-spacing:.08em!important;color:#f3ead9!important;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+  html.gs-page [data-ma-page] .gs-game > .gs-stamp span{color:inherit!important}
+  html.gs-page [data-ma-page] .gs-game:has(.dbd-cover .dbd-who) > .gs-stamp{display:none!important}   /* the date comes back with START (signed out) */
+  /* before START: the start card on its own, at full size; the puzzle's key, clock, and buttons come back with START (QA
+     2026-11-14: the card was scaled to 53-60% on a 360x640 screen to make room for them) */
+  html.gs-page [data-ma-page] .gs-game .hg-card:has(> .dbd-gate > .dbd-cover) > :not(.dbd-gate),
+  html.gs-page [data-ma-page] .gs-game main:has(> .thw-wrap > .dbd-gate > .dbd-cover) > :not(.thw-wrap),
+  html.gs-page [data-ma-page] .gs-game .thw-wrap:has(> .dbd-gate > .dbd-cover) > :not(.dbd-gate){display:none!important}
+}
+/* daily puzzles on short phones: the key on one line, the buttons on one row, Skyword's grid smaller than its keyboard, so the
+   card is scaled down less once START is pressed (QA 2026-11-14: 47-62% on a 360x640 screen) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] .gs-game :is(.cq-key,.bb-key){display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:6px 16px!important}
+  html.gs-page [data-ma-page] .gs-game :is(.cq-tools,.bb-tools,.ma-tools,.sm-tools):not([style*="none"]){display:flex!important;flex-wrap:nowrap!important;gap:8px!important;justify-content:center}
+  html.gs-page [data-ma-page] .gs-game :is(.cq-tools,.bb-tools,.ma-tools,.sm-tools) > *{flex:1 1 0!important;min-width:0!important;margin:0!important;padding-left:6px!important;padding-right:6px!important}
+  html.gs-page [data-ma-page] .gs-game .thw-key{padding-top:10px!important;padding-bottom:10px!important;font-size:14px!important}
+  html.gs-page [data-ma-page] .gs-game .thw-key.wide{font-size:12.5px!important}
+}
+@media (max-width:699px) and (max-height:760px){
+  html.gs-page [data-ma-page] .gs-game #thw-grid{max-width:200px!important;margin-left:auto!important;margin-right:auto!important;--gap:6px}
+  html.gs-page [data-ma-page] .gs-game :is(.cq-board,.bb-board){max-width:220px!important}
+  html.gs-page [data-ma-page] .gs-game .sm-field{max-width:200px!important}
+  /* tighter room inside the card; its passing messages show over the board instead of keeping an empty line under it */
+  html.gs-page [data-ma-page] .gs-game .hg-card{padding:14px 16px!important;position:relative}
+  html.gs-page [data-ma-page] .gs-game .hg-card > :not(:first-child){margin-top:8px!important}
+  html.gs-page [data-ma-page] .gs-game .hg-card > *{margin-bottom:0!important}
+  html.gs-page [data-ma-page] .gs-game .hg-card > .dbd-gate{margin-top:10px!important}
+  html.gs-page [data-ma-page] .gs-game .hg-card .hg-btn{padding-top:10px!important;padding-bottom:10px!important}
+  html.gs-page [data-ma-page] .gs-game :is(.hg-card > .hg-toast,#thw-toast){position:absolute!important;left:16px;right:16px;top:45%;z-index:4;margin:0!important;pointer-events:none;min-height:0!important}
+  html.gs-page [data-ma-page] .gs-game :is(.hg-card > .hg-toast,#thw-toast):not(:empty){background:#0b170f;color:#fffffe!important;padding:10px 12px;border:2px solid #f3ead9}
+  html.gs-page [data-ma-page] .gs-game #daily-word main{position:relative}
+}
+/* the words in a scaled daily card never drawn under 11px: its counts, clock, key, and buttons grow inside the card by as much as
+   the card is scaled down (--gsz, set by game-frame.js) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] .gs-game .hg-card :is(.cq-timer,.bb-timer,.sm-timer,.hg-clock,.sm-bar,.cq-key,.bb-key,.ma-tries,.ma-hint,.er-tries,.ss-lives,.sm-msg),
+  html.gs-page [data-ma-page] .gs-game #daily-word main .thw-wrap > p{font-size:max(14px,min(calc(11.4px / var(--gsz,1)),16.3px))!important}
+  html.gs-page [data-ma-page] .gs-game .hg-card :is(.cq-key,.bb-key) *{font-size:inherit!important}
+  html.gs-page [data-ma-page] .gs-game .hg-card .hg-btn{font-size:max(13px,min(calc(11.4px / var(--gsz,1)),16.3px))!important}
+  html.gs-page [data-ma-page] .gs-game .sm-c{font-size:max(13px,min(calc(11.4px / var(--gsz,1)),16.3px))!important}
+  html.gs-page [data-ma-page] .gs-game .thw-key{font-size:max(14px,min(calc(11.4px / var(--gsz,1)),16.3px))!important}
+  html.gs-page [data-ma-page] .gs-game .thw-key.wide{flex:3 1 0!important;font-size:max(12.5px,min(calc(11.4px / var(--gsz,1)),16.3px))!important;letter-spacing:0!important;padding-left:0!important;padding-right:0!important}
+  html.gs-page [data-ma-page] .gs-game .hg-card :is(.ma-word,.ma-slot,.ma-color span:not(.ma-slot)){font-size:14.8px!important}
+  html.gs-page [data-ma-page] .gs-game .cq-tools > :first-child{flex:1.7 1 0!important}
+}
+/* Sky Gauntlet on phones: the score row lifted over the board at full size (game-frame.js), Pause at its right; Normal/Easy on a
+   screen of their own just before the game; the start card's words never drawn under 11px however far the board is scaled */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-gauntlet .sg-hud.gs-lifted{font-size:13px!important;padding:0 4px!important;margin:0 0 12px!important;zoom:normal!important}
+  html.gs-page [data-ma-page] #ma-gauntlet .sg-hud.gs-lifted .sg-pausebtn{font-size:13px!important}
+  html.gs-page [data-ma-page] .gs-pre .sg-modes{display:flex!important;flex-direction:column!important;gap:20px!important;justify-content:center;margin:0 auto!important;width:min(100%,320px)!important}
+  html.gs-page [data-ma-page] .gs-pre .sg-modes > *{width:100%!important;padding-top:16px!important;padding-bottom:16px!important}
+  html.gs-page [data-ma-page] #ma-gauntlet .sg-ov p{font-size:max(14px,min(calc(11.4px / var(--gsz,1)),17px))!important}
+  html.gs-page [data-ma-page] #ma-gauntlet .sg-ov .sg-btn{font-size:max(15px,min(calc(11.6px / var(--gsz,1)),18px))!important}
+}
+/* Hold the Wall!: a fighter's name and cost never drawn under 11px with the game scaled to fit (1440x900: 10.9px) */
+html.gs-page [data-ma-page] #ma-holdwall .btns :is(.nm,.cost){font-size:max(11.5px,min(calc(11.6px / var(--gsz,1)),16px))!important}
+html.gs-page [data-ma-page] #ma-holdwall .btns .b{padding-left:0!important;padding-right:0!important}
+html.gs-page [data-ma-page] #ma-holdwall .btns .b .nm{letter-spacing:0!important}
+/* ...and on their own screen on a short phone, the fighters and upgrades fill it, in tighter cells so even the Tower tab's four rows
+   fit at full size */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] .gs-part #hw-ctl .btns{gap:6px!important}
+  html.gs-page [data-ma-page] .gs-part #hw-ctl .btns .b{padding-top:6px!important;padding-bottom:4px!important;min-height:0!important;gap:2px!important}
+  html.gs-page [data-ma-page] .gs-part #hw-ctl .btns .b .ic{height:24px!important;width:24px!important}
+  html.gs-page [data-ma-page] .gs-part #hw-ctl .auto{font-size:13px!important;margin-top:2px!important}
+  html.gs-page [data-ma-page] .gs-part #hw-ctl .btns :is(.nm,.cost){font-size:13px!important}
+  html.gs-page [data-ma-page] .gs-part #hw-ctl{width:100%!important;max-width:none!important;margin:0!important}
+  html.gs-page [data-ma-page] .gs-part #hw-ctl .ph{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px!important}
+  html.gs-page [data-ma-page] .gs-part #hw-ctl .ph > *{grid-column:1 / -1}
+  html.gs-page [data-ma-page] .gs-part #hw-ctl .ph > :is(.tabs,.tacts) button{grid-column:span 3!important}
+  html.gs-page [data-ma-page] .gs-part #hw-ctl .ph > .acts button{grid-column:span 2!important}
+  html.gs-page [data-ma-page] .gs-part #hw-ctl .ph > :is(.tabs,.acts,.tacts) button{width:auto!important;min-width:0!important;margin:0!important;font-size:14px!important;letter-spacing:.02em!important;padding-left:4px!important;padding-right:4px!important;white-space:nowrap!important}
+}
+/* Master Stacker: the score labels, the buttons, and Next up's size never drawn under 11px however far the game is scaled
+   (QA 2026-11-14: Score/Shipped/Level/Best at 8.4px on desktop, 6.6px on a 360x640 phone) */
+html.gs-page [data-ma-page] #ms-stack .ms-hud,html.gs-page [data-ma-page] #ms-stack .ms-hud *{font-size:max(11px,min(calc(11.6px / var(--gsz,1)),16.5px))!important}
+html.gs-page [data-ma-page] #ms-stack .ms-p{font-size:max(15px,min(calc(11.6px / var(--gsz,1)),18px))!important}
+html.gs-page [data-ma-page] #ms-stack :is(.ms-btn,.ms-pad button,.ms-un){font-size:max(12px,min(calc(11.6px / var(--gsz,1)),16px))!important}
+/* Goma Goons: the score bar, the buttons, the weapons, and the crew names never drawn under 11px however far the game is scaled
+   (QA 2026-11-14: 9.2-10.6px at 1440x900, 7.4-10.8px on phones) */
+html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel :is(.sd-bar,.sd-bar *){font-size:max(12px,min(calc(11.6px / var(--gsz,1)),16px))!important}
+html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel :is(.sd-btn,.sd-pad button,.sd-mode,.sd-goma){font-size:max(12px,min(calc(11.6px / var(--gsz,1)),16px))!important}
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel :is(.sd-bar,.sd-bar *){font-size:max(14px,min(calc(11.6px / var(--gsz,1)),17px))!important}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel :is(.sd-btn,.sd-pad button,.sd-mode){font-size:max(14px,min(calc(11.6px / var(--gsz,1)),17px))!important}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel :is(.sd-wpn,.sd-wpn small){font-size:max(13.5px,min(calc(11.6px / var(--gsz,1)),17px))!important}
+  html.gs-page [data-ma-page] #ma-skyduel .sd-msg{font-size:max(15px,min(calc(11.6px / var(--gsz,1)),17px))!important}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .gs-pre .sd-goma{font-size:13px!important;padding:4px 2px 6px!important;gap:4px!important}
+  html.gs-page [data-ma-page] .gs-pre .sd-panel{gap:12px!important;padding-top:16px!important;padding-bottom:16px!important}
+  html.gs-page [data-ma-page] .gs-pre .sd-pick{gap:8px!important}
+  html.gs-page [data-ma-page] .gs-pre .sd-gomas{gap:6px!important}
+  html.gs-page [data-ma-page] .gs-pre .sd-goma img{height:34px!important}
+  html.gs-page [data-ma-page] .gs-about .sd-note{margin-top:20px!important;font-size:15px!important;line-height:1.5!important}
+}
+/* Trench Run, Airship Runner, Thread the Needle: the score row, the start card's line, and its button never drawn under 11px
+   however far the game is scaled (QA 2026-11-14: Trench Run's score row 9.1-10.3px on desktop, SET SAIL 9.3px on a phone;
+   Airship Runner's SCORE/LEVEL/TIME 10.5px; Thread the Needle's start line 10.5px) */
+html.gs-page [data-ma-page] #ma-chase#ma-chase :is(.ch-ov p,.ch-btn){font-size:max(14px,min(calc(11.6px / var(--gsz,1)),20px))!important}
+@media (min-width:700px){html.gs-page [data-ma-page] #ma-chase#ma-chase :is(.ch-hud,.ch-hud *,.ch-pausebtn){font-size:max(12px,min(calc(11.6px / var(--gsz,1)),16px))!important}}
+html.gs-page [data-ma-page] #ma-runner#ma-runner .ar-cell span{font-size:max(11px,min(calc(11.6px / var(--gsz,1)),16px))!important}
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-runner#ma-runner .ar-cell span{font-size:max(13.5px,min(calc(11.6px / var(--gsz,1)),16px))!important}}
+html.gs-page [data-ma-page] #ma-runner#ma-runner .ar-quiet{font-size:max(13px,min(calc(11.6px / var(--gsz,1)),17px))!important}
+html.gs-page [data-ma-page] #ma-flappy#ma-flappy :is(.fl-ov p,.fl-btn){font-size:max(15px,min(calc(11.6px / var(--gsz,1)),20px))!important}
+/* the champion's win count a little clear of the name (QA 2026-11-14: 1-3px apart on a 360 screen) */
+html.gs-page [data-ma-page] :is(.wk-champ,.dbd-champ) sup{margin-left:3px!important}
+/* phones: the Arcade panel's heading a pixel in, so its first letter sits 16px or more from the screen's edge (it sat at 15.6) */
+@media (max-width:699px){html.gs-page [data-ma-page] .gs-arcade .hg-arcade{padding-left:1px!important}}
+/* a game's result (score form, XP box, export card, a daily's win box) never shows inside the game panel, even for the frames before
+   game-frame.js moves it to the result panel: it takes no room there, so the game and its Pause never jump (QA 2026-11-14: Sky
+   Gauntlet's and Airship Runner's Pause jumped up under the menu for a frame or two at game over) */
+html.gs-page [data-ma-page] .gs-game :is(.ac-card,.hg-share,#hg-result.win,#hg-result.lose,#thw-result.win,#thw-result.lose,.thw-result.win,.thw-result.lose,.txp,.sgb-post,.tr-post,.lvb-post,.ms-post,.fl-post,.hw-post,.gb-post){position:absolute!important;left:-10000px!important;top:0!important;visibility:hidden!important;pointer-events:none!important}
+/* daily puzzles, signed out, wide screens: the sign-in card a little tighter, so it fits the screen's height without a scrollbar
+   (QA 2026-11-14: 524px of card in 517px of room at 1440x900 and 1920x1080) */
+@media (min-width:700px){html.gs-page [data-ma-page] .gs-game .dbd-cover:has(.dbd-who){padding:20px 24px 20px!important}}
+/* phones, signed out: the champion banner waits for START too, so the name and email boxes and START fit the screen without the
+   card scrolling inside itself (QA 2026-11-14: START sat below the fold on a 360x640 screen) */
+@media (max-width:699px){html.gs-page [data-ma-page] .gs-game:has(.dbd-cover .dbd-who) :is(.dbd-champ,.wk-champ){display:none!important}}
+/* phones, signed out: tighter room in and around the sign-in card (the words keep their size), so START and the line under it
+   fit a 360x640 screen without the card scrolling inside itself */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] .gs-game :is(.hg-card,#daily-word main):has(.dbd-cover .dbd-who){padding-top:6px!important;padding-bottom:6px!important}
+  html.gs-page [data-ma-page] .gs-game.gs-game:has(.dbd-cover .dbd-who){padding-top:12px!important}
+  html.gs-page [data-ma-page] .gs-game .dbd-cover:has(.dbd-who){padding:12px 16px!important;gap:6px!important}
+  html.gs-page [data-ma-page] .gs-game .dbd-who{gap:12px!important}
+  html.gs-page [data-ma-page] .gs-game .dbd-who p{line-height:1.25!important}
+  html.gs-page [data-ma-page] .gs-game .dbd-cover:has(.dbd-who) > h2{margin-bottom:6px!important}
+  html.gs-page [data-ma-page] .gs-game .dbd-who label{gap:4px!important}
+  html.gs-page [data-ma-page] .gs-game .dbd-who input{padding:7px 12px!important}
+  html.gs-page [data-ma-page] .gs-game .dbd-cover:has(.dbd-who) button{padding-top:8px!important;padding-bottom:8px!important;margin-top:0!important}
+  html.gs-page [data-ma-page] .gs-game .dbd-cover:has(.dbd-who) > p:last-child{line-height:1.3!important;margin:6px 0 0!important}
+}

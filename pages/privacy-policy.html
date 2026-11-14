@@ -23,6 +23,17 @@
 .pp .pp-scroll{overflow-x:auto;margin:0 0 1.4em;-webkit-overflow-scrolling:touch}.pp .pp-scroll .pp-table{margin:0}
 .pp .pp-table th,.pp .pp-table td{overflow-wrap:normal!important;word-break:normal!important;hyphens:manual!important;-webkit-hyphens:manual!important}
 @media (max-width:600px){.pp .pp-table{table-layout:auto;width:max(100%,520px)}}
+/* phones (QA pass 4, 2026-11-14): no sideways scrolling; each row becomes a card, every answer under its column name */
+@media (max-width:600px){
+.pp .pp-scroll{overflow:visible}
+.pp .pp-table,.pp .pp-table tbody,.pp .pp-table tr,.pp .pp-table td{display:block!important;width:auto!important}
+.pp .pp-table thead{display:none!important}
+.pp .pp-table tr{border:1px solid #5C554A;margin:0 0 14px}
+.pp .pp-table tr:last-child{margin-bottom:0}
+.pp .pp-table td{border:0;border-top:1px solid #5C554A;padding:.7em .9em}
+.pp .pp-table td:first-child{border-top:0;background:rgba(255,255,255,.08);color:#F2EDE3;font-weight:600}
+.pp .pp-table td::before{content:attr(data-label);display:block;margin:0 0 .3em;font-size:.82em;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#D9B25C}
+}
 </style>
 <div class="pp">
 <h2 class="pp-title">Privacy Policy</h2>
@@ -70,44 +81,44 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td>Send our newsletter and marketing emails about books, releases, events, orders, and Promotions</td>
-<td>Email, first name, email engagement data</td>
-<td>Your consent (you can withdraw it at any time by unsubscribing)</td>
+<td data-label="What we do">Send our newsletter and marketing emails about books, releases, events, orders, and Promotions</td>
+<td data-label="Information used">Email, first name, email engagement data</td>
+<td data-label="Legal basis (GDPR)">Your consent (you can withdraw it at any time by unsubscribing)</td>
 </tr>
 <tr class="even">
-<td>Run Promotions: register entries, verify tasks and riddles, track points, display the scoreboard, pick and notify winners</td>
-<td>Name, email, Discord/social handle, submissions, receipts</td>
-<td>Performance of a contract (the Official Rules you accept when you enter); our legitimate interest in running the Promotion fairly</td>
+<td data-label="What we do">Run Promotions: register entries, verify tasks and riddles, track points, display the scoreboard, pick and notify winners</td>
+<td data-label="Information used">Name, email, Discord/social handle, submissions, receipts</td>
+<td data-label="Legal basis (GDPR)">Performance of a contract (the Official Rules you accept when you enter); our legitimate interest in running the Promotion fairly</td>
 </tr>
 <tr class="odd">
-<td>Deliver digital rewards (bonus chapters, wallpapers, etc.)</td>
-<td>Email</td>
-<td>Performance of a contract</td>
+<td data-label="What we do">Deliver digital rewards (bonus chapters, wallpapers, etc.)</td>
+<td data-label="Information used">Email</td>
+<td data-label="Legal basis (GDPR)">Performance of a contract</td>
 </tr>
 <tr class="even">
-<td>Ship physical prizes and confirm eligibility</td>
-<td>Name, postal address, phone, eligibility details</td>
-<td>Performance of a contract; compliance with legal obligations (prize and sweepstakes law)</td>
+<td data-label="What we do">Ship physical prizes and confirm eligibility</td>
+<td data-label="Information used">Name, postal address, phone, eligibility details</td>
+<td data-label="Legal basis (GDPR)">Performance of a contract; compliance with legal obligations (prize and sweepstakes law)</td>
 </tr>
 <tr class="odd">
-<td>Feature entries, photos, artwork, and winner names on the Sites, Discord, social media, or in publisher marketing</td>
-<td>Name/handle, submitted content, likeness</td>
-<td>Your consent, given when you submit (see Section 5) — you can withdraw it</td>
+<td data-label="What we do">Feature entries, photos, artwork, and winner names on the Sites, Discord, social media, or in publisher marketing</td>
+<td data-label="Information used">Name/handle, submitted content, likeness</td>
+<td data-label="Legal basis (GDPR)">Your consent, given when you submit (see Section 5) — you can withdraw it</td>
 </tr>
 <tr class="even">
-<td>Reply to your messages and provide support</td>
-<td>Contact details, message content</td>
-<td>Legitimate interest in responding to you</td>
+<td data-label="What we do">Reply to your messages and provide support</td>
+<td data-label="Information used">Contact details, message content</td>
+<td data-label="Legal basis (GDPR)">Legitimate interest in responding to you</td>
 </tr>
 <tr class="odd">
-<td>Operate, secure, and improve the Sites; understand which pages and campaigns work</td>
-<td>Technical and usage data</td>
-<td>Legitimate interest in running a working, secure website; consent for non-essential cookies where required</td>
+<td data-label="What we do">Operate, secure, and improve the Sites; understand which pages and campaigns work</td>
+<td data-label="Information used">Technical and usage data</td>
+<td data-label="Legal basis (GDPR)">Legitimate interest in running a working, secure website; consent for non-essential cookies where required</td>
 </tr>
 <tr class="even">
-<td>Comply with law, resolve disputes, enforce Official Rules, and prevent fraud (e.g. duplicate or automated entries)</td>
-<td>Any of the above as needed</td>
-<td>Legal obligation; legitimate interest</td>
+<td data-label="What we do">Comply with law, resolve disputes, enforce Official Rules, and prevent fraud (e.g. duplicate or automated entries)</td>
+<td data-label="Information used">Any of the above as needed</td>
+<td data-label="Legal basis (GDPR)">Legal obligation; legitimate interest</td>
 </tr>
 </tbody>
 </table></div>
@@ -179,28 +190,28 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td>Newsletter subscriber data</td>
-<td>Until you unsubscribe, plus a suppression record (email address only) so we do not accidentally re-add you</td>
+<td data-label="Information">Newsletter subscriber data</td>
+<td data-label="How long">Until you unsubscribe, plus a suppression record (email address only) so we do not accidentally re-add you</td>
 </tr>
 <tr class="even">
-<td>Promotion entries, scoreboard data, and submissions</td>
-<td>12 months after the Promotion ends, then deleted or anonymized, except items you have agreed we can keep featuring</td>
+<td data-label="Information">Promotion entries, scoreboard data, and submissions</td>
+<td data-label="How long">12 months after the Promotion ends, then deleted or anonymized, except items you have agreed we can keep featuring</td>
 </tr>
 <tr class="odd">
-<td>Receipt uploads</td>
-<td>Deleted within 90 days after the Promotion ends, or once verification is complete</td>
+<td data-label="Information">Receipt uploads</td>
+<td data-label="How long">Deleted within 90 days after the Promotion ends, or once verification is complete</td>
 </tr>
 <tr class="even">
-<td>Winner records (name, address, prize, any required forms)</td>
-<td>Up to 7 years where needed for tax, sweepstakes-law, and accounting records</td>
+<td data-label="Information">Winner records (name, address, prize, any required forms)</td>
+<td data-label="How long">Up to 7 years where needed for tax, sweepstakes-law, and accounting records</td>
 </tr>
 <tr class="odd">
-<td>Correspondence</td>
-<td>Up to 2 years after our last exchange</td>
+<td data-label="Information">Correspondence</td>
+<td data-label="How long">Up to 2 years after our last exchange</td>
 </tr>
 <tr class="even">
-<td>Website analytics</td>
-<td>Aggregated data retained by our analytics provider for 14 months; we do not keep raw logs longer than 90 days</td>
+<td data-label="Information">Website analytics</td>
+<td data-label="How long">Aggregated data retained by our analytics provider for 14 months; we do not keep raw logs longer than 90 days</td>
 </tr>
 </tbody>
 </table></div>

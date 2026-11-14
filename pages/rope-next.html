@@ -557,6 +557,10 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #rc .cr-pair-card{display:block}
 #rc .cr-pair-card .cr-pair{margin-top:12px}
 @media (max-width:600px){#rc .cr-pair-res{flex-direction:column;align-items:flex-start}}
+/* advantage pair: each roll keeps at least 260px (die + name side by side); narrower cards stack the rolls */
+#rc .cr-pair-card .cr-pair{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+#rc .cr-pair-res>div:last-child,#rc .cr-pair-res .by{min-width:0}
+#rc .cr-pair-card .cr-pair-note{margin-top:18px}
 /* the rope hunt (chapter 14), on top of the red color story (ashore.css): the raft panel (raft.css) with ember accents */
 /* the panel: the count, your 5 strands, and where to look */
 #rc .rf-top{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px}

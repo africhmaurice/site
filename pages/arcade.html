@@ -456,6 +456,17 @@
       var gpad = parseFloat(getComputedStyle(track).paddingLeft) || 24;
       track.style.gap = '0px'; track.style.paddingLeft = '0px'; track.style.paddingRight = '0px';
       grps.forEach(function (g) { var m = Math.max(gpad, (cw - g.offsetWidth) / 2); g.style.marginLeft = m.toFixed(2) + 'px'; g.style.marginRight = m.toFixed(2) + 'px'; });
+    } else {
+      // phones: a group's name never shows partway across the screen, cut off at its right edge (QA 2026-11-14: ARCADE GAMES and
+      // its line ran 150px past the edge at the stop showing the last puzzles): the next group starts a whole screen past the
+      // stop where this group's last column sits at the left
+      var ppad = parseFloat(getComputedStyle(track).paddingLeft) || 24;
+      grps.forEach(function (g, i) {
+        var nx = grps[i + 1], cards = q('.ac-card', g); if (!nx || !cards.length) return;
+        var lastLeft = Math.max.apply(null, cards.map(function (t) { return g.offsetLeft + t.parentNode.offsetLeft + t.offsetLeft; }));
+        var extra = (lastLeft - ppad) + cw - nx.offsetLeft;
+        if (extra > 0) g.style.marginRight = (extra + 1).toFixed(1) + 'px';
+      });
     }
     span = Math.max(0, track.scrollWidth - cw);
     root.style.height = (span + vh + END) + 'px';
@@ -504,6 +515,9 @@
     x = target;   // follows the scroll exactly (Maurice, 2026-11-13: the eased row lagged, then jumped)
     if (Math.abs(target - x) <= 0.4) { x = target; lastT = 0; }
     track.style.transform = 'translate3d(' + (-x).toFixed(1) + 'px,0,0)';
+    // phones: a group's name and line fade out as they slide off the left edge, so a stop on the group's later tiles never shows
+    // the end of a cut line ('PM' at the edge; QA 2026-11-14)
+    if (cw < 700) q('.ac-head', track).forEach(function (h) { var l = h.parentNode.offsetLeft + h.offsetLeft - x; h.style.opacity = clamp01(1 + l / 40).toFixed(3); });
     // the Scroll Bar fills while the row holds at its end
     var fz = clamp01((window.scrollY - y1) / END);
     sbar.style.opacity = fz > 0.01 && fz < 1 ? '1' : '0';

@@ -17,7 +17,8 @@
 @media (min-width:1180px){#hx{--rail:250px}}
 .hx-sec{position:relative;padding:120px calc(var(--lane) + var(--sb)) 120px calc(var(--lane) + var(--rail) + var(--sbl));background:#0b170f}
 /* phones (QA 2026-11-14): an even 36px lane each side keeps the column centered; the trail runs at the far right edge */
-@media (max-width:760px){#hx{--lane:36px}}
+@media (max-width:760px){#hx{--lane:46px}}
+/* phones (QA pass 4, 2026-11-14): a 46px lane and a 28px walker keep the goma, the dotted trail, and the X marks 12px+ clear of every panel */
 .hx-sec.hx-map{background:linear-gradient(rgba(11,23,15,.72),rgba(11,23,15,.82)),url(https://africhmaurice.github.io/site/assets/maps/treasure-map-degate.jpg) center/cover}
 .hx-sec[data-bg="violet"]{background:#2d1c53}.hx-sec[data-bg="emerald"]{background:#1a5e41}.hx-sec[data-bg="ember"]{background:#912501}.hx-sec[data-bg="forest"]{background:#1b3b15}
 /* his art under the section color at 90%, drifting slower than the page (Maurice 2026-11-12: "add backgrounds parallax under 90% under a few of the background colors") */
@@ -101,7 +102,9 @@
 #hx-goma{position:absolute;left:0;top:0;width:84px;height:84px;z-index:5;pointer-events:none;will-change:transform;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
 #hx-goma img{width:100%;height:100%;object-fit:contain;animation:hx-bob 1.6s ease-in-out infinite alternate}
 @keyframes hx-bob{from{translate:0 -4px}to{translate:0 4px}}
-@media (max-width:760px){#hx-goma{width:40px;height:40px}.hx-panel{padding:24px 20px}.hx-row{padding:10px 4px;gap:10px;grid-template-columns:30px minmax(0,1fr) auto}.hx-handle{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}}
+@media (max-width:760px){#hx-goma{width:28px;height:28px}.hx-x path{stroke-width:6}#hx-trail .hx-dots,#hx-trail .hx-done{stroke-width:4;stroke-dasharray:0 12}.hx-panel{padding:24px 20px}.hx-row{padding:10px 4px;gap:10px;grid-template-columns:30px minmax(0,1fr) auto}.hx-handle{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  /* phones: the handle runs under the name and the points, so long handles fit without breaking mid-word */
+  .hx-row{row-gap:2px}.hx-who{display:contents}.hx-rank{grid-column:1;grid-row:1/3}.hx-name{grid-column:2;grid-row:1;min-width:0}.hx-pts{grid-column:3;grid-row:1}.hx-handle{grid-column:2/4;grid-row:2;min-width:0}}
 /* the page menu: a rail on the left on wide screens, a strip along the bottom otherwise */
 #hx-nav{position:fixed;z-index:40;opacity:0;pointer-events:none;transition:opacity .35s ease}
 #hx-nav.hx-show{opacity:1;pointer-events:auto}
@@ -396,7 +399,7 @@
       if (!okL && !okR) side = 1;
       var x = side ? (cr + visW) / 2 : (rail + cl) / 2;
       // no room for a full lane (phones): the trail keeps to the far right edge, the goma fully on screen
-      if (!okL && !okR) x = Math.min(x, visW - size / 2 - 6);
+      if (!okL && !okR) x = Math.max(cr + gap + size / 2, Math.min(x, visW - size / 2 - 6));
       var y2 = crossTo(x, secs[i - 1], s), y = s.offsetTop + spots[i].fy * s.offsetHeight;
       if (typeof y2 === 'number') y = Math.max(y, y2 + 80);
       pts.push([x, y]);
@@ -444,8 +447,9 @@
       var best = 0, bd = 1e9;
       samples.forEach(function (s, k) { var dd = Math.abs(s[1] - m.x) + Math.abs(s[2] - m.y); if (dd < bd) { bd = dd; best = k; } });
       m.at = samples[best][0];
-      return '<g class="hx-x" data-i="' + i + '"><g class="hx-xg"><path d="M' + (m.x - 18) + ' ' + (m.y - 18) + 'L' + (m.x + 18) + ' ' + (m.y + 18) + 'M' + (m.x + 18) + ' ' + (m.y - 18) + 'L' + (m.x - 18) + ' ' + (m.y + 18) + '" stroke="' + m.color + '"/></g>' +
-        '<circle class="hx-ring" cx="' + m.x + '" cy="' + m.y + '" r="26" stroke="' + m.color + '"/></g>';
+      var xa = W > 760 ? 18 : 10;   // smaller X marks in the narrow phone lane
+      return '<g class="hx-x" data-i="' + i + '"><g class="hx-xg"><path d="M' + (m.x - xa) + ' ' + (m.y - xa) + 'L' + (m.x + xa) + ' ' + (m.y + xa) + 'M' + (m.x + xa) + ' ' + (m.y - xa) + 'L' + (m.x - xa) + ' ' + (m.y + xa) + '" stroke="' + m.color + '"/></g>' +
+        '<circle class="hx-ring" cx="' + m.x + '" cy="' + m.y + '" r="' + (W > 760 ? 26 : 14) + '" stroke="' + m.color + '"/></g>';
     }).join('');
     // what fades, flies, or dissolves away as it's scrolled past
     exits = [];
