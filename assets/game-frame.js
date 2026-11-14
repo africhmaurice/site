@@ -45,7 +45,7 @@
     'master-stacker':      { root: '#ms-stack', zoom: '.ms-play', box: ['.ms-hud', '.ms-cv'], how: ['.ms-how'], parts: [{ sel: '.ms-local, .ms-boardp', stack: true }],
                              side: ['.ms-hud', '.ms-ctrls'], snug: true },   // score and buttons sit over Next up, so the board gets the height
     'master-cannoneer':    { root: '#ma-holdwall', zoom: '.wrap', phoneW: 400, phoneHow: ['.wrap > .help'], squeeze: { sel: '.wrap', min: 1100 }, parts: [{ sel: '.hw-boardrow > section.panel', stack: true }] },
-    'sky-fishing':         { root: '#ma-skyduel', zoom: '.sd-wrap', snug: true, phoneW: 420, headIn: '.sd-wrap', beside: { host: '.sd-wrap', items: ['.sd-msg', '.sd-weapons', '.sd-pad', '.sd-panel'], wide: true },
+    'sky-fishing':         { root: '#ma-skyduel', zoom: '.sd-wrap', snug: true, phoneW: 420, phoneMinW: 360, headIn: '.sd-wrap', beside: { host: '.sd-wrap', items: ['.sd-msg', '.sd-weapons', '.sd-pad', '.sd-panel'], wide: true },
                              wideParts: [{ sel: '.sd-help', name: 'How to play' }],   // the long how-to gets a box of its own, so the map and the crew picker keep their size
                              // phones: the crew picker gets a screen of its own just before the game (it was squeezed under the name to
                              // 7px words; QA 2026-11-14), and the row follows it: on to the game when it starts, back when it opens again
@@ -446,6 +446,7 @@
   function bgLayer(c) { return c.classList.contains('ma-pfx') || c.getAttribute('aria-hidden') === 'true' && getComputedStyle(c).position === 'absolute'; }
   function shrinkGame() {
     game.style.zoom = ''; game.style.height = ''; game.style.removeProperty('--gz');
+    if (signIn()) { capGate(); return; }   // the sign-in questions keep their full size: the start card scrolls inside itself if it must
     var d = pad(game), need = 0, t0 = 1e9, b0 = -1e9;
     Array.prototype.forEach.call(game.children, function (c) { var b = c.getBoundingClientRect(); if (!b.height || !c.offsetParent || bgLayer(c)) return; t0 = Math.min(t0, b.top); b0 = Math.max(b0, b.bottom); });
     need = b0 - t0;
@@ -702,6 +703,9 @@
     var flow = el.matches('.hg-card, #daily-word main') || !!cfg.phoneW;
     el.style.zoom = ''; el.style.minHeight = ''; el.style.marginLeft = 'auto'; el.style.marginRight = 'auto';
     el.style.width = flow ? (cfg.phoneW || innerW) + 'px' : (cfg.snug ? 'fit-content' : '');
+    // a visitor with no saved player gets the sign-in questions before START: they keep their full size, one column the
+    // screen's width, instead of being scaled down with the board (QA 2026-11-14: 6-10px on phones)
+    if (signIn()) { last = 1; capGate(); try { window.dispatchEvent(new Event('ma-zoom')); } catch (e) {} return; }
     function measure() {
       var r = el.getBoundingClientRect(), t0 = 1e9, b0 = -1e9;
       Array.prototype.forEach.call(game.children, function (c) { if (!c.offsetParent || bgLayer(c)) return; var b = c.getBoundingClientRect(); if (!b.height) return; t0 = Math.min(t0, b.top); b0 = Math.max(b0, b.bottom); });
@@ -718,6 +722,13 @@
       [1.15, 1.3, 1.5].forEach(function (k) { el.style.width = (innerW * k).toFixed(1) + 'px'; var mm = measure(); if (Math.min(1, mm.z) >= 0.8 && mm.w * Math.min(1, mm.z) > best.m.w * Math.min(1, best.m.z) + 4) best = { w: innerW * k, m: mm }; });
       el.style.width = best.w.toFixed(1) + 'px'; m = measure();
     }
+    // a laid-out game with room to narrow (Goma Goons): on a screen narrower than its layout, the width between its own and its
+    // narrowest that draws it largest, so its words stay 11px or more on a 360 screen (QA 2026-11-14: 10.3px)
+    if (cfg.phoneW && cfg.phoneMinW && m.z < 0.98) {
+      var bw = cfg.phoneW, bm = m;
+      for (var pw = cfg.phoneW - 10; pw >= cfg.phoneMinW; pw -= 10) { el.style.width = pw + 'px'; var pm = measure(); if (pm.z > bm.z + 0.005) { bw = pw; bm = pm; } }
+      el.style.width = bw + 'px'; m = measure();
+    }
     var z = Math.max(0.2, Math.min(3, m.z));
     el.style.zoom = z.toFixed(3); last = z;
     lockSize(el);
@@ -726,6 +737,23 @@
   // a daily card keeps the size it was fitted at, so it never grows as the puzzle empties out (Maurice, 2026-11-14:
   // 'a fixed width on this so it doesn't increase in size every time you get one right')
   function lockSize(el) { if (el.matches('.hg-card, #daily-word main')) el.style.minHeight = el.offsetHeight + 'px'; }
+  // the sign-in questions on a daily puzzle's start card (shown only to a visitor with no saved player)
+  function signIn() { var w = q('.dbd-cover .dbd-who', game); return w && w.offsetParent ? w : null; }
+  // they never run onto the arrows: on a screen too short for them at full size, the start card scrolls inside itself
+  // (frame CSS) instead of being scaled down
+  function capGate() {
+    var w = signIn(), gt = w && w.closest('.dbd-gate'); if (!gt) return;
+    gt.style.removeProperty('--gs-gate-max');
+    // (measured again after each step: the panel centers what's in it, so a shorter card also moves down)
+    for (var i = 0; i < 4; i++) {
+      var gr = game.getBoundingClientRect(), k = gr.height / Math.max(1, game.offsetHeight) || 1;
+      var bottom = gr.bottom - (parseFloat(getComputedStyle(game).paddingBottom) || 0) * k, low = -1e9;
+      Array.prototype.forEach.call(game.children, function (c) { if (!c.offsetParent || bgLayer(c)) return; var b = c.getBoundingClientRect(); if (b.height) low = Math.max(low, b.bottom); });
+      var over = low - bottom; if (over <= 1) return;
+      var tr = gt.getBoundingClientRect(), kk = tr.height / Math.max(1, gt.offsetHeight) || 1;
+      gt.style.setProperty('--gs-gate-max', Math.max(160, (tr.height - over * (i ? 2 : 1)) / kk).toFixed(0) + 'px');
+    }
+  }
   // the Current Champion banner is exactly as wide as the play screen under it and touches it (Maurice, 2026-11-13)
   var BOARD = '.ar-stage,.ch-board,.sg-stage,.ms-stage,.ms-cv,.fl-stage,.lv-stage,.sd-stage,#ma-holdwall .stage,.hg-card,#daily-word main';
   function alignChamp() {
@@ -749,8 +777,17 @@
     st('white-space', 'nowrap'); Array.prototype.forEach.call(c.children, function (e) { e.style.setProperty('white-space', 'nowrap', 'important'); });
     var over = function () { return c.scrollWidth > c.clientWidth + 1; };
     if (over()) { st('padding-left', '8px'); st('padding-right', '8px'); }
-    var f = parseFloat(getComputedStyle(c).fontSize), n = 0;
-    while (over() && f > 11 && n++ < 30) { f -= 0.5; st('font-size', f + 'px'); }
+    // (the banner can sit inside a scaled game, as Master Stacker's does on phones: the floor is 11px as drawn on screen)
+    var f = parseFloat(getComputedStyle(c).fontSize), n = 0, fMin = 11 / Math.max(0.2, k);
+    // the win count's small raised number too (QA 2026-11-14: 9.4px in Master Stacker's banner on a 360 screen)
+    qa('sup, .wk-wins', c).forEach(function (e) { e.style.removeProperty('font-size'); e.style.setProperty('font-size', 'max(.75em, ' + fMin.toFixed(2) + 'px)', 'important'); });
+    while (over() && f > fMin && n++ < 40) { f -= 0.5; st('font-size', f + 'px'); }
+    // still too long at that size (the smallest phones): two lines, split after 'Current Champion:', the win count staying
+    // with the name, instead of words scaled past legible (QA 2026-11-14: Master Stacker's banner at 9.5px on a 360 screen)
+    if (over()) {
+      st('font-size', Math.max(f, fMin).toFixed(1) + 'px'); st('white-space', 'normal'); st('text-wrap', 'balance');
+      Array.prototype.forEach.call(c.children, function (e) { e.style.removeProperty('white-space'); e.style.setProperty('white-space', 'nowrap', 'important'); });
+    }
     if (over()) { var zz = (c.clientWidth - 16) / Math.max(1, c.scrollWidth - 16); Array.prototype.forEach.call(c.children, function (e) { e.style.zoom = zz.toFixed(3); }); }
     // then it touches the board: measured where everything rests (nothing in the row fades or slides in), so the board can never
     // be pulled up over it
@@ -758,6 +795,7 @@
       var cr2 = c.getBoundingClientRect(), br2 = b.getBoundingClientRect();
       st('margin-bottom', ((parseFloat(getComputedStyle(c).marginBottom) || 0) - (br2.top - cr2.bottom) / k).toFixed(1) + 'px');
     }
+    if (signIn()) capGate();
   }
   // words too wide for their button or box shrink until they fit (Maurice, 2026-11-13: 'shrink to fit', RESUME wrapping)
   function fitLabels() {
@@ -832,6 +870,7 @@
     var phone = !wide;
     z = Math.max(0.2, Math.min(el.matches('.hg-card, #daily-word main') ? 1.15 : 2.2, z));   /* a daily card never balloons when there's little left in it */   // as small as it needs to be to fit, never spilling (Maurice, 2026-11-13)   // a daily puzzle card can grow on phones (Maurice, 2026-11-13)
     if (Math.abs(z - 1) < 0.02) z = 1;
+    if (signIn()) z = 1;   // the sign-in questions keep their full size (the start card is only as tall as they are)
     if (fresh !== true && (el.style.minHeight || (Math.abs(z - last) < 0.05 && !(wide && z < last - 0.01)))) z = last;   // (a game that grew past its frame mid-game always shrinks back inside it)   // a locked card keeps its size   // small changes after the first fit are left alone (Book Icons pulsed)
     if (Math.abs(z - last) >= 0.01) {
       if (z === 1) clear(el);
@@ -842,6 +881,7 @@
     // at most once every two seconds (Maurice, 2026-11-14: 'it's getting wonky again on desktop')
     if (wide && fresh !== true && game.scrollWidth > game.clientWidth + 2 && Date.now() - (fit.__re || 0) > 2000) { fit.__re = Date.now(); setTimeout(size, 50); return; }
     if (fresh === true) lockSize(el);
+    if (signIn()) setTimeout(capGate, 60);
     if (wide && fresh === true) {   // the game panel is as wide as the game (set once per layout, never from a refit)
       var card = q('.hg-card, #daily-word main', game);
       var gw = Math.round(Math.max(card === el ? 360 : 480, w * z, card && card !== el ? card.offsetWidth : 0) + parseFloat(gs.paddingLeft) + parseFloat(gs.paddingRight));
@@ -917,6 +957,7 @@
   var overTried = {}, overLog = [];
   function overCheck() {
     if (!stops.length || !panels.length || document.hidden) return;
+    if (signIn()) capGate();   // the champion banner or the date can arrive after the start card was measured
     var hit = null, sig = '';
     panels.forEach(function (p, i) {
       if (hit || p.classList.contains('gs-arcade')) return;
