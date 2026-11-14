@@ -960,6 +960,8 @@
     if (sec) {
       Array.prototype.forEach.call(sec.querySelectorAll('.content-wrapper, .fluid-engine'), function (x) { x.style.setProperty('padding-top', '0', 'important'); x.style.setProperty('padding-bottom', '0', 'important'); });
       sec.style.setProperty('padding-top', '0', 'important'); sec.style.setProperty('padding-bottom', '0', 'important');
+      // the section's own leftover space under the page takes the page's ink, not the site's red (as the vote pages do)
+      sec.style.setProperty('background-color', '#0b170f', 'important');
     }
     root.style.marginLeft = '0px';
     root.style.marginLeft = -root.getBoundingClientRect().left + 'px';
