@@ -11,7 +11,8 @@
 // links only the two of them. Set MAINT to false and publish to reopen the site.
 // ?ma-open=1 lets this browser see the site anyway; ?ma-open=0 undoes that. ?ma-maint=1 shows the closed state early.
 var MAINT_AT = Date.parse('2026-11-11T05:00:00Z');
-var MAINT = Date.now() >= MAINT_AT || /[?&]ma-maint=1/.test(location.search);
+// Site reopened 2026-11-14 on Maurice's word ("let's push it live!"). ?ma-maint=1 still previews the closed screen.
+var MAINT = /[?&]ma-maint=1/.test(location.search);
 (function () {
   // Locked down 2026-11-14 (Maurice: "Lock everything"): every page shows the closed screen while the new site goes up behind it.
   var VOTE ='https://www.mauriceafrich.com/the-first-guardian', ARCADE = 'https://www.mauriceafrich.com/arcade';
