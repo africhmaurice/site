@@ -1093,7 +1093,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
         '#ma-foot h3{font-family:\'CI Face\',\'Cracked Imperia\',\'Almarai\',sans-serif;font-weight:400;font-size:22px;line-height:1.2;letter-spacing:.03em;text-transform:uppercase;text-align:center;color:#a2f590;margin:0;padding:0 0 12px;border-bottom:2px solid rgba(243,234,217,.3);align-self:stretch}' +
         '#ma-foot a{font-family:\'Almarai\',sans-serif;font-weight:700;font-size:15px;line-height:1.35;color:#f3ead9;text-decoration:none;border-radius:0;padding:2px 0;overflow-wrap:anywhere}' +
         '#ma-foot a:hover,#ma-foot a:focus-visible{color:#a2f590;text-decoration:underline;text-underline-offset:4px}' +
-        '#ma-foot .ma-foot-legal{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 32px;width:100%}' +
+        '#ma-foot .ma-foot-legal{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 32px;width:100%}@media (max-width:699px){#ma-foot .ma-foot-legal{padding-bottom:84px}}' +
         '#ma-foot .ma-foot-legal a{font-weight:800;font-size:12px;line-height:1.5;letter-spacing:.16em;text-transform:uppercase;padding:6px 0}' +
         '@media (max-width:760px){#ma-foot{padding:12px 20px 32px;gap:28px}#ma-foot .ma-foot-social{max-width:268px}#ma-foot .ma-foot-in{grid-template-columns:minmax(0,1fr);gap:16px}#ma-foot .ma-foot-col{padding:24px 20px}#ma-foot .ma-foot-body{flex-direction:column;gap:20px}#ma-foot .ma-foot-book{width:140px}#ma-foot h3{font-size:19px}#ma-foot .ma-foot-list a{padding:4px 0}}';
       document.head.appendChild(st);
@@ -1333,7 +1333,19 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     nativeReveal();
     centerDropdowns();
     menuFit();
+    gameMenu();
     Array.prototype.forEach.call(document.querySelectorAll('[data-ma-page]'), mount);
+  }
+  // The arcade games get the same game menu as the daily puzzles (their page files carry it; the arcade games' don't), so on
+  // phones every game page has the 88px game menu instead of the page builder's 145px bar (QA 2026-11-14); the rule above
+  // then hides the page builder's bar, as it does on the daily puzzles
+  function gameMenu() {
+    if (!ON_GAME || !document.body || document.getElementById('hunt-nav') || document.querySelector('[data-ma-page="hunt-menu"]')) return;
+    var arcade = false;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-ma-page]'), function (m) { var s = m.getAttribute('data-ma-page') || ''; if (s !== 'games' && s.indexOf('game-') !== 0) arcade = true; });
+    if (!arcade) return;
+    var hm = document.createElement('div'); hm.setAttribute('data-ma-page', 'hunt-menu');
+    document.body.insertBefore(hm, document.body.firstChild);
   }
   window.__maLoader = scan;
   if (document.body) fixedBackgrounds();

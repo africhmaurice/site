@@ -5,12 +5,16 @@
      bottom on smaller screens) jumps to each section. Numbers come from the hunt recap carousel and the final
      boards (Acts One to Three locked through Nov 1, Act Four final). DRAFT until he approves the wording. -->
 <style>
-#hx{position:relative;left:50%;width:100vw;margin-left:-50vw;overflow-x:clip;background:#0b170f;color:#fff;font-family:'Almarai',sans-serif;--rail:0px}
+#hx{position:relative;left:50%;width:100vw;margin-left:-50vw;overflow-x:clip;background:#0b170f;color:#fff;font-family:'Almarai',sans-serif;--rail:0px;--lane:136px;--sb:0px;--sbl:0px}
+/* the trail runs in a clear lane beside the words on each side (one lane, on the right, on phones), so it never
+   crosses text; --sb keeps the right lane out from under the scrollbar (2026-11-14) */
+#map{position:absolute;top:0;left:0;width:1px;height:1px;pointer-events:none}
 /* at the end the goma walks into the footer and hides behind the book (Maurice, 2026-11-12) */
 #ma-foot .ma-foot-book{position:relative;z-index:10}
 #hx *{box-sizing:border-box}
 @media (min-width:1180px){#hx{--rail:250px}}
-.hx-sec{position:relative;padding:120px 24px 120px calc(24px + var(--rail));background:#0b170f}
+.hx-sec{position:relative;padding:120px calc(var(--lane) + var(--sb)) 120px calc(var(--lane) + var(--rail) + var(--sbl));background:#0b170f}
+@media (max-width:760px){#hx{--lane:72px}.hx-sec{padding-left:calc(16px + var(--sbl))}}
 .hx-sec.hx-map{background:linear-gradient(rgba(11,23,15,.72),rgba(11,23,15,.82)),url(https://africhmaurice.github.io/site/assets/maps/treasure-map-degate.jpg) center/cover}
 .hx-sec[data-bg="violet"]{background:#2d1c53}.hx-sec[data-bg="emerald"]{background:#1a5e41}.hx-sec[data-bg="ember"]{background:#912501}.hx-sec[data-bg="forest"]{background:#1b3b15}
 /* his art under the section color at 90%, drifting slower than the page (Maurice 2026-11-12: "add backgrounds parallax under 90% under a few of the background colors") */
@@ -54,7 +58,7 @@
 .hx-g[aria-pressed="true"] img{opacity:0;transform:scale(.6);transition:opacity .25s,transform .25s}
 .hx-g:focus-visible{outline:2px solid #3adb97;outline-offset:3px}
 /* boards */
-.hx-boards{display:grid;gap:24px;width:100%;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:start}
+.hx-boards{display:grid;gap:24px;width:100%;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:start}
 .hx-board{display:flex;flex-direction:column;gap:6px;text-align:left}
 .hx-board .hx-h3{text-align:center;margin-bottom:10px}
 .hx-row{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.14);opacity:0;transform:translateX(-24px);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
@@ -74,7 +78,7 @@
 .hx-draw span{font-size:15px;line-height:1.6}
 /* section 7: the crest is a hole in the page, the dome moves behind it */
 /* a white stroke around the hole (four hard shadows trace the crest's edge) */
-.hx-crestwrap{width:min(86vw,900px);filter:drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)}
+.hx-crestwrap{width:min(100%,900px);filter:drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)}
 .hx-crest{position:relative;width:100%;aspect-ratio:2/1;overflow:hidden;-webkit-mask:url(https://africhmaurice.github.io/site/assets/hunt/crest-mask.png) center/contain no-repeat;mask:url(https://africhmaurice.github.io/site/assets/hunt/crest-mask.png) center/contain no-repeat}
 .hx-crest img{position:absolute;left:-15%;top:50%;width:130%;height:auto;max-width:none;will-change:transform}
 /* a 75% white layer over the dome (Maurice, 2026-11-12) */
@@ -94,7 +98,7 @@
 #hx-goma{position:absolute;left:0;top:0;width:84px;height:84px;z-index:5;pointer-events:none;will-change:transform;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
 #hx-goma img{width:100%;height:100%;object-fit:contain;animation:hx-bob 1.6s ease-in-out infinite alternate}
 @keyframes hx-bob{from{translate:0 -4px}to{translate:0 4px}}
-@media (max-width:760px){#hx-goma{width:56px;height:56px}}
+@media (max-width:760px){#hx-goma{width:48px;height:48px}}
 /* the page menu: a rail on the left on wide screens, a strip along the bottom otherwise */
 #hx-nav{position:fixed;z-index:40;opacity:0;pointer-events:none;transition:opacity .35s ease}
 #hx-nav.hx-show{opacity:1;pointer-events:auto}
@@ -120,6 +124,7 @@
 </style>
 
 <div id="hx" data-ma-own>
+  <span id="map" aria-hidden="true"></span>
   <svg id="hx-trail" aria-hidden="true"><defs><mask id="hx-mask" maskUnits="userSpaceOnUse"><rect id="hx-mrect" x="0" y="0" width="0" height="0" fill="#fff"/></mask></defs>
     <path class="hx-dots"/><path class="hx-done" mask="url(#hx-mask)"/><g id="hx-xs"></g></svg>
   <div id="hx-goma" aria-hidden="true"><img alt="" src="https://africhmaurice.github.io/site/assets/games/86-izzy.png"></div>
@@ -348,39 +353,78 @@
   function bookSpot(b) { var a = absXY(b), r0 = absXY(root); return [a[0] - r0[0] + b.offsetWidth / 2, a[1] - r0[1] + b.offsetHeight * 0.55]; }
   function offLeft(el) { var t = 0; while (el && el !== root) { t += el.offsetLeft; el = el.offsetParent; } return t; }
   function layout() {
+    // the lanes stay on screen: #hx is the full 100vw, so with a scrollbar a few pixels hang off each side
+    var rl = root.getBoundingClientRect().left, cw = document.documentElement.clientWidth;
+    var sbl = Math.min(40, Math.max(0, -rl)), sb = Math.min(40, Math.max(0, rl + root.offsetWidth - cw));
+    if (root.style.getPropertyValue('--sb') !== sb + 'px') root.style.setProperty('--sb', sb + 'px');
+    if (root.style.getPropertyValue('--sbl') !== sbl + 'px') root.style.setProperty('--sbl', sbl + 'px');
     W = root.clientWidth; H = root.scrollHeight;
-    var rr = root.getBoundingClientRect();
+    var visW = W - sb;
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-    var rail = W >= 1180 ? 250 : 0;
+    var rail = (W >= 1180 ? 250 : 0) + sbl;
+    // The trail never crosses words (2026-11-14): it runs down a lane beside the column (the goma's width plus 12px
+    // on each side, its gentle wiggle included) and switches sides only in the empty band between two sections.
+    var size = gomaEl.offsetWidth || 84, gap = 12, amp = W > 760 ? 8 : 0;
+    function inTop(s) { return offTop(s.querySelector('.hx-in')); }
+    function inBottom(s) { var c = s.querySelector('.hx-in'); return offTop(c) + c.offsetHeight; }
     // start: the middle of the chosen card
     var card = pick.querySelector('[aria-pressed="true"]') || pick.firstElementChild;
     var start = [offLeft(card) + card.offsetWidth / 2, offTop(card) + card.offsetHeight * 0.42];
-    var pts = [start];
+    var pts = [start], px = start[0];
     startY = start[1]; startCard = card; startAt = offTop(card) + ',' + offLeft(card);
     marks = [];
+    function crossTo(x, above, below) {
+      if (Math.abs(x - px) < 1) return below;
+      var top = inBottom(above) + gap + size * 0.8 + 4, bot = below === null ? H - 24 : inTop(below) - gap - size * 0.25 - 4;
+      var mid = (top + bot) / 2, y1 = Math.max(top, mid - 30), y2 = Math.min(bot, mid + 30);
+      if (y1 > y2) y1 = y2 = mid;
+      pts.push([px, y1], [x, y2]);
+      px = x;
+      return y2;
+    }
     secs.forEach(function (s, i) {
       if (i === 0) return;   // no X in the first section
-      var col = s.querySelector('.hx-in'), cl = offLeft(col), cr = cl + col.offsetWidth;
-      var lg = [rail + 8, cl - 8], rg = [cr + 8, W - 8], g = spots[i].side ? rg : lg;
-      if (g[1] - g[0] < 44) g = (rg[1] - rg[0]) >= (lg[1] - lg[0]) ? rg : lg;
-      var x = (g[1] - g[0]) < 44 ? (g === rg ? W - 22 : rail + 22) : (g[0] + g[1]) / 2;
-      var p = [x, s.offsetTop + spots[i].fy * s.offsetHeight], prev = pts[pts.length - 1], amp = Math.min(160, W * 0.12);
-      [1 / 3, 2 / 3].forEach(function (f, k) { pts.push([prev[0] + (p[0] - prev[0]) * f + wig[i][k] * amp, prev[1] + (p[1] - prev[1]) * f]); });
-      pts.push(p);
-      marks.push({ x: p[0], y: p[1], color: s.getAttribute('data-x'), at: 0 });
+      var col = s.querySelector('.hx-in'), cl = offLeft(col), cr = cl + col.offsetWidth, need = size + 2 * (gap + amp);
+      var okL = cl - rail >= need, okR = visW - cr >= need, side = spots[i].side;
+      if (side ? !okR : !okL) side = 1 - side;
+      if (!okL && !okR) side = 1;
+      var x = side ? (cr + visW) / 2 : (rail + cl) / 2;
+      var y2 = crossTo(x, secs[i - 1], s), y = s.offsetTop + spots[i].fy * s.offsetHeight;
+      if (typeof y2 === 'number') y = Math.max(y, y2 + 80);
+      pts.push([x, y]);
+      marks.push({ x: x, y: y, color: s.getAttribute('data-x'), at: 0 });
     });
-    // the end: behind the book in the footer (or the bottom of the page if there's no footer book)
+    // the end: behind the book in the footer (or the bottom of the page if there's no footer book), crossing over
+    // below the last words
     var book = document.querySelector('#ma-foot .ma-foot-book img'), end;
     if (book) { var bp = bookSpot(book); end = [bp[0], bp[1]]; }
     else end = [W / 2, H - 30];
-    var last = pts[pts.length - 1];
-    pts.push([last[0] + (end[0] - last[0]) * 0.5 + wig[0][0] * 60, last[1] + (end[1] - last[1]) * 0.5]);
+    crossTo(end[0], secs[secs.length - 1], null);
     pts.push(end);
     endY = end[1]; endX = end[0];
-    var d = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
-    for (var i = 0; i < pts.length - 1; i++) {
-      var p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
-      d += ' C' + (p1[0] + (p2[0] - p0[0]) / 6).toFixed(1) + ' ' + (p1[1] + (p2[1] - p0[1]) / 6).toFixed(1) + ' ' + (p2[0] - (p3[0] - p1[0]) / 6).toFixed(1) + ' ' + (p2[1] - (p3[1] - p1[1]) / 6).toFixed(1) + ' ' + p2[0].toFixed(1) + ' ' + p2[1].toFixed(1);
+    // the line: straight runs with rounded corners, a gentle wiggle down the long runs
+    var P = [pts[0]];
+    pts.forEach(function (p) { var q = P[P.length - 1]; if (Math.abs(p[0] - q[0]) + Math.abs(p[1] - q[1]) > 0.5) P.push(p); });
+    var n = P.length, cin = [], cout = [], rad = [];
+    for (var i = 1; i < n - 1; i++) {
+      var A0 = P[i - 1], B0 = P[i], C0 = P[i + 1], l1 = Math.hypot(B0[0] - A0[0], B0[1] - A0[1]), l2 = Math.hypot(C0[0] - B0[0], C0[1] - B0[1]);
+      var u1 = [(B0[0] - A0[0]) / l1, (B0[1] - A0[1]) / l1], u2 = [(C0[0] - B0[0]) / l2, (C0[1] - B0[1]) / l2];
+      var r = Math.abs(u1[0] * u2[1] - u1[1] * u2[0]) > 0.01 ? Math.min(40, l1 / 2, l2 / 2) : 0;
+      rad[i] = r; cin[i] = [B0[0] - u1[0] * r, B0[1] - u1[1] * r]; cout[i] = [B0[0] + u2[0] * r, B0[1] + u2[1] * r];
+    }
+    function f2(p) { return p[0].toFixed(1) + ' ' + p[1].toFixed(1); }
+    var d = 'M' + f2(P[0]), sg = 1;
+    for (var i = 0; i < n - 1; i++) {
+      var a = i === 0 ? P[0] : cout[i], b = i + 1 === n - 1 ? P[n - 1] : cin[i + 1];
+      if (amp && Math.abs(b[0] - a[0]) < 0.5 && b[1] - a[1] > 160) {
+        var k = Math.max(1, Math.round((b[1] - a[1]) / 260)), st = (b[1] - a[1]) / k;
+        for (var j = 0; j < k; j++) {
+          var y0 = a[1] + j * st, wx = (a[0] + sg * amp).toFixed(1);
+          d += ' C' + wx + ' ' + (y0 + st / 3).toFixed(1) + ' ' + wx + ' ' + (y0 + st * 2 / 3).toFixed(1) + ' ' + a[0].toFixed(1) + ' ' + (y0 + st).toFixed(1);
+          sg = -sg;
+        }
+      } else d += ' L' + f2(b);
+      if (i + 1 < n - 1 && rad[i + 1] > 0) d += ' Q' + f2(P[i + 1]) + ' ' + f2(cout[i + 1]);
     }
     dots.setAttribute('d', d); done.setAttribute('d', d);
     mrect.setAttribute('width', W);
@@ -439,8 +483,8 @@
     want += (len - want) * toEnd * toEnd * (3 - 2 * toEnd);
     cur = cur < 0 || still ? want : cur + (want - cur) * 0.18;
     var k = Math.min(samples.length - 1, Math.round(cur / 5)), s = samples[k];
-    if (Math.abs(s[1] - lastX) > 0.5) flip = s[1] < lastX ? -1 : 1;
-    lastX = s[1];
+    // it faces the way it's moving: only real moves across count, not the trail's small wiggle
+    if (Math.abs(s[1] - lastX) > 16) { flip = s[1] < lastX ? -1 : 1; lastX = s[1]; }
     var size = gomaEl.offsetWidth;
     // past the end of the page the goma moves into the footer itself: the page sits on a layer above the whole
     // footer, so only from inside the footer can it pass behind the book (Maurice, 2026-11-12)

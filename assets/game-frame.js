@@ -44,8 +44,11 @@
     'master-stacker':      { root: '#ms-stack', zoom: '.ms-play', box: ['.ms-hud', '.ms-cv'], how: ['.ms-how'], parts: [{ sel: '.ms-local, .ms-boardp', stack: true }],
                              side: ['.ms-hud', '.ms-ctrls'], snug: true },   // score and buttons sit over Next up, so the board gets the height
     'master-cannoneer':    { root: '#ma-holdwall', zoom: '.wrap', phoneW: 400, phoneHow: ['.wrap > .help'], squeeze: { sel: '.wrap', min: 1100 }, parts: [{ sel: '.hw-boardrow > section.panel', stack: true }] },
-    'sky-fishing':         { root: '#ma-skyduel', zoom: '.sd-wrap', snug: true, phoneW: 600, phoneHow: ['.sd-panel', '.sd-help'], headIn: '.sd-wrap', beside: { host: '.sd-wrap', items: ['.sd-msg', '.sd-weapons', '.sd-pad', '.sd-panel'], wide: true },
+    'sky-fishing':         { root: '#ma-skyduel', zoom: '.sd-wrap', snug: true, phoneW: 480, headIn: '.sd-wrap', beside: { host: '.sd-wrap', items: ['.sd-msg', '.sd-weapons', '.sd-pad', '.sd-panel'], wide: true },
                              wideParts: [{ sel: '.sd-help', name: 'How to play' }],   // the long how-to gets a box of its own, so the map and the crew picker keep their size
+                             // phones: the crew picker gets a screen of its own just before the game (it was squeezed under the name to
+                             // 7px words; QA 2026-11-14), and the row follows it: on to the game when it starts, back when it opens again
+                             phoneParts: [{ sel: '.sd-panel', pre: true, follow: true }, { sel: '.sd-help', name: 'How to play' }],
                              parts: [{ sel: '.gb-row > .gb-card', stack: true }, { sel: '.sd-notes', name: 'Your items' }] }
   };
   var mount = null, cfg = null;
@@ -99,6 +102,7 @@
   if (cfg.phoneJoin && window.innerWidth < 700) cfg.phoneJoin.forEach(function (j) { var a = q(j[0]), b = q(j[1]); if (a && b) { b.appendChild(a); b.classList.add('gs-joined'); } });
   if (cfg.phoneHow && window.innerWidth < 700) cfg.how = (cfg.how || []).concat(cfg.phoneHow);
   if (cfg.wideParts && window.innerWidth >= 700) cfg.parts = cfg.wideParts.concat(cfg.parts || []);
+  if (cfg.phoneParts && window.innerWidth < 700) cfg.parts = cfg.phoneParts.concat(cfg.parts || []);
   // 1. the game: everything the page had, less the parts that get panels of their own
   var h1 = q(H1);
   var game = panel((h1 && (h1.querySelector('.face') || h1).textContent.replace(/\s+/g, ' ').trim()) || 'Game', 'gs-game');
@@ -121,6 +125,15 @@
   function adopt() {
     var moved = false;
     qa(ABOUT, game).forEach(function (e) { if (gameHead && gameHead.contains(e)) return; var from = e.parentElement; if (gameHead) gameHead.appendChild(e); else aboutIn.insertBefore(e, howBox); emptyOut(from); moved = true; });
+    // the daily puzzles' tagline (from the old header) and their how-to (from the card) now sit one under the other, and most
+    // open with the same sentence (Book Icons: 'A famous book, told in icons.' then 'A famous book, told only in icons.'; QA
+    // 2026-11-14): when they do, the how-to is shown and the tagline steps aside, so it's said once
+    var tag = q('.hg-tag', aboutIn), howP = q('.hg-how', aboutIn);
+    if (tag && howP) {
+      var words = function (s) { return (s.split(/[.!?](\s|$)/)[0] || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(function (w) { return w.length > 2 && !/^(and|the|for)$/.test(w); }); };
+      var a = words(tag.textContent), b = words(howP.textContent), same = a.filter(function (w) { return b.indexOf(w) >= 0; }).length;
+      tag.classList.toggle('gs-dup', a.length > 0 && same / Math.min(a.length, b.length || 1) >= 0.75);
+    }
     // the name panel steps aside when everything it held went over the game
     if (gameHead && about.parentNode && !aboutIn.querySelector(':scope > :not(.gs-how)') && !howBox.children.length) { about.parentNode.removeChild(about); }
     (cfg.how || []).forEach(function (sel) { qa(sel, game).forEach(function (e) { var from = e.parentElement; howBox.appendChild(e); emptyOut(from); moved = true; }); });
@@ -130,12 +143,16 @@
       var p = track.querySelector('.gs-panel[data-part="' + i + '"]');
       if (!p) {
         var h = els[part.stack ? els.length - 1 : 0].querySelector('h1,h2,h3'), name = part.name || (h && h.textContent.replace(/\s+/g, ' ').trim()) || 'More';
-        p = panel(name, 'gs-part'); p.setAttribute('data-part', i);
+        p = panel(name, 'gs-part' + (part.pre ? ' gs-pre' : '')); p.setAttribute('data-part', i);
         var col = document.createElement('div'); col.className = (els.length > 1 && !part.stack ? 'gs-group' : 'gs-col') + (part.stack ? ' gs-stack' : ''); p.appendChild(col);
-        // panels keep the order the parts are listed in, after How to play and before the Arcade
-        var after = game;
-        qa('.gs-panel[data-part]', track).forEach(function (o) { if (+o.getAttribute('data-part') < i) after = o; });
-        track.insertBefore(p, after.nextSibling);
+        if (part.pre) track.insertBefore(p, game);   // a setup screen: just before the game
+        else {
+          // panels keep the order the parts are listed in, after How to play and before the Arcade
+          var after = game;
+          qa('.gs-panel[data-part]:not(.gs-pre)', track).forEach(function (o) { if (+o.getAttribute('data-part') < i) after = o; });
+          track.insertBefore(p, after.nextSibling);
+        }
+        if (part.follow) follow(p, els[0]);
       }
       els.forEach(function (e) { var from = e.parentElement; p.firstChild.appendChild(e); emptyOut(from); });
       moved = true;
@@ -166,6 +183,26 @@
     if (toCard) { toCard = false; var ci = qa('.gs-panel', track).indexOf(track.querySelector('.gs-cardp')); if (ci >= 0) setTimeout(function () { gameTouch = 0; var k = at[ci] || 0; var ty = y0 + (starts[k] || 0) + 1; if (still) wTo(0, ty); else glideTo(ty); }, 700); }
   }
   var toCard = false;
+  // a setup screen that comes and goes with the game (Goma Goons' crew picker on phones): its panel is in the row only while
+  // the game shows it, and the row glides to the game when it starts and back to the setup when it opens again (QA 2026-11-14:
+  // 'Start Free-for-All' started the game while the row stayed on the picker)
+  function follow(p, el) {
+    var shownNow = !el.hidden;
+    p.style.display = shownNow ? '' : 'none';
+    if (!window.MutationObserver) return;
+    new MutationObserver(function () {
+      var on = !el.hidden; if (on === shownNow) return; shownNow = on;
+      p.style.display = on ? '' : 'none';
+      size();
+      setTimeout(function () { goPanel(on ? p : game); }, 320);   // after the row has settled onto its new stops
+    }).observe(el, { attributes: true, attributeFilter: ['hidden'] });
+  }
+  function goPanel(p) {
+    var i = panels.indexOf(p); if (i < 0) return;
+    gameTouch = 0; var ty = y0 + (starts[at[i] || 0] || 0) + 1;
+    if (still) wTo(0, ty); else glideTo(ty);
+  }
+  function rowPanels() { return qa('.gs-panel', track).filter(function (p) { return p.style.display !== 'none'; }); }
 
   // the Arcade tiles: each game's art under its color (Links tiles), and their places in the two rows for the fly-in
   var ART = 'https://africhmaurice.github.io/site/assets/arcade/', tileList = [];
@@ -241,7 +278,7 @@
   sbar.className = 'gs-sbar'; sbar.setAttribute('aria-hidden', 'true'); sbar.title = 'Scroll Bar'; sbar.appendChild(sbarIn); stage.appendChild(sbar);
   var panels = [], segs = [];
   function bar() {
-    panels = qa('.gs-panel', track);
+    panels = rowPanels();
     prog.innerHTML = '';
     segs = panels.map(function (p, i) {
       var b = document.createElement('button'), name = p.getAttribute('data-name');
@@ -253,7 +290,7 @@
 
   // scrolling: the row stops with each panel in the middle of the screen and holds still there for a short stretch (so a
   // game nudging the page a few pixels doesn't slide the row), then moves on to the next stop
-  var widthsOf = [], HOLD = 320, HOLD_END = 1040,   /* doubled (Maurice, 2026-11-13: "double the length of the scroll bar") */ starts = [], holds = [], vw = 0, y0 = 0, x = 0, n = 0, wide = false, lefts = [], stops = [], at = [], total = 0, W = 0;
+  var widthsOf = [], HOLD = 320, HOLD_END = 200,   /* a short settle at the end (QA 2026-11-14: a hold of 1040 left a long stretch of scrolling that moved nothing) */ starts = [], holds = [], vw = 0, y0 = 0, x = 0, n = 0, wide = false, lefts = [], stops = [], at = [], total = 0, W = 0;
   function pad(p) { var c = getComputedStyle(p); return { x: parseFloat(c.paddingLeft) + parseFloat(c.paddingRight), y: parseFloat(c.paddingTop) + parseFloat(c.paddingBottom) }; }
   // wide screens: each panel as narrow as it can be while what's in it still fits the screen's height
   // nothing in the column pokes past its right edge (a box that clips its own overflow hides it from scrollWidth)
@@ -280,7 +317,7 @@
         if (p.classList.contains('gs-arcade')) { col.style.height = room + 'px'; p.style.width = (Math.max(1, Math.ceil((col.scrollWidth + d.x - 1) / vw)) * vw) + 'px'; return; }   // a whole number of screens
         // a long part (the Key): full size in screen-wide columns, scrolled through sideways, instead of shrunk until it
         // can't be read ('make the key bigger and wider so you have to scroll through it but it's readable')
-        if (col.scrollHeight > room * 1.15 && !p.classList.contains('gs-about')) {
+        if (col.scrollHeight > room * 1.15 && !p.classList.contains('gs-about') && !p.classList.contains('gs-pre')) {   // (a setup screen shrinks instead: its buttons never split across screens)
           col.classList.add('gs-cols'); col.style.height = room + 'px';
           var box = col.children.length === 1 ? col.firstElementChild : col;
           // n columns, one per screen: the gap is the panel's padding plus the box's own padding and border, so every
@@ -428,7 +465,7 @@
     stage.style.top = hdr + 'px';
     stage.style.height = (vh - hdr) + 'px';
     stage.style.setProperty('--gsvw', cw + 'px');   // the row's real width (a scrollbar can make it narrower than the window)
-    panels = qa('.gs-panel', track); n = panels.length;
+    panels = rowPanels(); n = panels.length;
     stage.classList.add('gs-measure');   // measure boxes where they rest, not partway through a fade-in
     widths();
     // the page's own wrappers must not clip or scroll, or the stage can't stay put
@@ -494,7 +531,7 @@
     tx = x; if (shown !== null) x = shown;
     // the Scroll button: on to the next section; gone at the end (Maurice, 2026-11-13: 'on horizontal scrolls, add a "scroll" button')
     var atEnd = !stops.length || tx >= stops[stops.length - 1] - 1; hint.style.opacity = atEnd ? '0' : ''; hint.style.pointerEvents = atEnd ? 'none' : '';
-    var atStart = x < 4; back.style.opacity = atStart ? '0' : ''; back.style.pointerEvents = atStart ? 'none' : '';
+    var atStart = tx < 4; back.style.opacity = atStart ? '0' : ''; back.style.pointerEvents = atStart ? 'none' : '';
     if (!glide) glide = requestAnimationFrame(draw);
   }
   function goTo(i) {
@@ -550,10 +587,13 @@
   addEventListener('scroll', function () { if (held() && Math.abs(window.scrollY - pressY) > 1) wTo(0, pressY); }, { passive: true });
   // a panel never scrolls inside itself (a focus or a game can scroll a clipped box): it snaps back
   document.addEventListener('scroll', function (e) { var t = e.target; if (t && t.classList && (t.classList.contains('gs-panel') || t === stage) && (t.scrollTop || t.scrollLeft)) { t.scrollTop = 0; t.scrollLeft = 0; } }, true);
+  // every size watcher here reads and changes the page only in the next frame, never while the browser is still delivering size
+  // changes (QA 2026-11-14: 'ResizeObserver loop completed with undelivered notifications' on the game pages)
+  function later(fn) { var on = 0; return function () { if (on) return; on = requestAnimationFrame(function () { on = 0; fn(); }); }; }
   var touched = false, wasWide = window.innerWidth >= 700;
   ['pointerdown', 'keydown'].forEach(function (ev) { game.addEventListener(ev, function () { touched = true; }, true); });
   // a scrollbar that comes or goes changes the window's inner width without a resize event: lay out again for it
-  if (window.ResizeObserver) { var cw0 = document.documentElement.clientWidth; new ResizeObserver(function () { var c = document.documentElement.clientWidth; if (c !== cw0) { cw0 = c; clearTimeout(rt); rt = setTimeout(size, 250); } }).observe(document.documentElement); }
+  if (window.ResizeObserver) { var cw0 = document.documentElement.clientWidth; new ResizeObserver(later(function () { var c = document.documentElement.clientWidth; if (c !== cw0) { cw0 = c; clearTimeout(rt); rt = setTimeout(size, 250); } })).observe(document.documentElement); }
   addEventListener('resize', function () {
     clearTimeout(rt);
     rt = setTimeout(function () { var nowWide = window.innerWidth >= 700; if (nowWide !== wasWide) { location.reload(); return; } wasWide = nowWide; size(); }, 250);
@@ -603,7 +643,9 @@
       var r = el.getBoundingClientRect(), t0 = 1e9, b0 = -1e9;
       Array.prototype.forEach.call(game.children, function (c) { if (!c.offsetParent || bgLayer(c)) return; var b = c.getBoundingClientRect(); if (!b.height) return; t0 = Math.min(t0, b.top); b0 = Math.max(b0, b.bottom); });
       var extra = Math.max(0, (b0 - t0) - r.height);
-      return { w: r.width, h: r.height, z: Math.min(innerW / r.width, (roomH - extra) / r.height) };
+      // anything poking out past its right edge counts too (Master Stacker's Pause ran 4px off the screen; QA 2026-11-14)
+      var rw = Math.max(r.width, el.scrollWidth * (r.width / Math.max(1, el.offsetWidth)));
+      return { w: rw, h: r.height, z: Math.min(innerW / rw, (roomH - extra) / r.height) };
     }
     var m = measure();
     // a daily card: try a few widths and keep the one that fills the most of the screen while its words stay readable
@@ -627,14 +669,31 @@
     var c = q('.wk-champ, .dbd-champ', game); if (!c || !c.offsetParent || c.closest('.gs-beside')) return;
     var b = null; qa(BOARD, game).forEach(function (e) { if (!b && e.offsetParent && e.getBoundingClientRect().top >= c.getBoundingClientRect().top) b = e; }); if (!b) return;
     var st = function (k, v) { c.style.setProperty(k, v, 'important'); };
-    ['width', 'margin-left', 'margin-bottom', 'margin-right'].forEach(function (k) { c.style.removeProperty(k); });
+    ['width', 'margin-left', 'margin-bottom', 'margin-right', 'margin-top', 'white-space', 'font-size', 'padding-left', 'padding-right'].forEach(function (k) { c.style.removeProperty(k); });
+    Array.prototype.forEach.call(c.children, function (e) { e.style.zoom = ''; e.style.removeProperty('white-space'); });
     st('align-self', 'flex-start'); st('box-sizing', 'border-box'); st('max-width', 'none'); st('margin-right', '0px');
+    var k = 1;
     for (var i = 0; i < 2; i++) {
-      var cr = c.getBoundingClientRect(), br = b.getBoundingClientRect(), k = cr.width / Math.max(1, c.offsetWidth) || 1;
+      var cr = c.getBoundingClientRect(), br = b.getBoundingClientRect(); k = cr.width / Math.max(1, c.offsetWidth) || 1;
       st('width', (br.width / k).toFixed(1) + 'px');
       cr = c.getBoundingClientRect();
       st('margin-left', ((parseFloat(getComputedStyle(c).marginLeft) || 0) + (br.left - cr.left) / k).toFixed(1) + 'px');
-      st('margin-bottom', ((parseFloat(getComputedStyle(c).marginBottom) || 0) - (br.top - cr.bottom) / k).toFixed(1) + 'px');
+    }
+    // phones: 12px on screen above it, however far the game is scaled (Sky Gauntlet's Pause sat 10px over it at 83%)
+    if (!wide && parseFloat(getComputedStyle(c).marginTop) >= 12) st('margin-top', (12 / k).toFixed(1) + 'px');
+    // one line, the win count beside the name (QA 2026-11-14: Master Stacker's banner wrapped and its '2' dropped to a line of
+    // its own): less room at the sides, then smaller words, then (a browser with a smallest-text setting) the words scaled
+    st('white-space', 'nowrap'); Array.prototype.forEach.call(c.children, function (e) { e.style.setProperty('white-space', 'nowrap', 'important'); });
+    var over = function () { return c.scrollWidth > c.clientWidth + 1; };
+    if (over()) { st('padding-left', '8px'); st('padding-right', '8px'); }
+    var f = parseFloat(getComputedStyle(c).fontSize), n = 0;
+    while (over() && f > 11 && n++ < 30) { f -= 0.5; st('font-size', f + 'px'); }
+    if (over()) { var zz = (c.clientWidth - 16) / Math.max(1, c.scrollWidth - 16); Array.prototype.forEach.call(c.children, function (e) { e.style.zoom = zz.toFixed(3); }); }
+    // then it touches the board: measured where everything rests (nothing in the row fades or slides in), so the board can never
+    // be pulled up over it
+    for (var j = 0; j < 2; j++) {
+      var cr2 = c.getBoundingClientRect(), br2 = b.getBoundingClientRect();
+      st('margin-bottom', ((parseFloat(getComputedStyle(c).marginBottom) || 0) - (br2.top - cr2.bottom) / k).toFixed(1) + 'px');
     }
   }
   // words too wide for their button or box shrink until they fit (Maurice, 2026-11-13: 'shrink to fit', RESUME wrapping)
@@ -745,10 +804,10 @@
       if (due) adopt(); else if (hadCover) refitSoon();   // (never refits mid-game: a new piece must not move the board)
     }, 60); }).observe(game, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
   }
-  if (window.ResizeObserver) { var el0 = cfg.zoom && q(cfg.zoom, game); if (el0) new ResizeObserver(soon).observe(el0); }
+  if (window.ResizeObserver) { var el0 = cfg.zoom && q(cfg.zoom, game); if (el0) new ResizeObserver(later(soon)).observe(el0); }
   // the board changes size when its start screen gives way (Trench Run on phones grew from 233 to 365 wide): the champion
   // banner follows it, so it is always exactly as wide as the board and touching it (QA 2026-11-14)
-  if (window.ResizeObserver) { var bt = 0, bro = new ResizeObserver(function () { clearTimeout(bt); bt = setTimeout(alignChamp, 60); }); qa(BOARD, game).forEach(function (e) { bro.observe(e); }); }
+  if (window.ResizeObserver) { var bt = 0, bro = new ResizeObserver(later(function () { clearTimeout(bt); bt = setTimeout(alignChamp, 60); })); qa(BOARD, game).forEach(function (e) { bro.observe(e); }); }
   // a leaderboard that fills in after its data loads can outgrow its panel: measure again, but only then (never for the game itself)
   if (window.MutationObserver) {
     var rt2 = 0;
@@ -767,7 +826,7 @@
     }).observe(track, { childList: true, subtree: true });
   }
   // the menu bar settles after the page (the logo loads, its padding is set): the row sits under it again when it does
-  if (window.ResizeObserver) { var hh = -1, ht = 0, ro = new ResizeObserver(function () { var h2 = header(); if (h2 !== hh) { hh = h2; clearTimeout(ht); ht = setTimeout(size, 200); } });
+  if (window.ResizeObserver) { var hh = -1, ht = 0, ro = new ResizeObserver(later(function () { var h2 = header(); if (h2 !== hh) { hh = h2; clearTimeout(ht); ht = setTimeout(size, 200); } }));
     ['header', 'hunt-nav'].forEach(function (id) { var e = document.getElementById(id); if (e) ro.observe(e); }); }
   // late fonts and late rows can push a box past the bottom edge after the first measure: check again, and measure again if so
   function checkOff() {
@@ -779,6 +838,31 @@
     });
     if (off) size();
   }
+  // something that arrives after the row was laid out (a game's 100 XP and Discord box under the board, an export card whose
+  // picture loads late) must never push a panel's words past its top or bottom edge, onto the arrows (QA 2026-11-14: Sky
+  // Gauntlet's game over, Airship Runner's card): checked once a second on screen, and a panel that runs over is fitted again
+  // (the game panel on its own, any other by laying the row out again); the same overflow is never chased twice, and at
+  // most three refits run in ten seconds
+  var overTried = {}, overLog = [];
+  function overCheck() {
+    if (!stops.length || !panels.length || document.hidden) return;
+    var hit = null, sig = '';
+    panels.forEach(function (p, i) {
+      if (hit || p.classList.contains('gs-arcade')) return;
+      var pr = p.getBoundingClientRect(); if (pr.right < 0 || pr.left > window.innerWidth || !pr.height) return;   // only what's on screen
+      var cs = getComputedStyle(p), z = pr.height / Math.max(1, p.offsetHeight) || 1;
+      var top = pr.top + parseFloat(cs.paddingTop) * z - 4, bot = pr.bottom - parseFloat(cs.paddingBottom) * z + 4;
+      var box = p === game ? game : p.firstChild; if (!box || !box.children || (box.classList && box.classList.contains('gs-cols'))) return;
+      var t0 = 1e9, b0 = -1e9;
+      Array.prototype.forEach.call(box.children, function (c) { if (bgLayer(c) || !c.getClientRects().length) return; var b = c.getBoundingClientRect(); if (!b.height) return; t0 = Math.min(t0, b.top); b0 = Math.max(b0, b.bottom); });
+      if (t0 < top || b0 > bot) { hit = p; sig = i + ':' + Math.round(t0 - top) + ':' + Math.round(b0 - bot) + ':' + Math.round(pr.width); }
+    });
+    if (!hit || overTried[sig]) return;
+    var now = Date.now(); overLog = overLog.filter(function (t) { return now - t < 10000; }); if (overLog.length >= 3) return;
+    overTried[sig] = 1; overLog.push(now);
+    if (hit === game) refit(); else size();
+  }
+  setInterval(overCheck, 1000);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { setTimeout(checkOff, 300); setTimeout(steadyPause, 350); });
   setTimeout(checkOff, 3000); setTimeout(checkOff, 6000);
   setTimeout(size, 200); setTimeout(size, 1500);

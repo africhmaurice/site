@@ -29,4 +29,8 @@
   var d=document.getElementById('ma-404');if(!d)return;
   var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#c53200';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
   var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
+  // the block Squarespace wraps around this one carries a negative top margin that slid the "404" under the header (QA 2026-11-14)
+  [d.closest('.fe-block'),fe,d.parentElement].forEach(function(x){if(x){x.style.setProperty('margin-top','0','important');x.style.setProperty('top','auto','important');}});
+  function clear(){var h=document.querySelector('#header,#hunt-nav'),hb=h?h.getBoundingClientRect().bottom:0,t=d.getBoundingClientRect().top;var need=Math.ceil(hb+24-t);if(need>0&&window.scrollY<5)d.style.paddingTop=(parseFloat(getComputedStyle(d).paddingTop)+need)+'px';}
+  clear();setTimeout(clear,400);setTimeout(clear,1500);
 })();</script>

@@ -437,3 +437,23 @@ html.gs-page [data-ma-page] .gs-cols .sd-ksec{break-inside:avoid;margin-bottom:1
   html.gs-page [data-ma-page] #ma-runner .ar-hud.gs-joined .ar-ctrls{min-width:0!important;overflow:hidden;contain:inline-size}   /* its label never sets the row's width */
   html.gs-page [data-ma-page] #ma-runner .ar-hud.gs-joined .ar-ctrls button{min-width:0!important;max-width:100%!important;width:100%!important;flex:1 1 auto!important;padding-left:4px!important;padding-right:4px!important;letter-spacing:.04em!important}
 }
+
+/* ---------- 12. QA pass 2 (2026-11-14) ---------- */
+/* nothing in the row fades or slides in: a board measured partway through its slide-in (28px low) had the champion banner
+   pulled down over it once it landed (The Levian, Master Stacker on phones) */
+html.gs-page [data-ma-page] .gs-stage .ma-rv{opacity:1!important;transform:none!important;translate:none!important}
+html.gs-page [data-ma-page] .gs-stage .ma-rv:not(.ma-in){transition:none!important}
+@media (max-width:699px){
+  /* room between the score row or buttons and the champion banner under them (The Levian's Restart, Sky Gauntlet's Pause) */
+  html.gs-page [data-ma-page] .gs-game :is(.wk-champ,.dbd-champ){margin-top:12px!important}
+  /* Master Stacker: the side column is as wide as its widest button (Resume), so Pause and Restart stay on the screen */
+  html.gs-page [data-ma-page] #ms-stack .ms-play{grid-template-columns:minmax(0,1fr) minmax(108px,max-content)!important}
+  html.gs-page [data-ma-page] #ms-stack .ms-play .wk-champ{margin:4px 0 0!important}   /* (8px row gap + 4px) */
+}
+/* a daily puzzle's tagline that says what its how-to says (game-frame.js marks it) */
+html.gs-page [data-ma-page] .gs-about .gs-dup{display:none!important}
+/* Thread the Needle on phones: the board and its score line 16px in from the screen's edges (they sat 8px in) */
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-flappy .gs-game{padding-left:16px!important;padding-right:16px!important}}
+/* Hold the Wall! on phones: the fighters and upgrades three to a row, so each name has room at full size (QA 2026-11-14:
+   'Gunslinger' and 'Intangible' were shrunk to about 9px in five narrow columns) */
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-holdwall .btns{grid-template-columns:repeat(3,minmax(0,1fr))!important}}

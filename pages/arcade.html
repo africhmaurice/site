@@ -423,7 +423,7 @@
     tiles = q('.ac-card', track).map(function (t, i) {
       var gg = t.parentNode, gr = gg.parentNode, cy = (t.offsetTop + t.offsetHeight / 2) / Math.max(1, gg.offsetHeight);
       var dir = cy < 0.45 ? -1 : cy > 0.55 ? 1 : (i % 2 ? -1 : 1);   // top rows from above, bottom rows from below
-      return { el: t, left: gr.offsetLeft + gg.offsetLeft + t.offsetLeft, w: t.offsetWidth, dir: dir };
+      return { el: t, left: gr.offsetLeft + gg.offsetLeft + t.offsetLeft, w: t.offsetWidth, dir: dir, gEnd: gr.offsetLeft + gg.offsetLeft + gg.offsetWidth };
     });
     paint(true);
   }
@@ -436,6 +436,9 @@
     var vw = cw, vh = window.innerHeight, done = clamp01((span - x) / (vw * 0.4));
     tiles.forEach(function (t) {
       var ph = vw < 700, mid = t.left - x + t.w / 2, k = ph ? clamp01((mid - vw * 1.05) / (vw * 0.5)) : clamp01((mid - vw * 0.55) / (vw * 0.45));   // phones: in place as soon as the tile is on screen (Maurice, 2026-11-13)
+      // wide screens: a group's tiles have all landed by the time the whole group is on screen, so Skyword through Sky Mines
+      // are seen together, settled (QA 2026-11-14: the right-hand tiles were still flying in while the left ones were in place)
+      if (!ph) k = Math.min(k, clamp01((t.gEnd - x - vw) / (vw * 0.25)));
       k = k * k * (3 - 2 * k) * done;
       t.el.style.setProperty('--ty', (t.dir * k * vh * 0.75).toFixed(1) + 'px');
       t.el.style.setProperty('--op', (1 - k * 0.5).toFixed(3));

@@ -1211,6 +1211,22 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 #av .avt-r:hover,#av .avt-r:focus-visible,#av .avt-r.on{opacity:1}
 #av .avt-r:focus-visible{outline:2px solid #fff;outline-offset:2px}
 #av.avt-railed .av-wrap{padding-left:max(var(--av-pad,20px),88px)}
+/* words never break mid-word (2026-11-14): player titles wrap at spaces only */
+#av .av-plabel,#av .av-enc .a,#av .av-enc .q,#av .av-enc .v{overflow-wrap:normal;word-break:normal;hyphens:none}
+/* a roll's die sits above its words once the card is too narrow for both side by side (the words wrap under the die
+   when less than 200px would be left beside it) */
+#av .av-enc{flex-wrap:wrap;row-gap:12px;align-content:flex-start}
+#av .av-enc>div:not(.av-die){flex:1 1 200px;min-width:0}
+@media (max-width:700px){#av .av-draws .av-enc>div:not(.av-die){flex:none;min-width:auto}}
+@media (max-width:760px){
+  /* the player's title gets the full width on its own line, the button, track, and time under it */
+  #av .av-player{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"lab lab lab" "btn trk time";align-items:center;column-gap:12px;row-gap:10px}
+  #av .av-pmid{display:contents}
+  #av .av-plabel{grid-area:lab;margin-bottom:0;font-size:12px;letter-spacing:.08em;line-height:1.4}
+  #av .av-pbtn{grid-area:btn}
+  #av .av-ptrack{grid-area:trk}
+  #av .av-ptime{grid-area:time}
+}
 @media (max-width:760px){
   #av .avt-rail{left:6px;width:38px;gap:3px}
   #av .avt-r{font-size:clamp(12px,2.1vh,17px)}
