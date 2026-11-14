@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
-<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=10" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=9"></script>
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=11" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=10"></script>
 <!-- ============================================================
      GOMA GOONS (was Sky Duel, then Mortar Mayhem / Mortar Madness; renamed 11/2) - a turn-based artillery game.
      Lives at /sky-fishing (page address kept so the Act Three riddle card link still works;
@@ -884,7 +884,7 @@ var ArcadeCard = (function () {
   function fitView(force){
     var st=d.querySelector('.sd-stage'),sw=st.clientWidth;if(!sw||!padEl||padEl.hidden)return;
     var parts=['.sd-bar','.sd-view','.sd-weapons','.sd-pad','.sd-msg'],ctrl=0;parts.forEach(function(q){var e=d.querySelector(q);if(e&&!e.hidden)ctrl+=e.offsetHeight+12;});
-    var room=innerHeight-headerCover()-ctrl-4-16,h0=sw*(narrow?600/560:540/960),h=Math.max(sw*(narrow?.6:.3),Math.min(h0,room));
+    var fr=window.maGameRoom&&window.maGameRoom(st),room=fr>0?fr:innerHeight-headerCover()-ctrl-4-16,h0=sw*(narrow?600/560:540/960),h=Math.max(sw*(narrow?.6:.3),Math.min(h0,room));
     if(!force&&Math.abs(h-fitH)<24)return;fitH=h;
     VH=Math.round(VW*h/sw);cv.width=VW*DPR;cv.height=VH*DPR;clampCam();
   }
@@ -1515,11 +1515,11 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
   }
   function drawHud(){
     cx.font='800 '+FS+'px Almarai,sans-serif';cx.textBaseline='alphabetic';
-    cx.textAlign='left';cx.fillStyle='#fffffe';if(narrow&&mode==='ffa')cx.font='800 '+Math.max(MINF,Math.round(FS*.75))+'px Almarai,sans-serif';cx.fillText(mode==='ffa'?'FREE-FOR-ALL':'LEVEL '+level,16,FS+12);cx.font='800 '+FS+'px Almarai,sans-serif';
+    cx.textAlign='left';cx.fillStyle='#fffffe';if(narrow&&mode==='ffa')cx.font='800 '+Math.max(MINF,Math.round(FS*.75))+'px Almarai,sans-serif';var hl=mode==='ffa'?'FREE-FOR-ALL':'LEVEL '+level,hlw=cx.measureText(hl).width;cx.fillText(hl,16,FS+12);cx.font='800 '+FS+'px Almarai,sans-serif';
     if(canAct()){var my=FS*2+22;cx.font='800 '+Math.max(MINF,Math.round(FS*.8))+'px Almarai,sans-serif';cx.fillText('MOVES',16,my);var mx=16+cx.measureText('MOVES').width+10,mw=narrow?90:70;
       cx.fillStyle='rgba(11,23,15,.75)';cx.fillRect(mx,my-10,mw,9);cx.fillStyle='#ffd166';cx.fillRect(mx+1,my-9,(mw-2)*walkLeft/WALK,7);}
     cx.font='800 '+FS+'px Almarai,sans-serif';cx.textAlign='center';cx.fillStyle='#fffffe';
-    var wx=VW/2;cx.fillText(wind?'WIND '+Math.abs(wind):'CALM',wx,FS+12);
+    var wl=wind?'WIND '+Math.abs(wind):'CALM',ww=cx.measureText(wl).width,wg=Math.ceil(14/(KS||1)),wtl=phase!=='panel'&&active?(team===0?'YOUR TURN':mode==='ffa'?GOMAS[active.goma][1].toUpperCase()+'’S TURN':'RIVAL TURN'):'';if(narrow&&wtl.length>12&&active)wtl=GOMAS[active.goma][1].toUpperCase();var wlo=16+hlw+wg+ww/2,whi=VW-16-(wtl?cx.measureText(wtl).width+wg:0)-ww/2,wx=Math.max(wlo,Math.min(whi,VW/2));if(wlo>whi)wx=(wlo+whi)/2;cx.fillText(wl,wx,FS+12);
     if(wind){var ay=FS+30,len=12+Math.abs(wind)*(narrow?6:8),dir=wind>0?1:-1,x0=wx-dir*len/2,x1=wx+dir*len/2;
       cx.strokeStyle='#89fbcb';cx.lineWidth=4;cx.beginPath();cx.moveTo(x0,ay);cx.lineTo(x1-dir*8,ay);cx.stroke();
       cx.fillStyle='#89fbcb';cx.beginPath();cx.moveTo(x1,ay);cx.lineTo(x1-dir*12,ay-8);cx.lineTo(x1-dir*12,ay+8);cx.fill();}

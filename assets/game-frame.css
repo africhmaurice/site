@@ -916,3 +916,138 @@ html.gs-page [data-ma-page] .gs-about .gs-col:not(.gs-cols) > :is(#gs-none,h1,.h
 /* Hold the Wall!'s start card inside the scaled game: its name 12px or more over its line, the line never under 11px */
 html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .over{gap:max(12px,calc(12.5px / var(--gsz,1)))!important}
 html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .over p{font-size:max(15px,min(calc(11.6px / var(--gsz,1)),18px))!important}
+
+/* ---------- 18. QA pass 8 (2026-11-14) ---------- */
+/* Master Stacker on short phones (game-frame.js: 'short'): Next up with Pause and Restart in a bar over the board, the arrow pad
+   under it, both at full size outside the scaled game, and the score boxes on a screen of their own after the game, so every
+   word reads at 11px or more (pass 8: the whole game was scaled to 53% on a 360x640 screen, its words 8-9px) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ms-stack .gs-game.gs-short{gap:0!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-short .ms-play{grid-template-columns:minmax(0,1fr)!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-short > .gs-topbar{flex:none;display:flex;align-items:stretch;gap:12px;width:100%;box-sizing:border-box;margin:0 0 12px;zoom:normal}
+  html.gs-page [data-ma-page] #ms-stack .gs-topbar .ms-slip{flex:1 1 auto;min-width:0;margin:0!important;padding:8px 12px!important;justify-content:center;opacity:1!important;transform:none!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-topbar .ms-slip .ms-item{gap:12px!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-topbar .ms-slip .ms-sq{width:44px!important;height:44px!important;padding:3px!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-topbar .ms-slip .ms-txt{flex-direction:column!important;align-items:flex-start!important;gap:2px!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-topbar .ms-slip h2{font-size:14px!important;line-height:1.2!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-topbar .ms-slip .ms-nm{font-size:13px!important;line-height:1.3!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-topbar .ms-slip .ms-un{font-size:12px!important;line-height:1.3!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-topbar .ms-ctrls{flex:none!important;display:flex!important;flex-direction:column!important;justify-content:center!important;gap:8px!important;width:auto!important;max-width:none!important;margin:0!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-topbar .ms-ctrls .ms-btn{font-size:12px!important;padding:8px 12px!important;letter-spacing:.06em!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-short > .ms-pad.gs-dropped{flex:none;width:100%!important;max-width:none!important;margin:12px 0 0!important;gap:6px!important;zoom:normal!important;box-sizing:border-box}
+  html.gs-page [data-ma-page] #ms-stack .gs-short > .ms-pad.gs-dropped button{min-height:44px!important;font-size:12px!important;padding:6px 2px!important;letter-spacing:.02em!important}
+  /* the score boxes on their own screen: two by two, full size */
+  html.gs-page [data-ma-page] #ms-stack .gs-part .ms-hud{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;width:100%!important;max-width:none!important;margin:0!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-part .ms-hud > *{padding:16px 8px!important;gap:6px!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-part .ms-hud span{font-size:13px!important;letter-spacing:.08em!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-part .ms-hud b{font-size:24px!important}
+}
+/* ...and the start, pause, and game-over cards on its board keep their words at 11px or more and 12px or more apart, however far
+   the board is scaled (--gsz) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ms-stack .gs-short .ms-in{gap:max(16px,calc(15px / var(--gsz,1)))!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-short .ms-ov :is(.ms-p,.ms-dmsg,.ms-stats,.ms-nb,.ms-streak,.ms-final span,.ms-btn){font-size:max(13px,calc(11.8px / var(--gsz,1)))!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-short .ms-ov .ms-big{font-size:max(30px,calc(11.8px / var(--gsz,1)))!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-short .ms-ov .ms-final{gap:max(6px,calc(4px / var(--gsz,1)))!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-short .ms-ov .ms-row{gap:max(12px,calc(12.5px / var(--gsz,1)))!important}
+  html.gs-page [data-ma-page] #ms-stack .gs-topbar .ms-slip .ms-txt{gap:4px!important}
+}
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ms-stack .gs-topbar .ms-slip :is(h2,.ms-nm,.ms-un){white-space:nowrap!important}   /* one line each, so the bar never changes height with the next crate's name */
+}
+/* short phones, in a browser that draws text at 13px or more (html.gs-floor, set by game-frame.js): the bar over the board and the
+   rows under it are scaled to 78%, so their words read at 12.5px and keep room inside their boxes (Master Stacker's RIGHT and DOWN
+   filled theirs at 16px) */
+@media (max-width:699px){
+  html.gs-page.gs-floor [data-ma-page] .gs-game.gs-short > :is(.gs-topbar,.gs-dropped){zoom:.78!important;width:100%!important}
+  html.gs-page.gs-floor [data-ma-page] .gs-game.gs-short > .gs-topbar{margin-bottom:calc(12px / .78)!important}
+  html.gs-page.gs-floor [data-ma-page] .gs-game.gs-short > .gs-dropped{margin-top:calc(12px / .78)!important}
+  html.gs-page.gs-floor [data-ma-page] #ms-stack .gs-short > .ms-pad.gs-dropped button{min-height:56px!important}
+}
+/* Goma Goons on short phones (game-frame.js: 'short'): the score row with Pause and New run over the battlefield, the weapons, the
+   move buttons, and the turn message under it, all at full size, so the battlefield keeps the width (pass 8: the whole game at 62%
+   on a 360x640 screen, its words 10.5px, the Zoom row touching the weapons, the turn message 3px under the buttons) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-skyduel .gs-game.gs-short{gap:0!important}
+  html.gs-page [data-ma-page] #ma-skyduel .gs-short > .gs-topbar{flex:none;width:100%;box-sizing:border-box;margin:0 0 12px;zoom:normal}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .gs-topbar .sd-bar{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;align-items:center!important;column-gap:16px!important;row-gap:12px!important;margin:0!important;padding:0!important;width:100%!important;max-width:none!important;font-size:12px!important;letter-spacing:.08em!important;line-height:1.3!important;zoom:normal!important}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel#ma-skyduel .gs-topbar :is(.sd-bar,.sd-bar *){font-size:12px!important}
+  html.gs-page [data-ma-page] #ma-skyduel .gs-topbar .sd-bar > span{white-space:nowrap}
+  html.gs-page [data-ma-page] #ma-skyduel .gs-topbar .sd-bar::before{display:none!important}
+  /* Pause and New run in a column at the bar's right, each a set size, so 'Tap again to start over' never moves anything */
+  html.gs-page [data-ma-page] #ma-skyduel .gs-short > .gs-topbar{display:flex;align-items:center;gap:12px}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .gs-topbar .sd-bar{flex:1 1 auto!important;width:auto!important;min-width:0!important}
+  html.gs-page [data-ma-page] #ma-skyduel .gs-topbar .gs-barcol{flex:none;width:118px;display:flex;flex-direction:column;gap:8px}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .gs-topbar .gs-barcol .sd-btn{width:100%!important;min-width:0!important;margin:0!important;padding:0 6px!important;font-size:12px!important;line-height:1.2!important;letter-spacing:.04em!important;white-space:normal!important;overflow-wrap:normal!important}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .gs-topbar .gs-barcol .sd-pause{height:34px!important}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .gs-topbar .gs-barcol .sd-new{height:calc(2.4em + 14px)!important}
+  /* each number keeps a set width (figures of one width), so the row never rewraps and Pause never moves as the score grows */
+  html.gs-page [data-ma-page] #ma-skyduel .gs-topbar .sd-bar b{display:inline-block;font-variant-numeric:tabular-nums;text-align:left;min-width:2ch}
+  html.gs-page [data-ma-page] #ma-skyduel .gs-topbar .sd-bar :is(.sd-score,.sd-best){min-width:5ch}
+  html.gs-page [data-ma-page] #ma-skyduel .gs-topbar .sd-bar :is(.sd-coin,.sd-hp0,.sd-hp1,.sd-startot){min-width:4ch}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .gs-short > .sd-weapons.gs-dropped{width:100%!important;max-width:none!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;margin:12px 0 0!important;zoom:normal}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .gs-short > .sd-weapons .sd-wpn{min-height:0!important;padding:6px 4px!important;gap:2px!important;font-size:11.5px!important;letter-spacing:0!important;line-height:1.25!important;text-align:center!important;align-items:center!important}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .gs-short > .sd-weapons .sd-wpn :is(span,small){font-size:11.5px!important;letter-spacing:0!important;max-width:100%}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .gs-short > .sd-pad.gs-dropped{width:100%!important;max-width:none!important;gap:6px!important;margin:12px 0 0!important;zoom:normal}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .gs-short > .sd-pad.gs-dropped button{min-height:40px!important;padding:6px 2px!important;font-size:12px!important;letter-spacing:.02em!important}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .gs-short > .sd-msg.gs-dropped{width:100%!important;max-width:none!important;margin:12px 0 0!important;font-size:13px!important;line-height:1.4!important;min-height:2lh!important;text-align:center!important;zoom:normal}
+  /* the view buttons on their own screen, two by two */
+  html.gs-page [data-ma-page] #ma-skyduel .gs-part .sd-view{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;width:100%!important}
+  html.gs-page [data-ma-page] #ma-skyduel .gs-part .sd-view .sd-btn{font-size:13px!important;padding:14px 8px!important}
+}
+/* Goma Goons' Your items on phones: the drops in three columns, so a caption never runs to the next one (pass 8: 'weapons' and
+   'upgrades' 7.8px apart in a browser that draws text at 16px) */
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-skyduel .sd-drops{grid-template-columns:repeat(3,minmax(0,1fr))!important;column-gap:12px!important}}
+/* the result panel on phones can be scaled down to 80% to fit its screen (game-frame.js): its form labels are set at 14px, so they
+   read at 11px or more however far it goes (pass 8: Sky Gauntlet's First name, Your email, Country at 10.0px on a 400x670 screen,
+   Goma Goons' at 9.6px on a 360x640 one) */
+@media (max-width:699px){html.gs-page [data-ma-page] .gs-cardp.gs-cardp :is(label,small){font-size:14px!important}}
+/* Sky Gauntlet's cards on its board (start, pause, game over) keep 11px or more however far the board is scaled: the old cap let
+   'Score 1,400 on wave 1' and 'Put your score on the board' read at 10.7-10.9px on a 360x640 screen in a browser that draws text
+   at 16px (pass 8) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-gauntlet#ma-gauntlet .sg-ov p{font-size:max(14px,calc(11.8px / var(--gsz,1)))!important}
+  html.gs-page [data-ma-page] #ma-gauntlet#ma-gauntlet .sg-ov .sg-btn{font-size:max(15px,calc(12px / var(--gsz,1)))!important}
+}
+/* ...and its How to play name 12px or more over the first line (pass 8: 11.2px at 390x844 in a browser that draws text at 16px) */
+html.gs-page [data-ma-page] #ma-gauntlet#ma-gauntlet .sgb-ph + .sg-how{margin-top:calc(4px / var(--gz,1))!important}
+/* Hold the Wall! on phones: the score row keeps one size all game: room for three lines from the start (Shield and Enemies left
+   join it mid-game), its figures of one width, so Pause and the battlefield never move (pass 8: at 360x640, about 21 seconds into
+   wave 1, the row grew from two lines to three and dropped Pause 16px) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .hud{align-content:flex-start!important;letter-spacing:.05em!important;min-height:calc(3lh + 2 * max(12px,calc(12.5px / var(--gsz,1))))}
+  html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .hud > span{white-space:nowrap}
+  html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .hud b{font-variant-numeric:tabular-nums}
+}
+/* Hold the Wall! on taller phones, its fighters under the battlefield (pass 8, 390x844): Fighters and Tower on one row and Send,
+   Train, and Shield on the next, 12px or more apart with room inside each box (they ran past their boxes 6px apart); each AUTO and
+   the line under the fighters 12px or more from what's over them */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .gs-game #hw-ctl .ph{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:max(12px,calc(12.5px / var(--gsz,1)))!important}
+  html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .gs-game #hw-ctl .ph > *{grid-column:1 / -1}
+  html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .gs-game #hw-ctl .ph > :is(.tabs,.tacts) button{grid-column:span 3!important}
+  html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .gs-game #hw-ctl .ph > .acts button{grid-column:span 2!important}
+  html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .gs-game #hw-ctl .ph > :is(.tabs,.acts,.tacts) button{width:auto!important;min-width:0!important;margin:0!important;letter-spacing:.02em!important;padding-left:6px!important;padding-right:6px!important;white-space:nowrap!important}
+  html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .gs-game #hw-ctl .ph2 .tacts{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:max(12px,calc(12.5px / var(--gsz,1)))!important;width:100%}
+  html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .gs-game #hw-ctl .auto{margin-top:calc(4px / var(--gsz,1))!important}
+  html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .gs-game #hw-ctl .actkey{margin-top:calc(6px / var(--gsz,1))!important}
+}
+/* ...and on their own screen, in a browser that draws text at 13px or more, the fighters' and upgrades' names are scaled to 82% (13px
+   as drawn) so Prism Guard and Crest Knight keep room inside their boxes (pass 8: they touched the borders at 360x640) */
+@media (max-width:699px){html.gs-page.gs-floor [data-ma-page] .gs-part #hw-ctl .btns .b .nm{zoom:max(.82,calc(.72 / var(--gz,1)))!important}}
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .gs-part #hw-ctl .actkey{margin-top:calc(6px / var(--gz,1))!important}}
+/* The Levian on phones: its one-line score row keeps 12px or more between Segments, Best, Pause, and Restart (game-frame.js
+   scales the pieces together to fit, never under 11px; pass 8: Segments and Best were 8.3px apart) */
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-levian#ma-levian .lv-bar{column-gap:12px!important}}
+/* Hold the Wall!'s Best this week and its board: 12px or more between their lines (pass 8: 'Board closes in' was 10.5px over 'The
+   board is resting.', the big 0 10px over 'No games yet this week.'; 9-9.5px in a browser that draws text at 16px) */
+html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .gs-part section.panel:not(.ctl){gap:max(14px,calc(14px / var(--gz,1)))!important}
+@media (max-width:699px){
+  html.gs-page.gs-floor [data-ma-page] #ma-skyduel#ma-skyduel .gs-short > .sd-pad.gs-dropped button{min-height:52px!important}
+  html.gs-page.gs-floor [data-ma-page] #ma-skyduel .gs-topbar .gs-barcol{width:150px}
+}
+@media (max-width:699px){
+  html.gs-page.gs-floor [data-ma-page] #ma-skyduel#ma-skyduel .gs-topbar .gs-barcol .sd-pause{height:44px!important}
+  html.gs-page.gs-floor [data-ma-page] #ma-skyduel#ma-skyduel .gs-topbar .gs-barcol .sd-new{height:56px!important}
+}
+@media (max-width:699px){html.gs-page.gs-floor [data-ma-page] #ms-stack .gs-topbar .ms-ctrls .ms-btn{padding:12px 14px!important}}

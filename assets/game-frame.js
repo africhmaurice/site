@@ -52,17 +52,28 @@
     'the-levian':          { phoneHowAfter: true, phoneRow: '.lv-bar', root: '#ma-levian', zoom: '.lv-stage', fit: ['.lv-bar', '.wk-champ'],
                              how: ['.lv-side > .lvb-panel:not(.lvb-local):not(.lvb-boardp)'], parts: [{ sel: '.lvb-local, .lvb-boardp', stack: true }] },
     'master-stacker':      { root: '#ms-stack', zoom: '.ms-play', box: ['.ms-hud', '.ms-cv'], how: ['.ms-how'], parts: [{ sel: '.ms-local, .ms-boardp', stack: true }],
-                             side: ['.ms-hud', '.ms-ctrls'], snug: true },   // score and buttons sit over Next up, so the board gets the height
+                             side: ['.ms-hud', '.ms-ctrls'], snug: true,   // score and buttons sit over Next up, so the board gets the height
+                             // short phones: Next up with Pause and Restart in a bar over the board and the arrow pad under it, both at
+                             // full size, and the score boxes on a screen of their own right after the game, so every word reads at
+                             // 11px or more (QA 2026-11-14, pass 8: the whole game scaled to 53% on a 360x640 screen, its words 8-9px)
+                             short: { maxH: 760, bar: ['.ms-slip', '.ms-ctrls'], drop: ['.ms-pad'], parts: [{ sel: '.ms-hud', name: 'Score', fit: true }] } },
     // short phones: the fighters and upgrades on a screen of their own right after the battlefield, so both read at full size (QA
     // 2026-11-14: on a 360x640 screen the whole game was scaled to 55%, its words 8-9px)
-    'master-cannoneer':    { phoneParts: [{ sel: '#hw-ctl', name: 'Fighters and upgrades', maxH: 760, fit: true }], root: '#ma-holdwall', zoom: '.wrap', phoneW: 400, phoneHow: ['.wrap > .help'], squeeze: { sel: '.wrap', min: 1100 }, parts: [{ sel: '.hw-boardrow > section.panel', stack: true }] },
+    // (pass 8: phones up to 900px tall too: at 390x844 the tab row ran past its boxes, and with room kept for the score row's third
+    // line and the gaps fixed, the game under it would have been scaled to 63%, its words 10px)
+    'master-cannoneer':    { phoneParts: [{ sel: '#hw-ctl', name: 'Fighters and upgrades', maxH: 900, fit: true }], root: '#ma-holdwall', zoom: '.wrap', phoneW: 400, phoneHow: ['.wrap > .help'], squeeze: { sel: '.wrap', min: 1100 }, parts: [{ sel: '.hw-boardrow > section.panel', stack: true }] },
     // (phones: the crew picker's how-to line goes to How to play, so the picker fits its screen at full size; QA 2026-11-14: 61%)
     'sky-fishing':         { phoneHow: ['.sd-panel .sd-note'], root: '#ma-skyduel', zoom: '.sd-wrap', snug: true, phoneW: 420, phoneMinW: 360, headIn: '.sd-wrap', beside: { host: '.sd-wrap', items: ['.sd-msg', '.sd-weapons', '.sd-pad', '.sd-panel'], wide: true },
                              wideParts: [{ sel: '.sd-help', name: 'How to play' }],   // the long how-to gets a box of its own, so the map and the crew picker keep their size
                              // phones: the crew picker gets a screen of its own just before the game (it was squeezed under the name to
                              // 7px words; QA 2026-11-14), and the row follows it: on to the game when it starts, back when it opens again
                              phoneParts: [{ sel: '.sd-panel', pre: true, follow: true }, { sel: '.sd-help', name: 'How to play' }],
-                             parts: [{ sel: '.gb-row > .gb-card', stack: true }, { sel: '.sd-notes', name: 'Your items' }] }
+                             parts: [{ sel: '.gb-row > .gb-card', stack: true }, { sel: '.sd-notes', name: 'Your items' }],
+                             // short phones: the score row with Pause and New run over the battlefield, the weapons, the move buttons, and the
+                             // turn message under it, all at full size outside the scaled game, and the view buttons on a screen of their own
+                             // right after it, so the battlefield keeps the screen's width and every word reads at 11px or more (QA 2026-11-14,
+                             // pass 8: the whole game scaled to 62% on a 360x640 screen, its words 10.5px)
+                             short: { maxH: 760, flow: true, bar: ['.sd-bar', ['.sd-pause', '.sd-new']], drop: ['.sd-weapons', '.sd-pad', '.sd-msg'], parts: [{ sel: '.sd-view', name: 'View' }] } }
   };
   var mount = null, cfg = null;
   document.querySelectorAll('[data-ma-page]').forEach(function (m) { var k = m.getAttribute('data-ma-page'); if (GAMES[k]) { mount = m; cfg = GAMES[k]; } });
@@ -117,6 +128,9 @@
   if (cfg.phoneHowAfter && window.innerWidth < 700 && cfg.how && cfg.how.length) { cfg.parts = [{ sel: cfg.how.join(', '), name: 'How to play' }].concat(cfg.parts || []); cfg.how = []; }
   if (cfg.wideParts && window.innerWidth >= 700) cfg.parts = cfg.wideParts.concat(cfg.parts || []);
   if (cfg.phoneParts && window.innerWidth < 700) cfg.parts = cfg.phoneParts.filter(function (p) { return !p.maxH || window.innerHeight < p.maxH; }).concat(cfg.parts || []);
+  var short = cfg.short && window.innerWidth < 700 && window.innerHeight < cfg.short.maxH ? cfg.short : null;
+  if (short && short.parts) cfg.parts = short.parts.concat(cfg.parts || []);
+  if (short && short.flow) { cfg.phoneW = 0; cfg.phoneMinW = 0; cfg.phoneFlow = true; }   // (the scaled game is as wide as the screen's room)
   // 1. the game: everything the page had, less the parts that get panels of their own
   var h1 = q(H1);
   var game = panel((h1 && (h1.querySelector('.face') || h1).textContent.replace(/\s+/g, ' ').trim()) || 'Game', 'gs-game');
@@ -612,6 +626,8 @@
     setLen();   // the page is always as long as the row needs, whichever path laid it out (QA 2026-11-14: Sort the Shelf at 1920 grew a screen on START and the arrows ran into the footer)
   }
   function size(keep) {
+    // (a browser with a smallest-text setting of 13px or more: the frame CSS scales a few tight rows of buttons instead; QA pass 8)
+    document.documentElement.classList.toggle('gs-floor', floorPx() >= 13);
     keep = keep === true;   // the game keeps its size and place: its result is on the way (Goma Goons' Pause jumped at game over; QA 2026-11-14)
     var restK = -1; stops.forEach(function (v, k) { if (Math.abs(v - x) < 3) restK = k; });
     var vh = window.innerHeight, hdr = header();
@@ -931,10 +947,22 @@
     }, { passive: false, capture: true });
     // touch: a drag more sideways than up or down moves the row with the finger; letting go eases it onto a stop
     var sw = { on: -1, x: 0, y: 0, lx: 0, rx: 0, pts: [] };
+    // (what is really under the finger: the browser hands a touch that lands in the empty room next to a button to the button, so a
+    // swipe started in the gap beside The Levian's Pause never moved the row; QA 2026-11-14, pass 8)
+    function under(e) {
+      var t = e.target, p = e.touches && e.touches[0]; if (!p || !t || !t.getBoundingClientRect) return t;
+      var r = t.getBoundingClientRect();
+      if (p.clientX >= r.left && p.clientX <= r.right && p.clientY >= r.top && p.clientY <= r.bottom) return t;
+      var f = document.elementFromPoint(p.clientX, p.clientY); return f && o.stage.contains(f) ? f : t;
+    }
     o.stage.addEventListener('touchstart', function (e) {
-      sw.on = e.touches.length === 1 && !(o.skip && o.skip(e.target, 'touch')) ? 0 : -1;
+      var u = under(e);
+      sw.on = e.touches.length === 1 && !(o.skip && o.skip(u, 'touch')) ? 0 : -1;
       if (sw.on < 0) return;
-      sw.x = sw.lx = e.touches[0].clientX; sw.y = e.touches[0].clientY;
+      sw.x = sw.lx = e.touches[0].clientX; sw.y = sw.ly = e.touches[0].clientY;
+      // ...and the browser won't scroll for such a touch when that button keeps its drags (Master Stacker's arrow pad): the page is
+      // scrolled up and down here instead (QA 2026-11-14, pass 8: an up or down swipe just under the pad did nothing)
+      sw.adj = u !== e.target && typeof pans === 'function' && !pans(e.target, 'y');
     }, { passive: true });
     o.stage.addEventListener('touchmove', function (e) {
       if (sw.on < 0) return;
@@ -942,9 +970,14 @@
       var cx = e.touches[0].clientX, dx = cx - sw.x, dy = e.touches[0].clientY - sw.y;
       if (!sw.on) {
         if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
-        sw.on = Math.abs(dx) > Math.abs(dy) * 1.2 ? 1 : -1;
+        sw.on = Math.abs(dx) > Math.abs(dy) * 1.2 ? 1 : sw.adj ? 2 : -1;
         if (sw.on < 0) return;
-        R.stop(); sw.rx = sw.rx0 = o.x(); sw.pts = []; sw.edge = 0; sw.lx = sw.x; if (o.took) o.took();   // (from where the finger went down: the row stays under it)
+        if (sw.on === 2) { R.stop(); R.down = true; if (o.took) o.took(); }
+        else { R.stop(); sw.rx = sw.rx0 = o.x(); sw.pts = []; sw.edge = 0; sw.lx = sw.x; if (o.took) o.took(); }   // (from where the finger went down: the row stays under it)
+      }
+      if (sw.on === 2) {
+        if (e.cancelable) e.preventDefault();
+        var cy = e.touches[0].clientY; set(window.scrollY - (cy - sw.ly)); sw.ly = cy; return;
       }
       if (e.cancelable) e.preventDefault();
       var st = o.stops(), lo = st[0] || 0, hi = st[st.length - 1] || 0;
@@ -954,6 +987,7 @@
     }, { passive: false });
     o.stage.addEventListener('touchend', function (e) {
       var was = sw.on; sw.on = -1;
+      if (was === 2) { R.eat = now(); R.down = false; R.settle(0); return; }   // (the page scrolled by hand above: settles on a stop as a scroll does)
       if (was !== 1) return;
       R.eat = now(); R.down = false;
       var p = sw.pts, v = 0;
@@ -992,7 +1026,7 @@
   function fitPhone(el) {
     var gs = getComputedStyle(game), innerW = game.clientWidth - parseFloat(gs.paddingLeft) - parseFloat(gs.paddingRight) - 4;
     var roomH = game.clientHeight - parseFloat(gs.paddingTop) - parseFloat(gs.paddingBottom) - 4;
-    var flow = el.matches('.hg-card, #daily-word main') || !!cfg.phoneW;
+    var flow = el.matches('.hg-card, #daily-word main') || !!cfg.phoneW || !!cfg.phoneFlow;
     el.style.zoom = ''; el.style.removeProperty('--gsz'); el.style.minHeight = ''; el.style.marginLeft = 'auto'; el.style.marginRight = 'auto';
     el.style.width = flow ? (cfg.phoneW || innerW) + 'px' : (cfg.snug ? 'fit-content' : '');
     // a visitor with no saved player gets the sign-in questions before START: they keep their full size, one column the
@@ -1012,7 +1046,7 @@
     var m = measure();
     // a daily card: try a few widths and keep the one drawn widest at 85% or more, so its words stay readable, else the one drawn
     // at the largest scale (QA 2026-11-14)
-    if (flow && !cfg.phoneW && m.z < 0.98) {
+    if (flow && !cfg.phoneW && !cfg.phoneFlow && m.z < 0.98) {
       var zOf = function (mm) { return Math.min(1, mm.z); }, cands = [{ w: innerW, m: m }], best = null;
       [1.15, 1.3, 1.5].forEach(function (k) { el.style.width = (innerW * k).toFixed(1) + 'px'; var mm = measure(); if (mm.h > 40) cands.push({ w: innerW * k, m: mm }); });
       var ok = cands.filter(function (c) { return zOf(c.m) >= 0.85; });
@@ -1028,7 +1062,7 @@
       el.style.width = bw + 'px'; m = measure();
     }
     if (m.h < 40) return;   // (measured mid-change, with nothing showing: left as it is)
-    var z = Math.max(0.2, Math.min(flow && !cfg.phoneW ? 1.15 : 3, m.z));   // a daily card never balloons
+    var z = Math.max(0.2, Math.min(flow && !cfg.phoneW && !cfg.phoneFlow ? 1.15 : 3, m.z));   // a daily card never balloons
     el.style.zoom = z.toFixed(3); el.style.setProperty('--gsz', z.toFixed(3)); last = z;
     // words that keep 11px inside the scaled card grow as it shrinks: measured again until it fits
     for (var it = 0, z0 = z; it < 4; it++) { var m2 = measure(); if (m2.z >= 0.995) break; z = Math.max(0.2, z0 * 0.8, z * m2.z * 0.995); el.style.zoom = z.toFixed(3); el.style.setProperty('--gsz', z.toFixed(3)); last = z; }
@@ -1317,6 +1351,34 @@
   if (cfg.phoneDrop && window.innerWidth < 700) {
     var zTop = cfg.zoom && q(cfg.zoom, game); while (zTop && zTop.parentElement !== game) zTop = zTop.parentElement;
     if (zTop) cfg.phoneDrop.slice().reverse().forEach(function (sel) { var e = q(sel, game); if (e) { game.insertBefore(e, zTop.nextSibling); e.classList.add('gs-dropped'); } });
+  }
+  // short phones (Master Stacker, Goma Goons): a bar over the scaled game and the rows under it, all at full size (QA 2026-11-14, pass 8)
+  if (short) {
+    var zTop2 = cfg.zoom && q(cfg.zoom, game); while (zTop2 && zTop2.parentElement !== game) zTop2 = zTop2.parentElement;
+    if (zTop2) {
+      game.classList.add('gs-short');
+      if (short.bar) {
+        var tb = document.createElement('div'); tb.className = 'gs-topbar';
+        short.bar.forEach(function (sel) {
+          if (typeof sel === 'string') { var e = q(sel, game); if (e) tb.appendChild(e); return; }
+          var bc2 = document.createElement('div'); bc2.className = 'gs-barcol'; sel.forEach(function (s2) { var e2 = tb.querySelector(s2) || q(s2, game); if (e2) bc2.appendChild(e2); }); tb.appendChild(bc2);   // (buttons in a column of their own at the bar's right)
+        });
+        game.insertBefore(tb, zTop2);
+      }
+      (short.drop || []).slice().reverse().forEach(function (sel) { var e = q(sel, game); if (e) { game.insertBefore(e, zTop2.nextSibling); e.classList.add('gs-dropped'); } });
+      // the room left for the scaled game once the bar and the rows under it have theirs, for a game that sizes its own board
+      // to the screen (Goma Goons' battlefield is drawn taller or shorter to fit): measured, never guessed
+      if (short.flow) window.maGameRoom = function () {
+        if (!game.offsetParent && !game.getClientRects().length) return 0;
+        var gs = getComputedStyle(game), k = game.getBoundingClientRect().height / Math.max(1, game.offsetHeight) || 1, used = 0;
+        Array.prototype.forEach.call(game.children, function (c) {
+          if (c === zTop2 || !c.getClientRects().length || bgLayer(c)) return;
+          var cs = getComputedStyle(c), cz = parseFloat(cs.zoom) || 1;
+          used += c.getBoundingClientRect().height / k + ((parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0)) * cz;
+        });
+        return Math.max(0, game.clientHeight - parseFloat(gs.paddingTop) - parseFloat(gs.paddingBottom) - used - 6);
+      };
+    }
   }
   // phones, daily puzzles: the date line goes over the champion banner at full size, out of the scaled card (QA 2026-11-14:
   // 12px words drawn at 7 to 10.5px inside the card, and its two lines took room from the board)
