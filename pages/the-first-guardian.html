@@ -189,6 +189,50 @@
 /* job titles stay on one line: where four cards get narrow, the icon sits above the name (as on phones) */
 @media (max-width:1100px) and (min-width:821px){#px .mhead{flex-direction:column;align-items:flex-start;gap:10px}}
 @media (max-width:960px) and (min-width:821px){#px .mbtns{grid-template-columns:minmax(0,1fr)}#px .mate{padding:18px 14px}}
+/* Paraxis's header (Maurice, 2026-11-14): his name, hit points, and swings on the left, his own dice beside them, so his
+   dice roll in their own spot and never land on a crew card */
+#px .foe{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px 24px}
+#px .foeinfo{display:flex;flex-direction:column;gap:12px;min-width:0}
+#px .hprow{display:flex;align-items:center;gap:14px}
+#px .hprow .bar{flex:1;min-width:0}
+#px .foe .pxres{font-size:14px;min-height:2.6em;justify-content:flex-start}
+#px .foe .pxres .mres{text-align:left}
+#px .foe .dice2{gap:12px}
+#px .turnbox{grid-template-columns:minmax(0,1fr)}
+/* phones (Maurice, 2026-11-14: "you can't see paraxis and the crew simultaneously on the phone"): a compact Paraxis
+   header over a 2x2 crew, smaller dice, name and role beside the icon, hit points beside the die */
+@media (max-width:560px){
+  #px .foe{padding:16px;gap:12px 12px;grid-template-areas:"title dice" "hp dice" "res res"}
+  #px .foeinfo{display:contents}
+  #px .foe h3{grid-area:title}#px .foe .hprow{grid-area:hp}#px .foe .pxres{grid-area:res}#px .foe .dice2{grid-area:dice}
+  #px .foe h3{font-size:18px;line-height:1.2}
+  #px .foe .hpnum{font-size:18px}
+  #px .foe .bar{height:12px}
+  #px .foe .pxres{font-size:12px;flex-direction:row;flex-wrap:wrap;align-items:flex-start;gap:12px 16px;min-height:1.3em}
+  #px .foe .pxres .mres{font-size:12px;letter-spacing:.08em}
+  #px .foe .dice2{gap:8px}
+  #px #rc-die-px,#px #rc-die-px.is3d,#px .foe .pxd4{width:52px;height:52px}
+  #px .crew{gap:12px}
+  #px .mate{padding:14px 12px;gap:12px}
+  #px .mhead{flex-direction:row;align-items:center;gap:8px}
+  #px .mhead>div{gap:12px}
+  #px .ico{width:30px;height:30px}#px .ico img{width:24px;height:24px}
+  #px .mate .nm{font-size:18px}
+  #px .mate .role{font-size:11px;letter-spacing:.02em}
+  #px .mrow{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"hp die" "res die";align-items:center;gap:12px 8px}
+  #px .mrow .hearts{grid-area:hp;align-self:end}
+  #px .mrow .mdie{grid-area:die}
+  #px .mrow .mres{grid-area:res;align-self:start;margin:0;text-align:left;font-size:12px;letter-spacing:.06em}
+  #px .mate .rc-die,#px .mate .rc-die.is3d{width:52px!important;height:52px!important}
+  #px .hearts{gap:4px}#px .hearts i{width:12px!important;height:12px!important}
+  #px .mbtns{grid-template-columns:1fr 1fr;gap:6px}
+  #px .mb,#px .mt{min-height:34px;padding:6px 2px;font-size:11px;letter-spacing:.02em}
+  #px .mwho{margin-top:12px;gap:12px 6px}
+  #px .mwho span{font-size:11px}
+  #px .mate .need{font-size:13px;line-height:1.4}
+  #px .turnbox{padding:16px;gap:12px}
+  #px .turntxt .say{font-size:16px;min-height:3em}
+}
 </style>
 <div id="px"><div class="w">
   <header class="hero">
@@ -242,12 +286,15 @@
   </section>
   <section id="px-battle" hidden style="display:flex;flex-direction:column;gap:18px">
     <div class="foe">
-      <div class="row"><h3>Paraxis, the First Guardian</h3><span class="hpnum"><span id="px-hp">30</span> / 30</span></div>
-      <div class="bar"><i id="px-bar" style="width:100%"></i></div>
+      <div class="foeinfo">
+        <h3>Paraxis, the First Guardian</h3>
+        <div class="hprow"><div class="bar"><i id="px-bar" style="width:100%"></i></div><span class="hpnum"><span id="px-hp">30</span> / 30</span></div>
+        <div class="pxres" id="px-pxres" aria-live="polite"></div>
+      </div>
+      <div class="dice2"><div class="rc-die" id="rc-die-px" aria-hidden="true"></div><div class="pxd4" id="px-d4" aria-hidden="true"><canvas></canvas><span class="d4lab">D12</span></div></div>
     </div>
     <div class="crew" id="px-crew"></div>
     <div class="turnbox">
-      <div class="pxdice"><div class="pxres" id="px-pxres" aria-live="polite"></div><div class="dice2"><div class="rc-die" id="rc-die-px" aria-hidden="true"></div><div class="pxd4" id="px-d4" aria-hidden="true"><canvas></canvas><span class="d4lab">D12</span></div></div></div>
       <div class="turntxt">
         <p class="kick" id="px-turnk">ROUND 1</p>
         <p class="say" id="px-say" aria-live="polite"></p>
@@ -412,7 +459,7 @@
       cv.width = px; cv.height = px;
       var c2 = cv.getContext('2d');
       var scene = new T.Scene(), cam = new T.PerspectiveCamera(30, 1, 0.1, 50);
-      cam.position.set(0, 0, 6.4); cam.lookAt(0, 0, 0);
+      cam.position.set(0, 0, node.clientWidth && node.clientWidth < 80 ? 5.4 : 6.4); cam.lookAt(0, 0, 0);   // a little closer in the small phone boxes
       var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
       scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
       var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-3, 5, 5); scene.add(sun);
@@ -431,31 +478,51 @@
       var cv = d.c2.canvas; d.c2.clearRect(0, 0, cv.width, cv.height); d.c2.drawImage(d.r.domElement, 0, 0, cv.width, cv.height);
     }
 
-    // ---- sound: a hard little knock plus a burst of clatter, a bit different every time
-    var ctx = null;
+    // ---- sound (Maurice, 2026-11-14: "another royalty free clicking sound"): a soft click of a resin die on wood, made on
+    // the spot with Web Audio, so there is no sound file. A short burst of noise for the click, the same burst ringing
+    // through a narrow band for the die's body, and a tiny tick on top; a little different every bounce. One per bounce
+    // or landing, never a rattle, quiet, only after the visitor has tapped or clicked, and silent when muted.
+    var ctx = null, armed = false;
     function audio() {
-      if (muted) return null;
+      if (muted || !armed) return null;
       var A = window.AudioContext || window.webkitAudioContext;
       if (!A) return null;
       if (!ctx) ctx = new A();
       if (ctx.state === 'suspended') ctx.resume();
       return ctx;
     }
+    function arm() {
+      if (armed) return; armed = true;
+      try { var a = audio(); if (a) { var s = a.createBufferSource(); s.buffer = a.createBuffer(1, 1, a.sampleRate); s.connect(a.destination); s.start(0); } } catch (e) {}
+      ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) { removeEventListener(ev, arm, true); });
+    }
+    ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) { addEventListener(ev, arm, true); });
     function clack(vol) {
       var a = audio(); if (!a) return;
-      var t = a.currentTime, len = Math.floor(a.sampleRate * 0.045), buf = a.createBuffer(1, len, a.sampleRate), ch = buf.getChannelData(0);
-      for (var i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 5);
-      var src = a.createBufferSource(); src.buffer = buf;
-      var bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2400 + Math.random() * 2200; bp.Q.value = 3;
-      var g = a.createGain(); g.gain.value = vol;
-      src.connect(bp); bp.connect(g); g.connect(a.destination); src.start(t);
-      var o = a.createOscillator(), og = a.createGain();
-      o.type = 'triangle';
-      o.frequency.setValueAtTime(380 + Math.random() * 300, t);
-      o.frequency.exponentialRampToValueAtTime(160, t + 0.07);
-      og.gain.setValueAtTime(vol * 0.7, t);
-      og.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
-      o.connect(og); og.connect(a.destination); o.start(t); o.stop(t + 0.1);
+      try {
+        var t = a.currentTime + 0.004, lvl = 0.2 * Math.max(0.35, Math.min(1, (vol == null ? 0.3 : vol) / 0.5));
+        var dur = 0.03 + Math.random() * 0.025, len = Math.ceil(a.sampleRate * dur), buf = a.createBuffer(1, len, a.sampleRate), ch = buf.getChannelData(0);
+        for (var i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4);
+        var out = a.createGain(); out.gain.value = lvl; out.connect(a.destination);
+        var src = a.createBufferSource(); src.buffer = buf; src.playbackRate.value = 0.9 + Math.random() * 0.2;
+        var hp = a.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1800 + Math.random() * 800;
+        var cg = a.createGain(); cg.gain.value = 0.5;
+        src.connect(hp); hp.connect(cg); cg.connect(out);
+        var bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1100 + Math.random() * 700; bp.Q.value = 9;
+        var bg = a.createGain(); bg.gain.value = 3;
+        src.connect(bp); bp.connect(bg); bg.connect(out);
+        var w = a.createOscillator(), wg = a.createGain(), wf = 700 + Math.random() * 300;
+        w.type = 'triangle'; w.frequency.setValueAtTime(wf, t); w.frequency.exponentialRampToValueAtTime(wf * 0.85, t + 0.05);
+        wg.gain.setValueAtTime(0.0001, t); wg.gain.exponentialRampToValueAtTime(0.22, t + 0.003); wg.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+        w.connect(wg); wg.connect(out); w.start(t); w.stop(t + 0.06);
+        var o = a.createOscillator(), og = a.createGain(), f = 2400 + Math.random() * 900;
+        o.type = 'sine';
+        o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f * 0.8, t + 0.03);
+        og.gain.setValueAtTime(0.0001, t); og.gain.exponentialRampToValueAtTime(0.18, t + 0.002); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.035);
+        o.connect(og); og.connect(out); o.start(t); o.stop(t + 0.05);
+        src.start(t); src.stop(t + dur + 0.01);
+        setTimeout(function () { try { out.disconnect(); } catch (e) {} }, 300);
+      } catch (e) {}
     }
 
     function stopLoop(d) { if (d.raf) cancelAnimationFrame(d.raf); d.raf = 0; }
@@ -693,7 +760,6 @@
       attach: function (id, node, n) {
         load().then(function () {
           if (dice[id]) return;
-          if (!calm) loadPhysics().catch(function () {});
           var d = build(id, node);
           node.classList.add('is3d');
           if (n) d.mesh.quaternion.copy(pose(n));
@@ -719,34 +785,37 @@
       spinCard: function (id) {
         var d = dice[id]; if (!d) return;
         stopLoop(d);
-        var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), last = performance.now(), start = last, tick = 0;
+        // a slow, low tumble (Maurice, 2026-11-14: rolling all four "looks too crazy"), and no rattle: the clicks come with the bounces
+        var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), last = performance.now(), start = last;
         d.axis = axis;
         (function frame(now) {
           var dt = Math.min(0.05, (now - last) / 1000); last = now;
-          if (!calm) d.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(axis, 13 * dt));
-          d.y = calm ? 0 : Math.abs(Math.sin((now - start) / 110)) * 0.35;
-          if (now - tick > 95) { tick = now; clack(0.05 + Math.random() * 0.06); }
+          if (!calm) d.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(axis, 6 * dt));
+          d.y = calm ? 0 : Math.abs(Math.sin((now - start) / 160)) * 0.12;
           draw(d);
           d.raf = requestAnimationFrame(frame);
         })(last);
       },
-      // In the card: three bounces, a clack on each, and it settles on n.
-      landCard: function (id, n, done) {
+      // In the card: two low hops and it settles on n, a click as it comes down each time and as it lands.
+      landCard: function (id, n, done, vol) {
         var d = dice[id]; if (!d) return done();
         stopLoop(d);
-        var q0 = d.mesh.quaternion.clone(), q1 = pose(n), axis = d.axis || new T.Vector3(1, 0, 0), dur = calm ? 1 : 920, t0 = performance.now(), hits = [0.286, 0.571, 0.857], hit = 0;
+        var q0 = d.mesh.quaternion.clone(), q1 = pose(n), axis = d.axis || new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+        var dur = calm ? 1 : 880, t0 = performance.now(), hits = [0.4, 0.8, 0.98], hit = 0, v = vol || 1;
+        d.axis = null;
         (function frame(now) {
           var t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3);
           var q = q0.clone().slerp(q1, e);
-          q.premultiply(new T.Quaternion().setFromAxisAngle(axis, (1 - e) * 7));
+          q.premultiply(new T.Quaternion().setFromAxisAngle(axis, (1 - e) * 3.5));
           d.mesh.quaternion.copy(q);
-          d.y = Math.abs(Math.sin(Math.PI * 3.5 * t)) * 0.85 * Math.pow(1 - t, 2);
-          while (hit < hits.length && t >= hits[hit]) { clack([0.5, 0.28, 0.14][hit]); hit++; }
+          d.y = calm ? 0 : Math.abs(Math.sin(Math.PI * 2.5 * t)) * 0.6 * Math.pow(1 - t, 2);
+          while (hit < hits.length && t >= hits[hit]) { if (!calm) clack([0.5, 0.3, 0.18][hit] * v); hit++; }
           draw(d);
           if (t < 1) d.raf = requestAnimationFrame(frame);
           else { d.raf = 0; d.mesh.quaternion.copy(q1); d.y = 0; draw(d); done(); }
         })(t0);
       },
+      clack: function (v) { clack(v); },
       stop: function (id) { dropThrow(id); var d = dice[id]; if (!d) return; stopLoop(d); d.y = 0; d.mesh.quaternion.copy(idle()); draw(d); },
       muted: function () { return muted; },
       setMuted: function (m) { muted = !!m; try { localStorage.setItem('thDice:muted', muted ? '1' : '0'); } catch (e) {} }
@@ -833,7 +902,7 @@
     function build(node) {
       var cv = node.querySelector('canvas'), r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
       r.outputEncoding = T.sRGBEncoding; r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); r.setSize(cv.clientWidth || 120, cv.clientHeight || 120, false);
-      var scene = new T.Scene(), cam = new T.PerspectiveCamera(30, 1, 0.1, 50); cam.position.set(0, 0, 4.6); cam.lookAt(0, 0, 0);
+      var scene = new T.Scene(), cam = new T.PerspectiveCamera(30, 1, 0.1, 50); cam.position.set(0, 0, 5.2); cam.lookAt(0, 0, 0);   // room to hop in its own slot
       var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
       scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35)); var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-3, 5, 5); scene.add(sun);
       var mesh = new T.Mesh(geo, mats); mesh.quaternion.copy(pose(0)); scene.add(mesh);
@@ -913,15 +982,18 @@
         var d = rec && rec.d; if (!d) return; stop(d);
         var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), last = performance.now(), start = last; d.axis = axis;
         (function frame(now) { var dt = Math.min(0.05, (now - last) / 1000); last = now;
-          d.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(axis, 12 * dt)); d.y = Math.abs(Math.sin((now - start) / 110)) * 0.3; draw(d); d.raf = requestAnimationFrame(frame); })(last);
+          d.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(axis, 7 * dt)); d.y = Math.abs(Math.sin((now - start) / 160)) * 0.12; draw(d); d.raf = requestAnimationFrame(frame); })(last);
       },
-      // three bounces and it settles with face n (1 Rune .. 4 Scarlett) toward the viewer
+      // in its own slot (Maurice, 2026-11-14): two low hops, a click each time it comes down, and it settles with face n
+      // (1 Rune .. 4 Scarlett) toward the viewer
       land: function (rec, n, done) {
         var d = rec && rec.d; if (!d) return done && done(); stop(d);
-        var q0 = d.mesh.quaternion.clone(), q1 = pose(faceFor(n)), axis = d.axis || new T.Vector3(1, 0, 0), t0 = performance.now(), dur = 800;
+        var q0 = d.mesh.quaternion.clone(), q1 = pose(faceFor(n)), axis = d.axis || new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), t0 = performance.now(), dur = calm ? 1 : 900, hits = [0.4, 0.8, 0.98], hit = 0;
+        d.axis = null;
         (function frame(now) { var t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3), q = q0.clone().slerp(q1, e);
-          q.premultiply(new T.Quaternion().setFromAxisAngle(axis, (1 - e) * 7)); d.mesh.quaternion.copy(q);
-          d.y = Math.abs(Math.sin(Math.PI * 3.5 * t)) * 0.7 * Math.pow(1 - t, 2); draw(d);
+          q.premultiply(new T.Quaternion().setFromAxisAngle(axis, (1 - e) * 4)); d.mesh.quaternion.copy(q);
+          d.y = calm ? 0 : Math.abs(Math.sin(Math.PI * 2.5 * t)) * 0.45 * Math.pow(1 - t, 2); draw(d);
+          while (hit < hits.length && t >= hits[hit]) { if (!calm) Dice.clack([0.45, 0.28, 0.16][hit]); hit++; }
           if (t < 1) d.raf = requestAnimationFrame(frame); else { d.raf = 0; d.mesh.quaternion.copy(q1); d.y = 0; draw(d); if (done) done(); } })(t0);
       }
     };
@@ -935,10 +1007,8 @@
     return new Promise(function (res) {
       var lab = rec.node.querySelector('.d4lab'); if (lab) lab.textContent = NAMES[n - 1];
       if (!D4.ready(rec)) return setTimeout(res, 500);
-      // a real physics throw like the d20; the drawn path if physics can't load
-      var thrown = physThrow([{ kind: 'd12', n: n, node: rec.node, done: function (u) { var Q = D4.parts(); D4.show(rec, u.rl && u.rl.face != null ? u.rl.face : Q.facesOf[n - 1][0]); } }]);
-      if (!thrown) return D4.toss(rec, n, res);
-      thrown.then(function (r) { if (r === null) D4.toss(rec, n, res); else res(); });
+      // a short tumble in its own slot, then it settles (Maurice, 2026-11-14: it used to fly across the screen and land on a card)
+      D4.spin(rec); setTimeout(function () { D4.land(rec, n, res); }, 300);
     });
   }
   // A roll on the die: 'thrown' means it left the card when the button was pressed and only needs its number,
@@ -947,7 +1017,8 @@
     return new Promise(function (res) {
       var done = function () { res(); };
       if (pre === 'thrown') { if (Dice.number('px', n, done)) return; Dice.drop('px'); }
-      if (Dice.ready('px')) { Dice.land('px', n, done); return; }
+      // Paraxis's d20 tumbles and settles in its own slot beside his name, never out over the cards (Maurice, 2026-11-14)
+      if (Dice.ready('px')) { Dice.spinCard('px'); setTimeout(function () { Dice.landCard('px', n, done); }, 300); return; }
       $('rc-dn-px').textContent = n; setTimeout(done, 600);
     });
   }
@@ -1113,9 +1184,8 @@
     if (lead.length) chain = chain.then(function () {
       say('The crew attacks!');
       var atk = lead.filter(function (e) { return e.t === 'atk'; });
-      // a real physics throw, all four in random directions; the drawn path if physics can't load
-      var thrown = physThrow(atk.map(function (e) { return { kind: 'd20', who: e.who, n: e.roll, node: $('rc-die-c' + e.who), done: function () { Dice.show('c' + e.who, e.roll); var dn = $('rc-dn-c' + e.who); if (dn) dn.textContent = e.roll; } }; }));
-      return thrown ? thrown.then(function (r) { return r === null ? crewToss(atk) : r; }) : crewToss(atk);
+      // each die hops low and settles in its own card, about 100ms apart (Maurice, 2026-11-14: "too crazy" flying across the screen)
+      return Promise.all(atk.map(function (e, k) { return wait(k * 100).then(function () { return cardDie(e.who, e.roll, 1 / Math.sqrt(atk.length)); }); }));
     });
     events.forEach(function (e) {
       var landed = lead.indexOf(e) >= 0;
@@ -1168,230 +1238,12 @@
     box.appendChild(p);
   }
   // a crew card's d20: tumbling in the card while the rolls are on their way, then three bounces onto n
-  function cardDie(i, n) {
+  function cardDie(i, n, vol) {
     return new Promise(function (res) {
       var id = 'c' + i;
       if (!Dice.ready(id)) { var dn = $('rc-dn-' + id); if (dn) dn.textContent = n; return setTimeout(res, 500); }
-      Dice.landCard(id, n, function () { res(); });
+      Dice.landCard(id, n, function () { var dn2 = $('rc-dn-' + id); if (dn2) dn2.textContent = n; res(); }, vol);
     });
-  }
-  // ---- the crew's dice thrown together across the screen (Maurice, 2026-11-13) ----
-  // Each die leaps out of its card, tumbles and bounces, and they land side by side in the middle with their numbers up,
-  // hold so you can read them, then fade back into the cards. Same die as the vote pages (Dice.parts()); drawn path, not physics.
-  var crewOv = null;
-  function crewOverlay(P) {
-    if (crewOv) return crewOv;
-    var T = P.T, cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
-    cv.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147481900;display:none';
-    document.body.appendChild(cv);
-    var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); r.outputEncoding = T.sRGBEncoding; r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    var scene = new T.Scene(), cam = new T.OrthographicCamera(-1, 1, 1, -1, -1000, 1000); cam.position.set(0, 0, 500); cam.lookAt(0, 0, 0);
-    var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(P.studio()).texture; pm.dispose();
-    scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35)); var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-300, 500, 500); scene.add(sun);
-    var sc = document.createElement('canvas'); sc.width = sc.height = 128; var sg = sc.getContext('2d'), rg = sg.createRadialGradient(64, 64, 0, 64, 64, 64);
-    rg.addColorStop(0, 'rgba(0,0,0,.5)'); rg.addColorStop(1, 'rgba(0,0,0,0)'); sg.fillStyle = rg; sg.fillRect(0, 0, 128, 128);
-    var shTex = new T.CanvasTexture(sc), geo = P.geometry(), dice = [];
-    for (var k = 0; k < 4; k++) {
-      var m = new T.Mesh(geo, P.materials(CREW_COL[k])); m.visible = false; scene.add(m);
-      var s = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: shTex, transparent: true, depthWrite: false })); s.position.z = -200; s.visible = false; scene.add(s);
-      dice.push({ mesh: m, shadow: s });
-    }
-    crewOv = { T: T, cv: cv, r: r, scene: scene, cam: cam, dice: dice, raf: 0 };
-    function size() { var w = window.innerWidth, h = window.innerHeight; r.setSize(w, h, false); cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2; cam.bottom = -h / 2; cam.updateProjectionMatrix(); crewOv.w = w; crewOv.h = h; crewOv.R = Math.max(36, Math.min(58, Math.min(w, h) * 0.072)); }
-    size(); window.addEventListener('resize', size);
-    return crewOv;
-  }
-  function crewToss(list) {
-    var P = Dice.parts && Dice.parts();
-    var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!P || calm || !list.length) return Promise.all(list.map(function (e) { return cardDie(e.who, e.roll); }));
-    return new Promise(function (done) {
-      var T = P.T, o = crewOverlay(P), R = o.R, n = list.length;
-      // landing spots: side by side across the middle, never closer than two dice apart and never off the edge
-      var gap = Math.min(R * 3.1, (o.w - R * 2.6) / Math.max(1, n - 1 || 1)), y0 = o.h * 0.07;
-      var runs = list.map(function (e, k) {
-        var node = $('rc-die-c' + e.who), b = node.getBoundingClientRect();
-        Dice.stop('c' + e.who); node.style.visibility = 'hidden';
-        var d = o.dice[e.who];
-        return { e: e, d: d, node: node, sx: b.left + b.width / 2 - o.w / 2, sy: o.h / 2 - (b.top + b.height / 2),
-          ex: (k - (n - 1) / 2) * gap + (Math.random() - 0.5) * R * 0.4, ey: y0 + (Math.random() - 0.5) * R * 0.6,
-          q0: new T.Quaternion().setFromEuler(new T.Euler(Math.random() * 6.3, Math.random() * 6.3, Math.random() * 6.3)), q1: P.pose(e.roll),
-          axis: new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), delay: k * 60, hits: 0 };
-      });
-      o.dice.forEach(function (d, k) { d.mesh.visible = d.shadow.visible = list.some(function (e) { return e.who === k; }); });
-      var tok = o.tok = (o.tok || 0) + 1;
-      o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
-      try { P.clack(0.3); } catch (err) {}
-      var dur = 1200, t0 = performance.now();
-      (function frame(now) {
-        var all = true;
-        runs.forEach(function (u) {
-          var t = Math.max(0, Math.min(1, (now - t0 - u.delay) / dur)), e = 1 - Math.pow(1 - t, 3); if (t < 1) all = false;
-          var x = u.sx + (u.ex - u.sx) * e, y = u.sy + (u.ey - u.sy) * e;
-          var hop = Math.abs(Math.sin(Math.PI * 3.5 * t)) * Math.pow(1 - t, 1.6) * R * 2.4;
-          // a clack each time it comes down
-          var bounce = Math.floor(t * 3.5 + 0.5); if (bounce > u.hits && bounce <= 3) { u.hits = bounce; try { P.clack([0.32, 0.18, 0.09][bounce - 1] / Math.sqrt(n)); } catch (err) {} }
-          var q = u.q0.clone().slerp(u.q1, e); q.premultiply(new T.Quaternion().setFromAxisAngle(u.axis, (1 - e) * 14));
-          u.d.mesh.quaternion.copy(q); u.d.mesh.position.set(x, y + hop, 0); u.d.mesh.scale.setScalar(R * (1 + hop / R * 0.07));
-          u.d.shadow.position.set(x + 4 + hop * 0.08, y - R * 0.85, -200); u.d.shadow.scale.set(R * 2 * (1 - Math.min(0.4, hop / R * 0.1)), R * 0.6 * (1 - Math.min(0.4, hop / R * 0.1)), 1);
-        });
-        o.r.render(o.scene, o.cam);
-        if (!all) { o.raf = requestAnimationFrame(frame); return; }
-        o.raf = 0;
-        // hold so everyone can read all four, then they go back into their cards
-        setTimeout(function () {
-          runs.forEach(function (u) { Dice.show('c' + u.e.who, u.e.roll); u.node.style.visibility = ''; var dn = $('rc-dn-c' + u.e.who); if (dn) dn.textContent = u.e.roll; });
-          if (o.tok === tok) { o.cv.style.transition = 'opacity .4s ease'; o.cv.style.opacity = '0'; }
-          setTimeout(function () { if (o.tok === tok) o.cv.style.display = 'none'; }, 420);
-          done();
-        }, 1300);
-      })(t0);
-    });
-  }
-  // ---- real physics throws (Maurice, 2026-11-13: "roll all over the place like when you do just one") ----
-  // Every die in a throw goes into one cannon.js world (the screen's edges are the walls, the page is the table), the same
-  // physics the vote pages' single d20 uses. Each leaves from its own card or slot in a random direction, they can knock
-  // into each other, and the throw is worked out ahead; then each die is turned on itself (a turn of the solid onto
-  // itself, so the motion is unchanged) so the face that ends up on top shows its rolled number, or for the target die
-  // one of that crew member's three faces. The twelve-sided die is smaller than the d20s. Played back 25% faster
-  // than real time (Maurice: "speed up the rolls by 25%").
-  var D12_SCALE = 0.72, PLAY_MS = 1000 / 75;
-  var phys = null;
-  function physOverlay(P, Q) {
-    if (phys) return phys;
-    var T = P.T, cv = document.createElement('canvas'); cv.setAttribute('aria-hidden', 'true');
-    cv.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147481950;display:none';
-    document.body.appendChild(cv);
-    var r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); r.outputEncoding = T.sRGBEncoding; r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    var scene = new T.Scene(), cam = new T.OrthographicCamera(-1, 1, 1, -1, -1000, 1000); cam.position.set(0, 0, 500); cam.lookAt(0, 0, 0);
-    var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(P.studio()).texture; pm.dispose();
-    scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35)); var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-300, 500, 500); scene.add(sun);
-    var sc = document.createElement('canvas'); sc.width = sc.height = 128; var sg = sc.getContext('2d'), rg = sg.createRadialGradient(64, 64, 0, 64, 64, 64);
-    rg.addColorStop(0, 'rgba(0,0,0,.55)'); rg.addColorStop(1, 'rgba(0,0,0,0)'); sg.fillStyle = rg; sg.fillRect(0, 0, 128, 128);
-    var shTex = new T.CanvasTexture(sc);
-    function slot(geo, mats) {
-      var m = new T.Mesh(geo, mats); m.visible = false; scene.add(m);
-      var s = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: shTex, transparent: true, depthWrite: false })); s.position.z = -200; s.visible = false; scene.add(s);
-      return { mesh: m, shadow: s };
-    }
-    var g20 = P.geometry(), d20 = [];
-    for (var k = 0; k < 4; k++) d20.push(slot(g20, P.materials(CREW_COL[k])));
-    phys = { T: T, cv: cv, r: r, scene: scene, cam: cam, d20: d20, d12: Q ? slot(Q.geo, Q.mats) : null, raf: 0 };
-    function size() { var w = window.innerWidth, h = window.innerHeight; r.setSize(w, h, false); cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2; cam.bottom = -h / 2; cam.updateProjectionMatrix(); phys.w = w; phys.h = h; phys.R = Math.max(34, Math.min(62, Math.min(w, h) * 0.075)); }
-    size(); window.addEventListener('resize', size);
-    return phys;
-  }
-  // the twelve-sided die's collision shape: its 20 corners and 12 pentagons (each listed counterclockwise from outside)
-  var d12Hull = null;
-  function d12Shape(C, Q) {
-    if (!d12Hull) {
-      var pts = [], idx = [];
-      var at = function (v) { for (var i = 0; i < pts.length; i++) if (pts[i].distanceTo(v) < 1e-4) return i; pts.push(v.clone()); return pts.length - 1; };
-      Q.faces.forEach(function (f) {
-        var z = f.n, y = f.pts[0].clone().sub(f.c).normalize(), x = new Q.T.Vector3().crossVectors(y, z);
-        var ring = f.pts.slice().sort(function (a, b) { var A = a.clone().sub(f.c), B = b.clone().sub(f.c); return Math.atan2(A.dot(y), A.dot(x)) - Math.atan2(B.dot(y), B.dot(x)); });
-        idx.push(ring.map(at));
-      });
-      d12Hull = { pts: pts, idx: idx };
-    }
-    return new C.ConvexPolyhedron(d12Hull.pts.map(function (p) { return new C.Vec3(p.x * D12_SCALE, p.y * D12_SCALE, p.z * D12_SCALE); }), d12Hull.idx.map(function (f) { return f.slice(); }));
-  }
-  // which twelve-sided face ended up on top, and the turn of the die onto itself that puts crew member n there, upright
-  function d12Top(T, Q, f) {
-    var q = new T.Quaternion(f[3], f[4], f[5], f[6]), best = -2, k = 0;
-    Q.faces.forEach(function (fc, i) { var z = fc.n.clone().applyQuaternion(q).z; if (z > best) { best = z; k = i; } });
-    return { k: k, q: q, flat: best };
-  }
-  function d12Relabel(T, Q, n, top) {
-    var frame = function (fc, v) { var z = fc.n, y = v.clone().sub(fc.c).normalize(), x = new T.Vector3().crossVectors(y, z); return new T.Matrix4().makeBasis(x, y, z); };
-    var f = Q.faces[top.k], best = null;
-    Q.facesOf[n - 1].forEach(function (t) {
-      var ft = Q.faces[t], toCanon = frame(ft, ft.pts[0]).transpose();
-      f.pts.forEach(function (v) {
-        var g = new T.Quaternion().setFromRotationMatrix(new T.Matrix4().multiplyMatrices(frame(f, v), toCanon));
-        var up = v.clone().sub(f.c).normalize().applyQuaternion(top.q), ang = Math.atan2(up.x, up.y);
-        if (!best || Math.abs(ang) < best.tilt) best = { g: g, tilt: Math.abs(ang), ang: ang, face: t };
-      });
-    });
-    return best;
-  }
-  // items: [{ kind: 'd20' | 'd12', n, node, done(run) }]; resolves when every die is back in place, or null if it can't throw
-  function physThrow(items) {
-    var P = Dice.parts && Dice.parts(), Q = D4.parts && D4.parts();
-    var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!P || calm || !items.length || items.some(function (it) { return it.kind === 'd12' && !Q; })) return null;
-    return P.loadPhysics().then(function (C) {
-      var T = P.T, o = physOverlay(P, Q), R = o.R, Wu = Math.max(5, o.w / 2 / R), Hu = Math.max(4, o.h / 2 / R);
-      var best = null, step = 0;
-      for (var attempt = 0; attempt < 6; attempt++) {
-        var world = new C.World(); world.gravity.set(0, 0, -40); world.broadphase = new C.NaiveBroadphase(); world.solver.iterations = 12; world.allowSleep = true;
-        world.defaultContactMaterial.friction = 0.28; world.defaultContactMaterial.restitution = 0.38;
-        var wall = function (x, y, axis, ang) { var b = new C.Body({ mass: 0 }); b.addShape(new C.Plane()); b.position.set(x, y, 0); if (axis) b.quaternion.setFromAxisAngle(axis, ang); world.addBody(b); };
-        wall(0, 0); wall(-Wu, 0, new C.Vec3(0, 1, 0), Math.PI / 2); wall(Wu, 0, new C.Vec3(0, 1, 0), -Math.PI / 2); wall(0, -Hu, new C.Vec3(1, 0, 0), -Math.PI / 2); wall(0, Hu, new C.Vec3(1, 0, 0), Math.PI / 2);
-        var runs = items.map(function (it) {
-          var b = it.node.getBoundingClientRect(), sx = (b.left + b.width / 2 - o.w / 2) / R, sy = (o.h / 2 - (b.top + b.height / 2)) / R;
-          var body = new C.Body({ mass: 1 }); body.addShape(it.kind === 'd12' ? d12Shape(C, Q) : P.hullShape());
-          body.linearDamping = 0.1; body.angularDamping = 0.1; body.allowSleep = true; body.sleepSpeedLimit = 0.15; body.sleepTimeLimit = 0.25;
-          body.position.set(Math.max(-Wu + 1.3, Math.min(Wu - 1.3, sx)), Math.max(-Hu + 1.3, Math.min(Hu - 1.3, sy)), 2.2 + Math.random() * 1.5);
-          body.quaternion.setFromEuler(Math.random() * 6.283, Math.random() * 6.283, Math.random() * 6.283);
-          // any direction at all, a little faster than the single throw so the dice spread over the screen
-          var ang = Math.random() * Math.PI * 2, sp = 16 + Math.random() * 12;
-          body.velocity.set(Math.cos(ang) * sp, Math.sin(ang) * sp, 2 + Math.random() * 5);
-          body.angularVelocity.set((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 30);
-          world.addBody(body);
-          var run = { it: it, body: body, frames: [], hits: [], lastHit: -9 };
-          body.addEventListener('collide', function (e) { var v = Math.abs(e.contact.getImpactVelocityAlongNormal()); if (v > 1.2 && step - run.lastHit > 3) { run.hits.push([step, Math.min(0.5, v * 0.032)]); run.lastHit = step; } });
-          return run;
-        });
-        for (step = 0; step < 600; step++) {
-          world.step(1 / 60);
-          runs.forEach(function (u) { var p = u.body.position, q = u.body.quaternion; u.frames.push([p.x, p.y, p.z, q.x, q.y, q.z, q.w]); });
-          if (step > 40 && runs.every(function (u) { return u.body.sleepState === C.Body.SLEEPING; })) break;
-        }
-        // every die has to come to rest flat on a face, or the whole throw is worked out again
-        var ok = runs.every(function (u) {
-          var f = u.frames[u.frames.length - 1];
-          if (u.it.kind === 'd12') { var t12 = d12Top(T, Q, f); if (t12.flat < 0.97) return false; u.rl = d12Relabel(T, Q, u.it.n, t12); return !!u.rl; }
-          var t20 = P.topFace(f); if (t20.flat < 0.97) return false; u.rl = P.relabel(u.it.n, t20); return !!u.rl;
-        });
-        best = runs; if (ok) break;
-      }
-      // play it back
-      var pool = o.d20.slice(), used = [];
-      best.forEach(function (u) { u.d = u.it.kind === 'd12' ? o.d12 : u.it.who != null ? o.d20[u.it.who] : pool.shift(); used.push(u.d); u.d.mesh.visible = u.d.shadow.visible = true; u.it.node.style.visibility = 'hidden'; if (!u.rl) u.rl = { g: new T.Quaternion(), ang: 0 }; });
-      [o.d12].concat(o.d20).forEach(function (d) { if (d && used.indexOf(d) < 0) d.mesh.visible = d.shadow.visible = false; });
-      var tok = o.tok = (o.tok || 0) + 1;
-      if (o.raf) cancelAnimationFrame(o.raf);
-      o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
-      try { P.clack(0.3); } catch (err) {}
-      return new Promise(function (done) {
-        var t0 = performance.now(), last = Math.max.apply(null, best.map(function (u) { return u.frames.length; })) - 1;
-        (function frame(now) {
-          var i = Math.max(0, Math.floor((now - t0) / PLAY_MS));
-          best.forEach(function (u) {
-            var fr = u.frames, j = Math.min(fr.length - 1, i), f = fr[j], z = Math.max(0, f[2] - 0.8), sz = u.it.kind === 'd12' ? D12_SCALE : 1, s = sz * (1 + z * 0.07);
-            while (u.hits.length && u.hits[0][0] <= j) { try { P.clack(u.hits.shift()[1] / Math.sqrt(best.length)); } catch (err) {} }
-            var k = Math.min(1, j / Math.max(1, fr.length - 1)), turn = -(u.rl.ang || 0) * k * k * (3 - 2 * k);
-            u.d.mesh.position.set(f[0] * R, f[1] * R, 0); u.d.mesh.quaternion.set(f[3], f[4], f[5], f[6]).multiply(u.rl.g);
-            if (turn) u.d.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 0, 1), turn));
-            u.d.mesh.scale.setScalar(R * s);
-            u.d.shadow.position.set(f[0] * R + 6 + z * 10, f[1] * R - 8 - z * 10, -200); u.d.shadow.scale.setScalar(R * 2.4 * sz * (1 - Math.min(0.5, z * 0.08)));
-            u.d.shadow.material.opacity = 0.9 - Math.min(0.6, z * 0.1);
-          });
-          o.r.render(o.scene, o.cam);
-          if (i < last) { o.raf = requestAnimationFrame(frame); return; }
-          o.raf = 0;
-          // at rest: hold so everyone can read them, then each goes back to its card or slot
-          setTimeout(function () {
-            best.forEach(function (u) { if (u.it.done) u.it.done(u); u.it.node.style.visibility = ''; });
-            if (o.tok !== tok) { done(); return; }
-            o.cv.style.transition = 'opacity .4s ease'; o.cv.style.opacity = '0';
-            setTimeout(function () { if (o.tok === tok) o.cv.style.display = 'none'; }, 420);
-            done();
-          }, 1100);
-        })(t0);
-      });
-    }).catch(function () { return null; });
   }
   var plan = ['a', 'a', 'a', 'a'];
   function pickHTML() {
@@ -1431,6 +1283,8 @@
   }
   function move() {
     if (busy) return; busy = true; $('px-acts').innerHTML = ''; pickHTML(); paint();
+    // the roll button sits under the cards: if the cards aren't all in view, bring Paraxis and the crew back up for the roll (Maurice, 2026-11-14)
+    try { var fb = document.querySelector('#px .foe').getBoundingClientRect(), cb = $('px-crew').getBoundingClientRect(); if (window.innerWidth <= 820 || fb.top < 0 || cb.bottom > window.innerHeight) $('px-battle').scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
     var acts = plan.map(function (p, i) { return view.hp[i] > 0 ? p : 'a'; });
     // every attacker's die starts tumbling on its card the moment Roll is pressed
     acts.forEach(function (p, i) { if (view.hp[i] > 0 && p === 'a' && Dice.ready('c' + i)) Dice.spinCard('c' + i); });
