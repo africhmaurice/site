@@ -628,6 +628,9 @@
   function size(keep) {
     // (a browser with a smallest-text setting of 13px or more: the frame CSS scales a few tight rows of buttons instead; QA pass 8)
     document.documentElement.classList.toggle('gs-floor', floorPx() >= 13);
+    document.documentElement.classList.toggle('gs-floor16', floorPx() >= 16);
+    // ...scaled only so far that the floor's words still read at 11px or more (pass 9: 13px x 0.78 read as 10.1px)
+    if (floorPx() >= 13) document.documentElement.style.setProperty('--gs-fz', Math.max(0.78, Math.min(1, 11.3 / floorPx())).toFixed(3)); else document.documentElement.style.removeProperty('--gs-fz');
     keep = keep === true;   // the game keeps its size and place: its result is on the way (Goma Goons' Pause jumped at game over; QA 2026-11-14)
     var restK = -1; stops.forEach(function (v, k) { if (Math.abs(v - x) < 3) restK = k; });
     var vh = window.innerHeight, hdr = header();
@@ -1394,6 +1397,13 @@
     // that changes its looks every frame never holds this up)
     var ueT = 0; new MutationObserver(function () { if (ueT || !game.querySelector('.gs-empty')) return; ueT = setTimeout(function () { ueT = 0; if (unEmpty()) size(true); }, 200); })
       .observe(game, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'class', 'style'] });
+    // a button whose words change mid-game (Goma Goons' Next crew, which reads Upgrades in Free-for-All) is fitted again, checked at
+    // most every 300ms and only when some button's words are new (pass 9: UPGRADES ran past its box at 1440 in a browser that draws
+    // text at 16px)
+    var blT = 0, blSig = '';
+    var btnSig = function () { return qa('button', game).map(function (b) { return b.textContent; }).join('|'); };
+    new MutationObserver(function () { if (blT) return; blT = setTimeout(function () { blT = 0; var sg = btnSig(); if (sg !== blSig) { blSig = sg; fitLabels(); } }, 300); })
+      .observe(game, { childList: true, subtree: true, characterData: true });
   }
   if (window.ResizeObserver) { var el0 = cfg.zoom && q(cfg.zoom, game); if (el0) new ResizeObserver(later(soon)).observe(el0); }
   // the board changes size when its start screen gives way (Trench Run on phones grew from 233 to 365 wide): the champion

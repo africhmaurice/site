@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
-<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=11" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=10"></script>
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=12" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=11"></script>
 <!-- ============================================================
      GOMA GOONS (was Sky Duel, then Mortar Mayhem / Mortar Madness; renamed 11/2) - a turn-based artillery game.
      Lives at /sky-fishing (page address kept so the Act Three riddle card link still works;
@@ -884,7 +884,7 @@ var ArcadeCard = (function () {
   function fitView(force){
     var st=d.querySelector('.sd-stage'),sw=st.clientWidth;if(!sw||!padEl||padEl.hidden)return;
     var parts=['.sd-bar','.sd-view','.sd-weapons','.sd-pad','.sd-msg'],ctrl=0;parts.forEach(function(q){var e=d.querySelector(q);if(e&&!e.hidden)ctrl+=e.offsetHeight+12;});
-    var fr=window.maGameRoom&&window.maGameRoom(st),room=fr>0?fr:innerHeight-headerCover()-ctrl-4-16,h0=sw*(narrow?600/560:540/960),h=Math.max(sw*(narrow?.6:.3),Math.min(h0,room));
+    var fr=window.maGameRoom&&window.maGameRoom(st),room=fr>0?fr:innerHeight-headerCover()-ctrl-4-16,h0=sw*(narrow?600/560:540/960),h=Math.max(sw*(narrow?(fr>0?.42:.6):.3),Math.min(h0,room));   /* (a short phone, whose room is measured, may draw it as short as .42 of its width, so the battlefield keeps the screen's width in Campaign too: pass 9) */
     if(!force&&Math.abs(h-fitH)<24)return;fitH=h;
     VH=Math.round(VW*h/sw);cv.width=VW*DPR;cv.height=VH*DPR;clampCam();
   }
@@ -1549,7 +1549,7 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
       for(var t=.06;t<=.5;t+=.055){var s=toScreen(m.x+v.vx*t,m.y+v.vy*t+G*w.grav*t*t/2);cx.beginPath();cx.arc(s.x,s.y,3.5,0,7);cx.fill();cx.fillStyle='#fffffe';cx.beginPath();cx.arc(s.x,s.y,2.2,0,7);cx.fill();cx.fillStyle='rgba(11,23,15,.85)';}}
     // the words on the board never drawn under 11.6px on screen, however far the page scales the canvas down (QA 2026-11-14: the
     // HP tags, FREE-FOR-ALL, and MOVES at 7-10px): sized up by as much as the canvas is scaled
-    if(!(drawN++%30)||!KS){var cr=cv.getBoundingClientRect();if(cr.width)KS=cr.width/VW;}
+    if(!(drawN++%1)||!KS){var cr=cv.getBoundingClientRect();if(cr.width)KS=cr.width/VW;}
     // (12px or more: QA 2026-11-14, pass 6, the HP tags and FREE-FOR-ALL at 10-11px on a 390 screen)
     var fs0=FS,hfs0=HFS;MINF=KS?Math.ceil(12.4/KS):0;FS=Math.max(fs0,Math.ceil(12.4/(KS||1)));HFS=Math.max(hfs0,MINF);
     drawLabels();

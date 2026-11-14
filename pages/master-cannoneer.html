@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
-<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=11" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=10"></script>
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=12" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=11"></script>
 <!-- ============================================================
      HOLD THE WALL! Replaces the old Master Cannoneer game (10/29), which is
      backed up at site-batch2/_batch2/box150/master-cannoneer.before-holdwall.html. The file keeps the master-cannoneer
@@ -1103,7 +1103,9 @@ function fitStage(){var stg=cv.parentNode,top=stg.parentNode,pan=$('ctl'),R=cv.w
   var other=(top.offsetHeight-stg.offsetHeight)+pan.offsetHeight+20,room=innerHeight-hdrCover()-other-16;
   stg.style.width=Math.round(Math.min(full,Math.max(Math.min(full,innerWidth<=760?240:300),room*R)))+'px';fitOver();}
 // v34: the card always fits inside the game screen
-function fitOver(){var o=$('over');o.classList.remove('tight','tiny');if(o.hidden)return;if(o.scrollHeight>o.clientHeight)o.classList.add('tight');if(o.scrollHeight>o.clientHeight)o.classList.add('tiny');}
+function fitOver(){var o=$('over');o.classList.remove('tight','tiny');if(o.hidden)return;if(overOver(o))o.classList.add('tight');if(overOver(o))o.classList.add('tiny');}
+/* (too tall also when its last line reaches into the card's own bottom padding, which scrollHeight leaves out: pass 9, the button touched the board's foot) */
+function overOver(o){if(o.scrollHeight>o.clientHeight)return true;var r=o.getBoundingClientRect(),k=r.height/Math.max(1,o.offsetHeight)||1,pb=(parseFloat(getComputedStyle(o).paddingBottom)||0)*k,m=-1e9;Array.prototype.forEach.call(o.children,function(c){if(c.getClientRects().length)m=Math.max(m,c.getBoundingClientRect().bottom);});return m>r.bottom-pb+0.5;}
 var fitT=0;window.addEventListener('resize',function(){clearTimeout(fitT);fitT=setTimeout(fitStage,120);});setTimeout(fitStage,0);window.addEventListener('load',fitStage);
 // small line icons for the buttons (his art where there is some: missile, burst, atomic bomb, shield bubble)
 var SVG={
