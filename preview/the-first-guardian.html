@@ -142,6 +142,7 @@
       <li>On the crew&rsquo;s turn, each of them attacks or uses a medpack. An attack rolls a D20, and 15 or higher hits for 1. Hale hits for 2.</li>
       <li>The crew has 3 medpacks. Each one heals 2 hit points, and it can bring someone back from 0.</li>
       <li>Paraxis attacks twice a turn. A D4 picks who he swings at, and he hits for 1 if he meets their number: Rune 12, Sparrow 14, Hale 15, Scarlett 11.</li>
+      <li>Anyone who rolls a natural 20 hits twice.</li>
       <li>Anyone who rolls a 1 takes a hit: the crew member who rolled it loses 1 hit point, and so does Paraxis.</li>
       <li>Win or lose, the result counts. If more than half the frens beat him, the crew wins. If one of the crew falls in more than half the battles, they fall in the story.</li>
     </ul>
@@ -200,7 +201,7 @@
 </div></div>
 <script>
 (function () {
-  var DATA = {"key":"paraxis_vote","opens":"2026-11-14T20:00:00Z","closes":"2026-11-15T21:00:00Z","lede":"The first guardian stands between the crew and the stone. Every fren fights Paraxis once: flip the crest coin, take the crew's turns, and see who is still standing at the end.","storyKick":"LAST TIME","storyTitle":"At the Sword","story":"The frens sent the crew to the sword, and the walk was an easy one. No beasts, no traps, no surprises. Just a quiet path down the valley to the giant blade standing in the rock.\n\nThen something beside the sword stood up.\n\n\"Tell me that's a building. Please tell me that's a building.\"\n\n\"Buildings don't have knees, love.\"\n\nIt was a machine, huge and ancient, and it looked down at the crew like they were late for an appointment.\n\n\"You've come for the stone. You are not the first, and you will not be the last. I am but one of three guardians who protect this land. You must defeat all of us before you can find what you seek. I am the first guardian. My name is Paraxis. You will not meet my siblings.\"","coin":{"crest":"https://africhmaurice.github.io/site/assets/paraxis/crest-coin-crest.webp","swords":"https://africhmaurice.github.io/site/assets/paraxis/crest-coin-swords.webp"},"audio":{"label":"LISTEN: GARY FURLONG AS PARAXIS","src":"https://africhmaurice.github.io/site/assets/audio/guardians-2-paraxis.m4a"},"icons":{"rune":"https://africhmaurice.github.io/site/assets/paraxis/icon-rune.webp","sparrow":"https://africhmaurice.github.io/site/assets/paraxis/icon-sparrow.webp","hale":"https://africhmaurice.github.io/site/assets/paraxis/icon-hale.webp","scarlett":"https://africhmaurice.github.io/site/assets/paraxis/icon-scarlett.webp"}};
+  var DATA = {"key":"paraxis_vote","opens":"2026-11-14T20:00:00Z","closes":"2026-11-15T21:00:00Z","lede":"The first guardian stands between the crew and the stone. Every fren fights Paraxis once: flip the crest coin, take the crew's turns, and see who is still standing at the end.","storyKick":"LAST TIME","storyTitle":"At the Sword","story":"The frens sent the crew to the sword, and the walk was an easy one. No beasts, no traps, no surprises. Just a quiet path down the valley to a platform with a sword carved into its face. And as they approach, something rises up from the center of the platform.\n\nA mech, huge and whirring with mechanical brilliance, and with that mech, a man. He looks down at the crew as if they're late for an appointment.\n\nMeet Paraxis. The first of three guardians.","coin":{"crest":"https://africhmaurice.github.io/site/assets/paraxis/crest-coin-crest.webp","swords":"https://africhmaurice.github.io/site/assets/paraxis/crest-coin-swords.webp"},"audio":{"label":"LISTEN: GARY FURLONG AS PARAXIS","src":"https://africhmaurice.github.io/site/assets/audio/guardians-2-paraxis.m4a"},"icons":{"rune":"https://africhmaurice.github.io/site/assets/paraxis/icon-rune.webp","sparrow":"https://africhmaurice.github.io/site/assets/paraxis/icon-sparrow.webp","hale":"https://africhmaurice.github.io/site/assets/paraxis/icon-hale.webp","scarlett":"https://africhmaurice.github.io/site/assets/paraxis/icon-scarlett.webp"}};
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var PREVIEW = /github\.io$/.test(location.hostname) || /[?&]pxpreview/.test(location.search);
   var CAPTAIN = (location.hash.match(/captain=([a-f0-9]+)/) || [])[1] || '';
@@ -715,9 +716,9 @@
     for (var a = 0; a < 2; a++) {
       if (!st.hp.some(function (h) { return h > 0; })) break;
       var d4s = [], t; do { t = d(4) - 1; d4s.push(t + 1); } while (st.hp[t] <= 0);
-      var roll = fake.bank[st.bi++ % 100], hit = roll >= GUARD[t]; if (hit) st.hp[t] = Math.max(0, st.hp[t] - 1);
+      var roll = fake.bank[st.bi++ % 100], hit = roll >= GUARD[t]; if (hit) st.hp[t] = Math.max(0, st.hp[t] - (roll === 20 ? 2 : 1));
       if (roll === 1) st.px = Math.max(0, st.px - 1);
-      ev.push({ t: 'px', d4: d4s, who: t, roll: roll, need: GUARD[t], hit: hit, hp: st.hp[t], fumble: roll === 1, px: st.px });
+      ev.push({ t: 'px', d4: d4s, who: t, roll: roll, need: GUARD[t], hit: hit, hp: st.hp[t], fumble: roll === 1, crit: roll === 20, px: st.px });
       if (st.px <= 0) { st.over = 'win'; return; }
     }
     if (!st.hp.some(function (h) { return h > 0; })) st.over = 'loss';
@@ -739,8 +740,8 @@
     if (payload.action === 'pxact') {
       var who = st.next;
       if (payload.act === 'heal') { var t = +payload.target, was = st.hp[t]; st.hp[t] = Math.min(4, st.hp[t] + 2); st.packs--; ev.push({ t: 'heal', who: who, target: t, from: was, hp: st.hp[t], packs: st.packs }); }
-      else { var r = d(20), hit = r >= 15, dmg = hit ? POWER[who] : 0; st.px = Math.max(0, st.px - dmg); if (r === 1) st.hp[who] = Math.max(0, st.hp[who] - 1);
-        ev.push({ t: 'atk', who: who, roll: r, hit: hit, dmg: dmg, px: st.px, fumble: r === 1, hp: st.hp[who] }); if (st.px <= 0) st.over = 'win'; else if (!st.hp.some(function (h) { return h > 0; })) st.over = 'loss'; }
+      else { var r = d(20), hit = r >= 15, dmg = hit ? POWER[who] * (r === 20 ? 2 : 1) : 0; st.px = Math.max(0, st.px - dmg); if (r === 1) st.hp[who] = Math.max(0, st.hp[who] - 1);
+        ev.push({ t: 'atk', who: who, roll: r, hit: hit, dmg: dmg, px: st.px, fumble: r === 1, crit: r === 20, hp: st.hp[who] }); if (st.px <= 0) st.over = 'win'; else if (!st.hp.some(function (h) { return h > 0; })) st.over = 'loss'; }
       if (!st.over) {
         var nx = -1; for (var i = who + 1; i < 4; i++) if (st.hp[i] > 0) { nx = i; break; }
         if (nx < 0) { ev.push({ t: 'pxturn', round: st.round }); fakeParaxis(st, ev); if (!st.over) { st.round++; for (var j = 0; j < 4; j++) if (st.hp[j] > 0) { nx = j; break; } ev.push({ t: 'round', round: st.round }); } }
@@ -805,13 +806,13 @@
       chain = chain.then(function () {
         if (e.t === 'coin') return fast ? null : flip(e.coin);
         if (e.t === 'atk') {
-          var line = NAMES[e.who] + ' rolls ' + e.roll + (e.hit ? ' and hits Paraxis for ' + e.dmg + '.' : e.fumble ? '. A 1! ' + NAMES[e.who] + ' takes a hit' + (e.hp <= 0 ? ' and is down.' : ' and has ' + e.hp + ' left.') : '. A miss.');
+          var line = NAMES[e.who] + ' rolls ' + e.roll + (e.crit ? '. A natural 20! ' + NAMES[e.who] + ' hits twice, for ' + e.dmg + '.' : e.hit ? ' and hits Paraxis for ' + e.dmg + '.' : e.fumble ? '. A 1! ' + NAMES[e.who] + ' takes a hit' + (e.hp <= 0 ? ' and is down.' : ' and has ' + e.hp + ' left.') : '. A miss.');
           return (fast ? Promise.resolve() : (pending || say(NAMES[e.who] + ' attacks…'), die(e.roll))).then(function () { view.px = e.px; if (e.fumble) { view.hp[e.who] = e.hp; if (!fast) shake(e.who); } say(line); log(line, e.hit ? 'good' : e.fumble ? 'bad' : ''); paint(); return fast ? null : wait(500); });
         }
         if (e.t === 'heal') { view.hp[e.target] = e.hp; view.packs = e.packs; var hl = NAMES[e.who] + ' uses a medpack on ' + (e.target === e.who ? (e.who === 1 || e.who === 3 ? 'herself' : 'himself') : NAMES[e.target]) + (e.from <= 0 ? ' and brings ' + NAMES[e.target] + ' back.' : '.') ; say(hl); log(hl, 'good'); paint(); return fast ? null : wait(700); }
         if (e.t === 'pxturn') { busy = true; say('Paraxis attacks!'); if (!fast) paint(); return fast ? null : wait(700); }
         if (e.t === 'px') {
-          var pl = 'Paraxis swings at ' + NAMES[e.who] + ' (D4: ' + e.d4.join(', then ') + ') and rolls ' + e.roll + '. ' + (e.hit ? 'A hit! ' + NAMES[e.who] + (e.hp <= 0 ? ' is down.' : ' has ' + e.hp + ' left.') : 'He needed ' + e.need + '. A miss.') + (e.fumble ? ' A 1! Paraxis takes a hit himself.' : '');
+          var pl = 'Paraxis swings at ' + NAMES[e.who] + ' (D4: ' + e.d4.join(', then ') + ') and rolls ' + e.roll + '. ' + (e.hit ? (e.crit ? 'A natural 20! He hits twice. ' : 'A hit! ') + NAMES[e.who] + (e.hp <= 0 ? ' is down.' : ' has ' + e.hp + ' left.') : 'He needed ' + e.need + '. A miss.') + (e.fumble ? ' A 1! Paraxis takes a hit himself.' : '');
           return (fast ? Promise.resolve() : (say('Paraxis swings at ' + NAMES[e.who] + '…'), die(e.roll))).then(function () { view.hp[e.who] = e.hp; if (e.fumble) view.px = e.px; if (e.hit && !fast) shake(e.who); say(pl); log(pl, e.hit ? 'bad' : e.fumble ? 'good' : ''); paint(); return fast ? null : wait(700); });
         }
         if (e.t === 'round') { view.round = e.round; log('Round ' + e.round + '.'); return null; }
