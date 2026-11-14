@@ -82,8 +82,8 @@
     },
     {
       "slug": "preorder",
-      "url": "/preorder",
-      "title": "Pre-order: all retailers",
+      "url": "/order",
+      "title": "Order: all retailers",
       "source": "pages/preorder.html (built by tools/preorder.mjs)"
     },
     {
@@ -355,6 +355,12 @@
       "url": "/act-two-winners",
       "title": "Act Two Winners (sweepstakes wheels)",
       "source": "pages/act-two-winners.html"
+    },
+    {
+      "slug": "act-four-winners",
+      "url": "/act-four-winners",
+      "title": "Act Four (final standings)",
+      "source": "pages/act-four-winners.html"
     },
     {
       "slug": "act-one-other-countries",

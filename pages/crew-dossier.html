@@ -1,71 +1,110 @@
 <!-- CREW DOSSIERS (mauriceafrich.com/crew-dossier). Maurice 11/9: his final "Your Art v2" dossier cards on their own page, shown as they are
      (nothing faded or rebuilt). One card per crew member; tap or click flips it over to the profile side.
-     Cards: Drive / Ready to Review / Crew Dossiers, Your Art v2 (DRAFT), made web size. Built by the bookshelf session's dossier/build2.cjs. -->
+     Cards: Drive / Ready to Review / Crew Dossiers, Your Art v2 (DRAFT), made web size. Built by the bookshelf session's dossier/build2.cjs.
+     2026-11-12 redesign, edited here by hand (today's look): an ember hero with his cover card beside the page title, then the
+     dossier cards as tiles two across (Bones centered alone in the last row), each card still flips.
+     Motion (round 3, 11/12: "have the cards slide in from the left and right as you scroll"): data-ma-fly="x" on the grid, the left column from the left and the right column from the right.
+     His card art is untouched: shown whole at its own 4:5 shape, never cropped, faded, or stretched.
+     DRAFT (mine, 2026-11-12): the page title "Crew Dossiers" as text. -->
 <link rel="stylesheet" href="https://use.typekit.net/hfm0eub.css">
 <style>
-#ma-dossier{box-sizing:border-box;background:#0b170f;position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow-x:hidden;padding:clamp(40px,5vw,80px) clamp(16px,3.4vw,64px) clamp(64px,7vw,110px);display:flex;flex-direction:column;align-items:center;gap:clamp(28px,3.4vw,48px)}
+#ma-dossier{box-sizing:border-box;background:#c53200;position:relative;width:100vw;margin-left:calc(50% - 50vw);overflow-x:hidden;color:#fffffe;font-family:'Almarai',sans-serif}
 section:has(#ma-dossier) .content-wrapper{padding:0!important;max-width:none!important}
-#ma-dossier *{box-sizing:border-box}
-#ma-dossier img{display:block;width:100%;height:auto;border-radius:0}
-#ma-dossier .cd-cover{width:min(100%,720px)}
-#ma-dossier .cd-jump{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 14px;max-width:1000px}
-#ma-dossier .cd-jump a,#ma-dossier .cd-hint{font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;line-height:1.2}
-#ma-dossier .cd-jump a{color:#fffffe;text-decoration:none;font-size:clamp(17px,1.5vw,22px);padding:10px 16px;border:2px solid currentColor}
-#ma-dossier .cd-jump a:hover,#ma-dossier .cd-jump a:focus-visible{background:#fffffe;color:#0b170f;outline:none}
-#ma-dossier .cd-hint{color:#fffffe;opacity:.85;font-size:clamp(18px,1.6vw,24px);margin:0;text-align:center}
-#ma-dossier .cd-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,3vw,44px);width:100%;max-width:1160px}
-#ma-dossier .cd-grid>:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - clamp(12px,1.5vw,22px))}
-@media (max-width:700px){#ma-dossier .cd-grid{grid-template-columns:minmax(0,1fr)}#ma-dossier .cd-grid>:last-child:nth-child(odd){width:100%}}
+/* the layout grid keeps a spare row under the block; without it no page color shows below the cards */
+section:has(#ma-dossier) .fluid-engine{display:block!important}
+#ma-dossier *{box-sizing:border-box;border-radius:0}
+#ma-dossier img{display:block;width:100%;height:auto}
+/* (the outer box is ember so any top room the loader adds above the hero matches it) */
+/* the hero: ember at 90% over the city art, the title and crew index on the left, his cover card on the right */
+#ma-dossier .cd-hero{position:relative;isolation:isolate;padding:clamp(150px,13vw,190px) clamp(20px,5vw,80px) clamp(56px,6vw,96px)}
+/* the art reaches up past the hero into any room above it, so there is no seam under the menu */
+#ma-dossier .cd-hero::before{content:"";position:absolute;left:0;right:0;bottom:0;top:-240px;z-index:-1;pointer-events:none;background:linear-gradient(rgba(197,50,0,.9),rgba(145,37,1,.92)),url(https://africhmaurice.github.io/site/assets/bg/city-skyline-panorama-as348070597.webp) center/cover;background-color:#c53200}
+#ma-dossier .cd-hin{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,520px);align-items:center;gap:clamp(32px,5vw,80px)}
+#ma-dossier .cd-words{display:flex;flex-direction:column;align-items:flex-start;gap:20px}
+#ma-dossier .cd-h1{margin:0;font-family:'CI Face','Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(48px,7.4vw,120px);line-height:1.2;letter-spacing:.03em;text-transform:uppercase;color:#fffffe;text-wrap:balance}
+#ma-dossier .cd-hint{margin:0;font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;font-size:clamp(20px,1.8vw,26px);line-height:1.2;letter-spacing:.08em;text-transform:uppercase;color:#fffffe}
+#ma-dossier .cd-cover{width:100%;box-shadow:0 30px 60px rgba(0,0,0,.45)}
+#ma-dossier .cd-jump{display:flex;flex-wrap:wrap;gap:12px}
+#ma-dossier .cd-jump a{font-family:'bebas-neue-pro','Bebas Neue Pro',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;line-height:1.2;color:#fffffe;text-decoration:none;font-size:clamp(18px,1.5vw,22px);padding:10px 16px;border:2px solid #fffffe;transition:background .15s ease,color .15s ease}
+#ma-dossier .cd-jump a:hover,#ma-dossier .cd-jump a:focus-visible{background:#fffffe;color:#912501;outline:none}
+/* the dossiers: tiles two across, Bones centered alone in the last row */
+#ma-dossier .cd-body{padding:clamp(48px,6vw,96px) clamp(16px,3.4vw,64px) clamp(64px,7vw,112px);background:linear-gradient(rgba(11,23,15,.9),rgba(11,23,15,.94)),url(https://africhmaurice.github.io/site/assets/bg/city-skyline-panorama-as348070597.webp) center/cover;background-color:#0b170f}
+#ma-dossier .cd-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%;max-width:1240px;margin:0 auto}
+#ma-dossier .cd-tile{position:relative;min-width:0}
+/* Bones, alone in the last row, sits in the middle at the same size (Maurice 2026-11-12: "just center bones") */
+#ma-dossier .cd-tile:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:calc(50% - 6px)}
 /* the flip: front = stats card, back = profile card */
-#ma-dossier .cd-card{display:block;width:100%;padding:0;margin:0;border:0;background:none;cursor:pointer;perspective:2200px;scroll-margin-top:110px;-webkit-tap-highlight-color:transparent}
+#ma-dossier .cd-card{position:relative;display:block;width:100%;padding:0;margin:0;border:0;background:none;cursor:pointer;perspective:2200px;scroll-margin-top:110px;-webkit-tap-highlight-color:transparent;transition:transform .18s ease}
+#ma-dossier .cd-card::after{content:"";position:absolute;inset:0;border:3px solid transparent;pointer-events:none;transition:border-color .15s;z-index:2}
+#ma-dossier .cd-card:hover::after{border-color:#fffffe}
 #ma-dossier .cd-card:focus-visible{outline:3px solid #fffffe;outline-offset:6px}
 #ma-dossier .cd-in{position:relative;display:block;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,.7,.25,1)}
 #ma-dossier .cd-card[aria-pressed="true"] .cd-in{transform:rotateY(180deg)}
 #ma-dossier .cd-front,#ma-dossier .cd-back{-webkit-backface-visibility:hidden;backface-visibility:hidden}
 #ma-dossier .cd-back{position:absolute;inset:0;transform:rotateY(180deg)}
-@media (prefers-reduced-motion:reduce){#ma-dossier .cd-in{transition:none}}
+@media (max-width:900px){
+  #ma-dossier .cd-hin{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}
+  #ma-dossier .cd-words{align-items:center}
+  #ma-dossier .cd-jump{justify-content:center}
+  #ma-dossier .cd-cover{max-width:520px}
+}
+@media (max-width:700px){
+  #ma-dossier .cd-hero{padding:150px 16px 48px}
+  #ma-dossier .cd-grid{grid-template-columns:minmax(0,1fr)}
+  #ma-dossier .cd-tile:last-child:nth-child(odd){width:100%}
+}
+@media (prefers-reduced-motion:reduce){#ma-dossier .cd-in,#ma-dossier .cd-card{transition:none}}
 </style>
-<div id="ma-dossier">
-  <div class="cd-cover"><img src="https://africhmaurice.github.io/site/assets/crew-dossier/cover.webp" width="1440" height="1800" alt="Crew Dossiers: Cello's Gate, the Trench crew. Seven sky pirates. Seven files."></div>
-  <nav class="cd-jump" aria-label="Crew">
-    <a href="#grey">Grey</a>
-    <a href="#minn">Minn</a>
-    <a href="#farlow">Farlow</a>
-    <a href="#dot">Dot</a>
-    <a href="#mars">Mars</a>
-    <a href="#willow">Willow</a>
-    <a href="#bones">Bones</a>
-  </nav>
-  <p class="cd-hint">Tap a card to flip it</p>
-  <div class="cd-grid">
-    <button type="button" class="cd-card" id="grey" aria-pressed="false" aria-label="Grey Shimada: flip the card"><span class="cd-in">
+<div id="ma-dossier" data-ma-own>
+  <header class="cd-hero">
+    <div class="cd-hin">
+      <div data-ma-rise><div class="cd-words">
+        <h1 class="cd-h1">Crew Dossiers</h1>
+        <p class="cd-hint">Tap a card to flip it</p>
+        <nav class="cd-jump" aria-label="Crew">
+          <a href="#grey">Grey</a>
+          <a href="#minn">Minn</a>
+          <a href="#farlow">Farlow</a>
+          <a href="#dot">Dot</a>
+          <a href="#mars">Mars</a>
+          <a href="#willow">Willow</a>
+          <a href="#bones">Bones</a>
+        </nav>
+      </div></div>
+      <div class="cd-cover" data-ma-rise><img src="https://africhmaurice.github.io/site/assets/crew-dossier/cover.webp" width="1440" height="1800" alt="Crew Dossiers: Cello's Gate, the Trench crew. Seven sky pirates. Seven files."></div>
+    </div>
+  </header>
+  <div class="cd-body">
+  <div class="cd-grid" data-ma-fly="x">
+    <div class="cd-tile"><button type="button" class="cd-card" id="grey" aria-pressed="false" aria-label="Grey Shimada: flip the card"><span class="cd-in">
       <img class="cd-front" src="https://africhmaurice.github.io/site/assets/crew-dossier/grey-1.webp" width="1440" height="1800" alt="Crew Dossier 01, Trench: Grey Shimada. Age: 30. Born: Indigo (Capital City), Indigo. On Trench: 10 years. Enneagram: 3w2 The Tactical Charmer. Eyes: Warm brown (like sunlit honey). Hair: Black. Weapons: Class 7 Brass Point &amp; Prismblade.">
       <img class="cd-back" src="https://africhmaurice.github.io/site/assets/crew-dossier/grey-2.webp" width="1440" height="1800" alt="Grey Shimada: Captain Grey is the kind of guy you assume would one day grow up to become a military leader or sharp-dressed, multi-million-dollar lobbyist. And though that was sort of an option for him, he chose a different path. His mother died when he was just a boy, and it left him in the hands of his emotionally distant, rigid, and hyper-opinionated father—who just happened to be a world-famous admiral responsible for more than one ruined city and cultural genocide. And though Grey was expected to wear that mantle, he couldn't. He hated it. He hated his father's legacy, hated what he was expected to become, and chose to leave. He packed everything he owned into the crimson airship his father gifted him after he graduated from flight school (second in his class) and became a sky pirate. Now, he does odd jobs for criminal syndicates, stealing from the wealthy elite to feed himself, his crew, and the community he's trying to rebuild in a city bombed to bits by his father's legacy. He wants to be a good person. Someone who does bad things—sure—but for the right reasons.">
-    </span></button>
-    <button type="button" class="cd-card" id="minn" aria-pressed="false" aria-label="Minnow 'Minn' Alisma: flip the card"><span class="cd-in">
+    </span></button></div>
+    <div class="cd-tile"><button type="button" class="cd-card" id="minn" aria-pressed="false" aria-label="Minnow 'Minn' Alisma: flip the card"><span class="cd-in">
       <img class="cd-front" src="https://africhmaurice.github.io/site/assets/crew-dossier/minn-1.webp" width="1440" height="1800" alt="Crew Dossier 02, Trench: Minnow 'Minn' Alisma. Age: 30. Born: Whisperwind, Fenna’s Soul. On Trench: 10 years. Enneagram: 2 The Quiet Anchor. Eyes: Golden brown. Hair: Black braids. Weapons: Retractable steel staff.">
       <img class="cd-back" src="https://africhmaurice.github.io/site/assets/crew-dossier/minn-2.webp" width="1440" height="1800" alt="Minnow 'Minn' Alisma: Minn was born with the Oracle's Gift—a magical ability that grants her clairtangency (psychometry; the ability to access memories and energetic imprints stored within physical objects), precognition, aura sight, and energy absorption. The gift is both a blessing and a burden, but she learned from her best. Her ga'ma, Madame Dubois. When Grey came back for her—ten years after their fateful separation—she jumped at the opportunity to join his crew. She was the first crewmember. And the first person Grey recruited.">
-    </span></button>
-    <button type="button" class="cd-card" id="farlow" aria-pressed="false" aria-label="Farlow Alisma: flip the card"><span class="cd-in">
+    </span></button></div>
+    <div class="cd-tile"><button type="button" class="cd-card" id="farlow" aria-pressed="false" aria-label="Farlow Alisma: flip the card"><span class="cd-in">
       <img class="cd-front" src="https://africhmaurice.github.io/site/assets/crew-dossier/farlow-1.webp" width="1440" height="1800" alt="Crew Dossier 03, Trench: Farlow Alisma. Age: 24. Born: Indigo (Capital City), Indigo. On Trench: 5 years. Enneagram: 6w5 The Wary Existentialist. Eyes: Brown. Hair: Tightly curled black hair. Weapons: Morton M8." loading="lazy">
       <img class="cd-back" src="https://africhmaurice.github.io/site/assets/crew-dossier/farlow-2.webp" width="1440" height="1800" alt="Farlow Alisma: Farlow was born a page bender (which means he has an eidetic memory). With this gift, he grew up being praised for his intellect and attended one of the best universities in the world—as a teenager. He's a genius, but in many ways, he's probably wasting his talents. His biggest dream is to research and understand the connection between biogenetics and the arcane. Why are some people born with gifts while others aren't? But when his old fren, Grey Shimada, and his sister, Minn Alisma, set sail on an airship, Farlow tagged along. Well, at first, he consulted because he wasn't finished with school. He officially joined the crew when he graduated." loading="lazy">
-    </span></button>
-    <button type="button" class="cd-card" id="dot" aria-pressed="false" aria-label="Dot: flip the card"><span class="cd-in">
+    </span></button></div>
+    <div class="cd-tile"><button type="button" class="cd-card" id="dot" aria-pressed="false" aria-label="Dot: flip the card"><span class="cd-in">
       <img class="cd-front" src="https://africhmaurice.github.io/site/assets/crew-dossier/dot-1.webp" width="1440" height="1800" alt="Crew Dossier 04, Trench: Dot. Age: 22. Born: Unknown. On Trench: 1.25 years. Enneagram: 8w9 The Orphaned Bear. Eyes: Dark blue. Hair: Dusty blonde. Weapons: Twin torches &amp; a bunch of knives." loading="lazy">
       <img class="cd-back" src="https://africhmaurice.github.io/site/assets/crew-dossier/dot-2.webp" width="1440" height="1800" alt="Dot: Dot was born into the Church of the Crest. Her history is a little muddy, but suffice it to say, she grew up in a violent environment where they turn children into ruthless, cold killers. She took her first life when she was four years old. She graduated and entered a life of servitude to immortals, but eventually, she escaped constriction and began a life on the run. There are hints that she has some ties to the Grim (a mercenary crew made up entirely of fugitive Crest knights), but we aren't sure if she was one of them or just knew them in passing. One day, she approached Grey in search of a job. He agreed immediately." loading="lazy">
-    </span></button>
-    <button type="button" class="cd-card" id="mars" aria-pressed="false" aria-label="Mars: flip the card"><span class="cd-in">
+    </span></button></div>
+    <div class="cd-tile"><button type="button" class="cd-card" id="mars" aria-pressed="false" aria-label="Mars: flip the card"><span class="cd-in">
       <img class="cd-front" src="https://africhmaurice.github.io/site/assets/crew-dossier/mars-1.webp" width="1440" height="1800" alt="Crew Dossier 05, Trench: Mars. Age: 39. Born: Triadica, Soel. On Trench: 4 years. Enneagram: 1w2 The Tortured Crusader. Eyes: Blue. Hair: Bald, with a red beard thickly braided down to his sternum. Weapons: Layla (giant mechaxe)." loading="lazy">
       <img class="cd-back" src="https://africhmaurice.github.io/site/assets/crew-dossier/mars-2.webp" width="1440" height="1800" alt="Mars: Mars was born in squalor and strove to rise above it. That's why he joined the Corps, the I.N. International Military Force. The Corps got him away from home, but he thrived under the conditions. He rose through the ranks and eventually joined the elite force, the Prism Guard, known for housing the most blood-thirsty and skilled soldiers in the world. But on one mission, he was trapped and imprisoned by the Frame and sold to the Killing Floor. On the Floor, it's kill or die, so he killed a lot. To this day, he holds the record for the most kills in the Killing Floor's history. A few years ago, Grey had some dealings with disreputable folks tied to the illegal travelling arena, and he was given the opportunity to buy Mars. It almost bankrupted him, but he did it. And then he offered the big man his freedom (and a job). Mars accepted the job and eventually found himself a home." loading="lazy">
-    </span></button>
-    <button type="button" class="cd-card" id="willow" aria-pressed="false" aria-label="Willow Barnabé: flip the card"><span class="cd-in">
+    </span></button></div>
+    <div class="cd-tile"><button type="button" class="cd-card" id="willow" aria-pressed="false" aria-label="Willow Barnabé: flip the card"><span class="cd-in">
       <img class="cd-front" src="https://africhmaurice.github.io/site/assets/crew-dossier/willow-1.webp" width="1440" height="1800" alt="Crew Dossier 06, Trench: Willow Barnabé. Age: 37. Born: Pontune (Capital City), Pontune. On Trench: 1 year. Enneagram: 7w8 The Brilliant Scoundrel. Eyes: Hazel. Hair: Chestnut brown, thick &amp; curly. Weapons: Morton M8 revolver." loading="lazy">
       <img class="cd-back" src="https://africhmaurice.github.io/site/assets/crew-dossier/willow-2.webp" width="1440" height="1800" alt="Willow Barnabé: Born Willow Marisolis Madera to the Patron Jose Madera and his wife Melody Madera of the Madera Cartel, raised in the freecity of Pontune before joining the Naval Aviation Academy in Crimn, Willow is a world-class pilot with a fondness for burners and foul language. She graduated number one in her class before taking a five-year stint in the Crimn National Military. She flew for the Iron Navy, delivering troops to freecity ports. During her fifth year, she met a man. William Barnabé. And together, they decided to become sky pirates." loading="lazy">
-    </span></button>
-    <button type="button" class="cd-card" id="bones" aria-pressed="false" aria-label="Billy 'Bones' Barnabé: flip the card"><span class="cd-in">
+    </span></button></div>
+    <div class="cd-tile"><button type="button" class="cd-card" id="bones" aria-pressed="false" aria-label="Billy 'Bones' Barnabé: flip the card"><span class="cd-in">
       <img class="cd-front" src="https://africhmaurice.github.io/site/assets/crew-dossier/bones-1.webp" width="1440" height="1800" alt="Crew Dossier 07, Trench: Billy 'Bones' Barnabé. Age: 34. Born: Selk, Drayden. On Trench: 1 year. Enneagram: 5w6 The Quiet Perfectionist. Eyes: Brown. Hair: Dark &amp; shaggy, with a hickory beard striped with ginger. Weapons: Whatever he can find." loading="lazy">
       <img class="cd-back" src="https://africhmaurice.github.io/site/assets/crew-dossier/bones-2.webp" width="1440" height="1800" alt="Billy 'Bones' Barnabé: Bones is Trench's resident techtailor, which basically means he handles everything technical, mechanical, and computerized. A lowly airship mechanic from the railroad isles of Drayden. The day he met Willow, they stole a cruiser and took it for a joyride, hitting several national banking establishments before selling the cruiser for scraps to thugs closely associated with the criminal syndicate known as the Frame and disappearing into the freecities. His family still lives in Drayden, and even though they believe he doesn't care about them anymore, he sends them money every month and tries to stay in touch. He is the calm boulder within Willow's raging storm." loading="lazy">
-    </span></button>
+    </span></button></div>
+  </div>
   </div>
 </div>
 <script>
@@ -75,5 +114,14 @@ section:has(#ma-dossier) .content-wrapper{padding:0!important;max-width:none!imp
     var c = e.target.closest && e.target.closest('.cd-card'); if (!c) return;
     c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
   });
+  // pressing a card tilts it toward where it was pressed, like the Links tiles (the flip still plays on release)
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  root.addEventListener('pointerdown', function (e) {
+    var c = e.target.closest && e.target.closest('.cd-card'); if (!c || still) return;
+    var r = c.getBoundingClientRect(), dx = (e.clientX - r.left) / r.width - 0.5, dy = (e.clientY - r.top) / r.height - 0.5;
+    c.style.transform = 'perspective(1200px) rotateY(' + (dx * 6).toFixed(1) + 'deg) rotateX(' + (-dy * 6).toFixed(1) + 'deg) scale(.985)';
+  });
+  function release() { Array.prototype.forEach.call(root.querySelectorAll('.cd-card[style]'), function (c) { c.style.transform = ''; }); }
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) { root.addEventListener(ev, release); });
 })();
 </script>

@@ -1,3 +1,180 @@
-<!-- Elfsight Testimonials Slider | Cello's Gate Testimonials Slider -->
-<script src="https://elfsightcdn.com/platform.js" async=""></script>
-<div class="elfsight-app-f2549339-e616-4091-8b9b-0e0861254970" data-elfsight-app-lazy=""></div>
+<!-- Home: review slider (Maurice, 2026-11-11; DRAFT until he approves the thirteen). Replaces the Elfsight testimonial widget.
+     Full-width strip floating over the bookshelf background (no band color), cards in rotating brand colors, three cards across on desktop and one on a phone (his note 11/11).
+     Every quote is from the Press Room's praise list, word for word. The same file serves the phone and desktop blocks. -->
+<style>
+@font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
+/* A full-width strip with no fill of its own: the middle card faces front, its neighbors angle in on each side. */
+.mrv{container-type:inline-size;position:relative;left:50%;width:100vw;margin-left:-50vw;padding:72px 0 64px;overflow:hidden;background:transparent;font-family:'Almarai',sans-serif;color:#fff;text-align:center}
+.mrv *{box-sizing:border-box}
+.mrv-view{display:grid;justify-items:center;padding:0 32px;perspective:1600px}
+.mrv-slide{grid-area:1/1;width:100%;max-width:400px;min-width:0;margin:0;padding:28px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;border:2px solid #fff;background:rgba(72,45,133,.9);box-shadow:0 18px 40px rgba(11,23,15,.35);opacity:0;pointer-events:none;transform:translateX(calc(var(--d,0)*(100% + 24px)));transition:transform .6s cubic-bezier(.4,0,.2,1),opacity .6s ease}
+.mrv-slide[data-d="0"]{opacity:1;pointer-events:auto}
+/* Card colors rotate violet, ember, emerald, ink, forest, so no two cards on screen match. */
+.mrv-slide:nth-child(5n+2){background:rgba(197,50,0,.9)}
+.mrv-slide:nth-child(5n+3){background:rgba(26,94,65,.9)}
+.mrv-slide:nth-child(5n+4){background:rgba(11,23,15,.9)}
+.mrv-slide:nth-child(5n+5){background:rgba(44,96,33,.9)}
+.mrv-face{flex:none;width:112px;height:112px;border-radius:50%;border:2px solid #fff;background-color:#0b170f;background-size:cover;background-position:center var(--mrv-p,20%)}
+/* An outlet's logo sits whole inside the circle on ink. */
+.mrv-face.mrv-logo{background-size:76% auto;background-position:center;background-repeat:no-repeat}
+.mrv-face.mrv-light{background-color:#fff}
+.mrv-face.mrv-fill{background-size:cover}
+.mrv-slide blockquote{margin:0;padding:0;border:0;font-weight:700;font-size:17px;line-height:1.6;color:#fff;quotes:none}
+.mrv-slide blockquote.mrv-long{font-size:14px;line-height:1.6}
+.mrv-slide figcaption{display:flex;flex-direction:column;align-items:center;gap:12px}
+.mrv-name{font-family:'Cracked Imperia',Impact,sans-serif;font-weight:700;font-size:24px;line-height:1.2;letter-spacing:.03em;text-transform:uppercase;color:#fff}
+/* The credit line is a light step of its own card's color. */
+.mrv-credit{font-size:14px;line-height:1.5;font-style:italic;color:#cdb8ff}
+.mrv-slide:nth-child(5n+2) .mrv-credit{color:#ffd9cc}
+.mrv-slide:nth-child(5n+3) .mrv-credit{color:#89fbcb}
+.mrv-slide:nth-child(5n+4) .mrv-credit{color:#b7c9bc}
+.mrv-slide:nth-child(5n+5) .mrv-credit{color:#a2f590}
+.mrv-slide figcaption a{font-weight:800;font-size:13px;line-height:1.5;letter-spacing:.1em;text-transform:uppercase;color:#fff!important;text-decoration:underline!important;text-underline-offset:4px}
+.mrv-slide figcaption a:hover,.mrv-slide figcaption a:focus-visible{text-decoration-thickness:3px!important}
+.mrv-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:28px 16px 0}
+.mrv-btn{flex:none;width:44px;height:44px;min-width:0;min-height:0;margin:0;padding:0;display:flex;align-items:center;justify-content:center;background:transparent;color:#0b170f;border:0;border-radius:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mrv-btn:hover,.mrv-btn:focus-visible{background:#0b170f;color:#fff}
+.mrv-btn svg{width:22px;height:22px;display:block}
+.mrv-dots{display:flex;align-items:center;justify-content:center;gap:5px}
+.mrv-dot{flex:none;width:13px;height:24px;min-width:0;min-height:0;margin:0;padding:0;border:0;border-radius:0;background:linear-gradient(#0b170f,#0b170f) center/100% 4px no-repeat;opacity:.35;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mrv-dot[aria-current="true"]{opacity:1}
+.mrv-btn:focus-visible,.mrv-dot:focus-visible{outline:3px solid #3adb97;outline-offset:3px}
+@container (min-width:900px){
+  .mrv-view{padding:0 136px}
+  .mrv-slide{width:30%;max-width:420px;padding:32px 28px}
+  .mrv-slide[data-d="-1"],.mrv-slide[data-d="1"]{opacity:1;pointer-events:auto;cursor:pointer}
+  .mrv-slide[data-d="-1"]{transform:translateX(calc(-100% - 24px)) rotateY(24deg) scale(.94)}
+  .mrv-slide[data-d="1"]{transform:translateX(calc(100% + 24px)) rotateY(-24deg) scale(.94)}
+  .mrv-slide[data-d="-1"] a,.mrv-slide[data-d="1"] a{pointer-events:none}
+  .mrv-bar{gap:20px}
+  .mrv-dots{gap:8px}
+  .mrv-dot{width:24px}
+  .mrv-btn{position:absolute;top:calc(50% - 34px)}
+  .mrv-btn[data-mrv="-1"]{left:48px}
+  .mrv-btn[data-mrv="1"]{right:48px}
+  .mrv-btn svg{width:28px;height:28px}
+}
+/* Five across on wide screens (Maurice, 2026-11-12): a second card on each side, smaller and turned further, clear of
+   the others; the arrows move down beside the dashes so the outer cards never cover them. */
+@container (min-width:1100px){
+  .mrv-view{padding:0 40px}
+  .mrv-slide{width:24%}
+  .mrv-slide[data-d="0"]{z-index:3}
+  .mrv-slide[data-d="-1"],.mrv-slide[data-d="1"]{z-index:2}
+  .mrv-slide[data-d="-1"]{transform:translateX(-95.5%) rotateY(24deg) scale(.86)}
+  .mrv-slide[data-d="1"]{transform:translateX(95.5%) rotateY(-24deg) scale(.86)}
+  .mrv-slide[data-d="-2"],.mrv-slide[data-d="2"]{z-index:1;opacity:1;pointer-events:auto;cursor:pointer}
+  .mrv-slide[data-d="-2"]{transform:translateX(-178%) rotateY(38deg) scale(.66)}
+  .mrv-slide[data-d="2"]{transform:translateX(178%) rotateY(-38deg) scale(.66)}
+  .mrv-slide[data-d="-2"] a,.mrv-slide[data-d="2"] a{pointer-events:none}
+  .mrv-btn{position:static}
+}
+@media (prefers-reduced-motion:reduce){.mrv-slide{transition:none}}
+</style>
+<div class="mrv" role="region" aria-roledescription="carousel" aria-label="Reviews of Cello's Gate">
+  <div class="mrv-view">
+      <figure class="mrv-slide">
+        <span class="mrv-face mrv-logo mrv-fill" role="img" aria-label="Publishers Weekly" style="background-image:url(https://africhmaurice.github.io/site/assets/reviews/logo-publishers-weekly.png)"></span>
+        <blockquote>“Readers will find this swashbuckling mix of technology and magic un-put-downable.”</blockquote>
+        <figcaption><span class="mrv-name">Publishers Weekly</span><span class="mrv-credit">Starred review</span><a href="https://www.publishersweekly.com/9781668242834" target="_blank" rel="noopener">Read the review</a></figcaption>
+      </figure>
+      <figure class="mrv-slide">
+        <span class="mrv-face mrv-logo mrv-light" role="img" aria-label="Kirkus Reviews" style="background-image:url(https://africhmaurice.github.io/site/assets/reviews/logo-kirkus.svg)"></span>
+        <blockquote>“Readers should enjoy this thinly veiled literary love letter to pop-culture SF.”</blockquote>
+        <figcaption><span class="mrv-name">Kirkus Reviews</span><a href="https://www.kirkusreviews.com/book-reviews/maurice-africh/cellos-gate-the-sky-pirates-of-imperia/" target="_blank" rel="noopener">Read the review</a></figcaption>
+      </figure>
+      <figure class="mrv-slide">
+        <span class="mrv-face mrv-logo mrv-light" role="img" aria-label="Library Journal" style="background-image:url(https://africhmaurice.github.io/site/assets/reviews/logo-library-journal.jpg)"></span>
+        <blockquote>“An adventurous sci-fi fantasy with a unique pirate twist that balances human connections with action.”</blockquote>
+        <figcaption><span class="mrv-name">Library Journal</span><a href="https://www.libraryjournal.com/review/cellos-gate-100013820" target="_blank" rel="noopener">Read the review</a></figcaption>
+      </figure>
+      <figure class="mrv-slide">
+        <span class="mrv-face mrv-logo" role="img" aria-label="Collider" style="background-image:url(https://africhmaurice.github.io/site/assets/reviews/logo-collider.svg)"></span>
+        <blockquote>“Cello’s Gate is a rip-roaring ride from the first to the final page.”</blockquote>
+        <figcaption><span class="mrv-name">Collider</span><span class="mrv-credit">10 Sci-Fi Books That Are Perfect From Start to Finish</span><a href="https://collider.com/sci-fi-books-perfect-start-to-finish/" target="_blank" rel="noopener">Read the article</a></figcaption>
+      </figure>
+      <figure class="mrv-slide">
+        <span class="mrv-face mrv-logo" role="img" aria-label="Screen Rant" style="background-image:url(https://africhmaurice.github.io/site/assets/img/screenrant-logo.webp)"></span>
+        <blockquote>“Blending witty and poetic prose, Africh’s debut is a must-read.”</blockquote>
+        <figcaption><span class="mrv-name">Screen Rant</span><a href="https://screenrant.com/exclusive-excerpt-preview-cellos-gate-maruice-africh/" target="_blank" rel="noopener">Read the excerpt</a></figcaption>
+      </figure>
+      <figure class="mrv-slide">
+        <span class="mrv-face mrv-logo" role="img" aria-label="Grimdark Magazine" style="background-image:url(https://africhmaurice.github.io/site/assets/reviews/logo-grimdark-magazine.webp)"></span>
+        <blockquote>“Cello’s Gate truly was the wickedly wild and uniquely imaginative adventure I didn’t know I needed in my life.”</blockquote>
+        <figcaption><span class="mrv-name">Esmay Rosalyne</span><span class="mrv-credit">Grimdark Magazine</span><a href="https://www.grimdarkmagazine.com/review-cellos-gate-by-maurice-africh/" target="_blank" rel="noopener">Read the review</a></figcaption>
+      </figure>
+      <figure class="mrv-slide">
+        <span class="mrv-face" style="background-image:url(https://africhmaurice.github.io/site/assets/reviews/author-1.webp)"></span>
+        <blockquote class="mrv-long">“This stellar debut is exactly the kind of book I love to read. Wait, are we sure I didn’t write this myself? This one’s a must-read, and I can’t wait to see where it goes from here.”</blockquote>
+        <figcaption><span class="mrv-name">Nicholas Eames</span><span class="mrv-credit">Author of KINGS OF THE WYLD</span></figcaption>
+      </figure>
+      <figure class="mrv-slide">
+        <span class="mrv-face" style="--mrv-p:0%;background-image:url(https://africhmaurice.github.io/site/assets/reviews/author-2.png)"></span>
+        <blockquote>“The very definition of rip-roaring.”</blockquote>
+        <figcaption><span class="mrv-name">Richard Swan</span><span class="mrv-credit">Author of THE JUSTICE OF KINGS</span></figcaption>
+      </figure>
+      <figure class="mrv-slide">
+        <span class="mrv-face" style="background-image:url(https://africhmaurice.github.io/site/assets/reviews/author-3.png)"></span>
+        <blockquote>“A little Firefly, a little Dune, a hell of a ride.”</blockquote>
+        <figcaption><span class="mrv-name">Dave Rudden</span><span class="mrv-credit">Author of SISTER WAKE</span></figcaption>
+      </figure>
+      <figure class="mrv-slide">
+        <span class="mrv-face" style="background-image:url(https://africhmaurice.github.io/site/assets/reviews/author-4.png)"></span>
+        <blockquote>“A spellbinding blend of found family, epic heisting, and murder-full suspense!”</blockquote>
+        <figcaption><span class="mrv-name">Andy Peloquin</span><span class="mrv-credit">Author of DARKBLADE</span></figcaption>
+      </figure>
+      <figure class="mrv-slide">
+        <span class="mrv-face" style="background-image:url(https://africhmaurice.github.io/site/assets/reviews/author-7.png)"></span>
+        <blockquote>“The most fun I’ve had reading this year.”</blockquote>
+        <figcaption><span class="mrv-name">Smitty</span><span class="mrv-credit">@smitty1423</span></figcaption>
+      </figure>
+      <figure class="mrv-slide">
+        <span class="mrv-face" style="background-image:url(https://africhmaurice.github.io/site/assets/reviews/author-5.png)"></span>
+        <blockquote>“Fun and thrilling with a cast of memorable characters. It’s hard to find a stronger debut novel.”</blockquote>
+        <figcaption><span class="mrv-name">Aaron N. Hall</span><span class="mrv-credit">Author of THE LEGEND OF UH</span></figcaption>
+      </figure>
+      <figure class="mrv-slide">
+        <span class="mrv-face" style="--mrv-p:70%;background-image:url(https://africhmaurice.github.io/site/assets/reviews/author-6.webp)"></span>
+        <blockquote class="mrv-long">“Maurice has made fantasy fun again, and I cannot get enough of it. Cello’s Gate is the best debut I have ever read and it’s not even close.”</blockquote>
+        <figcaption><span class="mrv-name">Noah Brisk</span><span class="mrv-credit">Author of THE TETHERED GOD</span></figcaption>
+      </figure>
+  </div>
+  <div class="mrv-bar">
+    <button type="button" class="mrv-btn" data-mrv="-1" aria-label="Previous review"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M13 3L6 10l7 7"/></svg></button>
+    <div class="mrv-dots"></div>
+    <button type="button" class="mrv-btn" data-mrv="1" aria-label="Next review"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 3l7 7-7 7"/></svg></button>
+  </div>
+</div>
+<script>
+/* The review slider: arrows, dashes, a swipe, and a click on a side card; it moves on by itself every 8 seconds unless someone is on it. */
+(function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.mrv:not([data-on])'),function(root){
+    root.setAttribute('data-on','1');
+    var view=root.querySelector('.mrv-view'),slides=root.querySelectorAll('.mrv-slide'),dots=root.querySelector('.mrv-dots'),n=slides.length,i=0,held=false,timer=null;
+    var still=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    function go(k){
+      i=(k+n)%n;
+      Array.prototype.forEach.call(slides,function(s,j){
+        // d is how many places the card sits from the middle; the far ones wait out of sight and wrap around
+        var d=((j-i)%n+n)%n;if(d>n/2)d-=n;
+        s.style.setProperty('--d',d);s.setAttribute('data-d',Math.abs(d)>2?'x':String(d));
+        s.setAttribute('aria-hidden',d===0?'false':'true');
+        Array.prototype.forEach.call(s.querySelectorAll('a'),function(a){a.tabIndex=d===0?0:-1;});
+      });
+      Array.prototype.forEach.call(dots.children,function(d,j){d.setAttribute('aria-current',j===i?'true':'false');});
+    }
+    function start(){if(still)return;clearInterval(timer);timer=setInterval(function(){if(!held&&root.offsetParent)go(i+1);},8000);}
+    for(var j=0;j<n;j++){(function(j){
+      var d=document.createElement('button');d.type='button';d.className='mrv-dot';d.setAttribute('aria-label','Review '+(j+1)+' of '+n);d.addEventListener('click',function(){go(j);start();});dots.appendChild(d);
+      slides[j].addEventListener('click',function(){if(j!==i){go(j);start();}});
+    })(j);}
+    Array.prototype.forEach.call(root.querySelectorAll('[data-mrv]'),function(b){b.addEventListener('click',function(){go(i+Number(b.getAttribute('data-mrv')));start();});});
+    root.addEventListener('mouseenter',function(){held=true;});root.addEventListener('mouseleave',function(){held=false;});
+    root.addEventListener('focusin',function(){held=true;});root.addEventListener('focusout',function(){held=false;});
+    var x0=null,y0=0;
+    view.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
+    view.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.5){go(i+(dx<0?1:-1));start();}},{passive:true});
+    go(0);start();
+  });
+})();
+</script>

@@ -1,0 +1,119 @@
+/* Chapter frame (Maurice, 2026-11-12): today's look for every adventure chapter page (/red-city through
+   /the-crew-decides). Loaded by each chapter page file, with chapter-frame.js, which marks #rc with data-cf (the
+   chapter's color) and --cf-art (the chapter's art). Only colors, spacing, and the hero change here; every vote,
+   roll, countdown, counter, audio player, transcript, and map keeps its own markup and script. DRAFT until he approves. */
+
+/* chapter colors: the panel color (r,g,b), a brighter shade for the chapter tag, and the accent for small labels */
+/* ember panels sit deeper (ember at 60% over ink) so his orange labels still read on them */
+#rc[data-cf="red"]{--cf:145,37,1;--cf7:#c53200;--cfa:#fd7547;--cfp:rgba(145,37,1,.6)}
+#rc[data-cf="teal"]{--cf:26,94,65;--cf7:#268e62;--cfa:#89fbcb}
+#rc[data-cf="purple"]{--cf:45,28,83;--cf7:#482d85;--cfa:#c3a6ff}
+#rc[data-cf="green"]{--cf:27,59,21;--cf7:#2c6021;--cfa:#a2f590}
+#rc[data-cf="olive"]{--cf:33,50,38;--cf7:#607667;--cfa:#a2f590}
+#rc[data-cf="bone"]{--cf:33,50,38;--cf7:#1a5e41;--cfa:#89fbcb}
+
+/* the page: ink ground (the art now lives in the hero, so nothing is pinned behind the page on phones) */
+#rc[data-cf][data-cf][data-cf]{background:#0b170f;padding-top:0;padding-bottom:0;
+  --panel:var(--cfp,rgba(var(--cf),.94));--well:rgba(11,23,15,.34);--hair:rgba(255,255,255,.2);--hair2:rgba(255,255,255,.45)}
+
+/* ---- the hero: chapter tag, place, and title over the chapter's art ---- */
+#rc[data-cf][data-cf] .rc-hero{position:relative;max-width:none;width:100%;margin:0;
+  padding:clamp(150px,13vw,200px) max(32px,calc((100% - 1180px) / 2 + 32px)) clamp(64px,7vw,104px);
+  min-height:min(86vh,820px);align-items:end;gap:48px 56px;background:#0b170f;overflow:hidden}
+/* the art is its own layer (chapter-frame.js adds it) so it can drift slower than the page (data-ma-par);
+   it runs past the hero top and bottom so the drift never shows an edge */
+#rc[data-cf][data-cf] .rc-hero>.cf-art{position:absolute;z-index:0;left:0;right:0;top:-28%;bottom:-28%;pointer-events:none;
+  background:linear-gradient(90deg,rgba(11,23,15,.9) 0%,rgba(11,23,15,.68) 52%,rgba(11,23,15,.25) 100%),
+    linear-gradient(rgba(var(--cf),.5),rgba(var(--cf),.5)),var(--cf-art,none) center/cover no-repeat}
+/* the bottom fade sits on top so the hero melts into the page */
+#rc[data-cf][data-cf] .rc-hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;pointer-events:none;
+  background:linear-gradient(rgba(11,23,15,0),#0b170f)}
+#rc[data-cf][data-cf] .rc-hero>*:not(.cf-art){position:relative;z-index:1}
+#rc[data-cf][data-cf] .rc-hero>div:first-child{display:flex;flex-direction:column;gap:16px}
+#rc[data-cf][data-cf] .rc-hero>div:first-child>*{margin-top:0;margin-bottom:0}
+#rc .cf-ch{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;margin:0}
+#rc .cf-no{display:inline-block;background:var(--cf7);color:#fff;font-family:'CI Face','Cracked Imperia',Impact,sans-serif;
+  font-weight:400;font-size:clamp(20px,2vw,26px);line-height:1.05;letter-spacing:.05em;text-transform:uppercase;padding:10px 16px 8px}
+#rc .cf-place{font-weight:800;font-size:13px;line-height:1.5;letter-spacing:.16em;text-transform:uppercase;color:#fff}
+#rc[data-cf][data-cf] .rc-hero .rc-kick{color:var(--cfa);font-size:13px;line-height:1.5;letter-spacing:.16em}
+#rc[data-cf][data-cf] .rc-hero h1{color:#fff;font-size:clamp(40px,5.6vw,84px);text-shadow:0 2px 18px rgba(0,0,0,.35)}
+#rc[data-cf][data-cf] .rc-hero h1 span{color:var(--cfa)}
+#rc[data-cf][data-cf] .rc-lede{color:rgba(255,255,255,.88);font-size:clamp(16px,1.35vw,19px);line-height:1.6}
+#rc[data-cf][data-cf] .rc-hero .rc-rec{margin-top:8px}
+/* the numbers beside the title: solid chapter-color panels */
+#rc[data-cf][data-cf] .rc-stats{gap:12px}
+#rc[data-cf][data-cf] .rc-stat{background:var(--cfp,rgba(var(--cf),.92));border:0;border-left:4px solid var(--cfa);padding:20px 24px}
+#rc[data-cf][data-cf] .rc-stat .k{color:var(--cfa);line-height:1.5}
+#rc[data-cf][data-cf] .rc-stat small{color:rgba(255,255,255,.78)}
+
+/* ---- the steps: solid chapter-color panels with real padding ---- */
+#rc[data-cf][data-cf][data-cf] .rc-step{background:var(--cfp,rgba(var(--cf),.94));border:0;padding:52px 56px 48px;box-shadow:0 24px 48px rgba(0,0,0,.28)}
+#rc[data-cf][data-cf] .rc-step+.rc-step,#rc[data-cf][data-cf] #rc-results>.rc-step:first-child,#rc[data-cf][data-cf] #cr-questions>.rc-step{margin-top:32px}
+#rc[data-cf][data-cf] .rc-step>header{gap:14px;margin-bottom:32px}
+#rc[data-cf][data-cf] .rc-step h2{color:#fff}
+#rc[data-cf][data-cf] .rc-step header .rc-kick,#rc[data-cf][data-cf] .rc-step>.rc-kick{color:var(--cfa)}
+#rc[data-cf][data-cf] .rc-step header p{color:rgba(255,255,255,.88)}
+/* cards and wells inside a panel: a darker inset, square, with a light hairline */
+#rc[data-cf][data-cf] .rc-card{background:rgba(11,23,15,.34);border-color:rgba(255,255,255,.18)}
+/* the first step after the hero sits a little lower, clear of the fade */
+#rc[data-cf][data-cf] .rc-hero+*{margin-top:24px}
+
+/* ---- the chapter strip at the bottom (built by chapter-nav.js; chapter-frame.js adds The Adventure) ---- */
+#rc[data-cf] #ma-chapters{max-width:1180px;margin:72px auto 0;padding:0 32px 88px}
+#rc[data-cf] #ma-chapters .mc-in{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+#rc[data-cf] #ma-chapters a{position:relative;min-height:150px;padding:28px 28px;gap:12px;border:0;overflow:hidden;isolation:isolate;
+  background:linear-gradient(rgba(var(--t,var(--cf)),.88),rgba(var(--t,var(--cf)),.88)),var(--t-art,none) center/cover no-repeat;
+  outline:2px solid transparent;outline-offset:-2px;transition:outline-color .15s ease,transform .15s ease}
+#rc[data-cf] #ma-chapters a:hover,#rc[data-cf] #ma-chapters a:focus-visible{outline-color:#fff;
+  background:linear-gradient(rgba(var(--t,var(--cf)),.8),rgba(var(--t,var(--cf)),.8)),var(--t-art,none) center/cover no-repeat}
+#rc[data-cf] #ma-chapters a:active{transform:perspective(600px) rotateX(4deg) scale(.985)}
+#rc[data-cf] #ma-chapters .mc-k{color:#fff;opacity:.9;font-size:12px;line-height:1.5;letter-spacing:.16em}
+#rc[data-cf] #ma-chapters .mc-t{font-family:'CI Face','Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(24px,2.4vw,32px);line-height:1.05;letter-spacing:.03em}
+#rc[data-cf] #ma-chapters .mc-prev{order:1}
+#rc[data-cf] #ma-chapters .mc-gap{order:1;min-height:0}
+#rc[data-cf] #ma-chapters .mc-next{order:2}
+#rc[data-cf] #ma-chapters .mc-adv{order:3;text-align:left}
+#rc[data-cf] #ma-chapters .mc-map{order:4}
+#rc[data-cf] #ma-chapters .mc-adv img{position:absolute;right:24px;top:50%;width:72px;height:72px;object-fit:contain;transform:translateY(-50%);opacity:.95;z-index:-1}
+#rc[data-cf] #ma-chapters .mc-adv .mc-k,#rc[data-cf] #ma-chapters .mc-adv .mc-t{padding-right:96px}
+/* when there is no previous chapter, the next chapter takes the whole row */
+#rc[data-cf] #ma-chapters .mc-gap+.mc-map+.mc-next,#rc[data-cf] #ma-chapters .mc-gap~.mc-next{grid-column:1/-1}
+#rc[data-cf] #ma-chapters .mc-gap{display:none}
+
+@media (prefers-reduced-motion:reduce){#rc[data-cf] #ma-chapters a{transition:none}#rc[data-cf] #ma-chapters a:active{transform:none}}
+
+@media (max-width:860px){
+  #rc[data-cf][data-cf] .rc-hero{grid-template-columns:1fr;min-height:0;padding:132px 20px 56px;gap:32px}
+  #rc[data-cf][data-cf] .rc-hero>.cf-art{top:-14%;bottom:-14%;
+    background:linear-gradient(rgba(11,23,15,.35),rgba(11,23,15,.8)),linear-gradient(rgba(var(--cf),.45),rgba(var(--cf),.45)),var(--cf-art,none) center/cover no-repeat}
+  #rc[data-cf][data-cf][data-cf] .rc-step{padding:32px 20px 28px}
+  #rc[data-cf] #ma-chapters{padding:0 16px 64px;margin-top:48px}
+}
+@media (max-width:760px){
+  #rc[data-cf] #ma-chapters .mc-in{grid-template-columns:minmax(0,1fr);gap:12px}
+  #rc[data-cf] #ma-chapters a{min-height:112px;padding:22px 20px;text-align:left!important;align-items:flex-start!important}
+  #rc[data-cf] #ma-chapters .mc-adv img{width:56px;height:56px;right:20px}
+  #rc[data-cf] #ma-chapters .mc-adv .mc-k,#rc[data-cf] #ma-chapters .mc-adv .mc-t{padding-right:76px}
+}
+
+/* ---- panel rows (2026-11-12): short panels two or three to a row; a short one on its own puts its heading beside
+   its cards (chapter-frame.js decides which, from how much of the panel its cards fill) ---- */
+#rc .cf-row{display:grid;grid-template-columns:repeat(var(--n,2),minmax(0,1fr));gap:24px;max-width:1180px;margin:32px auto 0;align-items:stretch}
+#rc[data-cf][data-cf][data-cf] .cf-row>.rc-step{margin:0;max-width:none;padding:40px 32px 36px}
+#rc[data-cf][data-cf] .cf-row>.rc-step>header{max-width:none}
+#rc .rc-step.cf-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:56px;align-items:start}
+#rc[data-cf][data-cf] .rc-step.cf-split>header{grid-column:1;grid-row:1 / span 12;margin-bottom:0}
+#rc[data-cf][data-cf] .rc-step.cf-split>*:not(header){grid-column:2}
+/* measured at rest: motion's moves are set aside for the moment it takes to measure */
+#rc.cf-measuring *{translate:none!important;rotate:none!important;scale:none!important}
+
+/* ---- dice (2026-11-12): each result die tumbles in like it's being rolled, then settles on its number ---- */
+#rc .cf-die-wait{opacity:0}
+#rc .cf-die-roll{animation:cf-roll 1.15s cubic-bezier(.2,.7,.25,1) both}
+@keyframes cf-roll{
+  0%{opacity:0;translate:-90px -70px;rotate:-900deg;scale:.35}
+  55%{opacity:1;translate:8px 6px;rotate:20deg;scale:1.08}
+  72%{translate:-3px -10px;rotate:-8deg;scale:.97}
+  86%{translate:0 2px;rotate:3deg;scale:1.01}
+  100%{opacity:1;translate:0 0;rotate:0deg;scale:1}}
+@media (prefers-reduced-motion:reduce){#rc .cf-die-wait{opacity:1}#rc .cf-die-roll{animation:none}}

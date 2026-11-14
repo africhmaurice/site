@@ -5,8 +5,8 @@
     background:#c1330a url('https://africhmaurice.github.io/leaderboard/leaderboard-bg-storm.webp') center/cover no-repeat;background-attachment:fixed}
   @media (max-width:900px),(hover:none){.th-lb-wrap{background-attachment:scroll}}
 </style>
-<div class="th-lb-wrap">
-  <iframe id="th-leaderboard" src="https://africhmaurice.github.io/leaderboard/?v=11&amp;embed=1" title="Treasure Hunt Leaderboard" allow="web-share" loading="lazy" allowtransparency="true" style="width:100%;height:1200px;border:0;display:block;background:transparent;color-scheme:normal;position:relative;z-index:2;pointer-events:auto"></iframe>
+<div class="th-lb-wrap" data-ma-flush>
+  <iframe id="th-leaderboard" src="https://africhmaurice.github.io/leaderboard/?v=12&amp;embed=1&amp;a4=0" title="Treasure Hunt Leaderboard" allow="web-share" loading="lazy" allowtransparency="true" style="width:100%;height:1200px;border:0;display:block;background:transparent;color-scheme:normal;position:relative;z-index:2;pointer-events:auto"></iframe>
   <style>
   #lb-more{position:relative;z-index:3;display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:8px 16px 64px;background:rgba(193,51,10,.9)}
   #lb-more a{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.1em;color:#fff;background:#912501;text-decoration:none;border:2px solid #912501;box-shadow:4px 5px 0 rgba(0,0,0,.35);padding:16px 32px;transition:transform .15s ease,background .15s ease,color .15s ease}
@@ -15,7 +15,6 @@
   </style>
   <div id="lb-more">
     <a href="https://www.mauriceafrich.com/games">PLAY GAMES</a>
-    <a href="https://www.mauriceafrich.com/lootbox-clue">FIND A LOOT BOX</a>
     <a href="https://www.mauriceafrich.com/the-treasure">SEE THE TREASURE</a>
   </div>
 </div>
@@ -45,39 +44,3 @@
     });
   })();
 </script>
-<!-- LOOT BOX 110 (staged 2026-10-26): The Other Country Loot Box: a tiny red speck in the bottom-left corner of the Other Country board.
-     The board inside the frame (treasure-hunt-leaderboard) posts {thLoot:110} when the spot is tapped; this page shows the
-     chest and the chest opens the claim. That repo needs its matching change at go-live (see the box150 hides-a report). -->
-<style>
-.lb110-ov{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(11,23,15,.72)}
-.lb110-ov[hidden]{display:none}
-.lb110-ov button{display:block;width:clamp(120px,30vw,160px);height:clamp(120px,30vw,160px);padding:0;margin:0;border:0;background:none;cursor:pointer;animation:lb110-pop .45s cubic-bezier(.2,1.6,.4,1)}
-.lb110-ov button:focus{outline:none}
-.lb110-ov button:focus-visible{outline:3px solid #89fbcb;outline-offset:4px}
-.lb110-ov img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 14px 22px rgba(0,0,0,.6))}
-@keyframes lb110-pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
-@media (prefers-reduced-motion:reduce){.lb110-ov button{animation:none}}
-</style>
-<script>(function(){
-  var f=document.getElementById('th-leaderboard');if(!f)return;
-  // 130 (5 Taps in the Cranium): the board is told who this browser's hunter is (thLoot:me, the same one the loot box
-  // page and games keep), and posts {thLoot:130} when that hunter taps their own name five times.
-  var KEYS={110:'NkQ0QURaWlc9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',130:'RFpSWEI4VVI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo'},cur=110;
-  function claim(){var u='';try{u=atob(KEYS[cur]).split('').reverse().join('');}catch(e){}if(!u)return;
-    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
-  var ov=null;
-  function show(){
-    if(!ov){ov=document.createElement('div');ov.className='lb110-ov';ov.hidden=true;
-      ov.innerHTML='<button type="button" aria-label="Loot box"><img alt="" width="160" height="160"></button>';
-      ov.addEventListener('click',function(e){if(e.target===ov)ov.hidden=true;});
-      ov.querySelector('button').addEventListener('click',function(){claim();ov.hidden=true;});
-      document.body.appendChild(ov);}
-    var b=ov.querySelector('button');b.setAttribute('aria-label','Loot box '+cur);b.querySelector('img').src='https://africhmaurice.github.io/leaderboard/loot/'+cur+'.png';
-    ov.hidden=false;b.focus();
-  }
-  window.addEventListener('message',function(e){if(e.source===f.contentWindow&&e.data&&(e.data.thLoot===110||e.data.thLoot===130)){cur=e.data.thLoot;show();}});
-  function tell(){var me={};try{me=JSON.parse(localStorage.getItem('thLoot:me')||'null')||{};}catch(er){}
-    if(f.contentWindow&&(me.handle||me.first_name))f.contentWindow.postMessage({thMe:{handle:me.handle||'',first:me.first_name||''}},'*');}
-  f.addEventListener('load',function(){tell();setTimeout(tell,1500);});tell();
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&ov)ov.hidden=true;});
-})();</script>

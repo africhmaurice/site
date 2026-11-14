@@ -1,0 +1,39 @@
+<!-- ============================================================
+     ACT FOUR - the final Act Four standings. Act Four was one worldwide board with no draw, so this page
+     shows the standings themselves (the same board the leaderboard page shows with ?act=four).
+     Act Four is forest green (Maurice, 2026-10-01).
+     ============================================================ -->
+<style>
+  /* Same fixed artwork as the leaderboard page, under a 90% forest wash. Phones and 900px and under scroll normally. */
+  .th-a4-wrap{width:100vw;position:relative;left:50%;margin-left:-50vw;overflow:hidden;z-index:2;
+    background:#2c6021 url('https://africhmaurice.github.io/leaderboard/leaderboard-bg-storm.webp') center/cover no-repeat;background-attachment:fixed}
+  .th-a4-wrap::before{content:"";position:absolute;inset:0;background:rgba(44,96,33,.9);z-index:1;pointer-events:none}
+  @media (max-width:900px),(hover:none){.th-a4-wrap{background-attachment:scroll}}
+  #a4-more{position:relative;z-index:3;display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:8px 16px 64px}
+  #a4-more a{display:inline-block;font-family:'Almarai',sans-serif;font-weight:800;font-size:15px;letter-spacing:.1em;color:#fff;background:#1b3b15;text-decoration:none;border:2px solid #1b3b15;border-radius:0;box-shadow:4px 5px 0 rgba(0,0,0,.35);padding:16px 32px;transition:transform .15s ease,background .15s ease,color .15s ease}
+  #a4-more a:hover{transform:scale(1.04);background:#fff;color:#1b3b15}
+  @media (max-width:560px){#a4-more a{flex:1 1 100%;text-align:center}}
+</style>
+<div class="th-a4-wrap" data-ma-flush>
+  <iframe id="th-act-four" src="https://africhmaurice.github.io/leaderboard/act.html?act=four&amp;embed=1&amp;v=4" title="Act Four Standings" loading="lazy" allowtransparency="true" style="width:100%;height:1200px;border:0;display:block;background:transparent;color-scheme:normal;position:relative;z-index:2;pointer-events:auto"></iframe>
+  <div id="a4-more">
+    <a href="https://www.mauriceafrich.com/leaderboard">SEE THE LEADERBOARD</a>
+    <a href="https://www.mauriceafrich.com/the-treasure">SEE THE TREASURE</a>
+  </div>
+</div>
+<script>
+  (function () {
+    var f = document.getElementById('th-act-four');
+    // The Squarespace section around the block takes the page's green, so no other color shows above or below.
+    var sec = f.closest('section');
+    if (sec) { sec.style.setProperty('background', '#2c6021', 'important'); var bg = sec.querySelector('.section-background'); if (bg) bg.style.setProperty('background', '#2c6021', 'important'); }
+    // A transformed Squarespace container would turn the fixed background back into a scrolling one.
+    for (var a = f.parentElement.parentElement; a && sec && sec.contains(a); a = a.parentElement) {
+      var cs = getComputedStyle(a);
+      if (cs.transform !== 'none' || cs.willChange.indexOf('transform') >= 0 || cs.filter !== 'none') { a.style.setProperty('transform', 'none', 'important'); a.style.setProperty('will-change', 'auto', 'important'); a.style.setProperty('filter', 'none', 'important'); }
+    }
+    window.addEventListener('message', function (e) {
+      if (e.source === f.contentWindow && e.data && e.data.thLeaderboardHeight) f.style.height = e.data.thLeaderboardHeight + 'px';
+    });
+  })();
+</script>

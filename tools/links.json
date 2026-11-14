@@ -72,7 +72,7 @@
     "id": "ed-hodderscape",
     "label": "Hodderscape Edition",
     "note": "UK Hardcover, Direct from My UK Publisher",
-    "img": "../img/ed-hodderscape-sm.webp",
+    "img": "../img/ed-hodderscape-cover-sm.webp",
     "url": "https://hodderscape.co.uk/products/cellos-gate",
     "bg": "pin-07.jpg"
    },
@@ -131,7 +131,7 @@
   {
    "id": "discord",
    "label": "Join the Trench Community",
-   "url": "https://discord.gg/TV8SNnSGdb",
+   "url": "https://discord.gg/d36Xnj4umU",
    "tone": "violet",
    "img": "logo-trench.png",
    "bg": "neon-street-as1928158052"

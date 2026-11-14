@@ -1,5 +1,8 @@
+<!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=3" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=2"></script>
 <!-- ============================================================
-     HOLD THE WALL! - page for loot box 140 (Box 150 batch). Replaces the old Master Cannoneer game (10/29), which is
+     HOLD THE WALL! Replaces the old Master Cannoneer game (10/29), which is
      backed up at site-batch2/_batch2/box150/master-cannoneer.before-holdwall.html. The file keeps the master-cannoneer
      slug for the loader; the Squarespace page to make at launch is /hold-the-wall-13212 (hide from search).
      Built by site-batch2/_batch2/box150/holdwall/port.mjs from the reviewed mockup (artifact 8GCvPhE4UTa9m5hWXrRSzF,
@@ -12,8 +15,6 @@
        then the tower. Waves grow every wave. His sky turns one frame per wave, dawn through night.
      Art (Maurice's): fighters, portal, tower and cannon, the 16 skies, YOU DIED, button icons (Icons.png), Intangible
        frames, imperial rock, Sky Gauntlet missiles/atomic/shield, red airship. Files: site/assets/games/140-*.
-     LOOT BOX 140: shown once per visit right after wave 20 is held. Nothing on the page says so beforehand (Maurice).
-       BOX_K holds the box 140 placeholder until the go-live builder swaps in the claim link.
      WEEKLY BOARD: holdwallstart / holdwallscore / holdwalltop on the Loot Boxes web app (staged server code in
        site-batch2/_batch2/box150/boards-server.gs.txt; until it ships the board says "resting"). The score check:
        wave, kills, and playing time must fit the page's own scoring (see holdwallCheck_). Maurice's runs are practice.
@@ -27,8 +28,7 @@
        500 is not approved for this game); HUD "Wave", "Score", "Credits", "Best", "Cannon", "Tower", "Shield", "Enemies
        left", "Destroyed"; panels "Fighters tap to send out", "Tower upgrades", the Train and Shield key, every fighter's
        and upgrade's name and line; overlays "Hold the Wall!", "Start wave N", "Wave N held", "+N score and +N credits...",
-       "The tower fell", "You held out to wave N with a score of N.", "Play again", "YOU DIED", "PAUSED"; "Box 140 is
-       yours."; board "Best this week", "This week's top defenders", "Board closes in", "No games yet this week.", "Kept
+       "The tower fell", "You held out to wave N with a score of N.", "Play again", "YOU DIED", "PAUSED"; board "Best this week", "This week's top defenders", "Board closes in", "No games yet this week.", "Kept
        on this device.", the form and its messages (copied from Master Stacker, "run" -> "game", "stacking" ->
        "defending"); help "Hold on the field to keep firing. Tap a fighter to send one out. ..."
      ============================================================ -->
@@ -89,13 +89,6 @@
 #ma-holdwall .key>span{display:flex;align-items:center;gap:8px;min-width:0}#ma-holdwall .key .mi{width:16px;height:16px;flex:none}#ma-holdwall .key b{font-weight:800}#ma-holdwall .key .k-tr{color:var(--violet)}#ma-holdwall .key .k-sh{color:var(--mint)}
 #ma-holdwall .btns .b .cost{font-size:12px}
 #ma-holdwall .b .badge{position:absolute;top:4px;display:flex;align-items:center;gap:2px;font:800 10px/1 Almarai,Arial,sans-serif;letter-spacing:.04em}
-#ma-holdwall .lootwin{display:flex;flex-direction:column;align-items:center;gap:20px;padding-block:8px;text-align:center}
-#ma-holdwall .lootwin p{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.25;letter-spacing:.04em;color:var(--mint);text-transform:uppercase}
-#ma-holdwall .lootbox{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(58vw,260px);animation:lbDrop .6s cubic-bezier(.25,1.5,.45,1) both}
-#ma-holdwall .lootbox img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 30px rgba(137,251,203,.45))}
-#ma-holdwall .lootbox:hover img,#ma-holdwall .lootbox:focus-visible img{filter:drop-shadow(0 0 44px rgba(137,251,203,.75))}#ma-holdwall .lootbox:focus-visible{outline:3px solid var(--mint);outline-offset:8px}
-@keyframes lbDrop{from{opacity:0;transform:translateY(-40px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){#ma-holdwall .lootbox{animation:none}}
 #ma-holdwall .msk{display:block;background:currentColor;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat}
 #ma-holdwall #hw-deploy .b .ic{display:flex;align-items:center;justify-content:center;color:#0d0d0c}#ma-holdwall #hw-deploy .b .ic .msk{width:78%;height:78%}
 #ma-holdwall .btns .b.up .ic.msk{color:var(--parch)}
@@ -171,7 +164,6 @@
 #ma-holdwall .auto input:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
 #ma-holdwall .auto.on{color:var(--gold)}
 @media (max-width:760px){#ma-holdwall .auto{font-size:9px;gap:4px;letter-spacing:.04em}}
-#ma-holdwall .lootwin{gap:12px;padding-block:0}#ma-holdwall .lootwin p{font-size:clamp(20px,2.6vw,28px)}#ma-holdwall .lootbox{width:min(30vw,130px)}
 #ma-holdwall .ph2{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px}
 #ma-holdwall .tacts{display:flex;gap:8px}
 #ma-holdwall .tacts button{margin:0;padding:7px 12px;border:1px solid rgba(243,234,217,.45);background:none;color:var(--parch);font:800 11px/1.2 Almarai,Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
@@ -268,7 +260,6 @@
     </div>
   </div>
   </div>
-  <div class="lootwin" id="hw-lootwin" hidden><p>Box 140 is yours.</p><button class="lootbox" id="hw-lootbox" type="button" aria-label="Open loot box 140"><img src="https://africhmaurice.github.io/site/assets/loot/140.png" alt="Loot box 140"></button></div>
   <section class="panel ctl" id="hw-ctl" data-tab="f">
     <div class="ph"><div class="tabs" role="group" aria-label="Show"><button type="button" data-tab="f" aria-pressed="true">Fighters</button><button type="button" data-tab="t" aria-pressed="false">Tower</button></div>
       <h3 class="fi">Fighters</h3>
@@ -298,7 +289,7 @@
 //   ArcadeCard.update(o) when the board answers: o.rank (place this week), o.best (best this week)
 //   The streak (days in a row the player has played this game) is looked up on its own when the card opens.
 var ArcadeCard = (function () {
-  var DISCORD = 'https://discord.gg/TV8SNnSGdb', url = null, opts = null, panel = null;
+  var DISCORD = 'https://discord.gg/d36Xnj4umU', url = null, opts = null, panel = null;
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   // each card's game, as the web app knows it
   var KEYS = { 'Airship Runner': 'airship_runner', 'Thread the Needle': 'thread_needle', 'Hold the Wall!': 'hold_wall', 'Goma Goons': 'goma_goons',
@@ -590,13 +581,6 @@ function buildWave(w){
   }
   return q.concat(bossesFor(w));
 }
-// loot box 140: shown once per visit, the moment wave BOX_WAVE is held (the site version swaps in the real claim link)
-var BOX_WAVE=20,boxShown=false,BOX_K='RUgyQlRGOVA9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-function showBox(){if(boxShown||new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10')return; // after the hunt (Maurice, 2026-11-09): no loot boxes
-boxShown=true;$('lootwin').hidden=false;fitStage();}
-$('lootbox').addEventListener('click',function(){var u='';try{u=atob(BOX_K).split('').reverse().join('');}catch(e){}if(!u)return;
-  var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w){location.href=u;return;}
-  $('lootwin').hidden=true;fitStage();});   // v30: gone once claimed, so the buttons are back in reach
 function startWave(){if(G.wave===1&&!G.run&&window.HWBoard)G.run=HWBoard.start();if(G.wave>1)G.skyT=0;G.queue=buildWave(G.wave);G.spawnT=.5;G.between=false;G.running=true;$('over').hidden=true;ui();}
 
 var TRAIN_MAX=10;
@@ -821,7 +805,6 @@ function step(dt){
     G.running=false;G.between=true;
     G.nades=[];G.ship=null;G.holes=[];G.pops=[];G.units.forEach(function(u){if(u.side===1&&!u.dead){u.x=Math.min(u.x,WALLX+60+Math.random()*120);u.gone=0;u.kb=0;if(u.tele){u.tele=1;u.ts=null;}}});
     showOver('Wave '+G.wave+' held','+'+bonus+' score and +'+cb+' credits. Upgrade the tower, train, or send out fighters, then face wave '+(G.wave+1)+': it’s bigger.','Start wave '+(G.wave+1));
-    if(G.wave===BOX_WAVE)showBox();
     G.wave++;
   }
   ui();
@@ -1000,7 +983,7 @@ Array.prototype.forEach.call($('ctl').querySelectorAll('.tabs button'),function(
 // the field takes the height left on screen under the site's pinned header, so the field and every button show together
 function hdrCover(){var h=0;Array.prototype.forEach.call(document.querySelectorAll('header,#header,.header'),function(e){var st=getComputedStyle(e);if(st.position==='fixed'||st.position==='sticky'){var r=e.getBoundingClientRect();if(r.top<=1&&r.bottom>h)h=r.bottom;}});return Math.min(h,innerHeight*.3);}
 function fitStage(){var stg=cv.parentNode,top=stg.parentNode,pan=$('ctl'),R=cv.width/cv.height;stg.style.width='100%';var full=stg.clientWidth;if(!full)return;
-  var lw=$('lootwin'),other=(top.offsetHeight-stg.offsetHeight)+pan.offsetHeight+20+(lw&&!lw.hidden?lw.offsetHeight+20:0),room=innerHeight-hdrCover()-other-16;
+  var other=(top.offsetHeight-stg.offsetHeight)+pan.offsetHeight+20,room=innerHeight-hdrCover()-other-16;
   stg.style.width=Math.round(Math.min(full,Math.max(Math.min(full,innerWidth<=760?240:300),room*R)))+'px';fitOver();}
 // v34: the card always fits inside the game screen
 function fitOver(){var o=$('over');o.classList.remove('tight','tiny');if(o.hidden)return;if(o.scrollHeight>o.clientHeight)o.classList.add('tight');if(o.scrollHeight>o.clientHeight)o.classList.add('tiny');}

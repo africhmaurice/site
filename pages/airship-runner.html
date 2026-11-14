@@ -1,18 +1,12 @@
+<!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=3" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=2"></script>
 <!-- ============================================================
-     AIRSHIP RUNNER - an endless sky runner and weekly high-score race; hides loot box 74. Lives at /airship-runner.
-     Clue (Clues page, card #74, Maurice's wording): "level 7".
+     AIRSHIP RUNNER - an endless sky runner and weekly high-score race. Lives at /airship-runner.
      Play: the airship flies up a five-lane sky. Swipe or tap left/right (phones), arrow keys or A/D (desktop), or
      click either half of the sky. Storm clouds, rival ships, floating islands, and cannon fire come down the lanes and
      the speed keeps rising. Score = distance flown + 100 for each ruby. Levels run on time: every level is 15 seconds and
      flies 10% faster than the last (banner at each), so Level 7 starts at 1:30.
-     From Level 7 on, loot box 74 appears as a pickup in an open lane; flying into it pauses the run and shows the
-     clickable box art (opens the claim link in a new tab, so the run is not lost), then KEEP FLYING.
-     LOOT BOX 135, The Cloud Chest (clue: "4.5k cumulootbindus"): once a run reaches 4,500 points (Maurice 10/26), a big white
-     cloud with his box 135 art riding on it floats down the open lane (the lane that is always clear, like the pickups).
-     Miss it and another comes a minute later until it is caught. Flying into it pauses the run like loot box
-     74 does and shows the box (claim link in a new tab); KEEP FLYING carries on. It adds nothing to the score, rubies,
-     or prizes, so the sheet's run checks (score vs time, rubies, prize chests) are unchanged.
-     DRAFT copy: "A cloud chest!", "Tap the box to open it. Your run waits for you." (same as box 74's line).
      Rare prize chests are worth 25 hunt points each, at most 4 a day (paid by the twice-daily run as Games rows).
      Everyone shares one weekly board; the top score at Friday 11:59 PM New York time wins 500 points (Maurice
      approves and pays it; see _batch2/airship-runner/patch-airship-runner.mjs).
@@ -21,15 +15,14 @@
      the lootbox.gs patch is deployed. ?runner-mock=1 forces the mock on a live page.
      The player is the hunt's usual thLoot:me (shared with the loot box page and the daily games).
      Runs pause when the tab is hidden; prefers-reduced-motion gets a calm mode (no shake, flashes, or debris).
-     PAUSE (Maurice 10/19): a Pause button under the score row; P or Esc pauses and resumes (Esc on the loot box panel
-     closes it to the Paused screen); the level banner and pickup toast stop while paused. Save progress was tried and
+     PAUSE (Maurice 10/19): a Pause button under the score row; P or Esc pauses and resumes; the level banner and pickup toast stop while paused. Save progress was tried and
      dropped (Maurice 10/19); a leftover 'ma-save-airship-runner' entry in localStorage is cleared on load.
      DRAFT copy (Maurice 10/19): "Pause", "Resume" (the Paused screen button, was KEEP FLYING).
      DRAFT copy (all mine, none of it Maurice's yet): "Sky Pirate high-score race", "Five lanes, one airship, and
      a whole sky trying to knock you out of it. Dodge left, dodge right, and fly as far as you can.", "Top score at
      11:59 PM ET every Friday wins 500 points.", "Ready to fly?", "Swipe or tap left and right to change lanes.",
      "Arrow keys or A and D to change lanes.", "The clock starts when you take off.", "PLAY", "Level N",
-     "+100 POINTS" (ruby, game score), "+25 HUNT POINTS" (prize chest: the golden chest, which replaced the wooden crate 10/13), "Prize limit reached for today", "You found a loot box!", "Keep flying",
+     "+100 POINTS" (ruby, game score), "+25 HUNT POINTS" (prize chest: the golden chest, which replaced the wooden crate 10/13), "Prize limit reached for today",
      "Paused", "Ship down!", "Best this week", "Fly again", "Save my card", "Copy my score", the score form text,
      the logging messages, "This week's top sky pirates", "Board closes in", "How it works" list, "No scores yet
      this week. Be the first.", "PREVIEW DATA".
@@ -88,10 +81,6 @@
 #ma-runner .ar-form input,#ma-runner .ar-form select{width:100%;margin:0;font-family:'Almarai',sans-serif;font-weight:700;font-size:16px;color:#0b170f;background:#fffffe;border:2px solid #fffffe;padding:10px 12px;outline:none}
 #ma-runner .ar-form input:focus,#ma-runner .ar-form select:focus{border-color:#7b4ee1}
 #ma-runner .ar-form .ar-btn{margin-top:10px;width:100%}
-#ma-runner .ar-boxbtn{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(56vw,220px)}
-#ma-runner .ar-boxbtn img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 30px rgba(255,76,15,.45))}
-#ma-runner .ar-boxbtn:hover img,#ma-runner .ar-boxbtn:focus-visible img{filter:drop-shadow(0 0 44px rgba(255,76,15,.7))}
-#ma-runner .ar-boxbtn:focus-visible{outline:3px solid #ff4c0f;outline-offset:8px}
 #ma-runner .ar-banner{position:absolute;left:12px;right:12px;top:26%;z-index:2;margin:0;text-align:center;pointer-events:none;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(40px,9vw,72px);line-height:1.2;letter-spacing:.04em;color:#fffffe;text-shadow:0 4px 24px rgba(11,23,15,.9);opacity:0}
 #ma-runner .ar-banner.on{animation:ar-pop 1.7s ease-out forwards}
 @keyframes ar-pop{0%{opacity:0;transform:scale(.7)}15%{opacity:1;transform:scale(1.08)}25%{transform:scale(1)}75%{opacity:1}100%{opacity:0;transform:translateY(-16px)}}
@@ -208,22 +197,6 @@
             <button type="button" class="ar-btn big ar-resume">Resume</button>
           </div>
         </div>
-        <div class="ar-ov ar-loot" hidden>
-          <div class="ar-in">
-            <p class="ar-big">You found a loot box!</p>
-            <button class="ar-boxbtn" type="button" aria-label="Open loot box 74"><img src="https://africhmaurice.github.io/leaderboard/loot/74.png" alt="Loot box 74"></button>
-            <p class="ar-quiet ar-lootnote">Tap the box to open it. Your run waits for you.</p>
-            <button type="button" class="ar-btn ghost ar-keep">KEEP FLYING</button>
-          </div>
-        </div>
-        <div class="ar-ov ar-cloud" hidden>
-          <div class="ar-in">
-            <p class="ar-big">A cloud chest!</p>
-            <button class="ar-boxbtn ar-box135" type="button" aria-label="Open loot box 135"><img src="https://africhmaurice.github.io/site/assets/loot/135.png" alt="Loot box 135"></button>
-            <p class="ar-quiet">Tap the box to open it. Your run waits for you.</p>
-            <button type="button" class="ar-btn ghost ar-keep135">KEEP FLYING</button>
-          </div>
-        </div>
         <div class="ar-ov ar-over" hidden>
           <div class="ar-in">
             <p class="ar-bang">Ship down!</p>
@@ -280,7 +253,7 @@
         <ol class="ar-board"><li><span class="ar-empty">Loading the board...</span></li></ol>
       </div>
       <div class="ar-panel">
-        <h2 class="ar-ph">How it works</h2>
+        <h2 class="ar-ph">How to play</h2>
         <ul class="ar-how">
           <li>Dodge storm clouds, rival ships, floating islands, and cannon fire.</li>
           <li>Grab rubies for 100 extra score each.</li>
@@ -304,7 +277,7 @@
 //   ArcadeCard.update(o) when the board answers: o.rank (place this week), o.best (best this week)
 //   The streak (days in a row the player has played this game) is looked up on its own when the card opens.
 var ArcadeCard = (function () {
-  var DISCORD = 'https://discord.gg/TV8SNnSGdb', url = null, opts = null, panel = null;
+  var DISCORD = 'https://discord.gg/d36Xnj4umU', url = null, opts = null, panel = null;
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   // each card's game, as the web app knows it
   var KEYS = { 'Airship Runner': 'airship_runner', 'Thread the Needle': 'thread_needle', 'Hold the Wall!': 'hold_wall', 'Goma Goons': 'goma_goons',
@@ -484,19 +457,18 @@ var ArcadeCard = (function () {
   // The Loot Boxes web app. Empty = preview mock: nothing is sent anywhere. Set at launch (see the comment at the top).
   var ENDPOINT='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   var MOCK=!ENDPOINT||/[?&]runner-mock=1\b/.test(location.search);
-  var K='RkJKNkdRNko9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';   // loot box 74's claim link, scrambled
   var PREVIEW_HOST=/^(|localhost|127\.0\.0\.1|africhmaurice\.github\.io)$/;
   var ME='thLoot:me',TZ='America/New_York',SITE='mauriceafrich.com/airship-runner';
   // These must match RUNNER in apps-script/lootbox.gs: the sheet checks every run against them.
-  var HUNT_OVER=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10';   // after the hunt (Maurice, 2026-11-09): no golden prize chests or loot boxes
-  var R={v0:10,levelSecs:15,speedGrow:1.1,xpBonus:100,xpGap:3,prizeFirst:20,prizeGap:30,prizesPerDay:4,boxLevel:7};
+  var HUNT_OVER=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10';   // after the hunt (Maurice, 2026-11-09): no golden prize chests
+  var R={v0:10,levelSecs:15,speedGrow:1.1,xpBonus:100,xpGap:3,prizeFirst:20,prizeGap:30,prizesPerDay:4};
   var calm=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   var touchy=('ontouchstart' in window)||navigator.maxTouchPoints>0;
 
   var $=function(s){return root.querySelector(s);};
   var stage=$('.ar-stage'),cv=$('canvas'),cx=cv.getContext('2d');
   var hud={score:$('[data-hud=score]'),level:$('[data-hud=level]'),time:$('[data-hud=time]'),prizes:$('[data-hud=prizes]')};
-  var cloudOv=$('.ar-cloud'),cover=$('.ar-cover'),pauseOv=$('.ar-pause'),lootOv=$('.ar-loot'),overOv=$('.ar-over'),banner=$('.ar-banner'),toastEl=$('.ar-toast');
+  var cover=$('.ar-cover'),pauseOv=$('.ar-pause'),overOv=$('.ar-over'),banner=$('.ar-banner'),toastEl=$('.ar-toast');
   if(touchy)$('.ar-ctl').textContent='Swipe or tap left and right to change lanes.';
 
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -687,7 +659,7 @@ var ArcadeCard = (function () {
   for(var ci=0;ci<6;ci++)clouds.push({x:Math.random(),y:Math.random(),k:.25+Math.random()*.35});
   function newRun(){
     return {t:0,score:0,xp:0,prizes:0,level:1,lane:2,x:laneX[2],tilt:0,ents:[],fx:[],travel:0,nextRow:0,open:2,
-      lastXp:-99,lastPrize:-99,lastBox:-99,gotBox:false,cloudAt:0,gotCloud:false,shake:0,dead:0,ticket:null,ticketWait:[],prop:0,lanes:0};
+      lastXp:-99,lastPrize:-99,shake:0,dead:0,ticket:null,ticketWait:[],prop:0,lanes:0};
   }
   function speed(t){return R.v0*Math.exp(LV_K*t);}
   function scroll(t){return H*.05*speed(t);}
@@ -705,10 +677,7 @@ var ArcadeCard = (function () {
     lanes.forEach(function(l){var kind=kinds[rnd(0,kinds.length-1)];S.ents.push(ent(kind,l,-SPR[kind].h));});
     // pickups go in the open lane
     var already=prizesToday()+S.prizes;
-    // loot box 135: the cloud chest, once the run reaches 4,500 points (Maurice 10/26), then every minute until it is caught (no score, no prize)
-    if(!HUNT_OVER&&!S.gotCloud&&S.score>=4500&&S.t>=S.cloudAt&&!S.ents.some(function(e){return e.kind==='cloud';})){S.cloudAt=S.t+60;S.ents.push(ent('cloud',open,-laneW*1.2));}
-    else if(!HUNT_OVER&&S.level>=R.boxLevel&&!S.gotBox&&S.t-S.lastBox>6&&!S.ents.some(function(e){return e.kind==='box';})){S.lastBox=S.t;S.ents.push(ent('box',open,-laneW));}
-    else if(!HUNT_OVER&&S.t>=R.prizeFirst&&S.t-S.lastPrize>=R.prizeGap&&already<R.prizesPerDay&&Math.random()<.2){S.lastPrize=S.t;S.ents.push(ent('prize',open,-SPR.prize.h));}
+    if(!HUNT_OVER&&S.t>=R.prizeFirst&&S.t-S.lastPrize>=R.prizeGap&&already<R.prizesPerDay&&Math.random()<.2){S.lastPrize=S.t;S.ents.push(ent('prize',open,-SPR.prize.h));}
     else if(S.t-S.lastXp>=R.xpGap&&Math.random()<.4){S.lastXp=S.t;S.ents.push(ent('xp',open,-SPR.xp.h));}
     // cannon fire: faster than the sky, after a warning, never down a lane that is any row's way through
     if(L>=3&&Math.random()<.08+.02*L){
@@ -719,8 +688,8 @@ var ArcadeCard = (function () {
     var mark={open:open};S.ents.forEach(function(e){if(e.y<0&&!e.row)e.row=mark;});
   }
   function ent(kind,lane,y){
-    var hw={storm:.36,rock:.3,rival:.24,cannon:.13,xp:.2,prize:.26,box:.34,cloud:.34}[kind]*laneW;
-    var hh={storm:.3,rock:.32,rival:.3,cannon:.13,xp:.2,prize:.26,box:.34,cloud:.34}[kind]*laneW;
+    var hw={storm:.36,rock:.3,rival:.24,cannon:.13,xp:.2,prize:.26}[kind]*laneW;
+    var hh={storm:.3,rock:.32,rival:.3,cannon:.13,xp:.2,prize:.26}[kind]*laneW;
     return {kind:kind,lane:lane,x:laneX[lane],y:y,hw:hw,hh:hh,mult:1,warn:0,ph:Math.random()*6};
   }
   var bad={storm:1,rock:1,rival:1,cannon:1};
@@ -747,8 +716,6 @@ var ArcadeCard = (function () {
         else if(e.kind==='prize'){
           if(prizesToday()+S.prizes<R.prizesPerDay){S.prizes++;toast('+25 HUNT POINTS','gold');}else toast('Prize limit reached for today','hot');
         }
-        else if(e.kind==='box'){S.gotBox=true;return openBox();}
-        else if(e.kind==='cloud'){S.gotCloud=true;return openCloud();}
       }
     }
     if(!calm&&Math.random()<dt*20)S.fx.push({x:S.x+(Math.random()-.5)*laneW*.2,y:shipY+SPR.ship.h*.45,vx:(Math.random()-.5)*20,vy:sp*.5,life:.5,c:'rgba(243,234,217,'});
@@ -772,9 +739,7 @@ var ArcadeCard = (function () {
     cx.fillStyle='rgba(243,234,217,.07)';var off=trav%40;
     for(var l=1;l<5;l++){for(var y=-40+off;y<H;y+=40)cx.fillRect(laneW*l-1,y,2,20);}
     if(S){
-      // the cloud chest (loot box 135) is drawn first so it never hides an obstacle in the next lane
-      for(var j0=0;j0<S.ents.length;j0++)if(S.ents[j0].kind==='cloud')drawEnt(S.ents[j0]);
-      for(var j=0;j<S.ents.length;j++)if(S.ents[j].kind!=='cloud')drawEnt(S.ents[j]);
+      for(var j=0;j<S.ents.length;j++)drawEnt(S.ents[j]);
       for(var k=0;k<S.fx.length;k++){var f=S.fx[k];cx.fillStyle=f.c+Math.max(0,f.life).toFixed(2)+')';cx.fillRect(f.x-2,f.y-2,4,4);}
     }
     if(S&&mode==='crash'&&ok('boom1')){var bi=Math.min(BOOM.length-1,Math.floor(S.dead/.16)),bp=PIC['boom'+BOOM[bi]];
@@ -793,8 +758,6 @@ var ArcadeCard = (function () {
     cx.fillStyle='#ffd9b0';cx.beginPath();cx.arc(0,gy,gr*.45,0,7);cx.fill();
     cx.restore();
   }
-  var boxImg=new Image();boxImg.crossOrigin='anonymous';boxImg.src='https://africhmaurice.github.io/leaderboard/loot/74.png';
-  var box135=new Image();box135.crossOrigin='anonymous';box135.src='https://africhmaurice.github.io/site/assets/loot/135.png';
   function drawEnt(e){
     var s;
     if(e.kind==='cannon'&&e.warn>0){
@@ -809,21 +772,6 @@ var ArcadeCard = (function () {
       else for(var i=3;i>0;i--){cx.fillStyle='rgba(255,76,15,'+(.12*i)+')';cx.beginPath();cx.arc(e.x,e.y-r*i*1.1,r*(1-i*.15),0,7);cx.fill();}
       if(ok('ball'))cx.drawImage(PIC.ball,e.x-r*1.1,e.y-r*1.1,r*2.2,r*2.2);
       else{cx.fillStyle='#0b170f';cx.beginPath();cx.arc(e.x,e.y,r,0,7);cx.fill();cx.strokeStyle='#ff4c0f';cx.lineWidth=2;cx.stroke();}
-      return;
-    }
-    if(e.kind==='cloud'){
-      // loot box 135 riding a big white cloud (his shared-soft-cloud drawing, drawn solid)
-      var cs2=laneW*1.6,cb=calm?0:Math.sin(e.ph*2.4)*3;
-      var cg=cx.createRadialGradient(e.x,e.y+cb,0,e.x,e.y+cb,laneW*.75);cg.addColorStop(0,'rgba(255,255,254,.55)');cg.addColorStop(1,'rgba(255,255,254,0)');cx.fillStyle=cg;cx.fillRect(e.x-laneW*.75,e.y+cb-laneW*.75,laneW*1.5,laneW*1.5);
-      if(ok('soft')){var ch2=cs2*PIC.soft.naturalHeight/PIC.soft.naturalWidth;cx.save();for(var cl=0;cl<3;cl++)cx.drawImage(PIC.soft,e.x-cs2/2,e.y-ch2*.4+cb,cs2,ch2);cx.restore();}
-      else{cx.fillStyle='rgba(243,234,217,.9)';[[-.28,.1,.24],[0,-.02,.3],[.28,.1,.22]].forEach(function(c){cx.beginPath();cx.arc(e.x+c[0]*cs2,e.y+c[1]*cs2+cb,c[2]*cs2,0,7);cx.fill();});}
-      var bs2=laneW*.78;if(box135.complete&&box135.naturalWidth)cx.drawImage(box135,e.x-bs2/2,e.y-bs2*.62+cb,bs2,bs2);
-      return;
-    }
-    if(e.kind==='box'){
-      var bs=laneW*.9,pulse=calm?0:Math.sin(e.ph*6)*.08;
-      cx.fillStyle='rgba(255,76,15,'+(.22+pulse)+')';cx.beginPath();cx.arc(e.x,e.y,bs*.55,0,7);cx.fill();
-      if(boxImg.complete&&boxImg.naturalWidth)cx.drawImage(boxImg,e.x-bs/2,e.y-bs/2,bs,bs);else{cx.fillStyle='#c53200';cx.fillRect(e.x-bs*.3,e.y-bs*.25,bs*.6,bs*.5);}
       return;
     }
     s=SPR[e.kind];var bob=(e.kind==='xp'||e.kind==='prize')&&!calm?Math.sin(e.ph*5)*3:0;
@@ -865,9 +813,8 @@ var ArcadeCard = (function () {
   function move(d){if(mode!=='run')return;var n=Math.max(0,Math.min(4,S.lane+d));if(n!==S.lane){S.lane=n;S.lanes++;}}
   document.addEventListener('keydown',function(e){
     var tg=e.target;if(tg&&/^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName))return;
-    // paused: P or Esc resumes; the loot box panel: Esc closes it to the Paused screen
+    // paused: P or Esc resumes
     if(mode==='paused'&&(e.key==='Escape'||e.key==='p'||e.key==='P')){e.preventDefault();resume();return;}
-    if(mode==='box'&&e.key==='Escape'){e.preventDefault();lootOv.hidden=cloudOv.hidden=true;pauseOv.hidden=false;mode='paused';ctl();return;}
     if(mode==='run'){
       var k=e.key;
       if(k==='ArrowLeft'||k==='a'||k==='A'){e.preventDefault();move(-1);}
@@ -890,7 +837,7 @@ var ArcadeCard = (function () {
   },{passive:false});
   cv.addEventListener('mousedown',function(e){var r=cv.getBoundingClientRect();move(e.clientX-r.left<r.width/2?-1:1);});
 
-  /* ---- start, pause, loot box, crash, game over ---- */
+  /* ---- start, pause, crash, game over ---- */
   function start(){
     cover.hidden=overOv.hidden=true;
     S=newRun();mode='run';paintHud();ctl();
@@ -902,7 +849,7 @@ var ArcadeCard = (function () {
   function pause(){if(mode!=='run')return;mode='paused';pauseOv.hidden=false;paintHud();
     // the level banner and pickup toast stop too
     clearTimeout(bannerT);clearTimeout(toastT);banner.classList.remove('on');toastEl.className='ar-toast';ctl();}
-  function resume(){if(mode!=='paused'&&mode!=='box')return;pauseOv.hidden=lootOv.hidden=cloudOv.hidden=true;mode='run';go();ctl();}
+  function resume(){if(mode!=='paused')return;pauseOv.hidden=true;mode='run';go();ctl();}
   // the Pause button (Maurice 10/19): live only during a run; reads Resume while paused
   var pauseBtn=$('.ar-pausebtn');
   function ctl(){var live=mode==='run'||mode==='paused';pauseBtn.disabled=!live;var t=mode==='paused'?'Resume':'Pause';if(pauseBtn.textContent!==t)pauseBtn.textContent=t;}
@@ -910,8 +857,6 @@ var ArcadeCard = (function () {
   try{localStorage.removeItem('ma-save-airship-runner');}catch(e){}   // left over from the dropped Save progress test (10/19)
   document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});
   window.addEventListener('blur',function(){pause();});
-  function openBox(){mode='box';lootOv.hidden=false;paintHud();draw();ctl();}
-  function openCloud(){mode='box';cloudOv.hidden=false;paintHud();draw();ctl();}
   function crash(){
     mode='crash';S.dead=0;S.shake=calm?0:1;ctl();
     if(!calm)for(var i=0;i<18;i++){var a=Math.random()*6.3,v=60+Math.random()*160;S.fx.push({x:S.x,y:shipY,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.6+Math.random()*.5,c:i%2?'rgba(255,76,15,':'rgba(243,234,217,'});}
@@ -984,17 +929,6 @@ var ArcadeCard = (function () {
   $('.ar-cardbtn').addEventListener('click',function(){if(window.ArcadeCard)ArcadeCard.scrollTo();});
   $('.ar-again').addEventListener('click',function(){whoEl.hidden=true;whoEl.innerHTML='';start();});
   $('.ar-resume').addEventListener('click',resume);
-  $('.ar-keep').addEventListener('click',resume);
-  $('.ar-keep135').addEventListener('click',resume);
-  $('.ar-box135').addEventListener('click',(function(){var K='V0RIRlhVVEQ9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-    return function(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
-      var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;};})());
-  $('.ar-boxbtn').addEventListener('click',function(){
-    var u=atob(K).split('').reverse().join('');
-    if(PREVIEW_HOST.test(location.hostname)){$('.ar-lootnote').textContent='Preview: this is where loot box 74 opens.';return;}
-    // A new tab keeps the run alive; if the browser blocks it, go there in this tab.
-    var w=window.open(u,'_blank');if(w){try{w.opener=null;}catch(e){}}else location.href=u;
-  });
 
   /* ---- share card ---- */
   function card(){
@@ -1030,7 +964,7 @@ var ArcadeCard = (function () {
   var rT=0;window.addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(resize,120);});
   resize();paintHud();
   // Preview only (local file, localhost, or github.io with ?runner-test=1): lets the preview script read the run.
-  if(PREVIEW_HOST.test(location.hostname)&&/[?&]runner-test=1\b/.test(location.search))window.__arTest={run:function(){return S;},lanes:function(){return laneX;},shipY:function(){return shipY;},mode:function(){return mode;},crash:function(){crash();},box:function(){openBox();}};
+  if(PREVIEW_HOST.test(location.hostname)&&/[?&]runner-test=1\b/.test(location.search))window.__arTest={run:function(){return S;},lanes:function(){return laneX;},shipY:function(){return shipY;},mode:function(){return mode;},crash:function(){crash();}};
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){build();draw();});
 })();
 </script>

@@ -1,0 +1,398 @@
+/* The frame around every game (Maurice, 2026-11-12: "design ... the arcade, individual games ... based on the designs
+   we've created today"). One look for all 15 game pages: the Arcade switcher as a tile row (daily puzzles emerald,
+   arcade games violet, the game you're on ember), the game's name and its lines on the ink ground, and the ink veil
+   over each game's art. Only the frame: nothing here touches a board, its rules, scoring, streaks, timers, daily
+   loading, claims, or controls, and nothing here moves (game pages run no motion). Linked by hand from each game's
+   page file (pages/games.html, game-*.html, airship-runner.html, thread-the-needle.html, trench-run.html,
+   sky-gauntlet.html, the-levian.html, master-stacker.html, master-cannoneer.html, sky-fishing.html). */
+
+/* ---------- 1. The Arcade switcher ---------- */
+[data-ma-page] .ma-arcade{width:min(100%,1000px)!important}
+[data-ma-page] .hg-arcade{font-size:clamp(24px,2.6vw,32px)!important;margin:0 auto 20px!important;color:#fff!important}
+/* desktop: two full rows, the seven daily puzzles over the eight arcade games (56 columns = 7 x 8) */
+[data-ma-page] .hg-tabs{grid-template-columns:repeat(56,minmax(0,1fr))!important;gap:8px!important;max-width:1000px!important;margin:0 auto clamp(44px,5vw,60px)!important}
+[data-ma-page] .hg-tabs a{grid-column:span 7!important;min-width:0;min-height:64px;padding:12px 10px!important;font-family:'Almarai',sans-serif!important;font-weight:800!important;font-size:12px!important;line-height:1.3!important;letter-spacing:.08em!important;color:#fff!important;text-wrap:balance;border:0!important;background:rgba(72,45,133,.92)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);transition:none!important}
+[data-ma-page] .hg-tabs a[data-k="skyword"],[data-ma-page] .hg-tabs a[data-k="shelf_sort"],[data-ma-page] .hg-tabs a[data-k="emoji_reads"],[data-ma-page] .hg-tabs a[data-k="blades_brass"],
+[data-ma-page] .hg-tabs a[data-k="matching_auras"],[data-ma-page] .hg-tabs a[data-k="crest_quest"],[data-ma-page] .hg-tabs a[data-k="sky_mines"]{grid-column:span 8!important;background:rgba(26,94,65,.92)!important}
+[data-ma-page] .hg-tabs a:hover,[data-ma-page] .hg-tabs a:focus-visible{box-shadow:inset 0 0 0 2px #fff;color:#fff!important;outline:0}
+[data-ma-page] .hg-tabs a.on,[data-ma-page] .hg-tabs a.on:hover{background:#c53200!important;color:#fff!important;box-shadow:inset 0 0 0 2px #fff}
+[data-ma-page] .hg-tabs a:active{transform:scale(.97)}
+/* pages whose own layout already adds room under the switcher (a flex gap, a top pad) get the same total room as the rest */
+[data-ma-page] #ma-flappy .hg-tabs{margin-bottom:clamp(24px,calc(5vw - 20px),40px)!important}
+[data-ma-page] #ma-holdwall .wrap{padding-top:0!important}
+/* tablets: twelve columns; daily puzzles four then three, arcade games four and four */
+@media (max-width:1000px){
+  [data-ma-page] .hg-tabs{grid-template-columns:repeat(12,minmax(0,1fr))!important}
+  [data-ma-page] .hg-tabs a,[data-ma-page] .hg-tabs a[data-k]{grid-column:span 3!important}
+  [data-ma-page] .hg-tabs a:nth-child(5),[data-ma-page] .hg-tabs a:nth-child(6),[data-ma-page] .hg-tabs a:nth-child(7){grid-column:span 4!important}
+}
+/* phones: six columns; daily puzzles three, three, and Sky Mines across; arcade games three, three, and two */
+@media (max-width:640px){
+  [data-ma-page] .hg-tabs{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:6px!important}
+  [data-ma-page] .hg-tabs a,[data-ma-page] .hg-tabs a[data-k],[data-ma-page] .hg-tabs a:nth-child(5),[data-ma-page] .hg-tabs a:nth-child(6){grid-column:span 2!important}
+  [data-ma-page] .hg-tabs a:nth-child(7){grid-column:span 6!important}
+  [data-ma-page] .hg-tabs a:nth-child(14),[data-ma-page] .hg-tabs a:nth-child(15){grid-column:span 3!important}
+  [data-ma-page] .hg-tabs a{min-height:48px;padding:8px 6px!important;font-size:11px!important;letter-spacing:.04em!important}
+}
+
+/* ---------- 2. The game's name and its lines ---------- */
+/* the small line above the name ("Cello's Gate", "Highest Score Wins!") */
+[data-ma-page] .hg-eyebrow,[data-ma-page] .m-eyebrow,[data-ma-page] .ar-eye{font-size:clamp(20px,2.4vw,28px)!important;line-height:1.2!important;color:#fd7547!important;margin:0 0 14px!important}
+[data-ma-page] .ar-head .ar-eye{margin:0!important}
+/* the name */
+[data-ma-page] .hg-h1,[data-ma-page] #daily-word h1,[data-ma-page] .ar-h1,[data-ma-page] .fl-h1,[data-ma-page] #ma-chase .ch-wrap > h1,
+[data-ma-page] #ma-gauntlet .sg-wrap > h1,[data-ma-page] #ma-levian .lv-wrap > h1,[data-ma-page] #ms-stack .ms-head h1,
+[data-ma-page] #ma-holdwall header h1,[data-ma-page] #ma-skyduel .sd-wrap > h1{font-size:clamp(44px,7vw,100px)!important;color:#fff!important;text-align:center!important;text-wrap:balance}
+/* the lines under it: what the game is and how to play */
+[data-ma-page] .hg-tag,[data-ma-page] .ar-tag,[data-ma-page] .fl-how,[data-ma-page] .ch-sub,[data-ma-page] .sg-sub,[data-ma-page] .lv-lede,
+[data-ma-page] .ms-lede,[data-ma-page] #ma-holdwall header .lede,[data-ma-page] .sd-lede{
+  font-family:'Almarai',sans-serif!important;font-weight:400!important;font-size:17px!important;line-height:1.6!important;letter-spacing:0!important;text-transform:none!important;
+  color:rgba(255,255,255,.9)!important;white-space:normal!important;max-width:62ch!important;margin-left:auto!important;margin-right:auto!important;text-align:center!important;text-wrap:pretty;text-shadow:0 1px 8px rgba(0,0,0,.55)}
+/* the weekly leaderboard line: an ember strip */
+[data-ma-page] .ar-weekly,[data-ma-page] .fl-weekly,[data-ma-page] .ch-weekly,[data-ma-page] .sg-weekly,[data-ma-page] .lvb-weekly,
+[data-ma-page] .ms-weekly,[data-ma-page] #ma-holdwall header .weekly{
+  font-family:'Almarai',sans-serif!important;font-weight:800!important;font-size:14px!important;line-height:1.5!important;letter-spacing:.04em!important;text-transform:none!important;
+  color:#fff!important;background:rgba(145,37,1,.92)!important;border:0!important;border-radius:0!important;padding:14px 20px!important;max-width:640px!important;
+  margin-left:auto!important;margin-right:auto!important;text-align:center!important;text-shadow:none!important;box-sizing:border-box}
+@media (max-width:640px){
+  [data-ma-page] .hg-tag,[data-ma-page] .ar-tag,[data-ma-page] .fl-how,[data-ma-page] .ch-sub,[data-ma-page] .sg-sub,[data-ma-page] .lv-lede,
+  [data-ma-page] .ms-lede,[data-ma-page] #ma-holdwall header .lede,[data-ma-page] .sd-lede{font-size:16px!important}
+}
+
+/* ---------- 3. The ground around the board: ink over each daily puzzle's art (the arcade games already sit on ink) ---------- */
+[data-ma-page="games"] #daily-word{background-image:linear-gradient(180deg,rgba(11,23,15,.8) 0%,rgba(11,23,15,.86) 60%,rgba(11,23,15,.92) 100%),url(https://africhmaurice.github.io/site/assets/bg/neon-street-as1928158052.webp)!important;background-color:#0b170f!important}
+[data-ma-page="game-shelf-sort"] .hg-section,[data-ma-page="game-crest-quest"] .hg-section{background-image:linear-gradient(180deg,rgba(11,23,15,.8) 0%,rgba(11,23,15,.86) 60%,rgba(11,23,15,.92) 100%),url(https://africhmaurice.github.io/site/assets/bg/monolith-canyon-as444233611.webp)!important;background-color:#0b170f!important}
+[data-ma-page="game-emoji-reads"] .hg-section{background-image:linear-gradient(180deg,rgba(11,23,15,.8) 0%,rgba(11,23,15,.86) 60%,rgba(11,23,15,.92) 100%),url(https://africhmaurice.github.io/site/assets/bg/neon-tunnel-arch-as468986961.webp)!important;background-color:#0b170f!important}
+[data-ma-page="game-blades-brass"] .hg-section{background-image:linear-gradient(180deg,rgba(11,23,15,.8) 0%,rgba(11,23,15,.86) 60%,rgba(11,23,15,.92) 100%),url(https://africhmaurice.github.io/site/assets/bg/gyroscope-foundry-as401944302.webp)!important;background-color:#0b170f!important}
+[data-ma-page="game-matching-auras"] .hg-section{background-image:linear-gradient(180deg,rgba(11,23,15,.8) 0%,rgba(11,23,15,.86) 60%,rgba(11,23,15,.92) 100%),url(https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp)!important;background-color:#0b170f!important}
+[data-ma-page="game-sky-mines"] .hg-section{background-image:linear-gradient(180deg,rgba(11,23,15,.8) 0%,rgba(11,23,15,.86) 60%,rgba(11,23,15,.92) 100%),url(https://africhmaurice.github.io/site/assets/bg/d/blue-sky-clouds-as606240509.webp)!important;background-color:#0b170f!important}
+[data-ma-page="games"] #daily-word,[data-ma-page^="game-"] .hg-section{background-size:cover!important;background-position:center!important}
+
+@media (prefers-reduced-motion:reduce){[data-ma-page] .hg-tabs a:active{transform:none}}
+
+/* ---------- 4. The sideways row (Maurice 2026-11-12: "make the game, leaderboard, everything full width and horizontal scrolling") ----------
+   game-frame.js puts each part of the page in a full-width, full-height panel in one row; these are the panels. */
+html.gs-page [data-ma-page] .gs-stage{position:sticky;top:0;width:100%;min-width:100%;max-width:100%;align-self:stretch;flex:none;margin:0;height:100vh;height:100svh;overflow:clip;display:block;background-color:#0b170f;z-index:1}
+html.gs-page [data-ma-page] .gs-track{display:flex;height:100%;will-change:transform}
+html.gs-page [data-ma-page] .gs-panel{flex:none;position:relative;height:100%;box-sizing:border-box;overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:auto;
+  display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:20px;padding:24px max(16px,4vw) 72px}
+/* the game panel: the game in the middle of the screen, scaled by game-frame.js */
+html.gs-page [data-ma-page] .gs-game{justify-content:safe center;padding:16px 16px 64px}
+html.gs-page [data-ma-page] .gs-game{align-items:stretch}
+html.gs-page [data-ma-page] .gs-game > *{width:100%;flex:none;margin-left:auto!important;margin-right:auto!important;box-sizing:border-box}
+html.gs-page [data-ma-page] .gs-game .gs-empty{display:none!important}
+html.gs-page [data-ma-page] .gs-game .gs-solo{display:block!important;grid-template-columns:none!important}
+html.gs-page [data-ma-page] .gs-game .gs-solo > *{margin-left:auto!important;margin-right:auto!important}
+html.gs-page [data-ma-page] .gs-game :is(.hg-head,.ar-head,.ms-head,header){margin:0!important;padding:0!important;min-height:0!important}
+html.gs-page [data-ma-page] .gs-game :is(.hg-card,#daily-word main){margin-top:0!important;margin-bottom:0!important}
+/* the other panels: their part in a column, or a few side by side */
+html.gs-page [data-ma-page] .gs-col{width:min(100%,760px);display:flex;flex-direction:column;align-items:stretch;gap:20px}
+html.gs-page [data-ma-page] .gs-col > *{width:auto!important;max-width:none!important;margin:0!important}
+html.gs-page [data-ma-page] .gs-group{width:min(100%,1160px);display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:20px}
+html.gs-page [data-ma-page] .gs-group > *{flex:1 1 320px;max-width:560px!important;width:auto!important;margin:0!important}
+html.gs-page [data-ma-page] .gs-part :is(.dbd-panel,.ar-panel,.tr-panel,.sgb-panel,.lvb-panel,.ms-panel,.ms-how,.fl-panel,.panel,.gb-card,.sd-notes,.ar-key,.tk,.sgk){box-sizing:border-box}
+/* How to play: the game's name big, then its lines */
+html.gs-page [data-ma-page] .gs-about .gs-col{gap:16px;align-items:center;text-align:center}
+html.gs-page [data-ma-page] .gs-about :is(.hg-h1,#daily-word h1,.ar-h1,.fl-h1,h1){font-size:clamp(40px,6vw,88px)!important;margin:0!important}
+/* where you are: one segment per panel; tap one to go there; and a nudge to start */
+html.gs-page [data-ma-page] .gs-prog{position:absolute;left:max(24px,6vw);right:max(24px,6vw);bottom:max(14px,2.4svh);display:flex;gap:6px;height:16px;z-index:5}
+html.gs-page [data-ma-page] .gs-seg{position:relative;flex:1 1 0;min-width:10px;height:100%;padding:0;margin:0;border:0;background:none;cursor:pointer}
+html.gs-page [data-ma-page] .gs-seg::before,html.gs-page [data-ma-page] .gs-seg i{content:"";position:absolute;left:0;right:0;top:50%;height:4px;margin-top:-2px}
+html.gs-page [data-ma-page] .gs-seg::before{background:rgba(255,255,254,.2)}
+html.gs-page [data-ma-page] .gs-seg i{display:block;background:#a2f590;transform-origin:0 50%;transform:scaleX(0)}
+html.gs-page [data-ma-page] .gs-seg:hover::before,html.gs-page [data-ma-page] .gs-seg:hover i,html.gs-page [data-ma-page] .gs-seg:focus-visible::before,html.gs-page [data-ma-page] .gs-seg:focus-visible i{height:8px;margin-top:-4px}
+html.gs-page [data-ma-page] .gs-seg:focus-visible{outline:2px solid #fffffe;outline-offset:2px}
+html.gs-page [data-ma-page] .gs-hint{position:absolute;right:max(24px,6vw);bottom:calc(max(14px,2.4svh) + 26px);display:flex;align-items:center;gap:10px;font-family:'Almarai',sans-serif;font-weight:800;font-size:13px;line-height:1.3;letter-spacing:.14em;text-transform:uppercase;color:#a2f590;pointer-events:none;z-index:5}
+html.gs-page [data-ma-page] .gs-hint svg{width:22px;height:22px}
+/* the menu bar is see-through on the dark pages; the row slides under it, so it gets the page's ink */
+/* (the menu bar keeps the site look: see-through at the top, one ember bar once you scroll; Maurice 2026-11-13) */
+/* the daily puzzles' white card keeps less padding in its panel, so the board gets the room */
+html.gs-page [data-ma-page] .gs-game :is(.hg-card,#daily-word main){padding:20px 24px!important}
+html.gs-page [data-ma-page] .gs-game :is(.hg-stamp,#thw-stamp){margin-bottom:12px!important}
+html.gs-page [data-ma-page] .gs-game #thw-spacer{display:none!important}
+
+/* ---------- 5. One tight strip on wide screens (Maurice 2026-11-13: "all together, stacked, as little space as possible
+   without losing legibility") ----------
+   game-frame.js sets each panel's width to what's in it; the Key runs in columns when it's taller than the screen. */
+html.gs-page [data-ma-page] .gs-how{display:flex;flex-direction:column;gap:16px;width:100%;text-align:left}
+html.gs-page [data-ma-page] .gs-how:empty{display:none}
+html.gs-page [data-ma-page] .gs-how > *{width:auto!important;max-width:none!important;margin:0!important}
+html.gs-page [data-ma-page] .gs-about .gs-col > :not(.gs-how){align-self:center}
+html.gs-page [data-ma-page] .gs-cols{display:block!important;column-width:300px;column-gap:24px;column-fill:auto;overflow:hidden}
+/* one box (the Key): the columns run inside its own border */
+html.gs-page [data-ma-page] .gs-cols:has(> :only-child){columns:auto}
+html.gs-page [data-ma-page] .gs-cols > :only-child{display:block!important;height:100%;box-sizing:border-box;column-width:300px;column-gap:28px;column-fill:auto;overflow:hidden}
+html.gs-page [data-ma-page] .gs-cols > *{margin:0!important}
+html.gs-page [data-ma-page] .gs-cols :is(li,tr,dt,dd,p,h2,h3,h4){break-inside:avoid}
+@media (min-width:700px){
+  html.gs-page [data-ma-page] .gs-panel{padding:20px 20px 64px}
+  html.gs-page [data-ma-page] .gs-game{padding:16px 20px 64px}
+  html.gs-page [data-ma-page] .gs-panel:first-child{padding-left:max(20px,3vw)}
+  html.gs-page [data-ma-page] .gs-panel:last-child{padding-right:max(20px,3vw)}
+  html.gs-page [data-ma-page] .gs-col,html.gs-page [data-ma-page] .gs-group{max-width:none}
+  html.gs-page [data-ma-page] .gs-about :is(.hg-h1,#daily-word h1,.ar-h1,.fl-h1,h1){font-size:clamp(40px,4.6vw,72px)!important}
+}
+/* inside the Key columns, its own two-column grids become one list so nothing splits across columns */
+html.gs-page [data-ma-page] .gs-cols :is(.tk-cols,.sgk-cols){display:block!important}
+html.gs-page [data-ma-page] .gs-cols :is(.tk-cols,.sgk-cols) > *{margin:0 0 20px!important}
+html.gs-page [data-ma-page] .gs-cols li{break-inside:avoid}
+html.gs-page [data-ma-page] .gs-cols :is(h2,h3,h4,.tk-h,.sgk-h){break-after:avoid;break-inside:avoid}
+html.gs-page [data-ma-page] .gs-cols :is(.tk-sec,.sgk-sec){display:block!important}
+html.gs-page [data-ma-page] .gs-cols :is(.tk-sec,.sgk-sec) > * + *{margin-top:12px!important}
+/* a heading needs room for its first item under it, or it moves to the next column with it */
+html.gs-page [data-ma-page] .gs-cols :is(h2,h3,h4,.tk-h,.sgk-h)::after{content:"";display:block;height:72px;margin-bottom:-72px}
+html.gs-page [data-ma-page] .gs-cols :is(.tk-cols,.sgk-cols) > *{break-inside:auto}
+/* Sky Gauntlet hull levels: one level per line in a Key column, so the words have room */
+html.gs-page [data-ma-page] .gs-cols .sgk-lv{grid-template-columns:minmax(0,1fr)!important;gap:8px!important}
+html.gs-page [data-ma-page] .gs-cols .sgk-lv > li{display:block!important;break-inside:avoid}
+html.gs-page [data-ma-page] .gs-cols .sgk-lv > li > b{display:inline!important;margin-right:8px}
+html.gs-page [data-ma-page] .gs-cols .sgk-tiers{break-inside:avoid}
+
+/* ---------- 6. Even edges, a frame for the game, and the Arcade as tiles (Maurice 2026-11-13) ---------- */
+@media (min-width:700px){
+  /* no scrollbars inside a panel: game-frame.js scales anything too tall down to fit */
+  html.gs-page [data-ma-page] .gs-panel{overflow:hidden;justify-content:flex-start}
+  html.gs-page [data-ma-page] .gs-panel > .gs-col{flex:none}
+  /* every box shares one top edge (20px under the menu) and one bottom edge (64px up, above the bar), with one border */
+  html.gs-page [data-ma-page] .gs-box,html.gs-page [data-ma-page] .gs-cols > :only-child{box-sizing:border-box;border:2px solid rgba(243,234,217,.18)!important;background-color:#132219!important}
+  html.gs-page [data-ma-page] .gs-part .gs-col{justify-content:flex-start}
+  /* the game sits in a frame of its own, the same border, with room around it */
+  html.gs-page [data-ma-page] .gs-game{isolation:isolate;justify-content:center;padding:44px 48px 88px!important}
+  html.gs-page [data-ma-page] .gs-game::before{content:"";position:absolute;left:20px;right:20px;top:20px;bottom:64px;border:2px solid rgba(243,234,217,.18);background:rgba(19,34,25,.72);z-index:-1;pointer-events:none}
+  /* the Arcade: the whole screen in tiles, each game's art under its color, the name in the middle */
+  html.gs-page [data-ma-page] .gs-arcade .gs-col{display:flex;flex-direction:column;gap:20px}
+  html.gs-page [data-ma-page] .gs-arcade .gs-col > *{flex:none}
+  html.gs-page [data-ma-page] .gs-arcade .ma-arcade{flex:1 1 auto!important;display:flex!important;flex-direction:column;gap:20px;width:100%!important;min-height:0}
+  html.gs-page [data-ma-page] .gs-arcade .hg-arcade{margin:0!important;font-size:clamp(28px,3vw,44px)!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs{flex:1 1 auto!important;min-height:0;width:100%;max-width:none!important;margin:0!important;grid-template-rows:repeat(2,minmax(0,1fr));gap:12px!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a{--tint:rgba(72,45,133,.9);min-height:0;height:auto;display:flex!important;align-items:center;justify-content:center;text-align:center;padding:20px!important;
+    font-size:clamp(15px,1.3vw,22px)!important;letter-spacing:.08em!important;
+    background:linear-gradient(var(--tint),var(--tint)),var(--art,none) center/cover no-repeat!important;box-shadow:none;transition:box-shadow .15s,transform .15s!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:is([data-k="skyword"],[data-k="shelf_sort"],[data-k="emoji_reads"],[data-k="blades_brass"],[data-k="matching_auras"],[data-k="crest_quest"],[data-k="sky_mines"]){--tint:rgba(26,94,65,.9)}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a.on{--tint:rgba(197,50,0,.9)}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:hover,html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:focus-visible{box-shadow:inset 0 0 0 3px #fffffe}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:active{transform:perspective(600px) rotateX(4deg) scale(.98)}
+}
+@media (min-width:700px){html.gs-page [data-ma-page] .gs-arcade .hg-tabs{clip-path:inset(0 -40px)}}   /* tiles slide in from the edges of their own area, never over the heading */
+@media (min-width:700px){
+  /* a panel scaled down to fit (--gz) keeps the same edges and gaps on screen as the rest */
+  html.gs-page [data-ma-page] .gs-panel{padding:calc(20px / var(--gz,1)) calc(20px / var(--gz,1)) calc(64px / var(--gz,1))}
+  html.gs-page [data-ma-page] .gs-game{padding:calc(44px / var(--gz,1)) calc(48px / var(--gz,1)) calc(88px / var(--gz,1))!important}
+  html.gs-page [data-ma-page] .gs-game::before{left:calc(20px / var(--gz,1));right:calc(20px / var(--gz,1));top:calc(20px / var(--gz,1));bottom:calc(64px / var(--gz,1))}
+  /* boxes in a group sit side by side, all the same height */
+  html.gs-page [data-ma-page] .gs-group{flex-wrap:nowrap!important;align-items:stretch!important;justify-content:flex-start!important;gap:20px}
+  html.gs-page [data-ma-page] .gs-group > *{flex:1 1 0!important;min-width:0;max-width:none!important}
+  /* words in an About box read as body text */
+  html.gs-page [data-ma-page] .gs-about .gs-box{color:rgba(255,255,255,.86)}
+}
+html.gs-page [data-ma-page] .gs-about .dbd-line{color:rgba(255,255,255,.86)!important}   /* the daily puzzles weekly line was dark text for a white card */
+html.gs-page [data-ma-page] .gs-measure .gs-panel :is(.ma-rv,[data-ma-rise]){transform:none!important;translate:none!important;transition:none!important}
+html.gs-page [data-ma-page] .gs-about :is(.hg-how,.hg-more){color:rgba(255,255,255,.86)!important}
+html.gs-page [data-ma-page] .gs-about .hg-next{color:rgba(255,255,255,.7)!important}   /* the daily puzzles lines were dark text for a white card */
+@media (min-width:700px){
+  /* About with no box: the words sit in the middle of the screen */
+  html.gs-page [data-ma-page] .gs-about.gs-mid{justify-content:center}
+  /* the daily puzzle card is wider (Maurice 2026-11-13: "make the board wider") */
+  html.gs-page [data-ma-page] .gs-game :is(.hg-card,#daily-word main){width:520px!important;max-width:none!important}   /* scaled up to fill the frame by game-frame.js */
+}
+html.gs-page [data-ma-page] .gs-how > *{width:100%!important;flex:none!important;align-self:stretch!important}
+html.gs-page [data-ma-page] .gs-about .gs-col > .gs-how{width:100%!important;align-self:stretch!important}
+@media (min-width:700px){
+  /* more of the screen for the game: a thinner band inside its frame (Maurice 2026-11-13: "the game is way too tiny") */
+  html.gs-page [data-ma-page] .gs-game{padding:calc(32px / var(--gz,1)) calc(36px / var(--gz,1)) calc(76px / var(--gz,1))!important}
+}
+html.gs-page [data-ma-page] .gs-how #thw-legend,html.gs-page [data-ma-page] .gs-how #thw-legend *{color:rgba(255,255,255,.86)!important}
+html.gs-page [data-ma-page] .gs-how #thw-legend{display:flex!important;flex-wrap:wrap;justify-content:center;gap:12px 20px;border:0!important;background:none!important;min-height:0!important}
+html.gs-page [data-ma-page] .dbd-gate:not(:has(.dbd-cover)){min-height:0!important}   /* the start card is gone: its box stops holding its height, so the board gets the room */
+
+/* ---------- 7. The Scroll Bar and the Arcade trailers (Maurice 2026-11-13) ---------- */
+/* fills while the row holds on a section: scarlet, teal, violet, green */
+html.gs-page [data-ma-page] .gs-sbar{position:absolute;left:0;right:0;bottom:0;height:6px;z-index:6;pointer-events:none;opacity:0;transition:opacity .25s ease;background:rgba(255,255,254,.08)}
+html.gs-page [data-ma-page] .gs-sbar i{display:block;height:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,#ff4c0f,#3adb97 33%,#7b4ee1 66%,#a2f590)}
+/* the trailer plays under the tile's color, the name stays on top */
+html.gs-page [data-ma-page] .gs-arcade .hg-tabs a{position:relative;isolation:isolate;overflow:hidden}
+html.gs-page [data-ma-page] .gs-arcade .hg-tabs a .gs-vid{position:absolute;inset:2px;width:calc(100% - 4px);height:calc(100% - 4px);object-fit:cover;z-index:-2;pointer-events:none}
+html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:has(.gs-vid){background:linear-gradient(var(--tint),var(--tint)),#0b170f!important}   /* solid color at the edges: the trailer stays 2px inside, so no picture can peek out (Maurice, 2026-11-13) */
+html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:has(.gs-vid)::after{content:"";position:absolute;inset:-3px;background:var(--tint);z-index:-1;pointer-events:none}
+@media (prefers-reduced-motion:reduce){html.gs-page [data-ma-page] .gs-sbar{transition:none}}
+html.gs-page [data-ma-page] .ms-side > .ms-hud{grid-template-columns:repeat(2,minmax(0,1fr))!important}   /* the score boxes two by two over Next up, so every label fits */
+
+/* ---------- 8. Boards bigger, controls beside them (Maurice 2026-11-13) ---------- */
+@media (min-width:700px){
+  /* the current champion strip keeps room around its words */
+  html.gs-page [data-ma-page] .gs-game :is(.wk-champ,.dbd-champ){padding:10px 20px!important;line-height:1.3!important;height:auto!important;min-height:0!important;overflow:visible!important;white-space:normal!important;box-sizing:border-box;margin-bottom:0!important}
+  /* a column beside the board for the score, modes, and buttons */
+  html.gs-page [data-ma-page] .gs-game .gs-two,html.gs-page [data-ma-page] .gs-game .gs-solo.gs-two{display:grid!important;grid-template-columns:auto var(--gs-side,220px);column-gap:24px!important;row-gap:0!important;align-items:start;justify-content:center}
+  html.gs-page [data-ma-page] .gs-two > :not(.gs-beside) + :not(.gs-beside){margin-top:12px!important}   /* (no row gaps: the side column spans twenty rows, and their gaps added height under the board) */
+  html.gs-page [data-ma-page] .gs-two > :not(.gs-beside){grid-column:1}
+  html.gs-page [data-ma-page] .gs-two > .gs-beside{grid-column:2;grid-row:1 / span 20;display:flex;flex-direction:column;gap:12px;align-self:start}
+  html.gs-page [data-ma-page] .gs-beside > *{width:100%!important;max-width:none!important;margin:0!important;box-sizing:border-box}
+  html.gs-page [data-ma-page] .gs-beside .ar-hud{grid-template-columns:1fr!important}
+  html.gs-page [data-ma-page] .gs-beside .sg-hud{flex-direction:column;align-items:stretch}
+  html.gs-page [data-ma-page] .gs-beside .sg-modes{display:flex;gap:8px}
+  html.gs-page [data-ma-page] .gs-beside .sg-modes > *{flex:1 1 0}
+  html.gs-page [data-ma-page] .gs-beside-wide{--gs-side:500px;min-width:0}
+  html.gs-page [data-ma-page] .gs-game .gs-two:has(> .gs-beside-wide){grid-template-columns:auto 500px}
+  /* Airship Runner's board keeps its own shape (it was stretched sideways) */
+  html.gs-page [data-ma-page] #ma-runner .ar-stage{width:560px!important;max-width:none!important}
+  html.gs-page [data-ma-page] #ma-runner .ar-stage canvas{width:100%!important;height:auto!important;max-width:none!important}
+  /* Hold the Wall!: the battlefield across the whole width, the fighters and upgrades under it */
+  html.gs-page [data-ma-page] #ma-holdwall .wrap{width:1100px!important;max-width:none!important}
+  html.gs-page [data-ma-page] #ma-holdwall .top .stage{width:100%!important;max-width:none!important;height:auto!important}
+  html.gs-page [data-ma-page] #ma-holdwall #hw-cv{width:100%!important;height:auto!important}
+  /* Goma Goons: the map big on the left, the crew picker and controls on the right */
+  html.gs-page [data-ma-page] #ma-skyduel .sd-wrap{max-width:none!important}
+  html.gs-page [data-ma-page] #ma-skyduel .sd-wrap > .sd-stage{width:900px!important;max-width:none!important}
+  html.gs-page [data-ma-page] #ma-skyduel .sd-stage canvas{width:100%!important;height:auto!important}
+  /* the export card's own panel */
+  html.gs-page [data-ma-page] .gs-cardp .ac-card{margin:0!important}
+}
+
+@media (min-width:700px){html.gs-page [data-ma-page] .gs-beside .wk-champ{font-size:clamp(15px,1.1vw,19px)!important;text-align:center}}   /* the champion strip at the top of the side column */
+@media (min-width:700px){
+  /* the champion strip spans the play screen under it, with room above (Maurice 2026-11-13) */
+  html.gs-page [data-ma-page] .gs-game :not(.gs-beside) > :is(.wk-champ,.dbd-champ){width:100%!important;max-width:none!important;align-self:stretch!important;margin-top:12px!important;margin-left:0!important;margin-right:0!important}
+  html.gs-page [data-ma-page] .gs-game > :is(.wk-champ,.dbd-champ):first-child{margin-top:0!important}
+  /* Goma Goons: its name and line over the map */
+  html.gs-page [data-ma-page] .gs-gamehead{width:0;min-width:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;margin-bottom:12px}
+  html.gs-page [data-ma-page] .gs-gamehead :is(h1,.sd-wrap > h1){font-size:clamp(34px,3.2vw,52px)!important;margin:0!important;color:#fff!important}
+  html.gs-page [data-ma-page] .gs-gamehead > *{margin:0!important;max-width:none!important}
+  /* the Arcade trailers crop the edges of the recordings, so the game fills the tile */
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a .gs-vid{transform:scale(1.4);clip-path:inset(calc(14.29% + 1.5px))}   /* scaled up to crop the recording margins, and clipped to end 2px inside the tile */
+}
+@media (min-width:700px){
+  /* the white edge on hover, drawn over the trailer (Maurice 2026-11-13: "when you hover over the arcade games, should an outline appear?") */
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:is(:hover,:focus-visible){outline:3px solid #fffffe!important;outline-offset:-3px}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a.on{outline:3px solid #fffffe;outline-offset:-3px}
+}
+
+/* the Scroll button (Maurice 2026-11-13) */
+html.gs-page [data-ma-page] .gs-hint{pointer-events:auto!important;cursor:pointer;padding:10px 14px;border:2px solid currentColor;background:rgba(11,23,15,.85);transition:opacity .25s ease,background-color .2s ease}html.gs-page [data-ma-page] .gs-hint:hover,html.gs-page [data-ma-page] .gs-hint:focus-visible{background:#1a5e41}
+html.gs-page [data-ma-page] .gs-panel{overflow:hidden}   /* phones too: no scrolling inside a panel; it is scaled to fit (Maurice 2026-11-13) */
+
+/* ---------- 9. Phones (Maurice 2026-11-13) ---------- */
+@media (max-width:699px){
+  /* the arrow pads sit in the middle under the board */
+  html.gs-page [data-ma-page] .gs-game :is(.ch-pad,.ms-pad,.sd-pad,.lv-pad,.ar-ctrls,.fl-ctl,.ms-ctrls){width:max-content!important;max-width:100%!important;margin-left:auto!important;margin-right:auto!important;justify-content:center!important}
+  /* a smaller Scroll button */
+  html.gs-page [data-ma-page] .gs-hint{padding:6px 10px!important;font-size:11px!important;gap:6px!important;letter-spacing:.1em!important}
+  html.gs-page [data-ma-page] .gs-hint svg{width:16px!important;height:16px!important}
+  /* the Arcade: big tiles in two rows, each game's art under its color, scrolled through sideways */
+  /* two tiles to a screen: 16px in from each screen edge, 32px between, so the row always stops on whole tiles */
+  html.gs-page [data-ma-page] .gs-arcade{padding-left:12px!important;padding-right:12px!important;padding-top:12px!important;align-items:flex-start!important}
+  html.gs-page [data-ma-page] .gs-arcade .gs-col{width:auto!important;max-width:none!important;display:flex;flex-direction:column;gap:16px;align-items:flex-start}
+  html.gs-page [data-ma-page] .gs-arcade .ma-arcade{width:auto!important;max-width:none!important;flex:1 1 auto;display:flex!important;flex-direction:column;gap:16px;min-height:0}
+  html.gs-page [data-ma-page] .gs-arcade .hg-arcade{margin:0!important;text-align:left!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs{flex:1 1 auto;min-height:0;display:grid!important;grid-template-columns:none!important;grid-template-rows:repeat(4,minmax(0,1fr))!important;grid-auto-flow:column!important;grid-auto-columns:calc(var(--gsvw,100vw) / 2 - 24px)!important;gap:8px 24px!important;margin:0!important;max-width:none!important;width:max-content!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a,html.gs-page [data-ma-page] .gs-arcade .hg-tabs a[data-k]{grid-column:auto!important;--tint:rgba(72,45,133,.9);min-height:0!important;height:auto;display:flex!important;align-items:center;justify-content:center;text-align:center;padding:16px!important;font-size:15px!important;letter-spacing:.06em!important;
+    background:linear-gradient(var(--tint),var(--tint)),var(--art,none) center/cover no-repeat!important;box-shadow:none!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:is([data-k="skyword"],[data-k="shelf_sort"],[data-k="emoji_reads"],[data-k="blades_brass"],[data-k="matching_auras"],[data-k="crest_quest"],[data-k="sky_mines"]){--tint:rgba(26,94,65,.9)}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a.on{--tint:rgba(197,50,0,.9);outline:3px solid #fffffe;outline-offset:-3px}
+}
+@media (max-width:699px){html.gs-page [data-ma-page] .gs-hint{right:84px!important}}   /* clear of the back-to-top button */
+@media (max-width:699px){html.gs-page [data-ma-page] .gs-hint{font-size:0!important;padding:6px!important;border:0!important;background:none!important;gap:0!important;right:auto!important;left:calc(50% + 28px)!important;translate:-50% 0}html.gs-page [data-ma-page] .gs-hint svg{width:22px!important;height:22px!important}}   /* phones: the Scroll button is just a small arrow */
+@media (max-width:699px){
+  /* the Arcade tiles in mixed heights, like the Start screen (Maurice, 2026-11-13: "smaller and closer together and randomized") */
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a{font-size:13px!important;padding:10px!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(1){grid-row:span 2!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(2){grid-row:span 2!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(3){grid-row:span 2!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(4){grid-row:span 1!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(5){grid-row:span 1!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(6){grid-row:span 1!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(7){grid-row:span 2!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(8){grid-row:span 1!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(9){grid-row:span 2!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(10){grid-row:span 2!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(11){grid-row:span 1!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(12){grid-row:span 1!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(13){grid-row:span 2!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(14){grid-row:span 2!important}
+  html.gs-page [data-ma-page] .gs-arcade .hg-tabs a:nth-child(15){grid-row:span 2!important}
+}
+
+/* ---------- 10. Phones, round 4 (Maurice 2026-11-13) ---------- */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] .gs-game{padding:12px 8px 60px!important;justify-content:center}
+  /* Best this week after the leaderboard */
+  html.gs-page [data-ma-page] .gs-stack{flex-direction:column-reverse!important}
+  /* room between the play screen and the arrow pads */
+  html.gs-page [data-ma-page] .gs-game :is(.ch-pad,.ms-pad,.sd-pad,.lv-pad){margin-top:16px!important}
+  /* Master Stacker: the score boxes and buttons fit their words */
+  html.gs-page [data-ma-page] #ms-stack .ms-hud{gap:4px!important}
+  html.gs-page [data-ma-page] #ms-stack .ms-hud > *{padding:6px 2px!important;font-size:10px!important;letter-spacing:.02em!important;min-width:0}
+  html.gs-page [data-ma-page] #ms-stack .ms-pad button{font-size:11px!important;padding:8px 4px!important;letter-spacing:.02em!important;white-space:nowrap}
+}
+/* the Key's sections: room between each dividing line and the heading under it */
+html.gs-page [data-ma-page] .gs-cols :is(.tk-sec,.sgk-sec){padding-top:16px!important}
+
+/* ---------- 11. Phones, round 5 (Maurice 2026-11-13) ---------- */
+@media (max-width:699px){
+  /* one bottom margin everywhere, so the Scroll arrow never sits on anything */
+  html.gs-page [data-ma-page] .gs-panel{padding-bottom:88px!important}
+  html.gs-page [data-ma-page] .gs-game{padding:24px 8px 88px!important}
+  html.gs-page [data-ma-page] .gs-hint{bottom:38px!important}
+  /* control arrows a size smaller */
+  html.gs-page [data-ma-page] .ch-pad{grid-template-columns:repeat(3,44px)!important;grid-template-rows:repeat(3,44px)!important;gap:8px!important}
+  html.gs-page [data-ma-page] .ch-pad button{width:44px!important;height:44px!important}
+  html.gs-page [data-ma-page] .lv-pad button{width:48px!important;height:48px!important}
+  /* Master Stacker's score boxes: every label inside its box */
+  html.gs-page [data-ma-page] #ms-stack .ms-hud *{font-size:9px!important;letter-spacing:0!important;white-space:nowrap}
+  html.gs-page [data-ma-page] #ms-stack .ms-hud > *{overflow:hidden}
+  /* Airship Runner: Pause in the score row */
+  html.gs-page [data-ma-page] #ma-runner .ar-hud.gs-joined{grid-template-columns:repeat(4,minmax(0,1fr))!important;align-items:stretch}
+  html.gs-page [data-ma-page] #ma-runner .ar-hud.gs-joined .ar-ctrls{display:flex!important;margin:0!important;width:auto!important}
+  html.gs-page [data-ma-page] #ma-runner .ar-hud.gs-joined .ar-ctrls button{width:100%;height:100%}
+  /* Sort the Shelf: the three buttons on one row */
+  html.gs-page [data-ma-page] .ss-tools:not([style*="none"]){display:flex!important;flex-wrap:nowrap!important;gap:6px!important;justify-content:center}
+  html.gs-page [data-ma-page] .ss-tools > *{flex:1 1 0!important;min-width:0!important;margin:0!important;padding-left:4px!important;padding-right:4px!important}
+}
+/* Hold the Wall!: the battlefield always spans its frame */
+html.gs-page [data-ma-page] #ma-holdwall .top .stage{width:100%!important;max-width:none!important;height:auto!important}
+html.gs-page [data-ma-page] #ma-holdwall #hw-cv{width:100%!important;height:auto!important}
+@media (max-width:699px){
+  /* Sort the Shelf on phones: a shorter bookcase and shorter books, so the card can run the full width and still fit
+     (Maurice, 2026-11-13: "can we make this full width?") */
+
+  html.gs-page [data-ma-page] .ss-book{aspect-ratio:230/270!important}
+  /* buttons and labels never wrap; game-frame.js shrinks their words to fit */
+  html.gs-page [data-ma-page] .gs-game button{white-space:nowrap!important}
+}
+/* Trench Run: the frame and the start screen are exactly the size of the maze (Maurice, 2026-11-13) */
+html.gs-page [data-ma-page] #ma-chase .ch-board{width:max-content!important;max-width:none!important;margin-left:auto!important;margin-right:auto!important}
+@media (max-width:699px){
+  /* score, board, gate, lives, and pause on one line, so the maze gets the room */
+  html.gs-page [data-ma-page] #ma-chase .ch-hud{flex-wrap:nowrap!important;justify-content:space-between!important;column-gap:8px!important;row-gap:0!important;letter-spacing:.04em!important;white-space:nowrap}
+}
+@media (max-width:699px){html.gs-page [data-ma-page] .gs-lifted{width:100%!important;max-width:none!important;flex:none;box-sizing:border-box;padding:0 4px!important;margin:0 0 8px!important;font-size:12px!important}}
+/* the champion's win count sits inside the banner, never poking out of the top where it gets cut off (Maurice, 2026-11-14) */
+html.gs-page [data-ma-page] :is(.wk-champ,.dbd-champ) sup{vertical-align:baseline!important;position:relative!important;top:-.45em!important;transform:none!important;line-height:1!important}
+html.gs-page [data-ma-page] :is(.wk-champ,.dbd-champ){padding-top:12px!important;padding-bottom:10px!important}
+@media (max-width:699px){
+  /* Sort the Shelf on phones: the four boxes two by two, so their words stay readable */
+  html.gs-page [data-ma-page] .ss-case{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  html.gs-page [data-ma-page] .ss-box{aspect-ratio:1.6/1!important}
+}
+
+/* the back arrow (desktop: bottom left; phones: over the second segment, the forward arrow over the fourth) */
+html.gs-page [data-ma-page] .gs-back{position:absolute;left:max(24px,6vw);bottom:calc(max(14px,2.4svh) + 26px);z-index:5;display:flex;align-items:center;justify-content:center;padding:6px;border:0;background:none;color:#a2f590;cursor:pointer;transition:opacity .25s ease}
+html.gs-page [data-ma-page] .gs-back svg{width:22px;height:22px}
+@media (max-width:699px){html.gs-page [data-ma-page] .gs-back{bottom:38px!important;translate:-50% 0}html.gs-page [data-ma-page] .gs-hint{translate:-50% 0}}
+@media (min-width:700px){
+  /* Sort the Shelf on wide screens: the books in two long rows and a wider card, so the game fills the screen's room
+     (Maurice, 2026-11-14: "there's a lot of room on desktop ... make it bigger") */
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .hg-card:is(.hg-card,#gs-none main){width:940px!important}
+  html.gs-page [data-ma-page="game-shelf-sort"] .ss-box{aspect-ratio:2/1!important}   /* shorter boxes, so the books get the height */
+  html.gs-page [data-ma-page="game-shelf-sort"] .ss-grid{grid-template-columns:repeat(8,minmax(0,1fr))!important}
+}
+/* every width: the Scroll button is just the small arrow, the pair centered at the bottom (Maurice, 2026-11-14) */
+html.gs-page [data-ma-page] .gs-hint{font-size:0!important;padding:6px!important;border:0!important;background:none!important;gap:0!important;right:auto!important;left:calc(50% + 28px)!important;translate:-50% 0;bottom:40px!important}
+html.gs-page [data-ma-page] .gs-hint svg{width:22px!important;height:22px!important}
+html.gs-page [data-ma-page] .gs-back{left:calc(50% - 28px)!important;translate:-50% 0;bottom:40px!important}
+@media (min-width:700px){
+  /* more room at the bottom of every panel, so nothing sits on the arrows */
+  html.gs-page [data-ma-page] .gs-panel{padding-bottom:calc(100px / var(--gz,1))!important}
+  html.gs-page [data-ma-page] .gs-game{padding-bottom:calc(112px / var(--gz,1))!important}
+  html.gs-page [data-ma-page] .gs-game::before{bottom:calc(96px / var(--gz,1))!important}
+}
+html.gs-page [data-ma-page] .gs-cols .sd-ksec{break-inside:avoid;margin-bottom:16px}   /* Goma Goons key: a group never splits from its name */

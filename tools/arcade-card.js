@@ -8,7 +8,7 @@
 //   ArcadeCard.update(o) when the board answers: o.rank (place this week), o.best (best this week)
 //   The streak (days in a row the player has played this game) is looked up on its own when the card opens.
 var ArcadeCard = (function () {
-  var DISCORD = 'https://discord.gg/TV8SNnSGdb', url = null, opts = null, panel = null;
+  var DISCORD = 'https://discord.gg/d36Xnj4umU', url = null, opts = null, panel = null;
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   // each card's game, as the web app knows it
   var KEYS = { 'Airship Runner': 'airship_runner', 'Thread the Needle': 'thread_needle', 'Hold the Wall!': 'hold_wall', 'Goma Goons': 'goma_goons',

@@ -59,9 +59,13 @@
   // A color counts as dark below this brightness; dark headings get the light 3D.
   function dark(c) { var m = c.match(/[\d.]+/g); if (!m) return false; return 0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2] <= 110; }
   // The heading's text with a line break wherever the heading itself breaks, so the 3D copy wraps identically.
-  function lines(el) { var out = [], top = null, w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n, r = document.createRange();
+  // A word split across tags (a search match marked inside a name) stays one word, so the copy has no extra spaces.
+  function lines(el) { var out = [], top = null, w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n, r = document.createRange(), glue = false;
     while ((n = w.nextNode())) { var re = /\S+/g, m; while ((m = re.exec(n.textContent))) { r.setStart(n, m.index); r.setEnd(n, m.index + m[0].length);
-      var rc = r.getClientRects()[0]; if (!rc) continue; if (top === null || Math.abs(rc.top - top) > rc.height / 2) { out.push([]); top = rc.top; } out[out.length - 1].push(m[0]); } }
+      var rc = r.getClientRects()[0]; if (!rc) continue;
+      if (m.index === 0 && glue && out.length && top !== null && Math.abs(rc.top - top) <= 3) {   /* same line only: a <br> starts a new word */ var ln = out[out.length - 1]; ln[ln.length - 1] += m[0]; continue; }
+      if (top === null || Math.abs(rc.top - top) > rc.height / 2) { out.push([]); top = rc.top; } out[out.length - 1].push(m[0]); }
+      if (n.textContent.length) glue = !/\s$/.test(n.textContent); }
     return out.map(function (l) { return l.join(' '); }).join('\n'); }
   // Where the letters really are inside the heading: the 3D copy is placed on that box. A turned or scaled heading
   // (the rotated stamps) can't be measured this way, so it keeps the 3D at the box corner.
@@ -69,13 +73,16 @@
     while ((n = w.nextNode())) { if (!n.textContent.trim()) continue; r.selectNodeContents(n); var rs = r.getClientRects();
       for (var i = 0; i < rs.length; i++) { var q = rs[i]; if (!q.width) continue; if (q.left < L) L = q.left; if (q.right > R) R = q.right; if (q.top < T) { T = q.top; h = q.height; } } }
     var b = el.getBoundingClientRect(); if (R < L || !b.width) return;
-    if (Math.abs(b.width - el.offsetWidth) > 2 || Math.abs(b.height - el.offsetHeight) > 2) return;
-    var s = getComputedStyle(el), lh = parseFloat(s.lineHeight) || h;
+    var s = getComputedStyle(el), block = !/flex|grid/.test(s.display);
+    // a plain block heading needs nothing measured on screen, so it is set even inside a scaled or moving panel
+    // (Maurice, 2026-11-13: the Master Stacker heading's 3D layer was off after its panel was scaled to fit)
+    if (!block && (Math.abs(b.width - el.offsetWidth) > 2 || Math.abs(b.height - el.offsetHeight) > 2)) return;
+    var lh = parseFloat(s.lineHeight) || h;
     el.style.setProperty('--ci-lh', lh + 'px');
     // A plain block heading lays its lines out in its own content box, so the 3D gets exactly that box and lines up
     // line for line at any width. Only flex and grid headings (centered by the layout, not by text-align) use the
     // measured letters.
-    if (!/flex|grid/.test(s.display)) {
+    if (block) {
       el.style.setProperty('--ci-x', parseFloat(s.paddingLeft) + 'px');
       el.style.setProperty('--ci-y', parseFloat(s.paddingTop) + 'px');
       el.style.setProperty('--ci-w', (el.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight)) + 'px');
@@ -83,8 +90,10 @@
     el.style.setProperty('--ci-x', (L - b.left - el.clientLeft) + 'px');
     el.style.setProperty('--ci-y', (T - b.top - el.clientTop - (lh - h) / 2) + 'px');
     el.style.setProperty('--ci-w', (R - L + 0.5) + 'px'); }
-  function relines() { document.querySelectorAll('[data-ci-x]').forEach(function (e) { var t = lines(e); if (t && t !== e.getAttribute('data-ci-x')) e.setAttribute('data-ci-x', t); place(e); }); document.documentElement.classList.remove('ma-ci-rs'); }
+  // a heading whose letters are mid-scramble (motion.js) is skipped; it asks to be measured again once it settles
+  function relines() { document.querySelectorAll('[data-ci-x]').forEach(function (e) { if (e.classList.contains('ma-dec')) return; var t = lines(e); if (t && t !== e.getAttribute('data-ci-x')) e.setAttribute('data-ci-x', t); place(e); }); document.documentElement.classList.remove('ma-ci-rs'); }
   var rt; function later() { clearTimeout(rt); rt = setTimeout(relines, 200); }
+  window.maCiRelines = later;
   // The 3D copy only lines up when all the text inside is heading text at one size, in one flow of lines.
   function uniform(el, size) { var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n;
     while ((n = w.nextNode())) { if (!n.textContent.trim()) continue; var p = n.parentElement, s = getComputedStyle(p);
@@ -155,7 +164,7 @@
       else if (!keep && cs.display !== 'inline' && /^\S+$/.test((el.textContent || '').trim())) { el.style.setProperty('white-space', 'nowrap', 'important'); el.dataset.ciOne = ''; one(el); }
       if (cs.display !== 'inline' && (el.innerText || '').trim() && uniform(el, cs.fontSize) && !turned(el)) {
         if (cs.position === 'static') el.style.setProperty('position', 'relative');
-        el.setAttribute('data-ci-x', lines(el)); place(el); } } }
+        el.setAttribute('data-ci-x', lines(el)); place(el); if (ciRO) ciRO.observe(el); } } }
   // Shrink a no-wrap title just enough that its longest line fits its column (never bigger than the page set it).
   function fit(el) { var o = el.dataset.ciFit; if (o) el.style.setProperty('font-size', o); else el.style.removeProperty('font-size'); var pe = el.parentElement, ps = pe && getComputedStyle(pe), w = pe ? pe.clientWidth - parseFloat(ps.paddingLeft) - parseFloat(ps.paddingRight) : 0;
     if (w && el.scrollWidth > w) el.style.setProperty('font-size', (parseFloat(getComputedStyle(el).fontSize) * w / el.scrollWidth * 0.98) + 'px', 'important'); }
@@ -171,6 +180,9 @@
   // New sections get scanned; text that changes in place (counters) only refreshes the 3D lines.
   // Headings whose own text changes (counting-up numbers) refresh their 3D on the next frame, so it never trails.
   var live = [], raf = 0;
+  // a heading whose box changes size (a home slider strip opening and closing, so its words wrap differently) rebuilds its
+  // 3D copy (Maurice, 2026-11-13: 'font off on home', LIBRARY JOURNAL)
+  var ciRO = window.ResizeObserver ? new ResizeObserver(function (es) { es.forEach(function (en) { var h = en.target; if (h.classList.contains('ma-dec')) return; if (live.indexOf(h) < 0) live.push(h); }); if (live.length && !raf) raf = requestAnimationFrame(flush); }) : null;
   function flush() { raf = 0; live.forEach(function (e) { if (e.dataset.ciOne !== undefined) one(e); else if (e.dataset.ciFit !== undefined) fit(e); var t = lines(e); if (t && t !== e.getAttribute('data-ci-x')) e.setAttribute('data-ci-x', t); place(e); }); live = []; }
   function start() { scan(); later(); new MutationObserver(function (ms) {
     var added = false;

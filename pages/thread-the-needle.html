@@ -1,5 +1,8 @@
+<!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=3" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=2"></script>
 <!-- ============================================================
-     THREAD THE NEEDLE (named by Maurice 10/12; was Flap and Float) - loot box 76. PUBLIC game at /thread-the-needle
+     THREAD THE NEEDLE (named by Maurice 10/12; was Flap and Float). PUBLIC game at /thread-the-needle
      (launched 10/13, in the game tabs like Airship Runner).
      Weekly board (Maurice, 10/13): the same flow as Airship Runner. A run asks the Loot Boxes web app for a ticket when it
      starts (action=needlestart); when it ends, the score (gaps) and the flying time go to action=needlescore with the
@@ -18,21 +21,17 @@
      It gets harder as you go: the sky speeds up 1.2% per gap (up to gap 40), then 0.6% per gap with no limit (Maurice
      10/13), and gaps tighten (up to gap 30).
      Art (site/assets/games): 76-ship.png, 76-rock-tower.png, 76-fire-tower.png, 76-sky.webp.
-     Loot box 76 floats in the middle of gap 100 (and every gap after it until it is caught; those gaps are
-     wider). Flying into it pauses the run and shows loot box 76 as a button that opens the claim link
-     (scrambled in K); "Keep flying" picks the run back up (Maurice, 10/12). The crash panel shows the box
-     again if it was caught that run. Hitting a tower or the bottom of the sky ends the run.
+     Hitting a tower or the bottom of the sky ends the run.
      The sky is one still dusk blue (#4f7fa3) with nothing behind the towers: no far city and no mist clouds (Maurice 11/8,
      after frens said the scrolling city lines made them dizzy at speed). A crash blows the airship up with the Airship Runner explosion frames (74-boom-1..4).
      Both Maurice, 10/12.
      The game pauses itself when the tab is hidden or the stage scrolls out of view; a tap resumes.
      Reduced motion: "calm skies" (slower, gentler lift, wider gaps, half the speed-up, no shake, no sparks, still sky).
      Best score is kept in localStorage (ma-flappy-best). Fixed 120-step physics, so it plays the same on any screen.
-     DRAFT copy (not Maurice's words yet): eyebrow "Loot Box 76"; the how-to line; "Cast off" and the start
+     DRAFT copy (not Maurice's words yet): the how-to line; "Cast off" and the start
      Weekly line (DRAFT wording, Maurice 10/12: top score every Friday wins 500, board resets Fridays): "Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week."
      panel line; "Tap to flap" hint; the crash heading "Crashed!" and the lines in CRASH; "Fly again";
-     "Paused" / "Keep flying"; the box hint "Fly into the loot box!"; the win heading "You caught it!" and
-     "Loot box 76 is yours. Tap the box to claim it."; the bar labels "Best:" and "Goal: 100 gaps";
+     "Paused"; the bar label "Best:";
      the calm note "Calm skies on".
      Pause (Maurice, 10/19): a control row under the sky with "Pause" (P or Escape too; it reads "Resume" while paused).
      Pause freezes the sky, towers, chests, the ship, and the flying time; Resume puts the ship back on hold and the next
@@ -60,22 +59,16 @@
 #ma-flappy .fl-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;background:rgba(11,23,15,.84);cursor:default}
 #ma-flappy .fl-ov h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(32px,5vw,56px);line-height:1.2;letter-spacing:.03em;color:#fffffe;text-wrap:balance}
 #ma-flappy .fl-ov p{margin:0;max-width:440px;font-size:clamp(15px,1.7vw,19px);line-height:1.5;color:#f3ead9;text-wrap:balance}
-#ma-flappy .fl-ov.win{background:rgba(44,96,33,.92)}
-#ma-flappy .fl-ov.win h2{color:#a2f590}
 #ma-flappy .fl-ov.dead h2{color:#ff4c0f}
 #ma-flappy .fl-btn{font-family:'Almarai',sans-serif;font-weight:800;font-size:16px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;color:#fffffe;background:#c53200;border:2px solid #fffffe;padding:14px 30px;margin:0;touch-action:manipulation;transition:background .15s ease,transform .15s ease}
 #ma-flappy .fl-btn:hover,#ma-flappy .fl-btn:focus-visible{background:#ff4c0f;outline:none;transform:scale(1.04)}
 #ma-flappy .fl-btn.ghost{background:transparent;border-color:#f3ead9;font-size:13px;padding:11px 22px}
 #ma-flappy .fl-btn.ghost:hover,#ma-flappy .fl-btn.ghost:focus-visible{background:#f3ead9;color:#0b170f}
-#ma-flappy .fl-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(44vw,210px,32vh);transition:transform .2s ease}
-#ma-flappy .fl-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 30px rgba(162,245,144,.45))}
-#ma-flappy .fl-box:hover,#ma-flappy .fl-box:focus-visible{transform:scale(1.05);outline:none}
-#ma-flappy .fl-box:focus-visible img{filter:drop-shadow(0 0 40px rgba(255,76,15,.7))}
 #ma-flappy .fl-bar{width:min(100%,920px);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-weight:800;font-size:13px;line-height:1.4;letter-spacing:.14em;text-transform:uppercase;color:#c3a6ff}
 #ma-flappy .fl-bar span{white-space:nowrap}
 #ma-flappy .fl-calm{color:#89fbcb}
 @media (max-width:760px){#ma-flappy .fl-stage{height:clamp(420px,calc(100vh - 220px),600px)}}
-@media (prefers-reduced-motion:reduce){#ma-flappy .fl-btn,#ma-flappy .fl-box{transition:none}}
+@media (prefers-reduced-motion:reduce){#ma-flappy .fl-btn{transition:none}}
 #ma-flappy .fl-post{width:min(100%,560px);display:flex;flex-direction:column;gap:12px;text-align:left}
 #ma-flappy .fl-msg{margin:0;min-height:22px;font-weight:700;font-size:15px;line-height:1.5;color:#a2f590;text-align:center}
 #ma-flappy .fl-msg.err{color:#ff8a5c}
@@ -129,21 +122,17 @@
     <script>(function(){var n=document.querySelectorAll('.hg-tabs');for(var i=0;i<n.length;i++){var a=n[i].querySelector('[data-k="'+n[i].getAttribute('data-on')+'"]');if(a){a.className='on';a.setAttribute('aria-current','page');a.hidden=false;}}var lk=document.querySelectorAll('.hg-tabs a[data-unlock]');if(lk.length&&window.fetch)fetch('https://africhmaurice.github.io/leaderboard/leaderboard.json?t='+Math.floor(Date.now()/300000)).then(function(r){return r.json();}).then(function(d){for(var j=0;j<lk.length;j++){var act=lk[j].getAttribute('data-act'),n=act?+((d.acts||{})[act])||0:+d.crewTotal||0;if(n>=+lk[j].getAttribute('data-unlock'))lk[j].hidden=false;}}).catch(function(){});})();</script>
 </div>
 <!-- ARCADE-TABS:END -->
-  <p class="fl-eye">Loot Box 76</p>
   <h1 class="fl-h1">Thread the Needle</h1>
   <p class="fl-how">Tap, click, or press space to give the airship some lift. Thread the gaps between the rock towers and the storms. Golden chests wait in gaps 50, 75, 150, and 300: 25 hunt points each, and once you catch one it’s gone until tomorrow.</p>
     <p class="fl-weekly">Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week. Every day you play also earns 50 hunt points (once a day), on top of golden chests.</p>
   <div class="fl-stage" tabindex="0" role="button" aria-label="Airship game. Tap or press space to flap.">
     <canvas></canvas>
     <div class="fl-ov fl-start"><h2>Thread the Needle</h2><p>One tap, one puff of lift. Don&rsquo;t touch the rocks.</p><button class="fl-btn fl-go" type="button">Cast off</button></div>
-    <div class="fl-ov dead fl-dead" hidden><h2>Crashed!</h2><p class="fl-dline"></p><p class="fl-dscore"></p><p class="fl-dmsg" role="status"></p><button class="fl-box fl-box2" type="button" aria-label="Open loot box 76" hidden><img src="https://africhmaurice.github.io/leaderboard/loot/76.png" alt="Loot box 76"></button><button class="fl-btn fl-re" type="button">Fly again</button><button class="fl-btn ghost fl-cardbtn" type="button" hidden>Export my card</button></div>
+    <div class="fl-ov dead fl-dead" hidden><h2>Crashed!</h2><p class="fl-dline"></p><p class="fl-dscore"></p><p class="fl-dmsg" role="status"></p><button class="fl-btn fl-re" type="button">Fly again</button><button class="fl-btn ghost fl-cardbtn" type="button" hidden>Export my card</button></div>
     <div class="fl-ov fl-pause" hidden><h2>Paused</h2><button class="fl-btn fl-res" type="button">Resume</button></div>
-    <div class="fl-ov win fl-win" hidden><h2>You caught it!</h2><p>Loot box 76 is yours. Tap the box to claim it.</p>
-      <button class="fl-box" type="button" aria-label="Open loot box 76"><img loading="lazy" decoding="async" src="https://africhmaurice.github.io/leaderboard/loot/76.png" alt="Loot box 76"></button>
-      <button class="fl-btn ghost fl-re2" type="button">Keep flying</button></div>
   </div>
   <div class="fl-ctl"><button class="fl-btn ghost fl-pz" type="button" disabled>Pause</button></div>
-  <div class="fl-bar"><span class="fl-best">Best: 0</span><span class="fl-calm" hidden>Calm skies on</span><span>Goal: 100 gaps</span></div>
+  <div class="fl-bar"><span class="fl-best">Best: 0</span><span class="fl-calm" hidden>Calm skies on</span></div>
   <div class="fl-post" hidden><p class="fl-msg" role="status"></p><div class="fl-who" hidden></div></div>
   <div class="fl-panel">
     <h2 class="fl-ph">This week’s top sky pirates</h2>
@@ -162,7 +151,7 @@
 //   ArcadeCard.update(o) when the board answers: o.rank (place this week), o.best (best this week)
 //   The streak (days in a row the player has played this game) is looked up on its own when the card opens.
 var ArcadeCard = (function () {
-  var DISCORD = 'https://discord.gg/TV8SNnSGdb', url = null, opts = null, panel = null;
+  var DISCORD = 'https://discord.gg/d36Xnj4umU', url = null, opts = null, panel = null;
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   // each card's game, as the web app knows it
   var KEYS = { 'Airship Runner': 'airship_runner', 'Thread the Needle': 'thread_needle', 'Hold the Wall!': 'hold_wall', 'Goma Goons': 'goma_goons',
@@ -338,9 +327,8 @@ var ArcadeCard = (function () {
   var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
   document.documentElement.style.background=document.body.style.background='#0b170f';
 
-  var K='VE1NMks1RDk9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
   var stage=d.querySelector('.fl-stage'),cv=stage.querySelector('canvas'),ctx=cv.getContext('2d');
-  var ovStart=d.querySelector('.fl-start'),ovDead=d.querySelector('.fl-dead'),ovPause=d.querySelector('.fl-pause'),ovWin=d.querySelector('.fl-win');
+  var ovStart=d.querySelector('.fl-start'),ovDead=d.querySelector('.fl-dead'),ovPause=d.querySelector('.fl-pause');
   var bestEl=d.querySelector('.fl-best');
   var calm=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   if(calm)d.querySelector('.fl-calm').hidden=false;
@@ -349,11 +337,10 @@ var ArcadeCard = (function () {
   var LOW='Down into the clouds you go.';
 
   // Physics, in world units: the sky is 600 tall, and as wide as the stage allows.
-  var H=600,GOAL=100,COLW=72,SPACING=250;
+  var H=600,COLW=72,SPACING=250;
   var P=calm?{g:1150,flap:-370,maxv:520,speed:128,gap:212}:{g:1500,flap:-430,maxv:620,speed:170,gap:180};
-  var BOXS=56,CHEST=44,CHESTS=[50,75,150,300];
-  var HUNT_OVER=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10';   // after the hunt (Maurice, 2026-11-09): no golden chests or loot box
-  var img=new Image(),imgOk=false;img.onload=function(){imgOk=true;};img.src='https://africhmaurice.github.io/leaderboard/loot/76.png';
+  var CHEST=44,CHESTS=[50,75,150,300];
+  var HUNT_OVER=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10';   // after the hunt (Maurice, 2026-11-09): no golden chests
   var ART='https://africhmaurice.github.io/site/assets/games/';
   function pic(f){var i=new Image();i.src=ART+f;return i;}
   function ok(i){return i.complete&&i.naturalWidth>0;}
@@ -383,9 +370,9 @@ var ArcadeCard = (function () {
   }
   reset();
   function spawn(x){
-    S.n++;var chest=!HUNT_OVER&&CHESTS.indexOf(S.n)>=0&&gotToday().indexOf(S.n)<0,box=!HUNT_OVER&&!chest&&S.n>=GOAL&&!S.gotBox,gap=box?gapNow()+50:gapNow(),reach=box?100:150;
+    S.n++;var chest=!HUNT_OVER&&CHESTS.indexOf(S.n)>=0&&gotToday().indexOf(S.n)<0,gap=gapNow(),reach=150;
     var gy=Math.max(gap/2+50,Math.min(GROUND-gap/2-60,S.lastGy+rnd(-reach,reach)));S.lastGy=gy;
-    S.cols.push({x:x,gy:gy,gap:gap,box:box,chest:chest,n:S.n,passed:false,seed:Math.random()*1000,bob:Math.random()*6});
+    S.cols.push({x:x,gy:gy,gap:gap,chest:chest,n:S.n,passed:false,seed:Math.random()*1000,bob:Math.random()*6});
   }
 
   // ---- input ----
@@ -395,7 +382,7 @@ var ArcadeCard = (function () {
     if(S.state==='play'){flap();return true;}
     return false;
   }
-  function begin(){reset();S.state='ready';S.y=H*.45;ovStart.hidden=ovDead.hidden=ovWin.hidden=ovPause.hidden=true;view();
+  function begin(){reset();S.state='ready';S.y=H*.45;ovStart.hidden=ovDead.hidden=ovPause.hidden=true;view();
     var run=S;run.ticket=null;run.ticketWait=[];postEl.hidden=true;whoEl.hidden=true;whoEl.innerHTML='';
     ticketRace(function(cb){api('needlestart',{},cb);},function(res){run.ticket=res&&res.ok?res.ticket:'';var w=run.ticketWait;run.ticketWait=[];w.forEach(function(f){f();});});}
   function liveRun(){return S&&(S.state==='play'||S.state==='ready'||S.state==='resume');}
@@ -406,10 +393,7 @@ var ArcadeCard = (function () {
   d.querySelector('.fl-go').addEventListener('click',begin);
   d.querySelector('.fl-re').addEventListener('click',begin);
   d.querySelector('.fl-cardbtn').addEventListener('click',function(){if(window.ArcadeCard)ArcadeCard.scrollTo();});
-  d.querySelector('.fl-re2').addEventListener('click',function(){ovWin.hidden=true;S.state='resume';try{stage.focus({preventScroll:true});}catch(e){}});
   d.querySelector('.fl-res').addEventListener('click',unpause);
-  function claim(){/* claim opens in a new tab so the game keeps going (2026-10-21) */(function(u){var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;})(atob(K).split('').reverse().join(''));}
-  d.querySelector('.fl-win .fl-box').addEventListener('click',claim);d.querySelector('.fl-box2').addEventListener('click',claim);
   document.addEventListener('keydown',function(e){
     if(e.code!=='Space'&&e.key!==' ')return;
     var t=e.target;if(t&&t!==stage&&/^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(t.tagName)&&t.getClientRects().length)return;
@@ -437,7 +421,7 @@ var ArcadeCard = (function () {
     if(S.state==='title'||S.state==='ready'){S.y=H*.45+Math.sin(S.t*2.6)*10;S.vy=0;return;}
     if(S.state==='play')S.rt=(S.rt||0)+dt;
     if(S.pop&&S.pop.t>0)S.pop.t-=dt;
-    if(S.state==='resume'||S.state==='paused'||S.state==='won')return;
+    if(S.state==='resume'||S.state==='paused')return;
     if(S.state==='dead'){
       S.deadT+=dt;if(S.y<H+40){S.vy=Math.min(S.vy+P.g*dt,P.maxv);S.y+=S.vy*dt;}
       if(S.deadT>.8&&ovDead.hidden){showDead();}
@@ -453,8 +437,6 @@ var ArcadeCard = (function () {
     while(S.cols.length&&S.cols[0].x<-COLW-40)S.cols.shift();
     for(var k=0;k<S.cols.length;k++){
       var c=S.cols[k],top=c.gy-c.gap/2,bot=c.gy+c.gap/2;
-      if(c.box&&!c.got&&!S.gotBox){var by=c.gy+Math.sin(S.t*2+c.bob)*(calm?10:18),bx=c.x+COLW/2;
-        if(hitRect(sx,S.y,16,bx-BOXS/2,by-BOXS/2,BOXS,BOXS)){c.got=true;S.gotBox=true;S.state='won';S.vy=0;winBurst(bx,by);setTimeout(showWin,calm?150:550);return;}}
       if(c.chest&&!c.gotChest){var cy=c.gy+Math.sin(S.t*2.4+c.bob)*(calm?8:14),cx2=c.x+COLW/2;
         if(hitRect(sx,S.y,16,cx2-CHEST/2,cy-CHEST/2,CHEST,CHEST)){c.gotChest=true;S.chests=(S.chests||[]).concat(c.n);markGot(c.n);
           S.pop={t:1.4,txt:'+25 hunt points'};
@@ -475,16 +457,13 @@ var ArcadeCard = (function () {
   }
   function crash(line){S.state='dead';S.deadT=0;S.boom={x:shipX(),y:S.y};S.vy=Math.min(S.vy,-120);S.crashLine=line;if(!calm)S.shake=1;
     if(S.score>best){best=S.score;lsSet('ma-flappy-best',String(best));showBest();}}
-  function showDead(){d.querySelector('.fl-box2').hidden=!S.gotBox;d.querySelector('.fl-dline').textContent=S.crashLine;d.querySelector('.fl-dscore').textContent='Gaps: '+S.score+'.'+(S.chests&&S.chests.length?' Chests: '+S.chests.length+'.':'')+' Best: '+best+'.';ovDead.hidden=false;
+  function showDead(){d.querySelector('.fl-dline').textContent=S.crashLine;d.querySelector('.fl-dscore').textContent='Gaps: '+S.score+'.'+(S.chests&&S.chests.length?' Chests: '+S.chests.length+'.':'')+' Best: '+best+'.';ovDead.hidden=false;
     var run=S;if(run.logged)return;run.logged=true;
     /* the export card for this run (Maurice, 10/13), under the game */
     var cb=d.querySelector('.fl-cardbtn');if(cb)cb.hidden=!(run.score>0&&window.ArcadeCard);
     if(run.score>0&&window.ArcadeCard){var tt=Math.floor(run.rt||0);ArcadeCard.show({game:'Thread the Needle',after:postEl,label:'GAPS',stat:String(run.score),
       line:'TIME '+Math.floor(tt/60)+':'+('0'+tt%60).slice(-2)+(run.chests&&run.chests.length?'  \u00b7  CHESTS '+run.chests.length:''),name:myName(),site:'mauriceafrich.com/thread-the-needle',icon:ART+'76-ship.png'});}
     if(run.score<=0){msg('');return;}if(me.email)submit(run);else who(run);}
-  function winBurst(x,y){if(S.score>best){best=S.score;lsSet('ma-flappy-best',String(best));showBest();}lsSet('ma-flappy-won','1');
-    if(calm)return;var cols=['#a2f590','#89fbcb','#f3ead9','#ff4c0f','#c3a6ff'];for(var i=0;i<40;i++)S.sparks.push({x:x,y:y,vx:rnd(-320,320),vy:rnd(-460,160),life:rnd(.6,1.2),c:cols[i%5],s:rnd(5,9)});}
-  function showWin(){ovWin.hidden=false;}
 
   // ---- drawing ----
   function moved(){return S.state==='paused'?0:S.state==='play'||S.state==='dead'?1:.35;}
@@ -513,13 +492,6 @@ var ArcadeCard = (function () {
     ctx.save();ctx.translate(cx2,cy);ctx.fillStyle='rgba(255,214,120,'+(.12+.12*br)+')';ctx.beginPath();ctx.arc(0,0,sz*.75,0,Math.PI*2);ctx.fill();
     ctx.shadowColor='rgba(255,214,120,'+(.55+.4*br)+')';ctx.shadowBlur=12+16*br;ctx.drawImage(chestImg,-sz/2,-hh/2,sz,hh);ctx.restore();
   }
-  function lootbox(c){
-    if(!c.box||c.got||S.gotBox)return;var bx=c.x+COLW/2,by=c.gy+Math.sin(S.t*2+c.bob)*(calm?10:18);
-    ctx.save();ctx.translate(bx,by);ctx.rotate(calm?0:Math.sin(S.t*1.6+c.bob)*.08);
-    ctx.fillStyle='rgba(162,245,144,.22)';ctx.beginPath();ctx.arc(0,0,BOXS*.85,0,Math.PI*2);ctx.fill();
-    if(imgOk)ctx.drawImage(img,-BOXS*.6,-BOXS*.62,BOXS*1.2,BOXS*1.2);else{ctx.fillStyle='#c53200';ctx.fillRect(-BOXS/2,-BOXS/2,BOXS,BOXS);}
-    ctx.restore();
-  }
   // the crash: four explosion frames, then the ship is gone
   function boom(){
     if(!S.boom||S.state!=='dead')return;var f=Math.floor(S.deadT/.09);if(f>3)return;var im=boomImg[f];if(!ok(im))return;
@@ -541,7 +513,6 @@ var ArcadeCard = (function () {
     ctx.font="800 15px 'Almarai', sans-serif";ctx.lineWidth=4;
     var sub=null;
     if(S.state==='ready'||S.state==='resume')sub='Tap to flap';
-    else if(!HUNT_OVER&&S.state==='play'&&S.score>=GOAL-1&&!S.gotBox)sub='Fly into the loot box!';
     if(S.pop&&S.pop.t>0){sub=S.pop.txt;}
     if(sub){ctx.strokeText(sub.toUpperCase(),W/2,82);ctx.fillStyle=S.pop&&S.pop.t>0?(S.pop.full?'#ff8a5c':'#ffd678'):'#a2f590';ctx.fillText(sub.toUpperCase(),W/2,82);}
     if(S.chests&&S.chests.length){ctx.textAlign='right';var ct='CHESTS '+S.chests.length;ctx.strokeText(ct,W-16,22);ctx.fillStyle='#ffd678';ctx.fillText(ct,W-16,22);ctx.textAlign='center';}
@@ -552,12 +523,12 @@ var ArcadeCard = (function () {
     ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);
     var k=scale*dpr,sh=S.shake?Math.sin(S.t*70)*6*S.shake:0;ctx.setTransform(k,0,0,k,sh*k,0);
     sky(dt);
-    for(var i=0;i<S.cols.length;i++){storm(S.cols[i]);tower(S.cols[i]);chest(S.cols[i]);lootbox(S.cols[i]);}
+    for(var i=0;i<S.cols.length;i++){storm(S.cols[i]);tower(S.cols[i]);chest(S.cols[i]);}
     ship();boom();sparks();hud();
   }
 
   // test hooks, only when the preview harness sets window.__flapTest before the page loads
-  if(window.__flapTest)window.__flap={raw:function(){return S;},snap:function(){var sx=shipX(),n=null;for(var i=0;i<S.cols.length;i++){if(S.cols[i].x+COLW>sx-20){n=S.cols[i];break;}}return {state:S.state,score:S.score,y:S.y,vy:S.vy,speed:speed(),gap:n?n.gap:0,gy:n?n.gy:0,dx:n?n.x-sx:0};},tap:function(){return tap();},setScore:function(v){S.score=v;},jump:function(v){S.score=v;S.n=v+S.cols.length;},got:function(){return !!S.gotBox;}};
+  if(window.__flapTest)window.__flap={raw:function(){return S;},snap:function(){var sx=shipX(),n=null;for(var i=0;i<S.cols.length;i++){if(S.cols[i].x+COLW>sx-20){n=S.cols[i];break;}}return {state:S.state,score:S.score,y:S.y,vy:S.vy,speed:speed(),gap:n?n.gap:0,gy:n?n.gy:0,dx:n?n.x-sx:0};},tap:function(){return tap();},setScore:function(v){S.score=v;},jump:function(v){S.score=v;S.n=v+S.cols.length;}};
 
   // ---- the weekly board (same web app and checks style as Airship Runner) ----
   var ENDPOINT='https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
@@ -695,7 +666,7 @@ var ArcadeCard = (function () {
   requestAnimationFrame(frame);
 
   // Preview-only peek for testing the page (nothing secret in it).
-  if(/[?&]preview=1\b/.test(location.search))d._peek=function(){return {state:S.state,x:shipX(),y:S.y,vy:S.vy,score:S.score,g:P.g,flap:P.flap,speed:P.speed,cols:S.cols.map(function(c){return {x:c.x,w:COLW,gy:c.gy,gap:c.gap,box:c.box};})};};
+  if(/[?&]preview=1\b/.test(location.search))d._peek=function(){return {state:S.state,x:shipX(),y:S.y,vy:S.vy,score:S.score,g:P.g,flap:P.flap,speed:P.speed,cols:S.cols.map(function(c){return {x:c.x,w:COLW,gy:c.gy,gap:c.gap};})};};
 })();
 </script>
 <script>/* PARALLAX FIXED (Maurice, 2026-10-16): a library picture pinned to the screen behind the game while the page scrolls over it */(function(){

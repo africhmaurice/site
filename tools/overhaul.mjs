@@ -17,7 +17,7 @@ const BOT = resolve(ROOT, '../treasure-hunt-leaderboard');
 const site = JSON.parse(readFileSync(join(ROOT, 'site.json'), 'utf8'));
 const LIVE = 'https://www.mauriceafrich.com';
 const U = (p) => LIVE + p;
-const DISCORD = 'https://discord.gg/TV8SNnSGdb';
+const DISCORD = 'https://discord.gg/d36Xnj4umU';
 const LOGO = 'https://images.squarespace-cdn.com/content/v1/68f0178dd88a7e52ec46ae7e/743ed1bd-4964-478d-9fd0-b278d0f39565/Maurice+Africh+Logo+-+White.png?format=500w';
 const ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
 

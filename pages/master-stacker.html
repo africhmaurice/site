@@ -1,6 +1,8 @@
+<!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=3" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=2"></script>
 <!-- ============================================================
-     MASTER STACKER - hidden page for loot box 148 ("Master Stacker Loot Box", clue "Stack the Crates", hidden as an Act Three
-     riddle). Lives at /master-stacker. Rebuilt 10/26 from the swing-and-drop stack into a falling-crate arcade game (Maurice:
+     MASTER STACKER. Lives at /master-stacker. Rebuilt 10/26 from the swing-and-drop stack into a falling-crate arcade game (Maurice:
      "Let's make a tetris-style game! Let me make the crates and stacks.") that is deliberately its own game, not a Tetris clone.
 
      HOW IT PLAYS
@@ -21,8 +23,6 @@
        level 1, 6 s at level 19, 2 s at level 28, and 0.33 s from level 88 on, never quicker. (The 10/27 "5% faster every
        5 seconds" speed-up is gone.) The next crate shows in the "Next up" square; there is no landing shadow.
        Game over when the stack hits the sky: a new crate has no room to fall in at the top.
-       LOOT BOX 148: from level 10 (27 rows shipped; my pick, approved by Maurice 10/27), the loot box (1 unit) is
-       added to the manifest. Landing it does nothing: fill and ship out its row (clear it) and it is revealed (claim opens in a new tab), then Keep stacking. One per game.
        Controls: arrows or A/D move, Up or W turns, Down or S soft drops, Space hard drops, P or Esc pauses. Phone: tap the
        left or right third of the play area to move, the middle to turn, swipe down to drop, or use the buttons under it.
 
@@ -31,8 +31,7 @@
          units (Big Cannonball, a 2x2 ball, and Iron Angle, a 2x3 L, both asked for by Maurice); the zigzag (Anchor Chain)
          and the T (Anchor) were made 5-unit pieces on purpose, so the set still has no S, Z, T, I, or J tetromino.
        - Not a 10x20 well: a 12x16 open-topped black cargo box on a floating island, clouds drifting behind.
-       - Look: Maurice's own drawn cargo (barrel, cannonball, oar bundle, long beam, corner brace, black chest, and red loot
-         chest), each one drawing laid over its whole piece with a thin parchment rim (no per-square bevels, no bright
+       - Look: Maurice's own drawn cargo (barrel, cannonball, oar bundle, long beam, corner brace, and black chest), each one drawing laid over its whole piece with a thin parchment rim (no per-square bevels, no bright
          single-color blocks, column lines only, no full grid).
        - No line flash-and-vanish: full rows are lifted out by a passing airship on ropes.
        - No naive row shift: after shipping, crates settle as solid pieces (chains possible).
@@ -61,10 +60,6 @@
       14. T Beam            XXX / .X. / .X.   5 units, Scarlet.
       15. Giant Cannonball  3x3        9 units, Green (his ball).
       16. Giant Crate       3x3        9 units, Teal (his crate).
-      17. Loot Box 148      X          1 unit, the real box 148 loot box art (assets/loot/148.png, saved as 148-loot.webp;
-                                       10/27: "this isn't a loot box use the actual loot box"). Drops only after 40 crates have
-                                       shipped, once per game. Landing it does nothing: its row has to be filled and shipped
-                                       out (cleared) before the claim screen opens.
        The manifest deals from a shuffled bag of 21 pieces (77 units): the three 1x1 pieces, Black Chest, and Corner Brace
        twice each, the rest once.
        The cargo box is his black box drawing, redrawn in code so it stays sharp: glossy black, a thin rim and white highlight
@@ -91,8 +86,7 @@
        this week in 'thStacker:best' (the side panel). When the web app answers {preview:true} (the local play server) or
        cannot be reached, the board says it is offline and the game plays on.
      ENDLESS: a game runs until the stack hits the sky; Play again and Restart start a new game (and a new ticket) as often
-       as you like (Restart drops the game in progress, which never goes on the board). The loot chest joins the manifest
-       after 40 crates in every game (the claim itself works once, as always).
+       as you like (Restart drops the game in progress, which never goes on the board).
      ARCADE: the 13th arcade button, after The Levian (Maurice 10/27: "add Master Stacker to the Arcade Buttons and the rotation"); the tabs block is pasted by tools/arcade.mjs from treasure-hunt-leaderboard/games/_tabs.html.
      SHARE CARD (10/27, copied from Airship Runner's): the game-over screen shows "ROWS <n>  ·  LEVEL <n>" under the final
        score, then "Save my card" and "Copy my score". Save draws a 1200x600 PNG (Ink with a Violet band and frame:
@@ -112,11 +106,10 @@
        area label "Cargo box. Crates fall from the open sky. Arrow keys move and turn the crate, Space drops it."; the
        "Cargo group +N" popup and the "Touch 6 or more crates" line are removed.
        heading "Master Stacker"; HUD "Score", "Shipped", "Level", "Best"; buttons "Pause", "Resume", "Restart",
-       "Play", "Play again", "Keep stacking", "Left", "Turn", "Right", "Down", "Drop"; start "Stack the cargo";
+       "Play", "Play again", "Left", "Turn", "Right", "Down", "Drop"; start "Stack the cargo";
        start lines "Arrows or A and D to move, Up to turn, Space to drop." / "Tap the sides to move, the middle to turn,
        swipe down to drop."; "Paused"; next-piece panel "Next up" (was the "Cargo manifest" / "Next to load" slip), "units"; popups "+N",
-       "Chain xN"; loot "The loot chest shipped!", "Tap the loot box to claim it. Your stack waits for you."; manifest note
-       "Loot box! Clear its row to claim it."; over "The stack hit the sky.", "Final score", "New best!"; "How it plays" list;
+       "Chain xN"; over "The stack hit the sky.", "Final score", "New best!"; "How it plays" list;
        board words: weekly line (wording and the 500 points copied from Thread the Needle, NOT approved for this game yet)
        "Weekly leaderboard: the top score at 11:59 PM ET every Friday wins 500 points. Then the board resets for a new week.";
        "Best this week", "Kept on this device.", "No runs yet this week.", "This week's top stackers", "Board closes in",
@@ -124,7 +117,7 @@
        this run stays on this device.", how-it-plays line "Play as often as you like. Your best score this week goes on the
        weekly board.", "Current Champion: <name>", and the score form and logging lines (same as Airship Runner's);
        crate names "Barrel", "Cannonball", "Oar Bundle", "Long Beam",
-       "Corner Brace", "Black Chest", and "Loot Chest"; ADDED 10/27: "Big Cannonball", "Iron Bracket", "Iron Angle",
+       "Corner Brace", and "Black Chest"; ADDED 10/27: "Big Cannonball", "Iron Bracket", "Iron Angle",
        "Crate Stack", "Anchor Chain", and "Anchor"; "1 unit", "N units".
      ============================================================ -->
 
@@ -169,11 +162,6 @@
 #ms-stack .ms-final b{font-weight:800;font-size:clamp(44px,9vw,64px);line-height:1.1;color:#fffffe;font-variant-numeric:tabular-nums}
 #ms-stack .ms-nb{margin:0;font-weight:800;font-size:14px;letter-spacing:.12em;color:#a2f590;text-transform:uppercase}
 #ms-stack .ms-streak{margin:0;font-weight:800;font-size:14px;letter-spacing:.12em;color:#c3a6ff;text-transform:uppercase}#ms-stack .ms-streak[hidden]{display:none}
-#ms-stack .ms-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(52vw,220px);animation:msDrop .6s cubic-bezier(.25,1.5,.45,1) both}
-#ms-stack .ms-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 30px rgba(123,78,225,.6))}
-#ms-stack .ms-box:hover img,#ms-stack .ms-box:focus-visible img{filter:drop-shadow(0 0 42px rgba(195,166,255,.8))}
-#ms-stack .ms-box:focus-visible{outline:3px solid #c3a6ff;outline-offset:8px}
-@keyframes msDrop{from{opacity:0;transform:translateY(-40px)}to{opacity:1;transform:none}}
 #ms-stack .ms-pad{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;width:100%}
 #ms-stack .ms-pad button{margin:0;min-height:52px;padding:8px 4px;border:2px solid rgba(243,234,217,.45);background:#132219;color:#fffffe;font:800 13px/1.2 'Almarai',sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none}
 #ms-stack .ms-pad button:active,#ms-stack .ms-pad button.on{background:#0f5c4d;border-color:#89fbcb}
@@ -188,7 +176,6 @@
 #ms-stack .ms-slip h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:22px;line-height:1.2;letter-spacing:.04em;color:#fffffe;text-transform:uppercase}
 #ms-stack .ms-slip .ms-nm{margin:0;font-weight:800;font-size:19px;line-height:1.3;color:#fffffe}
 #ms-stack .ms-slip .ms-un{margin:0;font-weight:700;font-size:14px;line-height:1.4;color:#c3a6ff}
-#ms-stack .ms-slip .ms-lootnote{margin:0;font-weight:800;font-size:14px;line-height:1.4;color:#ff8a5c}
 #ms-stack .ms-how{margin:0;padding:20px;border:2px solid rgba(243,234,217,.18);background:#132219;display:flex;flex-direction:column;gap:12px}
 #ms-stack .ms-how h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:22px;line-height:1.2;letter-spacing:.04em;color:#fffffe;text-transform:uppercase}
 #ms-stack .ms-how ul{margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:8px;font-weight:700;font-size:14px;line-height:1.5}
@@ -237,7 +224,6 @@
   #ms-stack .ms-how{order:2}
   #ms-stack .ms-head{margin-bottom:20px}
 }
-@media (prefers-reduced-motion:reduce){#ms-stack .ms-box{animation:none}}
 /* the share card row on the game-over screen (same as Airship Runner's) */
 #ms-stack .ms-stats{margin:0;font-weight:800;font-size:14px;line-height:1.5;letter-spacing:.08em;color:#f3ead9}
 #ms-stack .ms-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
@@ -300,14 +286,6 @@
             <button type="button" class="ms-btn ms-resume">Resume</button>
           </div>
         </div>
-        <div class="ms-ov ms-loot" hidden>
-          <div class="ms-in">
-            <p class="ms-big ms-win">You cleared the loot box!</p>
-            <button class="ms-box" type="button" aria-label="Open loot box 148"><img src="https://africhmaurice.github.io/site/assets/loot/148.png" alt="Loot box 148"></button>
-            <p class="ms-p">Tap the loot box to claim it. Your stack waits for you.</p>
-            <button type="button" class="ms-btn ghost ms-keep">Keep stacking</button>
-          </div>
-        </div>
         <div class="ms-ov ms-over" hidden>
           <div class="ms-in">
             <p class="ms-big ms-bang">The stack hit the sky.</p>
@@ -336,7 +314,6 @@
     <div class="ms-side">
       <div class="ms-slip" aria-live="polite">
         <div class="ms-item"><div class="ms-sq"><canvas class="ms-mini" width="192" height="192" aria-hidden="true"></canvas></div><div class="ms-txt"><h2>Next up</h2><p class="ms-nm">Barrel</p><p class="ms-un">1 unit</p></div></div>
-        <p class="ms-lootnote" hidden>Loot box! Clear its row to claim it.</p>
       </div>
       <div class="ms-panel ms-local">
         <h2 class="ms-ph">Best this week</h2>
@@ -349,7 +326,7 @@
         <ol class="ms-board"><li><span class="ms-empty">Loading the board...</span></li></ol>
       </div>
       <div class="ms-how">
-        <h2>How it plays</h2>
+        <h2>How to play</h2>
         <ul>
           <li>Crates fall from the open sky with nothing holding them. Move and turn each one to put it in the right place.</li>
           <li>Fill a whole row and an airship lifts that row away. Only full rows ship.</li>
@@ -367,10 +344,6 @@
   var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#0b170f';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
   var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
   document.documentElement.style.background=document.body.style.background='#0b170f';
-
-  var K='UVpUMjVFSDg9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
-    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
 
   /* The weekly board (see the header): lootbox.gs answers stackerstart / stackerscore / stackertop. false = no requests at all. */
   var BOARD=true,BESTKEY='ms-best-master-stacker';
@@ -393,13 +366,12 @@
     chain:{n:'Zigzag Beam',L:'z',c:[[0,0],[1,0],[1,1],[1,2],[2,2]],f:'#482d85'},
     anchor:{n:'T Beam',L:'t',c:[[0,0],[1,0],[2,0],[1,1],[1,2]],f:'#c53200'},
     giantball:{n:'Giant Cannonball',L:'G',c:[[0,0],[1,0],[2,0],[0,1],[1,1],[2,1],[0,2],[1,2],[2,2]],f:'#2c6021'},
-    giantcrate:{n:'Giant Crate',L:'Q',c:[[0,0],[1,0],[2,0],[0,1],[1,1],[2,1],[0,2],[1,2],[2,2]],f:'#268e62'},
-    loot:{n:'Loot Box 148',L:'L',c:[[0,0]],f:'#8b1605'}
+    giantcrate:{n:'Giant Crate',L:'Q',c:[[0,0],[1,0],[2,0],[0,1],[1,1],[2,1],[0,2],[1,2],[2,2]],f:'#268e62'}
   };
   /* one shuffled bag (10/27 v2): the 1x1 pieces, Black Chest, and Corner Brace twice, the rest once = 21 pieces, 77 units */
   var BAG=['barrel','barrel','cannonball','cannonball','crate','crate','chest','chest','brace','brace','oars','beam','bigball','bigcrate','bracket','angle','crates','chain','anchor','giantball','giantcrate'];
   var ART={};Object.keys(CARGO).forEach(function(t){var im=new Image();im.src='https://africhmaurice.github.io/site/assets/games/148-'+t+'.webp';ART[t]=im;});
-  var COLS=12,ROWS=16,DROP0=3,DROP1=8,LOOT_LEVEL=10,PER_LEVEL=36,LOCKMS=420;   /* level up every 3 rows (36 crate units) */
+  var COLS=12,ROWS=16,DROP0=3,DROP1=8,PER_LEVEL=36,LOCKMS=420;   /* level up every 3 rows (36 crate units) */
   /* speed (Maurice 10/27, after the classic NES table): every 3 levels is one speed step. FRAMES = frames per row for each
      step at 60.0988 frames a second, scaled by 20/16 so a drop down this 16-row box takes as long as one down a 20-row
      well: step 0 about 16 s top to bottom, the last step (step 29 on, level 88 on) about 0.33 s, and never quicker. */
@@ -408,7 +380,7 @@
 
   var $=function(s){return d.querySelector(s);};
   var cv=$('.ms-cv'),ctx=cv.getContext('2d'),stage=$('.ms-stage'),mini=$('.ms-mini'),mctx=mini.getContext('2d');
-  var cover=$('.ms-cover'),pauseOv=$('.ms-pause'),lootOv=$('.ms-loot'),overOv=$('.ms-over'),pauseBtn=$('.ms-pausebtn');
+  var cover=$('.ms-cover'),pauseOv=$('.ms-pause'),overOv=$('.ms-over'),pauseBtn=$('.ms-pausebtn');
   var shipImg=new Image();shipImg.src='https://africhmaurice.github.io/site/assets/games/ship-red-right.webp';   /* his red ship, nose right: it flies left to right */
   var islandImg=new Image();islandImg.src='https://africhmaurice.github.io/site/assets/games/86-island.png';   /* the floating island from the box 86 game */
   var SW=6,SAR=154/500,BELLY=.8;   /* ship width in units, height/width, rope line as a share of its height */
@@ -536,7 +508,7 @@
   function store(v){try{localStorage.setItem(BESTKEY,String(v));}catch(e){}}
   var best=load();
 
-  var grid,cur,manifest,score,shipped,level,chain,mode,prevMode,nextId,landT,resets,acc,lootQueued,lootFound,lifters,ship,pops,shipT0,settleT,topped,pendingLoot,playMs=0;
+  var grid,cur,manifest,score,shipped,level,chain,mode,prevMode,nextId,landT,resets,acc,lifters,ship,pops,shipT0,settleT,topped,playMs=0;
 
   function size(){
     /* as big as the screen allows (Maurice 10/26: "everything is too small ... the screen needs to be bigger"): on a wide
@@ -563,8 +535,6 @@
   var bag=[];
   function draw1(){if(!bag.length){bag=BAG.slice();for(var i=bag.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=bag[i];bag[i]=bag[j];bag[j]=t;}}return bag.pop();}
   function fill(){while(manifest.length<2)manifest.push(draw1());}
-  function queueLoot(){if(new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10')return;   /* after the hunt (Maurice, 2026-11-09): no loot box */
-    if(!lootQueued&&!lootFound&&level>=LOOT_LEVEL){lootQueued=true;fill();manifest.splice(1,0,'loot');}}
   function spawn(){
     fill();var t=manifest.shift();fill();
     var c=norm(CARGO[t].c.map(function(p){return p.slice();})),dm=dims(c);
@@ -588,11 +558,10 @@
 
   /* ---- shipping: full rows only (10/27: the same-cargo group bonus is gone) ---- */
   function resolve(){
-    var set={},n=0,rows=0,lootHit=false,x,y;
+    var set={},n=0,rows=0,x,y;
     for(y=0;y<ROWS;y++){var full=true;for(x=0;x<COLS;x++)if(!grid[y][x]){full=false;break;}if(full){rows++;for(x=0;x<COLS;x++)set[y*COLS+x]=1;}}
-    for(var k in set){var c=grid[Math.floor(k/COLS)][k%COLS];if(c&&c.t==='loot')lootHit=true;}
     var keys=Object.keys(set);
-    if(!keys.length){queueLoot();spawn();return;}
+    if(!keys.length){spawn();return;}
     chain++;var pts=0;lifters=[];
     keys.forEach(function(k){k=+k;var cx=k%COLS,cy=Math.floor(k/COLS),c=grid[cy][cx];
       pts+=10*level*chain;
@@ -602,9 +571,9 @@
     var top=ROWS;lifters.forEach(function(l){top=Math.min(top,l.y);});
     pops.push({x:COLS/2,y:top-.5,s:'+'+pts,t0:now(),c:'#fffffe'});
     if(chain>1)pops.push({x:COLS/2,y:top+.7,s:'Chain x'+chain,t0:now(),c:'#c3a6ff'});
-    ship={t0:now()};shipT0=now();pendingLoot=lootHit;mode='ship';hud();
+    ship={t0:now()};shipT0=now();mode='ship';hud();
     if(RUN)RUN.log.push(rows+'.'+chain);
-    if(T)T.events.push({kind:'ship',n:n,rows:rows,loot:lootHit,chain:chain,pts:pts});
+    if(T)T.events.push({kind:'ship',n:n,rows:rows,chain:chain,pts:pts});
   }
 
   /* after shipping, whole crates settle down until they rest on something */
@@ -636,8 +605,8 @@
 
   function reset(){
     grid=[];for(var y=0;y<ROWS;y++){grid.push([]);for(var x=0;x<COLS;x++)grid[y].push(null);}
-    bag=[];manifest=[];score=0;shipped=0;level=1;chain=0;nextId=0;playMs=0;lootQueued=false;lootFound=false;lifters=[];ship=null;pops=[];topped=0;pendingLoot=false;
-    cover.hidden=pauseOv.hidden=lootOv.hidden=overOv.hidden=true;stage.classList.add('live');
+    bag=[];manifest=[];score=0;shipped=0;level=1;chain=0;nextId=0;playMs=0;lifters=[];ship=null;pops=[];topped=0;
+    cover.hidden=pauseOv.hidden=overOv.hidden=true;stage.classList.add('live');
     hud();spawn();ctl();
   }
   function start(){
@@ -660,7 +629,6 @@
   function paintSlip(){
     fill();var t=manifest[0],cg=CARGO[t];
     $('.ms-nm').textContent=cg.n;$('.ms-un').textContent=cg.c.length+(cg.c.length===1?' unit':' units');
-    $('.ms-lootnote').hidden=t!=='loot';
     var c=norm(cg.c),dm=dims(c),s=Math.min(176/Math.max(dm.w,dm.h),96);
     mctx.setTransform(1,0,0,1,0,0);mctx.clearRect(0,0,192,192);
     piece(mctx,t,0,(192-dm.w*s)/2,(192-dm.h*s)/2,s,c);
@@ -745,7 +713,7 @@
       drawShip(sx,sy);}}
     /* score popups */
     pops=pops.filter(function(p){return t-p.t0<1300;});
-    if(mode==='loot'||mode==='over')pops=[];   /* nothing shows through behind an overlay */
+    if(mode==='over')pops=[];   /* nothing shows through behind an overlay */
     pops.forEach(function(p){var a=(t-p.t0)/1300;ctx.globalAlpha=1-a*a;ctx.fillStyle=p.c;ctx.font='800 '+Math.round(S*.62)+'px Almarai,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
       ctx.strokeStyle='#0b170f';ctx.lineWidth=Math.max(3,S*.14);ctx.strokeText(p.s,gx(p.x),gy(p.y)-a*S);ctx.fillText(p.s,gx(p.x),gy(p.y)-a*S);ctx.globalAlpha=1;});
   }
@@ -760,7 +728,7 @@
       if(acc>=fm){acc-=fm;if(fits(cur.c,cur.x,cur.y+1)){cur.y++;}}
       if(!fits(cur.c,cur.x,cur.y+1)){if(!landT)landT=t;if(t-landT>=LOCKMS)lock();}else landT=0;
     }else if(mode==='ship'){
-      if(t-shipT0>=920){lifters=[];if(pendingLoot){pendingLoot=false;lootFound=true;mode='loot';lootOv.hidden=false;ctl();if(T)T.events.push({kind:'loot'});}else{mode='settle';settleT=t;}}
+      if(t-shipT0>=920){lifters=[];mode='settle';settleT=t;}
     }else if(mode==='settle'){
       if(t-settleT>=60){settleT=t;if(!settleStep())resolve();}
     }
@@ -774,7 +742,6 @@
     var tg=e.target&&e.target.tagName;if(tg==='INPUT'||tg==='TEXTAREA')return;
     var k=e.key;
     if(mode==='paused'&&(k==='Escape'||k==='p'||k==='P')){e.preventDefault();resume();return;}
-    if(mode==='loot'&&k==='Escape'){e.preventDefault();keep();return;}
     if(mode!=='run'&&mode!=='ship'&&mode!=='settle')return;
     if(!visible())return;
     if(k==='Escape'||k==='p'||k==='P'){e.preventDefault();pause();return;}
@@ -798,13 +765,10 @@
     ['pointerup','pointerleave','pointercancel'].forEach(function(n){b.addEventListener(n,stop);});
     b.addEventListener('click',function(e){if(e.detail===0)act(a);});   // keyboard Enter on a focused button
   });
-  function keep(){lootOv.hidden=true;mode='settle';settleT=now();ctl();try{cv.focus({preventScroll:true});}catch(e){}}
   $('.ms-go').addEventListener('click',start);
   $('.ms-again').addEventListener('click',start);
   $('.ms-restart').addEventListener('click',start);
   $('.ms-resume').addEventListener('click',resume);
-  $('.ms-keep').addEventListener('click',keep);
-  $('.ms-box').addEventListener('click',claim);
   pauseBtn.addEventListener('click',function(){if(mode==='paused')resume();else pause();});
   document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});
   window.addEventListener('blur',function(){pause();});
@@ -870,7 +834,7 @@
   /* test hook, only with ?stacker-test=1 */
   var T=null;
   if(/[?&]stacker-test=1/.test(location.search)){T={events:[]};window.__ms={
-    T:T,state:function(){return {mode:mode,score:score,shipped:shipped,level:level,fallMs:fallMs(),playMs:playMs,cur:cur&&{t:cur.t,x:cur.x,y:cur.y,r:cur.r,c:JSON.stringify(cur.c)},next:manifest&&manifest[0],lootFound:lootFound,lootQueued:lootQueued,
+    T:T,state:function(){return {mode:mode,score:score,shipped:shipped,level:level,fallMs:fallMs(),playMs:playMs,cur:cur&&{t:cur.t,x:cur.x,y:cur.y,r:cur.r,c:JSON.stringify(cur.c)},next:manifest&&manifest[0],
       grid:grid&&grid.map(function(r){return r.map(function(c){return c?CARGO[c.t].L:'.';}).join('');})};},
     /* rows: strings from the bottom up, letter = CARGO[..].L, '.' empty. A run of one multi-unit letter is one piece lying
        flat (its bottom row, or turned once if it stands upright); 1-unit letters are each their own piece. */

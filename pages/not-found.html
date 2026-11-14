@@ -1,6 +1,5 @@
 <!-- ============================================================
-     404 PAGE (Maurice, 2026-10-11): Squarespace's 404 page shows this. Loot box 40 is the 0 in "404"; clicking it
-     opens its claim page. The One of Us page's random links /abandon-ship and /off-the-map land here on purpose.
+     404 PAGE (Maurice, 2026-10-11): Squarespace's 404 page shows this. The One of Us page's random links /abandon-ship and /off-the-map land here on purpose.
      Wording is Maurice-approved from the mockup.
      ============================================================ -->
 <style>
@@ -21,15 +20,13 @@
 @media (prefers-reduced-motion:reduce){#ma-404 .box{animation:none}}
 </style>
 <section id="ma-404">
-  <div class="n" aria-label="404"><span class="d">4</span><button class="box" type="button" aria-label="Open loot box 40"><img src="https://africhmaurice.github.io/leaderboard/loot/40.png" alt="Loot box 40"></button><span class="d">4</span></div>
+  <div class="n" aria-label="404"><span class="d">4</span><span class="d">0</span><span class="d">4</span></div>
   <h1>This page fell off the map</h1>
-  <p>Even sky pirates get lost. You did find something, though.</p>
-  <div class="go"><a href="https://www.mauriceafrich.com/">Home</a><a href="https://www.mauriceafrich.com/the-hunt">The Treasure Hunt</a><a href="https://www.mauriceafrich.com/lootbox-clue">Clues</a></div>
+  <p>Even sky pirates get lost.</p>
+  <div class="go"><a href="https://www.mauriceafrich.com/">Home</a><a href="https://www.mauriceafrich.com/arcade">The Arcade</a><a href="https://www.mauriceafrich.com/order">Order Cello's Gate</a></div>
 </section>
 <script>(function(){
   var d=document.getElementById('ma-404');if(!d)return;
   var sec=d.closest('section.page-section')||(d.parentElement&&d.parentElement.closest('section'));if(sec&&sec!==d){sec.style.background='#c53200';sec.style.minHeight='0';Array.prototype.forEach.call(sec.querySelectorAll('.section-background,.section-border'),function(x){x.style.display='none';});}
   var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
-  var k='UUFYRVlGNUM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-  d.querySelector('.box').addEventListener('click',function(){location.href=atob(k).split('').reverse().join('');});
 })();</script>

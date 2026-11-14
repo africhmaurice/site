@@ -4,126 +4,171 @@
      the online editor; do not hand-edit the DATA block. Scoring: every answer gives points to crew members; the crew
      member with the most points is the result (a tie goes to the one listed first). No loot box.
      DRAFT (mine): "Your top three crew" and "Loading the crew..."
+     2026-11-12: redesigned by hand in this built page; the build script is out of date with it, so don't rerun it.
+     Round 2 (Maurice, 2026-11-12: "make the quiz full page and make it a horizontal slider as you take the quiz"): the quiz
+     fills the screen under the menu as a sideways row of full-screen slides: the intro, one slide per question, then the
+     result. Answering slides the row to the next question; Back (or the left arrow key) returns to the previous one and
+     takes that answer's points back off, so the final scores are exactly what one straight run gives. Keys: A-H or 1-8
+     pick an answer, left and right arrows move. Reduced motion: slides change instantly.
+     DRAFT (mine, 2026-11-12): "Start the quiz", "Back", and the Back button's label "Back to the previous question".
+     The question and result name are headings by role (not h2) so the site's letter-decoding heading motion never puts
+     an old question back.
      ============================================================ -->
 
 <style>
 @font-face{font-family:'Cracked Imperia';src:url('https://africhmaurice.github.io/site/assets/fonts/CrackedImperia-Bold.woff2') format('woff2');font-weight:100 900;font-display:block;size-adjust:109.5%}
-#ma-quiz{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;min-height:100vh;padding:140px 20px 80px;
-  background:#fffffe;
-  font-family:'Almarai',sans-serif;color:#fffffe;overflow-x:hidden}
+#ma-quiz{width:100vw;position:relative;left:50%;margin-left:-50vw;box-sizing:border-box;padding:var(--q-pad,100px) 0 0;background:#0b170f;font-family:'Almarai',sans-serif;color:#fffffe;overflow:hidden}
 #ma-quiz *{box-sizing:border-box;border-radius:0}
-#ma-quiz .q-head{max-width:860px;margin:0 auto 36px;text-align:center;display:flex;flex-direction:column;gap:14px}
-#ma-quiz .q-eyebrow{font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(22px,3vw,34px);line-height:1.25;letter-spacing:.04em;color:#ff4c0f;margin:0}
-#ma-quiz .q-h1{text-wrap:balance;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(38px,6.6vw,84px);line-height:1.2;letter-spacing:.03em;color:#fffffe;margin:0}
-#ma-quiz .q-sub{font-size:clamp(15px,1.7vw,18px);line-height:1.6;color:#f3ead9;margin:0 auto;max-width:860px}
-#ma-quiz .q-card{max-width:860px;margin:0 auto;background:rgba(11,23,15,.9);border:3px solid #f3ead9;padding:clamp(22px,4vw,44px);display:flex;flex-direction:column;gap:22px}
-#ma-quiz .q-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:700;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:#89fbcb}
-#ma-quiz .q-bar{height:12px;background:#132219;border:2px solid #268e62}
-#ma-quiz .q-fill{height:100%;width:0;background:#89fbcb;transition:width .35s ease}
-#ma-quiz .q-text{font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(26px,3.4vw,40px);line-height:1.25;letter-spacing:.03em;color:#fffffe;margin:4px 0 0}
-#ma-quiz .q-opts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-#ma-quiz .q-opt{position:relative}
-#ma-quiz .q-ans{width:100%;height:100%;min-height:76px;text-align:left;font-family:'Almarai',sans-serif;font-weight:700;font-size:clamp(15px,1.6vw,17px);line-height:1.45;color:#0b170f;background:#f3ead9;border:3px solid #f3ead9;padding:18px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:background .15s ease,border-color .15s ease,transform .15s ease}
-#ma-quiz .q-ans:hover,#ma-quiz .q-ans:focus-visible{background:#fffffe;border-color:#ff4c0f;transform:translateY(-2px);outline:none}
-#ma-quiz .q-ans .q-l{flex:0 0 auto;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:#482d85;color:#fffffe;font-weight:800;font-size:15px}
-#ma-quiz .q-opt.has-box .q-ans{padding-right:58px}
-#ma-quiz .q-box{position:absolute;right:8px;bottom:8px;width:34px;height:34px;padding:0;border:0;background:none;cursor:pointer;z-index:2;opacity:.9;transition:transform .15s ease,opacity .15s ease}
-#ma-quiz .q-box:hover,#ma-quiz .q-box:focus-visible{transform:scale(1.25) rotate(-6deg);opacity:1;outline:none}
-#ma-quiz .q-box img{width:100%;height:100%;object-fit:contain;display:block}
-#ma-quiz .q-result{display:none;text-align:center;align-items:center;gap:20px}
-#ma-quiz.done .q-result{display:flex;flex-direction:column}
-#ma-quiz .q-play{display:flex;flex-direction:column;gap:22px}
-#ma-quiz.done .q-play{display:none}
-#ma-quiz .q-wait{margin:0;font-weight:700;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#89fbcb;text-align:center;padding:40px 0}
+#ma-quiz [hidden]{display:none!important}
+/* the stage: one screen tall under the menu; the track holds every slide side by side and slides sideways */
+#ma-quiz .q-stage{position:relative;display:flex;flex-direction:column;height:calc(100vh - var(--q-off,100px));height:calc(100svh - var(--q-off,100px));min-height:480px}
+#ma-quiz .q-view{position:relative;flex:1 1 auto;min-height:0;overflow:hidden}
+#ma-quiz .q-track{display:flex;height:100%;will-change:transform;transition:transform .85s cubic-bezier(.65,0,.25,1)}
+#ma-quiz .q-slide{flex:0 0 100%;width:100%;height:100%;overflow-x:hidden;overflow-y:auto;overscroll-behavior-x:contain;display:flex;outline:none}
+#ma-quiz .q-sin{margin:auto;width:100%;max-width:1120px;padding:clamp(28px,4.5vh,56px) clamp(20px,4vw,48px)}
+/* each question slide is a solid brand panel, the colors taking turns so the row is seen to move */
+#ma-quiz .q-s-q{background:#1a5e41}
+#ma-quiz .q-s-q.c1{background:#2d1c53}
+#ma-quiz .q-s-q.c2{background:#1b3b15}
+#ma-quiz .q-s-res{background:#0b170f}
+/* the intro slide: the title over the night sky */
+#ma-quiz .q-s-intro .q-sin{max-width:960px;display:flex;flex-direction:column;align-items:center;gap:28px;text-align:center}
+#ma-quiz .q-head{text-align:center;display:flex;flex-direction:column;gap:16px}
+#ma-quiz .q-eyebrow{font-family:'CI Face','Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(20px,2.6vw,30px);line-height:1.2;letter-spacing:.04em;text-transform:uppercase;color:#a2f590;margin:0}
+#ma-quiz .q-h1{text-wrap:balance;font-family:'CI Face','Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(38px,6.6vw,96px);line-height:1.2;letter-spacing:.03em;text-transform:uppercase;color:#fffffe;margin:0}
+#ma-quiz .q-sub{font-size:clamp(16px,1.8vw,20px);line-height:1.6;color:rgba(255,255,255,.86);margin:0 auto;max-width:760px}
+#ma-quiz .q-start{font-family:'Almarai',sans-serif;font-weight:800;font-size:18px;line-height:1.3;letter-spacing:.1em;text-transform:uppercase;color:#fffffe;background:#c53200;border:3px solid #c53200;padding:20px 40px;cursor:pointer;display:inline-flex;align-items:center;gap:14px;box-shadow:0 6px 0 #912501;transition:background .15s ease,border-color .15s ease,transform .15s ease,box-shadow .15s ease}
+#ma-quiz .q-start svg{width:22px;height:22px;flex:none}
+#ma-quiz .q-start:hover,#ma-quiz .q-start:focus-visible{background:#912501;border-color:#fffffe;transform:translateY(-3px);box-shadow:0 9px 0 #0b170f;outline:none}
+#ma-quiz .q-wait{margin:0;font-weight:800;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#a2f590;text-align:center;padding:12px 0}
 #ma-quiz.ready .q-wait{display:none}
-#ma-quiz:not(.ready) .q-play{display:none}
-#ma-quiz .r-eye{font-weight:800;font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:#89fbcb;margin:0}
-#ma-quiz .r-job{font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(48px,9vw,110px);line-height:1.2;letter-spacing:.04em;margin:0;color:#ff4c0f;overflow-wrap:anywhere}
-#ma-quiz .r-tag{font-weight:800;font-size:clamp(15px,1.8vw,19px);letter-spacing:.06em;color:#f3ead9;margin:0}
-#ma-quiz .r-desc{font-size:clamp(16px,1.9vw,19px);line-height:1.65;color:#fffffe;max-width:600px;margin:0}
-#ma-quiz .r-tbox{display:flex;flex-direction:column;gap:12px;align-items:center}
-#ma-quiz .r-tlabel{margin:0;font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#89fbcb}
-#ma-quiz .r-traits{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
-#ma-quiz .r-traits li{border:2px solid #f3ead9;padding:8px 14px;font-weight:800;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:#f3ead9}
-#ma-quiz .r-traits li:first-child{background:#f3ead9;color:#0b170f}
-#ma-quiz .r-art{width:min(280px,70vw);height:min(300px,75vw);display:flex;align-items:flex-end;justify-content:center;margin:0 auto}
-#ma-quiz .r-art img{max-width:100%;max-height:100%;object-fit:contain;display:block}
-#ma-quiz .r-traits li{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px}
-#ma-quiz .r-traits li img{width:36px;height:36px;object-fit:contain;background:#1d3325;flex:0 0 auto}
-#ma-quiz .r-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:14px}
-#ma-quiz .r-make{font-family:'Almarai',sans-serif;font-weight:800;font-size:16px;letter-spacing:.1em;text-transform:uppercase;color:#0b170f;background:#89fbcb;border:3px solid #89fbcb;padding:16px 30px;cursor:pointer;transition:background .15s ease,transform .15s ease}
-#ma-quiz .r-make:hover,#ma-quiz .r-make:focus-visible{background:#fffffe;border-color:#fffffe;transform:scale(1.04);outline:none}
-#ma-quiz .r-make[disabled]{opacity:.7;cursor:wait;transform:none}
-#ma-quiz .q-card{transition:border-color .3s ease}
-#ma-quiz .r-share{border:2px dashed #89fbcb;padding:14px 20px;font-weight:700;font-size:clamp(14px,1.6vw,16px);letter-spacing:.04em;line-height:1.5;color:#89fbcb;margin:0}
-#ma-quiz .r-again{font-family:'Almarai',sans-serif;font-weight:800;font-size:16px;letter-spacing:.1em;text-transform:uppercase;color:#fffffe;background:#c53200;border:3px solid #c53200;padding:16px 30px;cursor:pointer;transition:background .15s ease,transform .15s ease}
-#ma-quiz .r-again:hover,#ma-quiz .r-again:focus-visible{background:#ff4c0f;border-color:#ff4c0f;transform:scale(1.04);outline:none}
-#ma-quiz .q-eyebrow,#ma-quiz .q-h1,#ma-quiz .q-text,#ma-quiz .r-job{text-transform:uppercase}
-#ma-quiz .q-ans,#ma-quiz .r-make,#ma-quiz .r-again{background:#1a5e41;border-color:#1a5e41;color:#f3ead9}
-#ma-quiz .q-ans .q-l{background:#f3ead9;color:#1a5e41}
+#ma-quiz:not(.ready) .q-start{display:none}
+/* a question */
+#ma-quiz .q-qin{display:flex;flex-direction:column;gap:clamp(18px,2.6vh,28px)}
+#ma-quiz .q-count{margin:0;font-weight:800;font-size:14px;line-height:1.4;letter-spacing:.16em;text-transform:uppercase;color:#a2f590}
+#ma-quiz .q-text{font-family:'CI Face','Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(26px,3.6vw,48px);line-height:1.2;letter-spacing:.03em;text-transform:uppercase;color:#fffffe;margin:0;text-wrap:balance}
+/* the answers: bold ember tiles with a white edge on hover */
+#ma-quiz .q-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 #ma-quiz .q-opts.has-imgs{grid-template-columns:repeat(4,minmax(0,1fr))}
+#ma-quiz .q-opt{position:relative}
+#ma-quiz .q-ans{position:relative;width:100%;height:100%;min-height:80px;text-align:left;font-family:'Almarai',sans-serif;font-weight:800;font-size:clamp(16px,1.7vw,18px);line-height:1.4;color:#fffffe;background:#c53200;border:3px solid #c53200;padding:18px 22px;cursor:pointer;display:flex;align-items:center;gap:16px;box-shadow:0 6px 0 #912501;transition:background .15s ease,border-color .15s ease,transform .15s ease,box-shadow .15s ease}
+#ma-quiz .q-ans:hover,#ma-quiz .q-ans:focus-visible{background:#912501;border-color:#fffffe;transform:translateY(-3px);box-shadow:0 9px 0 #0b170f;outline:none}
+#ma-quiz .q-ans:active{transform:translateY(3px) scale(.98);box-shadow:0 2px 0 #0b170f}
+#ma-quiz .q-ans.is-picked{border-color:#fffffe;outline:3px solid #a2f590;outline-offset:3px}
 #ma-quiz .q-ans span{min-width:0;overflow-wrap:break-word}
+#ma-quiz .q-ans .q-l{flex:0 0 auto;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:#fffffe;color:#c53200;font-family:'CI Face','Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:22px;line-height:1}
 #ma-quiz .q-ans.has-img{flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden}
-#ma-quiz .q-ans.has-img img{width:100%;height:auto;aspect-ratio:4/3;flex:0 0 auto;object-fit:cover;display:block;background:#132219}
-#ma-quiz .q-ans.has-img .q-row{display:flex;align-items:center;gap:12px;padding:12px 14px;flex:1}
-#ma-quiz .q-ans.is-color{border-color:#f3ead9}
+#ma-quiz .q-ans.has-img img{width:100%;height:auto;aspect-ratio:16/10;flex:0 0 auto;object-fit:cover;display:block;background:#0b170f}
+#ma-quiz .q-ans.has-img .q-row{display:flex;align-items:center;gap:12px;padding:14px 16px;flex:1}
+#ma-quiz .q-ans.is-color{border-color:rgba(255,255,254,.55);box-shadow:0 6px 0 rgba(11,23,15,.6)}
+#ma-quiz .q-ans.is-color .q-l{color:#0b170f}
 #ma-quiz .q-ans.is-color:hover,#ma-quiz .q-ans.is-color:focus-visible{border-color:#fffffe;filter:brightness(1.1)}
+/* the bar under the stage: Back, where you are, and how far along */
+#ma-quiz .q-nav{flex:none;display:flex;align-items:center;gap:20px;min-height:68px;padding:12px clamp(16px,4vw,48px);background:#0b170f;border-top:2px solid rgba(255,255,254,.14)}
+#ma-quiz .q-back{flex:none;display:inline-flex;align-items:center;gap:10px;font-family:'Almarai',sans-serif;font-weight:800;font-size:14px;line-height:1.3;letter-spacing:.14em;text-transform:uppercase;color:#fffffe;background:transparent;border:2px solid #fffffe;padding:10px 16px;cursor:pointer;transition:background .15s ease,color .15s ease,opacity .2s ease}
+#ma-quiz .q-back svg{width:18px;height:18px}
+#ma-quiz .q-back:hover,#ma-quiz .q-back:focus-visible{background:#fffffe;color:#0b170f;outline:none}
+#ma-quiz .q-back[disabled]{opacity:.3;cursor:default;background:transparent;color:#fffffe}
+#ma-quiz .q-bar{position:relative;flex:1 1 auto;height:12px;background:rgba(255,255,254,.16)}
+#ma-quiz .q-fill{height:100%;width:0;background:#a2f590;transition:width .6s cubic-bezier(.65,0,.25,1)}
+#ma-quiz .q-pct{flex:none;min-width:3.4em;text-align:right;font-weight:800;font-size:14px;line-height:1.4;letter-spacing:.12em;color:#fffffe}
+/* what comes in with each slide */
+@keyframes qz-in{from{opacity:0;transform:translate3d(60px,0,0) scale(.92)}to{opacity:1;transform:none}}
+@keyframes qz-up{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
+#ma-quiz .q-slide.is-on .q-opt{animation:qz-in .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.35s + var(--k,0) * .06s)}
+#ma-quiz .q-slide.is-on .q-count,#ma-quiz .q-slide.is-on .q-text{animation:qz-up .6s ease .2s both}
+#ma-quiz .q-s-intro.is-on .q-head>*,#ma-quiz .q-s-intro.is-on .q-start{animation:qz-up .7s ease both}
+#ma-quiz .q-s-intro.is-on .q-h1{animation-delay:.12s}
+#ma-quiz .q-s-intro.is-on .q-sub{animation-delay:.24s}
+#ma-quiz .q-s-intro.is-on .q-start{animation-delay:.36s}
+/* the result: an ink panel with an edge in the crew member's color */
+#ma-quiz .q-card{position:relative;overflow:hidden;max-width:960px;margin:0 auto;background:#0b170f;border:3px solid #1a5e41;padding:clamp(24px,4vw,48px);box-shadow:0 24px 70px rgba(0,0,0,.6);transition:border-color .3s ease}
+#ma-quiz .q-result{display:flex;flex-direction:column;position:relative;text-align:center;align-items:center;gap:20px}
+#ma-quiz .r-art{position:relative;isolation:isolate;width:min(340px,70vw);height:min(360px,74vw);display:flex;align-items:flex-end;justify-content:center;margin:8px auto 0}
+#ma-quiz .r-art img{position:relative;z-index:1;max-width:100%;max-height:100%;object-fit:contain;display:block}
+#ma-quiz .r-art::before{content:"";position:absolute;left:50%;top:50%;width:130%;aspect-ratio:1;z-index:-1;transform:translate(-50%,-50%);pointer-events:none;
+  background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--jc,#ff4c0f) 55%,transparent) 0deg 9deg,transparent 9deg 22.5deg);
+  -webkit-mask:radial-gradient(circle,#000 0,#000 22%,transparent 60%);mask:radial-gradient(circle,#000 0,#000 22%,transparent 60%);opacity:.75}
+#ma-quiz .r-eye{font-weight:800;font-size:15px;line-height:1.4;letter-spacing:.18em;text-transform:uppercase;color:#a2f590;margin:0}
+#ma-quiz .r-job{font-family:'CI Face','Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(56px,11vw,140px);line-height:1.2;letter-spacing:.04em;text-transform:uppercase;margin:0;color:#ff4c0f;overflow-wrap:anywhere;text-shadow:0 6px 0 rgba(0,0,0,.45)}
+#ma-quiz .r-tag{font-weight:800;font-size:clamp(17px,2vw,22px);line-height:1.4;letter-spacing:.04em;color:#fffffe;margin:0}
+#ma-quiz .r-desc{font-size:clamp(16px,1.9vw,19px);line-height:1.65;color:rgba(255,255,255,.86);max-width:620px;margin:0}
+#ma-quiz .r-tbox{display:flex;flex-direction:column;gap:12px;align-items:center;margin-top:8px}
+#ma-quiz .r-tlabel{margin:0;font-weight:800;font-size:13px;line-height:1.4;letter-spacing:.16em;text-transform:uppercase;color:#a2f590}
+#ma-quiz .r-traits{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+#ma-quiz .r-traits li{display:flex;align-items:center;gap:10px;border:2px solid #fffffe;padding:6px 16px 6px 6px;font-weight:800;font-size:14px;line-height:1.3;letter-spacing:.1em;text-transform:uppercase;color:#fffffe}
+#ma-quiz .r-traits li:first-child{background:#fffffe;color:#0b170f}
+#ma-quiz .r-traits li img{width:38px;height:38px;object-fit:contain;background:#213226;flex:0 0 auto}
+#ma-quiz .r-share{border:2px dashed #a2f590;padding:14px 20px;font-weight:700;font-size:clamp(14px,1.6vw,16px);letter-spacing:.04em;line-height:1.5;color:#a2f590;margin:0}
+#ma-quiz .r-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:14px}
+#ma-quiz .r-make,#ma-quiz .r-again{font-family:'Almarai',sans-serif;font-weight:800;font-size:16px;line-height:1.3;letter-spacing:.1em;text-transform:uppercase;padding:18px 30px;cursor:pointer;transition:background .15s ease,border-color .15s ease,color .15s ease,transform .15s ease}
+#ma-quiz .r-make{color:#fffffe;background:#c53200;border:3px solid #c53200}
+#ma-quiz .r-make:hover,#ma-quiz .r-make:focus-visible{background:#912501;border-color:#fffffe;transform:translateY(-2px);outline:none}
+#ma-quiz .r-make[disabled]{opacity:.7;cursor:wait;transform:none}
+#ma-quiz .r-again{color:#fffffe;background:transparent;border:3px solid #fffffe}
+#ma-quiz .r-again:hover,#ma-quiz .r-again:focus-visible{background:#fffffe;color:#0b170f;transform:translateY(-2px);outline:none}
+/* the reveal (only when it plays: .cheer is added on each finish) */
+#ma-quiz .r-confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:3}
+#ma-quiz .r-confetti i{position:absolute;top:-24px;display:block;width:10px;height:14px;animation:qz-fall var(--d,2.6s) cubic-bezier(.25,.6,.4,1) var(--w,0s) both}
+@keyframes qz-fall{from{transform:translate3d(0,0,0) rotate(0deg);opacity:1}85%{opacity:1}to{transform:translate3d(var(--x,0px),var(--h,900px),0) rotate(var(--r,540deg));opacity:0}}
+@keyframes qz-pop{0%{transform:scale(.4) translateY(40px);opacity:0}60%{transform:scale(1.06);opacity:1}100%{transform:none;opacity:1}}
+@keyframes qz-slam{0%{transform:scale(1.8);opacity:0;letter-spacing:.3em}55%{opacity:1}100%{transform:none;opacity:1}}
+@keyframes qz-spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+#ma-quiz.cheer .r-art img{animation:qz-pop .8s cubic-bezier(.2,.8,.2,1) .5s both}
+#ma-quiz.cheer .r-art::before{animation:qz-spin 24s linear infinite}
+#ma-quiz.cheer .r-job{animation:qz-slam .7s cubic-bezier(.2,.8,.2,1) .75s both}
+#ma-quiz.cheer .r-eye{animation:qz-up .5s ease .65s both}
+#ma-quiz.cheer .r-tag,#ma-quiz.cheer .r-desc{animation:qz-up .6s ease 1.05s both}
+#ma-quiz.cheer .r-tbox,#ma-quiz.cheer .r-share,#ma-quiz.cheer .r-btns{animation:qz-up .6s ease 1.25s both}
 @media (max-width:900px){#ma-quiz .q-opts.has-imgs{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:500px){#ma-quiz .q-opts.has-imgs{gap:10px}#ma-quiz .q-ans.has-img .q-row{gap:8px;padding:10px}#ma-quiz .q-ans.has-img .q-l{width:26px;height:26px;font-size:13px}#ma-quiz .q-ans.has-img{font-size:14px}}
-#ma-quiz .q-ans:hover,#ma-quiz .q-ans:focus-visible{background:#268e62;border-color:#ff4c0f}
-#ma-quiz .r-make:hover,#ma-quiz .r-make:focus-visible,#ma-quiz .r-again:hover,#ma-quiz .r-again:focus-visible{background:#268e62;border-color:#268e62;color:#f3ead9}
 @media (max-width:700px){
-  #ma-quiz{padding:120px 16px 60px}
   #ma-quiz .q-opts{grid-template-columns:1fr}
-  #ma-quiz .q-ans{min-height:64px;padding:16px 18px}
-  #ma-quiz .q-opt.has-box .q-ans{padding-right:56px}
+  #ma-quiz .q-opts.q-short{grid-template-columns:1fr 1fr}
+  #ma-quiz .q-ans{min-height:60px;padding:14px 16px;gap:12px}
+  #ma-quiz .q-ans .q-l{width:32px;height:32px;font-size:18px}
+  #ma-quiz .r-btns{flex-direction:column;align-items:stretch;width:100%}
+  #ma-quiz .q-nav{gap:14px;min-height:60px}
+  #ma-quiz .q-back{padding:10px 12px}
+  #ma-quiz .q-back b{display:none}
 }
-@media (prefers-reduced-motion:reduce){#ma-quiz .q-fill,#ma-quiz .q-ans,#ma-quiz .q-box,#ma-quiz .r-again{transition:none}}
-#ma-quiz{background-color:#fffffe}
-#ma-quiz .q-eyebrow{color:#0b170f}
-#ma-quiz .q-h1{color:#c53200}
-#ma-quiz .q-sub{color:#0b170f}
-#ma-quiz .q-card{background:rgba(255,255,254,.94);border-color:#c53200}
-#ma-quiz .q-meta,#ma-quiz .q-wait,#ma-quiz .r-eye,#ma-quiz .r-tlabel{color:#c53200}
-#ma-quiz .q-bar{background:#f3ead9;border-color:#c53200}
-#ma-quiz .q-fill{background:#c53200}
-#ma-quiz .q-text,#ma-quiz .r-tag,#ma-quiz .r-desc{color:#0b170f}
-#ma-quiz .q-ans{background:#c53200;border-color:#c53200;color:#fffffe}
-#ma-quiz .q-ans .q-l{background:#fffffe;color:#c53200}
-#ma-quiz .q-ans:hover,#ma-quiz .q-ans:focus-visible{background:#912501;border-color:#0b170f}
-#ma-quiz .q-ans.has-img img{background:#f3ead9}
-#ma-quiz .q-ans.is-color{border-color:#36454f}
-#ma-quiz .q-ans.is-color:hover,#ma-quiz .q-ans.is-color:focus-visible{border-color:#c53200}
-#ma-quiz .r-traits li{border-color:#0b170f;color:#0b170f}
-#ma-quiz .r-traits li:first-child{background:#0b170f;color:#fffffe}
-#ma-quiz .r-traits li img{background:#f3ead9}
-#ma-quiz .r-make,#ma-quiz .r-again{background:#c53200;border-color:#c53200;color:#fffffe}
-#ma-quiz .r-make:hover,#ma-quiz .r-make:focus-visible,#ma-quiz .r-again:hover,#ma-quiz .r-again:focus-visible{background:#912501;border-color:#912501;color:#fffffe}
-#ma-quiz .r-share{border-color:#c53200;color:#c53200}
+@media (max-width:500px){#ma-quiz .q-opts.has-imgs{gap:10px}#ma-quiz .q-ans.has-img .q-row{gap:8px;padding:10px}#ma-quiz .q-ans.has-img .q-l{width:26px;height:26px;font-size:15px}#ma-quiz .q-ans.has-img{font-size:14px}}
+@media (prefers-reduced-motion:reduce){
+  #ma-quiz .q-track,#ma-quiz .q-fill,#ma-quiz .q-ans,#ma-quiz .q-start,#ma-quiz .r-make,#ma-quiz .r-again,#ma-quiz .q-card{transition:none}
+  #ma-quiz *,#ma-quiz .r-art::before{animation:none!important}
+  #ma-quiz .r-confetti{display:none}
+}
 </style>
-<section id="ma-quiz" aria-label="Sky pirate crew quiz">
-  <header class="q-head">
-    <p class="q-eyebrow">The Sky Pirate Quiz</p>
-    <h1 class="q-h1">Which Character Are You Most Like?</h1>
-    <p class="q-sub">Every airship needs a crew. Answer 15 questions and find out which character from The Sky Pirates of Imperia sums up your personality to an eerily scientific level of accuracy!</p>
-  </header>
-  <div class="q-card">
-    <p class="q-wait">Loading the crew...</p>
-    <div class="q-play">
-      <div class="q-meta"><span class="q-count">Question 1</span><span class="q-pct">0%</span></div>
-      <div class="q-bar" role="progressbar" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0"><div class="q-fill"></div></div>
-      <h2 class="q-text" aria-live="polite"></h2>
-      <div class="q-opts"></div>
+<section id="ma-quiz" aria-label="Sky pirate crew quiz" data-ma-own data-ma-keep-top>
+  <div class="q-stage">
+    <div class="q-view">
+      <div class="q-track">
+        <div class="q-slide q-s-intro is-on" tabindex="-1" data-lenis-prevent><div class="q-sin">
+          <header class="q-head">
+            <p class="q-eyebrow">The Sky Pirate Quiz</p>
+            <h1 class="q-h1">Which Character Are You Most Like?</h1>
+            <p class="q-sub">Every airship needs a crew. Answer 15 questions and find out which character from The Sky Pirates of Imperia sums up your personality to an eerily scientific level of accuracy!</p>
+          </header>
+          <p class="q-wait">Loading the crew...</p>
+          <button class="q-start" type="button">Start the quiz<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" aria-hidden="true"><path d="M4 12h15M13 5l7 7-7 7"/></svg></button>
+        </div></div>
+        <div class="q-slide q-s-res" tabindex="-1" data-lenis-prevent inert aria-hidden="true"><div class="q-sin">
+          <div class="q-card"><div class="q-result" aria-live="polite">
+            <div class="r-art"><img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="280" height="300"></div>
+            <p class="r-eye">You are most like the</p>
+            <p class="r-job" role="heading" aria-level="2"></p>
+            <p class="r-tag"></p>
+            <p class="r-desc"></p>
+            <div class="r-tbox"><p class="r-tlabel">Your top three crew</p><ul class="r-traits"></ul></div>
+            <p class="r-share">Screenshot this and tag @mauriceafrich with your result.</p>
+            <div class="r-btns"><button class="r-make" type="button">Create My Character Card</button><button class="r-again" type="button">Take it again</button></div>
+          </div></div>
+        </div></div>
+      </div>
     </div>
-    <div class="q-result" aria-live="polite">
-      <div class="r-art"><img alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="280" height="300"></div>
-      <p class="r-eye">You are most like the</p>
-      <h2 class="r-job"></h2>
-      <p class="r-tag"></p>
-      <p class="r-desc"></p>
-      <div class="r-tbox"><p class="r-tlabel">Your top three crew</p><ul class="r-traits"></ul></div>
-      <p class="r-share">Screenshot this and tag @mauriceafrich with your result.</p>
-      <div class="r-btns"><button class="r-make" type="button">Create My Character Card</button><button class="r-again" type="button">Take it again</button></div>
+    <div class="q-nav">
+      <button class="q-back" type="button" aria-label="Back to the previous question" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" aria-hidden="true"><path d="M20 12H5M11 5l-7 7 7 7"/></svg><b>Back</b></button>
+      <div class="q-bar" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="15" aria-valuenow="0"><div class="q-fill"></div></div>
+      <span class="q-pct">0%</span>
     </div>
   </div>
 </section>
@@ -136,26 +181,89 @@
 
   /*QUIZ:START*/var DATA={"version":2,"eyebrow":"The Sky Pirate Quiz","title":"Which Character Are You Most Like?","intro":"Every airship needs a crew. Answer 15 questions and find out which character from The Sky Pirates of Imperia sums up your personality to an eerily scientific level of accuracy!","resultLead":"You are most like","share":"Create your character card and tag @mauriceafrich with your result.","descriptors":[{"id":"grey","name":"Grey","def":""},{"id":"dot","name":"Dot","def":""},{"id":"minn","name":"Minn","def":""},{"id":"farlow","name":"Farlow","def":""},{"id":"mars","name":"Mars","def":""},{"id":"willow","name":"Willow","def":""},{"id":"bones","name":"Bones","def":""},{"id":"dalia","name":"Dalia","def":""},{"id":"rook","name":"Rook","def":""},{"id":"cello","name":"Cello","def":""},{"id":"eddie","name":"Eddie","def":""},{"id":"izzy","name":"Izzy","def":""},{"id":"jaan","name":"Jaan","def":""},{"id":"solomon","name":"Solomon","def":""}],"jobs":[{"id":"grey","title":"Grey","color":"#ff4c0f","tagline":"You talk; people listen.","description":"You’re the one people look at when things go sideways. You like red, a good revolver, and a plan with three backup options waiting in the wings. You’d rather talk your way out of a fight, but if talking fails, your brass point has already left the holster. The crew follows you because you never ask them to do anything you wouldn’t do first.","weights":{"grey":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/grey.webp"},{"id":"dot","title":"Dot","color":"#89fbcb","tagline":"Quiet. Fast. Done.","description":"You don’t say much, and you don’t need to. You’d pick a short blade over a long speech and a bag of chips over small talk. You eat them one at a time. Not because you need to, but because it feels right. When trouble starts, you’re the first one moving and the last one anyone sees coming. Dot doesn’t mess around, and neither do you.","weights":{"dot":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/dot.webp"},{"id":"minn","title":"Minn","color":"#a2f590","tagline":"You see the truth between the lies.","description":"You read people the way other people read books. Give you a role-playing game, a bowl of ice cream, and a long night of talking to someone you love or admire, and you’re happy. You’d rather calm a fight down than win it, mostly because you usually know how it ends before it even starts. The crew trusts your gut more than their own.","weights":{"minn":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/minn.webp"},{"id":"farlow","title":"Farlow","color":"#c3a6ff","tagline":"Brains first, anxiety second.","description":"You’re the one with a plan, a backup plan, and a deck of cards to pass the time (but only because you learned how to count them). Strategy games, science fiction, and a strong cup of coffee make a perfect day. If you could have any power, you’d pick a bigger brain, even though your brain is already plenty big. When there’s a problem nobody can crack, the crew hands it to you.","weights":{"farlow":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/farlow.webp"},{"id":"mars","title":"Mars","color":"#f3ead9","tagline":"Big axe. Bigger heart.","description":"You’re loud, you’re warm, and you’re always the one feeding people. Give you a card game, a bearded axe, and a kitchen with an adjoining dining room, and you’re set for life. You’d pick super strength over any other power, and you’d use it to carry your friends home.","weights":{"mars":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/mars.webp"},{"id":"willow","title":"Willow","color":"#7b4ee1","tagline":"Too much fun to be this dangerous.","description":"You’re the life of the party, and you probably planned it. Pink, gummy candy, games about life where you can do whatever you want without consequences, and anything that lets you fly at your own speed. Find a lost wallet and you’ll keep the good stuff without losing sleep. People underestimate you exactly once—and then they learn.","weights":{"willow":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/willow.webp"},{"id":"bones","title":"Bones","color":"#57bb41","tagline":"Doesn’t start fights. Good with a gadget.","description":"You’d rather settle things with your fists than a speech. You’re quiet and steady, and sitting in front of your computer or your tv with a cold beer beats almost anything. Your dream pet is a blue mastiff the size of a pony—that’s telling. Nobody on the ship has a stronger grip, or a softer spot for the crew.","weights":{"bones":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/bones.webp"},{"id":"dalia","title":"Dalia","color":"#ff4c0f","tagline":"Patient. Brilliant. Always a step ahead.","description":"You have all the time in the world, and you spend it reading everything. Literary fiction, history, a hot cup of tea, and a mind that can move things without lifting a finger. You’re polite and careful, and you’re always three moves ahead of the curve. Like Dalia, the immortal daughter of the ArchGovernor, you’re never quite who people think you are.","weights":{"dalia":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/dalia.webp"},{"id":"rook","title":"Rook","color":"#89fbcb","tagline":"The sword does the talking.","description":"You’re quiet, you carry a longsword, and you live by a code. You’d return a lost wallet untouched and train until the hard thing looks easy. You don’t need the spotlight. You need the people you protect to make it home. There’s no one more solid or reliable than Rook.","weights":{"rook":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/rook.webp"},{"id":"cello","title":"Cello","color":"#a2f590","tagline":"Rules are more like suggestions.","description":"You defy every label anyone tries to stick on you. You’d carry a rapier, solve every puzzle on the board, and order something strong at the bar. A lost wallet? Not your problem. You go where you want, you take what you see, and no one can stop you. Then again, no one wants to.","weights":{"cello":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/cello.webp"},{"id":"eddie","title":"Eddie","color":"#c3a6ff","tagline":"The healer with a side of glee.","description":"You’re kind, you’re green to the bone, and you’d pick healing over any other power. Fresh fruit, a big glass of juice, a long run, and a staff in your hand make for a good day. You’d return a lost wallet before lunch. When the crew gets hurt, you patch them up. You’re funny in a way that is disarming, and everyone you know relies on you to remain sane.","weights":{"eddie":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/eddie.webp"},{"id":"izzy","title":"Izzy","color":"#f3ead9","tagline":"Rock solid. Big heart.","description":"You hit hard and love harder. Your fists, an adventure game, and a sunny day are all you need. You’d return a lost wallet and make three friends on the way. You look tough, but you’re the softest heart on the ship.","weights":{"izzy":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/izzy.webp"},{"id":"jaan","title":"Jaan","color":"#7b4ee1","tagline":"Some people just want to watch a wallet burn.","description":"You’re hard to read and harder to predict. Black clothes, a short blade, a hexspider for a pet, and teleportation so nobody can catch you. The crew isn’t always sure whose side you’re on. Some days, neither are you.","weights":{"jaan":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/jaan.webp"},{"id":"solomon","title":"Solomon","color":"#57bb41","tagline":"Calm, patient, and always listening.","description":"You think in longform. Strategy, a spear, and a giant sea serpent by your side. You’re calm and quiet, and you hear what people don’t say out loud. Nobody gets anything past you, and you need them to know it.","weights":{"solomon":1},"image":"https://africhmaurice.github.io/site/assets/quiz/crew/solomon.webp"}],"questions":[{"text":"What's your favorite color (of the colors listed)?","answers":[{"text":"Blue","points":{"farlow":2,"bones":1,"rook":1,"solomon":1},"color":"#2563c9","ink":"#fffffe"},{"text":"Red","points":{"grey":2,"cello":1,"solomon":1},"color":"#c11212","ink":"#fffffe"},{"text":"Green","points":{"bones":1,"cello":1,"eddie":2,"izzy":1},"color":"#268e62","ink":"#fffffe"},{"text":"Orange","points":{"mars":2,"willow":1,"bones":1},"color":"#f07a1a","ink":"#0b170f"},{"text":"Yellow","points":{"dot":2,"dalia":1,"izzy":1},"color":"#f3c623","ink":"#0b170f"},{"text":"Purple","points":{"minn":2,"bones":1,"willow":1,"solomon":1},"color":"#6b3fa0","ink":"#fffffe"},{"text":"Pink","points":{"willow":2,"izzy":1,"dalia":1},"color":"#ee7fb4","ink":"#0b170f"},{"text":"Black","points":{"willow":1,"jaan":2,"solomon":1},"color":"#0b0b0b","ink":"#fffffe"}]},{"text":"Pick a Sky Pirate Snack","answers":[{"text":"Bag of Potato Chips","points":{"dot":2,"minn":1,"willow":1,"izzy":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/chips.webp"},{"text":"Fresh-Cut Fruit","points":{"grey":1,"farlow":1,"willow":1,"dalia":1,"cello":1,"eddie":2,"izzy":1,"solomon":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/fruit.webp"},{"text":"Gummy Candy","points":{"grey":1,"farlow":1,"willow":2,"bones":1,"rook":1,"dot":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/gummies.webp"},{"text":"Ice Cream","points":{"minn":2,"willow":1,"cello":1,"jaan":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/ice-cream.webp"},{"text":"Mixed Nuts","points":{"mars":1,"rook":1,"cello":2,"eddie":1,"izzy":1,"jaan":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/nuts.webp"},{"text":"Edamame","points":{"minn":1,"dalia":2,"solomon":1,"mars":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/edamame.webp"},{"text":"A Protein Bar","points":{"dot":1,"mars":2,"bones":1,"rook":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/protein-bar.webp"},{"text":"A Bowl of Cereal","points":{"grey":1,"dot":1,"minn":1,"mars":1,"willow":1,"bones":1,"dalia":1,"rook":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/cereal.webp"}]},{"text":"Favorite Weapon","answers":[{"text":"Revolver","points":{"grey":2,"farlow":1,"willow":1,"bones":1,"dalia":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/revolver.webp"},{"text":"Longknife/Short Sword/Prism Blade","points":{"grey":1,"dot":2,"willow":1,"bones":1,"jaan":2},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/longknife.webp"},{"text":"Longsword","points":{"rook":2},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/longsword.webp"},{"text":"Rapier","points":{"cello":2},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/rapier.webp"},{"text":"Bearded Axe","points":{"mars":2,"bones":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/axe.webp"},{"text":"Staff","points":{"minn":1,"eddie":2},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/staff.webp"},{"text":"Fists","points":{"mars":1,"bones":2,"izzy":2},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/fists.webp"},{"text":"Spear","points":{"solomon":2,"eddie":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/spear.webp"}]},{"text":"Favorite Season","answers":[{"text":"Autumn","points":{"grey":1,"minn":1,"farlow":1,"willow":1,"rook":1,"izzy":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/autumn.webp"},{"text":"Winter","points":{"dot":1,"bones":1,"jaan":1,"solomon":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/winter.webp"},{"text":"Spring","points":{"mars":1,"willow":1,"dalia":1,"eddie":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/spring.webp"},{"text":"Summer","points":{"rook":1,"cello":1,"izzy":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/summer.webp"}]},{"text":"Your Favorite Type of Game","answers":[{"text":"First Person Shooters","points":{"grey":1,"farlow":1,"willow":1,"bones":2},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/game-fps.webp"},{"text":"Role-Playing Games","points":{"grey":1,"minn":2,"mars":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/game-rpg.webp"},{"text":"Puzzle Games","points":{"minn":1,"mars":1,"willow":1,"cello":2,"solomon":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/game-puzzle.webp"},{"text":"Action & Adventure Games","points":{"grey":1,"dot":1,"farlow":1,"bones":1,"rook":1,"eddie":1,"izzy":2},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/game-action.webp"},{"text":"Strategy & Tactics Games","points":{"grey":2,"minn":1,"farlow":2,"bones":1,"dalia":1,"cello":1,"jaan":1,"solomon":2},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/game-strategy.webp"},{"text":"Simulation & Sandbox Games","points":{"minn":1,"willow":2,"dalia":1,"eddie":1,"solomon":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/game-sim.webp"},{"text":"Card Games","points":{"grey":1,"dot":1,"farlow":2,"mars":2,"willow":1,"bones":1,"rook":1,"cello":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/game-cards.webp"},{"text":"Party Games","points":{"grey":1,"minn":2,"willow":2,"eddie":1,"izzy":1,"jaan":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/game-party.webp"}]},{"text":"If you could be one creature from the world of the Sky Pirates of Imperia, what would you want to be?","answers":[{"text":"Drake","points":{"farlow":1,"mars":1,"willow":1,"bones":1,"rook":1,"cello":2},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/drake.webp"},{"text":"Levian (Giant Sea Serpent)","points":{"minn":1,"willow":1,"dalia":1,"solomon":2},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/levian.webp"},{"text":"Goma","points":{"farlow":1,"mars":1,"bones":1,"eddie":2,"izzy":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/goma.webp"},{"text":"Rake (Inspired by a Red Chocobo)","points":{"grey":1,"dalia":1,"cello":1,"jaan":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/rake.webp"},{"text":"Redback Gorilla (Carnivorous Gorilla)","points":{"mars":1,"willow":1,"bones":1,"rook":2,"cello":1,"jaan":1,"solomon":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/gorilla.webp"},{"text":"Cerunine (Blue Mastiffs the Size of Ponies)","points":{"farlow":1,"mars":2,"bones":2,"rook":1,"izzy":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/mastiff.webp"},{"text":"Blue Bay Eagle (Giant Bird of Prey, Big Enough to Ride)","points":{"grey":2,"dot":1,"minn":1,"willow":2,"dalia":1,"solomon":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/eagle.webp"},{"text":"Hexspider","points":{"dot":2,"mars":1,"cello":1,"eddie":1,"jaan":2},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/hexspider.webp"}]},{"text":"You find a wallet on the ground outside of a grocery store. What do you do?","answers":[{"text":"Take the wallet (interior untouched) to the customer service desk in the grocery store.","points":{"minn":1,"farlow":1,"dalia":1,"rook":1,"eddie":2,"izzy":1}},{"text":"Empty the wallet of all cash and take the wallet to the customer service desk in the grocery store.","points":{"grey":2,"mars":1,"willow":1,"bones":1,"jaan":1}},{"text":"Empty the wallet of all cash and credit cards and take the wallet to the customer service desk in the grocery store.","points":{"grey":1,"willow":1,"bones":2,"cello":1,"jaan":1}},{"text":"Empty the wallet of all the things you want and drop is on the ground where you found it.","points":{"willow":2,"bones":1,"cello":1,"jaan":1}},{"text":"Leave the wallet. You don't care what happens to it.","points":{"dalia":1,"cello":2,"solomon":1}},{"text":"Set the wallet on fire just to watch it burn.","points":{"jaan":2,"solomon":1}}]},{"text":"Do you identify as an extrovert, introvert, or ambivert?","answers":[{"text":"Extrovert","points":{"grey":2,"mars":1,"willow":1,"cello":1,"eddie":1,"izzy":1}},{"text":"Introvert","points":{"dot":2,"bones":1,"rook":1,"jaan":1}},{"text":"Ambivert","points":{"minn":2,"farlow":1,"dalia":1,"solomon":1}},{"text":"I defy all categorization.","points":{"cello":2,"jaan":1,"solomon":1}}]},{"text":"Choose your favorite animal (of the following).","answers":[{"text":"Turtle","points":{"farlow":1,"bones":1,"rook":1,"eddie":1,"izzy":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/turtle.webp"},{"text":"Wolf","points":{"grey":1,"dot":1,"mars":1,"willow":1,"rook":1,"jaan":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/wolf.webp"},{"text":"Tiger","points":{"dot":1,"minn":1,"dalia":1,"cello":1,"eddie":1,"solomon":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/tiger.webp"},{"text":"Hippo","points":{"minn":1,"farlow":1,"mars":1,"willow":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/hippo.webp"},{"text":"Elephant","points":{"dot":1,"mars":1,"bones":1,"rook":1,"eddie":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/elephant.webp"},{"text":"Snake","points":{"jaan":1,"solomon":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/snake.webp"},{"text":"Giraffe","points":{"grey":1,"willow":1,"eddie":1,"izzy":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/giraffe.webp"},{"text":"Rhino","points":{"minn":1,"farlow":1,"mars":1,"bones":1,"rook":1,"cello":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/rhino.webp"}]},{"text":"Choose your favorite TV Show (of the following).","answers":[{"text":"Supernatural","points":{"grey":1,"minn":1,"mars":1,"willow":1,"bones":1,"izzy":1}},{"text":"Lost","points":{"grey":1,"minn":1,"farlow":1,"mars":1,"cello":1,"solomon":1}},{"text":"Friends","points":{"farlow":1,"willow":1,"dalia":1,"eddie":1}},{"text":"Breaking Bad","points":{"grey":1,"dot":1,"minn":1,"farlow":1,"bones":1,"dalia":1,"rook":1,"jaan":1,"solomon":1}},{"text":"The Office (US)","points":{"grey":1,"minn":1,"farlow":1,"bones":1}},{"text":"Dexter","points":{"dot":1,"farlow":1,"mars":1,"willow":1,"dalia":1,"rook":1,"jaan":1,"solomon":1}},{"text":"Survivor","points":{"grey":1,"minn":1,"mars":1,"willow":1,"cello":1,"jaan":1,"solomon":1}},{"text":"Arcane","points":{"grey":1,"dot":1,"minn":1,"eddie":1,"izzy":1}}]},{"text":"Choose your favorite book genre (of the following).","answers":[{"text":"Fantasy","points":{"grey":1,"mars":1,"dalia":1,"rook":1,"eddie":1,"izzy":1,"solomon":1}},{"text":"Science Fiction","points":{"grey":1,"minn":1,"farlow":1,"bones":1,"jaan":1}},{"text":"Horror","points":{"willow":1,"cello":1,"jaan":1,"solomon":1}},{"text":"Literary","points":{"dot":1,"farlow":1,"dalia":1,"cello":1,"solomon":1}},{"text":"Romance","points":{"dot":1,"minn":1,"mars":1,"willow":1,"dalia":1,"eddie":1,"jaan":1,"solomon":1}},{"text":"Historical Fiction","points":{"grey":1,"farlow":1,"bones":1,"dalia":1,"rook":1,"cello":1,"solomon":1}},{"text":"Nonfiction","points":{"dot":1,"minn":1,"farlow":1,"bones":1,"dalia":1,"rook":1,"solomon":1}},{"text":"Poetry","points":{"minn":1,"mars":1,"bones":1,"rook":1,"eddie":1,"izzy":1,"jaan":1}}]},{"text":"Choose the superpower you'd most like to have.","answers":[{"text":"Flight","points":{"grey":1,"willow":2}},{"text":"Teleportation","points":{"dot":1,"mars":1,"bones":1,"rook":1,"jaan":2,"solomon":1}},{"text":"Super Speed","points":{"dot":2,"mars":1,"rook":1,"cello":1,"eddie":1,"izzy":1,"jaan":1,"solomon":1}},{"text":"Super Strength","points":{"dot":1,"mars":2,"rook":1,"cello":1,"izzy":1}},{"text":"Telekinesis","points":{"grey":1,"minn":1,"farlow":1,"willow":1,"bones":1,"dalia":2,"solomon":1}},{"text":"Telepathy","points":{"grey":1,"minn":1,"dalia":1,"cello":1,"jaan":1,"solomon":2}},{"text":"Healing (Self & Others)","points":{"minn":1,"farlow":1,"mars":1,"rook":1,"eddie":2,"izzy":1}},{"text":"Super Intelligence","points":{"grey":1,"minn":1,"farlow":2,"willow":1,"bones":1,"dalia":1,"solomon":1}}]},{"text":"Choose your favorite flower (of the following).","answers":[{"text":"Sunflower","points":{"minn":1,"dalia":1,"izzy":1,"eddie":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/sunflower.webp"},{"text":"Rose","points":{"dalia":1,"cello":1,"solomon":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/rose.webp"},{"text":"Honeysuckle","points":{"bones":1,"jaan":1,"grey":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/honeysuckle.webp"},{"text":"Daisy","points":{"rook":1,"dot":1,"farlow":1,"mars":1,"izzy":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/daisy.webp"},{"text":"Orchid","points":{"willow":1,"solomon":1,"minn":1,"grey":1,"cello":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/orchid.webp"},{"text":"Lotus","points":{"eddie":1,"minn":1,"solomon":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/lotus.webp"}]},{"text":"Choose your favorite drink (of the following).","answers":[{"text":"Coffee","points":{"grey":1,"minn":1,"farlow":1,"willow":1,"bones":1,"jaan":1,"cello":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/coffee.webp"},{"text":"Tea","points":{"solomon":1,"dalia":1,"cello":1,"rook":1,"mars":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/tea.webp"},{"text":"Soda","points":{"grey":1,"dot":1,"mars":1,"willow":1,"bones":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/soda.webp"},{"text":"Milk","points":{"mars":1,"izzy":1,"cello":1,"rook":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/milk.webp"},{"text":"Water (Sparkling or Flat)","points":{"grey":1,"dot":1,"rook":1,"dalia":1,"eddie":1,"solomon":1,"farlow":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/water.webp"},{"text":"Juice","points":{"minn":1,"farlow":1,"izzy":1,"willow":1,"mars":1,"eddie":5},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/juice.webp"},{"text":"Beer","points":{"bones":1,"mars":1,"grey":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/beer.webp"},{"text":"Liquor","points":{"cello":3,"solomon":1,"dalia":1,"willow":1},"image":"https://africhmaurice.github.io/site/assets/quiz/answers/liquor.webp"}]},{"text":"The love of your life is getting attacked--what do you do?","answers":[{"text":"Attack, disarm, immobilize.","points":{"grey":1,"dalia":1,"eddie":1}},{"text":"Kill the person attacking them. No questions.","points":{"dot":1,"mars":1,"willow":1,"bones":1,"rook":1,"cello":1,"jaan":1,"solomon":1}},{"text":"Try to break them up.","points":{"minn":1,"farlow":1,"mars":1,"eddie":1}},{"text":"Call the authorities.","points":{"minn":1,"farlow":1,"dalia":1,"izzy":1,"solomon":1}},{"text":"Quick-acting sedative in the neck. They wake up chained to a chair. What happens next is up to them...","points":{"grey":1,"willow":1,"cello":1,"jaan":1,"solomon":1}},{"text":"Depends on how big they are...","points":{"grey":1,"minn":1,"farlow":1,"izzy":1}}]}]};/*QUIZ:END*/
 
-  var D,N,i=0,tot={};
+  var D,N,i=0,tot={},hist=[],pos=0,slides=[],qs=[];
   var $=function(s){return root.querySelector(s);};
-  var txt=$('.q-text'),opts=$('.q-opts'),fill=$('.q-fill'),bar=$('.q-bar'),cnt=$('.q-count'),pct=$('.q-pct');
+  var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var track=$('.q-track'),view=$('.q-view'),fill=$('.q-fill'),bar=$('.q-bar'),pct=$('.q-pct'),back=$('.q-back'),intro=$('.q-s-intro'),res=$('.q-s-res');
   function setBar(n){var p=Math.round(n/N*100);fill.style.width=p+'%';pct.textContent=p+'%';bar.setAttribute('aria-valuenow',n);}
-  function warm(n){var Q=D.questions[n];if(Q)Q.answers.forEach(function(a){if(a.image){var i=new Image();i.src=a.image;}});}
-  function show(){warm(i+1);
-    var Q=D.questions[i];cnt.textContent='Question '+(i+1)+' of '+N;setBar(i);txt.textContent=Q.text;opts.innerHTML='';opts.classList.toggle('has-imgs',Q.answers.some(function(a){return a.image;}));
-    Q.answers.forEach(function(a,j){
-      var w=document.createElement('div');w.className='q-opt';
-      var b=document.createElement('button');b.type='button';b.className='q-ans';
-      var l=document.createElement('span');l.className='q-l';l.textContent='ABCDEFGH'.charAt(j);
-      var s=document.createElement('span');s.textContent=a.text.split('/').join('/'+String.fromCharCode(8203));
-      if(a.image){b.classList.add('has-img');var im=document.createElement('img');im.src=a.image;im.alt='';im.loading='lazy';im.width=640;im.height=480;var row=document.createElement('span');row.className='q-row';row.appendChild(l);row.appendChild(s);b.appendChild(im);b.appendChild(row);}
-      else{b.appendChild(l);b.appendChild(s);}
-      if(a.color){b.classList.add('is-color');b.style.background=a.color;b.style.color=a.ink||'#fffffe';}
-      b.addEventListener('click',function(){var p=a.points||{};for(var d in p)tot[d]=(tot[d]||0)+(+p[d]||0);i++;if(i<N)show();else finish();});
-      w.appendChild(b);
-      opts.appendChild(w);
-    });
+  // the next question's pictures start loading before it slides in
+  function warm(n){var s=qs[n];if(s)Array.prototype.forEach.call(s.querySelectorAll('img'),function(im){im.loading='eager';});}
+  // The stage starts right under the menu and is one screen tall.
+  function fit(){
+    if(window.scrollY>4)return;
+    var h=document.querySelector('header#header'),hb=h?h.getBoundingClientRect().bottom:0,rt=root.getBoundingClientRect().top;
+    root.style.setProperty('--q-pad',Math.max(0,Math.round(hb-rt))+'px');
+    root.style.setProperty('--q-off',Math.max(0,Math.round(Math.max(hb,rt)+window.scrollY))+'px');
   }
+  fit();setTimeout(fit,300);setTimeout(fit,1200);addEventListener('load',fit);addEventListener('resize',fit);
+  // one slide per question, built from his DATA the same way the single question used to be drawn
+  function build(){
+    D.questions.forEach(function(Q,k){
+      var sl=document.createElement('div');sl.className='q-slide q-s-q c'+(k%3);sl.tabIndex=-1;sl.setAttribute('data-lenis-prevent','');
+      var sin=document.createElement('div');sin.className='q-sin';
+      var qin=document.createElement('div');qin.className='q-qin';
+      var cnt=document.createElement('p');cnt.className='q-count';cnt.textContent='Question '+(k+1)+' of '+N;
+      var txt=document.createElement('p');txt.className='q-text';txt.setAttribute('role','heading');txt.setAttribute('aria-level','2');txt.textContent=Q.text;
+      var opts=document.createElement('div');opts.className='q-opts';
+      opts.classList.toggle('has-imgs',Q.answers.some(function(a){return a.image;}));
+      if(!Q.answers.some(function(a){return a.image||a.text.length>20;}))opts.classList.add('q-short');
+      Q.answers.forEach(function(a,j){
+        var w=document.createElement('div');w.className='q-opt';w.style.setProperty('--k',j);
+        var b=document.createElement('button');b.type='button';b.className='q-ans';
+        var l=document.createElement('span');l.className='q-l';l.textContent='ABCDEFGH'.charAt(j);
+        var s=document.createElement('span');s.textContent=a.text.split('/').join('/'+String.fromCharCode(8203));
+        if(a.image){b.classList.add('has-img');var im=document.createElement('img');im.src=a.image;im.alt='';im.loading='lazy';im.width=640;im.height=480;var row=document.createElement('span');row.className='q-row';row.appendChild(l);row.appendChild(s);b.appendChild(im);b.appendChild(row);}
+        else{b.appendChild(l);b.appendChild(s);}
+        if(a.color){b.classList.add('is-color');b.style.background=a.color;b.style.color=a.ink||'#fffffe';}
+        b.addEventListener('click',function(){choose(k,j);});
+        w.appendChild(b);opts.appendChild(w);
+      });
+      qin.appendChild(cnt);qin.appendChild(txt);qin.appendChild(opts);sin.appendChild(qin);sl.appendChild(sin);
+      track.insertBefore(sl,res);qs.push(sl);
+    });
+    slides=[intro].concat(qs,[res]);
+  }
+  function add(a,sign){var p=a.points||{};for(var d in p)tot[d]=(tot[d]||0)+sign*(+p[d]||0);}
+  // move the row to slide s (0 = intro, 1..N = questions, N+1 = result)
+  function go(s){
+    pos=s;view.scrollLeft=0;
+    track.style.transform='translate3d('+(-s*100)+'%,0,0)';
+    slides.forEach(function(el,n){var on=n===s;el.classList.toggle('is-on',on);el.inert=!on;if(on)el.removeAttribute('aria-hidden');else el.setAttribute('aria-hidden','true');});
+    slides[s].scrollTop=0;
+    back.disabled=s===0;
+    if(s>=1&&s<=N){warm(s);warm(s-1);}
+    try{slides[s].focus({preventScroll:true});}catch(e){}
+    // if the page was scrolled down, bring the stage back into view
+    // the stage lines up with the bottom of the menu bar, never under it (Maurice 2026-11-12)
+    var hb=document.querySelector('#header'),hh=hb?Math.max(0,hb.getBoundingClientRect().bottom):0,sg=root.querySelector('.q-stage')||root,r=sg.getBoundingClientRect();
+    if(Math.abs(r.top-hh)>8&&r.bottom>0)window.scrollTo({top:Math.max(0,window.scrollY+r.top-hh),behavior:still?'auto':'smooth'});
+  }
+  function choose(k,j){
+    if(k!==i||pos!==k+1)return;
+    var a=D.questions[k].answers[j];add(a,1);hist[k]=j;
+    Array.prototype.forEach.call(qs[k].querySelectorAll('.q-ans'),function(b,n){b.classList.toggle('is-picked',n===j);});
+    i++;if(i<N){setBar(i);go(i+1);}else finish();
+  }
+  // Back: the previous question comes back and its answer's points come off, so answering it again counts once
+  function undo(k){if(hist[k]!=null){add(D.questions[k].answers[hist[k]],-1);hist.length=k;}setBar(k);}
+  function goBack(){
+    if(pos===0)return;
+    if(pos===N+1){root.classList.remove('done','cheer');card.style.borderColor='';i=N-1;undo(i);go(N);return;}
+    if(pos===1){go(0);return;}
+    i=pos-2;undo(i);go(i+1);
+  }
+  back.addEventListener('click',goBack);
+  $('.q-start').addEventListener('click',function(){if(D){i=0;go(1);}});
+  // keys: left and right arrows move, A-H or 1-8 pick an answer
+  document.addEventListener('keydown',function(e){
+    if(!D||e.metaKey||e.ctrlKey||e.altKey||e.defaultPrevented)return;
+    var t=e.target;if(t&&/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)||t&&t.isContentEditable)return;
+    var r=root.getBoundingClientRect();if(r.bottom<80||r.top>innerHeight-80)return;
+    if(e.key==='ArrowLeft'){e.preventDefault();goBack();return;}
+    if(e.key==='ArrowRight'){if(pos===0){e.preventDefault();i=0;go(1);}return;}
+    if(pos>=1&&pos<=N){var k=e.key.length===1?'abcdefgh'.indexOf(e.key.toLowerCase()):-1;if(k<0&&/^[1-8]$/.test(e.key))k=+e.key-1;
+      var bs=qs[pos-1].querySelectorAll('.q-ans');if(k>=0&&bs[k]){e.preventDefault();bs[k].click();}}
+  });
   // Each job's score = sum of (your points in a trait x the job's weight for that trait).
   // Highest score wins; a tie goes to the job listed first in the JSON.
   function pick(){
@@ -169,7 +277,7 @@
     var ul=$('.r-traits');ul.innerHTML='';
     D.descriptors.filter(function(d){return tot[d.id]>0;}).sort(function(a,b){return tot[b.id]-tot[a.id];}).slice(0,3)
       .forEach(function(d){var li=document.createElement('li');li.textContent=d.name;ul.appendChild(li);});
-    extras(J);root.classList.add('done');root.scrollIntoView({behavior:'smooth',block:'start'});
+    extras(J);root.classList.add('done');go(N+1);celebrate(J);
   }
   function start(data){
     if(D)return;D=data;N=D.questions.length;
@@ -179,10 +287,13 @@
     if(D.resultLead)$('.r-eye').textContent=D.resultLead;
     if(D.share)$('.r-share').textContent=D.share;
     bar.setAttribute('aria-valuemax',N);
-    root.classList.add('ready');show();
+    build();setBar(0);go(0);warm(0);
+    root.classList.add('ready');
   }
   function ok(d){return d&&d.jobs&&d.jobs.length&&d.questions&&d.questions.length&&d.descriptors;}
-  $('.r-again').addEventListener('click',function(){card.style.borderColor='';i=0;tot={};root.classList.remove('done');show();root.scrollIntoView({behavior:'smooth',block:'start'});});
+  $('.r-again').addEventListener('click',function(){card.style.borderColor='';root.classList.remove('cheer');i=0;tot={};hist=[];
+    Array.prototype.forEach.call(root.querySelectorAll('.q-ans.is-picked'),function(b){b.classList.remove('is-picked');});
+    root.classList.remove('done');setBar(0);go(1);});
   var card=$('.q-card'),last=null;
   function img(id){var j=D.jobs.filter(function(x){return x.id===id;})[0];return j&&j.image;}
   function extras(J){
@@ -191,6 +302,19 @@
     card.style.borderColor=J.color||'';
     var ul=$('.r-traits');ul.innerHTML='';
     top.forEach(function(d){var li=document.createElement('li'),src=img(d.id);if(src){var im=document.createElement('img');im.src=src;im.alt='';li.appendChild(im);}li.appendChild(document.createTextNode(d.name));ul.appendChild(li);});
+  }
+  // the reveal: rays and a pop in the crew member's color, the name slams in, and brand-colored confetti falls once
+  function celebrate(J){
+    var col=J.color||'#ff4c0f';card.style.setProperty('--jc',col);
+    root.classList.remove('cheer');void card.offsetWidth;root.classList.add('cheer');
+    var old=card.querySelector('.r-confetti');if(old)old.remove();
+    if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    var box=document.createElement('div'),cols=[col,'#ff4c0f','#a2f590','#3adb97','#9e74fd','#fffffe'],h=card.offsetHeight+40;
+    box.className='r-confetti';box.setAttribute('aria-hidden','true');
+    for(var k=0;k<56;k++){var c=document.createElement('i');
+      c.style.cssText='left:'+(Math.random()*100).toFixed(1)+'%;background:'+cols[k%cols.length]+';--d:'+(2.2+Math.random()*1.8).toFixed(2)+'s;--w:'+(Math.random()*.7).toFixed(2)+'s;--x:'+((Math.random()-.5)*160).toFixed(0)+'px;--h:'+h+'px;--r:'+((Math.random()<.5?-1:1)*(360+Math.random()*540)).toFixed(0)+'deg'+(k%3?'':';width:7px;height:7px');
+      box.appendChild(c);}
+    card.appendChild(box);setTimeout(function(){if(box.parentNode)box.remove();},5200);
   }
   function load(src){return new Promise(function(ok){if(!src)return ok(null);var i=new Image();i.crossOrigin='anonymous';i.onload=function(){ok(i);};i.onerror=function(){ok(null);};i.src=src;});}
   function wrap(x,t,maxW){var w=t.split(' '),lines=[],l='';w.forEach(function(s){var n=l?l+' '+s:s;if(x.measureText(n).width>maxW&&l){lines.push(l);l=s;}else l=n;});if(l)lines.push(l);return lines;}
@@ -232,43 +356,6 @@
   var w=document.createElement('div');w.className='ma-plx';w.setAttribute('aria-hidden','true');
   w.style.cssText='position:absolute;inset:0;z-index:-1;overflow:hidden;clip-path:inset(0);pointer-events:none';
   var im=document.createElement('div');im.style.cssText='position:fixed;left:0;top:0;width:100vw;height:100vh;background:url(https://africhmaurice.github.io/site/assets/bg/'+dir+'night-sky-clouds-as184255512.webp) center/cover no-repeat';
-  var wash=document.createElement('div');wash.style.cssText='position:absolute;inset:0;background:rgba(255,255,254,.78)';
+  var wash=document.createElement('div');wash.style.cssText='position:absolute;inset:0;background:rgba(11,23,15,.86)';
   w.appendChild(im);w.appendChild(wash);r.insertBefore(w,r.firstChild);
-})();</script>
-<!-- LOOT BOX 109 (The Red Loot Box, staged 2026-10-26): an invisible hot spot in the bottom-right corner of the Red answer
-     (question 1). Clicking exactly there opens the claim; anywhere else on the button answers as usual. Nothing shows.
-     Kept out of the DATA block; build.cjs must carry this script too at go-live. -->
-<script>(function(){
-  var root=document.getElementById('ma-quiz');if(!root)return;
-  var K='MkNRNTdKRzQ9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
-    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
-  function isRed(b){if(!b||!b.classList.contains('is-color'))return false;var s=b.querySelectorAll('span');return s.length&&s[s.length-1].textContent.trim()==='Red';}
-  // The spot: the last 18px of the corner (26px on a touch screen, for a fingertip).
-  function inSpot(b,e){var r=b.getBoundingClientRect(),z=matchMedia('(pointer:coarse)').matches?26:18;
-    return e.clientX>=r.right-z&&e.clientX<=r.right&&e.clientY>=r.bottom-z&&e.clientY<=r.bottom;}
-  root.addEventListener('click',function(e){
-    var b=e.target&&e.target.closest&&e.target.closest('.q-ans');
-    if(!isRed(b)||!e.detail||!inSpot(b,e))return;
-    e.preventDefault();e.stopPropagation();claim();
-  },true);
-})();</script>
-<!-- GOLDEN TRAIL slot 10 (Maurice 11/3, clue "#3->#1"). For finishers only (golden.js runs the queued function): on question 3,
-     the 1 in the 15 of "Question 3 of 15" can be tapped (or reached with Tab and Enter); it looks exactly like the rest of the line.
-     Tapping it records slot 10. The quiz and its scoring are untouched. -->
-<script>(function(){
-  (window.maGoldenQ=window.maGoldenQ||[]).push(function(G){
-    var root=document.getElementById('ma-quiz'),cnt=root&&root.querySelector('.q-count');if(!cnt)return;
-    function wrap(){
-      var m=/^Question 3 of (\d+)$/.exec(cnt.textContent);if(!m||cnt.querySelector('.q-g1'))return;
-      cnt.textContent='Question 3 of ';
-      var s=document.createElement('span');s.className='q-g1';s.textContent=m[1].charAt(0);s.setAttribute('role','button');s.tabIndex=0;
-      s.style.cssText='cursor:pointer;outline-offset:3px;position:relative';
-      if(!document.getElementById('q-g1-st')){var gs=document.createElement('style');gs.id='q-g1-st';gs.textContent='@media (pointer:coarse){.q-g1::after{content:"";position:absolute;inset:-12px -10px}}';document.head.appendChild(gs);}
-      var go=function(){G.found(10);};
-      s.addEventListener('click',go);s.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
-      cnt.appendChild(s);cnt.appendChild(document.createTextNode(m[1].slice(1)));
-    }
-    new MutationObserver(wrap).observe(cnt,{childList:true,characterData:true,subtree:true});wrap();
-  });
 })();</script>

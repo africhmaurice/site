@@ -1,6 +1,9 @@
+<!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=3" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=2"></script>
 <!-- ============================================================
-     GOMA GOONS (was Sky Duel, then Mortar Mayhem / Mortar Madness; renamed 11/2) - a turn-based artillery game that hides
-     loot box 141 (Box 150 batch). Lives at /sky-fishing (page address kept so the Act Three riddle card link still works;
+     GOMA GOONS (was Sky Duel, then Mortar Mayhem / Mortar Madness; renamed 11/2) - a turn-based artillery game.
+     Lives at /sky-fishing (page address kept so the Act Three riddle card link still works;
      clue "Sky Fishing"). The old Sky Fishing arcade run is saved in site-batch2/_batch2/box150/sky-fishing.before-artillery.html.
      Maurice 10/29: an original game "modeled after" the classic turn-based artillery genre (small crews on destructible
      ground lobbing shots at each other). Not a copy of any existing game: its own goons, weapons, names, look, and sounds
@@ -47,7 +50,6 @@
        panel: Bigger blasts (+15% blast size, max 3), Heavier stones (+15% damage, max 3), Ammo pack (+1 Mine, Storm Call,
        and Boulder Drop every level, max 3), Goma Bomb (new weapon, 2 a level), Patch up (+40 health to every goon), and
        Extra goon (up to 5). Prices rise 50% each time you buy the same one.
-       LOOT BOX 141: shows once, the first time you beat level 3 (tap it: the claim link opens in a new tab).
        A loss ends the run. "Retry level N" practices from that level with a fresh, full-health crew; the score starts
        over and d.peek().fullRun is false.
      FREE-FOR-ALL (11/2): all 12 goons on one map (a random one of the six), you and 11 AI goons, every goon for itself.
@@ -116,7 +118,6 @@
        lightning strikes the top of the spot you hit.", "Boulder Drop: heavy, short range, and the wind cannot push it.",
        "Goma Bomb: splits into three stones in the air (unlock it in the upgrades).", "Water sinks a goon, and lava burns
        one up. Either way, it is out.";
-       win "Level 3 won. Box 141 is yours."
      ============================================================ -->
 
 <!-- WEEKLY BOARDS (11/2): goonscampstart/score/top (Campaign, FULL runs only: started at level 1, never a "Retry level N";
@@ -184,7 +185,20 @@
 #ma-skyduel .sd-alt{margin:0;padding:16px 26px;border:1px solid rgba(243,234,217,.45);background:none;color:#f3ead9;font:800 15px/1.2 'Almarai',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;touch-action:manipulation}
 #ma-skyduel .sd-alt:hover,#ma-skyduel .sd-alt:focus-visible{border-color:#89fbcb;color:#89fbcb;outline:none}
 #ma-skyduel .sd-help{margin:0;max-width:680px;font-size:14px;line-height:1.5;color:#a3b3a8}
-#ma-skyduel .sd-notes{margin:0;padding:0;list-style:none;display:grid;gap:12px;max-width:680px;font-size:14px;line-height:1.5;color:#a3b3a8}
+#ma-skyduel .sd-notes{margin:0;max-width:680px;background:#132219;border:2px solid rgba(243,234,217,.18);padding:24px;display:flex;flex-direction:column;gap:20px;text-align:left;box-sizing:border-box}
+.sd-ksec + .sd-ksec{border-top:1px solid rgba(243,234,217,.18);padding-top:16px}
+.sd-kh{margin:0 0 12px;font-family:'Almarai',sans-serif;font-weight:800;font-size:13px;line-height:1.3;letter-spacing:.14em;text-transform:uppercase;color:#f3ead9}
+.sd-ksec ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.sd-ksec li{display:flex;flex-direction:column;gap:2px;font-size:14px;line-height:1.5;color:rgba(255,255,255,.86)}
+.sd-ksec li b{font-weight:800;color:#fffffe;font-size:15px}
+/* the key shows the game's own art beside each item (Maurice, 2026-11-14) */
+.sd-ksec li.sd-kr{display:grid;grid-template-columns:40px minmax(0,1fr);gap:14px;align-items:start}
+.sd-ksec li.sd-kr > div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sd-ki{display:block;width:40px;height:40px;object-fit:contain;box-sizing:border-box;padding:5px;background:#f3ead9}
+.sd-drops{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 12px;margin-top:12px}
+.sd-drops figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:0}
+.sd-drops .sd-ki{width:38px;height:38px}
+.sd-drops figcaption{font-size:12px;line-height:1.3;color:rgba(255,255,255,.86)}
 #ma-skyduel .gb-post{display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;width:100%;max-width:620px}#ma-skyduel .gb-msg{margin:0;font-weight:700;line-height:1.5}#ma-skyduel .gb-msg.err{color:#ff4c0f}
 #ma-skyduel .gb-row{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
 @media (max-width:860px){#ma-skyduel .gb-row{grid-template-columns:1fr}}
@@ -199,14 +213,6 @@
 #ma-skyduel .gb-form{display:flex;flex-direction:column;gap:8px;width:100%;max-width:420px;text-align:left}#ma-skyduel .gb-form label{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 #ma-skyduel .gb-form input,#ma-skyduel .gb-form select{width:100%;margin:0 0 4px;padding:10px 12px;border:1px solid rgba(243,234,217,.45);background:#0b170f;color:#f3ead9;font:700 15px/1.3 'Almarai',sans-serif;border-radius:0}
 #ma-skyduel .gb-form button,#ma-skyduel .gb-who button{margin-top:8px;align-self:center}#ma-skyduel .gb-quiet{margin:0;font-size:13px;color:#a3b3a8}#ma-skyduel .gb-quiet a{color:#89fbcb;cursor:pointer;text-decoration:underline}
-#ma-skyduel .sd-win{display:flex;flex-direction:column;align-items:center;gap:20px;margin-top:8px}
-#ma-skyduel .sd-win p{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(28px,4vw,44px);line-height:1.25;letter-spacing:.04em;color:#89fbcb;text-transform:uppercase}
-#ma-skyduel .sd-box{border:0;background:none;padding:0;margin:0;cursor:pointer;width:min(58vw,260px);animation:sdDrop .6s cubic-bezier(.25,1.5,.45,1) both}
-#ma-skyduel .sd-box img{width:100%;height:auto;display:block;filter:drop-shadow(0 0 30px rgba(137,251,203,.45))}
-#ma-skyduel .sd-box:hover img,#ma-skyduel .sd-box:focus-visible img{filter:drop-shadow(0 0 44px rgba(137,251,203,.75))}
-#ma-skyduel .sd-box:focus-visible{outline:3px solid #89fbcb;outline-offset:8px}
-@keyframes sdDrop{from{opacity:0;transform:translateY(-40px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){#ma-skyduel .sd-box{animation:none}}
 @media (max-width:640px){
   #ma-skyduel{padding-left:16px;padding-right:16px}
   #ma-skyduel .sd-weapons{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -332,27 +338,18 @@
       <div class="sd-btns"><button class="sd-go" type="button">Start level 1</button><button class="sd-alt" type="button" hidden>Retry level 1</button></div>
     </div>
     <p class="sd-help">Drag on the sky to aim: the farther you drag, the harder the shot. The dots show the start of the arc, and the wind does the rest. Walk and jump before you fire. The view follows the action: drag with two fingers (or with the right mouse button) to look around, tap the small map in the corner to jump there, and use Overview to see the whole map. On a keyboard: A and D or the left and right arrows walk, W or J jumps, up and down arrows aim, Q and E set the power, 1 to 5 pick a weapon, N switches crew, and Space fires.</p>
-    <ul class="sd-notes">
-      <li>Mortar Stone: unlimited, steady.</li>
-      <li>Lightning Strike: lightning strikes the top of the spot you hit.</li>
-      <li>Red Atomic: one huge blast.</li>
-      <li>Barrage: fire a flare and an airship drops a string of bombs around it.</li>
-      <li>Every third turn, a random drop lands on each side of the map: health, gems, extra turns, extra lives, big boulders, coins, weapons, or upgrades. Walk onto one to grab it.</li>
-      <li>Goma Bomb: splits into three stones in the air (unlock it in the upgrades).</li>
-      <li>Coins: +50 at the start of each of your turns, 100 for every coin you grab, 10 for a hit, and 50 for a knockout. Spend them on upgrades: between levels in Campaign, and on your turn in Free-for-All (tap Upgrades).</li>
-      <li>Water sinks a goon, and lava burns one up. Either way, it is out.</li>
-      <li>Stars: 1 for winning a level, 2 for winning with at least two goons standing, and 3 for winning with every goon standing.</li>
-      <li>Your Campaign run saves between levels on this device. A loss ends the run.</li>
-    </ul>
+    <!-- Laid out like the other game keys (Maurice, 2026-11-14: "this is horribly organized ... more like the other game keys"); the group names are DRAFT -->
+    <div class="sd-notes">
+      <div class="sd-ksec"><p class="sd-kh">Weapons</p><ul><li class="sd-kr"><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/141-mortar-rest.png" alt=""><div><b>Mortar Stone</b><span>unlimited, steady.</span></div></li><li class="sd-kr"><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/78-bolt.png" alt=""><div><b>Lightning Strike</b><span>lightning strikes the top of the spot you hit.</span></div></li><li class="sd-kr"><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/140-atomic.png" alt=""><div><b>Red Atomic</b><span>one huge blast.</span></div></li><li class="sd-kr"><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/ship-red-right.webp" alt=""><div><b>Barrage</b><span>fire a flare and an airship drops a string of bombs around it.</span></div></li><li class="sd-kr"><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/78-mine.png" alt=""><div><b>Goma Bomb</b><span>splits into three stones in the air (unlock it in the upgrades).</span></div></li></ul></div>
+      <div class="sd-ksec"><p class="sd-kh">On the map</p><ul><li><span>Every third turn, a random drop lands on each side of the map: health, gems, extra turns, extra lives, big boulders, coins, weapons, or upgrades. Walk onto one to grab it.</span><div class="sd-drops"><figure><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/140-icon-repair.png" alt=""><figcaption>health</figcaption></figure><figure><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/74-ruby.png" alt=""><figcaption>gems</figcaption></figure><figure><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/77-boost.png" alt=""><figcaption>extra turns</figcaption></figure><figure><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/../img/skull-heart-red.webp" alt=""><figcaption>extra lives</figcaption></figure><figure><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/141-rock.webp" alt=""><figcaption>big boulders</figcaption></figure><figure><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/141-coin-10.webp" alt=""><figcaption>coins</figcaption></figure><figure><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/78-bolt.png" alt=""><figcaption>weapons</figcaption></figure><figure><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/140-icon-triple-barrel.png" alt=""><figcaption>upgrades</figcaption></figure></div></li><li><span>Water sinks a goon, and lava burns one up. Either way, it is out.</span></li></ul></div>
+      <div class="sd-ksec"><p class="sd-kh">Coins and stars</p><ul><li class="sd-kr"><img class="sd-ki" src="https://africhmaurice.github.io/site/assets/games/141-coin-10.webp" alt=""><div><b>Coins</b><span>+50 at the start of each of your turns, 100 for every coin you grab, 10 for a hit, and 50 for a knockout. Spend them on upgrades: between levels in Campaign, and on your turn in Free-for-All (tap Upgrades).</span></div></li><li class="sd-kr"><svg class="sd-ki" viewBox="0 0 24 23" aria-hidden="true"><polygon points="12,1 14.9,8.6 23,8.6 16.5,13.6 18.9,21.6 12,16.8 5.1,21.6 7.5,13.6 1,8.6 9.1,8.6" fill="#ffd166" stroke="#c53200" stroke-width="1.4" stroke-linejoin="miter"/></svg><div><b>Stars</b><span>1 for winning a level, 2 for winning with at least two goons standing, and 3 for winning with every goon standing.</span></div></li></ul></div>
+      <div class="sd-ksec"><p class="sd-kh">Saving</p><ul><li><span>Your Campaign run saves between levels on this device. A loss ends the run.</span></li></ul></div>
+    </div>
     <div class="gb-post" hidden><p class="gb-msg" role="status"></p><div class="gb-who" hidden></div></div>
     <div class="gb-row">
       <section class="gb-card"><h3>Best this week</h3><p class="gb-big gb-mybest">0</p><p class="gb-note gb-mynote">No games yet this week.</p></section>
       <section class="gb-card"><h3>Campaign: this week&rsquo;s top commanders</h3><p class="gb-note">Board closes in <span class="gb-left">...</span></p><ol class="gb-board gb-camp"><li><span class="gb-empty">Loading the board...</span></li></ol></section>
       <section class="gb-card"><h3>Free-for-All: this week&rsquo;s last goons standing</h3><p class="gb-note">Board closes in <span class="gb-left">...</span></p><ol class="gb-board gb-ffa"><li><span class="gb-empty">Loading the board...</span></li></ol></section>
-    </div>
-    <div class="sd-win" hidden>
-      <p>Level 3 won. Box 141 is yours.</p>
-      <button class="sd-box" type="button" aria-label="Open loot box 141"><img src="https://africhmaurice.github.io/site/assets/loot/141.png" alt="Loot box 141"></button>
     </div>
   </div>
 </section>
@@ -367,7 +364,7 @@
 //   ArcadeCard.update(o) when the board answers: o.rank (place this week), o.best (best this week)
 //   The streak (days in a row the player has played this game) is looked up on its own when the card opens.
 var ArcadeCard = (function () {
-  var DISCORD = 'https://discord.gg/TV8SNnSGdb', url = null, opts = null, panel = null;
+  var DISCORD = 'https://discord.gg/d36Xnj4umU', url = null, opts = null, panel = null;
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec';
   // each card's game, as the web app knows it
   var KEYS = { 'Airship Runner': 'airship_runner', 'Thread the Needle': 'thread_needle', 'Hold the Wall!': 'hold_wall', 'Goma Goons': 'goma_goons',
@@ -638,10 +635,6 @@ var ArcadeCard = (function () {
   var cw=d.closest('.content-wrapper');if(cw){cw.style.padding='0';cw.style.maxWidth='none';}var fe=d.closest('.fluid-engine');if(fe)fe.style.display='block';
   document.documentElement.style.background=document.body.style.background='#0b170f';
 
-  /* ---- loot box 141 ---- */
-  var K='RDdXQjlSSkQ9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
-    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
 
   var ART='https://africhmaurice.github.io/site/assets/games/';
   // crossOrigin: the maps are read pixel by pixel, so the drawings must load CORS-clean from GitHub Pages
@@ -680,7 +673,7 @@ var ArcadeCard = (function () {
   var WW=1920,SKY=700,GS=67.5,PS=67.5,MORTAR_L=45,WALL=24,AS=3;   // AS (v11): every attack 3x bigger: blasts, craters, and the shots themselves
     // v10: goons and drops 3x the old size (22.5 -> 67.5); WALL: the barrier on each side
   function wallIn(){return WALL+GS*.3;}   // how close a goon's middle can get to a barrier
-  var BOX_LEVEL=3,HP_CREW=100,WIN_BONUS=100,WALK=100,WALK_SPEED=60,DMGX=2,STEP=1/120,GC=400,CREW_MAX=5,FFA_N=12;
+  var HP_CREW=100,WIN_BONUS=100,WALK=100,WALK_SPEED=60,DMGX=2,STEP=1/120,GC=400,CREW_MAX=5,FFA_N=12;
   var G=360,VMAX=860,WK=5;   // a full-power shot at 45 degrees carries about the width of the map
   function dl(L){return 1+(L-1)*9/5;}   // levels 1-6 cover the old ten steps of difficulty; past 6 it keeps climbing to the floors below
   function rivalHp(L){return L<=6?40+20*(L-1):150+12*(L-6);}   // v7: 40, 60, 80 ... 140, then +12 a level
@@ -722,14 +715,14 @@ var ArcadeCard = (function () {
   var $=function(q){return d.querySelector(q);};
   var lvEl=$('.sd-lv'),lvWrap=$('.sd-lvw'),scoreEl=$('.sd-score'),bestEl=$('.sd-best'),coinEl=$('.sd-coin'),hp0El=$('.sd-hp0'),hp1El=$('.sd-hp1'),ylEl=$('.sd-yl'),rlEl=$('.sd-rl'),msg=$('.sd-msg'),pauseBtn=$('.sd-pause');
   var starsEl=$('.sd-stars'),starTotEl=$('.sd-startot'),starWrap=$('.sd-starw');
-  var panel=$('.sd-panel'),ph=$('.sd-ph'),pnote=$('.sd-note'),goBtn=$('.sd-go'),altBtn=$('.sd-alt'),win=$('.sd-win'),wpnEl=$('.sd-weapons');
+  var panel=$('.sd-panel'),ph=$('.sd-ph'),pnote=$('.sd-note'),goBtn=$('.sd-go'),altBtn=$('.sd-alt'),wpnEl=$('.sd-weapons');
   var modesEl=$('.sd-modes'),pickEl=$('.sd-pick'),shopEl=$('.sd-shop'),upsEl=$('.sd-ups'),coins2El=$('.sd-coins2'),ovBtn=$('.sd-ov'),findBtn=$('.sd-find');
   var padEl=$('.sd-pad'),bL=$('.sd-l'),bR=$('.sd-r'),bJ=$('.sd-j'),bN=$('.sd-next'),bF=$('.sd-fire');
   var W=WW,H=WW,VW=960,VH=540,DPR=1,narrow=false,FS=16,HFS=12;
   var MAP=null,usingMap=false,liq=new Uint8Array(1),lc=document.createElement('canvas'),lx=lc.getContext('2d'),mini=document.createElement('canvas'),miniDirty=true,miniT=0;
   var solid=new Uint8Array(1),crew=[],proj=[],fx=[],ammo=[[],[]],turnIdx=[0,0];
   var phase='panel',paused=false,level=1,score=0,finalScore=null,runFrom=1,wind=0,team=0,active=null,weapon=0,myWeapon=0,walkLeft=WALK,jumped=false,walkDir=0;
-  var shotTeam=0,settleT=0,ai=null,aiMul=1,last=0,acc=0,clock=0,boxShown=false,walkAcc=0;
+  var shotTeam=0,settleT=0,ai=null,aiMul=1,last=0,acc=0,clock=0,walkAcc=0;
   var inv={twice:0,turn:0,life:0,heal:0},INV_MAX=9,bigNext=[],extraTurn=[],tempUp=[],twiceArmed=false,twiceNow=false,round=0,playT=0,myKos=0,lvDrops=0,gRun=null,mode='campaign',TEAMS=2,coins=0,up={},crewState=null,shots=0,hits=0,streak=0,lvShots=0,lvHits=0,cur=null,pickups=[],boost=[],ffaRound=0,ffaVar=0,place=0,panelKind='start',lastBonus=null,lastPlan=null,variant=null;
   var cam={cx:WW/2,cy:WW/2,z:1},camHold=false,overview=false;
   // stars: best per level number, kept on this device; the run save (between levels only, so a level can't be replayed)
@@ -1089,10 +1082,9 @@ var ArcadeCard = (function () {
     // the crew carries its health on: half of what each goon lost comes back, and a knocked-out goon returns at a quarter
     crewState=crew.filter(function(c){return c.team===0;}).map(function(c){return c.alive?{hp:Math.min(c.max,Math.round(c.hp+(c.max-c.hp)*.5)),max:c.max}:{hp:Math.round(c.max*.25),max:c.max};});
     lastBonus={level:bonus,acc:Math.round(acc*100),accBonus:ab,coins:earn,stars:stars,starPts:sp};
-    var boxNow=L===BOX_LEVEL&&!boxShown&&!(new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())>'2026-11-10');   // after the hunt (Maurice, 2026-11-09): no loot boxesif(boxNow){boxShown=true;win.hidden=false;}
     level=L+1;saveRun();hud();
     openPanel('Level '+L+' won',stars+' of 3 stars (+'+sp+'). +'+bonus+' level bonus. Accuracy '+lastBonus.acc+'% (+'+ab+'). +'+earn+' coins. Your score: '+score+'. Spend coins below, then face level '+level+'.','Start level '+level,null,'shop');
-    drawStars(stars);say('');if(boxNow)setTimeout(function(){win.scrollIntoView({behavior:'smooth',block:'center'});},400);
+    drawStars(stars);say('');
   }
   function saveBest(){if(score>bests[mode]){bests[mode]=score;try{localStorage.setItem(mode==='ffa'?'ma-mortar-ffa-best':'ma-skyduel-best',String(score));}catch(e){}}}
   function runOver(){
@@ -1234,7 +1226,6 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
   });
   document.addEventListener('visibilitychange',function(){if(document.hidden&&phase!=='panel'&&!paused)setPause(true);if(document.hidden&&phase==='panel'&&panelKind==='shop')saveRun();});
   window.addEventListener('pagehide',function(){if(phase==='panel'&&panelKind==='shop')saveRun();});
-  $('.sd-box').addEventListener('click',claim);
 
   /* ---- pointer: one finger or the left button aims (drag on the sky); two fingers or the right/middle button pan;
      a tap on the minimap jumps the view there; in Overview a tap zooms back in on that spot -------------------------- */
@@ -1453,7 +1444,7 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
     return {W:W,H:H,VW:VW,VH:VH,G:G,GS:GS,narrow:narrow,mode:mode,phase:phase,paused:paused,level:level,levelReached:level,score:score,finalScore:finalScore,runFrom:runFrom,fullRun:runFrom===1,place:place,
       best:bests[mode],bests:{campaign:bests.campaign,ffa:bests.ffa},wind:wind,team:team,teams:TEAMS,panel:panelKind,variant:variant,variants:variants().length,usingMap:usingMap,liquid:lq,
       cam:{cx:cam.cx,cy:cam.cy,z:cam.z},overview:overview,camHold:camHold,mini:miniRect(),
-      weapon:WEAPONS[weapon].k,goma:GOMAS[myGoma][0],rivalGoma:GOMAS[rivalGoma(level)][0],ammo:ammo[0]?ammo[0].slice():[],walkLeft:walkLeft,jumped:jumped,solid:n,boxShown:boxShown,
+      weapon:WEAPONS[weapon].k,goma:GOMAS[myGoma][0],rivalGoma:GOMAS[rivalGoma(level)][0],ammo:ammo[0]?ammo[0].slice():[],walkLeft:walkLeft,jumped:jumped,solid:n,
       coins:coins,up:JSON.parse(JSON.stringify(up)),stars:{best:JSON.parse(JSON.stringify(starBest)),total:starTotal(),last:lastBonus?lastBonus.stars:null},saved:readSave(),resume:!!resumeSave,clock:clock,crewState:crewState?crewState.map(function(m){return {hp:m.hp,max:m.max};}):null,
       shots:shots,hits:hits,streak:streak,lvShots:lvShots,lvHits:lvHits,lastBonus:lastBonus,lastPlan:lastPlan,v7:{inv:JSON.parse(JSON.stringify(inv)),shopOpen:shopOpen,twiceArmed:twiceArmed,twiceNow:twiceNow,tempUp:tempUp.slice(),ammo0:ammo[0]?ammo[0].slice():[],proj:proj.map(function(p){return p.w.k;}),fx:fx.map(function(f){return f.k;}),extraTurn:extraTurn.slice(),bigNext:bigNext.slice(),round:round,pickups:pickups.map(function(p){return p.k;}),zoomMul:zoomMul,fitZ:fitZ(),alive0:living(0).length,alive1:living(1).length,rivalHp:crew.filter(function(c){return c.team===1;}).map(function(c){return c.max;})},
       pickups:pickups.map(function(p){return {k:p.k,x:p.x,y:p.y,v:p.v};}),

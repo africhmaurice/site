@@ -87,6 +87,18 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   var me = document.currentScript;
   var inHead = !!(me && me.parentNode && me.parentNode.nodeName === 'HEAD');
   var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // The new motion style (Maurice, 2026-11-12): motion.js on these pages, in place of the fade-in below.
+  // The home page first; more pages join this list as they are checked. The shop never loads loader.js.
+  // Maurice, 2026-11-12: then every page under Fun Stuff and Games, the order page, and the adventure chapters. The game
+  // pages get the dark look but no motion, so nothing moves while people play.
+  var NEW_PAGES = ['the-hunt', 'newsletter', 'oracles-gift/aura-spectrum', 'sky-pirate-quiz-61748', 'crew-dossier', 'bookshelf', 'contests', 'arcade',
+    'order', 'preorder', 'adventure', 'red-city', 'the-crew', 'the-crash', 'the-river', 'the-raft', 'river-mayhem', 'washed-ashore', 'cerunine-attack',
+    'the-reunion', 'the-energy-wave', 'finding-scarlett', 'light-on-her-feet', 'pull-her-out', 'the-source', 'the-break-in', 'search-the-building',
+    'the-captains-request', 'saving-scarlett', 'back-to-the-hunt', 'the-crew-decides'];
+  var GAME_PAGES = ['games', 'sort-the-shelf', 'book-icons', 'blades-and-brass', 'matching-auras', 'crest-quest', 'sky-mines', 'airship-runner',
+    'thread-the-needle', 'trench-run', 'sky-gauntlet', 'the-levian-30527', 'master-stacker-32368', 'hold-the-wall-13212', 'goma-goons-43216'];
+  var HERE = location.pathname.split('/').filter(Boolean).join('/'), ON_GAME = GAME_PAGES.indexOf(HERE) >= 0;
+  var NEWLOOK = HERE === '' || NEW_PAGES.indexOf(HERE) >= 0 || ON_GAME, MOTION = !still && NEWLOOK && !ON_GAME;   // home and The Hunt first (11/12)
   var pending = 0;
   // Runs fn once the loading screen has started fading (right away if there isn't one), so animations
   // near the top of a page play where people can see them instead of underneath the crest.
@@ -100,14 +112,175 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   // Cookie choices and the Meta Pixel (Maurice, 2026-10-07): cookies.js asks visitors in Europe first, loads the
   // Pixel for everyone else, and adds Cookie Preferences to the footer. Squarespace's banner and Pixel are off.
   (function () { var s = document.createElement('script'); s.src = BASE + 'cookies.js'; (document.head || document.documentElement).appendChild(s); })();
+  // Search titles, descriptions, share text, and the book's details for Google (seo.js, Maurice 2026-11-12)
+  (function () { var s = document.createElement('script'); s.src = BASE + 'seo.js'; (document.head || document.documentElement).appendChild(s); })();
+  // The Newsletter page is a plain Squarespace page (no page file), so its new look lives in newsletter-look.js (Maurice 2026-11-12)
+  if (HERE === 'newsletter') (function () { var s = document.createElement('script'); s.src = BASE + 'newsletter-look.js'; (document.head || document.documentElement).appendChild(s); })();
+  // Pistol pointer (Maurice, 2026-11-12): the mouse pointer is his gloved-hand pistol everywhere on the site, links
+  // and buttons too; it clicks from the muzzle. Typing fields keep their text cursor, and game pages keep their own.
+  // His white pointer art with its black outline (Maurice, 2026-11-12: "Brass Point Mouse Click 2", kept as
+  // gun-source-white.png); the old color one is gun-color-*.png.
+  // On the daily puzzles the board itself keeps its own pointers; the rest of the page, the Arcade tiles too, gets the
+  // pistol (Maurice, 2026-11-13: 'make the shooting white gun used on the rest of the site on the arcade too').
+  (function () {
+    var NOT = /^\/(games|game-)/.test(location.pathname) ? ':not(.gs-game):not(.gs-game *)' : '';
+    var g = BASE + 'assets/cursor/gun-', c = '-webkit-image-set(url(' + g + '48.png) 1x,url(' + g + '96.png) 2x) 5 7,url(' + g + '48.png) 5 7,auto';
+    var s = document.createElement('style'); s.id = 'ma-cursor';
+    s.textContent = '@media (pointer:fine){html,body,*:not(input):not(textarea):not(select):not([contenteditable]):not(iframe)' + NOT + '{cursor:' + c + '!important}' +
+      'input[type=button],input[type=submit],input[type=checkbox],input[type=radio],select{cursor:' + c + '!important}' + (NOT ? '.gs-game{cursor:auto!important}' : '') + '}';
+    (document.head || document.documentElement).appendChild(s);
+  })();
+  // Back to the top (Maurice, 2026-11-12: "a button on the bottom right that takes you back up to the top of the page,
+  // one of the new icons"): his licensed triple chevron on an ink square, shown once the page has been scrolled a screen.
+  (function top() {
+    if (!document.body) { document.addEventListener('DOMContentLoaded', top); return; }
+    var css = document.createElement('style');
+    css.textContent = '#ma-top{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:calc(20px + env(safe-area-inset-bottom));z-index:2147483000;width:52px;height:52px;padding:0;border:2px solid #fffffe;border-radius:0;background:#0b170f;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .3s ease,transform .3s ease,visibility 0s linear .3s,background-color .2s ease;cursor:pointer}' +
+      '#ma-top.on{opacity:1;visibility:visible;transform:none;transition:opacity .3s ease,transform .3s ease,background-color .2s ease}' +
+      '#ma-top:hover,#ma-top:focus-visible{background:#c53200}#ma-top:focus-visible{outline:2px solid #a2f590;outline-offset:3px}' +
+      '#ma-top img{height:28px;width:auto;display:block;pointer-events:none}' +
+      // the sideways sliders keep a bar along the bottom; the button sits above it there
+      'body:has(.lk-prog,.ac-prog,[data-ma-hz]) #ma-top{bottom:calc(max(18px,3svh) + 34px)}' +
+      '@media (prefers-reduced-motion:reduce){#ma-top{transition:none}}';
+    document.head.appendChild(css);
+    var b = document.createElement('button');
+    b.id = 'ma-top'; b.type = 'button'; b.setAttribute('aria-label', 'Back to the top'); b.title = 'Back to the top';
+    b.innerHTML = '<img src="' + BASE + 'assets/icons/back-to-top.png" alt="">';
+    b.addEventListener('click', function () {
+      if (window.maLenis && !still) window.maLenis.scrollTo(0, { duration: 1.2 }); else window.scrollTo({ top: 0, behavior: still ? 'auto' : 'smooth' });
+    });
+    document.body.appendChild(b);
+    var on = false;
+    function check() { var s = window.scrollY > Math.min(700, innerHeight * 0.9); if (s !== on) { on = s; b.classList.toggle('on', s); } }
+    addEventListener('scroll', check, { passive: true }); check();
+  })();
+  // A golden bullet (Maurice, 2026-11-12: "when you click something that isn't clickable or a button, the gun shoots a
+  // little golden bullet that flies up over the screen"): from the pistol's muzzle, up and off the top, with a small
+  // flash. Mouse and trackpad only, never on game pages, and not for people who ask for less motion.
+  // on the game pages it fires anywhere but over the game itself
+  if (!still) (function () {
+    var PASS = 'a,button,input,select,textarea,label,summary,option,video,audio,iframe,canvas,[role="button"],[role="link"],[role="tab"],[onclick],[contenteditable],[tabindex]:not([tabindex="-1"]),.lk-mt,#ma-top';
+    var css = document.createElement('style');
+    css.textContent = '.ma-shot{position:fixed;left:0;top:0;z-index:2147483001;pointer-events:none;width:5px;height:16px;margin:-8px 0 0 -2.5px;border-radius:2.5px 2.5px 1px 1px;background:linear-gradient(#fff6c8,#f2c94c 35%,#b8860b);box-shadow:0 0 6px 2px rgba(242,201,76,.7),0 0 14px 4px rgba(242,201,76,.35)}' +
+      '.ma-flash{position:fixed;left:0;top:0;z-index:2147483001;pointer-events:none;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:radial-gradient(circle,#fffbe6 0,#f2c94c 40%,rgba(242,201,76,0) 70%)}';
+    (document.head || document.documentElement).appendChild(css);
+    document.addEventListener('click', function (e) {
+      if (e.button !== 0 || e.defaultPrevented || !matchMedia('(pointer:fine)').matches) return;
+      if (e.target.closest && (e.target.closest(PASS) || e.target.closest('.gs-game'))) return;
+      var sel = window.getSelection && String(window.getSelection()); if (sel && sel.length) return;
+      if (getComputedStyle(e.target).cursor === 'text') return;
+      var x = e.clientX, y = e.clientY, ang = -46 + Math.random() * 4;   // straight out of the barrel: up and to the left at about 45 degrees (Maurice, 2026-11-13)
+      var rad = ang * Math.PI / 180, dist = y + 80, dx = Math.tan(rad) * dist, ty = -80;
+      if (x + dx < -80) { dx = -80 - x; ty = y - dx / Math.tan(rad); dist = y - ty; }   // leaves by the left edge first
+      var f = document.createElement('div'); f.className = 'ma-flash'; f.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+      var s = document.createElement('div'); s.className = 'ma-shot';
+      document.body.appendChild(f); document.body.appendChild(s);
+      f.animate([{ transform: 'translate(' + x + 'px,' + y + 'px) scale(.4)', opacity: 1 }, { transform: 'translate(' + x + 'px,' + y + 'px) scale(1.6)', opacity: 0 }],
+        { duration: 220, easing: 'ease-out' }).onfinish = function () { f.remove(); };
+      s.animate([{ transform: 'translate(' + x + 'px,' + y + 'px) rotate(' + ang + 'deg) scale(.6)', opacity: 1 },
+        { transform: 'translate(' + (x + dx) + 'px,' + ty + 'px) rotate(' + ang + 'deg) scale(1)', opacity: 1 }],
+        { duration: 420 + dist * 0.25, easing: 'cubic-bezier(.2,.6,.3,1)' }).onfinish = function () { s.remove(); };
+    });
+  })();
+  // Dark site (Maurice, 2026-11-12): pages on the new look sit on the dark ink that was behind the icon row
+  // (#0b170f), with white headings and soft white text. It follows the same page list as the motion, and people
+  // who ask for less motion still get the dark look. Sections listed in KEEP keep their own colors (the home
+  // page's Cello's Gate and Meet Maurice sections stay parchment with ink text, Maurice 2026-11-12). Photo backgrounds get a dark
+  // veil instead of a light one so white words read over them.
+  if (NEWLOOK) (function () {
+    var KEEP = ['68f02305a607472bc166989f', '68f11b87e56b4f29961710f1'];   // home: Cello's Gate, Meet Maurice
+    var S = '#page .page-section' + KEEP.map(function (id) { return ':not([data-section-id="' + id + '"])'; }).join('');
+    var s = document.createElement('style'); s.id = 'ma-dark';
+    s.textContent = S + '{--siteBackgroundColor:#0b170f!important;' +
+      '--headingExtraLargeColor:#fff!important;--headingLargeColor:#fff!important;--headingMediumColor:#fff!important;--headingSmallColor:#fff!important;' +
+      '--paragraphLargeColor:rgba(255,255,255,.86)!important;--paragraphMediumColor:rgba(255,255,255,.86)!important;--paragraphSmallColor:rgba(255,255,255,.86)!important;' +
+      '--paragraphLinkColor:#3adb97!important}' +
+      S + ' .section-background{background-color:#0b170f!important}' + S + ' .section-background-overlay{background-color:#0b170f!important}' +
+      'html,body,#siteWrapper{background-color:#0b170f!important}' +
+      // green words and social icons that were dark green on white turn bright emerald so they read on the dark
+      S + ' .sqsrte-text-color--darkAccent,' + S + ' .sqsrte-text-color--accent{color:#3adb97!important}' + S + ' .sqsrte-text-color--black{color:#fff!important}' +
+      S + ' .sqs-svg-icon--social .sqs-use--icon{fill:#3adb97!important}';
+    (document.head || document.documentElement).appendChild(s);
+  })();
+  // The page's social rows (Maurice, 2026-11-12): every icon from the footer row joins the page's own social links
+  // (Meet Maurice has Instagram, TikTok, and YouTube), drawn in that row's color. Walmart is its yellow spark's shape.
+  if (NEWLOOK) (function more(tries) {
+    var lists = document.querySelectorAll('#page .sqs-svg-icon--list'), foot = document.querySelectorAll('#ma-foot .ma-foot-social a');
+    if (!lists.length || !foot.length) { if ((tries || 0) < 80) setTimeout(function () { more((tries || 0) + 1); }, 250); return; }
+    // all on one line: the row may run wider than the button above it, and phones get slightly smaller icons
+    if (!document.getElementById('ma-more-css')) {
+      var cs = document.createElement('style'); cs.id = 'ma-more-css';
+      cs.textContent = '#page .sqs-svg-icon--list[data-ma-more]{flex-wrap:nowrap!important;justify-content:center!important;gap:16px!important}#page .sqs-svg-icon--list[data-ma-more]>a{flex:none!important}' +
+        '@media (max-width:640px){#page .sqs-svg-icon--list[data-ma-more]{gap:9px!important}#page .sqs-svg-icon--list[data-ma-more]>a{width:28px!important;height:28px!important;flex:none}}';
+      document.head.appendChild(cs);
+    }
+    Array.prototype.forEach.call(lists, function (list) {
+      if (list.getAttribute('data-ma-more')) return;
+      list.setAttribute('data-ma-more', '1');
+      var have = Array.prototype.map.call(list.querySelectorAll('a'), function (a) { return a.hostname.replace(/^www\./, ''); });
+      var first = list.querySelector('.sqs-use--icon'), tint = first ? getComputedStyle(first).fill : '#1a5e41';
+      Array.prototype.forEach.call(foot, function (f) {
+        if (have.indexOf(f.hostname.replace(/^www\./, '')) >= 0) return;
+        var a = document.createElement('a'), svg = f.querySelector('svg'), img = f.querySelector('img');
+        a.href = f.href; a.target = '_blank'; a.rel = 'noopener'; a.className = 'ma-more-icon';
+        a.setAttribute('aria-label', f.getAttribute('aria-label') || f.title || '');
+        a.style.cssText = 'display:block;width:32px;height:32px';
+        if (svg) {
+          var s = svg.cloneNode(true);
+          s.setAttribute('fill', tint);
+          Array.prototype.forEach.call(s.querySelectorAll('[fill]'), function (p) { p.setAttribute('fill', tint); });
+          s.style.cssText = 'display:block;width:100%;height:100%';
+          a.appendChild(s);
+        } else if (img) {
+          var src = /walmart/i.test(f.href) ? BASE + 'assets/img/walmart-spark.png' : (img.currentSrc || img.src), m = document.createElement('span');
+          m.style.cssText = 'display:block;width:100%;height:100%;background:' + tint + ';-webkit-mask:url("' + src + '") center/contain no-repeat;mask:url("' + src + '") center/contain no-repeat';
+          a.appendChild(m);
+        }
+        list.appendChild(a);
+      });
+    });
+  })();
+  // Main menu (Maurice, 2026-11-12): the header's links and dropdown links draw an underline in on hover, like the
+  // footer links. The boxed Order Cello's Gate button stays as it is.
+  (function () {
+    // (html body #header ...: the header's own style clears these links' background, so this has to outrank it)
+    var s = document.createElement('style'), M = 'html body #header .header-nav-item:not(:last-child)>a,html body #header .header-nav-item:not(:last-child)>.header-nav-folder-title,html body #header .header-nav-folder-item a';
+    var H = M.split(',').map(function (x) { return '@@:hover,@@:focus-visible'.replace(/@@/g, x); }).join(',');
+    s.textContent = '@media (hover:hover){' + M + '{background-image:linear-gradient(currentColor,currentColor)!important;background-repeat:no-repeat!important;background-position:100% 100%!important;background-size:0% 1.5px!important;text-decoration:none!important;transition:background-size .45s cubic-bezier(.6,0,.2,1)!important}' +
+      H + '{background-position:0 100%!important;background-size:100% 1.5px!important}}';
+    (document.head || document.documentElement).appendChild(s);
+  })();
+  // game pages get the footer's motion only (Maurice, 2026-11-13: the footer animation went away on the games); the
+  // smooth scrolling and the rest would fight the sideways row
+  if (!still && ON_GAME) window.MA_MOTION_FOOTER_ONLY = true;
+  if (MOTION || (!still && ON_GAME)) (function go() {
+    if (!document.body) { document.addEventListener('DOMContentLoaded', go); return; }
+    var s = document.createElement('script'); s.src = BASE + 'motion.js'; document.head.appendChild(s);
+  })();
   // Phones (Maurice, 2026-11-04): the hunt menu gets a solid bar, so its button never floats over the page's text.
-  (function () { var s = document.createElement('style'); s.textContent = '@media (max-width:900px){#hunt-nav{background:#1a5e41!important;padding:5px 0!important}}'; (document.head || document.documentElement).appendChild(s); })();
+  // The menu bar keeps one size from the first moment (Maurice, 2026-11-13: 'when I scroll at the beginning, the menu changes
+  // sizes and it causes a glitch'): the page builder's shrink-on-scroll class is taken off every time it is put on.
+  (function hold() {
+    var h = document.getElementById('header');
+    if (!h) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hold); return; }
+    if (h.classList.contains('shrink')) h.classList.remove('shrink');
+    if (window.MutationObserver) new MutationObserver(function () { if (h.classList.contains('shrink')) h.classList.remove('shrink'); }).observe(h, { attributes: true, attributeFilter: ['class'] });
+  })();
+  (function () { var s = document.createElement('style'); s.textContent = '@media (max-width:900px){#hunt-nav{background:#1a5e41!important;padding:5px 0!important}}' +
+    // phones and tablets: the logo on the left and the menu button on the right, like every other page's menu bar (Maurice,
+    // 2026-11-13: the logo was missing on Contests, the Arcade, and The Adventure)
+    'html body #hunt-nav,html body #header,html body #header .header-background,html body #header.shrink .header-background{background:#0b170f!important;background-color:#0b170f!important;opacity:1!important;backdrop-filter:none!important}' +   // the menu bar is ink from the start, on every screen (Maurice, 2026-11-13: 'always active ... easier on the eyes')
+    '@media (max-width:1100px){html body #hunt-nav{display:flex!important;align-items:center;justify-content:space-between;padding:10px 20px!important}' +
+    'html body #hunt-nav .mn-row{display:flex!important;flex:none;max-width:none;margin:0!important;justify-content:flex-start!important}html body #hunt-nav .mn-row .mn-logo{margin:0!important}html body #hunt-nav .mn-row .mn-right{display:none!important}' +
+    'html body #hunt-nav .mn-logo img{width:clamp(84px,24vw,112px)!important}html body #hunt-nav .mn-burger{display:flex!important;margin:0!important}}'; (document.head || document.documentElement).appendChild(s); })();
+  // No strip above the footer (Maurice, 2026-11-12): on wide screens Squarespace stretches a page's one code block
+  // taller than the page inside it, and the section color showed as a band above the footer. The block now ends
+  // where the page ends.
+  (function () { var s = document.createElement('style'); s.textContent = '#page .fluid-engine:has(> .fe-block:only-child .sqs-block-code){grid-template-rows:none!important;grid-auto-rows:auto!important}' +
+    '#page .page-section:has(.fluid-engine > .fe-block:only-child .sqs-block-code) > .content-wrapper{padding-bottom:0!important}'; (document.head || document.documentElement).appendChild(s); })();
   // Headings (Maurice, 2026-10-09): heads.js turns every Atomic Marker and Cinzel heading into Cracked Imperia Bold
   // with its 3D (Extrude Flush). Clue and puzzle text keeps its own capitals and line breaks.
   (function () { var s = document.createElement('script'); s.src = BASE + 'heads.js'; (document.head || document.documentElement).appendChild(s); })();
-  // The Golden Trail (Maurice, 2026-10-31): golden.js records the hidden golden characters and draws the golden board
-  // on /loot for hunters with all 151 loot boxes. For everyone else it does nothing.
-  (function () { var s = document.createElement('script'); s.src = BASE + 'golden.js'; (document.head || document.documentElement).appendChild(s); })();
 
   function runScripts(root) {
     var scripts = Array.prototype.slice.call(root.querySelectorAll('script'));
@@ -298,7 +471,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
       })
       .then(function () {
         el.setAttribute('data-ma-state', 'ready');
-        pending--; reveal(el); huntGift(); fitNavs();
+        pending--; topGap(); reveal(el); huntGift(); fitNavs();
         // Pages that size themselves on window load get a second chance now that they exist.
         try { window.dispatchEvent(new Event('resize')); } catch (e) {}
         // A link like /the-hunt#rewards arrives before its section exists; scroll once it does.
@@ -318,7 +491,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   // Game pages stay still: a board that fades in as you scroll can look like an empty page.
   function gamePage() { return !!document.querySelector('[data-ma-page="games"],[data-ma-page^="game-"]') || /^\/(games|game-)/.test(location.pathname); }
   function reveal(root) {
-    if (still || gamePage() || !('IntersectionObserver' in window)) return;
+    if (still || MOTION || gamePage() || !('IntersectionObserver' in window)) return;
     if (!document.getElementById('ma-reveal-css')) {
       var css = document.createElement('style'); css.id = 'ma-reveal-css';
       css.textContent = '.ma-rv{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .8s cubic-bezier(.2,.7,.2,1)}.ma-rv.ma-in{opacity:1;transform:none}';
@@ -552,115 +725,9 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     });
     reveal(document.body.querySelector('#sections') || document.body.querySelector('#page') || document.body);
   }
-  // The hunt menu (#hunt-nav, in every hunt page) on a screen too narrow for the whole row: Tasks, Riddles,
-  // Clues, Games and Contests fold into one EARN POINTS dropdown (Maurice, 2026-09-27). It measures whether the
-  // row really fits, so a browser's larger minimum font size counts too. If even that doesn't fit, the phone
-  // menu button takes over. Phones and tablets already get the phone menu from each page's own styles.
-  var EARN = /\/the-hunt#tasks$|\/the-hunt#riddles$|\/lootbox-clue$|\/games$|\/arcade$|\/contests$/;
-  // Act menus (Maurice, 2026-10-01): Current Progress adds the Act One and Act Two standings and splits Rewards by
-  // act; Earn Points splits Tasks and Riddles & Puzzles by act. Done here so every page's copy of the menu changes at
-  // once.
-  var ACTMENU = true;   // approved and live (Maurice, 2026-10-01)
+  // The green menu (#hunt-nav, in every hunt-type page) on a screen too narrow for the whole row: it sits tighter,
+  // and if even that does not fit, the phone menu button takes over. It measures whether the row really fits.
   var SITE = 'https://www.mauriceafrich.com';
-  function actSub(text, act) { var sp = document.createElement('span'); sp.className = 'ma-sub ma-sub-' + act; sp.textContent = text; return sp; }
-  function actLink(href, text) { var a = document.createElement('a'); a.href = href; a.textContent = text; return a; }
-  function earnActs(list) {
-    // Act Four (Maurice, 2026-11-02): its section owns #tasks; Act Three's riddles and puzzles sit in its drawer
-    list.appendChild(actSub('ACT FOUR', 'four'));
-    list.appendChild(actLink(SITE + '/the-hunt#tasks', 'TASKS'));
-    list.appendChild(actLink(SITE + '/the-hunt#act4-riddles', 'RIDDLES & PUZZLES'));
-    // the locked acts share one Past Acts heading (Maurice, 2026-11-02: "let's even this out")
-    list.appendChild(actSub('PAST ACTS', 'all'));
-    list.appendChild(actLink(SITE + '/the-hunt#act3-tasks', 'ACT THREE TASKS'));
-    list.appendChild(actLink(SITE + '/the-hunt#riddles', 'ACT THREE RIDDLES'));
-    list.appendChild(actLink(SITE + '/the-hunt#act2-tasks', 'ACT TWO TASKS'));
-    list.appendChild(actLink(SITE + '/the-hunt#act2-riddles', 'ACT TWO RIDDLES'));
-    list.appendChild(actLink(SITE + '/the-hunt#act1-tasks', 'ACT ONE TASKS'));
-    list.appendChild(actLink(SITE + '/the-hunt#act1-riddles', 'ACT ONE RIDDLES'));
-  }
-  // the Daily Checklist (Maurice, 2026-11-02): tops the panel's third column
-  var CHECK_URL = 'https://www.mauriceafrich.com/daily-checklist';
-  function actCss() {
-    if (!ACTMENU || document.getElementById('ma-act-menu')) return;
-    var st = document.createElement('style'); st.id = 'ma-act-menu';
-    var sel = function (x) { return ['#hunt-nav ', '#hunt-nav-ov ', '#header '].map(function (p) { return p + x; }).join(','); };
-    st.textContent = sel('span.ma-sub') + '{display:block!important;align-self:stretch;font-family:Almarai,sans-serif!important;font-weight:800!important;font-size:11px!important;letter-spacing:.16em!important;text-transform:uppercase!important;text-align:center!important;color:#fff!important;margin:10px 0 4px!important;padding:4px 10px!important;white-space:nowrap}' +
-      sel('span.ma-sub-one') + '{background:#482d85!important}' + sel('span.ma-sub-two') + '{background:#1a5e41!important;outline:1px solid #89fbcb}' + sel('span.ma-sub-all') + '{background:rgba(243,234,217,.14)!important}' + sel('span.ma-sub-three') + '{background:#912501!important;outline:1px solid #fd7547}' + sel('span.ma-sub-four') + '{background:#2c6021!important;outline:1px solid #a2f590}' +
-      sel('span.ma-sub-past') + '{background:none!important;color:rgba(243,234,217,.6)!important;margin:14px 0 2px!important}';
-    document.head.appendChild(st);
-  }
-  // Act Four (Maurice, 2026-11-02): the Adventure menu is one link, THE ADVENTURE SO FAR; every chapter is reached
-  // from that page or from the map on the Hunt page. Any ADVENTURE group or dropdown keeps only that link.
-  function advOne(root) {
-    if (!root || !root.querySelectorAll) return;
-    var head = function (g) { var h = g.firstElementChild; return h && h.tagName !== 'A' ? (h.textContent || '').replace(/\s+/g, ' ').trim().toUpperCase() : ''; };
-    Array.prototype.forEach.call(root.querySelectorAll('.mn-ovgroup, .ma-grp, .ma-ovgroup'), function (g) {
-      if (head(g) !== 'ADVENTURE') return;
-      var keep = null;
-      Array.prototype.slice.call(g.querySelectorAll('a')).forEach(function (a) { if (/\/adventure\/?$/.test(a.getAttribute('href') || '') && !keep) keep = a; else a.parentNode.removeChild(a); });
-      if (!keep) { keep = document.createElement('a'); keep.href = SITE + '/adventure'; if (g.querySelector('a')) keep.className = g.querySelector('a').className; g.appendChild(keep); }
-      keep.textContent = 'THE ADVENTURE SO FAR';
-    });
-    // the green hunt menu's desktop ADVENTURE dropdown becomes a plain link
-    Array.prototype.forEach.call(root.querySelectorAll('.mn-drop'), function (d) {
-      var t = d.querySelector(':scope > a.mn-link'); if (!t || !/\/adventure\/?$/.test(t.getAttribute('href') || '')) return;
-      var a = t.cloneNode(false); a.removeAttribute('aria-haspopup'); a.className = 'mn-link mn-vote'; a.textContent = 'THE ADVENTURE SO FAR';
-      d.parentNode.replaceChild(a, d);
-    });
-  }
-  function actify(root) {
-    advOne(root);
-    if (!ACTMENU || !root || root.getAttribute('data-acts')) return;
-    root.setAttribute('data-acts', '1'); actCss();
-    var q = function (sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); };
-    // The Games page is THE ARCADE in every menu (Maurice, 2026-10-13); the arcade links go to /arcade (the lobby, 2026-11-02); Skyword stays /games.
-    q('a[href$="/games"],a[href$="/arcade"]').forEach(function (x) { if (/^\s*games\s*$/i.test(x.textContent)) x.textContent = 'THE ARCADE'; });
-    q('.mn-dd-in a[href$="/leaderboard"], .mn-ovgroup a[href$="/leaderboard"]').forEach(function (a) {
-      var p = a.parentNode, next = a.nextSibling;
-      // Act Four right under the Leaderboard; the locked acts' standings go under Past Standings below (Maurice, 2026-11-02)
-      p.insertBefore(actLink(SITE + '/leaderboard?act=four', 'ACT FOUR STANDINGS'), next);
-    });
-    // Rewards is its own box in the panel's third column, under Adventure (Maurice, 2026-11-02)
-    q('.mn-dd-in a[href$="/the-hunt#rewards"], .mn-ovgroup a[href$="/the-hunt#rewards"]').forEach(function (a) {
-      var p = a.parentNode;
-      if (p.classList.contains('mn-ovgroup') && p.parentNode) {
-        var g = root.ownerDocument.createElement('div'); g.className = 'mn-ovgroup';
-        g.appendChild(root.ownerDocument.createElement('span')).textContent = 'REWARDS';
-        g.appendChild(actLink(SITE + '/the-hunt#rewards-act-four', 'ACT FOUR'));   // newest first
-        g.appendChild(actLink(SITE + '/the-hunt#rewards-act-three', 'ACT THREE'));
-        g.appendChild(actLink(SITE + '/the-hunt#rewards-act-two', 'ACT TWO'));
-        g.appendChild(actLink(SITE + '/the-hunt#rewards-act-one', 'ACT ONE'));
-        g.appendChild(actLink(SITE + '/act-three-winners', 'ACT THREE WINNERS'));   // the replayed Act Three draws (Maurice, 2026-11-09)
-        g.appendChild(actLink(SITE + '/act-two-winners', 'ACT TWO WINNERS'));   // the replayed Act Two draws (Maurice, 2026-10-19)
-        g.appendChild(actLink(SITE + '/act-one-winners', 'ACT ONE WINNERS'));   // the replayed draws (Maurice, 2026-10-02)
-        p.parentNode.insertBefore(g, p.nextSibling);
-      }
-      p.removeChild(a);
-    });
-    // Questions? (Maurice, 2026-10-09): no longer its own menu item; it closes the Current Progress dropdown instead,
-    // after the Past Standings.
-    var cp = q('.mn-dd-in, .mn-ovgroup, .ma-grp').filter(function (g) { return g.querySelector('a[href*="/leaderboard"]'); });
-    if (cp.length) {
-      q('a[href$="/questions"]').forEach(function (a) { a.parentNode.removeChild(a); });
-      cp.forEach(function (g) {
-        g.appendChild(actSub('PAST STANDINGS', 'past'));
-        g.appendChild(actLink(SITE + '/leaderboard?act=three', 'ACT THREE STANDINGS'));
-        g.appendChild(actLink(SITE + '/leaderboard?act=two', 'ACT TWO STANDINGS'));
-        g.appendChild(actLink(SITE + '/leaderboard?act=one', 'ACT ONE STANDINGS'));
-        g.appendChild(actLink(SITE + '/questions', 'QUESTIONS?'));
-      });
-    }
-    // the phone menu: Tasks, Riddles, Clues, Games and Contests become one Earn Points group, split by act
-    var ov = root.id === 'hunt-nav-ov' ? root : root.querySelector('#hunt-nav-ov');
-    var first = ov && Array.prototype.filter.call(ov.children, function (el) { return el.tagName === 'A' && EARN.test(el.href); });
-    if (first && first.length) {
-      var g = root.ownerDocument.createElement('div'); g.className = 'mn-ovgroup';
-      var h = root.ownerDocument.createElement('span'); h.textContent = 'EARN POINTS'; g.appendChild(h);
-      ov.insertBefore(g, first[0]);
-      first.forEach(function (el) { if (/#tasks$|#riddles$/.test(el.href)) el.parentNode.removeChild(el); else g.appendChild(el); });
-      earnActs(g);
-    }
-  }
   function navCss() {
     if (document.getElementById('ma-nav-fit')) return;
     var st = document.createElement('style'); st.id = 'ma-nav-fit';
@@ -675,64 +742,26 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
       '#hunt-nav.mn-burgered .mn-row{display:none!important}#hunt-nav.mn-burgered .mn-burger{display:flex!important}';
     document.head.appendChild(st);
   }
-  function navSetup(nav) {
-    if (nav.getAttribute('data-fit')) return;
-    var links = nav.querySelector('.mn-links'); if (!links) return;
-    var eps = Array.prototype.filter.call(links.children, function (a) { return a.tagName === 'A' && EARN.test(a.href); });
-    if (eps.length < 2) return;
-    nav.setAttribute('data-fit', '1'); navCss();
-    eps.forEach(function (a) { a.classList.add('mn-ep'); });
-    var caret = nav.querySelector('.mn-caret');
-    var d = document.createElement('div'); d.className = 'mn-drop mn-earn';
-    d.innerHTML = '<a href="javascript:void(0)" class="mn-link" aria-haspopup="true">EARN POINTS' + (caret ? caret.outerHTML : '') + '</a><div class="mn-dd"><div class="mn-dd-in"></div></div>';
-    var list = d.querySelector('.mn-dd-in');
-    eps.forEach(function (a) { if (ACTMENU && /#tasks$|#riddles$/.test(a.href)) return; var c = document.createElement('a'); c.href = a.href; c.textContent = a.textContent; list.appendChild(c); });
-    if (ACTMENU) earnActs(list);
-    links.insertBefore(d, eps[0]);
-  }
   function navFits(nav) {
     var row = nav.querySelector('.mn-row'); if (!row) return true;
     var last = nav.querySelector('.mn-drop-cta') || row.lastElementChild;
     return row.scrollWidth <= row.clientWidth + 1 && (!last || last.getBoundingClientRect().right <= Math.min(row.getBoundingClientRect().right, window.innerWidth) + 1);
   }
-  // The hunt menu's dropdowns get the phone menu's look (Maurice, 2026-09-27): one box per dropdown with a small
-  // green heading, links centered under it, the profile as a red button. The pre-order list stays as it is.
-  function boxDrops(nav) {
-    if (nav.getAttribute('data-boxed')) return;
-    var drops = nav.querySelectorAll('.mn-links .mn-drop:not(.mn-drop-cta)');
-    if (!drops.length) return;
-    nav.setAttribute('data-boxed', '1');
-    if (!document.getElementById('ma-nav-box')) {
-      var st = document.createElement('style'); st.id = 'ma-nav-box';
-      st.textContent = '#hunt-nav .mn-dd-in.ma-boxed{padding:12px}' +
-        '#hunt-nav .ma-grp{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid rgba(243,234,217,.3);padding:12px 14px 10px}' +
-        '#hunt-nav .ma-grp>span{font-family:\'Almarai\',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590;text-transform:uppercase;margin-bottom:4px;white-space:nowrap}' +
-        '#hunt-nav .ma-grp a{text-align:center;padding:8px 14px!important}' +
-        '#hunt-nav .ma-grp a.mn-profile{justify-content:center;border:1.5px solid #f3ead9;margin:4px 0;padding:9px 16px!important}#hunt-nav .ma-grp a.mn-profile svg{display:none}';
-      document.head.appendChild(st);
-    }
-    Array.prototype.forEach.call(drops, function (d) {
-      var inner = d.querySelector('.mn-dd-in'), head = d.querySelector('.mn-link');
-      if (!inner || !head || inner.querySelector('.ma-grp')) return;
-      var g = document.createElement('div'); g.className = 'ma-grp';
-      var h = document.createElement('span'); h.textContent = (head.textContent || '').replace(/\s+/g, ' ').trim(); g.appendChild(h);
-      while (inner.firstChild) g.appendChild(inner.firstChild);
-      inner.appendChild(g); inner.classList.add('ma-boxed');
-    });
-  }
   function fitNavs() {
-    huntOne();
-    actify(document.getElementById('hunt-nav-ov'));
+    newHunt();
     Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
-      actify(nav);
-      navSetup(nav);
-      boxDrops(nav);
       if (!nav.getAttribute('data-fit')) return;
-      nav.classList.remove('mn-compact', 'mn-burgered');
+      nav.classList.remove('mn-compact', 'mn-burgered'); nav.removeAttribute('data-ma-tight'); nav.style.removeProperty('--mn-gap'); nav.style.removeProperty('--mn-fs');
       var row = nav.querySelector('.mn-row');
       if (!row || getComputedStyle(row).display === 'none') return;   // the page's own phone menu is showing
       if (navFits(nav)) return;
       nav.classList.add('mn-compact');
+      if (navFits(nav)) return;
+      // still too wide: the spacing steps down to 8px, then the type to 11px, before the phone menu button takes over
+      var lk = nav.querySelector('.mn-links'), g = Math.floor(parseFloat(getComputedStyle(lk).columnGap)) || 12, f = parseFloat(getComputedStyle(lk.querySelector('.mn-link')).fontSize) || 12;
+      nav.setAttribute('data-ma-tight', '1'); nav.style.setProperty('--mn-gap', g + 'px'); nav.style.setProperty('--mn-fs', f + 'px');
+      while (!navFits(nav) && g > 8) { g -= 1; nav.style.setProperty('--mn-gap', g + 'px'); }
+      while (!navFits(nav) && f > 11) { f -= 0.5; nav.style.setProperty('--mn-fs', f + 'px'); }
       if (!navFits(nav)) nav.classList.add('mn-burgered');
     });
   }
@@ -741,139 +770,27 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitNavs);
   window.maFitNavs = fitNavs;
 
-  // Main site menu: The Treasure Hunt dropdown is the hunt pages' menu, exactly (Maurice, 2026-09-27). It is built
-  // from pages/hunt-menu.html each time, so a change to the hunt menu shows up here too. Desktop: the hunt menu's
-  // links in the same order and look, and each of its dropdowns (Submit, Current Progress, Adventure) as a flyout
-  // to the side. Phone menu: the hunt phone menu's list and boxed groups. Squarespace's own Adventure folder is
-  // hidden from the top level (it can't nest folders); its pages are managed there as before.
-  var HUNT = '/new-dropdown-1', ADV = '/adventure-menu', huntBuilt = false;
-  function huntCss() {
-    if (document.getElementById('ma-hunt-css')) return;
-    var st = document.createElement('style'); st.id = 'ma-hunt-css';
-    var box = 'background:rgba(9,23,7,.95);border:1px solid rgba(243,234,217,.25);min-width:170px;padding:0;';
-    // the same panel opens from the main menu and from the green hunt menu (one menu, Maurice 2026-10-09)
-    var desk = function (P) { return (
-      '#header .header-display-desktop .ma-hunt-dd{' + box + '}' +
-      '#header .header-display-desktop .ma-hunt-dd .ma-mega{display:grid;grid-template-columns:auto auto;gap:16px;padding:16px;align-items:start}' +
-      '#header .header-display-desktop .ma-hunt-dd .ma-mega-links{display:flex;flex-direction:column}' +
-      // the boxes flow into three columns so the dropdown fits on a laptop screen; a very short window scrolls inside it
-      '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups{display:block;columns:3;column-gap:12px;width:840px}' +
-      '#header .header-display-desktop .ma-hunt-dd .ma-grp a.ma-hl{max-width:100%;white-space:normal!important}' +
-      '#header .header-display-desktop .ma-hunt-dd .ma-mega-groups>.ma-grp{break-inside:avoid;margin:0 0 12px}' +
-      '#header .header-display-desktop .ma-hunt-dd .ma-mega{width:max-content;max-height:calc(100vh - 120px);overflow-y:auto;overscroll-behavior:contain}' +
-      '#header .header-display-desktop .ma-hunt-dd .ma-grp{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid rgba(243,234,217,.3);padding:12px 14px 10px}' +
-      '#header .header-display-desktop .ma-hunt-dd .ma-grp>span{font-family:\'Almarai\',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590;text-transform:uppercase;margin-bottom:4px}' +
-      '#header .header-display-desktop .ma-hunt-dd a.ma-hl{display:block!important;margin:0!important;padding:11px 18px!important;color:#fff!important;background:none!important;font-family:\'Almarai\',sans-serif!important;font-weight:700!important;font-size:clamp(12px,.92vw,14.4px)!important;letter-spacing:.07em!important;text-transform:uppercase!important;text-decoration:none!important;white-space:nowrap;line-height:1.2!important;text-align:left!important;box-sizing:border-box}' +
-      '#header .header-display-desktop .ma-hunt-dd a.ma-hl:hover{color:#a2f590!important;background:rgba(255,255,255,.06)!important}' +
-      '#header .header-display-desktop .ma-hunt-dd .ma-grp a.ma-hl{text-align:center!important;padding:8px 14px!important}' +
-      '#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-vote{color:#a2f590!important}#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-vote:hover{color:#ff4c0f!important}' +
-      '#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-profile{background:#c1330a!important;border:1.5px solid #f3ead9;margin:4px 0!important;padding:9px 16px!important}#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-profile:hover{background:#e04a12!important;color:#fff!important}#header .header-display-desktop .ma-hunt-dd a.ma-hl.mn-profile svg{display:none}' +
-      '#header .header-display-desktop .ma-hunt-dd{overflow:visible}' +
-      '#header .header-display-desktop .ma-hunt-dd .ma-grp a.ma-hl.mn-profile{white-space:nowrap!important;padding:9px 10px!important}' +
-      // three columns: The Treasure Hunt over Earn Points, Submit Points over Current Progress, then Adventure
-      '#header .header-display-desktop .ma-hunt-dd .ma-mega.ma-mega3{display:grid;grid-template-columns:repeat(3,minmax(250px,auto));gap:12px;padding:16px;align-items:start}' +
-      '#header .header-display-desktop .ma-hunt-dd .ma-col{display:flex;flex-direction:column;gap:12px}' +
-      '#header .header-display-desktop .ma-hunt-dd a.ma-hl.ma-top{text-align:center!important;border:1px solid rgba(243,234,217,.3);padding:14px!important;font-weight:800!important;letter-spacing:.12em!important}' +
-      '#header .header-display-desktop .ma-hunt-dd a.ma-hl.ma-check{background:#2c6021!important;border:1.5px solid #f3ead9!important}#header .header-display-desktop .ma-hunt-dd a.ma-hl.ma-check:hover{background:#3b7d2c!important;color:#fff!important}'
-      ).split('#header .header-display-desktop .ma-hunt-dd').join(P); };
-    st.textContent = desk('#header .header-display-desktop .ma-hunt-dd') + desk('#hunt-nav .ma-hunt-dd') +
-      '#hunt-nav .mn-dd-in.ma-hunt-dd{display:block}' +
-      // phone menu: the hunt phone menu's boxed groups
-      '#header .header-menu .ma-ovgroup{display:flex;flex-direction:column;align-items:center;gap:12px;border:1px solid rgba(243,234,217,.3);padding:14px 16px 16px;margin:10px auto;width:86%;box-sizing:border-box}' +
-      '#header .header-menu .ma-ovgroup>span{font-family:\'Almarai\',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590}' +
-      '#header .header-menu .ma-ovgroup a{font-size:15px!important;line-height:1.3!important;text-align:center;padding:0!important;margin:0!important}#header .header-menu .ma-ovgroup a.mn-profile{background:#c1330a;border:1.5px solid #f3ead9;padding:9px 16px!important;white-space:nowrap;font-size:15px!important}' +
-      '#header .header-menu .ma-ovgroup a.mn-profile svg{display:none}#header .header-menu a.mn-vote{color:#a2f590!important}';
-    document.head.appendChild(st);
-  }
   function plainText(a) { return (a.textContent || '').replace(/\s+/g, ' ').trim(); }
-  // One menu (Maurice, 2026-10-09). The main menu reads, left to right: THE TREASURE HUNT (dropdown), TRENCH MARKET,
-  // LINKS, NEWSLETTER, JOIN THE DISCORD!, and the Pre-Order dropdown, 25px apart. Games and Oracle's Gift live only in
-  // The Treasure Hunt panel (Maurice, 10/10).
-  // Submit is no longer its own item. The Treasure Hunt dropdown has three columns: THE TREASURE HUNT (the Hunt page)
-  // over Earn Points (Games back in it, Maurice 10/10), SUBMIT POINTS over Current Progress, then Adventure with
-  // Oracle's Gift under it.
-  // The green hunt menu on the hunt pages shows exactly the same menu.
-  var MEGA = [[['link', 'THE TREASURE HUNT', '/the-hunt'], ['group', 'EARN POINTS']], [['link', 'SUBMIT POINTS', '/points'], ['group', 'CURRENT PROGRESS']], [['check'], ['group', 'ADVENTURE'], ['group', 'REWARDS'], ['gift']]];
-  var DISCORD = 'https://discord.gg/d36Xnj4umU', GAP = 25;
-  // Trench Market is a dropdown on every menu (Maurice, 2026-10-10): Shop All and every category in the shop. The shop
-  // doesn't share its category list with other sites, so it is listed here; the shop's own menu (shopmenu.js) reads it live.
-  var SHOP = 'https://shop.mauriceafrich.com', SHOP_CATS = [['Shop All', '/collections/merch'], ['Stickers', '/collections/stickers'], ['Apparel', '/collections/apparel'], ['Hats', '/collections/hats'],
-    ['Beanies', '/collections/beanies'], ['Pins', '/collections/pins'], ['Mugs', '/collections/mugs'], ['Puzzles', '/collections/puzzles'], ['Prints', '/collections/art-prints']];
-  var TM = '/trench-market';
-  // the main menu's Trench Market dropdown, made from the Oracle's Gift dropdown
-  function marketFolder(gift) {
-    var item = gift.cloneNode(true), btn = item.querySelector('.header-nav-folder-title');
-    btn.setAttribute('data-href', TM); btn.setAttribute('aria-controls', 'trench-market'); btn.setAttribute('aria-expanded', 'false');
-    item.querySelector('.header-nav-folder-title-text').textContent = 'Trench Market';
-    var box = item.querySelector('.header-nav-folder-content'), tpl = box.querySelector('.header-nav-folder-item').cloneNode(true);
-    box.id = 'trench-market'; box.innerHTML = ''; box.classList.remove('ma-boxdd'); item.removeAttribute('data-ma-boxed');
-    SHOP_CATS.forEach(function (c) { var row = tpl.cloneNode(true), a = row.querySelector('a'); a.href = SHOP + c[1]; a.removeAttribute('target');
-      a.querySelector('.header-nav-folder-item-content').textContent = c[0]; box.appendChild(row); });
-    return item;
-  }
-  function megaLink(a, cls) {
-    var n = document.createElement('a'); n.href = a.getAttribute('href'); n.className = cls;
-    ['mn-vote', 'mn-profile'].forEach(function (c) { if (a.classList.contains(c)) n.classList.add(c); });
-    if (a.getAttribute('style')) n.setAttribute('style', a.getAttribute('style'));
-    if (a.getAttribute('target')) { n.target = a.getAttribute('target'); n.rel = 'noopener'; }
-    var svg = a.classList.contains('mn-profile') && a.querySelector('svg');
-    if (svg) n.appendChild(document.importNode(svg, true));
-    n.appendChild(document.createTextNode(plainText(a)));
-    return n;
-  }
-  // a hunt phone menu's boxed groups (after actify), by heading
-  function megaModel(ov) {
-    var gs = {};
-    Array.prototype.forEach.call(ov.children, function (el) {
-      if (!el.classList.contains('mn-ovgroup')) return;
-      var h = el.firstElementChild; if (h && h.tagName !== 'A') gs[plainText(h).toUpperCase()] = el;
-    });
-    return gs;
-  }
-  // a group's heading and links, copied
-  function groupKids(g, cls, add) {
-    var seen = {};   // each link once, even where a page's copy of the menu got it twice
-    Array.prototype.forEach.call(g.children, function (c) {
-      if (c.tagName === 'A') { var k = (c.getAttribute('href') || '') + '|' + plainText(c); if (seen[k]) return; seen[k] = 1; add(megaLink(c, cls)); }
-      else { var h = document.createElement('span'); h.textContent = plainText(c); if (c.className) h.className = c.className; add(h); }
-    });
-  }
-  // the Oracle's Gift box at the foot of the panel's third column (Maurice, 2026-10-10)
-  function giftBox(boxCls, linkCls) {
-    var box = document.createElement('div'); box.className = boxCls;
-    var h = document.createElement('span'); h.textContent = "ORACLE'S GIFT"; box.appendChild(h);
-    var a = document.createElement('a'); a.href = AURA_URL; a.className = linkCls; a.textContent = 'AURA SPECTRUM'; box.appendChild(a);
-    var q = document.createElement('a'); q.href = QUIZ_URL; q.className = linkCls; q.textContent = 'THE SKY PIRATE QUIZ'; box.appendChild(q);
-    return box;
-  }
-  function megaPanel(ov) {
-    var gs = megaModel(ov), mega = document.createElement('div'); mega.className = 'ma-mega ma-mega3';
-    MEGA.forEach(function (col) {
-      var c = document.createElement('div'); c.className = 'ma-col';
-      col.forEach(function (it) {
-        if (it[0] === 'link') { var a = document.createElement('a'); a.href = SITE + it[2]; a.className = 'ma-hl ma-top'; a.textContent = it[1]; c.appendChild(a); return; }
-        if (it[0] === 'gift') { c.appendChild(giftBox('ma-grp', 'ma-hl')); return; }
-        if (it[0] === 'check') { var k = document.createElement('a'); k.href = CHECK_URL; k.className = 'ma-hl ma-top ma-check'; k.textContent = 'DAILY CHECKLIST'; c.appendChild(k); return; }
-        if (!gs[it[1]]) return;
-        var box = document.createElement('div'); box.className = 'ma-grp';
-        groupKids(gs[it[1]], 'ma-hl', function (k) { box.appendChild(k); });
-        c.appendChild(box);
-      });
-      mega.appendChild(c);
-    });
-    return mega;
-  }
-  // 25px between the links wherever the row fits; on a narrower laptop the spacing tightens just enough to keep the
-  // Pre-Order button where the header's right edge has always been.
+  // 25px between the links wherever the row fits. On a narrower screen the spacing tightens first (never under 12px
+  // while the type can still shrink), then the type steps down to 11px, then the spacing goes to 8px; if the row still
+  // does not fit, the header switches to the phone menu so nothing ever touches or runs off the edge.
   var gapT;
   function mainGap() {
-    Array.prototype.forEach.call(document.querySelectorAll('#header .header-display-desktop .header-nav-list'), function (list) {
-      list.style.removeProperty('--ma-gap');
+    var hdr = document.getElementById('header'); if (!hdr) return;
+    hdr.classList.remove('ma-burger');
+    Array.prototype.forEach.call(hdr.querySelectorAll('.header-display-desktop .header-nav-list'), function (list) {
+      list.style.removeProperty('--ma-gap'); list.style.removeProperty('--ma-fs'); list.removeAttribute('data-ma-fs');
       var vis = Array.prototype.filter.call(list.children, function (i) { return i.offsetWidth; });
       if (!vis.length) return;
       var wrap = list.closest('.header-nav-wrapper') || list.parentNode, edge = Math.min(wrap.getBoundingClientRect().right, document.documentElement.clientWidth - 16);
-      var over = vis[vis.length - 1].getBoundingClientRect().right - edge;
-      if (over > 0) list.style.setProperty('--ma-gap', Math.max(6, GAP - Math.ceil(over / vis.length)) + 'px');
+      var over = function () { return vis[vis.length - 1].getBoundingClientRect().right - edge; }, o = over();
+      if (o <= 0) return;
+      var g = Math.max(12, GAP - Math.ceil(o / vis.length)), f = parseFloat(getComputedStyle(list.querySelector('a')).fontSize) || 14;
+      list.style.setProperty('--ma-gap', g + 'px');
+      while (over() > 0 && f > 11) { f -= 0.5; list.setAttribute('data-ma-fs', '1'); list.style.setProperty('--ma-fs', f + 'px'); }
+      while (over() > 0 && g > 8) { g -= 1; list.style.setProperty('--ma-gap', g + 'px'); }
+      while (over() <= -vis.length && g < GAP) { g += 1; list.style.setProperty('--ma-gap', g + 'px'); }   // give back what the type step freed
+      if (over() > 0) hdr.classList.add('ma-burger');
     });
   }
   // Every dropdown is a box with its title and a line under it (Maurice, 2026-10-10): the hunt menu's way, now on
@@ -897,7 +814,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     }
     Array.prototype.forEach.call(document.querySelectorAll('#header .header-display-desktop .header-nav-item--folder'), function (item) {
       var t = item.querySelector('.header-nav-folder-title'), box = item.querySelector('.header-nav-folder-content');
-      if (!t || !box || item.getAttribute('data-ma-boxed') || t.getAttribute('data-href') === HUNT || box.classList.contains('ma-hunt-dd')) return;
+      if (!t || !box || item.getAttribute('data-ma-boxed') || box.classList.contains('ma-hunt-dd')) return;
       item.setAttribute('data-ma-boxed', '1');
       var g = document.createElement('div'); g.className = 'ma-grp';
       var h = document.createElement('span'); h.textContent = plainText(t.querySelector('.header-nav-folder-title-text') || t); g.appendChild(h);
@@ -905,407 +822,10 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
       box.appendChild(g); box.classList.add('ma-boxdd');
     });
   }
-  // BOOKSHELF sits between Trench Market and Links (Maurice, 2026-11-07), made from the Links item.
-  // CREW DOSSIERS follows it (Maurice, 2026-11-09).
-  function bookRow(links, text, slug) {
-    var row = links.cloneNode(true), a = row.querySelector('a');
-    a.href = SITE + '/' + (slug || 'bookshelf'); a.removeAttribute('aria-current'); row.classList.remove('header-nav-item--active');
-    (a.querySelector('.header-menu-nav-item-content') || a).textContent = text;
-    return row;
-  }
-  // Main menu order and spacing (desktop row and phone menu). Waits until Market, Links, and Oracle's Gift are in.
-  function mainOrder() {
-    if (!document.getElementById('header')) return;
-    if (!document.getElementById('ma-one-gap')) {
-      var st = document.createElement('style'); st.id = 'ma-one-gap';
-      st.textContent = '#header .header-display-desktop .header-nav-list{gap:0!important}#header .header-display-desktop .header-nav{padding-left:24px!important}' +
-        '#header .header-display-desktop .header-nav-item{margin-left:calc(var(--ma-gap,' + GAP + 'px) / 2)!important;margin-right:calc(var(--ma-gap,' + GAP + 'px) / 2)!important}';
-      document.head.appendChild(st);
-      window.addEventListener('resize', function () { clearTimeout(gapT); gapT = setTimeout(mainGap, 120); });
-      if (document.fonts && document.fonts.ready) document.fonts.ready.then(mainGap);
-    }
-    mainGap();
-    Array.prototype.forEach.call(document.querySelectorAll('#header .header-nav-list'), function (list) {
-      if (list.getAttribute('data-ma-order')) return;
-      var items = Array.prototype.slice.call(list.children);
-      var find = function (sel) { for (var i = 0; i < items.length; i++) if (items[i].querySelector(sel)) return items[i]; return null; };
-      var hunt = find('.header-nav-folder-title[data-href="' + HUNT + '"]'), market = find('a[href="' + MERCH_URL + '"]'), links = find('a[href$="/links"]');
-      var pre = preOrder(items), gift = find('.header-nav-folder-title[data-href="' + GIFT + '"]');
-      if (!hunt || !market || !links || !pre) return;
-      list.setAttribute('data-ma-order', '1');
-      var submit = find('.header-nav-folder-title[data-href="/submit"]'); if (submit) submit.style.display = 'none';
-      var shop = gift ? marketFolder(gift) : market; if (shop !== market) market.style.display = 'none';
-      if (gift) gift.style.display = 'none';   // in The Treasure Hunt panel now
-      [hunt, shop, bookRow(links, 'Bookshelf'), bookRow(links, 'Crew Dossiers', 'crew-dossier'), links, find('a[href$="/newsletter"]'), find('a[href*="discord"]')].forEach(function (it) { if (it) list.insertBefore(it, pre); });
-    });
-    mainGap();
-    var root = document.querySelector('.header-menu-nav [data-folder="root"]');
-    var huntRow = root && root.querySelector('a[data-folder-id="' + HUNT + '"]');
-    if (!huntRow || root.getAttribute('data-ma-order')) return;
-    var rowList = huntRow.closest('.header-menu-nav-item').parentNode, rows = Array.prototype.slice.call(rowList.children);
-    var rfind = function (sel) { for (var i = 0; i < rows.length; i++) if (rows[i].querySelector(sel)) return rows[i]; return null; };
-    var rLinks = rfind('a[href$="/links"]'), rPre = preOrder(rows);
-    if (!rLinks || !rPre || !rfind('a[href="' + MERCH_URL + '"]')) return;
-    root.setAttribute('data-ma-order', '1');
-    var rSub = rfind('a[data-folder-id="/submit"]'); if (rSub) rSub.style.display = 'none';
-    // the phone menu's Trench Market row opens its own panel of categories, like the Oracle's Gift row
-    var rMarket = rfind('a[href="' + MERCH_URL + '"]'), rGift = rfind('a[data-folder-id="' + GIFT + '"]'), gPanel = document.querySelector('.header-menu-nav [data-folder="' + GIFT + '"]');
-    if (rGift) rGift.style.display = 'none';   // in The Treasure Hunt panel now
-    if (rGift && gPanel) {
-      var tmRow = rGift.cloneNode(true), ta = tmRow.querySelector('a'); ta.setAttribute('data-folder-id', TM); ta.setAttribute('href', TM);
-      tmRow.style.display = '';   // the Oracle's Gift row it copies is hidden
-      tmRow.querySelector('.header-nav-folder-title-text').textContent = 'Trench Market';
-      var tmPanel = gPanel.cloneNode(true); tmPanel.setAttribute('data-folder', TM);
-      var pRows = tmPanel.querySelectorAll('.header-menu-nav-item:not(.header-menu-controls)'), pTpl = pRows[0], pList = pTpl.parentNode;
-      Array.prototype.forEach.call(pRows, function (x) { x.parentNode.removeChild(x); });
-      SHOP_CATS.forEach(function (c) { var x = pTpl.cloneNode(true), xa = x.querySelector('a'); xa.href = SHOP + c[1]; xa.querySelector('.header-menu-nav-item-content').textContent = c[0]; pList.appendChild(x); });
-      gPanel.parentNode.insertBefore(tmPanel, gPanel.nextSibling);
-      if (rMarket) rMarket.style.display = 'none'; rMarket = tmRow;
-    }
-    [huntRow.closest('.header-menu-nav-item'), rMarket, bookRow(rLinks, 'Bookshelf'), bookRow(rLinks, 'Crew Dossiers', 'crew-dossier'), rLinks, rfind('a[href$="/newsletter"]'), rfind('a[href*="discord"]')]
-      .forEach(function (r) { if (r) rowList.insertBefore(r, rPre); });
-  }
-  // The green hunt menu (copied into each hunt page) becomes the same menu: desktop row and phone menu.
-  function huntOne() {
-    var ov = document.getElementById('hunt-nav-ov');
-    Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
-      var links = nav.querySelector('.mn-links'), gift = nav.querySelector('.mn-gift');
-      if (nav.getAttribute('data-one') || !links || !gift || !ov) return;
-      nav.setAttribute('data-one', '1');
-      actify(nav); actify(ov); huntCss(); navCss();   // act links first, so they aren't added again inside the new panel
-      if (!document.getElementById('ma-one-nav')) {
-        var st = document.createElement('style'); st.id = 'ma-one-nav';
-        st.textContent = '#hunt-nav .mn-right .mn-links{gap:' + GAP + 'px}#hunt-nav .mn-row .mn-right{gap:' + GAP + 'px}' +
-          '#hunt-nav.mn-compact .mn-right .mn-links{gap:clamp(10px,.9vw,18px)}#hunt-nav.mn-compact .mn-row .mn-right{gap:16px}' +
-          '#hunt-nav .ma-th>.mn-dd{z-index:3}#hunt-nav-ov .mn-ovgroup a.mn-profile{white-space:nowrap}' +
-          '#hunt-nav-ov a.mn-check{background:#2c6021;border:1.5px solid #f3ead9;padding:10px 22px;text-align:center}';
-        document.head.appendChild(st);
-      }
-      var caret = nav.querySelector('.mn-caret'), cta = nav.querySelector('.mn-drop-cta'), ctaIn = cta && links.contains(cta);
-      var mk = function (href, text, cls) { var a = document.createElement('a'); a.href = href; a.className = 'mn-link' + (cls ? ' ' + cls : ''); a.textContent = text;
-        if (href === DISCORD) { a.target = '_blank'; a.rel = 'noopener'; } return a; };
-      var th = document.createElement('div'); th.className = 'mn-drop ma-th';
-      th.innerHTML = '<a href="' + SITE + '/the-hunt" class="mn-link" aria-haspopup="true">THE TREASURE HUNT' + (caret ? caret.outerHTML : '') + '</a><div class="mn-dd"><div class="mn-dd-in ma-hunt-dd"></div></div>';
-      th.querySelector('.mn-dd-in').appendChild(megaPanel(ov));
-      // the wide panel opens under its link but stays 16px inside the screen
-      var dd = th.querySelector('.mn-dd'), place = function () {
-        dd.style.transform = '';
-        requestAnimationFrame(function () { var r = dd.getBoundingClientRect(), vw = document.documentElement.clientWidth, s = 0;
-          if (!r.width) return; if (r.right > vw - 16) s = vw - 16 - r.right; if (r.left + s < 16) s = 16 - r.left;
-          if (s) dd.style.transform = 'translateX(calc(-50% + ' + Math.round(s) + 'px))'; }); };
-      th.addEventListener('mouseenter', place); th.addEventListener('focusin', place);
-      // Trench Market, Oracle's Gift, and Pre-Order: each a box with its title and a line under it, on every menu
-      var tm = document.createElement('div'); tm.className = 'mn-drop ma-tm';
-      tm.innerHTML = '<a href="' + MERCH_URL + '" class="mn-link" aria-haspopup="true">TRENCH MARKET' + (caret ? caret.outerHTML : '') + '</a><div class="mn-dd"><div class="mn-dd-in"></div></div>';
-      SHOP_CATS.forEach(function (c) { var a = document.createElement('a'); a.href = SHOP + c[1]; a.textContent = c[0].toUpperCase(); tm.querySelector('.mn-dd-in').appendChild(a); });
-      [[tm, 'TRENCH MARKET'], [gift, "ORACLE'S GIFT"], [cta, "ORDER CELLO'S GATE"]].forEach(function (d) { if (d[0]) boxDrop(d[0], d[1]); });
-      var row = [th, tm, mk(SITE + '/bookshelf', 'BOOKSHELF'), mk(SITE + '/crew-dossier', 'CREW DOSSIERS'), mk(SITE + '/links', 'LINKS', 'mn-linkpage'), mk(SITE + '/newsletter', 'NEWSLETTER'), mk(DISCORD, 'JOIN THE DISCORD!'), gift];
-      gift.style.display = 'none';   // kept (huntGift looks for it) but shown only in The Treasure Hunt panel
-      while (links.firstChild) links.removeChild(links.firstChild);
-      row.forEach(function (el) { links.appendChild(el); });
-      if (ctaIn) links.appendChild(cta);
-      nav.setAttribute('data-fit', '1');   // no Earn Points fold now; it still tightens or uses the menu button when it doesn't fit
-    });
-    if (!ov || ov.getAttribute('data-one') || !ov.querySelector('.mn-gift')) return;
-    ov.setAttribute('data-one', '1'); actify(ov);
-    var gs = megaModel(ov);
-    Object.keys(gs).forEach(function (k) { var seen = {}; Array.prototype.forEach.call(gs[k].querySelectorAll('a'), function (a) {
-      var key = a.getAttribute('href') + '|' + plainText(a); if (seen[key]) a.parentNode.removeChild(a); seen[key] = 1; }); });
-    var ol = function (href, text, cls) { var a = document.createElement('a'); a.href = href; a.textContent = text; if (cls) a.className = cls;
-      if (href === DISCORD) { a.target = '_blank'; a.rel = 'noopener'; } return a; };
-    var tmGroup = document.createElement('div'); tmGroup.className = 'mn-ovgroup mn-merch-group'; tmGroup.appendChild(document.createElement('span')).textContent = 'TRENCH MARKET';
-    SHOP_CATS.forEach(function (c) { tmGroup.appendChild(ol(SHOP + c[1], c[0].toUpperCase())); });
-    var order = [ov.querySelector('.mn-x'), ov.querySelector('.mn-ovlogo'), ol(SITE + '/the-hunt', 'THE TREASURE HUNT'), gs['EARN POINTS'], ol(SITE + '/points', 'SUBMIT POINTS'), gs['CURRENT PROGRESS'], ol(CHECK_URL, 'DAILY CHECKLIST', 'mn-check'), gs['ADVENTURE'], gs['REWARDS'], ov.querySelector('.mn-gift'),
-      tmGroup, ol(SITE + '/bookshelf', 'BOOKSHELF'), ol(SITE + '/crew-dossier', 'CREW DOSSIERS'), ol(SITE + '/links', 'LINKS', 'mn-linkpage'), ol(SITE + '/newsletter', 'NEWSLETTER'), ol(DISCORD, 'JOIN THE DISCORD!'), ov.querySelector(':scope > .mn-cta')];
-    while (ov.firstChild) ov.removeChild(ov.firstChild);
-    order.forEach(function (el) { if (el) ov.appendChild(el); });
-  }
-  function huntDropdown() {
-    if (huntBuilt || !document.getElementById('header')) return;
-    var huntList = document.querySelector('#header .header-display-desktop .header-nav-folder-title[data-href="' + HUNT + '"] + .header-nav-folder-content');
-    if (!huntList) return;
-    huntBuilt = true;
-    // the top-level Adventure folder goes (desktop and phone); its pages now sit in The Treasure Hunt
-    var adv = document.querySelector('#header .header-display-desktop .header-nav-folder-title[data-href="' + ADV + '"]');
-    if (adv) adv.closest('.header-nav-item').style.display = 'none';
-    var advRow = document.querySelector('.header-menu-nav [data-folder="root"] a[data-folder-id="' + ADV + '"]');
-    if (advRow) advRow.closest('.header-menu-nav-item').style.display = 'none';
-    fetch(BASE + 'pages/hunt-menu.html', FRESH).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (html) {
-      var doc = new DOMParser().parseFromString(html, 'text/html');
-      actify(doc.body);
-      var src = doc.querySelector('#hunt-nav .mn-links'), ov = doc.getElementById('hunt-nav-ov');
-      if (!src) return;
-      huntCss();
-      // desktop
-      var out = document.createDocumentFragment();
-      function link(a, extra) {
-        var n = document.createElement('a'); n.href = a.getAttribute('href'); n.className = 'ma-hl' + (extra || '');
-        ['mn-vote', 'mn-profile'].forEach(function (c) { if (a.classList.contains(c)) n.classList.add(c); });
-        if (a.getAttribute('style')) n.setAttribute('style', a.getAttribute('style'));
-        if (a.getAttribute('target')) { n.target = a.getAttribute('target'); n.rel = 'noopener'; }
-        var svg = a.classList.contains('mn-profile') && a.querySelector('svg');
-        if (svg) n.appendChild(document.importNode(svg, true));
-        n.appendChild(document.createTextNode(plainText(a)));
-        return n;
-      }
-      // One menu (Maurice, 2026-10-09): three columns, built the same way for the green hunt menu (megaPanel).
-      if (ov) {
-        huntList.innerHTML = ''; huntList.classList.add('ma-hunt-dd'); huntList.appendChild(megaPanel(ov));
-        var pnl = document.querySelector('.header-menu-nav [data-folder="' + HUNT + '"] .header-menu-nav-folder-content');
-        if (!pnl) return;
-        Array.prototype.forEach.call(pnl.querySelectorAll('.header-menu-nav-item:not(.header-menu-controls)'), function (r) { r.remove(); });
-        var gs = megaModel(ov);
-        MEGA.forEach(function (col) { col.forEach(function (it) {
-          var row = document.createElement('div'); row.className = 'container header-menu-nav-item';
-          if (it[0] === 'link' || it[0] === 'check') {
-            var a = document.createElement('a'); a.href = it[0] === 'check' ? CHECK_URL : SITE + it[2]; a.tabIndex = -1; if (it[0] === 'check') it = [0, 'DAILY CHECKLIST'];
-            a.innerHTML = '<div class="header-menu-nav-item-content"></div>'; a.firstChild.textContent = it[1]; row.appendChild(a);
-          } else if (it[0] === 'gift') {
-            var gb = giftBox('ma-ovgroup', ''); gb.querySelector('a').tabIndex = -1; row.appendChild(gb);
-          } else {
-            if (!gs[it[1]]) return;
-            var g = document.createElement('div'); g.className = 'ma-ovgroup';
-            groupKids(gs[it[1]], '', function (k) { if (k.tagName === 'A') { k.className = k.classList.contains('mn-profile') ? 'mn-profile' : ''; k.tabIndex = -1; } g.appendChild(k); });
-            row.appendChild(g);
-          }
-          pnl.appendChild(row);
-        }); });
-        return;
-      }
-      // Desktop looks like the phone menu (Maurice, 2026-09-27): the plain links in a column on the left, and the
-      // phone menu's boxed groups (small green heading, links under it) in a column on the right.
-      var mega = document.createElement('div'); mega.className = 'ma-mega';
-      var left = document.createElement('div'); left.className = 'ma-mega-links';
-      var right = document.createElement('div'); right.className = 'ma-mega-groups';
-      mega.appendChild(left); mega.appendChild(right);
-      Array.prototype.forEach.call((ov || src).children, function (el) {
-        if (el.matches('.mn-ovlogo,.mn-x,.mn-cta')) return;
-        if (el.tagName === 'A') { if (!el.classList.contains('mn-merch')) left.appendChild(link(el)); return; }
-        var box = document.createElement('div'); box.className = 'ma-grp';
-        if (el.classList.contains('mn-ovgroup')) {
-          Array.prototype.forEach.call(el.children, function (c) {
-            if (c.tagName === 'A') box.appendChild(link(c));
-            else { var h = document.createElement('span'); h.textContent = plainText(c); if (c.className) h.className = c.className; box.appendChild(h); }
-          });
-        } else if (el.classList.contains('mn-drop')) {
-          var head = el.querySelector('.mn-link'); if (!head) return;
-          var h2 = document.createElement('span'); h2.textContent = plainText(head); box.appendChild(h2);
-          Array.prototype.forEach.call(el.querySelectorAll('.mn-dd-in a'), function (x) { box.appendChild(link(x)); });
-        } else return;
-        right.appendChild(box);
-      });
-      out.appendChild(mega);
-      huntList.innerHTML = ''; huntList.classList.add('ma-hunt-dd'); huntList.appendChild(out);
-      // (centered under its link like every other dropdown: centerDropdowns)
-      // phone menu: the hunt phone menu's list, groups boxed and headed as on the hunt pages
-      var panel = document.querySelector('.header-menu-nav [data-folder="' + HUNT + '"] .header-menu-nav-folder-content');
-      if (!panel || !ov) return;
-      Array.prototype.forEach.call(panel.querySelectorAll('.header-menu-nav-item:not(.header-menu-controls)'), function (r) { r.remove(); });
-      Array.prototype.forEach.call(ov.children, function (el) {
-        if (el.matches('.mn-ovlogo,.mn-x,.mn-cta,.mn-merch') || (el.tagName !== 'A' && !el.classList.contains('mn-ovgroup'))) return;
-        var row = document.createElement('div'); row.className = 'container header-menu-nav-item';
-        if (el.tagName === 'A') {
-          var a = document.createElement('a'); a.href = el.getAttribute('href'); a.tabIndex = -1;
-          if (el.classList.contains('mn-vote')) a.className = 'mn-vote';
-          a.innerHTML = '<div class="header-menu-nav-item-content"></div>'; a.firstChild.textContent = plainText(el);
-          row.appendChild(a);
-        } else {
-          var g = document.createElement('div'); g.className = 'ma-ovgroup';
-          Array.prototype.forEach.call(el.children, function (c) {
-            if (c.tagName === 'A') { var l = link(c, ''); l.className = c.classList.contains('mn-profile') ? 'mn-profile' : ''; l.tabIndex = -1; g.appendChild(l); }
-            else { var s = document.createElement('span'); s.textContent = plainText(c); if (c.className) s.className = c.className; g.appendChild(s); }
-          });
-          row.appendChild(g);
-        }
-        panel.appendChild(row);
-      });
-    }).catch(function () {});
-  }
-
-  // Main menu: MERCH (the Trench Market shop) sits right before The Treasure Hunt (Maurice, 2026-09-28). It replaces
-  // the old Merch folder, whose partner shops are now listed inside the shop itself.
-  var MERCH_URL = 'https://shop.mauriceafrich.com/', OLD_MERCH = '/new-dropdown', merchBuilt = false;
-  // Last in the menu, just before Pre-Order: an Oracle's Gift dropdown with the Aura Spectrum (the Aura Color Search
-  // Database) under it (Maurice, 2026-10-03; the Act Two reward at 80k). It is a copy of the Submit dropdown, renamed.
-  var AURA_URL = SITE + '/oracles-gift/aura-spectrum', GIFT = '/oracles-gift', GIFT_TEXT = "Oracle's Gift", AURA_TEXT = 'Aura Spectrum';
-  // the Sky Pirate Quiz (the Act Three 300K reward) sits under Aura Spectrum in every Oracle's Gift menu (Maurice, 2026-10-24)
-  var QUIZ_URL = SITE + '/sky-pirate-quiz-61748', QUIZ_TEXT = 'The Sky Pirate Quiz';
-  // the Pre-Order menu item in a list of menu items (null puts a new item at the end)
-  function preOrder(items) {
-    for (var i = 0; i < items.length; i++) if (/^\s*(Folder:\s*)?(Pre-)?Order\b/i.test(items[i].textContent)) return items[i];
-    return null;
-  }
-  function giftFolder(list) {
-    var src = list.querySelector('.header-nav-folder-title[data-href="/submit"]');
-    if (!src) return null;
-    var item = src.closest('.header-nav-item').cloneNode(true), btn = item.querySelector('.header-nav-folder-title');
-    btn.setAttribute('data-href', GIFT); btn.setAttribute('aria-controls', 'oracles-gift'); btn.setAttribute('aria-expanded', 'false');
-    item.querySelector('.header-nav-folder-title-text').textContent = GIFT_TEXT;
-    var box = item.querySelector('.header-nav-folder-content'); box.id = 'oracles-gift';
-    var rows = box.querySelectorAll('.header-nav-folder-item');
-    for (var i = 1; i < rows.length; i++) rows[i].parentNode.removeChild(rows[i]);
-    var a = rows[0].querySelector('a'); a.href = AURA_URL; a.removeAttribute('target');
-    a.querySelector('.header-nav-folder-item-content').textContent = AURA_TEXT;
-    var qr = rows[0].cloneNode(true), qa = qr.querySelector('a'); qa.href = QUIZ_URL; qa.querySelector('.header-nav-folder-item-content').textContent = QUIZ_TEXT;
-    rows[0].parentNode.insertBefore(qr, rows[0].nextSibling);
-    return item;
-  }
-  function mainMerch() {
-    if (merchBuilt || !document.getElementById('header')) return;
-    var lists = document.querySelectorAll('#header .header-nav-list');
-    if (!lists.length) return;
-    merchBuilt = true;
-    Array.prototype.forEach.call(lists, function (list) {
-      var hunt = list.querySelector('.header-nav-folder-title[data-href="' + HUNT + '"]');
-      var old = list.querySelector('.header-nav-folder-title[data-href="' + OLD_MERCH + '"]');
-      var tpl = list.querySelector('.header-nav-item--external') || list.querySelector('.header-nav-item--collection');
-      if (old) old.closest('.header-nav-item').style.display = 'none';
-      if (!hunt || !tpl) return;
-      var item = tpl.cloneNode(true), a = item.querySelector('a');
-      a.href = MERCH_URL; a.removeAttribute('target'); a.textContent = 'Trench Market';
-      hunt.closest('.header-nav-item').parentNode.insertBefore(item, hunt.closest('.header-nav-item'));
-      var gift = giftFolder(list);
-      if (gift) { var pre = preOrder(list.children); list.insertBefore(gift, pre); }
-    });
-    var root = document.querySelector('.header-menu-nav [data-folder="root"]');
-    if (!root) return;
-    var oldRow = root.querySelector('a[data-folder-id="' + OLD_MERCH + '"]');
-    if (oldRow) oldRow.closest('.header-menu-nav-item').style.display = 'none';
-    var huntRow = root.querySelector('a[data-folder-id="' + HUNT + '"]');
-    var tplRow = root.querySelector('.header-menu-nav-item--external');
-    if (!huntRow || !tplRow) return;
-    var row = tplRow.cloneNode(true), ra = row.querySelector('a');
-    ra.href = MERCH_URL; ra.removeAttribute('target'); ra.textContent = 'Trench Market';
-    huntRow.closest('.header-menu-nav-item').parentNode.insertBefore(row, huntRow.closest('.header-menu-nav-item'));
-    // the phone menu: an Oracle's Gift row that opens its own panel, like the Submit row does
-    var subRow = root.querySelector('a[data-folder-id="/submit"]'), subPanel = document.querySelector('.header-menu-nav [data-folder="/submit"]');
-    if (subRow && subPanel) {
-      var giftRow = subRow.closest('.header-menu-nav-item').cloneNode(true), ga = giftRow.querySelector('a');
-      ga.setAttribute('data-folder-id', GIFT); ga.setAttribute('href', GIFT);
-      giftRow.querySelector('.header-nav-folder-title-text').textContent = GIFT_TEXT;
-      var rowList = huntRow.closest('.header-menu-nav-item').parentNode;
-      rowList.insertBefore(giftRow, preOrder(rowList.children));
-      var panel = subPanel.cloneNode(true); panel.setAttribute('data-folder', GIFT);
-      var prow = panel.querySelectorAll('.header-menu-nav-item:not(.header-menu-controls)');
-      for (var j = 1; j < prow.length; j++) prow[j].parentNode.removeChild(prow[j]);
-      var pa = prow[0].querySelector('a'); pa.href = AURA_URL; pa.querySelector('.header-menu-nav-item-content').textContent = AURA_TEXT;
-      var pq = prow[0].cloneNode(true), pqa = pq.querySelector('a'); pqa.href = QUIZ_URL; pqa.querySelector('.header-menu-nav-item-content').textContent = QUIZ_TEXT;
-      prow[0].parentNode.insertBefore(pq, prow[0].nextSibling);
-      subPanel.parentNode.insertBefore(panel, subPanel.nextSibling);
-    }
-  }
-
-  // The green hunt menu (copied into each hunt page) gets the same Oracle's Gift dropdown, last before Pre-Order.
-  // The Adventure dropdown of the green hunt menu (copied into each hunt page) gets FIGHT THE LEVIAN (chapter 5,
-  // /the-river) right after CRASH LANDING, on desktop and in the phone menu (Maurice, 2026-10-05).
-  function huntRiver() {
-    Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav, #hunt-nav-ov'), function (nav) {
-      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/the-crash"]'), function (crash) {
-        var box = crash.parentNode;
-        if (box.querySelector('a[href$="/the-river"]')) return;
-        var a = crash.cloneNode(false); a.href = SITE + '/the-river'; a.textContent = 'FIGHT THE LEVIAN';
-        box.insertBefore(a, crash.nextSibling);
-      });
-      // Cross the River (chapter 6, 2026-10-07) follows Fight the Levian
-      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/the-river"]'), function (river) {
-        var box = river.parentNode;
-        if (box.querySelector('a[href$="/the-raft"]')) return;
-        var a = river.cloneNode(false); a.href = SITE + '/the-raft'; a.textContent = 'CROSS THE RIVER';
-        box.insertBefore(a, river.nextSibling);
-      });
-      // River Mayhem (chapter 7, 2026-10-08) follows Cross the River
-      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/the-raft"]'), function (raft) {
-        var box = raft.parentNode;
-        if (box.querySelector('a[href$="/river-mayhem"]')) return;
-        var a = raft.cloneNode(false); a.href = SITE + '/river-mayhem'; a.textContent = 'RIVER MAYHEM';
-        box.insertBefore(a, raft.nextSibling);
-      });
-      // Washed Ashore (chapter 8, 2026-10-12) follows River Mayhem
-      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/river-mayhem"]'), function (mayhem) {
-        var box = mayhem.parentNode;
-        if (box.querySelector('a[href$="/washed-ashore"]')) return;
-        var a = mayhem.cloneNode(false); a.href = SITE + '/washed-ashore'; a.textContent = 'WASHED ASHORE';
-        box.insertBefore(a, mayhem.nextSibling);
-      });
-      // Cerunine Attack (chapter 9, 2026-10-15) follows Washed Ashore
-      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/washed-ashore"]'), function (ashore) {
-        var box = ashore.parentNode;
-        if (box.querySelector('a[href$="/cerunine-attack"]')) return;
-        var a = ashore.cloneNode(false); a.href = SITE + '/cerunine-attack'; a.textContent = 'CERUNINE ATTACK';
-        box.insertBefore(a, ashore.nextSibling);
-      });
-      // The Reunion (chapter 10, 2026-10-19) follows Cerunine Attack
-      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/cerunine-attack"]'), function (fight) {
-        var box = fight.parentNode;
-        if (box.querySelector('a[href$="/the-reunion"]')) return;
-        var a = fight.cloneNode(false); a.href = SITE + '/the-reunion'; a.textContent = 'THE REUNION';
-        box.insertBefore(a, fight.nextSibling);
-      });
-      // The Energy Wave (chapter 11, 2026-10-21) follows The Reunion
-      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/the-reunion"]'), function (reunion) {
-        var box = reunion.parentNode;
-        if (box.querySelector('a[href$="/the-energy-wave"]')) return;
-        var a = reunion.cloneNode(false); a.href = SITE + '/the-energy-wave'; a.textContent = 'THE ENERGY WAVE';
-        box.insertBefore(a, reunion.nextSibling);
-      });
-      // Finding Scarlett (chapter 12, 2026-10-25) follows The Energy Wave
-      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/the-energy-wave"]'), function (wave) {
-        var box = wave.parentNode;
-        if (box.querySelector('a[href$="/finding-scarlett"]')) return;
-        var a = wave.cloneNode(false); a.href = SITE + '/finding-scarlett'; a.textContent = 'FINDING SCARLETT';
-        box.insertBefore(a, wave.nextSibling);
-      });
-      // Light on Her Feet (chapter 13, 2026-10-26) follows Finding Scarlett
-      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/finding-scarlett"]'), function (shore) {
-        var box = shore.parentNode;
-        if (box.querySelector('a[href$="/light-on-her-feet"]')) return;
-        var a = shore.cloneNode(false); a.href = SITE + '/light-on-her-feet'; a.textContent = 'LIGHT ON HER FEET';
-        box.insertBefore(a, shore.nextSibling);
-      });
-      // Pull Her Out (chapter 14, 2026-10-28) follows Light on Her Feet
-      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/light-on-her-feet"]'), function (feet) {
-        var box = feet.parentNode;
-        if (box.querySelector('a[href$="/pull-her-out"]')) return;
-        var a = feet.cloneNode(false); a.href = SITE + '/pull-her-out'; a.textContent = 'PULL HER OUT';
-        box.insertBefore(a, feet.nextSibling);
-      });
-      // The Source of the Wave (chapter 15, 2026-10-30) follows Pull Her Out
-      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/pull-her-out"]'), function (rope) {
-        var box = rope.parentNode;
-        if (box.querySelector('a[href$="/the-source"]')) return;
-        var a = rope.cloneNode(false); a.href = SITE + '/the-source'; a.textContent = 'THE SOURCE OF THE WAVE';
-        box.insertBefore(a, rope.nextSibling);
-      });
-      // The Break-In Gone Wrong (chapter 16, 2026-10-31) follows The Source of the Wave
-      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/the-source"]'), function (src) {
-        var box = src.parentNode;
-        if (box.querySelector('a[href$="/the-break-in"]')) return;
-        var a = src.cloneNode(false); a.href = SITE + '/the-break-in'; a.textContent = 'THE BREAK-IN GONE WRONG';
-        box.insertBefore(a, src.nextSibling);
-      });
-      // Search the Building (chapter 17, 2026-11-03) follows The Break-In Gone Wrong
-      Array.prototype.forEach.call(nav.querySelectorAll('a[href$="/the-break-in"]'), function (brk) {
-        var box = brk.parentNode;
-        if (box.querySelector('a[href$="/search-the-building"]')) return;
-        var a = brk.cloneNode(false); a.href = SITE + '/search-the-building'; a.textContent = 'SEARCH THE BUILDING';
-        box.insertBefore(a, brk.nextSibling);
-      });
-    });
-  }
-  // The raft hunt (chapter 6, 2026-10-07): raft.js hides the pieces on every page; it checks its own hours.
   // Chapter buttons (2026-10-09): Previous chapter / See the map / Next chapter at the foot of each chapter page.
   function chapterNav() {
     if (window.__chapterNavLoaded) return; window.__chapterNavLoaded = true;
     var s = document.createElement('script'); s.src = GH + 'chapter-nav.js?v=17'; s.async = true; document.head.appendChild(s);
-  }
-  function raftHunt() {
-    if (window.__raftLoaded) return; window.__raftLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'raft.js?v=8'; s.async = true; document.head.appendChild(s);
-  }
-  // The rope hunt (chapter 14, 2026-10-29): rope.js hides the strands on every page; it checks its own hours.
-  function ropeHunt() {
-    if (window.__ropeLoaded) return; window.__ropeLoaded = true;
-    var s = document.createElement('script'); s.src = GH + 'rope.js?v=3'; s.async = true; document.head.appendChild(s);
   }
   // "Cello's Gate" is out (Maurice, 2026-11-02): every menu says ORDER, not PRE-ORDER. The Squarespace folder keeps
   // its old name, so the text is swapped in the header, the green hunt menu, its phone menu, and the footer.
@@ -1321,245 +841,268 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     });
   }
   function huntGift() {
-    huntLinks();
-    huntRiver();
-    advOne(document);
     orderText(); setTimeout(orderText, 1200); setTimeout(orderText, 4000);
-    raftHunt();
-    ropeHunt();
     chapterNav();
-    var caret = '<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg>';
-    Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
-      if (nav.querySelector('.mn-gift')) return;
-      var cta = nav.querySelector('.mn-drop-cta'), links = nav.querySelector('.mn-links');
-      if (!links) return;
-      var d = document.createElement('div'); d.className = 'mn-drop mn-gift';
-      d.innerHTML = '<a href="javascript:void(0)" class="mn-link" aria-haspopup="true">ORACLE&#39;S GIFT' + caret + '</a><div class="mn-dd"><div class="mn-dd-in"><a href="' + AURA_URL + '">AURA SPECTRUM</a><a href="' + QUIZ_URL + '">THE SKY PIRATE QUIZ</a></div></div>';
-      // the plain menu items sit in their own box inside .mn-links, with the Pre-Order dropdown after it
-      var box = cta && cta.parentNode === links ? cta.previousElementSibling : null;
-      if (box && box.tagName === 'DIV' && !box.classList.contains('mn-drop')) box.appendChild(d);
-      else links.insertBefore(d, cta && cta.parentNode === links ? cta : null);
+    newHunt();
+  }
+
+  // The post-hunt menu (Maurice, 2026-11-11). One list feeds every menu: the main header (desktop row and phone
+  // menu) and the green menu copied into the hunt-type pages (desktop row and phone menu). It reads, left to right:
+  // THE HUNT, MARKET, LINKS, GAMES (dropdown), NEWSLETTER, FUN STUFF (dropdown; was Extras until Maurice 2026-11-12), JOIN TRENCH!, and the
+  // ORDER CELLO'S GATE dropdown. Maurice, 2026-11-12: Arcade and Adventure under the new Games dropdown, Bookshelf
+  // under Extras; later that day Contests moved from The Hunt to Extras.
+  var MERCH_URL = 'https://shop.mauriceafrich.com/', DISCORD = 'https://discord.gg/d36Xnj4umU', GAP = 25;
+  var AURA_URL = SITE + '/oracles-gift/aura-spectrum', QUIZ_URL = SITE + '/sky-pirate-quiz-61748';
+  var ORDER_URL = SITE + '/order', ORDER_TEXT = "Order Cello's Gate";
+  var MENU = [
+    ['Home', SITE + '/'],   // Home above The Hunt (Maurice, 2026-11-13)
+    ['The Hunt', SITE + '/the-hunt'],   // no dropdown: the one-page hunt recap (Maurice, 2026-11-12)
+    ['Market', MERCH_URL], ['Links', SITE + '/links'],
+    ['Games', '/ma-games', [['Arcade', SITE + '/arcade'], ['Adventure', SITE + '/adventure']]],
+    ['Newsletter', SITE + '/newsletter'],
+    ['Fun Stuff', '/ma-extras', [['Aura Spectrum', AURA_URL], ['Take the Quiz!', QUIZ_URL], ['Crew Dossiers', SITE + '/crew-dossier'], ['Bookshelf', SITE + '/bookshelf'], ['Contests', SITE + '/contests']]],
+    ['Join Trench!', DISCORD]
+  ];
+  var RETAIL = [['Amazon', 'https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834/ref=sr_1_1?crid=279A8MV3ZYP0T&dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&dib_tag=se&keywords=cellos+gate&qid=1770340593&sprefix=cellos%27+gate%2Caps%2C179&sr=8-1&ascsubtag=srctok-f7d285c3c39c18b3&btn_ref=srctok-f7d285c3c39c18b3'],
+    ['Audible', 'https://www.amazon.com/Audible-Cellos-Gate/dp/B0GKZWW416/ref=tmm_aud_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&qid=1770340593&sr=8-1&ascsubtag=srctok-d4f496760f7c524a&btn_ref=srctok-d4f496760f7c524a'],
+    ['Walmart Special Edition', 'https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704'],
+    ['Waterstones Exclusive Edition', 'https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227'],
+    ['Broken Binding (Sold Out!)', 'https://thebrokenbindingsub.com/products/cellos-gate'],
+    ['Barnes & Noble', 'https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834'],
+    ['All Retailers', ORDER_URL]];
+  // the Order menu item in a list of menu items
+  function preOrder(items) {
+    for (var i = 0; i < items.length; i++) if (/^\s*(Folder:\s*)?(Pre-)?Order\b/i.test(items[i].textContent)) return items[i];
+    return null;
+  }
+  // links that leave the site (not the shop) open in a new tab
+  function setLink(a, href, text, holder) {
+    a.href = href; a.removeAttribute('aria-current');
+    if (href.indexOf(SITE) !== 0 && href !== MERCH_URL) { a.target = '_blank'; a.rel = 'noopener'; } else { a.removeAttribute('target'); a.removeAttribute('rel'); }
+    ((holder && a.querySelector(holder)) || a).textContent = text;
+  }
+  function menuCss() {
+    if (document.getElementById('ma-menu-css')) return;
+    var st = document.createElement('style'); st.id = 'ma-menu-css';
+    st.textContent = '#header .header-display-desktop .header-nav-list{gap:0!important;flex-wrap:nowrap!important}#header .header-display-desktop .header-nav{padding-left:24px!important}' +
+      '#header .header-display-desktop .header-nav-item{margin-left:calc(var(--ma-gap,' + GAP + 'px) / 2)!important;margin-right:calc(var(--ma-gap,' + GAP + 'px) / 2)!important;white-space:nowrap}' +
+      '@media (max-width:1280px){#header .header-display-desktop .header-nav{padding-left:16px!important}}' +
+      '#header .header-display-desktop .header-nav-list[data-ma-fs] .header-nav-item>a,#header .header-display-desktop .header-nav-list[data-ma-fs] .header-nav-folder-title{font-size:var(--ma-fs)!important}' +
+      '#header.ma-burger .header-display-desktop{display:none!important}#header.ma-burger .header-display-mobile{display:flex!important}#header.ma-burger .header-burger{display:flex!important}#header.ma-burger .header-display-mobile .header-nav{display:none!important}' +
+      'body.header--menu-open #header.ma-burger .header-menu{visibility:visible!important;opacity:1!important}' +
+      '@media (max-width:1060px){#header .header-display-desktop .header-nav{padding-left:8px!important}' +
+      '#header .header-display-desktop .header-nav-folder-title[data-href="/preorder-cellos-gate"]{padding-left:9px!important;padding-right:9px!important}}' +
+      // the green menu: its spacing, and each dropdown as a box with its title
+      '#hunt-nav .mn-right .mn-links{gap:' + GAP + 'px}#hunt-nav .mn-row .mn-right{gap:' + GAP + 'px}' +
+      '#hunt-nav.mn-compact .mn-right .mn-links{gap:clamp(10px,.9vw,18px)}#hunt-nav.mn-compact .mn-row .mn-right{gap:16px}' +
+      '#hunt-nav[data-ma-tight] .mn-right .mn-links{gap:var(--mn-gap)!important}#hunt-nav[data-ma-tight] .mn-row .mn-right{gap:max(12px,var(--mn-gap))!important}#hunt-nav[data-ma-tight] .mn-links .mn-link,#hunt-nav[data-ma-tight] .mn-drop-cta .mn-link{font-size:var(--mn-fs)!important}' +
+      '#hunt-nav .mn-dd-in.ma-boxed{padding:12px}' +
+      '#hunt-nav .ma-grp{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid rgba(243,234,217,.3);padding:12px 14px 10px}' +
+      '#hunt-nav .ma-grp>span{font-family:\'Almarai\',sans-serif;font-weight:800;font-size:12px;letter-spacing:.16em;color:#a2f590;text-transform:uppercase;margin-bottom:4px;white-space:nowrap}' +
+      '#hunt-nav .ma-grp a{text-align:center;padding:8px 14px!important;white-space:nowrap}';
+    document.head.appendChild(st);
+    window.addEventListener('resize', function () { clearTimeout(gapT); gapT = setTimeout(mainGap, 120); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(mainGap);
+  }
+  // The main header: desktop row, then the phone menu. Every old item goes; the new ones are made from the header's
+  // own items, so they keep its look and its hover and tap behavior.
+  function newMain() {
+    if (!document.getElementById('header')) return;
+    menuCss();
+    Array.prototype.forEach.call(document.querySelectorAll('#header .header-nav-list'), function (list) {
+      if (list.getAttribute('data-ma-menu')) return;
+      var items = Array.prototype.slice.call(list.children), pre = preOrder(items), fTpl = null;
+      items.forEach(function (i) { if (i !== pre && !fTpl && i.classList.contains('header-nav-item--folder')) fTpl = i; });
+      var lTpl = list.querySelector('.header-nav-item--external') || list.querySelector('.header-nav-item--collection'), rTpl = list.querySelector('.header-nav-folder-item');
+      if (!pre || !fTpl || !lTpl || !rTpl) return;
+      list.setAttribute('data-ma-menu', '1');
+      fTpl = fTpl.cloneNode(true); lTpl = lTpl.cloneNode(true); rTpl = rTpl.cloneNode(true);
+      var fill = function (box, set) {
+        box.innerHTML = '';
+        set.forEach(function (r) { var row = rTpl.cloneNode(true); row.classList.remove('header-nav-folder-item--active'); setLink(row.querySelector('a'), r[1], r[0], '.header-nav-folder-item-content'); box.appendChild(row); });
+      };
+      items.forEach(function (i) { if (i !== pre) list.removeChild(i); });
+      MENU.forEach(function (m) {
+        var it;
+        if (m[2]) {
+          it = fTpl.cloneNode(true);
+          var b = it.querySelector('.header-nav-folder-title'), id = m[1].slice(1), box = it.querySelector('.header-nav-folder-content');
+          b.setAttribute('data-href', m[1]); b.setAttribute('aria-controls', id); b.setAttribute('aria-expanded', 'false');
+          if (b.tagName === 'A') b.setAttribute('href', m[1]);
+          it.querySelector('.header-nav-folder-title-text').textContent = m[0];
+          box.id = id; fill(box, m[2]);
+        } else { it = lTpl.cloneNode(true); setLink(it.querySelector('a'), m[1], m[0]); }
+        it.classList.remove('header-nav-item--active'); it.style.display = '';
+        list.insertBefore(it, pre);
+      });
+      pre.querySelector('.header-nav-folder-title-text').textContent = ORDER_TEXT;
+      fill(pre.querySelector('.header-nav-folder-content'), RETAIL);
     });
-    Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav-ov'), function (ov) {
-      if (ov.querySelector('.mn-gift')) return;
-      var g = document.createElement('div'); g.className = 'mn-ovgroup mn-gift';
-      g.innerHTML = '<span>ORACLE&#39;S GIFT</span><a href="' + AURA_URL + '">AURA SPECTRUM</a><a href="' + QUIZ_URL + '">THE SKY PIRATE QUIZ</a>';
-      ov.insertBefore(g, ov.querySelector(':scope > .mn-cta'));
+    boxMainDrops();
+    mainGap();
+    var root = document.querySelector('.header-menu-nav [data-folder="root"]');
+    if (!root || root.getAttribute('data-ma-menu')) return;
+    var all = Array.prototype.filter.call(root.querySelectorAll('.header-menu-nav-item'), function (r) { return r.querySelector('a[data-folder-id]'); }), rPre = preOrder(all), fRow = null, lRow = null;
+    if (!rPre) return;
+    var rowList = rPre.parentNode, rows = Array.prototype.filter.call(rowList.children, function (r) { return r.classList.contains('header-menu-nav-item') && !r.classList.contains('header-menu-controls'); });
+    rows.forEach(function (r) {
+      if (r === rPre) return;
+      if (r.querySelector('a[data-folder-id]')) { if (!fRow) fRow = r; } else if (r.querySelector('a') && (!lRow || (!lRow.querySelector('.header-menu-nav-item-content') && r.querySelector('.header-menu-nav-item-content')))) lRow = r;
+    });
+    var panelOf = function (row) { var a = row && row.querySelector('a[data-folder-id]'); return a && document.querySelector('.header-menu-nav [data-folder="' + a.getAttribute('data-folder-id') + '"]'); };
+    var fPanel = panelOf(fRow), oPanel = panelOf(rPre), pTpl = oPanel && oPanel.querySelector('.header-menu-nav-item:not(.header-menu-controls)');
+    if (!rPre || !fRow || !lRow || !fPanel || !pTpl) return;
+    root.setAttribute('data-ma-menu', '1');
+    fRow = fRow.cloneNode(true); lRow = lRow.cloneNode(true); fPanel = fPanel.cloneNode(true); pTpl = pTpl.cloneNode(true);
+    var pFill = function (panel, set) {
+      Array.prototype.forEach.call(panel.querySelectorAll('.header-menu-nav-item:not(.header-menu-controls)'), function (x) { x.parentNode.removeChild(x); });
+      var ctl = panel.querySelector('.header-menu-controls'), host = ctl ? ctl.parentNode : (panel.querySelector('.header-menu-nav-folder-content') || panel);
+      set.forEach(function (r) { var x = pTpl.cloneNode(true); x.classList.remove('header-menu-nav-item--active'); setLink(x.querySelector('a'), r[1], r[0], '.header-menu-nav-item-content'); host.appendChild(x); });
+    };
+    rows.forEach(function (r) { if (r !== rPre) rowList.removeChild(r); });
+    Array.prototype.forEach.call(root.querySelectorAll('[data-folder]'), function (p) { if (p !== oPanel) p.parentNode.removeChild(p); });
+    MENU.forEach(function (m) {
+      var r;
+      if (m[2]) {
+        r = fRow.cloneNode(true);
+        var a = r.querySelector('a'); a.setAttribute('data-folder-id', m[1]); a.setAttribute('href', m[1]);
+        (r.querySelector('.header-nav-folder-title-text') || a).textContent = m[0];
+        var p = fPanel.cloneNode(true); p.setAttribute('data-folder', m[1]); pFill(p, m[2]);
+        oPanel.parentNode.insertBefore(p, oPanel);
+      } else { r = lRow.cloneNode(true); setLink(r.querySelector('a'), m[1], m[0], '.header-menu-nav-item-content'); }
+      r.classList.remove('header-menu-nav-item--active'); r.style.display = '';
+      rowList.insertBefore(r, rPre);
+    });
+    (rPre.querySelector('.header-nav-folder-title-text') || rPre.querySelector('a')).textContent = ORDER_TEXT;
+    pFill(oPanel, RETAIL);
+  }
+  // The green menu copied into the hunt-type pages becomes the same menu: desktop row and phone menu.
+  function newHunt() {
+    var caret = '<svg class="mn-caret" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M3 7l8 8 8-8"></path></svg>';
+    var mk = function (href, text, cls) { var a = document.createElement('a'); if (cls) a.className = cls; setLink(a, href, text.toUpperCase()); return a; };
+    Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav'), function (nav) {
+      var links = nav.querySelector('.mn-links');
+      if (!links || nav.getAttribute('data-ma-menu')) return;
+      nav.setAttribute('data-ma-menu', '1'); nav.setAttribute('data-fit', '1'); navCss(); menuCss();
+      var cta = nav.querySelector('.mn-drop-cta'), ctaIn = cta && links.contains(cta);
+      while (links.firstChild) links.removeChild(links.firstChild);
+      MENU.forEach(function (m) {
+        if (!m[2]) { links.appendChild(mk(m[1], m[0], 'mn-link')); return; }
+        var d = document.createElement('div'); d.className = 'mn-drop';
+        d.innerHTML = '<a href="javascript:void(0)" class="mn-link" aria-haspopup="true"></a><div class="mn-dd"><div class="mn-dd-in"></div></div>';
+        d.firstChild.textContent = m[0].toUpperCase(); d.firstChild.insertAdjacentHTML('beforeend', caret);
+        m[2].forEach(function (r) { d.querySelector('.mn-dd-in').appendChild(mk(r[1], r[0])); });
+        boxDrop(d, m[0].toUpperCase());
+        links.appendChild(d);
+      });
+      if (!cta) return;
+      var inn = cta.querySelector('.mn-dd-in'), top = cta.querySelector('.mn-link');
+      if (top) top.href = ORDER_URL;
+      if (inn) { inn.innerHTML = ''; RETAIL.forEach(function (r) { inn.appendChild(mk(r[1], r[0])); }); boxDrop(cta, ORDER_TEXT.toUpperCase()); }
+      if (ctaIn) links.appendChild(cta);
+    });
+    var ov = document.getElementById('hunt-nav-ov');
+    if (!ov || ov.getAttribute('data-ma-menu')) return;
+    ov.setAttribute('data-ma-menu', '1');
+    var keep = [ov.querySelector('.mn-x'), ov.querySelector('.mn-ovlogo')];
+    var group = function (title, set) {
+      var g = document.createElement('div'); g.className = 'mn-ovgroup';
+      g.appendChild(document.createElement('span')).textContent = title.toUpperCase();
+      set.forEach(function (r) { g.appendChild(mk(r[1], r[0])); });
+      return g;
+    };
+    while (ov.firstChild) ov.removeChild(ov.firstChild);
+    keep.forEach(function (el) { if (el) ov.appendChild(el); });
+    MENU.forEach(function (m) { ov.appendChild(m[2] ? group(m[0], m[2]) : mk(m[1], m[0])); });
+    ov.appendChild(group(ORDER_TEXT, RETAIL));
+  }
+  // The home page's green button under "A race to find them all" (a Squarespace button) now sells the book.
+  function homeOrder() {
+    Array.prototype.forEach.call(document.querySelectorAll('a.sqs-block-button-element[href$="/the-hunt"]'), function (a) {
+      var caps = a.textContent.trim() === a.textContent.trim().toUpperCase();
+      a.href = ORDER_URL; a.textContent = caps ? ORDER_TEXT.toUpperCase() : ORDER_TEXT;
     });
   }
 
-  // The old Linktree menu link becomes LINKS, pointing at /links (Maurice, 2026-10-07; from 10/4 it was hidden and
-  // /links stayed off the menus for The Quiet One riddle). Runs after mainMerch, which clones an external menu item
-  // as its template.
-  function dropLinktree() {
-    // With LINKS in it, the header row is a little wider: tighten its spacing on laptop widths so the Pre-Order
-    // button stays on screen (items keep 10px or more between them).
-    if (!document.getElementById('ma-hdr-fit')) {
-      var st = document.createElement('style'); st.id = 'ma-hdr-fit';
-      st.textContent = '@media (max-width:1280px){#header .header-display-desktop .header-nav{padding-left:16px!important}' +
-        '#header .header-display-desktop .header-nav-item{margin-left:5px!important;margin-right:5px!important}}' +
-        '@media (max-width:1060px){#header .header-display-desktop .header-nav{padding-left:8px!important}' +
-        '#header .header-display-desktop .header-nav-folder-title[data-href="/preorder-cellos-gate"]{padding-left:9px!important;padding-right:9px!important}}';
+  // The footer carries every important link (Maurice, 2026-11-11), in one centered footer (his note, same day):
+  // the book and where to buy it (with the floating book), and the Trench. Explore and Follow came out on his third note.
+  // The site's own heading stays on top; under it sit the home page's icon row, the two lists in boxes, and one small row
+  // with the policy links and Cookie Preferences. The site's second footer row and the cookie bar are folded in.
+  var FOOT = [
+    ['The Book', [RETAIL[6], RETAIL[0], RETAIL[1], RETAIL[2], RETAIL[3], RETAIL[5]]],
+    ['The Trench', [['Home', SITE + '/'], ['Join Trench!', DISCORD], ['Market', MERCH_URL], ['Newsletter', SITE + '/newsletter'], ['Press Room', SITE + '/press-kit'], ['Links', SITE + '/links']]]
+  ];
+  // The footer icon row is the home page's icon row (his note 11/11): label, link, width, then an SVG path (p) or an image file (i).
+  var FOOT_ICONS = [
+    ['TikTok', 'https://www.tiktok.com/@mauriceafrich', 26, 'p', 'M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z'],
+    ['Instagram', 'https://www.instagram.com/mauriceafrich', 26, 'p', 'M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.72 3.72 0 0 1-1.38-.9 3.72 3.72 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.88 5.88 0 0 0-2.13 1.38A5.88 5.88 0 0 0 .63 4.14C.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13a5.88 5.88 0 0 0 2.13 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.88 5.88 0 0 0 2.13-1.38 5.88 5.88 0 0 0 1.38-2.13c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.88 5.88 0 0 0-1.38-2.13A5.88 5.88 0 0 0 19.86.63C19.1.33 18.22.13 16.95.07 15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z'],
+    ['YouTube', 'https://www.youtube.com/@africhmaurice', 29, 'p', 'M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 0 0 .5 6.19C0 8.07 0 12 0 12s0 3.93.5 5.81a3.02 3.02 0 0 0 2.12 2.14c1.88.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 0 0 2.12-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.81zM9.55 15.57V8.43L15.82 12l-6.27 3.57z'],
+    ['Facebook', 'https://www.facebook.com/profile.php?id=61573491875476', 26, 'p', 'M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.09 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.7 4.53-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.09 24 18.1 24 12.07z'],
+    ['Amazon', 'https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834/ref=sr_1_1?crid=279A8MV3ZYP0T&dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&dib_tag=se&keywords=cellos+gate&qid=1770340593&sprefix=cellos%27+gate%2Caps%2C179&sr=8-1&ascsubtag=srctok-e98445806c42f65a&btn_type=pt&btn_ref=srctok-e98445806c42f65a', 29, 'i', 'assets/foot/amazon.webp'],
+    ['Audible', 'https://www.amazon.com/Audible-Cellos-Gate/dp/B0GKZWW416/ref=tmm_aud_swatch_0?_encoding=UTF8&dib_tag=se&dib=eyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwGwPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps&qid=1770340593&sr=8-1', 29, 'i', 'assets/foot/audible.webp'],
+    ['Walmart', 'https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704?classType=REGULAR&from=/search', 29, 'i', 'assets/foot/walmart.webp'],
+    ['Trench Discord', 'https://discord.gg/d36Xnj4umU', 33, 'i', 'assets/img/7bf9c98ba157d33f.webp'],
+    ['All my links', 'https://www.mauriceafrich.com/links', 30, 'i', 'assets/foot/comet.webp']
+  ];
+  function footLinks() {
+    var foot = document.getElementById('footer-sections');
+    if (!foot || document.getElementById('ma-foot')) return;
+    if (!document.getElementById('ma-foot-css')) {
+      var st = document.createElement('style'); st.id = 'ma-foot-css';
+      st.textContent = '#footer-sections{background:#0b170f}#ma-ck-bar{display:none!important}' +
+        '#ma-foot{background:#0b170f;padding:16px 24px 40px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:32px;text-align:center}' +
+        '#ma-foot *{box-sizing:border-box}' +
+        '#ma-foot .ma-foot-social{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px;width:100%}' +
+        '#ma-foot .ma-foot-social a{display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;opacity:.85;transition:transform .2s ease,opacity .2s}' +
+        '#ma-foot .ma-foot-social a:hover,#ma-foot .ma-foot-social a:focus-visible{opacity:1;transform:scale(1.18)}' +
+        '#ma-foot .ma-foot-social svg,#ma-foot .ma-foot-social img{display:block;height:auto;fill:#fff}' +
+        '#ma-foot .ma-foot-in{width:100%;max-width:860px;display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:20px}' +
+        '#ma-foot .ma-foot-col{display:flex;flex-direction:column;align-items:center;gap:16px;min-width:0;padding:28px 24px;border:2px solid #fff;border-radius:0}' +
+        '#ma-foot .ma-foot-body{flex:1;display:flex;align-items:center;justify-content:center;gap:32px;width:100%}' +
+        '#ma-foot .ma-foot-list{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0}' +
+        '#ma-foot .ma-foot-book{flex:none;display:block;width:150px;padding:12px 0;animation:ma-foot-float 3.6s ease-in-out infinite alternate}' +
+        '#ma-foot .ma-foot-book img{display:block;width:100%;height:auto;filter:drop-shadow(0 14px 14px rgba(0,0,0,.6))}' +
+        '@keyframes ma-foot-float{from{transform:translateY(6px)}to{transform:translateY(-6px)}}' +
+        '@media (prefers-reduced-motion:reduce){#ma-foot .ma-foot-book{animation:none}}' +
+        '#ma-foot h3{font-family:\'CI Face\',\'Cracked Imperia\',\'Almarai\',sans-serif;font-weight:400;font-size:22px;line-height:1.2;letter-spacing:.03em;text-transform:uppercase;text-align:center;color:#a2f590;margin:0;padding:0 0 12px;border-bottom:2px solid rgba(243,234,217,.3);align-self:stretch}' +
+        '#ma-foot a{font-family:\'Almarai\',sans-serif;font-weight:700;font-size:15px;line-height:1.35;color:#f3ead9;text-decoration:none;border-radius:0;padding:2px 0;overflow-wrap:anywhere}' +
+        '#ma-foot a:hover,#ma-foot a:focus-visible{color:#a2f590;text-decoration:underline;text-underline-offset:4px}' +
+        '#ma-foot .ma-foot-legal{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 32px;width:100%}' +
+        '#ma-foot .ma-foot-legal a{font-weight:800;font-size:12px;line-height:1.5;letter-spacing:.16em;text-transform:uppercase;padding:6px 0}' +
+        '@media (max-width:760px){#ma-foot{padding:12px 20px 32px;gap:28px}#ma-foot .ma-foot-social{max-width:268px}#ma-foot .ma-foot-in{grid-template-columns:minmax(0,1fr);gap:16px}#ma-foot .ma-foot-col{padding:24px 20px}#ma-foot .ma-foot-body{flex-direction:column;gap:20px}#ma-foot .ma-foot-book{width:140px}#ma-foot h3{font-size:19px}#ma-foot .ma-foot-list a{padding:4px 0}}';
       document.head.appendChild(st);
     }
-    Array.prototype.forEach.call(document.querySelectorAll('#header a[href*="linktr.ee"], .header-menu-nav a[href*="linktr.ee"]'), function (a) {
-      a.href = SITE + '/links'; a.removeAttribute('target'); a.removeAttribute('rel');
-      (a.querySelector('.header-menu-nav-item-content') || a).textContent = 'Links';
+    var nav = document.createElement('nav'); nav.id = 'ma-foot'; nav.setAttribute('aria-label', 'Footer links');
+    // The site's second row (policy links around three social icons) is rebuilt here and hidden.
+    var rows = foot.querySelectorAll(':scope > section'), old = null, top = null;
+    Array.prototype.forEach.call(rows, function (r) { if (r.querySelector('a[href$="/privacy-policy"]')) old = r; else if (!top) top = r; });
+    if (old) old.style.display = 'none';
+    var soc = nav.appendChild(document.createElement('div')); soc.className = 'ma-foot-social';
+    FOOT_ICONS.forEach(function (r) {
+      var a = soc.appendChild(document.createElement('a')); setLink(a, r[1], '');
+      a.setAttribute('aria-label', r[0]); a.title = r[0];
+      a.innerHTML = r[3] === 'p' ? '<svg viewBox="0 0 24 24" aria-hidden="true" style="width:' + r[2] + 'px"><path d="' + r[4] + '"></path></svg>'
+        : '<img loading="lazy" decoding="async" alt="" src="' + BASE + r[4] + '" style="width:' + r[2] + 'px">';
     });
-  }
-  // The green hunt menu (desktop row and phone menu) gets LINKS right after MARKET (Maurice, 2026-10-07: in the row,
-  // not folded into EARN POINTS).
-  function huntLinks() {
-    Array.prototype.forEach.call(document.querySelectorAll('#hunt-nav .mn-merch, #hunt-nav-ov .mn-merch'), function (m) {
-      if (m.parentNode.querySelector('.mn-linkpage')) return;
-      var a = m.cloneNode(false); a.href = SITE + '/links'; a.removeAttribute('target'); a.removeAttribute('rel');
-      a.className = m.className.replace('mn-merch', 'mn-linkpage'); a.textContent = 'LINKS';
-      m.parentNode.insertBefore(a, m.nextSibling);
+    var inn = nav.appendChild(document.createElement('div')); inn.className = 'ma-foot-in';
+    FOOT.forEach(function (g, i) {
+      var col = inn.appendChild(document.createElement('div')); col.className = 'ma-foot-col';
+      col.appendChild(document.createElement('h3')).textContent = g[0];
+      var body = col.appendChild(document.createElement('div')); body.className = 'ma-foot-body';
+      if (!i) {
+        // the floating book sits beside the retailers and goes to the Order page
+        var bk = body.appendChild(document.createElement('a')); setLink(bk, ORDER_URL, ''); bk.className = 'ma-foot-book'; bk.setAttribute('aria-label', ORDER_TEXT);
+        bk.innerHTML = '<img loading="lazy" decoding="async" alt="" src="' + BASE + 'assets/img/cellos-gate-book.webp">';
+      }
+      var list = body.appendChild(document.createElement('div')); list.className = 'ma-foot-list';
+      g[1].forEach(function (r) { setLink(list.appendChild(document.createElement('a')), r[1], r[0]); });
     });
-  }
-
-  function quietWord() {
-    var dec = function (k) { return atob(k).split('').reverse().join(''); };
-    var phrase = dec('LGxsZVcgP2hjdGFjIGVoVA=='), tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), n;
-    while ((n = tw.nextNode())) {
-      var at = n.nodeValue.indexOf(phrase);
-      if (at < 0) continue;
-      var w = n.splitText(at + phrase.length - 5); w.splitText(4);
-      var s = document.createElement('span');
-      w.parentNode.replaceChild(s, w); s.appendChild(w);
-      s.addEventListener('click', function () { location.href = dec('OTc4MTUtYWVzLW5vY2kvbW9jLmhjaXJmYWVjaXJ1YW0ud3d3Ly86c3B0dGg='); });
-      return;
-    }
-  }
-
-  // Box 53, The Locked Loot Box (Maurice, 2026-10-04): "You find the chest first, when you find the chest, you get the
-  // key clue." The chest hides in the teal under the newsletter signup; the key hides in the home page's Meet Maurice
-  // social row ("one of these things doesn't belong here"). The key is kept in this browser only.
-  // Box 98, "Unhand me!" (Maurice, 2026-10-16): his raised fist in the home page headshot. Click it and the box appears
-  // in his hand; click the box to claim it. The spot is set in the photo's own proportions (it is cropped with object-fit:
-  // cover), so it follows the fist at every width.
-  function handBox98() {
-    try {
-      if ((location.pathname.replace(/\/+$/, '') || '/') !== '/') return;
-      var K98 = 'VVA0N0ZSMkI9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo', HAND = { x0: .69, x1: .875, y0: .33, y1: .47 };
-      var img = document.querySelector('img[src*="Maurice+Headshot"],img[data-src*="Maurice+Headshot"]');
-      if (!img || img.getAttribute('data-ma98')) return;
-      img.setAttribute('data-ma98', '1');
-      if (!document.getElementById('ma98-css')) {
-        var st = document.createElement('style'); st.id = 'ma98-css';
-        st.textContent = '.ma98-spot{position:absolute;z-index:3;display:block;padding:0;margin:0;border:0;border-radius:0;background:transparent;cursor:default;-webkit-tap-highlight-color:transparent}' +
-          '.ma98-spot:focus-visible{outline:2px solid #89fbcb;outline-offset:2px}' +
-          '.ma98-spot img{display:block;width:100%;height:100%;object-fit:contain;opacity:0;transform:scale(.3);transition:opacity .35s ease,transform .45s cubic-bezier(.2,1.6,.4,1);filter:drop-shadow(0 0 10px #ffd36b)}' +
-          '.ma98-spot.ma98-on{cursor:pointer}.ma98-spot.ma98-on img{opacity:1;transform:none}' +
-          '@media (prefers-reduced-motion:reduce){.ma98-spot img{transition:none}}';
-        document.head.appendChild(st);
-      }
-      var host = img.parentElement; if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'ma98-spot'; b.setAttribute('aria-label', 'His hand');
-      b.innerHTML = '<img src="https://africhmaurice.github.io/leaderboard/loot/98.png" alt="">';
-      host.appendChild(b);
-      var place = function () {
-        var W = img.clientWidth, H = img.clientHeight, nw = img.naturalWidth, nh = img.naturalHeight; if (!W || !H || !nw || !nh) return;
-        var sc = Math.max(W / nw, H / nh), rw = nw * sc, rh = nh * sc, pos = (getComputedStyle(img).objectPosition || '50% 50%').split(' ');
-        var px = parseFloat(pos[0]) / 100, py = parseFloat(pos[1] || pos[0]) / 100; if (isNaN(px)) px = .5; if (isNaN(py)) py = .5;
-        var ox = (W - rw) * px + img.offsetLeft, oy = (H - rh) * py + img.offsetTop;
-        var l = Math.max(img.offsetLeft, ox + HAND.x0 * rw), t = oy + HAND.y0 * rh, r = Math.min(img.offsetLeft + W, ox + HAND.x1 * rw), bt = oy + HAND.y1 * rh;
-        b.style.left = l + 'px'; b.style.top = t + 'px'; b.style.width = Math.max(30, r - l) + 'px'; b.style.height = Math.max(30, bt - t) + 'px';
-      };
-      b.addEventListener('click', function (e) {
-        e.preventDefault(); e.stopPropagation();
-        if (!b.classList.contains('ma98-on')) { b.classList.add('ma98-on'); b.setAttribute('aria-label', 'Open loot box 98'); return; }
-        location.href = atob(K98).split('').reverse().join('');
-      });
-      place(); img.addEventListener('load', place); window.addEventListener('resize', place);
-      var n = 0, iv = setInterval(function () { place(); if (++n > 20) clearInterval(iv); }, 500);
-    } catch (e) {}
-  }
-
-  // Box 67, "To Be Or Not to Be" (Maurice, 2026-10-16): the words "ex-theater kid" in the home page bio look like plain
-  // text. Click them and the box appears right after them; click the box to claim it.
-  function theaterBox67() {
-    try {
-      if ((location.pathname.replace(/\/+$/, '') || '/') !== '/' || document.querySelector('.ma67-words')) return;
-      var K67 = 'NzVLSlVUSzY9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo', W = 'ex-theater kid';
-      var tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), t = null, n;
-      while ((n = tw.nextNode())) { if (n.nodeValue.indexOf(W) >= 0 && !n.parentElement.closest('[data-ma-page],script,style')) { t = n; break; } }
-      if (!t) return;
-      if (!document.getElementById('ma67-css')) {
-        var st = document.createElement('style'); st.id = 'ma67-css';
-        st.textContent = '.ma67-words{cursor:text;color:inherit}.ma67-box{display:inline-block;vertical-align:-.35em;width:0;height:1.6em;margin:0;padding:0;border:0;border-radius:0;background:none;cursor:pointer;overflow:hidden;transition:width .4s cubic-bezier(.2,1.6,.4,1),margin .4s ease}' +
-          '.ma67-box img{display:block;height:100%;width:auto}.ma67-box.ma67-on{width:1.8em;margin:0 .15em}.ma67-box:focus-visible{outline:2px solid #89fbcb;outline-offset:2px}' +
-          '@media (prefers-reduced-motion:reduce){.ma67-box{transition:none}}';
-        document.head.appendChild(st);
-      }
-      var i = t.nodeValue.indexOf(W), after = t.splitText(i); after.splitText(W.length);
-      var w = document.createElement('span'); w.className = 'ma67-words'; w.textContent = W; after.parentNode.replaceChild(w, after);
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'ma67-box'; b.tabIndex = -1; b.setAttribute('aria-label', 'Open loot box 67');
-      b.innerHTML = '<img src="https://africhmaurice.github.io/leaderboard/loot/67.png" alt="">';
-      w.parentNode.insertBefore(b, w.nextSibling);
-      w.addEventListener('click', function () { b.classList.add('ma67-on'); b.tabIndex = 0; });
-      b.addEventListener('click', function (e) { e.preventDefault(); if (!b.classList.contains('ma67-on')) return; location.href = atob(K67).split('').reverse().join(''); });
-    } catch (e) {}
-  }
-
-  function lockedChest53() {
-    try {
-      var KEY = 'ma-key53', path = location.pathname.replace(/\/+$/, '') || '/';
-      if (path !== '/' && path !== '/newsletter') return;
-      var has = function () { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } };
-      var css = function () {
-        if (document.getElementById('ma53-css')) return;
-        var st = document.createElement('style'); st.id = 'ma53-css';
-        st.textContent = '#ma53-chest{position:absolute;top:calc(100% + 16px);right:6%;width:34px;height:34px;z-index:2;transition:width .45s cubic-bezier(.2,.8,.3,1.2),height .45s cubic-bezier(.2,.8,.3,1.2)}#ma53-chest.ma53-shut{width:96px;height:96px}' +
-          '#ma53-chest .ma53-box{display:block;position:relative;width:100%;height:100%;padding:0;margin:0;border:0;border-radius:0;background:none;box-shadow:none;cursor:pointer;-webkit-tap-highlight-color:transparent}' +
-          '#ma53-chest .ma53-box:focus-visible{outline:2px solid #89fbcb;outline-offset:4px}' +
-          '#ma53-chest img{display:block;width:100%;height:100%;opacity:.5;filter:hue-rotate(105deg) saturate(.85) brightness(.85);transition:opacity .45s ease,filter .45s ease}#ma53-chest.ma53-shut img{opacity:1;filter:none}' +
-          '#ma53-chest .ma53-lock{position:absolute;left:-8%;top:-8%;width:116%;height:116%;overflow:visible;pointer-events:none;opacity:0;transition:opacity .25s ease}' +
-          '#ma53-chest.ma53-shut .ma53-lock{opacity:1}' +
-          '#ma53-chest .ma53-pad{transition:transform .7s cubic-bezier(.5,0,.8,.4),opacity .7s ease}' +
-          '#ma53-chest .ma53-chains{transition:opacity .5s ease .25s}' +
-          '#ma53-chest.ma53-open .ma53-pad{transform:translateY(60px) rotate(18deg);opacity:0}' +
-          '#ma53-chest.ma53-open .ma53-chains{opacity:0}' +
-          '#ma53-chest.ma53-open img{opacity:1;mix-blend-mode:normal;filter:drop-shadow(0 0 14px #89fbcb) drop-shadow(0 0 4px #fffffe)}' +
-          '#ma53-chest.ma53-rattle .ma53-box{animation:ma53r .5s linear}' +
-          '@keyframes ma53r{0%,100%{transform:none}15%{transform:translateX(-4px) rotate(-5deg)}30%{transform:translateX(4px) rotate(4deg)}45%{transform:translateX(-3px) rotate(-3deg)}60%{transform:translateX(3px) rotate(2deg)}80%{transform:translateX(-1px)}}' +
-          '#ma53-chest .ma53-note{position:absolute;right:calc(100% + 14px);top:0;box-sizing:border-box;width:max-content;max-width:400px;margin:0;padding:20px 22px;background:#0b170f;color:#f3ead9;border:2px solid #f3ead9;border-radius:0;font-family:Almarai,sans-serif;font-weight:700;font-size:16px;line-height:1.4;letter-spacing:.01em;text-align:left;text-transform:none}' +
-          '#ma53-chest .ma53-note[hidden]{display:none}' +
-          '#ma53-toast{position:fixed;left:50%;bottom:28px;z-index:2147483000;box-sizing:border-box;max-width:calc(100vw - 32px);padding:20px 26px;background:#0b170f;color:#f3ead9;border:2px solid #89fbcb;border-radius:0;font-family:Almarai,sans-serif;font-weight:700;font-size:17px;line-height:1.4;transform:translate(-50%,16px);opacity:0;transition:opacity .35s ease,transform .35s ease;pointer-events:none}' +
-          '#ma53-toast.ma53-on{opacity:1;transform:translate(-50%,0)}' +
-          '#ma53-key{transition:background-color .17s ease-in-out,opacity .45s ease}#ma53-key.ma53-got{opacity:0;pointer-events:none}' +
-          '@media (max-width:640px){#ma53-chest{width:28px;height:28px;right:4%}#ma53-chest.ma53-shut{width:72px;height:72px}#ma53-chest .ma53-note{font-size:15px;padding:20px}}' +
-          '@media (prefers-reduced-motion:reduce){#ma53-chest.ma53-rattle .ma53-box{animation:none}#ma53-chest *,#ma53-toast,#ma53-key{transition-duration:.01s!important;transition-delay:0s!important}}';
-        document.head.appendChild(st);
-      };
-      if (path === '/') {
-        // The key: a fourth icon in the Meet Maurice social row (not the footer's), drawn and colored like the others.
-        if (has() || document.getElementById('ma53-key')) return;
-        var nav = Array.prototype.filter.call(document.querySelectorAll('.sqs-block-socialaccountlinks-content .sqs-svg-icon--list'), function (x) { return !x.closest('footer'); })[0];
-        if (!nav) return;
-        css();
-        var a = document.createElement('a');
-        a.id = 'ma53-key'; a.href = '#'; a.className = 'sqs-svg-icon--wrapper'; a.setAttribute('aria-label', 'Key');
-        a.innerHTML = '<div><svg class="sqs-svg-icon--social" viewBox="0 0 64 64"><g transform="translate(31.15 31.45) rotate(-45) scale(1) translate(-32 -32)">' +
-          '<path class="sqs-use--icon" fill-rule="evenodd" d="M15.5 32a8.5 8.5 0 1 0 17 0a8.5 8.5 0 1 0 -17 0zM20.5 32a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0 -7 0z"/>' +
-          '<path class="sqs-use--icon" d="M31.5 30H48.5V34H31.5zM41 34H44V39.5H41zM45.5 34H48.5V38H45.5z"/></g></svg></div>';
-        a.addEventListener('click', function (e) {
-          e.preventDefault();
-          if (a.classList.contains('ma53-got')) return;
-          try { localStorage.setItem(KEY, '1'); } catch (er) {}
-          a.classList.add('ma53-got');
-          setTimeout(function () { if (a.parentNode) a.parentNode.removeChild(a); }, 480);
-          var t = document.createElement('div'); t.id = 'ma53-toast'; t.setAttribute('role', 'status'); t.textContent = 'You found a key.';
-          var old = document.getElementById('ma53-toast'); if (old) old.parentNode.removeChild(old);
-          document.body.appendChild(t);
-          requestAnimationFrame(function () { requestAnimationFrame(function () { t.classList.add('ma53-on'); }); });
-          setTimeout(function () { t.classList.remove('ma53-on'); setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 500); }, 3600);
-        });
-        nav.appendChild(a);
-        return;
-      }
-      // The chest: under the signup form, inside the form's own grid cell so it follows the form at every width.
-      if (document.getElementById('ma53-chest')) return;
-      var form = document.querySelector('form.formkit-form'), cell = form && form.closest('.fe-block'), sec = cell && cell.closest('section');
-      if (!sec) { lockedChest53.n = (lockedChest53.n || 0) + 1; if (lockedChest53.n < 20) setTimeout(lockedChest53, 500); return; }
-      css();
-      if (getComputedStyle(cell).position === 'static') cell.style.position = 'relative';
-      var k = 'VDUzNkVHU009Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-      var c = document.createElement('div'); c.id = 'ma53-chest';
-      c.innerHTML = '<button type="button" class="ma53-box" aria-label="A locked chest"><img src="https://africhmaurice.github.io/leaderboard/loot/53.png" alt="Loot box 53" draggable="false">' +
-        '<svg class="ma53-lock" viewBox="0 0 100 100" aria-hidden="true"><g class="ma53-chains" fill="none" stroke-linecap="butt">' +
-        '<path d="M4 22L96 86M4 86L96 22" stroke="#0b170f" stroke-width="10" stroke-dasharray="11 4"/><path d="M4 22L96 86M4 86L96 22" stroke="#f3ead9" stroke-width="5" stroke-dasharray="11 4"/></g>' +
-        '<g class="ma53-pad"><path d="M40 58V46a10 10 0 0 1 20 0V58" fill="none" stroke="#0b170f" stroke-width="8"/><path d="M40 58V46a10 10 0 0 1 20 0V58" fill="none" stroke="#f3ead9" stroke-width="4"/>' +
-        '<rect x="32" y="54" width="36" height="28" fill="#c53200" stroke="#0b170f" stroke-width="3"/><circle cx="50" cy="65" r="3.6" fill="#0b170f"/><rect x="48.4" y="66" width="3.2" height="9" fill="#0b170f"/></g></svg></button>' +
-        '<p class="ma53-note" role="status" hidden>one of these things doesn’t belong here</p>';
-      cell.appendChild(c);
-      var box = c.firstChild, note = c.lastChild, extra = 0, busy = false;
-      // Breathing room: the note sits left of the chest; if the teal under the form is too short for the chest (and the
-      // note, once it shows), the section grows by just enough to keep 16px clear above the footer.
-      var fit = function () {
-        sec.style.paddingBottom = ''; extra = 0;
-        var cr = c.getBoundingClientRect(), sr = sec.getBoundingClientRect(), left = cr.left - 14 - Math.max(16, sr.left + 16);
-        note.style.maxWidth = Math.max(160, Math.min(400, left)) + 'px';
-        var bottom = Math.max(cr.bottom, note.hidden ? 0 : note.getBoundingClientRect().bottom);
-        var need = Math.ceil(bottom + 16 - sr.bottom);
-        if (need > 0) { extra = need; sec.style.paddingBottom = 'calc(' + (getComputedStyle(sec).paddingBottom || '0px') + ' + ' + need + 'px)'; }
-      };
-      fit();
-      window.addEventListener('resize', fit);
-      window.addEventListener('load', fit);
-      box.addEventListener('click', function () {
-        if (busy) return;
-        if (has()) {
-          busy = true;
-          c.classList.add('ma53-shut'); note.hidden = true;
-          setTimeout(function () { c.classList.add('ma53-open'); box.setAttribute('aria-label', 'An open chest'); }, still ? 0 : 280);
-          setTimeout(function () { location.href = atob(k).split('').reverse().join(''); }, still ? 700 : 1500);
-          return;
-        }
-        c.classList.remove('ma53-rattle'); void c.offsetWidth; c.classList.add('ma53-rattle', 'ma53-shut');
-        note.hidden = false; fit(); setTimeout(fit, 500);
-      });
-    } catch (e) {}
+    var legal = nav.appendChild(document.createElement('div')); legal.className = 'ma-foot-legal';
+    setLink(legal.appendChild(document.createElement('a')), SITE + '/privacy-policy', 'Privacy Policy');
+    // Official Rules left the footer on every page; it's only at the bottom of The Hunt now (Maurice, 2026-11-12)
+    // cookies.js opens the preferences from any link to #cookie-preferences
+    var ck = legal.appendChild(document.createElement('a')); ck.href = '#cookie-preferences'; ck.setAttribute('role', 'button'); ck.textContent = 'Cookie Preferences';
+    if (top) foot.insertBefore(nav, top.nextSibling); else foot.insertBefore(nav, foot.firstChild);
   }
 
   // Every main-menu dropdown opens centered under the link that opens it (Maurice, 2026-10-05), then is nudged
@@ -1621,492 +1164,145 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     (document.head || document.documentElement).appendChild(st);
   }
 
-  // ---- Batch 2 site tricks: loot boxes 87-93 (added at the batch 2 launch) -----------------------------------
-  // 87 Secret Phrase: type SKYPIRATE (or SKY PIRATE) on any page, outside a text field, and box 87 drops in from the top.
-  //    Phones have no keyboard to listen to, so typing the phrase into any text field on the site works too
-  //    (the Questions form, the newsletter box, Submit Points). Nothing is sent: the field is only watched.
-  // 88 Move the Comet: the Comet that falls into the U of the header logo can be dragged out. Box 88 sits in the
-  //    U's ring behind it (it shows through the hole); click it once the Comet is out of the way. Dragging never goes
-  //    home; a normal click on the logo still does.
-  // 89 First Minute Only: on /leaderboard, box 89 sits at the end of the button row under the board, but only during
-  //    the first minute of every hour by the visitor's own clock (:00:00 to :00:59).
-  // 90 High Contrast Only: on /questions, box 90 sits under the intro, shown only when the device is in a high
-  //    contrast mode (prefers-contrast: more, or forced colors / Windows contrast themes).
-  // 91 Print It: on /lootbox-clue, box 91 and its claim link print right under the intro. The link text is written
-  //    just before printing and wiped after, so it is never sitting in the page.
-  // 92 Copy Trap: on /lootbox-clue, copying clue #92 adds a line with the box 92 claim link.
-  // 93 Deliberate Typo: on /newsletter, "first looks" becomes "frist looks", and "frist" quietly opens box 93.
-  var B2 = window.__maB2 || (window.__maB2 = {});
-  var B2K = {
-    87: 'N0pCRlNENzY9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
-    88: 'RUEyTUY5M0o9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
-    89: 'RDY1WFNBWE09Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
-    90: 'RUZCUFk2V0E9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
-    91: 'TTdSNzNDRk49Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
-    92: 'MkNORThHUTQ9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
-    93: 'VjJNQkJQNEU9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
-    // boxes 101-150 (the loader's share of them; see "Boxes 101-150 site tricks" below)
-    105: 'OTg1NVlXNks9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
-    112: 'VDdHVVBNVFM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
-    113: 'WjhXN1Y4R0U9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
-    115: 'N0g4VzUyQ0E9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo',
-    119: 'N05ZV1FXRkQ9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo'
-  };
-  var b2url = function (n) { return atob(B2K[n]).split('').reverse().join(''); };
-  var b2open = function (n) { location.href = b2url(n); };
-  var b2art = function (n) { return 'https://africhmaurice.github.io/leaderboard/loot/' + n + '.png'; };
-  var b2path = function () { return location.pathname.replace(/\/+$/, '') || '/'; };
-  // Tries fn now and every half second until it says it is done (true), up to about 15 seconds.
-  var b2wait = function (name, fn) {
-    if (B2[name]) return; B2[name] = 'trying';
-    var tries = 0, go = function () { var ok = false; try { ok = fn(); } catch (e) { ok = true; } if (ok) B2[name] = 'done'; else if (++tries < 30) setTimeout(go, 500); };
-    go();
-  };
-  function b2css() {
-    if (document.getElementById('ma-b2-css')) return;
-    var st = document.createElement('style'); st.id = 'ma-b2-css';
-    st.textContent =
-      '.ma-b2-drop{position:fixed;inset:0;z-index:2147482000;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:28px;padding:clamp(110px,22vh,220px) 20px 20px;background:rgba(11,23,15,0);transition:background .35s ease}' +
-      '.ma-b2-drop.ma-b2-on{background:rgba(11,23,15,.86)}' +
-      '.ma-b2-drop .ma-b2-box,.ma-b2-drop .ma-b2-box:hover{display:block;width:min(58vw,240px);height:auto;min-width:0;min-height:0;padding:0!important;margin:0;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;cursor:pointer;transform:translateY(-130vh);-webkit-tap-highlight-color:transparent}' +
-      '.ma-b2-drop.ma-b2-on .ma-b2-box{transform:none;transition:transform .9s cubic-bezier(.3,1.3,.5,1)}' +
-      '.ma-b2-drop .ma-b2-box img{display:block;width:100%;height:auto;filter:drop-shadow(0 0 30px rgba(137,251,203,.45))}' +
-      '.ma-b2-drop .ma-b2-box:focus-visible{outline:3px solid #89fbcb;outline-offset:8px}' +
-      '.ma-b2-drop .ma-b2-x{position:static;flex:none;width:48px;height:48px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;padding:0!important;margin:0;border:2px solid #f3ead9!important;border-radius:0;background:#0b170f!important;color:#f3ead9!important;box-shadow:none!important;cursor:pointer}' +
-      '.ma-b2-drop .ma-b2-x:hover,.ma-b2-drop .ma-b2-x:focus-visible{background:#f3ead9!important;color:#0b170f!important}' +
-      '.ma-b2-drop .ma-b2-x svg{width:20px;height:20px}' +
-      '.ma-b2-logo{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;isolation:isolate}' +
-      '.ma-b2-cm{position:absolute;pointer-events:none;margin:0;padding:0}' +
-      '.ma-b2-cm img{position:absolute;display:block;max-width:none;margin:0;padding:0;border:0;-webkit-user-drag:none;user-select:none}' +
-      '.ma-b2-cm-under{z-index:-1}.ma-b2-cm-over{z-index:2}' +
-      '.ma-b2-cm-over span{position:absolute;box-sizing:content-box;pointer-events:auto;cursor:grab;touch-action:none;-webkit-tap-highlight-color:transparent}' +
-      '.ma-b2-cm-over span.ma-b2-held{cursor:grabbing}' +
-      '.ma-b2-cm-over span img{position:static;width:100%;height:100%}' +
-      '#lb-more .ma-b2-89,#lb-more .ma-b2-89:hover{display:block;align-self:center;width:72px;height:72px;min-width:0;min-height:0;padding:0!important;margin:0;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;cursor:pointer}' +
-      '#lb-more .ma-b2-89[hidden]{display:none}' +
-      '#lb-more .ma-b2-89 img{display:block;width:100%;height:100%;filter:drop-shadow(0 4px 0 rgba(0,0,0,.35))}' +
-      '#lb-more .ma-b2-89:hover{transform:scale(1.06)}' +
-      '.ma-b2-hc{display:none}' +
-      '@media (prefers-contrast:more),(forced-colors:active){.ma-b2-hc{display:flex;justify-content:center;margin:24px 0 0;forced-color-adjust:none}}' +
-      '.ma-b2-hc button,.ma-b2-hc button:hover{display:block;width:120px;height:auto;min-width:0;min-height:0;padding:0!important;margin:0;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;cursor:pointer;forced-color-adjust:none}' +
-      '.ma-b2-hc img{display:block;width:100%;height:auto;forced-color-adjust:none}' +
-      '.ma-b2-hc button:focus-visible{outline:3px solid CanvasText;outline-offset:6px}' +
-      '.ma-b2-print{display:none}' +
-      '@media print{.ma-b2-print{display:block!important;box-sizing:border-box;max-width:560px;margin:28px auto;padding:24px;border:3px solid #000;background:#fff;color:#000;text-align:center;font-family:Almarai,sans-serif;break-inside:avoid;page-break-inside:avoid}' +
-      '.ma-b2-print img{display:block;width:170px;height:auto;margin:0 auto 16px}.ma-b2-print p{margin:0 0 10px!important;padding:0!important;color:#000!important;opacity:1!important;transform:none!important;text-shadow:none!important;font-family:Almarai,sans-serif!important;font-size:15px!important;font-weight:400!important;line-height:1.5!important;letter-spacing:0!important;text-transform:none!important}' +
-      '.ma-b2-print p.ma-b2-u{margin:0!important;font-weight:700!important;font-size:16px!important;word-break:break-all}}' +
-      '@media (prefers-reduced-motion:reduce){.ma-b2-drop,.ma-b2-drop.ma-b2-on .ma-b2-box{transition:none}}';
-    document.head.appendChild(st);
-  }
-  // The shared reveal: the box falls in from the top of the screen. Click it to claim; the X, Escape, or a click
-  // outside it puts it away.
-  function b2drop(n) {
-    try {
-      if (document.querySelector('.ma-b2-drop')) return;
-      b2css();
-      var d = document.createElement('div'); d.className = 'ma-b2-drop'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Loot box ' + n);
-      d.innerHTML = '<button type="button" class="ma-b2-box" aria-label="Open loot box ' + n + '"><img src="' + b2art(n) + '" alt="Loot box ' + n + '" draggable="false"></button>' +
-        '<button type="button" class="ma-b2-x" aria-label="Close"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square" aria-hidden="true"><path d="M3 3l14 14M17 3L3 17"/></svg></button>';
-      var shut = function () { document.removeEventListener('keydown', esc, true); if (d.parentNode) d.parentNode.removeChild(d); };
-      var esc = function (e) { if (e.key === 'Escape') shut(); };
-      // Only a click that starts and ends on the dark backdrop closes it (letting go of a long press over it does not).
-      var downOnBack = false;
-      d.addEventListener('pointerdown', function (e) { downOnBack = e.target === d; });
-      d.addEventListener('click', function (e) { if (e.target === d && downOnBack) shut(); downOnBack = false; });
-      d.querySelector('.ma-b2-x').addEventListener('click', shut);
-      d.querySelector('.ma-b2-box').addEventListener('click', function () { b2open(n); });
-      document.addEventListener('keydown', esc, true);
-      document.body.appendChild(d);
-      requestAnimationFrame(function () { requestAnimationFrame(function () { d.classList.add('ma-b2-on'); }); });
-    } catch (e) {}
-  }
-
-  // 87
-  function b2phrase() {
-    if (B2.phrase) return; B2.phrase = 1;
-    var said = function (s) { return /SKYPIRATE$/.test(String(s || '').toUpperCase().replace(/[^A-Z]/g, '')); };
-    var buf = '';
-    document.addEventListener('keydown', function (e) {
-      try {
-        var t = e.target;
-        if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
-        if (e.ctrlKey || e.metaKey || e.altKey || !e.key || e.key.length !== 1) return;
-        // the space in SKY PIRATE should not scroll the page
-        if (e.key === ' ' && /SKY$/.test(buf.toUpperCase().replace(/[^A-Z]/g, ''))) e.preventDefault();
-        buf = (buf + e.key).slice(-24);
-        if (said(buf)) { buf = ''; b2drop(87); }
-      } catch (er) {}
-    }, true);
-    document.addEventListener('input', function (e) {
-      try {
-        var t = e.target;
-        if (!t || !/^(INPUT|TEXTAREA)$/.test(t.tagName) || t.type === 'password') return;
-        if (said(t.value)) b2drop(87);
-      } catch (er) {}
-    }, true);
-  }
-
-  // 88
-  // Where the Comet sits in the 640 x 396 logo, and where box 88 hides behind it (center x, center y, size).
-  var CM = { box: [207, 4, 84, 146], loot: [263, 122, 74], w: 640 };
-  var CMBASE = 'https://africhmaurice.github.io/site/assets/img/';
-  function b2comet() {
-    var found = false;
-    Array.prototype.forEach.call(document.querySelectorAll('.header-title-logo img[data-ma-logo], .header-mobile-logo img[data-ma-logo], #hunt-nav .mn-logo img[data-ma-logo]'), function (img) {
-      found = true;
-      if (img.__maComet) return; img.__maComet = 1;
-      var a = img.closest('a') || img.parentElement; if (!a) return;
-      b2css(); a.classList.add('ma-b2-logo'); img.setAttribute('draggable', 'false');
-      if (getComputedStyle(a).position === 'static') a.style.position = 'relative';
-      var under = document.createElement('span'), over = document.createElement('span');
-      under.className = 'ma-b2-cm ma-b2-cm-under'; over.className = 'ma-b2-cm ma-b2-cm-over';
-      // 115 hides behind 88: box 115 sits under box 88 in the ring, and box 88 can be dragged off it too.
-      under.innerHTML = '<img src="' + b2art(115) + '" alt="" draggable="false"><img src="' + b2art(88) + '" alt="" draggable="false">';
-      over.innerHTML = '<span role="img" aria-label="The Comet"><img src="' + CMBASE + 'logo-comet.png" alt="" draggable="false"></span>';
-      a.appendChild(under); a.appendChild(over);
-      var deep = under.firstChild, loot = under.lastChild, grip = over.firstChild, dx = 0, dy = 0, moved = false, drag = null, ate = 0;
-      var lx = 0, ly = 0, lmoved = false, ldrag = null, press = 0;
-      // The logo without its Comet stays in place; box 88 sits behind it (showing through the U's hole) and the
-      // Comet sits on top, both laid exactly over the logo picture.
-      var place = function () {
-        var r = img.getBoundingClientRect(), p = a.getBoundingClientRect(); if (!r.width) return;
-        [under, over].forEach(function (o) { o.style.left = (r.left - p.left) + 'px'; o.style.top = (r.top - p.top) + 'px'; o.style.width = r.width + 'px'; o.style.height = r.height + 'px'; });
-        var k = r.width / CM.w, L = CM.loot, B = CM.box, pad = 6;   // pad: a few pixels of extra grip around the thin Comet
-        // The header's own image rules size every picture in the logo, so these sizes are set as important.
-        var set = function (el, prop, v) { el.style.setProperty(prop, v, 'important'); };
-        [loot, deep].forEach(function (el) { set(el, 'width', L[2] * k + 'px'); set(el, 'height', L[2] * k + 'px'); set(el, 'max-height', 'none'); set(el, 'left', (L[0] - L[2] / 2) * k + 'px'); set(el, 'top', (L[1] - L[2] / 2) * k + 'px'); });
-        loot.style.transform = 'translate(' + lx * r.width + 'px,' + ly * r.width + 'px)';
-        // 115 only shows once box 88 has been pulled off it
-        set(deep, 'visibility', Math.sqrt(lx * lx + ly * ly) > 0.05 ? 'visible' : 'hidden');
-        set(grip, 'left', (B[0] * k - pad) + 'px'); set(grip, 'top', (B[1] * k - pad) + 'px'); set(grip, 'width', B[2] * k + 'px'); set(grip, 'height', B[3] * k + 'px'); set(grip, 'padding', pad + 'px');
-        var ci = grip.firstChild; set(ci, 'width', B[2] * k + 'px'); set(ci, 'height', B[3] * k + 'px'); set(ci, 'max-height', 'none'); set(ci, 'max-width', 'none');
-        grip.style.transform = 'translate(' + dx * r.width + 'px,' + dy * r.width + 'px)';
-        // The box stays out of sight until the Comet has been pulled clear of the ring.
-        set(loot, 'visibility', Math.sqrt(dx * dx + dy * dy) > 0.07 ? 'visible' : 'hidden');
-      };
-      var swap = function () { if (!/nocomet/.test(img.src)) img.src = CMBASE + 'logo-2026-white-nocomet.webp'; };
-      swap(); place();
-      img.addEventListener('load', function () { swap(); place(); });
-      window.addEventListener('resize', place); setTimeout(place, 600); setTimeout(place, 2500);
-      // the hunt menu's logo can have no size yet when this runs (phones); lay it out again once it gets one
-      try { if (window.ResizeObserver) new ResizeObserver(function () { place(); }).observe(img); } catch (er) {}
-      grip.addEventListener('pointerdown', function (e) {
-        if (e.button) return; e.preventDefault(); e.stopPropagation();
-        var r = img.getBoundingClientRect(); drag = { x: e.clientX, y: e.clientY, dx: dx, dy: dy, w: r.width, went: false };
-        try { grip.setPointerCapture(e.pointerId); } catch (er) {} grip.classList.add('ma-b2-held');
-        // 119: holding the Comet still (a long press on a phone) opens its menu, same as a right-click
-        clearTimeout(press); var px = e.clientX, py = e.clientY;
-        press = setTimeout(function () { if (drag && !drag.went) { drag = null; grip.classList.remove('ma-b2-held'); ate = Date.now(); b3menu(px, py); } }, 650);
-      });
-      grip.addEventListener('contextmenu', function (e) { e.preventDefault(); e.stopPropagation(); clearTimeout(press); b3menu(e.clientX, e.clientY); });
-      grip.addEventListener('pointermove', function (e) {
-        if (!drag) return;
-        var mx = e.clientX - drag.x, my = e.clientY - drag.y; if (Math.abs(mx) + Math.abs(my) > 3) { moved = true; drag.went = true; clearTimeout(press); }
-        dx = drag.dx + mx / drag.w; dy = drag.dy + my / drag.w; place();
-      });
-      var drop = function () { clearTimeout(press); if (!drag) return; drag = null; grip.classList.remove('ma-b2-held'); if (moved) ate = Date.now(); };
-      // 115: once the Comet is out of the ring, box 88 can be dragged too. Picked up, it rides above the logo (moved
-      // into the top layer) so it can be set down anywhere; box 115 is left showing through the ring.
-      var hit = function (el, e) { var q = el.getBoundingClientRect(); return e.clientX >= q.left && e.clientX <= q.right && e.clientY >= q.top && e.clientY <= q.bottom; };
-      a.addEventListener('pointerdown', function (e) {
-        if (e.button || !moved || ldrag || loot.style.visibility === 'hidden' || !hit(loot, e) || hit(grip, e)) return;
-        e.preventDefault(); e.stopPropagation();
-        var r = img.getBoundingClientRect(); ldrag = { x: e.clientX, y: e.clientY, lx: lx, ly: ly, w: r.width };
-        try { a.setPointerCapture(e.pointerId); } catch (er) {}
-      }, true);
-      a.addEventListener('pointermove', function (e) {
-        if (!ldrag) return;
-        var mx = e.clientX - ldrag.x, my = e.clientY - ldrag.y;
-        if (Math.abs(mx) + Math.abs(my) > 3 && !lmoved) { lmoved = true; over.insertBefore(loot, grip); }
-        if (!lmoved) return;
-        lx = ldrag.lx + mx / ldrag.w; ly = ldrag.ly + my / ldrag.w; place();
-      }, true);
-      var ldrop = function () { if (!ldrag) return; var went = lmoved && (lx !== ldrag.lx || ly !== ldrag.ly); ldrag = null; if (went) ate = Date.now(); };
-      a.addEventListener('pointerup', ldrop, true); a.addEventListener('pointercancel', ldrop, true);
-      a.addEventListener('touchstart', function (e) { var t = e.touches[0]; if (t && moved && loot.style.visibility !== 'hidden' && hit(loot, t)) e.preventDefault(); }, { passive: false });
-      a.addEventListener('touchmove', function (e) { if (ldrag) e.preventDefault(); }, { passive: false });
-      grip.addEventListener('pointerup', drop); grip.addEventListener('pointercancel', drop);
-      grip.addEventListener('touchstart', function (e) { e.preventDefault(); }, { passive: false });
-      grip.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
-      // Clicks on the logo: on the Comet or right after a drag, nothing happens. With the Comet out of the way, a
-      // click on the hole where it was opens box 88. Any other click still goes home.
-      a.addEventListener('click', function (e) {
-        if (Date.now() - ate < 400 || (e.target && e.target.closest && e.target.closest('.ma-b2-cm-over'))) { e.preventDefault(); e.stopPropagation(); return; }
-        if (!moved) return;
-        var lr = loot.getBoundingClientRect(), gr = grip.getBoundingClientRect();
-        var inLoot = e.clientX >= lr.left && e.clientX <= lr.right && e.clientY >= lr.top && e.clientY <= lr.bottom;
-        var covered = e.clientX >= gr.left && e.clientX <= gr.right && e.clientY >= gr.top && e.clientY <= gr.bottom;
-        if (inLoot && !covered) { e.preventDefault(); e.stopPropagation(); b2drop(88); return; }
-        if (lmoved && deep.style.visibility !== 'hidden' && hit(deep, e) && !covered) { e.preventDefault(); e.stopPropagation(); b2drop(115); }
-      }, true);
-      a.addEventListener('dragstart', function (e) { e.preventDefault(); });
-    });
-    return found;
-  }
-
-  // 89
-  function b2minute() {
-    if (b2path() !== '/leaderboard') return true;
-    var row = document.getElementById('lb-more');
-    if (!row) return false;
-    if (row.querySelector('.ma-b2-89')) return true;
-    b2css();
-    var b = document.createElement('button'); b.type = 'button'; b.className = 'ma-b2-89'; b.hidden = true; b.setAttribute('aria-label', 'Open loot box 89');
-    b.innerHTML = '<img src="' + b2art(89) + '" alt="Loot box 89" draggable="false">';
-    b.addEventListener('click', function () { if (new Date().getMinutes() === 0) b2open(89); });
-    row.appendChild(b);
-    var tick = function () { var on = new Date().getMinutes() === 0; if (b.hidden === on) b.hidden = !on; };
-    tick(); setInterval(tick, 1000);
-    return true;
-  }
-
-  // 90
-  function b2contrast() {
-    if (b2path() !== '/questions') return true;
-    var head = document.querySelector('#hq .hq-head');
-    if (!head) return false;
-    if (head.querySelector('.ma-b2-hc')) return true;
-    b2css();
-    var w = document.createElement('div'); w.className = 'ma-b2-hc';
-    w.innerHTML = '<button type="button" aria-label="Open loot box 90"><img src="' + b2art(90) + '" alt="Loot box 90" draggable="false"></button>';
-    w.firstChild.addEventListener('click', function () { b2open(90); });
-    head.appendChild(w);
-    return true;
-  }
-
-  // 91
-  function b2print() {
-    if (b2path() !== '/lootbox-clue') return true;
-    var intro = document.querySelector('#loot-clue .lc-intro');
-    if (!intro) return false;
-    if (document.querySelector('.ma-b2-print')) return true;
-    b2css();
-    var p = document.createElement('div'); p.className = 'ma-b2-print'; p.setAttribute('aria-hidden', 'true');
-    p.innerHTML = '<img src="' + b2art(91) + '" alt="Loot box 91"><p>You printed the clues. Very old school. This one only shows up on paper:</p><p class="ma-b2-u"></p>';
-    intro.parentNode.insertBefore(p, intro.nextSibling);
-    var u = p.querySelector('.ma-b2-u');
-    var fill = function () { try { u.textContent = b2url(91); } catch (e) {} };
-    var wipe = function () { u.textContent = ''; };
-    window.addEventListener('beforeprint', fill);
-    window.addEventListener('afterprint', wipe);
-    try { var mq = matchMedia('print'), ch = function (m) { if (m.matches) fill(); else wipe(); }; if (mq.addEventListener) mq.addEventListener('change', ch); else mq.addListener(ch); } catch (e) {}
-    return true;
-  }
-
-  // 92
-  function b2copy() {
-    if (b2path() !== '/lootbox-clue') return true;
-    if (B2.copyOn) return true; B2.copyOn = 1;
-    document.addEventListener('copy', function (e) {
-      try {
-        var card = document.querySelector('#loot-clue .lc-board[data-clue="92"]'), sel = window.getSelection();
-        if (!card || !sel || !sel.rangeCount || sel.isCollapsed || !e.clipboardData) return;
-        var r = sel.getRangeAt(0);
-        if (!card.contains(r.startContainer) && !card.contains(r.endContainer) && !r.intersectsNode(card)) return;
-        e.clipboardData.setData('text/plain', sel.toString() + '\n\nP.S. Clippy saw that. Here is loot box 92 for your trouble: ' + b2url(92));
-        e.preventDefault();
-      } catch (er) {}
-    });
-    return true;
-  }
-
-  // 93
-  function b2typo() {
-    if (b2path() !== '/newsletter') return true;
-    if (document.querySelector('.ma-b2-typo')) return true;
-    var phrase = 'exclusive first looks', tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), n;
-    while ((n = tw.nextNode())) {
-      var at = n.nodeValue.indexOf(phrase);
-      if (at < 0) continue;
-      var w = n.splitText(at + 10); w.splitText(5);
-      var s = document.createElement('span'); s.className = 'ma-b2-typo'; s.textContent = 'frist';
-      w.parentNode.replaceChild(s, w);
-      s.addEventListener('click', function () { b2open(93); });
-      return true;
+  // One gap between the menu and the first thing on every page (Maurice, 2026-11-11): the first words or picture
+  // start the same distance under the menu everywhere. The home slider and the games stay as they are.
+  var GAP_SKIP = '#header,#hunt-nav,#hunt-nav-ov,#ma-loading,#sb-note,footer,script,style,noscript,template,.section-background,[hidden],[aria-hidden="true"]';
+  function gapSeen(e, root) {
+    for (var a = e; a && a !== root; a = a.parentElement) {
+      var c = getComputedStyle(a);
+      if (c.display === 'none' || c.visibility === 'hidden' || c.position === 'fixed' || (c.opacity === '0' && !a.classList.contains('ma-rv'))) return false;
     }
-    return false;
-  }
-
-  function b2Tricks() {
-    try { b2phrase(); } catch (e) {}
-    b2wait('comet', b2comet);
-    // Header logos inside pages the loader mounts (the hunt menu) arrive later: look again once they have.
-    if (!B2.cometAgain) { B2.cometAgain = 1; setTimeout(function () { try { b2comet(); } catch (e) {} }, 4000); setTimeout(function () { try { b2comet(); } catch (e) {} }, 9000); }
-    b2wait('minute', b2minute);
-    b2wait('contrast', b2contrast);
-    b2wait('print', b2print);
-    b2wait('copy', b2copy);
-    b2wait('typo', b2typo);
-    b3Tricks();
-  }
-  // ---- end of batch 2 site tricks ----
-
-  // ---- Boxes 101-150 site tricks (the ones that live in the loader; the rest are in their pages) ----------------
-  // 105 Copyright: every page's footer carries a copyright line; tap its (c) five times in a row and box 105 drops in.
-  // 112 Mobile Menu: open the phone menu three times (within half a minute) and, on the third, a hidden LOOT BOX
-  //     row sits at the top of the menu for ten seconds.
-  // 115 Double Slide (Again): in b2comet above. Drag the Comet out, then drag box 88 off; box 115 was under it.
-  // 119 Special Click Comet: right-click the Comet in the logo (or long-press it on a phone) and its own little
-  //     menu opens, with box 119 in it. Wired in b2comet; the menu is b3menu.
-  function b3css() {
-    if (document.getElementById('ma-b3-css')) return;
-    var st = document.createElement('style'); st.id = 'ma-b3-css';
-    st.textContent =
-      '.ma-b3-copy{display:block;box-sizing:border-box;margin:0 auto;padding:12px 20px 20px;text-align:center;font:400 12px/1.6 Almarai,sans-serif;letter-spacing:.04em;color:rgba(243,234,217,.72);-webkit-user-select:none;user-select:none}' +
-      '.ma-b3-copy .ma-b3-c{cursor:text;-webkit-tap-highlight-color:transparent}' +
-      '.ma-b3-menu{position:fixed;z-index:2147482100;box-sizing:border-box;min-width:208px;margin:0;padding:6px;list-style:none;background:#0b170f;border:1px solid rgba(243,234,217,.5);box-shadow:0 10px 30px rgba(0,0,0,.5);font:700 14px/1.3 Almarai,sans-serif;color:#f3ead9}' +
-      '.ma-b3-menu button,.ma-b3-menu button:hover{display:flex;align-items:center;gap:12px;width:100%;box-sizing:border-box;min-height:0;margin:0;padding:10px 12px!important;border:0!important;border-radius:0;background:transparent!important;color:#f3ead9!important;font:inherit;letter-spacing:.06em;text-align:left;cursor:pointer;box-shadow:none!important}' +
-      '.ma-b3-menu button:hover,.ma-b3-menu button:focus-visible{background:#132219!important;outline:none}' +
-      '.ma-b3-menu img{width:32px;height:32px;flex:none}' +
-      '.ma-b3-menu hr{margin:4px 6px;border:0;border-top:1px solid rgba(243,234,217,.2)}' +
-      '.ma-b3-mm,.ma-b3-mm:hover{display:flex!important;align-items:center;justify-content:center;gap:12px;margin:0 auto;padding:8px 16px!important;border:2px solid #ff4c0f!important;border-radius:0;background:transparent!important;color:#f3ead9!important;font:700 17px/1.2 Almarai,sans-serif!important;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;box-shadow:none!important}' +
-      '.ma-b3-mm img{width:40px;height:40px}';
-    document.head.appendChild(st);
-  }
-  // 119
-  function b3menu(x, y) {
-    try {
-      var old = document.querySelector('.ma-b3-menu'); if (old) old.remove();
-      b3css();
-      var m = document.createElement('div'); m.className = 'ma-b3-menu'; m.setAttribute('role', 'menu'); m.setAttribute('aria-label', 'The Comet');
-      m.innerHTML = '<button type="button" role="menuitem" data-go="home">Back to Home</button>' +
-        '<button type="button" role="menuitem" data-go="hunt">The Treasure Hunt</button><hr>' +
-        '<button type="button" role="menuitem" data-go="box"><img src="' + b2art(119) + '" alt="" draggable="false">Loot Box 119</button>';
-      document.body.appendChild(m);
-      var w = m.offsetWidth, h = m.offsetHeight;
-      m.style.left = Math.max(8, Math.min(x, innerWidth - w - 8)) + 'px'; m.style.top = Math.max(8, Math.min(y, innerHeight - h - 8)) + 'px';
-      var shut = function () { document.removeEventListener('pointerdown', away, true); document.removeEventListener('keydown', esc, true); if (m.parentNode) m.remove(); };
-      var away = function (e) { if (!m.contains(e.target)) shut(); };
-      var esc = function (e) { if (e.key === 'Escape') shut(); };
-      m.addEventListener('click', function (e) {
-        var b = e.target.closest('button'); if (!b) return; var go = b.getAttribute('data-go'); shut();
-        if (go === 'box') b2open(119); else location.href = go === 'hunt' ? '/the-hunt' : '/';
-      });
-      setTimeout(function () { document.addEventListener('pointerdown', away, true); document.addEventListener('keydown', esc, true); }, 0);
-      m.querySelector('[data-go="box"]').focus();
-    } catch (e) {}
-  }
-  // 105
-  function b3copy() {
-    if (document.querySelector('.ma-b3-copy')) return true;
-    var foot = document.getElementById('footer-sections') || document.querySelector('footer');
-    if (!foot && document.readyState !== 'complete') return false;
-    var shown = foot && foot.offsetHeight > 0 && getComputedStyle(foot).display !== 'none';
-    b3css();
-    var p = document.createElement('p'); p.className = 'ma-b3-copy';
-    p.innerHTML = 'Copyright <span class="ma-b3-c">&copy;</span> Maurice Africh - 2025-Present - All Rights Reserved - Patent Pending';
-    (shown ? foot : document.body).appendChild(p);
-    var taps = [];
-    p.querySelector('.ma-b3-c').addEventListener('click', function () {
-      var t = Date.now(); taps = taps.filter(function (x) { return t - x < 2500; }); taps.push(t);
-      if (taps.length >= 5) { taps = []; b2drop(105); }
-    });
     return true;
   }
-  // 112
-  function b3menuBox() {
-    if (B2.mmenu) return; B2.mmenu = 1;
-    var opens = [];
-    var show = function () {
-      var host = null;
-      var ov = document.getElementById('hunt-nav-ov');
-      if (ov && getComputedStyle(ov).display !== 'none') host = ov;
-      // Squarespace's own menu stacks its folder panels over the list, so the row goes inside the open panel (a tap on the list itself never lands, Poppa Squatch 10/27)
-      if (!host && /header--menu-open/.test(document.body.className)) host = document.querySelector('.header-menu .header-menu-nav-folder--active .header-menu-nav-folder-content') || document.querySelector('.header-menu .header-menu-nav-list') || document.querySelector('.header-menu');
-      if (!host || host.querySelector('.ma-b3-mm')) return;
-      b3css();
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'ma-b3-mm';
-      b.innerHTML = '<img src="' + b2art(112) + '" alt="" draggable="false">Loot Box';
-      b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); b2open(112); });
-      if (host === ov) { var x = ov.querySelector('.mn-ovlogo'); ov.insertBefore(b, x && x.nextSibling ? x.nextSibling : ov.firstChild); }
-      else host.insertBefore(b, host.firstChild);
-      setTimeout(function () { if (b.parentNode) b.remove(); }, 10000);
-    };
-    var opened = function () {
-      var t = Date.now(); opens = opens.filter(function (x) { return t - x < 30000; }); opens.push(t);
-      if (opens.length >= 3) { opens = []; setTimeout(show, 120); }
-    };
-    document.addEventListener('click', function (e) {
-      var el = e.target && e.target.closest && e.target.closest('.header-burger-btn, #hunt-nav .mn-burger');
-      if (!el) return;
-      // the Squarespace burger opens and closes the menu: only count the clicks that leave it open
-      if (el.classList.contains('header-burger-btn')) setTimeout(function () { if (/header--menu-open/.test(document.body.className)) opened(); }, 80);
-      else opened();
-    }, true);
-  }
-  // 113 Fake Newsletter: signing up as lootbox@lootbox.com in a newsletter (Kit) form drops box 113 instead.
-  //     The address is never sent to Kit: the submit is stopped before Kit's own script sees it.
-  function b3fakeMail() {
-    if (B2.fakeMail) return; B2.fakeMail = 1;
-    var fake = function (form) {
-      var i = form && form.querySelector && form.querySelector('input[type="email"], input[name="email_address"], input[name="email"]');
-      return i && String(i.value).trim().toLowerCase() === 'lootbox@lootbox.com';
-    };
-    var stop = function (e, form) { e.preventDefault(); e.stopPropagation(); if (e.stopImmediatePropagation) e.stopImmediatePropagation(); b2drop(113); };
-    document.addEventListener('submit', function (e) { var f = e.target; if (f && f.tagName === 'FORM' && fake(f)) stop(e, f); }, true);
-    document.addEventListener('click', function (e) {
-      var b = e.target && e.target.closest && e.target.closest('button, input[type="submit"]'); if (!b) return;
-      var f = b.form || b.closest('form, .newsletter-form'); if (f && fake(f) && (b.type === 'submit' || /submit/.test(b.className + ' ' + (b.getAttribute('data-element') || '')))) stop(e, f);
-    }, true);
-  }
-  function b3Tricks() {
-    b2wait('b3copy', b3copy);
-    try { b3menuBox(); } catch (e) {}
-    try { b3fakeMail(); } catch (e) {}
-  }
-  // ---- end of boxes 101-150 site tricks ----
-
-  // The new special editions sit right after Walmart's in every Pre-Order list (Maurice, 2026-10-12): the Waterstones
-  // Exclusive Edition and the Broken Binding edition. Added here so the Squarespace, hunt, and shop menus all match.
-  var SPECIAL = [['Waterstones Exclusive Edition', 'https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227'],
-    ['Broken Binding Special Edition', 'https://thebrokenbindingsub.com/products/cellos-gate']];
-  // "Read Excerpt" first in the Pre-Order dropdown (Maurice, 2026-10-16): Chapter One on the Simon & Schuster page,
-  // which opens its excerpt section straight away. Copies the Walmart link's wrapper so it lines up with the others.
-  function readExcerpt() {
-    Array.prototype.forEach.call(document.querySelectorAll('a[href*="Walmart-Exclusive-Hardcover"]'), function (a) {
-      if (a.__maRX || a.querySelector('img') || !a.closest('#header, #hunt-nav, #hunt-nav-ov, .header-menu, .tm-header')) return;
-      a.__maRX = true;
-      var unit = a.parentNode.children.length === 1 && /header-nav-folder-item|header-menu-nav-item/.test(a.parentNode.className) ? a.parentNode : a;
-      var box = unit.parentNode, caps = a.textContent.trim() === a.textContent.trim().toUpperCase();
-      if (box.querySelector('a[href="https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834#excerpt"]')) return;
-      var n = unit.cloneNode(true), link = n.tagName === 'A' ? n : n.querySelector('a');
-      link.href = 'https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834#excerpt'; link.textContent = caps ? 'READ EXCERPT' : 'Read Excerpt'; link.__maSE = true; link.__maRX = true;
-      link.target = '_blank'; link.rel = 'noopener';
-      box.insertBefore(n, box.firstElementChild);
+  function gapNow() {
+    var mb = 0, root = document.querySelector('#sections') || document.querySelector('#page');
+    if (!root) return null;
+    ['#header', '#hunt-nav'].forEach(function (s) {
+      var e = document.querySelector(s); if (!e) return;
+      var c = getComputedStyle(e), r = e.getBoundingClientRect();
+      if (c.display !== 'none' && c.visibility !== 'hidden' && r.height && r.top < 40) mb = Math.max(mb, r.bottom);
     });
+    var tw = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT), n, best = null, seen = 0;
+    while ((n = tw.nextNode()) && seen < 25) {
+      var el = n.nodeType === 3 ? n.parentElement : n, r;
+      if (n.nodeType === 3) {
+        if (n.nodeValue.trim().length < 2) continue;
+        var rg = document.createRange(); rg.selectNodeContents(n); r = rg.getBoundingClientRect();
+      } else {
+        if (!/^(IMG|IFRAME|VIDEO|CANVAS|INPUT|BUTTON|SELECT|TEXTAREA)$/.test(n.tagName)) continue;
+        r = n.getBoundingClientRect(); if (r.height < 24 || r.width < 24) continue;
+      }
+      if (!r.height || !r.width || !el || el.closest(GAP_SKIP) || !gapSeen(el, root)) continue;
+      seen++;
+      // things waiting to rise into view sit 28px low until they do
+      var top = r.top + window.scrollY;
+      for (var a = el; a && a !== root; a = a.parentElement) if (a.classList.contains('ma-rv') && !a.classList.contains('ma-in')) { top -= 28; break; }
+      if (!best || top < best.top) best = { top: top, el: el };
+    }
+    if (!best) return null;
+    // a framed board ([data-ma-flush]) sits right under the menu; the board inside keeps the gap to its own first words
+    var fl = best.el.closest('[data-ma-flush]');
+    if (fl) return { el: fl, gap: fl.getBoundingClientRect().top + window.scrollY - mb, root: root, flush: true };
+    return { el: best.el, gap: best.top - mb, root: root };
   }
-
-  function specialEditions() {
-    Array.prototype.forEach.call(document.querySelectorAll('a[href*="Walmart-Exclusive-Hardcover"]'), function (a) {
-      if (a.__maSE || a.querySelector('img') || !a.closest('#header, #hunt-nav, #hunt-nav-ov, .header-menu, .tm-header')) return;
-      a.__maSE = true;
-      // a link alone in its own wrapper (Squarespace's folder items) gets its wrapper copied, so the new ones line up
-      var unit = a.parentNode.children.length === 1 && /header-nav-folder-item|header-menu-nav-item/.test(a.parentNode.className) ? a.parentNode : a;
-      var box = unit.parentNode, after = unit, caps = a.textContent.trim() === a.textContent.trim().toUpperCase();
-      SPECIAL.forEach(function (s) {
-        if (box.querySelector('a[href="' + s[1] + '"]')) return;
-        var n = unit.cloneNode(true), link = n.tagName === 'A' ? n : n.querySelector('a');
-        link.href = s[1]; link.textContent = caps ? s[0].toUpperCase() : s[0]; link.__maSE = true;
-        box.insertBefore(n, after.nextSibling); after = n;
+  function gapSet(e, prop, px) { e.style.setProperty(prop, Math.round(px * 10) / 10 + 'px', 'important'); }
+  function gapShift(m, d) {
+    var chain = [], a;
+    for (a = m.el; a && a !== m.root; a = a.parentElement) chain.unshift(a);
+    if (d > 0) {
+      // more room: the page's own outer box grows at the top, so its background grows with it
+      var mount = m.el.closest('[data-ma-page]'), box = mount ? chain[chain.indexOf(mount) + 1] || mount : chain[0];
+      // on the first section inside it, so that section's art reaches the top too (a pad on the outer box showed as a
+      // dark line above the art; Maurice, 2026-11-13: 'do you see that line at the top of the page? can we remove that for ALL pages?')
+      Array.prototype.some.call(box.children, function (c) { if (c.contains(m.el) && c !== m.el) { box = c; return true; } });
+      // padding the page builder put above the page (room for the menu) moves inside it as well, so it's art, not a dark band
+      if (mount) chain.slice(0, chain.indexOf(mount)).forEach(function (e) { var v = parseFloat(getComputedStyle(e).paddingTop) || 0; if (v > 0.5) { gapSet(e, 'padding-top', 0); d += v; } });
+      return gapSet(box, 'padding-top', parseFloat(getComputedStyle(box).paddingTop) + d);
+    }
+    var need = -d;
+    ['padding-top', 'margin-top'].forEach(function (prop) {
+      chain.forEach(function (e) {
+        var v = parseFloat(getComputedStyle(e).getPropertyValue(prop)) || 0, take = Math.min(v, need);
+        if (take > 0.5) { gapSet(e, prop, v - take); need -= take; }
       });
     });
+    // space that is not padding (empty layout rows): the block itself moves up
+    if (need > 1) {
+      var blk = m.el.closest('.fe-block') || chain[0];
+      gapSet(blk, 'margin-top', (parseFloat(getComputedStyle(blk).marginTop) || 0) - need);
+    }
   }
+  function topGap() {
+    if (!document.body || pending || window.scrollY > 4 || location.pathname === '/' || /^\/home\b/.test(location.pathname)) return;
+    if (gamePage() || document.querySelector('#hg-page,[data-ma-keep-top]')) return;
+    var want = Math.round(Math.max(40, Math.min(88, window.innerWidth * .06)));
+    for (var pass = 0; pass < 6; pass++) {
+      var m = gapNow(); if (!m) return;
+      var d = (m.flush ? 0 : want) - m.gap;
+      if (Math.abs(d) < 1.5) break;
+      // a framed board that starts behind the menu comes down by padding on its section, which stays hidden behind the menu
+      // (inside the page, on its first piece, so that piece's art fills the space and no dark line shows above it)
+      if (m.flush && d > 0) {
+        var sec = m.el.closest('section') || m.el.parentElement, mnt = m.el.closest('[data-ma-page]');
+        if (mnt) Array.prototype.some.call(mnt.children, function (c) { if (c.contains(m.el) && c !== m.el) { sec = c; return true; } });
+        gapSet(sec, 'padding-top', parseFloat(getComputedStyle(sec).paddingTop) + d); continue;
+      }
+      gapShift(m, d);
+    }
+    gapWatch(m);
+  }
+  // the page builder writes its own top padding on the first section whenever it likes; set the gap again when it does
+  var gapT, gapMO;
+  function gapWatch(m) {
+    var sec = m && m.el.closest('section.page-section') || m && m.el.closest('section');
+    if (!sec || sec.__maGap || !window.MutationObserver) return;
+    sec.__maGap = 1;
+    gapMO = gapMO || new MutationObserver(function () { clearTimeout(gapT); gapT = setTimeout(topGap, 250); });
+    gapMO.observe(sec, { attributes: true, attributeFilter: ['style'] });
+    var cw = sec.querySelector('.content-wrapper');
+    if (cw) gapMO.observe(cw, { attributes: true, attributeFilter: ['style'] });
+  }
+  window.addEventListener('load', function () { topGap(); setTimeout(topGap, 1500); });
+  // after a resize the page builder sets its own top padding again, so the gap is set once more when that has settled
+  window.addEventListener('resize', function () { clearTimeout(gapT); gapT = setTimeout(function () { topGap(); setTimeout(topGap, 900); }, 200); });
 
+  // Phones (Maurice, 2026-11-13: 'add padding'): the page builder's phone layout stacks blocks with no space between them
+  // and runs text close to the screen edges. Text gets more room at the sides, and any block that starts less than 12px
+  // under the one above it (a heading sitting on a button) is moved down to leave 12px; the section grows to match.
+  (function () { var st = document.createElement('style'); st.textContent = '@media (max-width:767px){#page .fe-block .sqs-html-content{padding-left:8px;padding-right:8px;box-sizing:border-box}' +
+    // a row of social icons goes on two lines, five over four, like the footer (Maurice, 2026-11-13)
+    'html body #page .sqs-svg-icon--list[class]{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:22px 28px!important;max-width:calc(5 * 36px + 4 * 28px)!important;margin-left:auto!important;margin-right:auto!important}html body #page .sqs-svg-icon--list[class]>*{margin:0!important;width:36px!important;height:36px!important;flex:none!important}}'; (document.head || document.documentElement).appendChild(st); })();
+  function phoneGaps() {
+    if (window.innerWidth > 767 || !document.body) return;
+    Array.prototype.forEach.call(document.querySelectorAll('#page .fluid-engine'), function (fe) {
+      if (fe.querySelector('[data-ma-page]') && fe.children.length < 3) return;
+      var bs = Array.prototype.filter.call(fe.children, function (b) { return b.classList.contains('fe-block'); });
+      bs.forEach(function (b) { if (b.__maGap) { b.style.marginTop = ''; b.__maGap = 0; } });
+      if (fe.__maPad) { fe.style.paddingBottom = ''; fe.__maPad = 0; }
+      var maxB = function () { var m = -1e9; bs.forEach(function (b) { var br = b.getBoundingClientRect(); if (br.height) m = Math.max(m, br.bottom); }); return m; }, fb0 = maxB();
+      var items = bs.map(function (b) { return { b: b, r: b.getBoundingClientRect() }; }).filter(function (o) { return o.r.height > 0 && o.r.width > 0; });
+      items.sort(function (x, y) { return x.r.top - y.r.top; });
+      var done = [];
+      items.forEach(function (o) {
+        var r = o.b.getBoundingClientRect(), above = -1e9;
+        done.forEach(function (q) { var qr = q.getBoundingClientRect(), ov = Math.min(qr.right, r.right) - Math.max(qr.left, r.left);
+          if (ov > Math.min(qr.width, r.width) * 0.5 && qr.top < r.top - 2) above = Math.max(above, qr.bottom); });
+        var gap = r.top - above;
+        if (above > -1e9 && gap > -4 && gap < 12) { o.b.style.marginTop = (12 - gap) + 'px'; o.b.__maGap = 1; }
+        done.push(o.b);
+      });
+      var grow = maxB() - fb0;   // only what the moves added
+      if (grow > 1) { fe.style.paddingBottom = Math.ceil(grow) + 'px'; fe.__maPad = 1; }
+    });
+  }
+  var pgT = 0; window.addEventListener('resize', function () { clearTimeout(pgT); pgT = setTimeout(phoneGaps, 400); });
+  window.addEventListener('load', function () { setTimeout(phoneGaps, 600); setTimeout(phoneGaps, 2500); });
   function scan() {
-    specialEditions(); readExcerpt();
     headRule();
-    lockedChest53();
-    handBox98();
-    theaterBox67();
-    if (document.body) quietWord();
-    b2Tricks();
     huntGift();
-    huntOne();
-    mainMerch();
-    dropLinktree();
-    huntDropdown();
-    mainOrder();
-    if (document.querySelector('#header .header-nav-list[data-ma-order]')) boxMainDrops();
+    newMain();
+    homeOrder();
+    footLinks();
     fixedBackgrounds();
     nativeReveal();
     centerDropdowns();

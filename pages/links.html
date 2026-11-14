@@ -1,8 +1,5 @@
 <!-- ============================================================
-     THE LINK PAGE (mauriceafrich.com/links). BUILT by tools/links.mjs from tools/links.json; edit those, not this.
-     THE GOLDEN TRAIL (Maurice 10/31), finishers only (all 151 loot boxes), script at the end: slot 7 = the Comet in the footer logo blinks
-     PLEASE MOVE ME in Morse code and can be dragged aside onto a golden D; slot 9 = the Brick in the Brick discount picture can be dragged
-     aside onto a golden H. At go-live these must also go into tools/links.mjs, or the next build drops them.
+     THE LINK PAGE (mauriceafrich.com/links). Started from tools/links.mjs (tools/links.json), but this page has changed since (hunt removal, the sideways slider at the bottom); edit this page, and do not rerun the generator.
      ============================================================ -->
 <style>
 #ma-links{--ink:#0b170f;--ink7:#213226;--moss:#607667;--green:#a2f590;--green7:#2c6021;--teal:#268e62;--scarlet:#c53200;--violet:#482d85;--parch:#fffffe;
@@ -27,7 +24,6 @@
 #ma-links .lk-soc img{display:block;max-width:26px;max-height:26px;width:auto;height:auto}
 #ma-links .lk-soc:hover{transform:scale(1.15)}
 #ma-links .lk-copper{display:flex;align-items:center;gap:16px;padding:14px 18px 14px 12px;border:2px solid #fd7547;background:linear-gradient(90deg,rgba(145,37,1,.94),rgba(197,50,0,.9));color:var(--parch)!important;text-decoration:none!important;transition:transform .15s ease}
-#ma-links .lk-excerpt{border-color:#9e74fd;background:linear-gradient(90deg,rgba(45,28,83,.95),rgba(72,45,133,.92));margin-bottom:8px}
 #ma-links .lk-copper img{flex:none;width:78px;height:78px;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
 #ma-links .lk-copper span{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
 #ma-links .lk-copper b{font-family:'Atomic Marker',Impact,sans-serif;font-weight:400;font-size:clamp(18px,5vw,22px);line-height:1.2;letter-spacing:.03em}
@@ -43,7 +39,7 @@
 #ma-links .lk-quiz em svg{width:16px;height:16px}
 #ma-links .lk-quiz:hover{transform:scale(1.02)}
 @media (max-width:520px){#ma-links .lk-quiz{grid-template-columns:minmax(0,1fr);gap:16px;padding:20px}#ma-links .lk-quiz span{align-items:center;text-align:center}}
-#ma-links .lk-feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#ma-links .lk-feats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 #ma-links .lk-secs{display:flex;flex-direction:column;gap:30px;margin-top:8px}
 #ma-links .lk-sec{display:flex;flex-direction:column;gap:12px}
 #ma-links .lk-h{margin:0;font-family:'Atomic Marker',Impact,sans-serif;font-weight:400;font-size:28px;line-height:1.2;letter-spacing:.03em;color:var(--parch)!important;text-align:center;text-wrap:balance}
@@ -107,6 +103,8 @@
 #ma-links .lk-edov{background:linear-gradient(180deg,rgba(11,23,15,.55),rgba(11,23,15,.9) 62%)}
 #ma-links .lk-edin{position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;height:100%;padding:20px 12px 20px}
 #ma-links .lk-edimg{display:block;height:clamp(150px,40vw,190px);width:auto;max-width:100%;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(0,0,0,.6))}
+/* The Hodderscape picture ends in a pale strip of page edge; the frame stops just short of it (Maurice, 2026-11-11). */
+[data-link="ed-hodderscape"] .lk-edimg{aspect-ratio:262/400;object-fit:cover;object-position:left center}
 #ma-links .lk-edin b{display:flex;align-items:center;justify-content:center;min-height:3.9em;font-weight:800;font-size:clamp(13px,3.6vw,15px);line-height:1.3;letter-spacing:.06em;text-transform:uppercase;text-wrap:balance}
 #ma-links .lk-edin small{min-height:4.2em;font-weight:700;font-size:clamp(11px,3vw,12px);line-height:1.4;opacity:.85;text-wrap:balance}
 #ma-links .lk-edcta{margin-top:auto;padding:8px 14px;background:var(--green);color:var(--ink);font-weight:800;font-size:12px;line-height:1;letter-spacing:.1em;text-transform:uppercase}
@@ -124,34 +122,39 @@
 #ma-links .lk-flogo:hover{opacity:1}
 #ma-links .lk-foot{margin:0;text-align:center;font-size:13px;letter-spacing:.06em;color:var(--moss)!important}
 @media (prefers-reduced-motion:reduce){#ma-links .lk-spin{animation:none}#ma-links .lk-ed,#ma-links .lk-tile,#ma-links .lk-copper,#ma-links .lk-soc,#ma-links .lk-promo,#ma-links .lk-quiet{transition:none}}
+.ma-sbar{position:absolute;left:0;right:0;bottom:0;height:6px;z-index:6;pointer-events:none;opacity:0;transition:opacity .25s ease;background:rgba(255,255,254,.08)}
+.ma-sbar i{display:block;height:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,#ff4c0f,#3adb97 33%,#7b4ee1 66%,#a2f590)}
+@media (prefers-reduced-motion:reduce){.ma-sbar{transition:none}}
+.lk-hz .lk-hint{pointer-events:auto!important;cursor:pointer;padding:10px 14px;border:2px solid currentColor;background:rgba(11,23,15,.85);transition:opacity .25s ease,background-color .2s ease}.lk-hz .lk-hint:hover,.lk-hz .lk-hint:focus-visible{background:#1a5e41}
+.lk-back{position:absolute;left:max(24px,6vw);bottom:calc(max(18px,3svh) + 30px);z-index:4;display:flex;padding:6px;border:0;background:none;color:#a2f590;cursor:pointer;transition:opacity .25s ease}.lk-back svg{width:22px;height:22px}
+@media (max-width:699px){.lk-hz .lk-back{left:calc(50% - 28px)!important;translate:-50% 0}.lk-hz .lk-hint{left:calc(50% + 28px)!important;translate:-50% 0}}
+.lk-hz .lk-hint{font-size:0!important;padding:6px!important;border:0!important;background:none!important;gap:0!important;right:auto!important;left:calc(50% + 28px)!important;translate:-50% 0}.lk-hz .lk-hint svg{width:22px;height:22px}.lk-hz .lk-back{left:calc(50% - 28px)!important;translate:-50% 0}   /* every width: small arrows, centered (Maurice, 2026-11-14) */
 </style>
 <div id="ma-links">
   <div class="lk-sky" aria-hidden="true"></div><div class="lk-wash" aria-hidden="true"></div>
   <div class="lk-in">
     <header class="lk-top">
-      <img class="lk-cover" src="https://africhmaurice.github.io/site/assets/press/cover-saga-floating.webp" alt="Cello's Gate by Maurice Africh" width="1600" height="1600">
+      <img class="lk-cover" src="https://africhmaurice.github.io/site/assets/press/cover-saga-floating.webp" alt="Cello's Gate by Maurice Africh" width="1600" height="1600" loading="eager" decoding="sync" fetchpriority="high">
       <h1>Cello's Gate</h1>
-      <p class="lk-line">The Sky Pirates of Imperia (Book 1)</p><p class="lk-line">November 3, 2026 | Order Now!</p>
+      <p class="lk-line">The Sky Pirates of Imperia (Book 1)</p>
       <nav class="lk-socs" aria-label="Find Maurice"><a class="lk-soc" href="https://www.amazon.com/Cellos-Gate-Sky-Pirates-Imperia/dp/1668242834" target="_blank" rel="noopener" data-link="amazon" data-section="socials" aria-label="Amazon" title="Amazon"><img src="https://africhmaurice.github.io/site/assets/links/icon-amazon.png" alt=""></a><a class="lk-soc" href="https://www.mauriceafrich.com/" target="_blank" rel="noopener" data-link="website" data-section="socials" aria-label="Author Website" title="Author Website"><img src="https://africhmaurice.github.io/site/assets/links/icon-mark.png" alt=""></a><a class="lk-soc" href="https://www.instagram.com/mauriceafrich" target="_blank" rel="noopener" data-link="instagram" data-section="socials" aria-label="Instagram" title="Instagram"><img src="https://africhmaurice.github.io/site/assets/links/icon-instagram.png" alt=""></a><a class="lk-soc" href="https://www.tiktok.com/@mauriceafrich" target="_blank" rel="noopener" data-link="tiktok" data-section="socials" aria-label="TikTok" title="TikTok"><img src="https://africhmaurice.github.io/site/assets/links/icon-tiktok.png" alt=""></a><a class="lk-soc" href="https://www.youtube.com/@africhmaurice" target="_blank" rel="noopener" data-link="youtube" data-section="socials" aria-label="YouTube" title="YouTube"><img src="https://africhmaurice.github.io/site/assets/links/icon-youtube.png" alt=""></a><a class="lk-soc" href="https://www.facebook.com/profile.php?id=61573491875476" target="_blank" rel="noopener" data-link="facebook" data-section="socials" aria-label="Facebook" title="Facebook"><img src="https://africhmaurice.github.io/site/assets/links/icon-facebook.png" alt=""></a><a class="lk-soc" href="#email" data-m="bW9jLnNrb29iZGxyb3dkbm9jZXNAaGNpcmZhZWNpcnVhbQ==" data-link="email" data-section="socials" aria-label="Email" title="Email"><img src="https://africhmaurice.github.io/site/assets/links/icon-mail.png" alt=""></a></nav>
     </header>
-    <a class="lk-copper lk-excerpt" href="https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834#excerpt" target="_blank" rel="noopener" data-link="read-excerpt" data-section="top"><img src="https://africhmaurice.github.io/site/assets/img/cellos-gate-book.webp" alt="" width="360" height="360"><span><b>Read Excerpt</b><small>Read Chapter One of Cello’s Gate free on Simon &amp; Schuster.</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg></a>
-    <section class="lk-eds" id="lk-editions"><h2 class="lk-h">Choose Your Edition</h2><div class="lk-edgrid"><a href="https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834" target="_blank" rel="noopener" class="lk-ed" data-link="ed-saga-deluxe" data-section="editions" aria-label="Saga Deluxe Edition"><span class="lk-edart" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-03.jpg')"></span><span class="lk-edov"></span><span class="lk-edin"><img class="lk-edimg" src="https://africhmaurice.github.io/site/assets/img/ed-deluxe-sm.webp" alt=""><b>Saga Deluxe Edition</b><small>U.S. Hardcover, Sprayed Edges, Map Endpapers</small><span class="lk-edcta">Order</span></span></a><a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener" class="lk-ed" data-link="ed-walmart" data-section="editions" aria-label="Walmart Exclusive Special Edition"><span class="lk-edart" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-04.jpg')"></span><span class="lk-edov"></span><span class="lk-edin"><img class="lk-edimg" src="https://africhmaurice.github.io/site/assets/img/ed-walmart-sm.webp" alt=""><b>Walmart Exclusive Special Edition</b><small>New Cover, Bonus Brass Point Short Story</small><span class="lk-edcta">Order</span></span></a><a href="https://hodderscape.co.uk/products/cellos-gate" target="_blank" rel="noopener" class="lk-ed" data-link="ed-hodderscape" data-section="editions" aria-label="Hodderscape Edition"><span class="lk-edart" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-07.jpg')"></span><span class="lk-edov"></span><span class="lk-edin"><img class="lk-edimg" src="https://africhmaurice.github.io/site/assets/img/ed-hodderscape-sm.webp" alt=""><b>Hodderscape Edition</b><small>UK Hardcover, Direct from My UK Publisher</small><span class="lk-edcta">Order</span></span></a><a href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227" target="_blank" rel="noopener" class="lk-ed" data-link="ed-waterstones" data-section="editions" aria-label="Waterstones Exclusive Edition"><span class="lk-edart" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-10.jpg')"></span><span class="lk-edov"></span><span class="lk-edin"><img class="lk-edimg" src="https://africhmaurice.github.io/site/assets/img/ed-waterstones-sm.webp" alt=""><b>Waterstones Exclusive Edition</b><small>UK Exclusive, Sprayed Edges and Endpapers</small><span class="lk-edcta">Order</span></span></a><a href="https://thebrokenbindingsub.com/products/cellos-gate" target="_blank" rel="noopener" class="lk-ed lk-ed-out" data-link="ed-broken-binding" data-section="editions" data-soldout="1" aria-label="Signed Broken Binding Edition (Sold Out)"><span class="lk-edart" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-11.jpg')"></span><span class="lk-edov"></span><span class="lk-edin"><img class="lk-edimg" src="https://africhmaurice.github.io/site/assets/img/ed-broken-binding-sm.webp" alt=""><b>Signed Broken Binding Edition</b><small>Signed, Foil Boards, Digital Edges</small><span class="lk-edcta">Sold Out!</span></span><span class="lk-edstamp" aria-hidden="true">Sold Out</span></a><a href="https://r.amzlink.to/?btn_url=https%3A%2F%2Fwww.amazon.com%2FAudible-Cellos-Gate%2Fdp%2FB0GKZWW416%2Fref%3Dtmm_aud_swatch_0%3F_encoding%3DUTF8%26dib_tag%3Dse%26dib%3DeyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps%26qid%3D1770340593%26sr%3D8-1&amp;btn_ref=org-433bb393e1b8b503" target="_blank" rel="noopener" class="lk-ed" data-link="ed-audiobook" data-section="editions" aria-label="Audiobook Edition"><span class="lk-edart" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-13.jpg')"></span><span class="lk-edov"></span><span class="lk-edin"><img class="lk-edimg lk-edframe" src="https://africhmaurice.github.io/site/assets/img/ed-audiobook.webp" alt=""><b>Audiobook Edition</b><small>Narrated by Audie Award Winner Gary Furlong</small><span class="lk-edcta">Order</span></span></a></div></section>
-    <section class="lk-sec" id="lk-events"><h2 class="lk-h">Launch Events</h2><div class="lk-grid lk-two"><a class="lk-tile" href="https://malaprops.com/event/2026-11-02/maurice-africh" target="_blank" rel="noopener" data-link="event-malaprops" data-section="events" aria-label="Malaprop’s Launch, Nov 2" title="Malaprop’s Launch, Nov 2"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/monolith-canyon-as444233611.webp')"></span><span class="lk-ov lk-ov-violet"></span><span class="lk-tin"><span class="lk-name">Malaprop’s Launch, Nov 2</span></span></a><a class="lk-tile" href="https://mystgalaxy.com/110526Africh" target="_blank" rel="noopener" data-link="event-mysterious-galaxy" data-section="events" aria-label="Mysterious Galaxy Virtual, Nov 5" title="Mysterious Galaxy Virtual, Nov 5"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/cavern-ruins-as581365050.webp')"></span><span class="lk-ov lk-ov-violet"></span><span class="lk-tin"><span class="lk-name">Mysterious Galaxy Virtual, Nov 5</span></span></a></div></section>
+    <section class="lk-eds" id="lk-editions"><h2 class="lk-h">Choose Your Edition</h2><div class="lk-edgrid"><a href="https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834" target="_blank" rel="noopener" class="lk-ed" data-link="ed-saga-deluxe" data-section="editions" aria-label="Saga Deluxe Edition"><span class="lk-edart" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-03.jpg')"></span><span class="lk-edov"></span><span class="lk-edin"><img class="lk-edimg" src="https://africhmaurice.github.io/site/assets/img/ed-deluxe-sm.webp" alt=""><b>Saga Deluxe Edition</b><small>U.S. Hardcover, Sprayed Edges, Map Endpapers</small><span class="lk-edcta">Order</span></span></a><a href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704" target="_blank" rel="noopener" class="lk-ed" data-link="ed-walmart" data-section="editions" aria-label="Walmart Exclusive Special Edition"><span class="lk-edart" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-04.jpg')"></span><span class="lk-edov"></span><span class="lk-edin"><img class="lk-edimg" src="https://africhmaurice.github.io/site/assets/img/ed-walmart-sm.webp" alt=""><b>Walmart Exclusive Special Edition</b><small>New Cover, Bonus Brass Point Short Story</small><span class="lk-edcta">Order</span></span></a><a href="https://hodderscape.co.uk/products/cellos-gate" target="_blank" rel="noopener" class="lk-ed" data-link="ed-hodderscape" data-section="editions" aria-label="Hodderscape Edition"><span class="lk-edart" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-07.jpg')"></span><span class="lk-edov"></span><span class="lk-edin"><img class="lk-edimg" src="https://africhmaurice.github.io/site/assets/img/ed-hodderscape-cover-sm.webp" alt=""><b>Hodderscape Edition</b><small>UK Hardcover, Direct from My UK Publisher</small><span class="lk-edcta">Order</span></span></a><a href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227" target="_blank" rel="noopener" class="lk-ed" data-link="ed-waterstones" data-section="editions" aria-label="Waterstones Exclusive Edition"><span class="lk-edart" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-10.jpg')"></span><span class="lk-edov"></span><span class="lk-edin"><img class="lk-edimg" src="https://africhmaurice.github.io/site/assets/img/ed-waterstones-sm.webp" alt=""><b>Waterstones Exclusive Edition</b><small>UK Exclusive, Sprayed Edges and Endpapers</small><span class="lk-edcta">Order</span></span></a><a href="https://thebrokenbindingsub.com/products/cellos-gate" target="_blank" rel="noopener" class="lk-ed lk-ed-out" data-link="ed-broken-binding" data-section="editions" data-soldout="1" aria-label="Signed Broken Binding Edition (Sold Out)"><span class="lk-edart" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-11.jpg')"></span><span class="lk-edov"></span><span class="lk-edin"><img class="lk-edimg" src="https://africhmaurice.github.io/site/assets/img/ed-broken-binding-sm.webp" alt=""><b>Signed Broken Binding Edition</b><small>Signed, Foil Boards, Digital Edges</small><span class="lk-edcta">Sold Out!</span></span><span class="lk-edstamp" aria-hidden="true">Sold Out</span></a><a href="https://r.amzlink.to/?btn_url=https%3A%2F%2Fwww.amazon.com%2FAudible-Cellos-Gate%2Fdp%2FB0GKZWW416%2Fref%3Dtmm_aud_swatch_0%3F_encoding%3DUTF8%26dib_tag%3Dse%26dib%3DeyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps%26qid%3D1770340593%26sr%3D8-1&amp;btn_ref=org-433bb393e1b8b503" target="_blank" rel="noopener" class="lk-ed" data-link="ed-audiobook" data-section="editions" aria-label="Audiobook Edition"><span class="lk-edart" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-13.jpg')"></span><span class="lk-edov"></span><span class="lk-edin"><img class="lk-edimg lk-edframe" src="https://africhmaurice.github.io/site/assets/img/ed-audiobook.webp" alt=""><b>Audiobook Edition</b><small>Narrated by Audie Award Winner Gary Furlong</small><span class="lk-edcta">Order</span></span></a></div></section>
     <a class="lk-quiz" href="https://www.mauriceafrich.com/sky-pirate-quiz-61748" target="_blank" rel="noopener" style="--qbg:url('https://africhmaurice.github.io/site/assets/links/quiz-bg.webp')" data-link="sky-pirate-quiz" data-section="top"><img src="https://africhmaurice.github.io/site/assets/links/quiz-crew.webp" alt="The crew of the Sky Pirates of Imperia" width="900" height="563"><span><b>The Sky Pirate Quiz</b><small>Which character are you most like? Answer 15 questions and find out which member of the crew sums up your personality.</small><em>Take the quiz <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg></em></span></a>
-    <a class="lk-copper" href="https://www.mauriceafrich.com/loot?c=RDWC79VF" data-link="copper-loot-box" data-section="top"><img src="https://africhmaurice.github.io/site/assets/links/box-copper.png" alt="" width="360" height="360"><span><b>Copper Loot Box (for Beginners)</b><small>Your first loot box (and the easiest one to find)! Open it and claim your loot!</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" aria-hidden="true"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg></a>
-    <div class="lk-feats"><button type="button" class="lk-tile lk-feat" data-link="preorder" data-section="buttons" aria-label="Order Cello's Gate" data-open="preorder"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/red-sun-ruins-as360866146.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-fimg" src="https://africhmaurice.github.io/site/assets/img/cellos-gate-book.webp" alt=""><span class="lk-flabel">Order Cello's Gate</span></span></button><a href="https://www.mauriceafrich.com/the-hunt" target="_blank" rel="noopener" class="lk-tile lk-feat" data-link="hunt" data-section="buttons" aria-label="The Treasure Hunt is Live!"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/art-world-map.jpg')"></span><span class="lk-ov lk-ov-green"></span><span class="lk-tin"><span class="lk-fimg lk-spin" style="background-image:url('https://africhmaurice.github.io/site/assets/games/77-coin-spin.png')" aria-hidden="true"></span><span class="lk-flabel">The Treasure Hunt is Live!</span></span></a><a href="https://discord.gg/TV8SNnSGdb" target="_blank" rel="noopener" class="lk-tile lk-feat" data-link="discord" data-section="buttons" aria-label="Join the Trench Community"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/neon-street-as1928158052.webp')"></span><span class="lk-ov lk-ov-violet"></span><span class="lk-tin"><img class="lk-fimg" src="https://africhmaurice.github.io/site/assets/links/logo-trench.png" alt=""><span class="lk-flabel">Join the Trench Community</span></span></a></div>
+    
+    <div class="lk-feats"><button type="button" class="lk-tile lk-feat" data-link="preorder" data-section="buttons" aria-label="Order Cello's Gate" data-open="preorder"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/red-sun-ruins-as360866146.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-fimg" src="https://africhmaurice.github.io/site/assets/img/cellos-gate-book.webp" alt=""><span class="lk-flabel">Order Cello's Gate</span></span></button><a href="https://discord.gg/d36Xnj4umU" target="_blank" rel="noopener" class="lk-tile lk-feat" data-link="discord" data-section="buttons" aria-label="Join the Trench Community"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/neon-street-as1928158052.webp')"></span><span class="lk-ov lk-ov-violet"></span><span class="lk-tin"><img class="lk-fimg" src="https://africhmaurice.github.io/site/assets/links/logo-trench.png" alt=""><span class="lk-flabel">Join the Trench Community</span></span></a></div>
     <form class="lk-news" data-kit="8271339" novalidate><h2 class="lk-h">Join My Newsletter</h2>
       <div class="lk-nrow"><input type="text" name="fields[first_name]" placeholder="First Name" aria-label="First Name" autocomplete="given-name"><input type="email" name="email_address" placeholder="Email Address" aria-label="Email Address" autocomplete="email" required><button type="submit">Sign Up</button></div>
       <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden"><label for="lk-hp">Leave this empty</label><input type="text" id="lk-hp" tabindex="-1" autocomplete="off"></div>
       <p class="lk-nmsg" role="status" hidden></p></form>
     <div class="lk-secs">
-<section class="lk-sec" id="lk-preorder"><h2 class="lk-h">Order Cello's Gate</h2><div class="lk-grid lk-four"><a class="lk-tile" href="https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834" target="_blank" rel="noopener" data-link="simon-schuster" data-section="preorder" aria-label="Simon &amp; Schuster" title="Simon &amp; Schuster"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/city-skyline-panorama-as348070597.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-simon-schuster.png" alt="Simon &amp; Schuster" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://r.amzlink.to/?btn_url=https%3A%2F%2Fwww.amazon.com%2FCellos-Gate-Sky-Pirates-Imperia%2Fdp%2F1668242834%2Fref%3Dsr_1_1%3Fcrid%3D279A8MV3ZYP0T%26dib%3DeyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps%26dib_tag%3Dse%26keywords%3Dcellos%2Bgate%26qid%3D1770340593%26sprefix%3Dcellos%2527%2Bgate%252Caps%252C179%26sr%3D8-1&amp;btn_ref=org-433bb393e1b8b503" target="_blank" rel="noopener" data-link="amazon-book" data-section="preorder" aria-label="Amazon" title="Amazon"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/crystal-towers-lake-as395045722.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/icon-amazon.png" alt="Amazon" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834" target="_blank" rel="noopener" data-link="barnes-noble" data-section="preorder" aria-label="Barnes &amp; Noble" title="Barnes &amp; Noble"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/dome-city-mist-as159145789.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-barnes-noble.png" alt="Barnes &amp; Noble" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704?classType=REGULAR&amp;from=/search" target="_blank" rel="noopener" data-link="walmart-exclusive" data-section="preorder" aria-label="Walmart Exclusive Special Edition" title="Walmart Exclusive Special Edition"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-walmart.png" alt="Walmart Exclusive Special Edition" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://bookshop.org/p/books/cello-s-gate-maurice-africh/867e45638f69e94f?ean=9781668242834" target="_blank" rel="noopener" data-link="bookshop" data-section="preorder" aria-label="Bookshop.org" title="Bookshop.org"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-bookshop.png" alt="Bookshop.org" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227" target="_blank" rel="noopener" data-link="waterstones" data-section="preorder" aria-label="Waterstones" title="Waterstones"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-waterstones.png" alt="Waterstones" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://r.amzlink.to/?btn_url=https%3A%2F%2Fwww.amazon.com%2FAudible-Cellos-Gate%2Fdp%2FB0GKZWW416%2Fref%3Dtmm_aud_swatch_0%3F_encoding%3DUTF8%26dib_tag%3Dse%26dib%3DeyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps%26qid%3D1770340593%26sr%3D8-1&amp;btn_ref=org-433bb393e1b8b503" target="_blank" rel="noopener" data-link="audible" data-section="preorder" aria-label="Audible" title="Audible"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-01.jpg')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-audible.png" alt="Audible" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://www.mauriceafrich.com/preorder" target="_blank" rel="noopener" data-link="all-retailers" data-section="preorder" aria-label="All Retailers" title="All Retailers"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/monolith-canyon-as444233611.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><span class="lk-name">All Retailers</span></span></a></div></section>
-<section class="lk-sec" id="lk-hunt"><h2 class="lk-h">The Treasure Hunt</h2><div class="lk-grid lk-three"><a class="lk-tile" href="https://www.mauriceafrich.com/adventure" target="_blank" rel="noopener" data-link="adventure" data-section="hunt" aria-label="The Adventure" title="The Adventure"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/art-degate-map.jpg')"></span><span class="lk-ov lk-ov-green"></span><span class="lk-tin"><span class="lk-name">The Adventure</span></span></a><a class="lk-tile" href="https://www.mauriceafrich.com/games" target="_blank" rel="noopener" data-link="games" data-section="hunt" aria-label="Daily Games" title="Daily Games"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-02.jpg')"></span><span class="lk-ov lk-ov-green"></span><span class="lk-tin"><span class="lk-name">Daily Games</span></span></a><a class="lk-tile" href="https://www.mauriceafrich.com/leaderboard" target="_blank" rel="noopener" data-link="leaderboard" data-section="hunt" aria-label="Leaderboard" title="Leaderboard"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/gyroscope-foundry-as401944302.webp')"></span><span class="lk-ov lk-ov-green"></span><span class="lk-tin"><span class="lk-name">Leaderboard</span></span></a><a class="lk-tile" href="https://www.mauriceafrich.com/oracles-gift/aura-spectrum" target="_blank" rel="noopener" data-link="aura" data-section="hunt" aria-label="Aura Color Spectrum" title="Aura Color Spectrum"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-03.jpg')"></span><span class="lk-ov lk-ov-green"></span><span class="lk-tin"><span class="lk-name">Aura Color Spectrum</span></span></a><a class="lk-tile" href="https://www.mauriceafrich.com/lootbox-clue" target="_blank" rel="noopener" data-link="clues" data-section="hunt" aria-label="Clues" title="Clues"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-04.jpg')"></span><span class="lk-ov lk-ov-green"></span><span class="lk-tin"><span class="lk-name">Clues</span></span></a></div></section>
-<section class="lk-sec" id="lk-shop"><h2 class="lk-h">Shop</h2><div class="lk-grid lk-two"><a class="lk-tile" href="https://shop.mauriceafrich.com/" target="_blank" rel="noopener" data-link="trench-market" data-section="shop" aria-label="Trench Market" title="Trench Market"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-05.jpg')"></span><span class="lk-ov lk-ov-teal"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-crest.png" alt="Trench Market" loading="lazy" decoding="async"><span class="lk-note">Trench Market</span></span></a><a class="lk-tile" href="https://www.etsy.com/shop/beeristhemindkiller/?section_id=57855442" target="_blank" rel="noopener" data-link="beeristhemindkiller" data-section="shop" aria-label="Shirts! (BeeristheMindKiller)" title="Shirts! (BeeristheMindKiller)"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-06.jpg')"></span><span class="lk-ov lk-ov-teal"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-beeristhemindkiller.png" alt="Shirts! (BeeristheMindKiller)" loading="lazy" decoding="async"><span class="lk-note">BeeristheMindKiller</span></span></a><a class="lk-tile" href="https://flowersandfantasyco.com/collections/sky-pirates-of-imperia" target="_blank" rel="noopener" data-link="flowers-fantasy" data-section="shop" aria-label="Apparel! (Flowers &amp; Fantasy Co)" title="Apparel! (Flowers &amp; Fantasy Co)"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/garden-city-towers.webp')"></span><span class="lk-ov lk-ov-teal"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-flowers-fantasy.png" alt="Apparel! (Flowers &amp; Fantasy Co)" loading="lazy" decoding="async"><span class="lk-note">Flowers &amp; Fantasy Co</span></span></a><a class="lk-tile" href="https://www.etsy.com/shop/ReadersQuadrantArt?ref=shop-header-name&amp;listing_id=4339673175&amp;from_page=listing" target="_blank" rel="noopener" data-link="readers-quadrant" data-section="shop" aria-label="Stickers and Enamel Pins! (Readers Quadrant Book Art)" title="Stickers and Enamel Pins! (Readers Quadrant Book Art)"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-07.jpg')"></span><span class="lk-ov lk-ov-teal"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-readers-quadrant.png" alt="Stickers and Enamel Pins! (Readers Quadrant Book Art)" loading="lazy" decoding="async"><span class="lk-note">Readers Quadrant Book Art</span></span></a></div></section>
+<section class="lk-sec" id="lk-preorder"><h2 class="lk-h">Order Cello's Gate</h2><div class="lk-grid lk-four"><a class="lk-tile" href="https://www.simonandschuster.com/books/Cellos-Gate/Maurice-Africh/The-Sky-Pirates-of-Imperia/9781668242834" target="_blank" rel="noopener" data-link="simon-schuster" data-section="preorder" aria-label="Simon &amp; Schuster" title="Simon &amp; Schuster"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/city-skyline-panorama-as348070597.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-simon-schuster.png" alt="Simon &amp; Schuster" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://r.amzlink.to/?btn_url=https%3A%2F%2Fwww.amazon.com%2FCellos-Gate-Sky-Pirates-Imperia%2Fdp%2F1668242834%2Fref%3Dsr_1_1%3Fcrid%3D279A8MV3ZYP0T%26dib%3DeyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps%26dib_tag%3Dse%26keywords%3Dcellos%2Bgate%26qid%3D1770340593%26sprefix%3Dcellos%2527%2Bgate%252Caps%252C179%26sr%3D8-1&amp;btn_ref=org-433bb393e1b8b503" target="_blank" rel="noopener" data-link="amazon-book" data-section="preorder" aria-label="Amazon" title="Amazon"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/crystal-towers-lake-as395045722.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/icon-amazon.png" alt="Amazon" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://www.barnesandnoble.com/w/cellos-gate-maurice-africh/1146753302?ean=9781668242834" target="_blank" rel="noopener" data-link="barnes-noble" data-section="preorder" aria-label="Barnes &amp; Noble" title="Barnes &amp; Noble"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/dome-city-mist-as159145789.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-barnes-noble.png" alt="Barnes &amp; Noble" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://www.walmart.com/ip/Cello-s-Gate-Walmart-Exclusive-Hardcover-9781668266922/20417514704?classType=REGULAR&amp;from=/search" target="_blank" rel="noopener" data-link="walmart-exclusive" data-section="preorder" aria-label="Walmart Exclusive Special Edition" title="Walmart Exclusive Special Edition"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/floating-blocks-city-as311317794.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-walmart.png" alt="Walmart Exclusive Special Edition" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://bookshop.org/p/books/cello-s-gate-maurice-africh/867e45638f69e94f?ean=9781668242834" target="_blank" rel="noopener" data-link="bookshop" data-section="preorder" aria-label="Bookshop.org" title="Bookshop.org"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/overgrown-sphere-as470076105.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-bookshop.png" alt="Bookshop.org" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://www.waterstones.com/book/cellos-gate/maurice-africh/9781399766227" target="_blank" rel="noopener" data-link="waterstones" data-section="preorder" aria-label="Waterstones" title="Waterstones"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/nebula-glow-as332921866.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-waterstones.png" alt="Waterstones" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://r.amzlink.to/?btn_url=https%3A%2F%2Fwww.amazon.com%2FAudible-Cellos-Gate%2Fdp%2FB0GKZWW416%2Fref%3Dtmm_aud_swatch_0%3F_encoding%3DUTF8%26dib_tag%3Dse%26dib%3DeyJ2IjoiMSJ9.RBX2LzKjSJiNUWTqmNKtS75WGKoRJIDr7LrYojLn1a7OJ-VKrLzE7_KGvq2QdIBq-PMve7-kIS5x7P0LX7pLXQXqXw7rm9JyqHzVf0Uujj1FDAqiGnSlEN0YwgWPkZX7KtiGUStagN0Lv_Mzbxkx1A.bAa6jbgYADzwequhA3uY18cTabBf0XksaeGD6jgY2ps%26qid%3D1770340593%26sr%3D8-1&amp;btn_ref=org-433bb393e1b8b503" target="_blank" rel="noopener" data-link="audible" data-section="preorder" aria-label="Audible" title="Audible"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-01.jpg')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-audible.png" alt="Audible" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://www.mauriceafrich.com/order" target="_blank" rel="noopener" data-link="all-retailers" data-section="preorder" aria-label="All Retailers" title="All Retailers"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/monolith-canyon-as444233611.webp')"></span><span class="lk-ov lk-ov-scarlet"></span><span class="lk-tin"><span class="lk-name">All Retailers</span></span></a></div></section>
+<section class="lk-sec" id="lk-hunt"><h2 class="lk-h">Extras</h2><div class="lk-grid lk-three"><a class="lk-tile" href="https://www.mauriceafrich.com/adventure" target="_blank" rel="noopener" data-link="adventure" data-section="hunt" aria-label="The Adventure" title="The Adventure"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/art-degate-map.jpg')"></span><span class="lk-ov lk-ov-green"></span><span class="lk-tin"><img class="lk-logo lk-icon" src="https://africhmaurice.github.io/site/assets/icons/adventure-scroll.png" alt="" loading="lazy" decoding="async"><span class="lk-name">The Adventure</span></span></a><a class="lk-tile" href="https://www.mauriceafrich.com/arcade" target="_blank" rel="noopener" data-link="arcade" data-section="hunt" aria-label="The Arcade" title="The Arcade"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-02.jpg')"></span><span class="lk-ov lk-ov-green"></span><span class="lk-tin"><img class="lk-logo lk-icon" src="https://africhmaurice.github.io/site/assets/icons/arcade-invader.png" alt="" loading="lazy" decoding="async"><span class="lk-name">The Arcade</span></span></a><a class="lk-tile" href="https://www.mauriceafrich.com/oracles-gift/aura-spectrum" target="_blank" rel="noopener" data-link="aura" data-section="hunt" aria-label="Aura Color Spectrum" title="Aura Color Spectrum"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-03.jpg')"></span><span class="lk-ov lk-ov-green"></span><span class="lk-tin"><img class="lk-logo lk-icon" src="https://africhmaurice.github.io/site/assets/icons/aura-eye.png" alt="" loading="lazy" decoding="async"><span class="lk-name">Aura Color Spectrum</span></span></a></div></section>
+<section class="lk-sec" id="lk-shop"><h2 class="lk-h">Merch</h2><div class="lk-grid lk-two"><a class="lk-tile" href="https://shop.mauriceafrich.com/" target="_blank" rel="noopener" data-link="trench-market" data-section="shop" aria-label="Trench Market" title="Trench Market"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-05.jpg')"></span><span class="lk-ov lk-ov-teal"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-crest.png" alt="Trench Market" loading="lazy" decoding="async"><span class="lk-note">Trench Market</span></span></a><a class="lk-tile" href="https://www.etsy.com/shop/beeristhemindkiller/?section_id=57855442" target="_blank" rel="noopener" data-link="beeristhemindkiller" data-section="shop" aria-label="Shirts! (BeeristheMindKiller)" title="Shirts! (BeeristheMindKiller)"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-06.jpg')"></span><span class="lk-ov lk-ov-teal"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-beeristhemindkiller.png" alt="Shirts! (BeeristheMindKiller)" loading="lazy" decoding="async"><span class="lk-note">BeeristheMindKiller</span></span></a><a class="lk-tile" href="https://flowersandfantasyco.com/collections/sky-pirates-of-imperia" target="_blank" rel="noopener" data-link="flowers-fantasy" data-section="shop" aria-label="Apparel! (Flowers &amp; Fantasy Co)" title="Apparel! (Flowers &amp; Fantasy Co)"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/garden-city-towers.webp')"></span><span class="lk-ov lk-ov-teal"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-flowers-fantasy.png" alt="Apparel! (Flowers &amp; Fantasy Co)" loading="lazy" decoding="async"><span class="lk-note">Flowers &amp; Fantasy Co</span></span></a><a class="lk-tile" href="https://www.etsy.com/shop/ReadersQuadrantArt?ref=shop-header-name&amp;listing_id=4339673175&amp;from_page=listing" target="_blank" rel="noopener" data-link="readers-quadrant" data-section="shop" aria-label="Stickers and Enamel Pins! (Readers Quadrant Book Art)" title="Stickers and Enamel Pins! (Readers Quadrant Book Art)"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-07.jpg')"></span><span class="lk-ov lk-ov-teal"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-readers-quadrant.png" alt="Stickers and Enamel Pins! (Readers Quadrant Book Art)" loading="lazy" decoding="async"><span class="lk-note">Readers Quadrant Book Art</span></span></a></div></section>
 <section class="lk-sec" id="lk-pod"><h2 class="lk-h">The Crippled Pod</h2><div class="lk-grid lk-five"><a class="lk-tile" href="https://open.spotify.com/show/1UDpA2dZNhRY0ay3Md4XVY?si=6421b622a4294aba" target="_blank" rel="noopener" data-link="pod-spotify" data-section="pod" aria-label="The Crippled Pod: A Beginners Guide to Malazan" title="The Crippled Pod: A Beginners Guide to Malazan"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-08.jpg')"></span><span class="lk-ov lk-ov-ink"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/icon-spotify.png" alt="The Crippled Pod: A Beginners Guide to Malazan" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://youtu.be/SXdivHbUpHo?si=l28Zohnffql4uo6Z" target="_blank" rel="noopener" data-link="pod-ep0" data-section="pod" aria-label="The Crippled Pod: Episode 0 (Let's Talk About Malazan!)" title="The Crippled Pod: Episode 0 (Let's Talk About Malazan!)"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-09.jpg')"></span><span class="lk-ov lk-ov-ink"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/icon-youtube.png" alt="The Crippled Pod: Episode 0 (Let's Talk About Malazan!)" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://fable.co/club/2026-malazan-read-through-with-wordswithwill-171033660107" target="_blank" rel="noopener" data-link="pod-fable" data-section="pod" aria-label="The Malazan Fable Book Club! Current Read: Deadhouse Gates" title="The Malazan Fable Book Club! Current Read: Deadhouse Gates"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/bg/cavern-ruins-as581365050.webp')"></span><span class="lk-ov lk-ov-ink"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-fable.png" alt="The Malazan Fable Book Club! Current Read: Deadhouse Gates" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://www.instagram.com/thecrippledpod" target="_blank" rel="noopener" data-link="pod-instagram" data-section="pod" aria-label="The Crippled Pod (Instagram)" title="The Crippled Pod (Instagram)"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-10.jpg')"></span><span class="lk-ov lk-ov-ink"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/icon-instagram.png" alt="The Crippled Pod (Instagram)" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://www.tiktok.com/@the.crippled.pod" target="_blank" rel="noopener" data-link="pod-tiktok" data-section="pod" aria-label="The Crippled Pod (TikTok)" title="The Crippled Pod (TikTok)"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-11.jpg')"></span><span class="lk-ov lk-ov-ink"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/icon-tiktok.png" alt="The Crippled Pod (TikTok)" loading="lazy" decoding="async"></span></a></div></section>
 <section class="lk-sec" id="lk-find"><h2 class="lk-h">Find Me</h2><div class="lk-grid lk-five"><a class="lk-tile" href="https://www.mauriceafrich.com/" target="_blank" rel="noopener" data-link="author-website" data-section="find" aria-label="Author Website" title="Author Website"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-12.jpg')"></span><span class="lk-ov lk-ov-violet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/icon-mark.png" alt="Author Website" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://www.goodreads.com/user/show/57225930-maurice-africh" target="_blank" rel="noopener" data-link="goodreads" data-section="find" aria-label="Goodreads" title="Goodreads"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-13.jpg')"></span><span class="lk-ov lk-ov-violet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-goodreads.png" alt="Goodreads" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://fable.co/book/cellos-gate-the-sky-pirates-of-imperia-1-by-maurice-africh-dSUxO1vs7a" target="_blank" rel="noopener" data-link="fable" data-section="find" aria-label="Fable" title="Fable"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-14.jpg')"></span><span class="lk-ov lk-ov-violet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-fable.png" alt="Fable" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://app.thestorygraph.com/books/deda125b-9938-4904-a640-5d018664ccfc" target="_blank" rel="noopener" data-link="storygraph" data-section="find" aria-label="Story Graph" title="Story Graph"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-15.jpg')"></span><span class="lk-ov lk-ov-violet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-storygraph.png" alt="Story Graph" loading="lazy" decoding="async"></span></a><a class="lk-tile" href="https://www.amazon.com/hz/wishlist/ls/1BP7HJUAPUXJO?ref_=wl_share" target="_blank" rel="noopener" data-link="wishlist" data-section="find" aria-label="Wishlist" title="Wishlist"><span class="lk-bgimg" style="background-image:url('https://africhmaurice.github.io/site/assets/links/pin-16.jpg')"></span><span class="lk-ov lk-ov-violet"></span><span class="lk-tin"><img class="lk-logo" src="https://africhmaurice.github.io/site/assets/links/logo-wishlist.png" alt="Wishlist" loading="lazy" decoding="async"></span></a></div><a class="lk-promo" href="http://getbrick.com/mauriceafrich" target="_blank" rel="noopener" data-link="brick" data-section="find" aria-label="Brick: Take Back Control of Your Screen Time" title="Brick: Take Back Control of Your Screen Time"><img src="https://africhmaurice.github.io/site/assets/links/promo-brick.webp" alt="Brick: Take Back Control of Your Screen Time" loading="lazy" decoding="async"></a></section>
     </div>
-    <a class="lk-quiet" href="https://www.mauriceafrich.com/loot?c=KKWKUD27" data-link="the-quiet-one" data-section="quiet" aria-label="The Quiet One" title="The Quiet One"><img src="https://africhmaurice.github.io/site/assets/links/box-plain.png" alt="" loading="lazy" decoding="async"></a>
+    
     <p class="lk-foot">mauriceafrich.com</p>
     <a class="lk-flogo" href="https://www.mauriceafrich.com/" data-link="footer-logo" data-section="footer" aria-label="Maurice Africh"><img src="https://africhmaurice.github.io/site/assets/img/logo-2026-white.webp" alt="Maurice Africh" width="640" height="396" loading="lazy" decoding="async"></a>
   </div>
@@ -213,9 +216,7 @@
       // same tap as a custom event, which an Engagement campaign can optimize for (Maurice, 10/14).
       // Not pre-orders (Maurice, 10/20): a sold-out edition (the Signed Broken Binding, until it's back in stock) and
       // All Retailers (it only opens the /preorder page, where the store tap counts) get their own events instead.
-      // Read Excerpt (Chapter One on Simon & Schuster) has its own event, for the CHAPTER1 campaign (Maurice, 10/20).
-      if (a.getAttribute('data-link') === 'read-excerpt') px('trackCustom', 'ReadExcerptTap', { section: a.getAttribute('data-section'), campaign: CMP });
-      else if (a.hasAttribute('data-soldout')) px('trackCustom', 'BrokenBindingTap', { link: a.getAttribute('data-link'), section: a.getAttribute('data-section'), campaign: CMP });
+      if (a.hasAttribute('data-soldout')) px('trackCustom', 'BrokenBindingTap', { link: a.getAttribute('data-link'), section: a.getAttribute('data-section'), campaign: CMP });
       else if (a.getAttribute('data-link') === 'all-retailers') px('trackCustom', 'AllRetailersTap', { section: a.getAttribute('data-section'), campaign: CMP });
       else if (/^(preorder|editions)$/.test(a.getAttribute('data-section')) || a.getAttribute('data-link') === 'amazon') {
         px('track', 'InitiateCheckout', { content_name: "Cello's Gate", content_category: a.getAttribute('data-link'), campaign: CMP });
@@ -276,177 +277,413 @@
       s.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
-  // The book up top slides aside, but only to the left, and only for someone who tries.
-  (function () {
-    var bk = root.querySelector('.lk-cover'); if (!bk) return;
-    var top = bk.parentElement, k = 'WUpXN01XNEc9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-    var id = null, mode = 0, x0 = 0, y0 = 0, dx = 0, W = 0, done = false, tm;
-    bk.setAttribute('draggable', 'false');
-    bk.addEventListener('dragstart', function (e) { e.preventDefault(); });
-    function set(v) { bk.style.transform = v ? 'translateX(' + v + ')' : ''; }
-    function ease(v) { clearTimeout(tm); bk.style.transition = 'transform .35s ease'; set(v); tm = setTimeout(function () { bk.style.transition = ''; }, 400); }
-    function show() {
-      var spot = document.createElement('div'), img = document.createElement('img');
-      spot.className = 'lk-bk';
-      function go() { location.href = atob(k).split('').reverse().join(''); }
-      img.alt = 'Loot box 64'; img.tabIndex = 0; img.setAttribute('role', 'link');
-      img.addEventListener('click', go);
-      img.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
-      img.src = 'https://africhmaurice.github.io/leaderboard/loot/64.png';
-      spot.appendChild(img); top.insertBefore(spot, top.firstChild);
-    }
-    function end(e) {
-      if (e.pointerId !== id) return;
-      id = null;
-      if (mode !== 1) { mode = 0; return; }
-      mode = 0;
-      if (e.type === 'pointerup' && -dx > W * 0.45) { done = true; ease('-90%'); show(); }
-      else ease('');
-    }
-    bk.addEventListener('pointerdown', function (e) {
-      if (done || id !== null || (e.pointerType === 'mouse' && e.button !== 0)) return;
-      id = e.pointerId; x0 = e.clientX; y0 = e.clientY; dx = 0; mode = 0; W = bk.offsetWidth;
-      if (e.pointerType === 'mouse') e.preventDefault();
-    });
-    bk.addEventListener('pointermove', function (e) {
-      if (e.pointerId !== id) return;
-      var mx = e.clientX - x0, my = e.clientY - y0;
-      if (mode === 0) {
-        if (Math.abs(mx) < 8 && Math.abs(my) < 8) return;
-        if (Math.abs(mx) <= Math.abs(my)) { id = null; return; }
-        mode = 1; clearTimeout(tm); bk.style.transition = '';
-        try { bk.setPointerCapture(id); } catch (er) {}
-      }
-      e.preventDefault();
-      dx = Math.max(-W, Math.min(0, mx));
-      set(dx + 'px');
-    });
-    bk.addEventListener('pointerup', end);
-    bk.addEventListener('pointercancel', end);
-  })();
+
 })();
 </script>
-<!-- LOOT BOX 117 (The Izzy Blob Coin Loot Box, staged 2026-10-26): the spinning coin on "The Treasure Hunt is Live!" tile
-     spins faster with every tap; after 8 quick taps (each within 1.2 seconds of the last) it turns into the box. A tap on
-     the coin no longer opens the hunt page (the rest of the tile still does). Let it rest and it slows back down.
-     tools/links.mjs generates this page, so it must carry this block too at go-live. -->
+<!-- Sideways tile groups (Maurice, 2026-11-12: "a horizontal slider where you're scrolling through big tiles", then
+     "more along the lines of windows software design, the tiles are stacked in such a way to fit together in sections").
+     Like the Windows Start screen: each section is a group of tiles in four sizes (small, wide small, medium, wide,
+     large) packed to fill a block with no holes, its name above it; scrolling down moves sideways through the groups
+     (sideways swipes and the arrow keys too). Tiles tilt toward where they're pressed. This was added to the built page
+     directly; tools/links.mjs is out of date with this page, so don't rerun it. -->
 <style>
-#ma-links .lk-spin.lk-117{background:none!important;animation:none!important;cursor:pointer}
-#ma-links .lk-spin.lk-117 img{display:block;width:100%;height:100%;object-fit:contain;animation:lk117 .45s cubic-bezier(.2,1.6,.4,1)}
-@keyframes lk117{from{transform:scale(.4) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}
-@media (prefers-reduced-motion:reduce){#ma-links .lk-spin.lk-117 img{animation:none}}
+#ma-links.lk-hz{overflow:clip;padding:0;min-height:0}
+#ma-links.lk-hz .lk-in{max-width:none;display:block;height:100%}   /* the stage can only stay put inside a box as tall as the scroll */
+.lk-hz .lk-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;align-items:center}
+.lk-hz .lk-track{display:flex;align-items:flex-start;gap:calc(var(--u) * .6);padding:0 max(24px,6vw);will-change:transform}
+.lk-hz .lk-grp{flex:none;display:flex;flex-direction:column;gap:14px}
+.lk-hz .lk-grp > .lk-h{flex:none;height:40px;margin:0;display:flex;align-items:flex-end;text-align:left;font-size:clamp(20px,3svh,28px);line-height:1.2;letter-spacing:.04em;white-space:nowrap;color:#fffffe!important}
+.lk-hz .lk-gg{display:grid;grid-template-rows:repeat(4,var(--u));grid-auto-columns:var(--u);grid-auto-flow:column dense;gap:8px}
+.lk-hz .lk-mt{position:relative;display:flex;min-width:0;min-height:0;transition:transform .18s ease;transform-style:preserve-3d}
+.lk-hz .lk-mt.s{grid-column:span 1;grid-row:span 1}.lk-hz .lk-mt.s2{grid-column:span 2;grid-row:span 1}
+.lk-hz .lk-mt.m{grid-column:span 2;grid-row:span 2}.lk-hz .lk-mt.t{grid-column:span 2;grid-row:span 4}.lk-hz .lk-mt.w{grid-column:span 4;grid-row:span 2}.lk-hz .lk-mt.l{grid-column:span 4;grid-row:span 4}
+.lk-hz .lk-mt > *{flex:1 1 auto!important;width:100%!important;height:100%!important;max-width:none!important;margin:0!important;aspect-ratio:auto!important;transform:none!important;box-shadow:none!important}
+/* hovering shows a white edge, as on the Start screen */
+.lk-hz .lk-mt::after{content:"";position:absolute;inset:0;border:2px solid transparent;pointer-events:none;transition:border-color .15s}
+.lk-hz .lk-mt:hover::after,.lk-hz .lk-mt:focus-within::after{border-color:#fffffe}
+/* tile names sit in the middle, under the logo (Maurice 2026-11-12: "move the text to the center") */
+.lk-hz .lk-tile .lk-tin{flex-direction:column;justify-content:center;align-items:center;gap:14px;padding:20px}
+.lk-hz .lk-tile .lk-name,.lk-hz .lk-tile .lk-note{position:static;text-align:center;text-wrap:balance}
+.lk-hz .lk-tile .lk-name{font-size:clamp(13px,calc(var(--u) * .11),19px);letter-spacing:.06em}
+.lk-hz .lk-tile .lk-note{font-size:clamp(10px,calc(var(--u) * .075),13px)!important;letter-spacing:.06em}
+.lk-hz .lk-tile .lk-logo{max-width:58%!important;max-height:42%!important}
+.lk-hz .lk-mt.w .lk-logo{max-width:40%!important;max-height:46%!important}
+.lk-hz .lk-tile .lk-icon{width:auto;height:auto;max-width:44%!important;max-height:40%!important;object-fit:contain}
+.lk-hz .lk-tile .lk-icon[src*="aura-eye"]{max-width:72%!important}
+/* feature tiles */
+.lk-hz .lk-feat .lk-tin{flex-direction:column!important;justify-content:center!important;align-items:center!important;padding:24px 20px!important;gap:16px!important}
+.lk-hz .lk-feat .lk-fimg{flex:0 1 auto!important;height:58%!important;width:auto!important;max-width:80%!important}
+.lk-hz .lk-feat .lk-flabel{position:static;font-size:clamp(15px,calc(var(--u) * .13),24px)!important;white-space:normal!important;text-align:center!important}
+.lk-hz .lk-feat .lk-spin{--s:calc(var(--u) * 1.1)}
+/* editions: cover, name, button; the big one also gets its line; the wide one lays out sideways */
+.lk-hz .lk-ed .lk-edin{justify-content:center;gap:10px;padding:16px 12px}
+.lk-hz .lk-ed .lk-edimg,.lk-hz .lk-ed .lk-edframe{height:52%!important;width:auto!important;max-width:86%}
+.lk-hz .lk-ed .lk-edin b{min-height:0;font-size:clamp(11px,calc(var(--u) * .085),15px)}
+.lk-hz .lk-ed .lk-edin small{display:none}
+.lk-hz .lk-mt.l .lk-ed .lk-edimg{height:58%!important}
+.lk-hz .lk-mt.l .lk-ed .lk-edin b{font-size:clamp(15px,calc(var(--u) * .13),22px)}
+.lk-hz .lk-mt.l .lk-ed .lk-edin small{display:block;min-height:0;font-size:clamp(12px,calc(var(--u) * .09),15px)}
+.lk-hz .lk-mt.w .lk-ed .lk-edin{flex-direction:row;justify-content:center;gap:18px;padding:14px 22px}
+.lk-hz .lk-mt.w .lk-ed .lk-edimg,.lk-hz .lk-mt.w .lk-ed .lk-edframe{height:86%!important}
+.lk-hz .lk-ed .lk-edcta{margin-top:4px;padding:8px 12px;font-size:11px}
+.lk-hz .lk-ed .lk-edstamp{top:26%;font-size:16px}
+/* the quiz and the newsletter are wide tiles */
+.lk-hz .lk-quiz{padding:16px 20px!important;gap:16px!important}
+.lk-hz .lk-quiz b{font-size:clamp(18px,calc(var(--u) * .15),28px)}
+.lk-hz .lk-quiz small{font-size:clamp(11px,calc(var(--u) * .085),14px);line-height:1.4}
+.lk-hz .lk-quiz em{padding:8px 12px;font-size:12px}
+.lk-hz .lk-news{justify-content:center;gap:12px;padding:18px 20px!important}
+.lk-hz .lk-news .lk-h{text-align:left;font-size:clamp(18px,calc(var(--u) * .15),26px)}
+.lk-hz .lk-news .lk-nrow{grid-template-columns:1fr 1.3fr auto!important}
+/* the cover tile, the small link tiles, and the logo tile */
+/* the opening section: the book, its name, and the icons under it, filling the screen with no tile around it */
+.lk-hz .lk-gg.lk-full{display:flex;align-items:center;justify-content:center;width:calc(100vw - 2 * max(24px,6vw));min-height:calc(var(--u) * 4 + 24px)}
+.lk-hz .lk-full > .lk-top{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;width:100%;padding:20px;background:none;border:0}
+#ma-links.lk-hz .lk-top .lk-cover{width:auto;height:min(54svh,calc(100vw - 64px));max-width:none;object-fit:contain;margin:-4svh 0 -3svh}
+@media (max-width:700px){#ma-links.lk-hz .lk-top .lk-cover{height:min(40svh,64vw);margin:0}}
+#ma-links.lk-hz .lk-top h1{margin:0;font-size:clamp(36px,min(9svh,12.5vw),110px)}
+#ma-links.lk-hz .lk-top .lk-line{margin:0;font-size:clamp(16px,2.4svh,24px)}
+#ma-links.lk-hz .lk-top .lk-socs{margin:0;gap:12px 24px}
+#ma-links.lk-hz .lk-top .lk-soc{width:52px;height:52px}
+#ma-links.lk-hz .lk-top .lk-soc img{max-width:36px;max-height:36px}
+.lk-hz .lk-endt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(11,23,15,.6);border:1px solid rgba(255,255,254,.16);padding:16px}
+.lk-hz .lk-endt{gap:20px;padding:28px}
+.lk-hz .lk-endt .lk-flogo{width:72%!important;height:auto!important}
+.lk-hz .lk-endt .lk-foot{font-size:clamp(14px,calc(var(--u) * .12),20px)!important}
+.lk-hz .lk-endt .lk-foot{flex:none!important;width:auto!important;height:auto!important}
+/* where you are, and a nudge to start */
+.lk-hz .lk-hint{position:absolute;right:max(24px,6vw);bottom:calc(max(18px,3svh) + 30px);display:flex;align-items:center;gap:10px;font-weight:800;font-size:13px;line-height:1.3;letter-spacing:.14em;text-transform:uppercase;color:#a2f590;transition:opacity .4s ease}
+.lk-hz .lk-hint svg{width:22px;height:22px;animation:lk-nudge 1.2s ease-in-out infinite alternate}
+@keyframes lk-nudge{from{transform:translateX(0)}to{transform:translateX(8px)}}
+/* the quiz on a large square tile stacks */
+.lk-hz .lk-mt.l .lk-quiz{grid-template-columns:1fr!important;align-content:center;justify-items:center;text-align:center;padding:24px!important}
+#ma-links.lk-hz .lk-mt.l .lk-quiz img{width:auto;height:auto;max-width:100%;max-height:none;object-fit:contain}
+#ma-links.lk-hz .lk-mt.l .lk-quiz span{align-items:center;text-align:center}
+.lk-hz .lk-mt.l .lk-news{align-items:stretch;justify-content:center;text-align:center;gap:18px!important;padding:clamp(24px,3vw,40px)!important}
+/* the sign-up form fills its card (Maurice 2026-11-12) */
+.lk-hz .lk-mt.l .lk-news .lk-nrow{gap:12px!important}
+.lk-hz .lk-mt.l .lk-news input,.lk-hz .lk-mt.l .lk-news button{height:clamp(52px,6.5svh,64px)!important;font-size:clamp(16px,1.2vw,19px)!important}
+#ma-links.lk-hz .lk-mt.l .lk-news .lk-h{text-align:center;font-size:clamp(32px,2.9vw,50px);white-space:normal}
+.lk-hz .lk-mt.l .lk-news .lk-nrow{grid-template-columns:1fr!important;width:100%;max-width:none}
+/* motion borrowed from jjettas.com: tiles come in from above and below and meet in the middle */
+.lk-hz .lk-grp{position:relative}
+.lk-hz .lk-gg{position:relative;z-index:1}
+.lk-hz .lk-mt{transform:translate3d(0,var(--ty,0px),0);opacity:var(--op,1);transition:none}
+/* where you are along the row: one segment per group, each filling in as you move through it; tap one to jump there
+   (Maurice 2026-11-12: "add a bar at the bottom that shows or indicates movement") */
+.lk-hz .lk-prog{position:absolute;left:max(24px,6vw);right:max(24px,6vw);bottom:max(18px,3svh);display:flex;gap:6px;height:16px;z-index:3}
+.lk-hz .lk-seg{position:relative;flex:1 1 0;min-width:10px;height:100%;padding:0;margin:0;border:0;background:none;cursor:pointer}
+.lk-hz .lk-seg::before,.lk-hz .lk-seg i{content:"";position:absolute;left:0;right:0;top:50%;height:4px;margin-top:-2px;transition:height .15s ease,margin .15s ease}
+.lk-hz .lk-seg::before{background:rgba(255,255,254,.2)}
+.lk-hz .lk-seg i{display:block;background:#a2f590;transform-origin:0 50%;transform:scaleX(0)}
+.lk-hz .lk-seg:hover::before,.lk-hz .lk-seg:hover i,.lk-hz .lk-seg:focus-visible::before,.lk-hz .lk-seg:focus-visible i{height:8px;margin-top:-4px}
+.lk-hz .lk-seg:focus-visible{outline:2px solid #fffffe;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.lk-hz .lk-hint svg{animation:none}.lk-hz .lk-mt{transform:none;opacity:1}}
+/* phones (Maurice, 2026-11-13): one column of three tiles per screen, 20px from every edge, 40px between columns so each
+   column is exactly one screen; big tiles take two of the three spots; a smaller opening and Scroll button */
+@media (max-width:699px){
+  .lk-hz .lk-track{gap:40px;padding:0 20px}
+  .lk-hz .lk-gg{grid-template-rows:repeat(3,var(--rowh,180px));grid-auto-columns:calc(100vw - 40px);column-gap:40px;row-gap:8px}
+  .lk-hz .lk-mt.s,.lk-hz .lk-mt.s2,.lk-hz .lk-mt.m,.lk-hz .lk-mt.w{grid-column:span 1;grid-row:span 1}
+  .lk-hz .lk-mt.l,.lk-hz .lk-mt.t{grid-column:span 1;grid-row:span 2}
+  .lk-hz .lk-gg.lk-full{width:calc(100vw - 40px);min-height:calc(var(--rowh,180px) * 3 + 16px)}
+  #ma-links.lk-hz .lk-top .lk-cover{height:min(30svh,52vw)}
+  #ma-links.lk-hz .lk-top h1{font-size:clamp(32px,10vw,48px)}
+  #ma-links.lk-hz .lk-top .lk-line{font-size:clamp(12px,3.7vw,16px);white-space:nowrap}
+  #ma-links.lk-hz .lk-top .lk-socs{gap:10px 18px}
+  #ma-links.lk-hz .lk-top .lk-soc{width:38px;height:38px}
+  #ma-links.lk-hz .lk-top .lk-soc img{max-width:26px;max-height:26px}
+  .lk-hz .lk-ed .lk-edin{display:grid!important;grid-template-columns:auto minmax(0,1fr);align-content:center;justify-items:start;column-gap:18px;row-gap:10px;padding:12px 20px;text-align:left}
+  .lk-hz .lk-ed .lk-edin > :first-child{grid-row:1 / span 3;align-self:center}
+  .lk-hz .lk-ed .lk-edimg,.lk-hz .lk-ed .lk-edframe{height:calc(var(--rowh,180px) - 28px)!important;max-width:none}
+  .lk-hz .lk-ed .lk-edin b{font-size:14px}
+  .lk-hz .lk-ed .lk-edstamp{left:24px!important;right:auto!important;top:50%!important;transform:translateY(-50%) rotate(-12deg)!important;font-size:12px!important;padding:5px 8px!important}   /* on the cover, clear of the name */
+  /* the groups sit at the top, not in the middle, so the tiles get the room ("move everything up") */
+  .lk-hz .lk-stage{align-items:flex-start}
+  .lk-hz .lk-track{padding-top:16px}
+  /* the opening icons in two rows, four over three */
+  #ma-links.lk-hz .lk-top .lk-socs{display:flex;flex-wrap:wrap;justify-content:center;max-width:calc(4 * 38px + 3 * 18px);margin:0 auto}
+  /* merch: two screens, two full-width boxes each, filling the height (Maurice, 2026-11-13) */
+  .lk-hz #lk-shop .lk-gg{grid-template-rows:repeat(2,calc((var(--rowh,180px) * 3 + 8px) / 2));grid-auto-columns:calc(100vw - 40px);column-gap:40px}
+  .lk-hz .lk-tile .lk-name{overflow-wrap:anywhere;max-width:100%}
+  /* the logo tile at the end fills the screen */
+  .lk-hz .lk-mt.l:has(.lk-endt){grid-row:span 3}
+  /* the Scroll button is just a small arrow: a hint more than a button */
+  .lk-hz .lk-hint{font-size:0!important;padding:6px!important;border:0!important;background:none!important;gap:0!important;right:auto!important;left:calc(50% + 28px)!important;translate:-50% 0}
+  .lk-hz .lk-hint svg{width:22px;height:22px}
+}
 </style>
-<script>(function(){
-  var K='WFBFQzdOQzM9Yz90b29sL21vYy5oY2lyZmFlY2lydWFtLnd3dy8vOnNwdHRo';
-  function claim(){var u='';try{u=atob(K).split('').reverse().join('');}catch(e){}if(!u)return;
-    var w=null;try{w=window.open(u,'_blank');if(w)w.opener=null;}catch(e){}if(!w)location.href=u;}
-  var coin=document.querySelector('#ma-links [data-link="hunt"] .lk-spin');if(!coin)return;
-  var taps=0,last=0,done=false,slow=null,BASE=1.6,NEED=8;
-  function speed(){coin.style.animationDuration=(BASE/(1+taps*.75)).toFixed(3)+'s';}
-  coin.addEventListener('click',function(e){
-    e.preventDefault();e.stopPropagation();
-    if(done){claim();return;}
-    var now=Date.now();taps=now-last<=1200?taps+1:1;last=now;speed();
-    clearTimeout(slow);slow=setTimeout(function(){taps=0;coin.style.animationDuration='';},1400);
-    if(taps>=NEED){done=true;clearTimeout(slow);coin.classList.add('lk-117');coin.setAttribute('aria-label','Loot box 117');coin.removeAttribute('aria-hidden');
-      coin.innerHTML='<img src="https://africhmaurice.github.io/site/assets/loot/117.png" alt="" width="160" height="160">';}
-  });
-})();</script>
 <script>
-// THE GOLDEN TRAIL, slots 7 and 9 (Maurice 10/31). Only hunters with all 151 loot boxes get these (golden.js runs the queue).
-(window.maGoldenQ = window.maGoldenQ || []).push(function (G) {
-  // Shared bits for the golden spots on this page (only finishers ever run them).
-  function gdStyle() {
-    if (document.getElementById('gd-spot-css')) return;
-    var s = document.createElement('style'); s.id = 'gd-spot-css';
-    s.textContent = '.gd-hid{position:absolute;z-index:1;margin:0;padding:0 4px;border:0;border-radius:0;background:none;font-family:"CI Face",Impact,sans-serif;font-weight:400;line-height:1.2;letter-spacing:.03em;color:#f2cf5b;text-shadow:0 0 14px rgba(242,207,91,.75);opacity:0;pointer-events:none;transform:translate(-50%,-50%);transition:opacity .25s ease;cursor:pointer}' +
-      '.gd-hid.gd-show{opacity:1;pointer-events:auto}.gd-hid:focus-visible{outline:2px solid #ff4c0f;outline-offset:2px}' +
-      '.gd-glow{filter:brightness(1.35) drop-shadow(0 0 6px rgba(242,207,91,.95))}' +
-      '@media (prefers-reduced-motion:reduce){.gd-hid{transition:none}}';
-    (document.head || document.documentElement).appendChild(s);
+(function () {
+  var root = document.getElementById('ma-links');
+  if (!root || root.classList.contains('lk-hz')) return;
+  var inner = root.querySelector('.lk-in');
+  if (!inner) return;
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // a pinned stage only works if the page clips its sides rather than hiding them
+  var fix = document.createElement('style');
+  fix.textContent = 'html,body{overflow-x:clip!important}';
+  document.head.appendChild(fix);
+
+  var track = document.createElement('div'), stage = document.createElement('div');
+  track.className = 'lk-track'; stage.className = 'lk-stage';
+  // a group: its name above a grid; every group's sizes fill a block of four rows with no holes
+  function group(title, id) {
+    var g = document.createElement('section');
+    g.className = 'lk-grp';
+    if (id) g.id = id;
+    var h = title && title.nodeType ? title : document.createElement('h2');
+    if (!title || !title.nodeType) { h.className = 'lk-h'; h.textContent = title || ''; }
+    var grid = document.createElement('div');
+    grid.className = 'lk-gg';
+    g.appendChild(h); g.appendChild(grid);
+    track.appendChild(g);
+    return grid;
   }
-  // A golden character waiting under something; it can only be tapped once whatever covers it is moved.
-  function gdChar(ch, n, G) {
-    var b = document.createElement('button'); b.type = 'button'; b.className = 'gd-hid'; b.textContent = ch; b.tabIndex = -1;
-    b.setAttribute('aria-label', 'Golden character');
-    b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); if (b.classList.contains('gd-show')) G.found(n); });
-    return b;
+  function tile(grid, el, size) {
+    var t = document.createElement('div');
+    t.className = 'lk-mt ' + size;
+    t.appendChild(el);
+    grid.appendChild(t);
+    return t;
   }
-  // Drag with a finger or a mouse (pointer events). A drag never counts as a click on the link underneath.
-  // free: drag any way (touch-action none, for small pieces); otherwise a finger drags sideways and still scrolls the page.
-  function gdDrag(el, o) {
-    var id = null, sx = 0, sy = 0, bx = 0, by = 0, x = 0, y = 0, moved = false, lim = o.limit || 200;
-    el.style.touchAction = o.free ? 'none' : 'pan-y'; el.style.userSelect = 'none'; el.style.webkitUserSelect = 'none';
-    el.addEventListener('pointerdown', function (e) { if (e.button > 0) return; id = e.pointerId; sx = e.clientX; sy = e.clientY; bx = x; by = y; moved = false; });
-    // Moves are heard on the whole page, so a fast drag that slips off a small piece keeps going.
-    addEventListener('pointermove', function (e) {
-      if (e.pointerId !== id) return;
-      var dx = e.clientX - sx, dy = e.clientY - sy;
-      if (!moved) { if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return; moved = true; try { el.setPointerCapture(id); } catch (z) {} }
-      x = Math.max(-lim, Math.min(lim, bx + dx));
-      if (o.free || e.pointerType === 'mouse') y = Math.max(-lim, Math.min(lim, by + dy));
-      el.style.translate = x + 'px ' + y + 'px';
-      if (o.move) o.move(Math.sqrt(x * x + y * y));
-      e.preventDefault();
+  function q(sel, from) { return Array.prototype.slice.call((from || inner).querySelectorAll(sel)); }
+  var top = inner.querySelector('.lk-top'), socs = q('.lk-soc', top), eds = q('.lk-eds .lk-ed'), quiz = inner.querySelector('.lk-quiz');
+  var feats = q('.lk-feats > *'), news = inner.querySelector('.lk-news'), secs = q('.lk-sec'), endBits = q('.lk-foot, .lk-flogo');
+
+  // 1. Cello's Gate: the book, its name, and the icons under it, filling the screen with no tile (Maurice 2026-11-12)
+  var g = group('');
+  g.classList.add('lk-full');
+  g.appendChild(top);
+  // 2. editions: two rows of three, all the same size (Maurice 2026-11-12: "do 2x3 all the same size")
+  var edSec = inner.querySelector('.lk-eds');
+  g = group(edSec.querySelector('.lk-h'), edSec.id);
+  eds.forEach(function (e) { tile(g, e, 'm'); });
+  // 3. no group name; the quiz, the newsletter, and the feature tiles each get a large tile (Maurice 2026-11-12)
+  g = group('');
+  if (quiz) tile(g, quiz, 'l');
+  if (news) tile(g, news, 'l');
+  feats.forEach(function (f) { tile(g, f, 'w'); });   // Order and Trench: two wide tiles stacked (Maurice 2026-11-12)
+  // 4. each link group, sized so it packs: 2 tiles = two wide; 3 = wide + two medium; 4 = four medium; 5 = wide + four medium
+  var PLAN = { 1: ['l'], 2: ['w', 'w'], 3: ['w', 'm', 'm'], 4: ['m', 'm', 'm', 'm'], 5: ['w', 'm', 'm', 'm', 'm'], 6: ['w', 'm', 'm', 'w', 'm', 'm'] };
+  // the Find Me group is gone (Maurice 2026-11-12: "remove this whole bit"); the row ends on the website tile alone
+  secs.forEach(function (s) {
+    var hh = s.querySelector('.lk-h');
+    if (hh && /^find me$/i.test(hh.textContent.trim())) return;
+    var tiles = q('.lk-tile', s), plan = PLAN[tiles.length] || tiles.map(function () { return 'm'; });
+    g = group(hh && /^extras$/i.test(hh.textContent.trim()) ? '' : hh, s.id);   // no "Extras" name (Maurice 2026-11-12)
+    tiles.forEach(function (t, i) { tile(g, t, plan[i] || 'm'); });
+  });
+  // the last stop: the logo and the website, on a large tile of its own ("make it the final one of my website but bigger")
+  if (endBits.length) {
+    var e = document.createElement('div');
+    e.className = 'lk-endt';
+    endBits.forEach(function (b) { e.appendChild(b); });
+    tile(group(''), e, 'l');
+  }
+  inner.innerHTML = '';
+  stage.appendChild(track);
+  stage.insertAdjacentHTML('beforeend', '<div class="lk-hint" role="button" tabindex="0" aria-label="Scroll to see more">Scroll<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>');
+  inner.appendChild(stage);
+  root.classList.add('lk-hz');
+  root.setAttribute('data-ma-keep-top', '');   // the slider clears the menu itself; the site's top-gap rule leaves it alone
+  var hint = stage.querySelector('.lk-hint');
+  var glideTok = 0;   // any wheel, touch, or key stops a glide, so it never fights the reader
+  ['wheel', 'touchstart', 'keydown'].forEach(function (ev) { addEventListener(ev, function () { glideTok++; }, { passive: true }); });
+  function glideTo(ty) {   // our own short glide, so every click moves (the browser's smooth scroll sometimes drops one)
+    var y0g = window.scrollY, d = ty - y0g, t0 = performance.now(), dur = Math.min(420, 220 + Math.abs(d) * 0.3), tok = ++glideTok;
+    if (Math.abs(d) < 1) return;
+    (function step() { if (tok !== glideTok) return; var k = Math.max(0, Math.min(1, (performance.now() - t0) / dur)), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; window.scrollTo(0, y0g + d * e); if (k < 1) requestAnimationFrame(step); })();
+  }
+  function forward() {   // about one screen further along the row
+    var tx = Math.min(span, x + window.innerWidth * 0.75), ty = y0 + (tx / Math.max(1, span)) * (y1 - y0);
+    if (window.maLenis && window.maLenis.scrollTo) window.maLenis.scrollTo(ty); else glideTo(ty);
+  }
+  hint.addEventListener('click', forward);
+  // a back arrow, so it's clear the row goes both ways (Maurice, 2026-11-14)
+  var back = document.createElement('button'); back.type = 'button'; back.className = 'lk-back'; back.setAttribute('aria-label', 'Scroll back');
+  back.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>'; hint.parentNode.appendChild(back);
+  back.addEventListener('click', function () {
+    var tx = Math.max(0, x - window.innerWidth * 0.75), ty = y0 + (tx / Math.max(1, span)) * (y1 - y0);
+    if (window.maLenis && window.maLenis.scrollTo) window.maLenis.scrollTo(ty); else glideTo(ty);
+  });
+  hint.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); forward(); } });
+  var prog = document.createElement('nav');
+  prog.className = 'lk-prog'; prog.setAttribute('aria-label', 'Sections');
+  var segs = q('.lk-grp', track).map(function (gr, i) {
+    var b = document.createElement('button'), h = gr.querySelector('.lk-h');
+    var first = gr.querySelector('.lk-name, .lk-quiz b');
+    var name = (h && h.textContent.trim()) || (i === 0 ? "Cello's Gate" : gr.querySelector('.lk-endt') ? 'mauriceafrich.com' : first ? first.textContent.trim() : 'Section ' + (i + 1));
+    b.type = 'button'; b.className = 'lk-seg'; b.title = name; b.setAttribute('aria-label', name);
+    b.innerHTML = '<i></i>';
+    b.addEventListener('click', function () { goTo(gr); });
+    prog.appendChild(b);
+    return { el: b, fill: b.firstChild, gr: gr, a: 0, b: 1 };
+  });
+  stage.appendChild(prog);
+
+  // pressing a tile tilts it toward where it was pressed, like the Start screen
+  track.addEventListener('pointerdown', function (e) {
+    var t = e.target.closest('.lk-mt'); if (!t || still) return;
+    var r = t.getBoundingClientRect(), dx = (e.clientX - r.left) / r.width - 0.5, dy = (e.clientY - r.top) / r.height - 0.5;
+    t.style.transform = 'perspective(800px) rotateY(' + (dx * 14).toFixed(1) + 'deg) rotateX(' + (-dy * 14).toFixed(1) + 'deg) scale(.97)';
+  });
+  function release(e) { var t = e.target.closest && e.target.closest('.lk-mt'); if (t) t.style.transform = ''; }
+  track.addEventListener('pointerup', release);
+  track.addEventListener('pointerleave', function () { q('.lk-mt', track).forEach(function (t) { t.style.transform = ''; }); });
+  track.addEventListener('pointercancel', release);
+
+  // sizes: four rows of square cells fill most of the screen's height
+  var span = 0, x = 0, target = 0, raf = 0, y0 = 0, y1 = 1, hdr = 0, tiles = [];
+  // the Scroll Bar (Maurice, 2026-11-13): at the end of the row the page freezes for about ten scrolls while a bar along
+  // the bottom fills, scarlet to teal to violet to green, so it's clear the scroll is still going before the page moves on
+  var END = 1040, sbar = document.createElement('div'), sbarIn = document.createElement('i');
+  sbar.className = 'ma-sbar'; sbar.setAttribute('aria-hidden', 'true'); sbar.title = 'Scroll Bar'; sbar.appendChild(sbarIn); stage.appendChild(sbar);
+  function size() {
+    var vh = window.innerHeight;
+    // the page pads this block down to clear the menu; the stage keeps that gap at its top instead, so it can stay
+    // put for the whole length of the block
+    root.style.setProperty('padding-top', '0', 'important');
+    hdr = 0;
+    ['#header', '#hunt-nav'].forEach(function (s) {
+      var e = document.querySelector(s); if (!e) return;
+      var c = getComputedStyle(e), r = e.getBoundingClientRect();
+      if (c.display !== 'none' && c.visibility !== 'hidden' && r.height && r.top < 40) hdr = Math.max(hdr, Math.round(r.bottom));
     });
-    function up(e) { if (e.pointerId !== id) return; id = null; if (moved) setTimeout(function () { moved = false; }, 0); }
-    addEventListener('pointerup', up); addEventListener('pointercancel', up);
-    (o.guard || el).addEventListener('click', function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
-    el.addEventListener('dragstart', function (e) { e.preventDefault(); });
-  }
-  // Run an installer now and again whenever the page redraws (each one does nothing the second time).
-  function gdKeep(fn) { fn(); var t = 0, iv = setInterval(function () { fn(); if (++t > 60) clearInterval(iv); }, 500);
-    try { new MutationObserver(function () { fn(); }).observe(document.body, { childList: true, subtree: true }); } catch (e) {} }
-  // Cut a shape out of a picture inside a link: the picture gets a hole, and the cut piece sits on top where it was,
-  // so nothing looks different until the piece is dragged away. Shapes are SVG in the picture's own pixels ({F} = fill).
-  function gdCut(a, img, W, H, shapes, box, ch, n, G, at, fs) {
-    function svg(inner) { return 'url("data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' + inner + '</svg>') + '")'; }
-    var hole = svg('<defs><mask id="m"><rect width="' + W + '" height="' + H + '" fill="white"/>' + shapes.replace(/\{F\}/g, 'black') + '</mask></defs><rect width="' + W + '" height="' + H + '" fill="white" mask="url(#m)"/>');
-    var only = svg(shapes.replace(/\{F\}/g, 'white'));
-    function mask(el, u) { ['webkitMask', 'mask'].forEach(function (k) { el.style[k + 'Image'] = u; el.style[k + 'Size'] = '100% 100%'; el.style[k + 'Repeat'] = 'no-repeat'; }); }
-    if (getComputedStyle(a).position === 'static') a.style.position = 'relative';
-    var c = gdChar(ch, n, G); c.style.left = at[0] / W * 100 + '%'; c.style.top = at[1] / H * 100 + '%'; a.appendChild(c);
-    var p = document.createElement('span'); p.className = 'gd-piece'; p.setAttribute('aria-hidden', 'true');
-    p.style.cssText = 'position:absolute;z-index:2;display:block;margin:0;left:' + box[0] / W * 100 + '%;top:' + box[1] / H * 100 + '%;width:' + box[2] / W * 100 + '%;height:' + box[3] / H * 100 + '%;cursor:grab';
-    var pi = img.cloneNode(); pi.removeAttribute('loading'); pi.alt = ''; pi.removeAttribute('class');
-    pi.style.cssText = 'position:absolute;display:block;max-width:none;max-height:none;margin:0;aspect-ratio:auto;pointer-events:none;left:' + (-box[0] / box[2] * 100) + '%;top:' + (-box[1] / box[3] * 100) + '%;width:' + W / box[2] * 100 + '%;height:' + H / box[3] * 100 + '%';
-    mask(pi, only); p.appendChild(pi); a.appendChild(p); mask(img, hole);
-    a.addEventListener('dragstart', function (e) { e.preventDefault(); });
-    function size() { c.style.fontSize = Math.max(16, a.clientWidth * fs) + 'px'; } size(); addEventListener('resize', size);
-    gdDrag(p, { free: true, guard: a, limit: 240, move: function (d) { c.classList.toggle('gd-show', d > p.offsetWidth * 0.55); } });
-    return { piece: p, img: pi };
-  }
-  // Slot 7, "The Falling Man Speaks": the Comet in the footer logo blinks PLEASE MOVE ME in Morse code. Drag it aside: a golden D.
-  var MORSE = { P: '.--.', L: '.-..', E: '.', A: '.-', S: '...', M: '--', O: '---', V: '...-' }, UNIT = 200;
-  function comet() {
-    var a = document.querySelector('#ma-links .lk-flogo'), img = a && a.querySelector('img');
-    if (!img || a.getAttribute('data-gd')) return; a.setAttribute('data-gd', '1'); gdStyle();
-    var cut = gdCut(a, img, 640, 396, '<ellipse cx="268" cy="136" rx="64" ry="64" fill="{F}"/><polygon points="198,0 224,0 266,96 228,112" fill="{F}"/>',
-      [196, 0, 140, 204], 'D', 7, G, [268, 136], 0.15);
-    // On and off times in units: a dot is 1, a dash 3, 1 between parts of a letter, 3 between letters, 7 between words.
-    var seq = [];
-    'PLEASE MOVE ME'.split(' ').forEach(function (w, wi) {
-      if (wi) seq[seq.length - 1] = 7;
-      w.split('').forEach(function (l, li) {
-        if (li) seq[seq.length - 1] = 3;
-        MORSE[l].split('').forEach(function (s) { seq.push(s === '-' ? 3 : 1, 1); });
-      });
+    stage.style.top = hdr + 'px';
+    stage.style.height = (vh - hdr) + 'px';
+    var room = vh - hdr;
+    var gridH = Math.min(room * (window.innerWidth < 700 ? 0.7 : 0.8), 700) - 54;
+    // never so big that a large tile (four cells across) is wider than the screen, on a phone
+    var fit = Math.floor((window.innerWidth - 2 * Math.max(24, window.innerWidth * 0.06) - 24) / 4);
+    track.style.setProperty('--u', Math.max(64, Math.min(fit, Math.floor((gridH - 24) / 4))) + 'px');
+    // phones: each screen is one column of three tiles; a row is a third of what's left under the group's name and above
+    // the bar (Maurice, 2026-11-13: 'stacks of 3 and make everything fit with padding on every side')
+    if (window.innerWidth < 700) track.style.setProperty('--rowh', Math.max(120, Math.floor((room - 54 - 16 - 96 - 16) / 3)) + 'px');
+    span = Math.max(0, track.scrollWidth - window.innerWidth);
+    root.style.height = (span + vh + END) + 'px';
+    // Squarespace's block grid keeps a set height on phones; let it grow with the slider so the page can scroll
+    var fe = root.closest('.fluid-engine');
+    if (fe) { fe.style.setProperty('grid-template-rows', 'none', 'important'); fe.style.setProperty('grid-auto-rows', 'auto', 'important'); fe.style.setProperty('min-height', (span + vh + END) + 'px', 'important'); }
+    // the row runs from the top of the page to the bottom of this block, so it finishes before anything under it
+    // scrolls in (Maurice 2026-11-12: "at the end, it starts going down")
+    var top0 = root.getBoundingClientRect().top + window.scrollY;
+    y0 = Math.max(0, top0);
+    y1 = Math.max(y0 + 1, top0 + root.offsetHeight - vh - END);   // the row ends here; the freeze comes after
+    // where each tile and each group's big name sits along the row
+    // every group gets an equal segment; it fills as that group passes the middle of the screen
+    var mids = segs.map(function (sg) { return Math.min(span, Math.max(0, sg.gr.offsetLeft + sg.gr.offsetWidth / 2 - window.innerWidth / 2)); });
+    segs.forEach(function (sg, i) {
+      sg.a = i === 0 ? 0 : (mids[i - 1] + mids[i]) / 2;
+      sg.b = i === segs.length - 1 ? span : (mids[i] + mids[i + 1]) / 2;
     });
-    seq[seq.length - 1] = 14;
-    var k = 0, stop = false;
-    cut.piece.addEventListener('pointerdown', function () { stop = true; cut.img.classList.remove('gd-glow'); });
-    (function tick() {
-      if (stop) return;
-      cut.img.classList.toggle('gd-glow', k % 2 === 0);
-      var t = seq[k] * UNIT; k = (k + 1) % seq.length; setTimeout(tick, t);
-    })();
+    tiles = q('.lk-mt', track).map(function (t, i) {
+      var gg = t.parentNode, gr = gg.parentNode, cy = (t.offsetTop + t.offsetHeight / 2) / Math.max(1, gg.offsetHeight);
+      // tiles in the top rows come from above, the bottom rows from below; full-height tiles take turns
+      var dir = cy < 0.45 ? -1 : cy > 0.55 ? 1 : (i % 2 ? -1 : 1);
+      return { el: t, left: gr.offsetLeft + gg.offsetLeft + t.offsetLeft, w: t.offsetWidth, dir: dir };
+    });
+    paint(true);
   }
-  // Slot 9, "Behind a brick.": the Brick in the Brick discount picture can be dragged out of the way. Behind it: a golden R.
-  function brick() {
-    var a = document.querySelector('#ma-links a.lk-promo[data-link="brick"]'), img = a && a.querySelector('img');
-    if (!img || a.getAttribute('data-gd')) return; a.setAttribute('data-gd', '1'); gdStyle();
-    gdCut(a, img, 2000, 1333, '<rect x="284" y="188" width="414" height="424" rx="50" fill="{F}"/>', [280, 184, 422, 432], 'H', 9, G, [491, 400], 0.14);
+  function progress() { return Math.min(1, Math.max(0, (window.scrollY - y0) / (y1 - y0))); }
+  function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  // the tiles come in from outside the screen, above and below, and meet in the middle (Maurice 2026-11-12: "have all
+  // the tiles come in from the outside and meet in the middle"); once in they stay put and slide off the left edge, and
+  // scrolling back sends them out again the way they came ("they don't leave when you scroll past them")
+  function swing() {
+    if (still) return;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var done = clamp01((span - x) / (vw * 0.4));   // everything is in place by the end of the row
+    tiles.forEach(function (t) {
+      var mid = t.left - x + t.w / 2;
+      // in place well before the middle of the screen (Maurice 2026-11-12: 'have the cards in place by the time they reach this point')
+      var k = clamp01((mid - vw * 0.82) / (vw * 0.4)); k = k * k * (3 - 2 * k) * done;
+      var m = k, st = t.el.style;
+      st.setProperty('--ty', (t.dir * m * vh * 0.75).toFixed(1) + 'px');
+      st.setProperty('--op', (1 - m * 0.5).toFixed(3));
+    });
   }
-  gdKeep(function () { comet(); brick(); });
-});
+  var lastT = 0;
+  function paint(now) {
+    raf = 0;
+    target = progress() * span;
+    // the easing is timed, so the row catches up just as fast when the browser draws fewer frames
+    var t = performance.now(), dt = lastT ? Math.min(250, t - lastT) : 16.7; lastT = t;
+    x = target;   // follows the scroll exactly (Maurice, 2026-11-13: the eased row lagged, then jumped)
+    if (Math.abs(target - x) <= 0.4) lastT = 0;
+    track.style.transform = 'translate3d(' + (-x).toFixed(1) + 'px,0,0)';
+    // the Scroll Bar fills while the row holds at its end
+    var fz = clamp01((window.scrollY - y1) / END);
+    sbar.style.opacity = fz > 0.01 && fz < 1 ? '1' : '0';
+    sbarIn.style.transform = 'scaleX(' + fz.toFixed(3) + ')';
+    swing();
+    segs.forEach(function (sg) {
+      var f = sg.b - sg.a > 1 ? clamp01((x - sg.a) / (sg.b - sg.a)) : (x >= sg.b - 1 ? 1 : 0);
+      sg.fill.style.transform = 'scaleX(' + f.toFixed(4) + ')';
+    });
+    // the Scroll button stays until the end of the row (Maurice, 2026-11-13: 'on horizontal scrolls, add a "scroll" button')
+    var atEnd = x >= span - 2; hint.style.opacity = atEnd ? '0' : ''; hint.style.pointerEvents = atEnd ? 'none' : ''; var atStart = x < 4; back.style.opacity = atStart ? '0' : ''; back.style.pointerEvents = atStart ? 'none' : '';
+    if (Math.abs(target - x) > 0.4) raf = requestAnimationFrame(function () { paint(false); });
+  }
+  function kick() { if (!raf) raf = requestAnimationFrame(function () { paint(false); }); }
+  addEventListener('scroll', kick, { passive: true });
+  // a finger still on the screen is never fought: the row only settles after the finger lifts and the scrolling stops
+  var touching = false;
+  addEventListener('touchstart', function () { touching = true; }, { passive: true });
+  ['touchend', 'touchcancel'].forEach(function (ev) { addEventListener(ev, function () { touching = false; window.dispatchEvent(new Event('scroll')); }, { passive: true }); });
+  // phones: when the scrolling stops, the row settles onto the nearest whole screen of tiles
+  var snapT = 0;
+  addEventListener('scroll', function () {
+    if (window.innerWidth >= 700 || still || !span) return;
+    clearTimeout(snapT);
+    snapT = setTimeout(function () {
+      if (touching) return;
+      var t = progress() * span; if (t <= 1 || t >= span - 1) return;
+      var vw = window.innerWidth, k = Math.round(t / vw), tx = Math.min(span, k * vw);
+      if (Math.abs(tx - t) < 2) return;
+      glideTo(y0 + (tx / span) * (y1 - y0));
+    }, 140);
+  }, { passive: true });
+  var rt = 0;
+  addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(size, 120); });
+  addEventListener('load', size);
+
+  // move to a group: scroll the page to the spot where it sits at the left of the screen
+  function goTo(el, smooth) {
+    var pos = Math.min(span, Math.max(0, el.offsetLeft - parseFloat(getComputedStyle(track).paddingLeft)));
+    var y = y0 + (span ? pos / span : 0) * (y1 - y0);
+    window.scrollTo({ top: y, behavior: smooth === false || still ? 'auto' : 'smooth' });
+  }
+  // the group jumps (like the Order Cello's Gate tile) go to the group
+  q('.lk-grp[id]', track).forEach(function (s) { s.scrollIntoView = function () { goTo(s); }; });
+  // sideways swipes and trackpads, and the arrow keys (one group at a time)
+  addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { e.preventDefault(); window.scrollBy(0, e.deltaX); }
+  }, { passive: false });
+  var tx = null, ty = null;
+  root.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+  root.addEventListener('touchmove', function (e) {
+    if (tx === null) return;
+    var dx = e.touches[0].clientX - tx, dy = e.touches[0].clientY - ty;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 6) { e.preventDefault(); window.scrollBy(0, -dx * 1.4); tx = e.touches[0].clientX; ty = e.touches[0].clientY; }
+  }, { passive: false });
+  root.addEventListener('touchend', function () { tx = ty = null; }, { passive: true });
+  var groups = q('.lk-grp', track);
+  addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    if (/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || '')) return;
+    var pad = parseFloat(getComputedStyle(track).paddingLeft), i;
+    if (e.key === 'ArrowRight') { for (i = 0; i < groups.length; i++) if (groups[i].offsetLeft - pad > x + 4) break; }
+    else { for (i = groups.length - 1; i >= 0; i--) if (groups[i].offsetLeft - pad < x - 4) break; }
+    var g2 = groups[Math.max(0, Math.min(groups.length - 1, i))];
+    if (g2) { e.preventDefault(); goTo(g2); }
+  });
+  // keyboard users: a tile that gets focus is brought on screen
+  track.addEventListener('focusin', function (e) {
+    var t = e.target.closest('.lk-mt'); if (!t) return;
+    var r = t.getBoundingClientRect();
+    if (r.left < 0 || r.right > window.innerWidth) goTo(t, false);
+  });
+  size();
+})();
 </script>
