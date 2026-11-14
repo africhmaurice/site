@@ -56,6 +56,9 @@
 #ma-chase .tk-i{position:relative;flex:0 0 52px;width:52px;height:48px;display:flex;align-items:center;justify-content:center}
 #ma-chase .tk-i img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 #ma-chase .tk-i.g img{filter:drop-shadow(0 0 7px rgba(var(--g),.85))}
+/* the gate bar is a long thin strip (256x10): show it at the shape the game draws it, on a light tile so the dark bar reads */
+#ma-chase .tk-i.tk-gate::before{content:"";position:absolute;left:4px;right:4px;top:4px;bottom:4px;background:#f3ead9}
+#ma-chase .tk-i.tk-gate img{position:relative;width:36px;height:7px;max-width:none;max-height:none;object-fit:fill}
 #ma-chase .tk-t{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:14px;line-height:1.45;color:#f3ead9}
 #ma-chase .tk-t b{font-weight:800;font-size:15px;color:#fffffe}
 #ma-chase .tk p{margin:0;font-size:14px;line-height:1.55;color:#f3ead9}
@@ -81,6 +84,8 @@
 #ma-chase .ch-ov.on{display:flex}
 #ma-chase .ch-ov h2{margin:0;font-family:'Cracked Imperia',Impact,sans-serif;font-weight:400;font-size:clamp(30px,4.6vw,46px);line-height:1.2;letter-spacing:.04em;color:#fffffe}
 #ma-chase .ch-ov p{margin:0;max-width:420px;font-size:clamp(14px,1.7vw,17px);line-height:1.5;color:#f3ead9}
+/* the start tip stays readable when the frame shrinks the game to fit */
+#ma-chase .ch-start p{font-size:clamp(20px,2.4vw,22px);font-weight:800;line-height:1.4;text-wrap:balance}
 #ma-chase .ch-btn{margin:0;padding:12px 24px;border:2px solid #0b170f;background:#c53200;color:#fffffe;font:700 15px/1.2 'Almarai',sans-serif;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .15s ease,transform .15s ease}
 #ma-chase .ch-btn:hover{background:#ff4c0f;transform:scale(1.04)}
 #ma-chase .ch-btn.ghost{background:none;border:1px solid rgba(243,234,217,.5);color:#f3ead9}
@@ -327,7 +332,7 @@ window.TrenchXP = window.TrenchXP || (function () {
             <div class="tk-sec">
               <p class="tk-h">The gate and the boards</p>
               <ul>
-                    <li><span class="tk-i"><img src="https://africhmaurice.github.io/site/assets/games/77-gate.png" alt="" loading="lazy"></span><span class="tk-t"><b>The gate</b>It opens once you earn enough points on that board: 60% of the board’s coins, rounded to the hundred. Fly through the open gate for +1,000 and the next board.</span></li>
+                    <li><span class="tk-i tk-gate"><img src="https://africhmaurice.github.io/site/assets/games/77-gate.png" alt="" loading="lazy"></span><span class="tk-t"><b>The gate</b>It opens once you earn enough points on that board: 60% of the board’s coins, rounded to the hundred. Fly through the open gate for +1,000 and the next board.</span></li>
               </ul>
               <p>Every board is a new maze, the same for everyone, and each one is longer than the last. The forcefield walls and doors don’t hurt you; they just block the way. The doors open and close on a beat.</p>
             </div>

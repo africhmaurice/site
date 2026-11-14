@@ -289,7 +289,7 @@ window.TrenchXP = window.TrenchXP || (function () {
         <div class="ar-cell"><span>PRIZES</span><b data-hud="prizes">0/4</b></div>
       </div>
       <div class="ar-ctrls">
-        <button type="button" class="ar-btn ghost ar-sm ar-pausebtn" disabled>Pause</button>
+        <button type="button" class="ar-btn ghost ar-sm ar-pausebtn" disabled style="visibility:hidden">Pause</button>
       </div>
       <div class="ar-stage">
         <canvas aria-label="Airship Runner game. Use the left and right arrow keys, or swipe, to change lanes."></canvas>
@@ -966,7 +966,7 @@ var ArcadeCard = (function () {
   function resume(){if(mode!=='paused')return;pauseOv.hidden=true;mode='run';go();ctl();}
   // the Pause button (Maurice 10/19): live only during a run; reads Resume while paused
   var pauseBtn=$('.ar-pausebtn');
-  function ctl(){var live=mode==='run'||mode==='paused';pauseBtn.disabled=!live;var t=mode==='paused'?'Resume':'Pause';if(pauseBtn.textContent!==t)pauseBtn.textContent=t;}
+  function ctl(){var live=mode==='run'||mode==='paused';pauseBtn.disabled=!live;var vis=live?'':'hidden';if(pauseBtn.style.visibility!==vis)pauseBtn.style.visibility=vis;var t=mode==='paused'?'Resume':'Pause';if(pauseBtn.textContent!==t)pauseBtn.textContent=t;}
   pauseBtn.addEventListener('click',function(){if(mode==='paused')resume();else pause();});
   try{localStorage.removeItem('ma-save-airship-runner');}catch(e){}   // left over from the dropped Save progress test (10/19)
   document.addEventListener('visibilitychange',function(){if(document.hidden)pause();});

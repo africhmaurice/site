@@ -222,7 +222,7 @@ html.gs-page [data-ma-page] .ms-side > .ms-hud{grid-template-columns:repeat(2,mi
   /* the current champion strip keeps room around its words */
   html.gs-page [data-ma-page] .gs-game :is(.wk-champ,.dbd-champ){padding:10px 20px!important;line-height:1.3!important;height:auto!important;min-height:0!important;overflow:visible!important;white-space:normal!important;box-sizing:border-box;margin-bottom:0!important}
   /* a column beside the board for the score, modes, and buttons */
-  html.gs-page [data-ma-page] .gs-game .gs-two,html.gs-page [data-ma-page] .gs-game .gs-solo.gs-two{display:grid!important;grid-template-columns:auto var(--gs-side,220px);column-gap:24px!important;row-gap:0!important;align-items:start;justify-content:center}
+  html.gs-page [data-ma-page] .gs-game .gs-two,html.gs-page [data-ma-page] .gs-game .gs-solo.gs-two{display:grid!important;grid-template-columns:auto var(--gs-side,220px)!important;column-gap:24px!important;row-gap:0!important;align-items:start;justify-content:center}
   html.gs-page [data-ma-page] .gs-two > :not(.gs-beside) + :not(.gs-beside){margin-top:12px!important}   /* (no row gaps: the side column spans twenty rows, and their gaps added height under the board) */
   html.gs-page [data-ma-page] .gs-two > :not(.gs-beside){grid-column:1}
   html.gs-page [data-ma-page] .gs-two > .gs-beside{grid-column:2;grid-row:1 / span 20;display:flex;flex-direction:column;gap:12px;align-self:start}
@@ -232,12 +232,17 @@ html.gs-page [data-ma-page] .ms-side > .ms-hud{grid-template-columns:repeat(2,mi
   html.gs-page [data-ma-page] .gs-beside .sg-modes{display:flex;gap:8px}
   html.gs-page [data-ma-page] .gs-beside .sg-modes > *{flex:1 1 0}
   html.gs-page [data-ma-page] .gs-beside-wide{--gs-side:500px;min-width:0}
-  html.gs-page [data-ma-page] .gs-game .gs-two:has(> .gs-beside-wide){grid-template-columns:auto 500px}
+  html.gs-page [data-ma-page] .gs-game .gs-two:has(> .gs-beside-wide){grid-template-columns:auto 500px!important}
   /* Airship Runner's board keeps its own shape (it was stretched sideways) */
   html.gs-page [data-ma-page] #ma-runner .ar-stage{width:560px!important;max-width:none!important}
   html.gs-page [data-ma-page] #ma-runner .ar-stage canvas{width:100%!important;height:auto!important;max-width:none!important}
   /* Hold the Wall!: the battlefield across the whole width, the fighters and upgrades under it */
-  html.gs-page [data-ma-page] #ma-holdwall .wrap{width:1100px!important;max-width:none!important}
+  html.gs-page [data-ma-page] #ma-holdwall .wrap{width:1640px!important;max-width:none!important}
+  /* Hold the Wall!: the fighters and upgrades beside the battlefield instead of under it, so the game fits the screen's
+     height at full size and its labels stay readable (QA 2026-11-14: it was scaled to 58%) */
+  html.gs-page [data-ma-page] #ma-holdwall .wrap{display:grid!important;grid-template-columns:minmax(0,1fr) 720px!important;column-gap:24px!important;row-gap:12px!important;align-items:start!important}
+  html.gs-page [data-ma-page] #ma-holdwall .wrap > *{grid-column:1;min-width:0}
+  html.gs-page [data-ma-page] #ma-holdwall .wrap > .ctl{grid-column:2;grid-row:1 / span 8;margin:0!important}
   html.gs-page [data-ma-page] #ma-holdwall .top .stage{width:100%!important;max-width:none!important;height:auto!important}
   html.gs-page [data-ma-page] #ma-holdwall #hw-cv{width:100%!important;height:auto!important}
   /* Goma Goons: the map big on the left, the crew picker and controls on the right */
@@ -354,7 +359,7 @@ html.gs-page [data-ma-page] #ma-holdwall #hw-cv{width:100%!important;height:auto
   /* Sort the Shelf on phones: a shorter bookcase and shorter books, so the card can run the full width and still fit
      (Maurice, 2026-11-13: "can we make this full width?") */
 
-  html.gs-page [data-ma-page] .ss-book{aspect-ratio:230/270!important}
+  html.gs-page [data-ma-page] .ss-book{aspect-ratio:4/3!important}   /* wider than tall, so the four rows fit and the card can run the full width (QA 2026-11-14: it was 55% of the screen) */
   /* buttons and labels never wrap; game-frame.js shrinks their words to fit */
   html.gs-page [data-ma-page] .gs-game button{white-space:nowrap!important}
 }
@@ -371,7 +376,7 @@ html.gs-page [data-ma-page] :is(.wk-champ,.dbd-champ){padding-top:12px!important
 @media (max-width:699px){
   /* Sort the Shelf on phones: the four boxes two by two, so their words stay readable */
   html.gs-page [data-ma-page] .ss-case{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-  html.gs-page [data-ma-page] .ss-box{aspect-ratio:1.6/1!important}
+  html.gs-page [data-ma-page] .ss-box{aspect-ratio:2/1!important}
 }
 
 /* the back arrow (desktop: bottom left; phones: over the second segment, the forward arrow over the fourth) */
@@ -395,4 +400,40 @@ html.gs-page [data-ma-page] .gs-back{left:calc(50% - 28px)!important;translate:-
   html.gs-page [data-ma-page] .gs-game{padding-bottom:calc(112px / var(--gz,1))!important}
   html.gs-page [data-ma-page] .gs-game::before{bottom:calc(96px / var(--gz,1))!important}
 }
+/* Goma Goons' how-to in its own box on wide screens: body-size words with room inside the box (QA 2026-11-14) */
+html.gs-page [data-ma-page] .gs-part .sd-help{padding:20px!important;font-size:16px!important;line-height:1.6!important;text-align:left!important;color:rgba(255,255,255,.86)!important;max-width:none!important}
 html.gs-page [data-ma-page] .gs-cols .sd-ksec{break-inside:avoid;margin-bottom:16px}   /* Goma Goons key: a group never splits from its name */
+/* Trench Run on phones: the score row lifted over the maze reads at full size in two rows, Pause/Resume fixed at the right
+   (QA 2026-11-14: it was shrunk to 8px and the button moved between Pause and Resume) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-chase .ch-hud.gs-lifted{display:grid!important;grid-template-columns:max-content max-content minmax(0,1fr);align-items:center;column-gap:20px!important;row-gap:8px!important;font-size:14px!important;letter-spacing:.06em!important;padding:0 8px!important;zoom:normal!important}
+  html.gs-page [data-ma-page] #ma-chase .ch-hud.gs-lifted .ch-pausebtn{grid-column:3;grid-row:1 / span 2;justify-self:end;font-size:14px!important;padding:10px 14px!important}
+}
+/* phones, daily puzzles before START: the start card is only as tall as its own words (the page held it at the board's full
+   height, so the card was scaled down to about half the screen's width; QA 2026-11-14); the board comes back with START */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] .gs-game .dbd-gate:has(> .dbd-cover){min-height:0!important;height:auto!important}
+  html.gs-page [data-ma-page] .gs-game .dbd-gate > .dbd-cover{position:relative!important;inset:auto!important;height:auto!important}
+  html.gs-page [data-ma-page] .gs-game .dbd-gate:has(> .dbd-cover) > .dbd-hidden{display:none!important}
+}
+/* Master Stacker on phones: the score boxes and Pause/Restart in a column beside the board instead of stacked over it, so the
+   board gets the screen's height and nothing is scaled down (QA 2026-11-14: the board was 202px wide, its labels 6px) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ms-stack .ms-play{display:grid!important;grid-template-columns:minmax(0,1fr) 108px!important;column-gap:12px!important;row-gap:8px!important;align-items:start!important;align-content:start!important}
+  html.gs-page [data-ma-page] #ms-stack .ms-play > .ms-game,html.gs-page [data-ma-page] #ms-stack .ms-play > .ms-side{display:contents!important}
+  html.gs-page [data-ma-page] #ms-stack .ms-play .ms-slip{grid-column:1 / -1;grid-row:1;margin:0!important}
+  html.gs-page [data-ma-page] #ms-stack .ms-play .wk-champ{grid-column:1;grid-row:2;margin:0!important}
+  html.gs-page [data-ma-page] #ms-stack .ms-play .ms-stage{grid-column:1;grid-row:3 / span 3;width:100%!important;max-width:none!important;margin:0!important}
+  html.gs-page [data-ma-page] #ms-stack .ms-play .ms-stage .ms-cv{width:100%!important;height:auto!important}
+  html.gs-page [data-ma-page] #ms-stack .ms-play .ms-hud{grid-column:2;grid-row:3;grid-template-columns:1fr!important;margin:0!important;width:auto!important}
+  html.gs-page [data-ma-page] #ms-stack .ms-play .ms-ctrls{grid-column:2;grid-row:4;flex-direction:column!important;margin:0!important;width:auto!important}
+  html.gs-page [data-ma-page] #ms-stack .ms-play .ms-pad{grid-column:1 / -1;grid-row:6;margin:0!important;width:100%!important}
+  html.gs-page [data-ma-page] #ms-stack .ms-play .ms-post{grid-column:1 / -1}
+  html.gs-page [data-ma-page] #ms-stack .ms-hud *{font-size:12px!important;letter-spacing:.04em!important}
+}
+/* Airship Runner on phones: Pause/Resume fills its cell in the score row and never pushes past it (QA 2026-11-14: it grew
+   from 80 to 88px on Resume and reached the screen's edge) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-runner .ar-hud.gs-joined .ar-ctrls{min-width:0!important;overflow:hidden;contain:inline-size}   /* its label never sets the row's width */
+  html.gs-page [data-ma-page] #ma-runner .ar-hud.gs-joined .ar-ctrls button{min-width:0!important;max-width:100%!important;width:100%!important;flex:1 1 auto!important;padding-left:4px!important;padding-right:4px!important;letter-spacing:.04em!important}
+}

@@ -23,7 +23,9 @@
     // While the page is changing width, the 3D waits out of sight until it is lined up again (Maurice, 10/13).
     "html.ma-ci-rs [data-ci-x]::before{visibility:hidden}" +
     // The 3D: the heading's words again, in the Extrude font, behind the face, on the same lines.
-    "[data-ci-x]::before{content:attr(data-ci-x);position:absolute;left:var(--ci-x,0);top:calc(var(--ci-y,0px) + .0318em);width:var(--ci-w,auto);padding:0;border:0;box-sizing:content-box;font-family:'CI Extrude';font-size:inherit;line-height:var(--ci-lh,1.05);letter-spacing:inherit;word-spacing:inherit;text-align:inherit;text-transform:inherit;text-indent:inherit;white-space:pre;-webkit-text-stroke:0;color:var(--ci-depth);-webkit-text-fill-color:var(--ci-depth);background:none;filter:none;z-index:-1;pointer-events:none}";
+    "[data-ci-x]::before{content:attr(data-ci-x);position:absolute;left:var(--ci-x,0);top:calc(var(--ci-y,0px) + .0318em);right:var(--ci-r,auto);width:var(--ci-w,auto);padding:0;border:0;box-sizing:content-box;font-family:'CI Extrude';font-size:inherit;line-height:var(--ci-lh,1.05);letter-spacing:inherit;word-spacing:inherit;text-align:inherit;text-transform:inherit;text-indent:inherit;white-space:pre;-webkit-text-stroke:0;color:var(--ci-depth);-webkit-text-fill-color:var(--ci-depth);background:none;filter:none;z-index:-1;pointer-events:none}" +
+    // A copy that wraps by itself (see flowable): same wrapping as the heading, plus its <br> line breaks.
+    "[data-ci-x][data-ci-flow]::before{white-space:pre-line;white-space-collapse:preserve-breaks;text-wrap-mode:inherit}";
   (document.head || document.documentElement).appendChild(st);
   var pre = document.createElement('link'); pre.rel = 'preload'; pre.as = 'font'; pre.type = 'font/woff2'; pre.crossOrigin = 'anonymous';
   pre.href = FONTS + 'CrackedImperia-Bold.woff2'; (document.head || document.documentElement).appendChild(pre);
@@ -67,31 +69,76 @@
       if (top === null || Math.abs(rc.top - top) > rc.height / 2) { out.push([]); top = rc.top; } out[out.length - 1].push(m[0]); }
       if (n.textContent.length) glue = !/\s$/.test(n.textContent); }
     return out.map(function (l) { return l.join(' '); }).join('\n'); }
-  // Where the letters really are inside the heading: the 3D copy is placed on that box. A turned or scaled heading
-  // (the rotated stamps) can't be measured this way, so it keeps the 3D at the box corner.
-  function place(el) { var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n, r = document.createRange(), L = 1e9, T = 1e9, R = -1e9, h = 0;
+  // Measured as the heading sits at rest: a panel that is mid-animation (motion.js pops panels in turned and scaled, and
+  // a turned box makes every word sit a little lower than the one before) is set straight just for the measuring and
+  // put back before anything is drawn (QA 2026-11-14: ghost 3D words below chapter cards). Transitions are held off
+  // so straightening and putting back never start one.
+  var MOVES = ['transform', 'rotate', 'scale', 'translate'];
+  function atRest(el, fn) { var undo = [];
+    for (var q = el; q && q.nodeType === 1; q = q.parentElement) { var c = getComputedStyle(q);
+      if (c.transform === 'none' && (!c.rotate || c.rotate === 'none') && (!c.scale || c.scale === 'none') && (!c.translate || c.translate === 'none')) continue;
+      var st = q.style, sv = {};
+      MOVES.concat('transition').forEach(function (k) { sv[k] = [st.getPropertyValue(k), st.getPropertyPriority(k)]; st.setProperty(k, 'none', 'important'); });
+      undo.push([q, sv]); }
+    function put(q, sv, k) { if (sv[k][0]) q.style.setProperty(k, sv[k][0], sv[k][1]); else q.style.removeProperty(k); }
+    try { return fn(); } finally {
+      undo.forEach(function (u) { MOVES.forEach(function (k) { put(u[0], u[1], k); }); getComputedStyle(u[0]).transform; });
+      undo.forEach(function (u) { put(u[0], u[1], 'transition'); }); } }
+  // The 3D copy wraps by itself (QA 2026-11-14): a plain block heading's copy gets the heading's own content box, font,
+  // spacing, and wrapping rules, so the browser breaks it on exactly the same words as the heading at every width, zoom,
+  // and font load, with no line breaks worked out ahead of time. (The Extrude font's letters are exactly as wide as the
+  // face's.) Only flex and grid headings, and text whose pieces are spaced differently, keep measured lines.
+  var FLOW = !!(window.CSS && CSS.supports && CSS.supports('white-space-collapse', 'preserve-breaks') && CSS.supports('text-wrap-mode', 'wrap'));
+  function flowable(el, s) {
+    if (!FLOW || /flex|grid/.test(s.display) || s.whiteSpaceCollapse !== 'collapse') return false;
+    var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n;
+    while ((n = w.nextNode())) { if (!n.textContent.trim()) continue;
+      for (var q = n.parentElement; q && q !== el; q = q.parentElement) { var c = getComputedStyle(q);
+        if (c.letterSpacing !== s.letterSpacing || c.wordSpacing !== s.wordSpacing || c.textTransform !== s.textTransform || c.whiteSpaceCollapse !== 'collapse' ||
+          parseFloat(c.paddingLeft) || parseFloat(c.paddingRight) || parseFloat(c.marginLeft) || parseFloat(c.marginRight) ||
+          parseFloat(c.borderLeftWidth) || parseFloat(c.borderRightWidth)) return false; } }
+    return true; }
+  // The heading's words as it shows them: spaces run together, and a line break only where it has a <br>.
+  function words(el) { var out = [''], w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT), n;
+    while ((n = w.nextNode())) { if (n.nodeType === 3) out[out.length - 1] += n.textContent; else if (n.tagName === 'BR') out.push(''); }
+    return out.map(function (l) { return l.replace(/[ \t\n\r\f]+/g, ' ').trim(); }).join('\n'); }
+  // Build (or rebuild) one heading's 3D copy: its words, and where it sits.
+  function build(el, first) { var s = getComputedStyle(el), f = flowable(el, s);
+    if (f) el.setAttribute('data-ci-flow', ''); else el.removeAttribute('data-ci-flow');
+    var t = f ? words(el) : atRest(el, function () { return lines(el); });
+    if (first || (t && t !== el.getAttribute('data-ci-x'))) el.setAttribute('data-ci-x', t);
+    place(el, f); }
+  // Where the letters really are inside the heading: the 3D copy is placed on that box.
+  function place(el, flow) { var s = getComputedStyle(el), lh = parseFloat(s.lineHeight);
+    if (flow && lh) {
+      el.style.setProperty('--ci-lh', lh + 'px');
+      el.style.setProperty('--ci-x', parseFloat(s.paddingLeft) + 'px');
+      el.style.setProperty('--ci-y', parseFloat(s.paddingTop) + 'px');
+      el.style.setProperty('--ci-r', parseFloat(s.paddingRight) + 'px');
+      el.style.setProperty('--ci-w', 'auto');
+      return; }
+    el.style.removeProperty('--ci-r');
+    atRest(el, function () { measure(el, s); }); }
+  function measure(el, s) { var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n, r = document.createRange(), L = 1e9, T = 1e9, R = -1e9, h = 0;
     while ((n = w.nextNode())) { if (!n.textContent.trim()) continue; r.selectNodeContents(n); var rs = r.getClientRects();
       for (var i = 0; i < rs.length; i++) { var q = rs[i]; if (!q.width) continue; if (q.left < L) L = q.left; if (q.right > R) R = q.right; if (q.top < T) { T = q.top; h = q.height; } } }
-    var b = el.getBoundingClientRect(); if (R < L || !b.width) return;
-    var s = getComputedStyle(el), block = !/flex|grid/.test(s.display);
-    // a plain block heading needs nothing measured on screen, so it is set even inside a scaled or moving panel
-    // (Maurice, 2026-11-13: the Master Stacker heading's 3D layer was off after its panel was scaled to fit)
-    if (!block && (Math.abs(b.width - el.offsetWidth) > 2 || Math.abs(b.height - el.offsetHeight) > 2)) return;
-    var lh = parseFloat(s.lineHeight) || h;
+    var b = el.getBoundingClientRect(); if (R < L || !b.width || !el.offsetWidth) return;
+    var block = !/flex|grid/.test(s.display);
+    // a zoomed panel (the game pages zoom their panels to fit) measures in zoomed pixels; the 3D copy lives in the
+    // heading's own pixels, so the measurements are scaled back
+    var k = el.offsetWidth / b.width; if (Math.abs(k - 1) < 0.01) k = 1;
+    var lh = parseFloat(s.lineHeight) || h * k;
     el.style.setProperty('--ci-lh', lh + 'px');
-    // A plain block heading lays its lines out in its own content box, so the 3D gets exactly that box and lines up
-    // line for line at any width. Only flex and grid headings (centered by the layout, not by text-align) use the
-    // measured letters.
     if (block) {
       el.style.setProperty('--ci-x', parseFloat(s.paddingLeft) + 'px');
       el.style.setProperty('--ci-y', parseFloat(s.paddingTop) + 'px');
       el.style.setProperty('--ci-w', (el.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight)) + 'px');
       return; }
-    el.style.setProperty('--ci-x', (L - b.left - el.clientLeft) + 'px');
-    el.style.setProperty('--ci-y', (T - b.top - el.clientTop - (lh - h) / 2) + 'px');
-    el.style.setProperty('--ci-w', (R - L + 0.5) + 'px'); }
+    el.style.setProperty('--ci-x', ((L - b.left) * k - el.clientLeft) + 'px');
+    el.style.setProperty('--ci-y', ((T - b.top) * k - el.clientTop - (lh - h * k) / 2) + 'px');
+    el.style.setProperty('--ci-w', ((R - L) * k + 0.5) + 'px'); }
   // a heading whose letters are mid-scramble (motion.js) is skipped; it asks to be measured again once it settles
-  function relines() { document.querySelectorAll('[data-ci-x]').forEach(function (e) { if (e.classList.contains('ma-dec')) return; var t = lines(e); if (t && t !== e.getAttribute('data-ci-x')) e.setAttribute('data-ci-x', t); place(e); }); document.documentElement.classList.remove('ma-ci-rs'); }
+  function relines() { document.querySelectorAll('[data-ci-x]').forEach(function (e) { if (e.classList.contains('ma-dec')) return; build(e); }); document.documentElement.classList.remove('ma-ci-rs'); }
   var rt; function later() { clearTimeout(rt); rt = setTimeout(relines, 200); }
   window.maCiRelines = later;
   // The 3D copy only lines up when all the text inside is heading text at one size, in one flow of lines.
@@ -164,7 +211,7 @@
       else if (!keep && cs.display !== 'inline' && /^\S+$/.test((el.textContent || '').trim())) { el.style.setProperty('white-space', 'nowrap', 'important'); el.dataset.ciOne = ''; one(el); }
       if (cs.display !== 'inline' && (el.innerText || '').trim() && uniform(el, cs.fontSize) && !turned(el)) {
         if (cs.position === 'static') el.style.setProperty('position', 'relative');
-        el.setAttribute('data-ci-x', lines(el)); place(el); if (ciRO) ciRO.observe(el); } } }
+        build(el, true); if (ciRO) ciRO.observe(el); } } }
   // Shrink a no-wrap title just enough that its longest line fits its column (never bigger than the page set it).
   function fit(el) { var o = el.dataset.ciFit; if (o) el.style.setProperty('font-size', o); else el.style.removeProperty('font-size'); var pe = el.parentElement, ps = pe && getComputedStyle(pe), w = pe ? pe.clientWidth - parseFloat(ps.paddingLeft) - parseFloat(ps.paddingRight) : 0;
     if (w && el.scrollWidth > w) el.style.setProperty('font-size', (parseFloat(getComputedStyle(el).fontSize) * w / el.scrollWidth * 0.98) + 'px', 'important'); }
@@ -183,7 +230,7 @@
   // a heading whose box changes size (a home slider strip opening and closing, so its words wrap differently) rebuilds its
   // 3D copy (Maurice, 2026-11-13: 'font off on home', LIBRARY JOURNAL)
   var ciRO = window.ResizeObserver ? new ResizeObserver(function (es) { es.forEach(function (en) { var h = en.target; if (h.classList.contains('ma-dec')) return; if (live.indexOf(h) < 0) live.push(h); }); if (live.length && !raf) raf = requestAnimationFrame(flush); }) : null;
-  function flush() { raf = 0; live.forEach(function (e) { if (e.dataset.ciOne !== undefined) one(e); else if (e.dataset.ciFit !== undefined) fit(e); var t = lines(e); if (t && t !== e.getAttribute('data-ci-x')) e.setAttribute('data-ci-x', t); place(e); }); live = []; }
+  function flush() { raf = 0; live.forEach(function (e) { if (e.dataset.ciOne !== undefined) one(e); else if (e.dataset.ciFit !== undefined) fit(e); build(e); }); live = []; }
   function start() { scan(); later(); new MutationObserver(function (ms) {
     var added = false;
     for (var i = 0; i < ms.length; i++) { var m = ms[i], n = m.target.nodeType === 1 ? m.target : m.target.parentElement, h = n && n.closest && n.closest('[data-ci-x]');

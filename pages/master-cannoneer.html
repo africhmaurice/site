@@ -198,6 +198,9 @@
   #ma-holdwall .actkey{font-size:11px;min-height:30px}}
 
 #ma-holdwall{box-sizing:border-box;width:100vw;position:relative;left:50%;margin-left:-50vw;min-height:100vh;padding:clamp(110px,13vh,150px) 16px 80px;background:var(--ink);overflow-x:clip}
+/* labels never drop under 16px in any browser (Maurice's Chrome already draws them at its 16px floor; this makes every browser match what he sees) */
+#ma-holdwall :is(.hud,.hudbar .sm,.panel h3,.ctl h3,.btns .b,.btns .b .nm,.btns .b .cost,.b .badge,.b.up .rank,.key,.actkey,.help,.tabs button,.acts button,.tacts button,.auto,.tr,.mini .tr,.over.tight p,.go,.over.tight .go,.inv .it .itn){font-size:max(16px,1em)!important}
+#ma-holdwall .btns .b .nm{letter-spacing:.015em!important}
 #ma-holdwall .weekly{margin:0;max-width:640px;font-weight:700;font-size:14px;line-height:1.5;color:var(--gold)}
 #ma-holdwall .hw-boardrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
 @media (max-width:760px){#ma-holdwall .hw-boardrow{grid-template-columns:1fr}}

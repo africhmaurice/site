@@ -576,6 +576,8 @@
         // one after another, but the last one still finishes by the time the page bottoms out (Maurice, 2026-11-12)
         var off = Math.min(it.i * it.step, 0.7);
         p = ease(clamp((prog(r, vh * 0.98, vh * 0.5) - off) / Math.min(0.6, 1 - off)));
+        // a short page can't scroll far enough to finish the reveal, so in view at the page's bottom means fully shown (QA 2026-11-14)
+        if (p < 1 && r.top < vh && window.scrollY + vh >= document.documentElement.scrollHeight - 4) p = 1;
         if (it.kind === 'line') { put(it.el, 'backgroundSize', (p * 100).toFixed(1) + '% ' + it.w); return; }
         if (it.kind === 'trace') {
           // four sides drawn in turn: top left to right, right side down, bottom right to left, left side up

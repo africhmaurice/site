@@ -18,6 +18,8 @@
    Loaded by hand from each game's page file, next to assets/game-frame.css. DRAFT words: HOW TO PLAY, SCROLL. */
 (function () {
   try { localStorage.removeItem('ma-game-full'); } catch (e) {}   // the old full-screen switch is gone
+  var ownAt = 0, nTo = window.scrollTo.bind(window), wBy = window.scrollBy.bind(window);   // the row's own scrolling (a game's is held back, below)
+  function wTo() { ownAt = Date.now(); return nTo.apply(window, arguments); }
   var H1 = '.hg-h1,#daily-word h1,.ar-h1,.fl-h1,#ma-chase .ch-wrap > h1,#ma-gauntlet .sg-wrap > h1,#ma-levian .lv-wrap > h1,#ms-stack .ms-head h1,#ma-holdwall header h1,#ma-skyduel .sd-wrap > h1';
   var ABOUT = '.hg-how,#thw-note,.dbd-line,.hg-more,.hg-next,#thw-next,.hg-eyebrow,.m-eyebrow,.ar-eye,' + H1 + ',.hg-tag,.ar-tag,.fl-how,.ch-sub,.sg-maint,.sg-sub,.lv-lede,.ms-lede,.sd-lede,' +
     '.ar-weekly,.fl-weekly,.ch-weekly,.sg-weekly,.lvb-weekly,.ms-weekly,#ma-holdwall header .lede,#ma-holdwall header .weekly';
@@ -30,19 +32,20 @@
     'game-matching-auras': { root: '.hg-section', zoom: '.hg-card', fit: ['.ma-tools'], parts: ['.dbd-panel'] },
     'game-crest-quest':    { root: '.hg-section', zoom: '.hg-card', fit: ['.cq-key', '.cq-tools'], parts: ['.dbd-panel'] },
     'game-sky-mines':      { root: '.hg-section', zoom: '.hg-card', fit: ['.sm-bar', '.sm-tools'], parts: ['.dbd-panel'] },
-    'airship-runner':      { phoneJoin: [['.ar-ctrls', '.ar-hud']], root: '#ma-runner', zoom: '.ar-wrap', box: ['.ar-hud', '.ar-stage'], snug: true, beside: { host: '.ar-game', items: ['.wk-champ', '.ar-hud', '.ar-ctrls'] },
+    'airship-runner':      { phoneJoin: [['.ar-ctrls', '.ar-hud']], root: '#ma-runner', zoom: '.ar-wrap', box: ['.ar-hud', '.ar-stage'], snug: true, beside: { host: '.ar-game', items: ['.ar-hud', '.ar-ctrls'] },
                              how: ['.ar-side > .ar-panel:has(.ar-how)'], parts: ['.ar-side > .ar-panel:has(.ar-board)', '.ar-key'] },
     'thread-the-needle':   { root: '#ma-flappy', zoom: '.fl-stage', fit: ['.fl-ctl', '.fl-bar'], parts: ['.fl-panel'] },
     'trench-run':          { phoneLift: ['.ch-hud'], root: '#ma-chase', zoom: '.ch-game', box: ['.ch-hud', '.ch-board'],
                              how: ['.ch-howp'], parts: ['.ch-side > .tr-panel:not(.ch-howp)', 'section.tk'] },
-    'sky-gauntlet':        { root: '#ma-gauntlet', zoom: '.sg-game', box: ['.sg-hud', '.sg-stage'], snug: true, beside: { host: '.sg-main', items: ['.wk-champ', '.sg-modes', '.sg-hud', '.sgb-post'] },
+    'sky-gauntlet':        { root: '#ma-gauntlet', zoom: '.sg-game', box: ['.sg-hud', '.sg-stage'], snug: true, beside: { host: '.sg-main', items: ['.sg-modes', '.sg-hud', '.sgb-post'] },
                              how: ['.sg-howp'], parts: ['.sg-side > .sgb-panel:not(.sg-howp)', 'section.sgk'] },
     'the-levian':          { root: '#ma-levian', zoom: '.lv-stage', fit: ['.lv-bar', '.wk-champ'],
                              how: ['.lv-side > .lvb-panel:not(.lvb-local):not(.lvb-boardp)'], parts: [{ sel: '.lvb-local, .lvb-boardp', stack: true }] },
     'master-stacker':      { root: '#ms-stack', zoom: '.ms-play', box: ['.ms-hud', '.ms-cv'], how: ['.ms-how'], parts: [{ sel: '.ms-local, .ms-boardp', stack: true }],
                              side: ['.ms-hud', '.ms-ctrls'], snug: true },   // score and buttons sit over Next up, so the board gets the height
-    'master-cannoneer':    { root: '#ma-holdwall', zoom: '.wrap', phoneW: 640, parts: [{ sel: '.hw-boardrow > section.panel', stack: true }] },
-    'sky-fishing':         { root: '#ma-skyduel', zoom: '.sd-wrap', snug: true, phoneW: 600, phoneHow: ['.sd-panel', '.sd-help'], headIn: '.sd-wrap', beside: { host: '.sd-wrap', items: ['.sd-msg', '.sd-weapons', '.sd-pad', '.sd-panel', '.sd-help'], wide: true },
+    'master-cannoneer':    { root: '#ma-holdwall', zoom: '.wrap', phoneW: 400, phoneHow: ['.wrap > .help'], squeeze: { sel: '.wrap', min: 1100 }, parts: [{ sel: '.hw-boardrow > section.panel', stack: true }] },
+    'sky-fishing':         { root: '#ma-skyduel', zoom: '.sd-wrap', snug: true, phoneW: 600, phoneHow: ['.sd-panel', '.sd-help'], headIn: '.sd-wrap', beside: { host: '.sd-wrap', items: ['.sd-msg', '.sd-weapons', '.sd-pad', '.sd-panel'], wide: true },
+                             wideParts: [{ sel: '.sd-help', name: 'How to play' }],   // the long how-to gets a box of its own, so the map and the crew picker keep their size
                              parts: [{ sel: '.gb-row > .gb-card', stack: true }, { sel: '.sd-notes', name: 'Your items' }] }
   };
   var mount = null, cfg = null;
@@ -95,6 +98,7 @@
   // phones: some games put their setup (Goma Goons' crew picker) on the screen before the game, so the game gets the screen
   if (cfg.phoneJoin && window.innerWidth < 700) cfg.phoneJoin.forEach(function (j) { var a = q(j[0]), b = q(j[1]); if (a && b) { b.appendChild(a); b.classList.add('gs-joined'); } });
   if (cfg.phoneHow && window.innerWidth < 700) cfg.how = (cfg.how || []).concat(cfg.phoneHow);
+  if (cfg.wideParts && window.innerWidth >= 700) cfg.parts = cfg.wideParts.concat(cfg.parts || []);
   // 1. the game: everything the page had, less the parts that get panels of their own
   var h1 = q(H1);
   var game = panel((h1 && (h1.querySelector('.face') || h1).textContent.replace(/\s+/g, ' ').trim()) || 'Game', 'gs-game');
@@ -159,7 +163,7 @@
     var arc = track.querySelector('.gs-arcade'); if (arc) { track.appendChild(arc); tiles(arc); }
     if (moved) { bar(); size(); }
     // the puzzle is over: on to the result, so the score is the first thing seen (Maurice, 2026-11-14)
-    if (toCard) { toCard = false; var ci = qa('.gs-panel', track).indexOf(track.querySelector('.gs-cardp')); if (ci >= 0) setTimeout(function () { gameTouch = 0; var k = at[ci] || 0; var ty = y0 + (starts[k] || 0) + 1; if (still) window.scrollTo(0, ty); else glideTo(ty); }, 700); }
+    if (toCard) { toCard = false; var ci = qa('.gs-panel', track).indexOf(track.querySelector('.gs-cardp')); if (ci >= 0) setTimeout(function () { gameTouch = 0; var k = at[ci] || 0; var ty = y0 + (starts[k] || 0) + 1; if (still) wTo(0, ty); else glideTo(ty); }, 700); }
   }
   var toCard = false;
 
@@ -213,14 +217,14 @@
     var y0g = window.scrollY, d = ty - y0g, t0 = performance.now(), dur = Math.min(420, 220 + Math.abs(d) * 0.4);
     if (Math.abs(d) < 1) return;
     var tok = ++glideTok;
-    (function step() { if (tok !== glideTok) return; var k = Math.max(0, Math.min(1, (performance.now() - t0) / dur)), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; window.scrollTo(0, y0g + d * e); if (k < 1) requestAnimationFrame(step); })();
+    (function step() { if (tok !== glideTok) return; var k = Math.max(0, Math.min(1, (performance.now() - t0) / dur)), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; wTo(0, y0g + d * e); if (k < 1) requestAnimationFrame(step); })();
   }
   // a back arrow, so it's clear the row goes both ways (Maurice, 2026-11-14): over the second segment, the forward arrow over the fourth
   var back = document.createElement('button'); back.type = 'button'; back.className = 'gs-back'; back.setAttribute('aria-label', 'Scroll to the previous section');
   back.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>'; stage.appendChild(back);
   back.addEventListener('click', function () {
-    for (var k = stops.length - 1; k >= 0; k--) if (stops[k] < x - vw * 0.25) { var ty = y0 + starts[k] + 1; if (still) window.scrollTo(0, ty); else glideTo(ty); return; }
-    if (still) window.scrollTo(0, y0); else glideTo(y0);
+    for (var k = stops.length - 1; k >= 0; k--) if (stops[k] < x - vw * 0.25) { var ty = y0 + starts[k] + 1; if (still) wTo(0, ty); else glideTo(ty); return; }
+    if (still) wTo(0, y0); else glideTo(y0);
   });
   function placeArrows() {
     if (wide) { back.style.left = ''; hint.style.left = ''; return; }
@@ -230,8 +234,8 @@
   }
   hint.addEventListener('click', function () {
     // the next stop at least a quarter screen along (a stop a few pixels away would barely move the row)
-    for (var k = 0; k < stops.length; k++) if (stops[k] > x + vw * 0.25) { var ty = y0 + starts[k] + 1; if (still) window.scrollTo(0, ty); else glideTo(ty); return; }
-    var tl = stops.length - 1; if (tl >= 0) { if (still) window.scrollTo(0, y0 + starts[tl] + 1); else glideTo(y0 + starts[tl] + 1); }
+    for (var k = 0; k < stops.length; k++) if (stops[k] > x + vw * 0.25) { var ty = y0 + starts[k] + 1; if (still) wTo(0, ty); else glideTo(ty); return; }
+    var tl = stops.length - 1; if (tl >= 0) { if (still) wTo(0, y0 + starts[tl] + 1); else glideTo(y0 + starts[tl] + 1); }
   });
   var sbar = document.createElement('div'), sbarIn = document.createElement('i');
   sbar.className = 'gs-sbar'; sbar.setAttribute('aria-hidden', 'true'); sbar.title = 'Scroll Bar'; sbar.appendChild(sbarIn); stage.appendChild(sbar);
@@ -358,10 +362,13 @@
     if (!wide) p.style.width = (vw / z).toFixed(1) + 'px';   // a phone panel still fills the screen's width
     return p.clientHeight - pad(p).y;
   }
+  // the phones' pinned background (loader.js puts an .ma-pfx layer over the whole panel) is not part of the game: it never counts
+  // when the game is measured (it made every phone game panel shrink to 85%; QA 2026-11-14)
+  function bgLayer(c) { return c.classList.contains('ma-pfx') || c.getAttribute('aria-hidden') === 'true' && getComputedStyle(c).position === 'absolute'; }
   function shrinkGame() {
     game.style.zoom = ''; game.style.height = ''; game.style.removeProperty('--gz');
     var d = pad(game), need = 0, t0 = 1e9, b0 = -1e9;
-    Array.prototype.forEach.call(game.children, function (c) { var b = c.getBoundingClientRect(); if (!b.height || !c.offsetParent) return; t0 = Math.min(t0, b.top); b0 = Math.max(b0, b.bottom); });
+    Array.prototype.forEach.call(game.children, function (c) { var b = c.getBoundingClientRect(); if (!b.height || !c.offsetParent || bgLayer(c)) return; t0 = Math.min(t0, b.top); b0 = Math.max(b0, b.bottom); });
     need = b0 - t0;
     if (need > 0) shrink(game, need, game.clientHeight - d.y);
   }
@@ -406,7 +413,13 @@
   }
   function size() {
     var vh = window.innerHeight, hdr = header();
-    vw = Math.round(stage.getBoundingClientRect().width) || document.documentElement.clientWidth;
+    // the row is exactly as wide as the window less its scrollbar, whatever width the page's own block has (a block set to
+    // 100vw runs under the scrollbar and was cut off at both sides; QA 2026-11-14)
+    var cw = document.documentElement.clientWidth;
+    ['width', 'min-width', 'max-width'].forEach(function (k) { stage.style.setProperty(k, cw + 'px', 'important'); });
+    stage.style.setProperty('margin-left', '0px', 'important');
+    var sl = stage.getBoundingClientRect().left; if (Math.abs(sl) > 0.5) stage.style.setProperty('margin-left', (-sl).toFixed(1) + 'px', 'important');
+    vw = cw;
     wide = window.innerWidth >= 700;
     if (!wide) game.style.width = '';
     root.setAttribute('data-ma-keep-top', '');
@@ -414,7 +427,7 @@
     root.style.setProperty('min-height', '0', 'important');
     stage.style.top = hdr + 'px';
     stage.style.height = (vh - hdr) + 'px';
-    stage.style.setProperty('--gsvw', (Math.round(stage.getBoundingClientRect().width) || document.documentElement.clientWidth) + 'px');   // the row's real width (a scrollbar can make it narrower than the window)
+    stage.style.setProperty('--gsvw', cw + 'px');   // the row's real width (a scrollbar can make it narrower than the window)
     panels = qa('.gs-panel', track); n = panels.length;
     stage.classList.add('gs-measure');   // measure boxes where they rest, not partway through a fade-in
     widths();
@@ -486,7 +499,7 @@
   }
   function goTo(i) {
     gameTouch = 0;
-    window.scrollTo({ top: Math.max(0, y0 + posOf(i) + Math.min(HOLD, holds[at[i] || 0] || 0) / 2), behavior: still ? 'auto' : 'smooth' });   // a little way into the hold, so the Scroll Bar shows it's still going
+    wTo({ top: Math.max(0, y0 + posOf(i) + Math.min(HOLD, holds[at[i] || 0] || 0) / 2), behavior: still ? 'auto' : 'smooth' });   // a little way into the hold, so the Scroll Bar shows it's still going
   }
   function here() { var b = 0; stops.forEach(function (v, k) { if (Math.abs(v - x) < Math.abs(stops[b] - x)) b = k; }); var i = at.indexOf(b); return i < 0 ? 0 : i; }
   function gameShown() { var r = game.getBoundingClientRect(); return r.right > 40 && r.left < window.innerWidth - 40; }
@@ -518,8 +531,29 @@
   var gameTouch = 0;
   game.addEventListener('pointerdown', function () { gameTouch = Date.now(); }, true);
   game.addEventListener('touchstart', function () { gameTouch = Date.now(); }, { capture: true, passive: true });
+  // a game that scrolls the page when it starts (its own "bring the game into view", a focus that scrolls) would slide the
+  // row off its stop (QA 2026-11-14: Goma Goons' Continue, Sky Gauntlet's Launch): the page holds still for a game, so its
+  // focus never scrolls, scrollIntoView does nothing inside the row, and a window scroll right after a press is undone
+  var pressAt = 0, pressY = 0, userAt = 0;
+  ['pointerdown', 'click', 'keydown'].forEach(function (ev) { game.addEventListener(ev, function () { if (Date.now() - pressAt > 300 || ev !== 'click') pressY = window.scrollY; pressAt = Date.now(); }, true); });
+  addEventListener('wheel', function () { userAt = Date.now(); }, { passive: true, capture: true });
+  addEventListener('touchmove', function (e) { if (!inGame(e.target)) userAt = Date.now(); }, { passive: true, capture: true });
+  addEventListener('keydown', function (e) { if (!game.contains(e.target) && /^(Arrow|Page|Home|End| )/.test(e.key)) userAt = Date.now(); }, true);
+  function held() { return Date.now() - pressAt < 1500 && userAt < pressAt && Date.now() - ownAt > 150; }
+  try {
+    var nFocus = HTMLElement.prototype.focus, nInto = Element.prototype.scrollIntoView;
+    HTMLElement.prototype.focus = function (o) { if (root.contains(this)) { var p = {}; if (o) for (var k in o) p[k] = o[k]; p.preventScroll = true; return nFocus.call(this, p); } return nFocus.apply(this, arguments); };
+    Element.prototype.scrollIntoView = function () { if (root.contains(this)) return; return nInto.apply(this, arguments); };
+    window.scrollTo = window.scroll = function () { if (held()) return; return nTo.apply(window, arguments); };
+    window.scrollBy = function () { if (held()) return; return wBy.apply(window, arguments); };
+  } catch (e) {}
+  addEventListener('scroll', function () { if (held() && Math.abs(window.scrollY - pressY) > 1) wTo(0, pressY); }, { passive: true });
+  // a panel never scrolls inside itself (a focus or a game can scroll a clipped box): it snaps back
+  document.addEventListener('scroll', function (e) { var t = e.target; if (t && t.classList && (t.classList.contains('gs-panel') || t === stage) && (t.scrollTop || t.scrollLeft)) { t.scrollTop = 0; t.scrollLeft = 0; } }, true);
   var touched = false, wasWide = window.innerWidth >= 700;
   ['pointerdown', 'keydown'].forEach(function (ev) { game.addEventListener(ev, function () { touched = true; }, true); });
+  // a scrollbar that comes or goes changes the window's inner width without a resize event: lay out again for it
+  if (window.ResizeObserver) { var cw0 = document.documentElement.clientWidth; new ResizeObserver(function () { var c = document.documentElement.clientWidth; if (c !== cw0) { cw0 = c; clearTimeout(rt); rt = setTimeout(size, 250); } }).observe(document.documentElement); }
   addEventListener('resize', function () {
     clearTimeout(rt);
     rt = setTimeout(function () { var nowWide = window.innerWidth >= 700; if (nowWide !== wasWide) { location.reload(); return; } wasWide = nowWide; size(); }, 250);
@@ -542,20 +576,20 @@
   });
   addEventListener('wheel', function (e) {
     if (Math.abs(e.deltaX) <= Math.abs(e.deltaY) || e.defaultPrevented || inGame(e.target) || !root.contains(e.target)) return;
-    e.preventDefault(); window.scrollBy(0, e.deltaX);
+    e.preventDefault(); wBy(0, e.deltaX);
   }, { passive: false });
   var tx = null, ty = null;
   root.addEventListener('touchstart', function (e) { if (inGame(e.target)) { tx = null; return; } tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
   root.addEventListener('touchmove', function (e) {
     if (tx === null) return;
     var dx = e.touches[0].clientX - tx, dy = e.touches[0].clientY - ty;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 6) { e.preventDefault(); window.scrollBy(0, -dx * 1.4); tx = e.touches[0].clientX; ty = e.touches[0].clientY; }
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 6) { e.preventDefault(); wBy(0, -dx * 1.4); tx = e.touches[0].clientX; ty = e.touches[0].clientY; }
   }, { passive: false });
   root.addEventListener('touchend', function () { tx = ty = null; }, { passive: true });
 
   // the game fills its panel: scaled to fit the panel's width and height, keeping its shape
   var last = 0;
-  function clear(el) { el.style.minHeight = ''; el.style.zoom = ''; el.style.width = cfg.snug ? 'fit-content' : ''; el.style.marginLeft = ''; el.style.marginRight = ''; last = 1; }
+  function clear(el) { el.style.minHeight = ''; el.style.zoom = ''; el.style.width = cfg.snug ? 'fit-content' : ''; if (el.__sqW) el.style.setProperty('width', el.__sqW + 'px', 'important'); el.style.marginLeft = ''; el.style.marginRight = ''; last = 1; }
   // phones (Maurice, 2026-11-13: 'everything should FIT TO SCREEN ... shrinking as it needs to'): the game is scaled to fill
   // the panel's width or height, whichever runs out first; a daily card or a laid-out game (Hold the Wall!, Goma Goons) is
   // first given a width that suits the screen's shape, so it fills the screen instead of a strip of it
@@ -567,16 +601,16 @@
     el.style.width = flow ? (cfg.phoneW || innerW) + 'px' : (cfg.snug ? 'fit-content' : '');
     function measure() {
       var r = el.getBoundingClientRect(), t0 = 1e9, b0 = -1e9;
-      Array.prototype.forEach.call(game.children, function (c) { if (!c.offsetParent) return; var b = c.getBoundingClientRect(); if (!b.height) return; t0 = Math.min(t0, b.top); b0 = Math.max(b0, b.bottom); });
+      Array.prototype.forEach.call(game.children, function (c) { if (!c.offsetParent || bgLayer(c)) return; var b = c.getBoundingClientRect(); if (!b.height) return; t0 = Math.min(t0, b.top); b0 = Math.max(b0, b.bottom); });
       var extra = Math.max(0, (b0 - t0) - r.height);
       return { w: r.width, h: r.height, z: Math.min(innerW / r.width, (roomH - extra) / r.height) };
     }
     var m = measure();
     // a daily card: try a few widths and keep the one that fills the most of the screen while its words stay readable
-    // (drawn at 60% or more); a card whose board grows with its width (Sort the Shelf) keeps its first width
+    // (drawn at 80% or more, so the words stay readable; QA 2026-11-14); a card whose board grows with its width (Sort the Shelf) keeps its first width
     if (flow && !cfg.phoneW && m.z < 0.98) {
       var best = { w: innerW, m: m };
-      [1.15, 1.3, 1.5].forEach(function (k) { el.style.width = (innerW * k).toFixed(1) + 'px'; var mm = measure(); if (Math.min(1, mm.z) >= 0.6 && mm.w * Math.min(1, mm.z) > best.m.w * Math.min(1, best.m.z) + 4) best = { w: innerW * k, m: mm }; });
+      [1.15, 1.3, 1.5].forEach(function (k) { el.style.width = (innerW * k).toFixed(1) + 'px'; var mm = measure(); if (Math.min(1, mm.z) >= 0.8 && mm.w * Math.min(1, mm.z) > best.m.w * Math.min(1, best.m.z) + 4) best = { w: innerW * k, m: mm }; });
       el.style.width = best.w.toFixed(1) + 'px'; m = measure();
     }
     var z = Math.max(0.2, Math.min(3, m.z));
@@ -607,6 +641,7 @@
   function fitLabels() {
     qa('button, .ms-hud > *, .ar-cell, .sg-stat, .tabs > *, .ch-hud, .sd-bar', game).forEach(function (e) {
       if (!e.offsetParent || !e.clientWidth) return;
+      if (e.classList.contains('gs-lifted')) { e.style.fontSize = ''; e.style.zoom = ''; return; }   // a lifted score row wraps instead of shrinking (frame CSS)
       e.style.fontSize = '';
       var f = parseFloat(getComputedStyle(e).fontSize), n = 0;
       e.style.zoom = '';
@@ -616,32 +651,62 @@
     });
   }
   function steadyPause() {
-    qa('button', game).forEach(function (bt) { if (!/^(pause|resume)$/i.test(bt.textContent.trim()) || bt.__gsW) return; var t = bt.textContent; bt.textContent = 'RESUME'; var w = bt.offsetWidth; bt.textContent = t; if (w) { bt.style.minWidth = w + 'px'; bt.__gsW = 1; } });
+    // measured with both words each time the row is laid out (and once the fonts are in), so the button never grows or moves
+    qa('button', game).forEach(function (bt) {
+      if (!/^(pause|resume)$/i.test(bt.textContent.trim()) || !bt.offsetParent) return;
+      var t = bt.textContent, w = 0; bt.style.minWidth = '';
+      ['RESUME', 'PAUSE', 'Resume', 'Pause'].forEach(function (s) { bt.textContent = s; w = Math.max(w, bt.getBoundingClientRect().width); });
+      bt.textContent = t; var k = bt.getBoundingClientRect().width / Math.max(1, bt.offsetWidth) || 1;
+      if (w) bt.style.minWidth = Math.ceil(w / k + 1) + 'px';
+    });
   }
   function fit(fresh) {
     var el = cfg.zoom && q(cfg.zoom, game); if (!el) return;
     if (!wide) { if (fresh === true) fitPhone(el); return; }
     if (fresh === true) clear(el);
-    var gz = parseFloat(game.style.zoom) || 1;
-    var cur = parseFloat(el.style.zoom) || 1, r = el.getBoundingClientRect(); if (!r.width || !r.height) return;
-    var w = r.width / cur / gz, h = r.height / cur / gz;
-    var gs = getComputedStyle(game);
-    var vh = game.clientHeight - parseFloat(gs.paddingTop) - parseFloat(gs.paddingBottom);
-    // everything else in the game panel (score bars, buttons, the champion line) keeps its size; the game takes the rest
-    var kids = Array.prototype.filter.call(game.children, function (c) { return c.offsetParent || getComputedStyle(c).position === 'fixed'; });
-    var t0 = 1e9, b0 = -1e9;
-    kids.forEach(function (c) { var b = c.getBoundingClientRect(); if (!b.height) return; t0 = Math.min(t0, b.top); b0 = Math.max(b0, b.bottom); });
-    var extra = Math.max(0, (b0 - t0) - r.height) / gz;
-    var par = el.parentElement, cs = getComputedStyle(par);
-    var room = wide ? (vw - 64) / gz : Math.min(par.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), game.clientWidth - 32);
-    var z = Math.min(room / w, (vh - extra) / h);
+    var gz = parseFloat(game.style.zoom) || 1, gs = getComputedStyle(game), r, w, h, z, room;
+    function calc() {
+      var cur = parseFloat(el.style.zoom) || 1; r = el.getBoundingClientRect(); if (!r.width || !r.height) return false;
+      w = r.width / cur / gz; h = r.height / cur / gz;
+      var vh = game.clientHeight - parseFloat(gs.paddingTop) - parseFloat(gs.paddingBottom);
+      // everything else in the game panel (score bars, buttons, the champion line) keeps its size; the game takes the rest
+      var kids = Array.prototype.filter.call(game.children, function (c) { return !bgLayer(c) && (c.offsetParent || getComputedStyle(c).position === 'fixed'); });
+      var t0 = 1e9, b0 = -1e9;
+      kids.forEach(function (c) { var b = c.getBoundingClientRect(); if (!b.height) return; t0 = Math.min(t0, b.top); b0 = Math.max(b0, b.bottom); });
+      var extra = Math.max(0, (b0 - t0) - r.height) / gz;
+      var par = el.parentElement, cs = getComputedStyle(par);
+      room = wide ? (vw - 64) / gz : Math.min(par.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), game.clientWidth - 32);
+      z = Math.min(room / w, (vh - extra) / h);
+      return true;
+    }
+    if (!calc()) return;
+    // legible first (Maurice's rule; QA 2026-11-14: Hold the Wall! at 58%, Goma Goons at 88%): a game that would be scaled
+    // down past 95% gets a narrower board instead, so its height drops and its words keep their size
+    if (wide && fresh === true && cfg.squeeze) {
+      var sq = q(cfg.squeeze.sel, game);
+      if (sq) {
+        var setW = function (v) {
+          sq.__sqW = v;
+          if (v) { sq.style.setProperty('width', v + 'px', 'important'); if (sq === el) sq.style.setProperty('min-width', '0px', 'important'); }
+          else { sq.style.removeProperty('width'); sq.style.removeProperty('min-width'); if (sq === el && cfg.snug) el.style.width = 'fit-content'; }
+          return calc();
+        };
+        if (!setW(0)) return;
+        var zBest = z, wBest = 0, from = sq.offsetWidth;
+        for (var sw = from - 20; z < 0.95 && sw >= cfg.squeeze.min; sw -= 20) {
+          if (!setW(sw)) return;
+          if (z > zBest + 0.002) { zBest = z; wBest = sw; } else if (sw < (wBest || from) - 60) break;   // narrowing no longer helps: something else sets the height
+        }
+        if (sq.__sqW !== wBest) setW(wBest);
+      }
+    }
     var phone = !wide;
     z = Math.max(0.2, Math.min(el.matches('.hg-card, #daily-word main') ? 1.15 : 2.2, z));   /* a daily card never balloons when there's little left in it */   // as small as it needs to be to fit, never spilling (Maurice, 2026-11-13)   // a daily puzzle card can grow on phones (Maurice, 2026-11-13)
     if (Math.abs(z - 1) < 0.02) z = 1;
-    if (fresh !== true && (Math.abs(z - last) < 0.05 || el.style.minHeight)) z = last;   // a locked card keeps its size   // small changes after the first fit are left alone (Book Icons pulsed)
+    if (fresh !== true && (el.style.minHeight || (Math.abs(z - last) < 0.05 && !(wide && z < last - 0.01)))) z = last;   // (a game that grew past its frame mid-game always shrinks back inside it)   // a locked card keeps its size   // small changes after the first fit are left alone (Book Icons pulsed)
     if (Math.abs(z - last) >= 0.01) {
       if (z === 1) clear(el);
-      else { el.style.width = w.toFixed(1) + 'px'; el.style.marginLeft = 'auto'; el.style.marginRight = 'auto'; el.style.zoom = z.toFixed(3); last = z; }
+      else { el.style.setProperty('width', w.toFixed(1) + 'px', el.__sqW ? 'important' : ''); el.style.marginLeft = 'auto'; el.style.marginRight = 'auto'; el.style.zoom = z.toFixed(3); last = z; }
       try { window.dispatchEvent(new Event('ma-zoom')); } catch (e) {}   // a game that sizes its own words measures again
     }
     // the game grew past its frame after the page was laid out (a card that changed shape mid-game): lay the row out again,
@@ -681,6 +746,9 @@
     }, 60); }).observe(game, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
   }
   if (window.ResizeObserver) { var el0 = cfg.zoom && q(cfg.zoom, game); if (el0) new ResizeObserver(soon).observe(el0); }
+  // the board changes size when its start screen gives way (Trench Run on phones grew from 233 to 365 wide): the champion
+  // banner follows it, so it is always exactly as wide as the board and touching it (QA 2026-11-14)
+  if (window.ResizeObserver) { var bt = 0, bro = new ResizeObserver(function () { clearTimeout(bt); bt = setTimeout(alignChamp, 60); }); qa(BOARD, game).forEach(function (e) { bro.observe(e); }); }
   // a leaderboard that fills in after its data loads can outgrow its panel: measure again, but only then (never for the game itself)
   if (window.MutationObserver) {
     var rt2 = 0;
@@ -711,7 +779,7 @@
     });
     if (off) size();
   }
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { setTimeout(checkOff, 300); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { setTimeout(checkOff, 300); setTimeout(steadyPause, 350); });
   setTimeout(checkOff, 3000); setTimeout(checkOff, 6000);
   setTimeout(size, 200); setTimeout(size, 1500);
   addEventListener('load', size);

@@ -282,6 +282,8 @@
 @media (max-width:640px){
   #ma-skyduel .sd-wpn{font-size:10px;letter-spacing:.03em;padding:6px 4px}
   #ma-skyduel .sd-wpn small{font-size:10px;letter-spacing:0}
+  /* a long weapon name (Lightning Strike) wraps to two lines inside its button instead of running past the edge */
+  #ma-skyduel .sd-wpn span,#ma-skyduel .sd-wpn small{white-space:normal!important;overflow-wrap:break-word;min-width:0;max-width:100%}
   #ma-skyduel .sd-view .sd-btn{font-size:10px;letter-spacing:.03em;padding:8px 2px}
   #ma-skyduel .sd-pad button{font-size:11px;letter-spacing:.04em}
 }

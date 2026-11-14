@@ -151,7 +151,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
       '#ma-top:hover,#ma-top:focus-visible{background:#c53200}#ma-top:focus-visible{outline:2px solid #a2f590;outline-offset:3px}' +
       '#ma-top img{height:28px;width:auto;display:block;pointer-events:none}' +
       // the sideways sliders keep a bar along the bottom; the button sits above it there
-      'body:has(.lk-prog,.ac-prog,[data-ma-hz]) #ma-top{bottom:calc(max(18px,3svh) + 34px)}' +
+      'body:has(.lk-prog,.ac-prog,.gs-prog,[data-ma-hz]) #ma-top{bottom:calc(max(18px,3svh) + 34px)}' +
       '@media (prefers-reduced-motion:reduce){#ma-top{transition:none}}';
     document.head.appendChild(css);
     var b = document.createElement('button');
@@ -162,7 +162,19 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     });
     document.body.appendChild(b);
     var on = false;
-    function check() { var s = window.scrollY > Math.min(700, innerHeight * 0.9); if (s !== on) { on = s; b.classList.toggle('on', s); } }
+    // phones: it shows only while scrolling back up (or at the very bottom) and tucks away 1.6 s after scrolling stops,
+    // so it never sits on the page's words (Maurice's no-overlap rule; QA 2026-11-14)
+    var lastY = window.scrollY, hideT = 0;
+    function check() {
+      var y = window.scrollY, s = y > Math.min(700, innerHeight * 0.9);
+      if (s && innerWidth < 700) {
+        var bottom = y + innerHeight >= document.documentElement.scrollHeight - 8;
+        s = bottom || y < lastY - 2 || (on && y <= lastY + 2);
+        clearTimeout(hideT); if (s && !bottom) hideT = setTimeout(function () { on = false; b.classList.remove('on'); }, 1600);
+      }
+      lastY = y;
+      if (s !== on) { on = s; b.classList.toggle('on', s); }
+    }
     addEventListener('scroll', check, { passive: true }); check();
   })();
   // A golden bullet (Maurice, 2026-11-12: "when you click something that isn't clickable or a button, the gun shoots a
@@ -277,6 +289,9 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     if (h.classList.contains('shrink')) h.classList.remove('shrink');
     if (window.MutationObserver) new MutationObserver(function () { if (h.classList.contains('shrink')) h.classList.remove('shrink'); }).observe(h, { attributes: true, attributeFilter: ['class'] });
   })();
+  // A game page whose page builder still shows its own menu bar under the game menu (Sky Mines: a 145px bar with the logo
+  // peeking out under the 88px menu on phones; QA 2026-11-14) keeps only the game menu, like every other game page
+  if (ON_GAME) (function () { var s = document.createElement('style'); s.textContent = 'body:has(#hunt-nav) header#header{display:none!important}'; (document.head || document.documentElement).appendChild(s); })();
   (function () { var s = document.createElement('style'); s.textContent = '@media (max-width:900px){#hunt-nav{background:#1a5e41!important;padding:5px 0!important}}' +
     // phones and tablets: the logo on the left and the menu button on the right, like every other page's menu bar (Maurice,
     // 2026-11-13: the logo was missing on Contests, the Arcade, and The Adventure)
@@ -939,7 +954,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
           it = fTpl.cloneNode(true);
           var b = it.querySelector('.header-nav-folder-title'), id = m[1].slice(1), box = it.querySelector('.header-nav-folder-content');
           b.setAttribute('data-href', m[1]); b.setAttribute('aria-controls', id); b.setAttribute('aria-expanded', 'false');
-          if (b.tagName === 'A') b.setAttribute('href', m[1]);
+          if (b.tagName === 'A') b.setAttribute('href', (m[2] && m[2][0] && m[2][0][1]) || m[1]);   // the folder title opens its first page, never the dead /ma-games or /ma-extras (QA 2026-11-14)
           it.querySelector('.header-nav-folder-title-text').textContent = m[0];
           box.id = id; fill(box, m[2]);
         } else { it = lTpl.cloneNode(true); setLink(it.querySelector('a'), m[1], m[0]); }
