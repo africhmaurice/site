@@ -87,6 +87,8 @@
 #px .hearts i.off{background:transparent}
 #px .mate .need{font-size:14px;line-height:1.5}
 #px .mate.turn{border-color:var(--ember);box-shadow:0 0 0 3px var(--ember)}
+/* the one Paraxis is swinging at: a bright ember stroke with a glow, on top of any other state */
+#px .mate.aimed{border-color:#ff4c0f!important;box-shadow:0 0 0 4px #ff4c0f,0 0 22px 6px rgba(255,76,15,.55)!important;position:relative;z-index:1}
 #px .mate.down{background:#d9cfbd}
 #px .mate.down .nm{text-decoration:line-through}
 #px .mate.hit{animation:pxhit .5s}
@@ -1113,7 +1115,8 @@
           if (!fast) e.d4.forEach(function (v, i) {
             d4chain = d4chain.then(function () { say(i ? NAMES[e.d4[i - 1] - 1] + ' is down. Paraxis rolls the twelve-sided die again…' : 'Paraxis rolls the twelve-sided die to pick his target…'); return rollD4(d4Battle, v); }).then(function () { return wait(350); });
           });
-          return d4chain.then(function () { return fast ? null : (say('Paraxis swings at ' + NAMES[e.who] + '…'), die(e.roll)); }).then(function () { pxRes(e); view.hp[e.who] = e.hp; if (e.fumble) view.px = e.px; if (e.hit && !fast) shake(e.who); say(pl); log(pl, e.hit ? 'bad' : e.fumble ? 'good' : ''); paint(); return fast ? null : wait(700); });
+          // the crew member he is swinging at gets a stroke around their card until the swing is done (Maurice, 2026-11-13)
+          return d4chain.then(function () { if (!fast) aim(e.who); return fast ? null : (say('Paraxis swings at ' + NAMES[e.who] + '…'), die(e.roll)); }).then(function () { pxRes(e); view.hp[e.who] = e.hp; if (e.fumble) view.px = e.px; if (e.hit && !fast) shake(e.who); say(pl); log(pl, e.hit ? 'bad' : e.fumble ? 'good' : ''); paint(); return fast ? null : wait(700); }).then(function () { aim(-1); });
         }
         if (e.t === 'round') { view.round = e.round; log('Round ' + e.round + '.'); return null; }
       });
@@ -1134,6 +1137,8 @@
   }
   // HIT / MISS under each crew die once it lands, kept up through Paraxis's turn (Maurice, 2026-11-13)
   function markRes(i, text, cls) { var el = $('px-res' + i); if (el) { el.textContent = text; el.className = 'mres ' + cls; } }
+  // the card Paraxis is swinging at (-1: none)
+  function aim(i) { for (var k = 0; k < 4; k++) { var m = $("px-m" + k); if (m) m.classList.toggle("aimed", k === i); } }
   function clearRes() { for (var i = 0; i < 4; i++) markRes(i, '', ''); }
   // Paraxis's swings, above his dice: his HIT is bad news for the crew (red), his MISS good (green); null clears them
   function pxRes(e) {
