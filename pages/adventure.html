@@ -1260,6 +1260,23 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
   #av .av-live .k,#av .av-box h4,#av .av-box h4 small,#av .av-box small{letter-spacing:.02em}
   #av .avt-rail.avt-two{column-gap:8px}
 }
+/* QA pass 9 (2026-11-14): a crew card's He/She tile sits above its words once the card is too narrow for both side by
+   side, so the words get the card's full width and wrap at spaces only */
+#av .av-mem{flex-wrap:wrap;row-gap:12px}
+#av .av-mem>div:not(.av-pron){flex:1 1 170px;min-width:0}
+#av .av-mem p{overflow-wrap:normal;word-break:normal;hyphens:none}
+/* a box's label and its subtitle share a line when both fit; otherwise the subtitle drops 10px under the label */
+#av .av-box h4{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;column-gap:16px;row-gap:10px}
+#av .av-box h4 small{float:none;margin-top:0;min-width:0}
+/* the transcript link wraps inside its card instead of running off it */
+#av .av-tx summary{width:auto;max-width:100%;overflow-wrap:normal}
+/* the narrowest phones: the player and the crew titles give their words a little more room */
+@media (max-width:340px){
+  #av .av-player{padding:12px 10px;column-gap:10px}
+  #av .av-plabel{letter-spacing:.02em}
+  #av .av-tx summary{letter-spacing:.04em}
+  #av .av-mem .q{letter-spacing:0}
+}
 @media (prefers-reduced-motion:reduce){#av .avt-rail{transition:none}}
 /* motion (2026-11-12): the art behind the hero and every band is its own layer, so it can drift slower than the page
    (data-ma-par); it runs past the band's edges so the drift never shows one */

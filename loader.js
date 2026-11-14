@@ -229,7 +229,9 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
       'html,body,#siteWrapper{background-color:#0b170f!important}' +
       // green words and social icons that were dark green on white turn bright emerald so they read on the dark
       S + ' .sqsrte-text-color--darkAccent,' + S + ' .sqsrte-text-color--accent{color:#3adb97!important}' + S + ' .sqsrte-text-color--black{color:#fff!important}' +
-      S + ' .sqs-svg-icon--social .sqs-use--icon{fill:#3adb97!important}';
+      S + ' .sqs-svg-icon--social .sqs-use--icon{fill:#3adb97!important}' +
+      // home, Meet Maurice (QA pass 9, 2026-11-14): "(no, not in real life)" sits 12px+ under the big heading on desktop
+      '@media (min-width:768px){.fe-block-c27c1f0638154e4aaec1{margin-top:14px}}';
     (document.head || document.documentElement).appendChild(s);
   })();
   // The page's social rows (Maurice, 2026-11-12): every icon from the footer row joins the page's own social links

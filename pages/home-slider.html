@@ -593,6 +593,9 @@ maStart();
   if(window.ResizeObserver){var ro=new ResizeObserver(function(){later();});ro.observe(sl);ro.observe(s);}
   if(document.fonts){if(document.fonts.ready)document.fonts.ready.then(later);if(document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',later);}
   [].forEach.call(s.querySelectorAll('img'),function(im){if(!im.complete)im.addEventListener('load',later);});
+  // first visits (QA pass 9, 2026-11-14): fit once more after the page and its fonts finish loading, and again 600ms on
+  function settle(){later();setTimeout(fit,600);}
+  if(document.readyState==='complete')settle();else addEventListener('load',settle);
 })();
 /* The other slides on phones (QA pass 8, 2026-11-14): when a slide's pieces need more height than the slider has (a
    short phone, or a browser that holds text at 16px or more), they are drawn smaller together, just enough to sit 8px+
@@ -619,7 +622,10 @@ maStart();
   }
   var t=0;function all(){clearTimeout(t);t=setTimeout(function(){slides.forEach(fitOne);},80);}
   all();addEventListener('resize',all);
-  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(all);
+  if(document.fonts){if(document.fonts.ready)document.fonts.ready.then(all);if(document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',all);}
+  // first visits (QA pass 9, 2026-11-14): fit once more after the page finishes loading, and again 600ms on
+  function settle(){all();setTimeout(function(){slides.forEach(fitOne);},600);}
+  if(document.readyState==='complete')settle();else addEventListener('load',settle);
   if(window.ResizeObserver)new ResizeObserver(all).observe(sl);
   [].forEach.call(sl.querySelectorAll('#ma-track img'),function(im){if(!im.complete)im.addEventListener('load',all);});
 })();
