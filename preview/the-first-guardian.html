@@ -339,13 +339,13 @@
       TILT = new T.Quaternion().setFromEuler(new T.Euler(-0.42, 0.3, 0.06));
     }
 
-    function faceTexture(n) {
+    function faceTexture(n, col) {
       var c = document.createElement('canvas'); c.width = c.height = 256;
       var g = c.getContext('2d');
       var grad = g.createLinearGradient(0, 0, 0, 256);
-      grad.addColorStop(0, '#d23a12'); grad.addColorStop(1, '#8e1a06');
+      grad.addColorStop(0, col ? col[0] : '#d23a12'); grad.addColorStop(1, col ? col[1] : '#8e1a06');
       g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
-      g.fillStyle = '#ffe2a8'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillStyle = col ? col[2] : '#ffe2a8'; g.textAlign = 'center'; g.textBaseline = 'middle';
       g.font = '700 ' + (n > 9 ? 78 : 92) + 'px Almarai, Arial, sans-serif';
       g.fillText(n === 6 || n === 9 ? n + '.' : String(n), 128, 150);
       var t = new T.CanvasTexture(c);
@@ -379,9 +379,9 @@
       geo.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
       return geo;
     }
-    function dieMaterials() {
+    function dieMaterials(col) {
       var mats = [];
-      for (var k = 0; k < 20; k++) mats.push(new T.MeshStandardMaterial({ map: faceTexture(numbers[k]), roughness: 0.3, metalness: 0.85, envMapIntensity: 1.2, flatShading: true }));
+      for (var k = 0; k < 20; k++) mats.push(new T.MeshStandardMaterial({ map: faceTexture(numbers[k], col), roughness: 0.3, metalness: 0.85, envMapIntensity: 1.2, flatShading: true }));
       return mats;
     }
 
@@ -407,7 +407,7 @@
       var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
       scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
       var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-3, 5, 5); scene.add(sun);
-      var mesh = new T.Mesh(dieGeometry(), dieMaterials());
+      var mesh = new T.Mesh(dieGeometry(), dieMaterials(COL[id]));
       mesh.quaternion.copy(idle());
       scene.add(mesh);
       var d = { r: r, c2: c2, scene: scene, cam: cam, mesh: mesh, node: node, shadow: node.querySelector('.rc-die-shadow'), raf: 0, y: 0 };
@@ -588,7 +588,10 @@
       return best;
     }
 
+    var COL = {}, MATS2 = {};
     function throwIt(id, n, done) {
+      var o0 = overlay(), ck = COL[id] ? id : '_';
+      if (o0.colKey !== ck) { o0.mesh.material = MATS2[ck] || (MATS2[ck] = dieMaterials(COL[id])); o0.colKey = ck; }
       if (!P) return false;
       // Never a table smaller than a few dice wide, even if the window reports no size (a hidden tab).
       var d = dice[id], o = overlay(), s = slotCenter(id), Wu = Math.max(5, o.w / 2 / o.R), Hu = Math.max(4, o.h / 2 / o.R);
@@ -689,6 +692,7 @@
         }).catch(function () {});
       },
       ready: function (id) { return !!dice[id]; },
+      colors: function (id, col) { COL[id] = col; },
       parts: function () { return T ? { T: T, geometry: dieGeometry, materials: dieMaterials, pose: pose, studio: studio, clack: clack, loadPhysics: loadPhysics, hullShape: hullShape, topFace: topFace, relabel: relabel } : null; },
       // Throw straight away, before the number is known; set it with number() when it arrives.
       throwNow: function (id) { if (calm || !dice[id]) return false; try { return throwIt(id, null, null); } catch (e) { dropThrow(id); return false; } },
@@ -740,6 +744,11 @@
     };
   })();
 
+  // each character's dice (Maurice, 2026-11-13): metal top, metal bottom, numbers. Brand colors: Rune teal, Sparrow violet,
+  // Hale green, Scarlett scarlet; Paraxis (his d20 and the twelve-sided die) dark ink with parchment numbers.
+  var CREW_COL = [['#3adb97', '#1a5e41', '#0b170f'], ['#8a5cf0', '#2d1c53', '#f1eaff'], ['#8fd14f', '#2c6021', '#0b170f'], ['#ff4c0f', '#912501', '#ffe2a8']];
+  var PX_COL = ['#4a5a4f', '#0b170f', '#f3ead9'];
+  Dice.colors('px', PX_COL);
   $('rc-die-px').innerHTML = D20 + '<span class="rc-dn" id="rc-dn-px">20</span><i class="rc-die-shadow"></i><canvas class="rc-die-cv" width="240" height="240"></canvas>';
   Dice.attach('px', $('rc-die-px'), 20);
   // ---- Paraxis's target die: a metal twelve-sided die with each of the crew on three faces (Maurice, 2026-11-13; it was a D4) ----
@@ -759,7 +768,8 @@
     function img(src) { return new Promise(function (ok) { if (!src) return ok(null); var i = new Image(); i.crossOrigin = 'anonymous'; i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
     function face(icon, label) {
       var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d');
-      var grad = g.createLinearGradient(0, 0, 0, 256); grad.addColorStop(0, '#d23a12'); grad.addColorStop(1, '#8e1a06');
+      // Paraxis's die: dark ink metal like his d20
+      var grad = g.createLinearGradient(0, 0, 0, 256); grad.addColorStop(0, '#4a5a4f'); grad.addColorStop(1, '#0b170f');
       g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
       // the icon sits in the middle of the pentagon (the face spans the texture's center, point up)
       if (icon) g.drawImage(icon, 63, 66, 130, 130);
@@ -1050,7 +1060,7 @@
     // every card's die is the same 3D d20 as the vote pages
     NAMES.forEach(function (n, i) {
       var el = $('rc-die-c' + i); el.innerHTML = D20 + '<span class="rc-dn" id="rc-dn-c' + i + '">20</span><i class="rc-die-shadow"></i><canvas class="rc-die-cv" width="240" height="240"></canvas>';
-      Dice.attach('c' + i, el, 20);
+      Dice.colors('c' + i, CREW_COL[i]); Dice.attach('c' + i, el, 20);
     });
   }
   function paint() {
@@ -1077,7 +1087,7 @@
       say('The crew attacks!');
       var atk = lead.filter(function (e) { return e.t === 'atk'; });
       // a real physics throw, all four in random directions; the drawn path if physics can't load
-      var thrown = physThrow(atk.map(function (e) { return { kind: 'd20', n: e.roll, node: $('rc-die-c' + e.who), done: function () { Dice.show('c' + e.who, e.roll); var dn = $('rc-dn-c' + e.who); if (dn) dn.textContent = e.roll; } }; }));
+      var thrown = physThrow(atk.map(function (e) { return { kind: 'd20', who: e.who, n: e.roll, node: $('rc-die-c' + e.who), done: function () { Dice.show('c' + e.who, e.roll); var dn = $('rc-dn-c' + e.who); if (dn) dn.textContent = e.roll; } }; }));
       return thrown ? thrown.then(function (r) { return r === null ? crewToss(atk) : r; }) : crewToss(atk);
     });
     events.forEach(function (e) {
@@ -1139,9 +1149,9 @@
     scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35)); var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-300, 500, 500); scene.add(sun);
     var sc = document.createElement('canvas'); sc.width = sc.height = 128; var sg = sc.getContext('2d'), rg = sg.createRadialGradient(64, 64, 0, 64, 64, 64);
     rg.addColorStop(0, 'rgba(0,0,0,.5)'); rg.addColorStop(1, 'rgba(0,0,0,0)'); sg.fillStyle = rg; sg.fillRect(0, 0, 128, 128);
-    var shTex = new T.CanvasTexture(sc), geo = P.geometry(), mats = P.materials(), dice = [];
+    var shTex = new T.CanvasTexture(sc), geo = P.geometry(), dice = [];
     for (var k = 0; k < 4; k++) {
-      var m = new T.Mesh(geo, mats); m.visible = false; scene.add(m);
+      var m = new T.Mesh(geo, P.materials(CREW_COL[k])); m.visible = false; scene.add(m);
       var s = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: shTex, transparent: true, depthWrite: false })); s.position.z = -200; s.visible = false; scene.add(s);
       dice.push({ mesh: m, shadow: s });
     }
@@ -1161,13 +1171,13 @@
       var runs = list.map(function (e, k) {
         var node = $('rc-die-c' + e.who), b = node.getBoundingClientRect();
         Dice.stop('c' + e.who); node.style.visibility = 'hidden';
-        var d = o.dice[k];
+        var d = o.dice[e.who];
         return { e: e, d: d, node: node, sx: b.left + b.width / 2 - o.w / 2, sy: o.h / 2 - (b.top + b.height / 2),
           ex: (k - (n - 1) / 2) * gap + (Math.random() - 0.5) * R * 0.4, ey: y0 + (Math.random() - 0.5) * R * 0.6,
           q0: new T.Quaternion().setFromEuler(new T.Euler(Math.random() * 6.3, Math.random() * 6.3, Math.random() * 6.3)), q1: P.pose(e.roll),
           axis: new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), delay: k * 60, hits: 0 };
       });
-      o.dice.forEach(function (d, k) { d.mesh.visible = d.shadow.visible = k < n; });
+      o.dice.forEach(function (d, k) { d.mesh.visible = d.shadow.visible = list.some(function (e) { return e.who === k; }); });
       o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
       try { P.clack(0.3); } catch (err) {}
       var dur = 1200, t0 = performance.now();
@@ -1222,8 +1232,8 @@
       var s = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: shTex, transparent: true, depthWrite: false })); s.position.z = -200; s.visible = false; scene.add(s);
       return { mesh: m, shadow: s };
     }
-    var g20 = P.geometry(), m20 = P.materials(), d20 = [];
-    for (var k = 0; k < 4; k++) d20.push(slot(g20, m20));
+    var g20 = P.geometry(), d20 = [];
+    for (var k = 0; k < 4; k++) d20.push(slot(g20, P.materials(CREW_COL[k])));
     phys = { T: T, cv: cv, r: r, scene: scene, cam: cam, d20: d20, d12: Q ? slot(Q.geo, Q.mats) : null, raf: 0 };
     function size() { var w = window.innerWidth, h = window.innerHeight; r.setSize(w, h, false); cam.left = -w / 2; cam.right = w / 2; cam.top = h / 2; cam.bottom = -h / 2; cam.updateProjectionMatrix(); phys.w = w; phys.h = h; phys.R = Math.max(34, Math.min(62, Math.min(w, h) * 0.075)); }
     size(); window.addEventListener('resize', size);
@@ -1306,7 +1316,7 @@
       }
       // play it back
       var pool = o.d20.slice(), used = [];
-      best.forEach(function (u) { u.d = u.it.kind === 'd12' ? o.d12 : pool.shift(); used.push(u.d); u.d.mesh.visible = u.d.shadow.visible = true; u.it.node.style.visibility = 'hidden'; if (!u.rl) u.rl = { g: new T.Quaternion(), ang: 0 }; });
+      best.forEach(function (u) { u.d = u.it.kind === 'd12' ? o.d12 : u.it.who != null ? o.d20[u.it.who] : pool.shift(); used.push(u.d); u.d.mesh.visible = u.d.shadow.visible = true; u.it.node.style.visibility = 'hidden'; if (!u.rl) u.rl = { g: new T.Quaternion(), ang: 0 }; });
       [o.d12].concat(o.d20).forEach(function (d) { if (d && used.indexOf(d) < 0) d.mesh.visible = d.shadow.visible = false; });
       o.cv.style.transition = 'none'; o.cv.style.opacity = '1'; o.cv.style.display = 'block';
       try { P.clack(0.3); } catch (err) {}
