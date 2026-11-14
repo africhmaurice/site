@@ -82,6 +82,15 @@
 /* the die: the same 3D d20 as every vote page (games/redcity.template.html, pulled in by the build) */
 #px{--cream:#f3ead9;--lime:#a2f590}
 #px .rc-die{grid-row:auto!important}
+#px .dice2{display:flex;align-items:center;gap:16px}
+/* the D4: a 3D canvas once three.js is in; until then (or without it) the name it landed on */
+#px .pxd4{position:relative;width:120px;height:120px;display:grid;place-items:center;flex:none}
+#px .pxd4 canvas{position:absolute;inset:0;width:100%;height:100%;display:none}
+#px .pxd4.is3d canvas{display:block}
+#px .pxd4 .d4lab{font-weight:800;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4)}
+#px .pxd4.is3d .d4lab{display:none}
+#px .pxd4.is3d::after{content:"";position:absolute;left:50%;bottom:6px;width:58%;height:12%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.45),transparent);z-index:-1}
+#px .pxd4{z-index:0}
 #px .rc-die .face{fill:#0b170f!important}
 #px .rc-die{grid-row:1/4;position:relative;width:88px;height:88px}
 #px .rc-die .rc-die-cv,#px .rc-die .rc-die-shadow{display:none}
@@ -178,7 +187,7 @@
     </div>
     <div class="crew" id="px-crew"></div>
     <div class="turnbox">
-      <div class="rc-die" id="rc-die-px" aria-hidden="true"></div>
+      <div class="dice2"><div class="rc-die" id="rc-die-px" aria-hidden="true"></div><div class="pxd4" id="px-d4" aria-hidden="true"><canvas></canvas><span class="d4lab">D4</span></div></div>
       <div class="turntxt">
         <p class="kick" id="px-turnk">ROUND 1</p>
         <p class="say" id="px-say" aria-live="polite"></p>
@@ -201,6 +210,7 @@
     <h3>Who He Swings At: D4s</h3>
     <p class="quiet">1 Rune · 2 Sparrow · 3 Hale · 4 Scarlett</p>
     <p class="packs" id="px-bank4-n">Banked: …</p>
+    <div class="pxd4" id="px-d4cap" aria-hidden="true"><canvas></canvas><span class="d4lab">D4</span></div>
     <div class="acts"><button type="button" class="btn" id="px-bank41">ROLL ONE D4</button><button type="button" class="btn alt" id="px-bank410">ROLL TEN D4S</button></div>
     <div class="bank" id="px-bank4"></div>
     <p class="msg" id="px-bank4-msg"></p>
@@ -680,6 +690,107 @@
 
   $('rc-die-px').innerHTML = D20 + '<span class="rc-dn" id="rc-dn-px">20</span><i class="rc-die-shadow"></i><canvas class="rc-die-cv" width="240" height="240"></canvas>';
   Dice.attach('px', $('rc-die-px'), 20);
+  // ---- the D4: Paraxis's target die, a metal tetrahedron with the crew's four icons (Maurice, 2026-11-13) ----
+  // Same red metal and studio light as the d20 above; it tumbles, then bounces and settles with the rolled face to the viewer.
+  var D4 = (function () {
+    var T = null, ready = false, nodes = [], targets = [], TILT = null, mats = null, geo = null;
+    function three() {
+      if (window.THREE) return Promise.resolve(window.THREE);
+      return new Promise(function (ok, no) {
+        var had = document.querySelector('script[src*="three.min.js"]');
+        var s = had || document.createElement('script');
+        var t = setInterval(function () { if (window.THREE) { clearInterval(t); ok(window.THREE); } }, 150);
+        setTimeout(function () { clearInterval(t); window.THREE ? ok(window.THREE) : no(); }, 15000);
+        if (!had) { s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'; s.async = true; document.head.appendChild(s); }
+      });
+    }
+    function img(src) { return new Promise(function (ok) { if (!src) return ok(null); var i = new Image(); i.crossOrigin = 'anonymous'; i.onload = function () { ok(i); }; i.onerror = function () { ok(null); }; i.src = src; }); }
+    function face(icon, label) {
+      var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d');
+      var grad = g.createLinearGradient(0, 0, 0, 256); grad.addColorStop(0, '#d23a12'); grad.addColorStop(1, '#8e1a06');
+      g.fillStyle = grad; g.fillRect(0, 0, 256, 256);
+      // the icon sits in the middle of the face's triangle (top 128,13; bottom corners 13,205 and 243,205)
+      if (icon) g.drawImage(icon, 66, 86, 124, 124);
+      else { g.fillStyle = '#ffe2a8'; g.textAlign = 'center'; g.font = '800 30px Almarai, Arial, sans-serif'; g.fillText(label, 128, 160); }
+      var t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; return t;
+    }
+    function glow(icon) {
+      var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d'); g.fillStyle = '#000'; g.fillRect(0, 0, 256, 256);
+      if (icon) g.drawImage(icon, 66, 86, 124, 124);
+      var t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; return t;
+    }
+    function studio() {
+      var c = document.createElement('canvas'); c.width = 512; c.height = 256; var g = c.getContext('2d'), sky = g.createLinearGradient(0, 0, 0, 256);
+      sky.addColorStop(0, '#fff6e8'); sky.addColorStop(0.45, '#8c6a58'); sky.addColorStop(0.55, '#3a2418'); sky.addColorStop(1, '#0c0706');
+      g.fillStyle = sky; g.fillRect(0, 0, 512, 256);
+      [[110, 70, 70], [360, 60, 55], [250, 30, 40]].forEach(function (s) { var l = g.createRadialGradient(s[0], s[1], 0, s[0], s[1], s[2]); l.addColorStop(0, 'rgba(255,255,255,1)'); l.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = l; g.fillRect(0, 0, 512, 256); });
+      var tex = new T.CanvasTexture(c); tex.mapping = T.EquirectangularReflectionMapping; tex.encoding = T.sRGBEncoding; return tex;
+    }
+    function setup(icons) {
+      geo = new T.TetrahedronGeometry(1, 0);
+      var p = geo.getAttribute('position'), uv = [];
+      geo.clearGroups();
+      for (var f = 0; f < 4; f++) {
+        uv.push(0.5, 0.95, 0.05, 0.2, 0.95, 0.2); geo.addGroup(f * 3, 3, f);
+        var a = new T.Vector3().fromBufferAttribute(p, f * 3), b = new T.Vector3().fromBufferAttribute(p, f * 3 + 1), c = new T.Vector3().fromBufferAttribute(p, f * 3 + 2);
+        var mid = a.clone().add(b).add(c).divideScalar(3), z = mid.clone().normalize(), y = a.clone().sub(mid).normalize(), x = new T.Vector3().crossVectors(y, z);
+        targets[f] = new T.Quaternion().setFromRotationMatrix(new T.Matrix4().makeBasis(x, y, z).transpose());
+      }
+      geo.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+      mats = icons.map(function (im, k) { return new T.MeshStandardMaterial({ map: face(im, NAMES[k]), emissive: 0xffffff, emissiveMap: glow(im), emissiveIntensity: 0.75, roughness: 0.3, metalness: 0.85, envMapIntensity: 1.2, flatShading: true }); });
+      TILT = new T.Quaternion().setFromEuler(new T.Euler(-0.5, 0.42, 0.05));
+    }
+    function build(node) {
+      var cv = node.querySelector('canvas'), r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+      r.outputEncoding = T.sRGBEncoding; r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); r.setSize(cv.clientWidth || 120, cv.clientHeight || 120, false);
+      var scene = new T.Scene(), cam = new T.PerspectiveCamera(30, 1, 0.1, 50); cam.position.set(0, 0, 4.6); cam.lookAt(0, 0, 0);
+      var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
+      scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35)); var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-3, 5, 5); scene.add(sun);
+      var mesh = new T.Mesh(geo, mats); mesh.quaternion.copy(pose(0)); scene.add(mesh);
+      var d = { r: r, scene: scene, cam: cam, mesh: mesh, node: node, raf: 0, y: 0 }; draw(d); return d;
+    }
+    function pose(k) { return targets[k].clone().premultiply(TILT); }
+    function draw(d) { d.mesh.position.y = d.y; d.r.render(d.scene, d.cam); }
+    function stop(d) { if (d.raf) cancelAnimationFrame(d.raf); d.raf = 0; }
+    var api = {
+      attach: function (node, iconSrcs) {
+        var rec = { node: node, d: null }; nodes.push(rec);
+        three().then(function (t) { T = t; return Promise.all(iconSrcs.map(img)); }).then(function (icons) {
+          if (!geo) setup(icons); rec.d = build(node); node.classList.add('is3d'); ready = true;
+        }).catch(function () {});
+        return rec;
+      },
+      ready: function (rec) { return !!(rec && rec.d); },
+      // tumbling until the number is known
+      spin: function (rec) {
+        var d = rec && rec.d; if (!d) return; stop(d);
+        var axis = new T.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(), last = performance.now(), start = last; d.axis = axis;
+        (function frame(now) { var dt = Math.min(0.05, (now - last) / 1000); last = now;
+          d.mesh.quaternion.premultiply(new T.Quaternion().setFromAxisAngle(axis, 12 * dt)); d.y = Math.abs(Math.sin((now - start) / 110)) * 0.3; draw(d); d.raf = requestAnimationFrame(frame); })(last);
+      },
+      // three bounces and it settles with face n (1 Rune .. 4 Scarlett) toward the viewer
+      land: function (rec, n, done) {
+        var d = rec && rec.d; if (!d) return done && done(); stop(d);
+        var q0 = d.mesh.quaternion.clone(), q1 = pose(n - 1), axis = d.axis || new T.Vector3(1, 0, 0), t0 = performance.now(), dur = 1000;
+        (function frame(now) { var t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 3), q = q0.clone().slerp(q1, e);
+          q.premultiply(new T.Quaternion().setFromAxisAngle(axis, (1 - e) * 7)); d.mesh.quaternion.copy(q);
+          d.y = Math.abs(Math.sin(Math.PI * 3.5 * t)) * 0.7 * Math.pow(1 - t, 2); draw(d);
+          if (t < 1) d.raf = requestAnimationFrame(frame); else { d.raf = 0; d.mesh.quaternion.copy(q1); d.y = 0; draw(d); if (done) done(); } })(t0);
+      }
+    };
+    return api;
+  })();
+  var ICONS = ['rune', 'sparrow', 'hale', 'scarlett'].map(function (k) { return (DATA.icons || {})[k]; });
+  var d4Battle = D4.attach($('px-d4'), ICONS);
+  if (PREVIEW) window.__pxD4 = function (n) { return rollD4(d4Battle, n); };   // for checking each face on a preview
+  // roll the D4 to n; without 3D it just shows the name
+  function rollD4(rec, n) {
+    return new Promise(function (res) {
+      var lab = rec.node.querySelector('.d4lab'); if (lab) lab.textContent = NAMES[n - 1];
+      if (!D4.ready(rec)) return setTimeout(res, 500);
+      D4.spin(rec); setTimeout(function () { D4.land(rec, n, res); }, 420);
+    });
+  }
   // A roll on the die: 'thrown' means it left the card when the button was pressed and only needs its number,
   // 'spun' means it is tumbling in the card; otherwise (Paraxis's rolls) it is thrown and lands on n.
   function rollDie(n, pre) {
@@ -820,7 +931,12 @@
         if (e.t === 'pxturn') { busy = true; say('Paraxis attacks!'); if (!fast) paint(); return fast ? null : wait(700); }
         if (e.t === 'px') {
           var pl = 'Paraxis swings at ' + NAMES[e.who] + ' (D4: ' + e.d4.join(', then ') + ') and rolls ' + e.roll + '. ' + (e.hit ? (e.crit ? 'A natural 20! He hits twice. ' : 'A hit! ') + NAMES[e.who] + (e.hp <= 0 ? ' is down.' : ' has ' + e.hp + ' left.') : 'He needed ' + e.need + '. A miss.') + (e.fumble ? ' A 1! Paraxis takes a hit himself.' : '');
-          return (fast ? Promise.resolve() : (say('Paraxis swings at ' + NAMES[e.who] + '…'), die(e.roll))).then(function () { view.hp[e.who] = e.hp; if (e.fumble) view.px = e.px; if (e.hit && !fast) shake(e.who); say(pl); log(pl, e.hit ? 'bad' : e.fumble ? 'good' : ''); paint(); return fast ? null : wait(700); });
+          // the D4 first: who he swings at (one that lands on someone who is down moves on to the next)
+          var d4chain = Promise.resolve();
+          if (!fast) e.d4.forEach(function (v, i) {
+            d4chain = d4chain.then(function () { say(i ? NAMES[e.d4[i - 1] - 1] + ' is down. Paraxis rolls the D4 again…' : 'Paraxis rolls the D4 to pick his target…'); return rollD4(d4Battle, v); }).then(function () { return wait(350); });
+          });
+          return d4chain.then(function () { return fast ? null : (say('Paraxis swings at ' + NAMES[e.who] + '…'), die(e.roll)); }).then(function () { view.hp[e.who] = e.hp; if (e.fumble) view.px = e.px; if (e.hit && !fast) shake(e.who); say(pl); log(pl, e.hit ? 'bad' : e.fumble ? 'good' : ''); paint(); return fast ? null : wait(700); });
         }
         if (e.t === 'round') { view.round = e.round; log('Round ' + e.round + '.'); return null; }
       });
@@ -910,7 +1026,17 @@
       $(id + '1').disabled = $(id + '10').disabled = res.bank.length >= size;
       $(id + '-msg').textContent = res.added && res.added.length ? 'You rolled ' + res.added.join(', ') + '.' : res.bank.length >= size ? 'All ' + size + ' ' + what + ' are banked.' : '';
     };
-    var bank = function (die, n) { $((die === 'd4' ? 'px-bank4' : 'px-bank') + '-msg').textContent = n ? 'Rolling…' : ''; send({ action: 'pxbank', captain: CAPTAIN, n: n, die: die }).then(function (res) { showBank(die, res); }); };
+    var d4Cap = D4.attach($('px-d4cap'), ICONS);
+    var bank = function (die, n) {
+      $((die === 'd4' ? 'px-bank4' : 'px-bank') + '-msg').textContent = n ? 'Rolling…' : '';
+      // the D4 tumbles while the roll is on its way, then lands on the last one rolled
+      if (die === 'd4' && n && D4.ready(d4Cap)) D4.spin(d4Cap);
+      send({ action: 'pxbank', captain: CAPTAIN, n: n, die: die }).then(function (res) {
+        var last = die === 'd4' && res && res.ok && res.added && res.added[res.added.length - 1];
+        if (!last) { showBank(die, res); return; }
+        rollD4(d4Cap, last).then(function () { showBank(die, res); });
+      });
+    };
     $('px-bank1').onclick = function () { bank('d20', 1); }; $('px-bank10').onclick = function () { bank('d20', 10); };
     $('px-bank41').onclick = function () { bank('d4', 1); }; $('px-bank410').onclick = function () { bank('d4', 10); };
     bank('d20', 0); bank('d4', 0);
