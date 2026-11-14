@@ -180,6 +180,29 @@
         items.push({ type: 'fly', el: c, ref: c, dir: dir, i: i, x: side, home: home });
       });
     });
+    // data-ma-from="ul d ur" on a group (Maurice, 2026-11-14: "have things flying in from everywhere as you go"): each
+    // child flies in from its own direction, taken from the list in turn (l, r, u, d, or a corner: ul, ur, dl, dr),
+    // turning and growing a little on the way, one after another. data-ma-in="dir" flies the piece itself (a heading
+    // still decodes as well). Phones get short travel, mostly up and down with a small sideways move. Like every
+    // piece, it never crosses the side of the screen and settles in place once the page stops.
+    function fromItem(c, dir, i) {
+      var r = c.getBoundingClientRect(), d = String(dir || 'd');
+      items.push({ type: 'from', el: c, ref: c, i: i, hx: /l/.test(d) ? -1 : /r/.test(d) ? 1 : 0, hy: /u/.test(d) ? -1 : /d/.test(d) ? 1 : 0,
+        home: window.scrollY < 10 && r.top < innerHeight && r.bottom > 0 });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#page [data-ma-from]'), function (g) {
+      var dirs = (g.getAttribute('data-ma-from') || 'd').split(/\s+/).filter(Boolean), n = 0;
+      Array.prototype.forEach.call(g.children, function (c) {
+        if (!(c.offsetWidth > 0) || /^(SCRIPT|STYLE|TEMPLATE)$/.test(c.tagName)) return;
+        if (mark(c)) fromItem(c, dirs[n % dirs.length], n);
+        n++;
+      });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#page [data-ma-in]'), function (el) {
+      if (el.__maIn) return;
+      el.__maIn = 1;
+      fromItem(el, el.getAttribute('data-ma-in'), 0);
+    });
     Array.prototype.forEach.call(document.querySelectorAll('#page [data-ma-pop]'), function (g) {
       var slow = g.getAttribute('data-ma-pop') === 'slow', n = g.children.length;
       Array.prototype.forEach.call(g.children, function (c, i) { if (c.offsetWidth > 0 && mark(c)) items.push({ type: 'pop', el: c, ref: c, i: i, slow: slow, n: n }); });
@@ -474,7 +497,7 @@
   // comes all the way in while scrolling is done the same way, so nothing ever plays backward out of sight.
   // Anything already on the first screen when the page opens is done from the start, in its place.
   var untouched = window.scrollY < 10, scrolling = false, idleT = 0, idlers = [];
-  var SETTLE = /^(rise|card|panel|pop|wipe|stag|fly|float|scatter)$/;
+  var SETTLE = /^(rise|card|panel|pop|wipe|stag|fly|float|scatter|from)$/;
   // The smooth wheel glide takes a second or more to creep its last few pixels; the page counts as stopped once it
   // moves slower than about 4 px a frame (240 px a second), so pieces don't wait for that tail.
   var lastSY = window.scrollY, lastST = 0;
@@ -568,7 +591,7 @@
     var live = items.map(function (it) { return !it.done || it.type === 'float' || !!it.img; });
     var rects = items.map(function (it, k) { return live[k] ? it.ref.getBoundingClientRect() : null; });
     var drawn = items.map(function (it, k) { return live[k] && !it.done && SETTLE.test(it.type) ? it.el.getBoundingClientRect() : null; });
-    var rbs = items.map(function (it) { return !it.done && /^(fly|pop|stag|scatter)$/.test(it.type) ? restBox(it.el) : null; });
+    var rbs = items.map(function (it) { return !it.done && /^(fly|pop|stag|scatter|from)$/.test(it.type) ? restBox(it.el) : null; });
     // how far something has come in, from s (where it starts) over span; anything that can't scroll that far up
     // (the end of the page) finishes as the page bottoms out
     function prog(r, s, span) {
@@ -649,6 +672,23 @@
         put(it.el, 'opacity', fp < 1 ? (0.15 + 0.85 * fp).toFixed(3) : '');
         // a piece takes taps once it is mostly in its slot (Maurice, 2026-11-13: 'make the dossier so you can click on them
         // when they're visible on the screen'); the cut-off part never takes a tap meant for anything around it
+        put(it.el, 'pointerEvents', p < 0.5 ? 'none' : '');
+        return;
+      }
+      if (it.type === 'from') {
+        // in place by the time it is about halfway up the screen, a small stagger along the group
+        var st3 = (it.i % 3) * 0.06;
+        p = it.home ? 1 : ease(clamp((prog(R, vh * 1.02, vh * 0.55) - st3) / (1 - st3)));
+        if (gate(it, p, R.top, R.bottom, vh)) return;
+        var ph = innerWidth < 768, u3 = 1 - p;
+        var fx = it.hx * u3 * (ph ? 24 : Math.min(innerWidth * 0.3, 360)), fy = it.hy * u3 * (ph ? 70 : Math.min(vh * 0.3, 220));
+        // wide pieces barely turn, so a long paragraph never swings across its neighbors
+        var turn = (it.hx || (it.i % 2 ? 1 : -1)) * u3 * (ph ? 4 : 10) * Math.min(1, 260 / Math.max(1, R.width));
+        f = fitX(R, R.width / 2, R.height / 2, 1 - u3 * (ph ? 0.08 : 0.2), turn, fx, 0, 0);
+        put(it.el, 'translate', p < 1 ? (fx + f.dx).toFixed(1) + 'px ' + fy.toFixed(1) + 'px' : '');
+        put(it.el, 'rotate', p < 1 && f.rot ? f.rot.toFixed(2) + 'deg' : '');
+        put(it.el, 'scale', p < 1 ? f.s.toFixed(3) : '');
+        put(it.el, 'opacity', p < 1 ? (0.1 + 0.9 * p).toFixed(3) : '');
         put(it.el, 'pointerEvents', p < 0.5 ? 'none' : '');
         return;
       }
