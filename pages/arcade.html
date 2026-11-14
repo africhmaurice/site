@@ -371,7 +371,9 @@
   // where the row can stop with no tile cut at the screen's left edge: a group's or a tile's left edge lined up with the row's
   // side room, where no other tile crosses (QA 2026-11-14: the arrows stopped partway through tiles on phones)
   function stopsClean() {
-    if (cw >= 700) return [0, span].concat(q('.ac-grp', track).map(function (g) { return Math.round(g.offsetLeft - (parseFloat(g.style.marginLeft) || 0)); }).filter(function (v) { return v > 0 && v < span; })).sort(function (a, b) { return a - b; });
+    // (a group's stop closer to the end than the row's side room is dropped, since the end shows that group whole: the last arrow press
+    // moved the row 6px; QA 2026-11-14)
+    if (cw >= 700) return [0, span].concat(q('.ac-grp', track).map(function (g) { return Math.round(g.offsetLeft - (parseFloat(g.style.marginLeft) || 0)); }).filter(function (v) { return v > 0 && v < span - (parseFloat(getComputedStyle(track).paddingLeft) || 24); })).sort(function (a, b) { return a - b; });
     var pad = parseFloat(getComputedStyle(track).paddingLeft) || 24, out = [0, span];
     var edges = q('.ac-grp', track).map(function (g) { return g.offsetLeft; }).concat(tiles.map(function (t) { return t.left; }));
     edges.forEach(function (e) {
@@ -381,11 +383,15 @@
     });
     return out.sort(function (a, b) { return a - b; }).filter(function (v, i, a) { return !i || v - a[i - 1] > 2; });
   }
-  function rowTo(tx) { var ty = y0 + (tx / Math.max(1, span)) * (y1 - y0); if (window.maLenis && window.maLenis.scrollTo) window.maLenis.scrollTo(ty); else glideTo(ty); }
+  // a press while the row is still gliding counts from where it's headed, so the next press never moves it the last few pixels to
+  // the same stop (QA 2026-11-14: the last arrow press at 1440 moved the row 6px, then the arrow went away)
+  var aim = 0, aimAt = 0;
+  function from(dir) { return Date.now() - aimAt < 2000 && (aim - x) * dir > 0 ? aim : x; }
+  function rowTo(tx) { aim = tx; aimAt = Date.now(); var ty = y0 + (tx / Math.max(1, span)) * (y1 - y0); if (window.maLenis && window.maLenis.scrollTo) window.maLenis.scrollTo(ty); else glideTo(ty); }
   function forward() {   // about one screen further along the row, onto a stop where nothing is cut at the left
-    var pad = parseFloat(getComputedStyle(track).paddingLeft) || 24, reach = x + cw - 2 * pad, st = stopsClean(), tx = -1;
-    st.forEach(function (v) { if (v > x + 8 && v <= reach) tx = v; });
-    if (tx < 0) st.forEach(function (v) { if (tx < 0 && v > x + 8) tx = v; });
+    var x0 = from(1), pad = parseFloat(getComputedStyle(track).paddingLeft) || 24, reach = x0 + cw - 2 * pad, st = stopsClean(), tx = -1;
+    st.forEach(function (v) { if (v > x0 + 8 && v <= reach) tx = v; });
+    if (tx < 0) st.forEach(function (v) { if (tx < 0 && v > x0 + 8) tx = v; });
     if (tx >= 0) rowTo(Math.min(span, tx));
   }
   hint.addEventListener('click', forward);
@@ -393,9 +399,9 @@
   var back = document.createElement('button'); back.type = 'button'; back.className = 'ac-back'; back.setAttribute('aria-label', 'Scroll back');
   back.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>'; hint.parentNode.appendChild(back);
   back.addEventListener('click', function () {
-    var pad = parseFloat(getComputedStyle(track).paddingLeft) || 24, reach = x - (cw - 2 * pad), st = stopsClean(), tx = -1;
-    st.slice().reverse().forEach(function (v) { if (v < x - 8 && v >= reach) tx = v; });
-    if (tx < 0) st.slice().reverse().forEach(function (v) { if (tx < 0 && v < x - 8) tx = v; });
+    var x0 = from(-1), pad = parseFloat(getComputedStyle(track).paddingLeft) || 24, reach = x0 - (cw - 2 * pad), st = stopsClean(), tx = -1;
+    st.slice().reverse().forEach(function (v) { if (v < x0 - 8 && v >= reach) tx = v; });
+    if (tx < 0) st.slice().reverse().forEach(function (v) { if (tx < 0 && v < x0 - 8) tx = v; });
     rowTo(Math.max(0, tx));
   });
   // phones: when the scrolling stops partway through the row, it settles onto the nearest stop, so no tile is left cut

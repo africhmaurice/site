@@ -378,7 +378,8 @@
     // the goma rests on its card, but the dotted trail starts just under the picker, so neither the line nor the walking
     // goma ever runs over the other cards (QA 2026-11-14)
     cardPt = [offLeft(card) + card.offsetWidth / 2, offTop(card) + card.offsetHeight * 0.42];
-    var start = [cardPt[0], inBottom(secs[0]) + gap + size * 0.8];
+    // (plus the 4px the goma bobs up and down, so it stays 12px+ clear of the last row of cards; QA pass 5)
+    var start = [cardPt[0], inBottom(secs[0]) + gap + 4 + size * 0.8];
     var pts = [start], px = start[0];
     startY = start[1]; startCard = card; startAt = offTop(card) + ',' + offLeft(card);
     marks = [];

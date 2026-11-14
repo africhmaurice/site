@@ -152,6 +152,9 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
       '#ma-top img{height:28px;width:auto;display:block;pointer-events:none}' +
       // the sideways sliders keep a bar along the bottom; the button sits above it there
       'body:has(.lk-prog,.ac-prog,.gs-prog,[data-ma-hz]) #ma-top{bottom:calc(max(18px,3svh) + 34px)}' +
+      // game pages (QA 2026-11-14): wide screens: down beside the bar, which ends short of it, so it never covers a panel's corner;
+      // phones: not shown (the row has its own arrows, and it sat on the Key's border and over the bar)
+      '@media (min-width:700px){body:has(.gs-prog) #ma-top{bottom:20px}}@media (max-width:699px){body:has(.gs-prog) #ma-top{display:none!important}}' +
       '@media (prefers-reduced-motion:reduce){#ma-top{transition:none}}';
     document.head.appendChild(css);
     var b = document.createElement('button');
@@ -298,7 +301,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     'html body #hunt-nav,html body #header,html body #header .header-background,html body #header.shrink .header-background{background:#0b170f!important;background-color:#0b170f!important;opacity:1!important;backdrop-filter:none!important}' +   // the menu bar is ink from the start, on every screen (Maurice, 2026-11-13: 'always active ... easier on the eyes')
     '@media (max-width:1100px){html body #hunt-nav{display:flex!important;align-items:center;justify-content:space-between;padding:10px 20px!important}' +
     'html body #hunt-nav .mn-row{display:flex!important;flex:none;max-width:none;margin:0!important;justify-content:flex-start!important}html body #hunt-nav .mn-row .mn-logo{margin:0!important}html body #hunt-nav .mn-row .mn-right{display:none!important}' +
-    'html body #hunt-nav .mn-logo img{width:clamp(84px,24vw,112px)!important}html body #hunt-nav .mn-burger{display:flex!important;margin:0!important}}'; (document.head || document.documentElement).appendChild(s); })();
+    'html body #hunt-nav .mn-logo img{width:clamp(93.6px,24vw,112px)!important}html body #hunt-nav .mn-burger{display:flex!important;margin:0!important}}'; (document.head || document.documentElement).appendChild(s); })();
   // No strip above the footer (Maurice, 2026-11-12): on wide screens Squarespace stretches a page's one code block
   // taller than the page inside it, and the section color showed as a band above the footer. The block now ends
   // where the page ends.

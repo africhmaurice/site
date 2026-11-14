@@ -449,15 +449,32 @@
   }
   function put(el, prop, v) { if (el['__ma_' + prop] !== v) { el['__ma_' + prop] = v; el.style[prop] = v; } }
 
+  // Anything already on the first screen when the page opens shows in its place, at rest (QA 2026-11-14: a stat card
+  // at the bottom of a phone screen sat half-way through its entrance, small, tilted, and faded, until the reader
+  // scrolled). It stays put until it has scrolled out of sight above; after that it moves with the scroll like the rest.
+  var untouched = window.scrollY < 10, HOMES = /^(rise|card|panel|pop|wipe|stag|float)$/;
+  addEventListener('scroll', function () { if (window.scrollY > 10) untouched = false; }, { passive: true });
+  function settleHome(it, r, vh) {
+    if (it.type === 'fly' || !HOMES.test(it.type) || (it.type === 'pop' && it.slow)) return false;
+    var box = it.type === 'card' ? it.b.getBoundingClientRect() : r;
+    // a popping piece is drawn smaller around its middle, so its real top is found from its middle and its own height
+    var top = it.type === 'pop' ? (box.top + box.bottom) / 2 - it.el.offsetHeight / 2 : box.top;
+    var bottom = it.type === 'pop' ? top + it.el.offsetHeight : box.bottom;
+    if (untouched && !it.home && box.height > 0 && top < vh && bottom > 0) it.home = true;
+    else if (it.home && bottom < 0) it.home = false;
+    return !!it.home;
+  }
+
   // One pass: read every position first, then write, so the page never measures something it just moved.
   function paint() {
     var vh = innerHeight, moving = false, doc = document.documentElement;
     var max = doc.scrollHeight - vh;
     put(bar, 'transform', 'scaleX(' + (max > 0 ? clamp(scrollY / max) : 0).toFixed(4) + ')');
-    var rects = items.map(function (it) { return it.ref.getBoundingClientRect(); });
+    var rects = items.map(function (it) { return it.ref.getBoundingClientRect(); }), homeNow = false;
     // how far something has come in, from s (where it starts) over span; anything that can't scroll that far up
     // (the end of the page) finishes as the page bottoms out
     function prog(r, s, span) {
+      if (homeNow) return 1;
       var end = Math.max(s - span, r.top - (max - scrollY));
       return s - end <= 1 ? 1 : clamp((s - r.top) / (s - end));
     }
@@ -480,6 +497,7 @@
     });
     items.forEach(function (it, k) {
       var r = rects[k], p, q;
+      homeNow = settleHome(it, r, vh);
       if (it.type === 'hero') {
         p = clamp(-r.top / r.height);
         // it used to shrink as the page scrolled, which opened a dark gap around it that looked like a mistake
@@ -617,7 +635,7 @@
       }
       if (it.type === 'card') {
         q = Math.max(prog(r, vh * 0.95, vh * 0.45), full(it));
-        p = ease(clamp((q - it.i * 0.08) / 0.62));
+        p = homeNow ? 1 : ease(clamp((q - it.i * 0.08) / 0.62));
         var cc = cols[it.key], o = own[k];
         put(it.el, 'transformOrigin', ((cc.l + cc.r) / 2 - o.left).toFixed(1) + 'px ' + ((cc.t + cc.b) / 2 - o.top).toFixed(1) + 'px');
         put(it.el, 'transform', p < 1 ? 'perspective(700px) translate3d(0,' + ((1 - p) * 40).toFixed(1) + 'px,0) rotateX(' + ((1 - p) * 18).toFixed(2) +

@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
-<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=4" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=3"></script>
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=5" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=4"></script>
 <!-- ============================================================
      GOMA GOONS (was Sky Duel, then Mortar Mayhem / Mortar Madness; renamed 11/2) - a turn-based artillery game.
      Lives at /sky-fishing (page address kept so the Act Three riddle card link still works;
@@ -834,7 +834,7 @@ var ArcadeCard = (function () {
   var panel=$('.sd-panel'),ph=$('.sd-ph'),pnote=$('.sd-note'),goBtn=$('.sd-go'),altBtn=$('.sd-alt'),wpnEl=$('.sd-weapons');
   var modesEl=$('.sd-modes'),pickEl=$('.sd-pick'),shopEl=$('.sd-shop'),upsEl=$('.sd-ups'),coins2El=$('.sd-coins2'),ovBtn=$('.sd-ov'),findBtn=$('.sd-find');
   var padEl=$('.sd-pad'),bL=$('.sd-l'),bR=$('.sd-r'),bJ=$('.sd-j'),bN=$('.sd-next'),bF=$('.sd-fire');
-  var W=WW,H=WW,VW=960,VH=540,DPR=1,narrow=false,FS=16,HFS=12;
+  var W=WW,H=WW,VW=960,VH=540,DPR=1,narrow=false,FS=16,HFS=12,KS=0,MINF=0,drawN=0;
   var MAP=null,usingMap=false,liq=new Uint8Array(1),lc=document.createElement('canvas'),lx=lc.getContext('2d'),mini=document.createElement('canvas'),miniDirty=true,miniT=0;
   var solid=new Uint8Array(1),crew=[],proj=[],fx=[],ammo=[[],[]],turnIdx=[0,0];
   var phase='panel',paused=false,level=1,score=0,finalScore=null,runFrom=1,wind=0,team=0,active=null,weapon=0,myWeapon=0,walkLeft=WALK,jumped=false,walkDir=0;
@@ -1515,8 +1515,8 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
   }
   function drawHud(){
     cx.font='800 '+FS+'px Almarai,sans-serif';cx.textBaseline='alphabetic';
-    cx.textAlign='left';cx.fillStyle='#fffffe';if(narrow&&mode==='ffa')cx.font='800 '+Math.round(FS*.75)+'px Almarai,sans-serif';cx.fillText(mode==='ffa'?'FREE-FOR-ALL':'LEVEL '+level,16,FS+12);cx.font='800 '+FS+'px Almarai,sans-serif';
-    if(canAct()){var my=FS*2+22;cx.font='800 '+Math.round(FS*.8)+'px Almarai,sans-serif';cx.fillText('MOVES',16,my);var mx=16+cx.measureText('MOVES').width+10,mw=narrow?90:70;
+    cx.textAlign='left';cx.fillStyle='#fffffe';if(narrow&&mode==='ffa')cx.font='800 '+Math.max(MINF,Math.round(FS*.75))+'px Almarai,sans-serif';cx.fillText(mode==='ffa'?'FREE-FOR-ALL':'LEVEL '+level,16,FS+12);cx.font='800 '+FS+'px Almarai,sans-serif';
+    if(canAct()){var my=FS*2+22;cx.font='800 '+Math.max(MINF,Math.round(FS*.8))+'px Almarai,sans-serif';cx.fillText('MOVES',16,my);var mx=16+cx.measureText('MOVES').width+10,mw=narrow?90:70;
       cx.fillStyle='rgba(11,23,15,.75)';cx.fillRect(mx,my-10,mw,9);cx.fillStyle='#ffd166';cx.fillRect(mx+1,my-9,(mw-2)*walkLeft/WALK,7);}
     cx.font='800 '+FS+'px Almarai,sans-serif';cx.textAlign='center';cx.fillStyle='#fffffe';
     var wx=VW/2;cx.fillText(wind?'WIND '+Math.abs(wind):'CALM',wx,FS+12);
@@ -1526,7 +1526,7 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
     if(phase!=='panel'&&active){cx.textAlign='right';cx.fillStyle=team?'#89fbcb':'#ffb08a';
       var tl=team===0?'YOUR TURN':mode==='ffa'?GOMAS[active.goma][1].toUpperCase()+'’S TURN':'RIVAL TURN';if(narrow&&tl.length>12)tl=GOMAS[active.goma][1].toUpperCase();
       cx.fillText(tl,VW-16,FS+12);
-      if(streak>1){cx.font='800 '+Math.round(FS*.8)+'px Almarai,sans-serif';cx.fillStyle='#ffd166';cx.fillText('STREAK x'+streak,VW-16,FS*2+22);}}
+      if(streak>1){cx.font='800 '+Math.max(MINF,Math.round(FS*.8))+'px Almarai,sans-serif';cx.fillStyle='#ffd166';cx.fillText('STREAK x'+streak,VW-16,FS*2+22);}}
   }
   function drawWalls(){var top=Math.min(0,cam.cy-VH/cam.z),bot=Math.max(H,cam.cy+VH/cam.z),o=80;   // dark stone from past the map edge to the barrier, with a glowing emerald face
     [[-o,1],[W-WALL,-1]].forEach(function(w){var x=w[0],ww=WALL+o,g=cx.createLinearGradient(w[1]>0?x:x+ww,0,w[1]>0?x+ww:x,0);
@@ -1547,9 +1547,14 @@ if(panelKind==='start'&&mode==='campaign'&&resumeSave){clearSave();newRun();gRun
     cx.setTransform(DPR,0,0,DPR,0,0);
     if(canAct()){var c=active,w=WEAPONS[weapon],m=muzzle(c,c.ang),v=shotVel(c.ang,c.pow,w);cx.fillStyle='rgba(11,23,15,.85)';
       for(var t=.06;t<=.5;t+=.055){var s=toScreen(m.x+v.vx*t,m.y+v.vy*t+G*w.grav*t*t/2);cx.beginPath();cx.arc(s.x,s.y,3.5,0,7);cx.fill();cx.fillStyle='#fffffe';cx.beginPath();cx.arc(s.x,s.y,2.2,0,7);cx.fill();cx.fillStyle='rgba(11,23,15,.85)';}}
+    // the words on the board never drawn under 11.6px on screen, however far the page scales the canvas down (QA 2026-11-14: the
+    // HP tags, FREE-FOR-ALL, and MOVES at 7-10px): sized up by as much as the canvas is scaled
+    if(!(drawN++%30)||!KS){var cr=cv.getBoundingClientRect();if(cr.width)KS=cr.width/VW;}
+    var fs0=FS,hfs0=HFS;MINF=KS?Math.ceil(11.6/KS):0;FS=Math.max(fs0,Math.ceil(12/(KS||1)));HFS=Math.max(hfs0,MINF);
     drawLabels();
     if(phase!=='panel'&&!overview)drawMini();
     drawHud();
+    FS=fs0;HFS=hfs0;
     if(phase==='panel'||paused){cx.fillStyle='rgba(11,23,15,.5)';cx.fillRect(0,0,VW,VH);cx.textAlign='center';cx.font='400 '+(narrow?40:44)+'px "Cracked Imperia",Impact,sans-serif';cx.fillStyle='#fffffe';
       cx.fillText(paused?'PAUSED':'READY',VW/2,VH/2);}
   }

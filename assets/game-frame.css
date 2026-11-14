@@ -756,3 +756,58 @@ html.gs-page [data-ma-page] .gs-game :is(.ac-card,.hg-share,#hg-result.win,#hg-r
   html.gs-page [data-ma-page="game-matching-auras"] .gs-about .ma-hint{color:rgba(255,255,255,.86)!important;font-size:15px!important;line-height:1.5!important;margin:0 auto!important}
   html.gs-page [data-ma-page="game-matching-auras"] .gs-about .ma-hint a{color:#fd7547!important}
 }
+
+/* ---------- 16. QA pass 5 (2026-11-14) ---------- */
+/* a Key that runs on across screens: a frame on each screen (game-frame.js draws them), so no border runs off a screen's side */
+html.gs-page [data-ma-page] .gs-panel > .gs-frame{position:absolute;box-sizing:border-box;border:2px solid rgba(243,234,217,.18);background:#132219;pointer-events:none;z-index:0}
+html.gs-page [data-ma-page] .gs-panel .gs-framed.gs-framed{position:relative;z-index:1;border-color:transparent!important;background:none!important;background-color:transparent!important}
+/* daily puzzles, signed out: a start card scaled down to fit the screen (game-frame.js; it scrolled inside itself) keeps its
+   labels at 11px or more and its boxes at 16px as drawn, and START's own line is no taller than its word */
+html.gs-page [data-ma-page] .gs-game .dbd-cover[style*="--gs-cz"] .dbd-who label{font-size:max(13px,calc(11.5px / var(--gs-cz,1)))!important}
+html.gs-page [data-ma-page] .gs-game .dbd-cover[style*="--gs-cz"] .dbd-who input{font-size:calc(16px / var(--gs-cz,1))!important}
+html.gs-page [data-ma-page] .gs-game .dbd-cover:has(.dbd-who) > button{line-height:1.2!important}
+/* a label too long for its button breaks between words instead of being scaled down on its own (game-frame.js marks it) */
+html.gs-page [data-ma-page] .gs-game .gs-wrap.gs-wrap,html.gs-page [data-ma-page] .gs-game .gs-wrap.gs-wrap *{white-space:normal!important;overflow-wrap:normal!important;word-break:normal!important;text-wrap:balance}
+/* Hold the Wall! on wide screens: a wider column for the fighters and upgrades, so every name has room in its cell at full size
+   (QA 2026-11-14: Gunslinger, Grenades, and Intangible were scaled on their own to 8.8-10.6px; the AUTO boxes touched) */
+@media (min-width:700px){
+  html.gs-page [data-ma-page] #ma-holdwall .wrap{grid-template-columns:minmax(0,1fr) 840px!important}
+  html.gs-page [data-ma-page] #ma-holdwall .btns .b{padding-left:4px!important;padding-right:4px!important}   /* (a name never runs to the cell's edge: Crest Knight takes two lines) */
+  html.gs-page [data-ma-page] #ma-holdwall .btns .b .nm{overflow-wrap:normal!important;word-break:normal!important;hyphens:none;text-wrap:balance}
+}
+/* Goma Goons' crew picker on phones: Campaign and Free-for-All on one row and a little less room between the rows, so the picker
+   fits its screen at full size (QA 2026-11-14: scaled to 74% on a 360x640 screen, its names 9.7px) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] .gs-pre .sd-modes{display:flex!important;flex-wrap:nowrap!important;justify-content:center;gap:8px!important;width:100%}
+  html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .gs-pre .sd-mode{flex:0 1 auto;min-width:0;padding:10px 12px!important;letter-spacing:.06em!important;white-space:nowrap}
+  html.gs-page [data-ma-page] .gs-pre .sd-panel{gap:10px!important}
+}
+/* Trench Run on phones: the start card's line and SET SAIL drawn at 11.5px or more with the maze scaled to half (they were held to
+   20px, 10px as drawn on a 360 screen) */
+html.gs-page [data-ma-page] #ma-chase#ma-chase :is(.ch-ov p,.ch-btn){font-size:max(14px,min(calc(12px / var(--gsz,1)),28px))!important}
+/* Matching Auras on wide screens: the four colors in one row on a wider card, so the card is scaled down less and its slots,
+   clock, and lines read at 11px or more (QA 2026-11-14: the slots 9.5px at 1440x900, the card scaled to 73%) */
+@media (min-width:700px){
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game :is(.hg-card,#gs-none main){width:800px!important}
+  html.gs-page [data-ma-page="game-matching-auras"] .gs-game .ma-colors{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
+/* wide screens: the bar along the bottom ends short of the back-to-top button's corner (loader.js sets it down beside the bar) */
+@media (min-width:700px){html.gs-page [data-ma-page] .gs-prog{left:max(88px,6vw);right:max(88px,6vw)}}
+/* Goma Goons: the weapons read at 11px or more on wide screens too (1440x900: 9.8-10.7px), and on phones a long name keeps its size in
+   its cell, two by two on the narrowest (Lightning ran past its cell and was scaled on its own to 10.9px) */
+@media (min-width:700px){html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel :is(.sd-wpn,.sd-wpn span,.sd-wpn small){font-size:max(12px,min(calc(11.8px / var(--gsz,1)),16px))!important}}
+@media (max-width:389px){html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .sd-weapons{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .sd-wpn{min-height:0!important;padding:6px 8px!important}}
+@media (max-width:699px){html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel .sd-wpn{padding-left:4px!important;padding-right:4px!important;letter-spacing:0!important}html.gs-page [data-ma-page] #ma-skyduel#ma-skyduel :is(.sd-wpn,.sd-wpn span,.sd-wpn small){font-size:max(12.5px,min(calc(11.8px / var(--gsz,1)),17px))!important;letter-spacing:0!important}}
+/* Goma Goons on phones: Pause and New run on a row of their own under the score, so Pause holds its place when the numbers change
+   (at game over on a 360 screen it jumped 127px across and up a row as the score row re-wrapped) */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] #ma-skyduel .sd-bar::before{content:"";flex:0 0 100%;height:0;order:9}
+  html.gs-page [data-ma-page] #ma-skyduel .sd-bar > .sd-btn{order:10}
+}
+/* the result panel on phones: room between the export card, the score line, and the XP box (the line sat 6px under the card) */
+html.gs-page [data-ma-page] .gs-cardp .gs-cols > * + *{margin-top:20px!important}
+/* ...and when its export card is scaled down to fit a phone's screen (game-frame.js), each box keeps the width it was measured at,
+   centered on its screen, so the scale holds the card whole instead of the card growing with the wider column */
+@media (max-width:699px){html.gs-page [data-ma-page] .gs-cardp[style*="zoom"] .gs-cols > *{max-width:calc(var(--gsvw,100vw) - 32px)!important;margin-left:auto!important;margin-right:auto!important}}
+/* ...and 12px or more between the start card's title, its line, and SET SAIL as drawn (7px with the maze scaled down) */
+html.gs-page [data-ma-page] #ma-chase#ma-chase .ch-ov{gap:max(12px,calc(12px / var(--gsz,1)))!important}

@@ -171,13 +171,17 @@
     // mobile, this happens'), so the game never grows past its screen
     // an arcade game's score form and the 100 XP box go there too: a game panel is never shrunk to make room for them (QA
     // 2026-11-14: Sky Gauntlet's game over scaled the board to 27% on a phone, Airship Runner's to 63%)
-    var results = resultsIn(game);
+    var results = resultsIn(game), cpOn = track.querySelector('.gs-cardp'); cpOn = !!cpOn && cpOn.style.display !== 'none';
     var card = results[0];
     if (card) {
       var cp = track.querySelector('.gs-cardp');
       if (!cp) { cp = panel('Your result', 'gs-part gs-cardp'); var cc = document.createElement('div'); cc.className = 'gs-col'; cp.appendChild(cc); watchCard(cp); }
       track.insertBefore(cp, game.nextSibling);
-      results.forEach(function (e) { cp.firstChild.appendChild(e); }); cp.style.display = ''; cardCols(cp); moved = true; toCard = true;
+      results.forEach(function (e) { cp.firstChild.appendChild(e); });
+      // the export card leads, so the result's first screen shows it, never a lone line over an empty screen (QA 2026-11-14: Goma
+      // Goons' 'Practice game.' line sat alone on the first screen, the card and the XP box on the next)
+      var ac0 = cp.querySelector('.ac-card'); if (ac0 && ac0.parentElement === cp.firstChild && cp.firstChild.firstChild !== ac0) cp.firstChild.insertBefore(ac0, cp.firstChild.firstChild);
+      cp.style.display = ''; cardCols(cp); moved = true; toCard = true;
     }
     // the Arcade switcher goes last
     var sw = q('.ma-arcade', game) || q('.hg-tabs', game);
@@ -188,7 +192,7 @@
       var from = sw.parentElement; ap.firstChild.appendChild(sw); emptyOut(from); moved = true;
     }
     var arc = track.querySelector('.gs-arcade'); if (arc) { track.appendChild(arc); tiles(arc); }
-    if (moved) { bar(); size(); }
+    if (moved) { var hold = !!card && stops.length > 0; bar(); size(hold); if (hold && toCard && !cpOn) holdGame(); }   // (a result after the row was laid out: the game holds still until the row moves on)
     // the puzzle is over: on to the result, so the score is the first thing seen (Maurice, 2026-11-14)
     if (toCard) { toCard = false; setTimeout(function () { goPanel(track.querySelector('.gs-cardp')); }, 700); }
   }
@@ -206,7 +210,7 @@
       if (sig === seen && on === was) return;   // (a box redrawing its own words is left alone)
       seen = sig; cardCols(cp);
       if (on !== was) { cp.style.display = on ? '' : 'none'; bar(); }
-      size();
+      size(true);   // (the game keeps its size: its result changed, not the game)
       if (on && !was) setTimeout(function () { goPanel(cp); }, 400);
     }, 80); }).observe(cp, { attributes: true, attributeFilter: ['hidden'], childList: true, subtree: true });
   }
@@ -226,10 +230,26 @@
     if (!window.MutationObserver) return;
     new MutationObserver(function () {
       var on = !el.hidden; if (on === shownNow) return; shownNow = on;
+      // the game is over and its result is on the way: the row holds still on the game, which keeps its size, and then goes on to
+      // the result, never back to the setup first (QA 2026-11-14: Goma Goons' Pause jumped for 23 frames before the row moved)
+      var res = on && resultsIn(game).length > 0;
       p.style.display = on ? '' : 'none';
-      bar(); size();   // (the bar gets one segment per panel again: it lit the wrong ones; QA 2026-11-14)
+      bar(); size(res);   // (the bar gets one segment per panel again: it lit the wrong ones; QA 2026-11-14)
+      if (res) { holdGame(); return; }
       setTimeout(function () { goPanel(on ? p : game); }, 320);   // after the row has settled onto its new stops
     }).observe(el, { attributes: true, attributeFilter: ['hidden'] });
+  }
+  // ...and what's left in it stays where it was: a game that hides its controls at game over would be centered again, its score row and
+  // Pause dropping 60px (QA 2026-11-14), so it keeps the top it was fitted at until the next fit
+  var gameTop = null;
+  function topIn() { var t = 1e9, gr = game.getBoundingClientRect(); Array.prototype.forEach.call(game.children, function (c) { if (!c.offsetParent || bgLayer(c)) return; var b = c.getBoundingClientRect(); if (b.height) t = Math.min(t, b.top); }); return t < 1e9 ? (t - gr.top) / (gr.height / Math.max(1, game.offsetHeight) || 1) : null; }
+  function letGo() { game.style.removeProperty('justify-content'); game.style.removeProperty('padding-top'); }
+  function holdGame() {
+    var gi = panels.indexOf(game); if (gi < 0) return; gameTouch = 0; glideTok++; wTo(0, stopY(at[gi] || 0)); paint(); draw();
+    var t = topIn(); if (gameTop === null || t === null || Math.abs(t - gameTop) < 1) return;
+    game.style.setProperty('justify-content', 'flex-start', 'important');
+    var t2 = topIn(), pt = parseFloat(getComputedStyle(game).paddingTop) || 0;
+    if (t2 !== null) game.style.setProperty('padding-top', Math.max(0, pt + gameTop - t2).toFixed(1) + 'px', 'important');
   }
   function goPanel(p) {
     var i = panels.indexOf(p); if (i < 0) return;
@@ -341,7 +361,7 @@
         if (p === game) return;
         var col = p.firstChild; if (!col) return;
         // anything left from the wide layout goes (columns, set widths and heights, stretched boxes)
-        col.classList.remove('gs-cols'); col.style.width = ''; col.style.height = '';
+        col.classList.remove('gs-cols'); col.style.width = ''; col.style.height = ''; frames(p);
         [col, col.firstElementChild].forEach(function (e) { if (e) { e.style.columnWidth = ''; e.style.columnCount = ''; e.style.columnGap = ''; e.style.columnFill = ''; } });
         Array.prototype.forEach.call(col.querySelectorAll('.gs-box'), function (b) { b.style.minHeight = ''; });
         p.classList.remove('gs-mid');
@@ -349,6 +369,9 @@
         // the Arcade: big tiles in two rows, as wide as they need to be; you scroll sideways through them (Maurice,
         // 2026-11-13: 'do the same with the arcade, put them like the windows tiles design')
         if (p.classList.contains('gs-arcade')) { col.style.height = room + 'px'; p.style.width = (Math.max(1, Math.ceil((col.scrollWidth + d.x - 1) / vw)) * vw) + 'px'; return; }   // a whole number of screens
+        // the result panel: a box a little taller than the screen (the export card) is scaled down to fit its screen whole, instead of
+        // running its last lines onto the next screen and leaving that one near empty (QA 2026-11-14: Goma Goons at 360x640)
+        if (p.classList.contains('gs-cardp')) { var tall = 0; Array.prototype.forEach.call(col.children, function (c) { tall = Math.max(tall, c.offsetHeight); }); if (tall > room && room / tall >= 0.8) { shrink(p, tall + 2, room); d = pad(p); room = p.clientHeight - d.y; } }
         // a long part (the Key): full size in screen-wide columns, scrolled through sideways, instead of shrunk until it
         // can't be read ('make the key bigger and wider so you have to scroll through it but it's readable')
         // (a setup screen shrinks instead: its buttons never split across screens; the name panel shrinks down to 80% and no
@@ -359,11 +382,14 @@
           // n columns, one per screen: the gap is the panel's padding plus the box's own padding and border, so every
           // column starts the same distance in from its screen's edge and none is cut where the row stops
           var setCols = function (n) {
-            p.style.width = (vw * n) + 'px'; col.style.width = (vw * n - d.x) + 'px';
+            var sw = vw / (parseFloat(p.style.zoom) || 1);   // a screen, in the panel's own (scaled) pixels
+            p.style.width = (sw * n) + 'px'; col.style.width = (sw * n - d.x) + 'px';
             var bs = getComputedStyle(box), chrome = box === col ? 0 : parseFloat(bs.paddingLeft) + parseFloat(bs.paddingRight) + parseFloat(bs.borderLeftWidth) + parseFloat(bs.borderRightWidth);
             box.style.columnWidth = 'auto'; box.style.columnCount = n; box.style.columnGap = (d.x + chrome) + 'px'; box.style.columnFill = 'auto';
           };
-          for (var n = 1; n <= 12; n++) { setCols(n); if (box.scrollWidth <= box.clientWidth + 1 && col.scrollWidth <= col.clientWidth + 1) break; }
+          // (as many screens as it takes: at 12 the Key's last column ran past the panel's last stop and was cut off; QA 2026-11-14)
+          for (var n = 1; n <= 40; n++) { setCols(n); if (box.scrollWidth <= box.clientWidth + 1 && col.scrollWidth <= col.clientWidth + 1 && inside(col)) break; }
+          if (box !== col && n > 1) frames(p, box, n);
           return;
         }
         shrink(p, col.scrollHeight, room);
@@ -375,7 +401,7 @@
       var col = p.firstChild; if (!col) return;
       p.style.zoom = ''; p.style.height = ''; p.style.removeProperty('--gz');
       var d = pad(p), room = p.clientHeight - d.y, max = vw - d.x, best = 0;
-      col.classList.remove('gs-cols'); col.style.height = ''; col.style.width = '';
+      col.classList.remove('gs-cols'); col.style.height = ''; col.style.width = ''; frames(p);
       [col, col.firstElementChild].forEach(function (e) { if (e) { e.style.columnWidth = ''; e.style.columnCount = ''; e.style.columnGap = ''; e.style.columnFill = ''; } });
       Array.prototype.forEach.call(col.querySelectorAll('.gs-box'), function (b) { b.style.minHeight = ''; });
       function set(w) { p.style.width = (w + d.x) + 'px'; col.style.width = w + 'px'; }
@@ -402,7 +428,7 @@
           for (var ns = 2; ns <= 8 && !best; ns++) {
             p.style.width = (vw * ns) + 'px'; col.style.width = (vw * ns - d.x) + 'px';
             kb.style.columnWidth = 'auto'; kb.style.columnCount = ns * per; kb.style.columnGap = (d.x + chrome) + 'px'; kb.style.columnFill = 'auto';
-            if (fits()) best = -2;
+            if (fits()) { best = -2; if (one) frames(p, one, ns); }
           }
           if (!best) { kb.style.columnWidth = ''; kb.style.columnCount = ''; kb.style.columnGap = ''; kb.style.columnFill = ''; }
         }
@@ -421,6 +447,30 @@
         Array.prototype.forEach.call(col.querySelectorAll('.gs-box'), function (b) { b.style.minHeight = ''; });
         room = p.clientHeight - pad(p).y; stretch(p, col, room);
       }
+    });
+  }
+  // a Key that runs on across screens gets a frame on each screen instead of one box whose top and bottom edges run off the
+  // screen's side (QA 2026-11-14: Sky Gauntlet's Key at 1440: its right border was a screen away); its columns already sit one
+  // set to a screen, the same distance in from each screen's edges, so each frame holds that screen's columns
+  function frames(p, box, ns) {
+    Array.prototype.slice.call(p.children).forEach(function (f) { if (f.classList.contains('gs-frame')) p.removeChild(f); });
+    Array.prototype.forEach.call(p.querySelectorAll('.gs-framed'), function (b) { b.classList.remove('gs-framed'); });
+    if (!box || !(ns > 1)) return;
+    box.classList.add('gs-framed');
+    var pr = p.getBoundingClientRect(), br = box.getBoundingClientRect(), z = parseFloat(p.style.zoom) || 1, sw = vw / z;
+    var l = (br.left - pr.left) / z, r = (pr.right - br.right) / z, t = (br.top - pr.top) / z, h = br.height / z;
+    for (var k = 0; k < ns; k++) {
+      var f = document.createElement('i'); f.className = 'gs-frame'; f.setAttribute('aria-hidden', 'true');
+      f.style.left = (k * sw + l).toFixed(1) + 'px'; f.style.width = (sw - l - r).toFixed(1) + 'px'; f.style.top = t.toFixed(1) + 'px'; f.style.height = h.toFixed(1) + 'px';
+      p.appendChild(f);
+    }
+  }
+  // a Key whose words outgrew its columns after it was laid out (a late font, Easy Mode's extra lines) runs past its last screen
+  function colsOff() {
+    return panels.some(function (p) {
+      var col = p.firstChild; if (!col || !col.classList || !col.classList.contains('gs-cols')) return false;
+      var box = col.children.length === 1 ? col.firstElementChild : col;
+      return box.scrollWidth > box.clientWidth + 1 || col.scrollWidth > col.clientWidth + 1;
     });
   }
   // the words grow to fill the height, but the panel keeps its width (Maurice, 2026-11-13: 'make the how to play and header
@@ -514,7 +564,8 @@
     });
     total = stops.length ? starts[stops.length - 1] + holds[stops.length - 1] : 0;
   }
-  function size() {
+  function size(keep) {
+    keep = keep === true;   // the game keeps its size and place: its result is on the way (Goma Goons' Pause jumped at game over; QA 2026-11-14)
     var restK = -1; stops.forEach(function (v, k) { if (Math.abs(v - x) < 3) restK = k; });
     var vh = window.innerHeight, hdr = header();
     // the row is exactly as wide as the window less its scrollbar, whatever width the page's own block has (a block set to
@@ -547,11 +598,15 @@
       stage.style.backgroundSize = 'cover'; stage.style.backgroundPosition = 'center';
       root.style.setProperty('background', 'none', 'important');
     }
-    game.style.zoom = ''; game.style.height = '';
-    if (wide) game.style.width = vw + 'px';   // the game lays itself out with the whole screen first, then the panel closes in on it
-    fit(true);
-    shrinkGame();
+    if (!keep) {
+      letGo();
+      game.style.zoom = ''; game.style.height = '';
+      if (wide) game.style.width = vw + 'px';   // the game lays itself out with the whole screen first, then the panel closes in on it
+      fit(true);
+      shrinkGame();
+    }
     stage.classList.remove('gs-measure');
+    if (!keep) gameTop = topIn();
     layout();
     root.style.setProperty('height', (total + vh) + 'px', 'important');
     var fe = root.closest('.fluid-engine');
@@ -755,17 +810,31 @@
   function signIn() { var w = q('.dbd-cover .dbd-who', game); return w && w.offsetParent ? w : null; }
   // they never run onto the arrows: on a screen too short for them at full size, the start card scrolls inside itself
   // (frame CSS) instead of being scaled down
+  // (QA 2026-11-14, pass 5: a scrollbar inside the card is gone: a card too tall for the screen, as it is once 'A first name,
+  // please.' shows under the boxes, is scaled down a little instead, its smallest words kept at 11px or more (frame CSS raises
+  // the labels by as much) and the boxes at 16px as drawn; only past that does it still scroll, as a last resort)
   function capGate() {
     var w = signIn(), gt = w && w.closest('.dbd-gate'); if (!gt) return;
-    gt.style.removeProperty('--gs-gate-max');
-    // (measured again after each step: the panel centers what's in it, so a shorter card also moves down)
-    for (var i = 0; i < 4; i++) {
+    var cv = w.closest('.dbd-cover') || gt;
+    function over() {
       var gr = game.getBoundingClientRect(), k = gr.height / Math.max(1, game.offsetHeight) || 1;
-      var bottom = gr.bottom - (parseFloat(getComputedStyle(game).paddingBottom) || 0) * k, low = -1e9;
-      Array.prototype.forEach.call(game.children, function (c) { if (!c.offsetParent || bgLayer(c)) return; var b = c.getBoundingClientRect(); if (b.height) low = Math.max(low, b.bottom); });
-      var over = low - bottom; if (over <= 1) return;
+      var bottom = gr.bottom - (parseFloat(getComputedStyle(game).paddingBottom) || 0) * k, top = gr.top + (parseFloat(getComputedStyle(game).paddingTop) || 0) * k, low = -1e9, high = 1e9;
+      Array.prototype.forEach.call(game.children, function (c) { if (!c.offsetParent || bgLayer(c)) return; var b = c.getBoundingClientRect(); if (b.height) { low = Math.max(low, b.bottom); high = Math.min(high, b.top); } });
+      return Math.max(low - bottom, (low - high) - (bottom - top));
+    }
+    gt.style.removeProperty('--gs-gate-max'); cv.style.zoom = ''; cv.style.removeProperty('--gs-cz');
+    // (measured again after each step: the panel centers what's in it, so a shorter card also moves down)
+    var z = 1;
+    for (var i = 0; i < 4; i++) {
+      var o = over(); if (o <= 1) break;
+      var h = cv.getBoundingClientRect().height; if (!h) break;
+      var nz = Math.max(0.84, z * (h - o - 2) / h); if (nz >= z - 0.002) break;
+      z = nz; cv.style.zoom = z.toFixed(3); cv.style.setProperty('--gs-cz', z.toFixed(3));
+    }
+    for (var j = 0; j < 4; j++) {   // the last resort
+      var o2 = over(); if (o2 <= 1) break;
       var tr = gt.getBoundingClientRect(), kk = tr.height / Math.max(1, gt.offsetHeight) || 1;
-      gt.style.setProperty('--gs-gate-max', Math.max(160, (tr.height - over * (i ? 2 : 1)) / kk).toFixed(0) + 'px');
+      gt.style.setProperty('--gs-gate-max', Math.max(160, (tr.height - o2 * (j ? 2 : 1)) / kk).toFixed(0) + 'px');
     }
   }
   // the Current Champion banner is exactly as wide as the play screen under it and touches it (Maurice, 2026-11-13)
@@ -813,16 +882,31 @@
     if (signIn()) capGate();
   }
   // words too wide for their button or box shrink until they fit (Maurice, 2026-11-13: 'shrink to fit', RESUME wrapping)
+  // (QA 2026-11-14, pass 5: never under 11px as drawn: a word scaled on its own past that (Hold the Wall!'s Gunslinger at 8.8px,
+  // Goma Goons' Galaxy at 10.8px) wraps between words instead, and a label that still can't fit is scaled only down to 11px)
+  function zOf(e) { var z = 1; for (var x = e; x && x.nodeType === 1; x = x.parentElement) z *= parseFloat(getComputedStyle(x).zoom) || 1; return z; }
+  function smallestText(e) {   // the smallest words in a label, as drawn on screen
+    var m = 1e9; [e].concat(Array.prototype.slice.call(e.querySelectorAll('*'))).forEach(function (x) {
+      if (!x.getClientRects().length || !Array.prototype.some.call(x.childNodes, function (n) { return n.nodeType === 3 && n.textContent.trim(); })) return;
+      m = Math.min(m, parseFloat(getComputedStyle(x).fontSize) * zOf(x));
+    });
+    return m < 1e9 ? m : 0;
+  }
   function fitLabels() {
     qa('button, .ms-hud > *, .ar-cell, .sg-stat, .tabs > *, .ch-hud, .sd-bar', game).forEach(function (e) {
       if (!e.offsetParent || !e.clientWidth) return;
       if (e.classList.contains('gs-lifted')) { e.style.fontSize = ''; e.style.zoom = ''; return; }   // a lifted score row wraps instead of shrinking (frame CSS)
-      e.style.fontSize = '';
-      var f = parseFloat(getComputedStyle(e).fontSize), n = 0;
-      e.style.zoom = '';
-      while (e.scrollWidth > e.clientWidth + 1 && f > 10 && n++ < 30) { f -= 0.5; e.style.fontSize = f + 'px'; }
-      // a browser that won't draw text that small (a smallest-text setting) gets the whole row scaled to fit instead
-      if (e.scrollWidth > e.clientWidth + 1) e.style.zoom = (e.clientWidth / e.scrollWidth).toFixed(3);
+      e.style.fontSize = ''; e.style.zoom = ''; e.style.removeProperty('white-space'); e.classList.remove('gs-wrap');
+      var over = function () { return e.scrollWidth > e.clientWidth + 1 || Array.prototype.some.call(e.children, function (c) { return c.clientWidth && c.scrollWidth > c.clientWidth + 1 && getComputedStyle(c).overflowX === 'visible'; }); };   // (a word running past its own line inside the label counts too)
+      if (!over()) return;
+      var f = parseFloat(getComputedStyle(e).fontSize), n = 0, k = zOf(e) || 1;
+      while (over() && f > 10 && f * k > 11.6 && n++ < 30) { f -= 0.5; e.style.fontSize = f + 'px'; }
+      if (!over()) return;
+      // two lines, broken between words (a name like Crest Knight), when the label has a space to break at
+      if (/\s/.test(e.textContent.trim())) { e.classList.add('gs-wrap'); if (!over()) return; }
+      // a browser that won't draw text that small (a smallest-text setting) gets the label scaled to fit instead, never past 11px
+      var s = smallestText(e), zMin = s ? Math.min(1, 11.2 / s) : 0.5;
+      e.style.zoom = Math.max(zMin, e.clientWidth / e.scrollWidth).toFixed(3);
     });
   }
   function steadyPause() {
@@ -908,15 +992,17 @@
   function soon() { clearTimeout(ft); ft = setTimeout(fit, 120); }
   // the start card gives way to the board: scale the game and its panel again for what's showing now
   function refit() {
-    if (!wide) { fit(true); fitLabels(); alignChamp(); return; }   // the banner follows the board when the start card gives way
+    letGo();
+    if (!wide) { fit(true); fitLabels(); alignChamp(); gameTop = topIn(); return; }   // the banner follows the board when the start card gives way
     game.style.zoom = ''; game.style.height = ''; game.style.removeProperty('--gz');
     game.style.width = vw + 'px';   // measured with the whole screen, as at the start, so it never creeps smaller
-    fit(true); shrinkGame(); layout(); paint(); alignChamp();
+    fit(true); shrinkGame(); layout(); paint(); alignChamp(); gameTop = topIn();
   }
   var rf = 0;
   var hadCover = !!q('.dbd-cover', game);
   function refitSoon() { clearTimeout(rf); rf = setTimeout(function () { if (hadCover && !q('.dbd-cover', game)) { hadCover = false; refit(); } }, 300); }
   game.addEventListener('click', refitSoon);
+  game.addEventListener('click', function () { if (signIn()) setTimeout(capGate, 30); });   // a sign-in line that appears under the boxes ('A first name, please.') is fitted at once
   // phones: a tab inside a panel of its own (Hold the Wall!'s Fighters and Tower) changes its height: that panel is fitted again
   var pt = 0; track.addEventListener('click', function (e) { if (wide || !e.target.closest || !e.target.closest('.gs-fit')) return; clearTimeout(pt); pt = setTimeout(function () { widths(); layout(); paint(); }, 150); });
   game.addEventListener('keydown', function (e) { if (e.key === 'Enter') refitSoon(); });
@@ -961,8 +1047,8 @@
     ['header', 'hunt-nav'].forEach(function (id) { var e = document.getElementById(id); if (e) ro.observe(e); }); }
   // late fonts and late rows can push a box past the bottom edge after the first measure: check again, and measure again if so
   function checkOff() {
-    if (!wide) return;
-    var off = panels.some(function (p) {
+    if (!wide) { if (colsOff()) size(); return; }
+    var off = colsOff() || panels.some(function (p) {
       if (p === game || p.classList.contains('gs-arcade')) return false;
       var col = p.firstChild; if (!col || col.classList.contains('gs-cols')) return false;
       var lb = col.lastElementChild; return lb && lb.getBoundingClientRect().bottom > col.getBoundingClientRect().bottom + 2;
@@ -978,6 +1064,7 @@
   function overCheck() {
     if (!stops.length || !panels.length || document.hidden) return;
     if (signIn()) capGate();   // the champion banner or the date can arrive after the start card was measured
+    if (colsOff()) { var cs0 = 'cols:' + Math.round(W); if (!overTried[cs0]) { overTried[cs0] = 1; size(); return; } }
     var hit = null, sig = '';
     panels.forEach(function (p, i) {
       if (hit || p.classList.contains('gs-arcade')) return;
@@ -997,7 +1084,7 @@
   setInterval(overCheck, 1000);
   // a picture that loads after the row was laid out (the export card's) changes its panel's height: lay the row out again
   var imgT = 0;
-  track.addEventListener('load', function (e) { var t = e.target; if (!t || t.tagName !== 'IMG' || game.contains(t)) return; clearTimeout(imgT); imgT = setTimeout(size, 120); }, true);
+  track.addEventListener('load', function (e) { var t = e.target; if (!t || t.tagName !== 'IMG' || game.contains(t)) return; clearTimeout(imgT); imgT = setTimeout(function () { size(true); }, 120); }, true);   // (the game keeps its size: the picture is outside it)
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { setTimeout(checkOff, 300); setTimeout(steadyPause, 350); });
   setTimeout(checkOff, 3000); setTimeout(checkOff, 6000);
   setTimeout(size, 200); setTimeout(size, 1500);
