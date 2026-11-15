@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
-<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=12" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=11"></script>
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=13" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=12"></script>
 <!-- Generated copy of squarespace-game-sky-mines.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
 <!-- ============================================================
      Sky Mines - a daily game for the Cello's Gate Treasure Hunt.
@@ -1257,6 +1257,27 @@ var HG_GAME = {"key":"sky_mines","label":"Sky Mines","points":25,"startDate":"20
     press = setTimeout(function () { press = null; skipClick = true; toggleFlag(i); if (navigator.vibrate) try { navigator.vibrate(30); } catch (er) {} }, 450);
   });
   ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) { board.addEventListener(ev, function () { clearTimeout(press); press = null; }); });
+  // tap safeguards (Maurice's players, 2026-11-15: 'I keep mistakenly hitting a square next to the one I was actually going for'):
+  // on a touch screen the cell under the finger is marked while it's down; a finger that slides 10px or more is a slide, not a tap
+  // (so a near miss can be slid off and let go), and a second tap on a different cell within 250ms of the last one is a slip and
+  // doesn't count
+  var tap = { x: 0, y: 0, moved: false, touch: false, cell: null, lastAt: 0, lastI: -1 };
+  function unpress() { if (tap.cell) tap.cell.classList.remove('sm-press'); tap.cell = null; }
+  board.addEventListener('pointerdown', function (e) {
+    tap.touch = e.pointerType !== 'mouse'; tap.moved = false; tap.x = e.clientX; tap.y = e.clientY; unpress();
+    var b = e.target.closest('.sm-c'); if (tap.touch && b && !b.classList.contains('open')) { tap.cell = b; b.classList.add('sm-press'); }
+  });
+  board.addEventListener('pointermove', function (e) {
+    if (!tap.touch || tap.moved) return;
+    if (Math.abs(e.clientX - tap.x) >= 10 || Math.abs(e.clientY - tap.y) >= 10) { tap.moved = true; unpress(); clearTimeout(press); press = null; }
+  });
+  ['pointerup', 'pointercancel'].forEach(function (ev) { board.addEventListener(ev, function (e) { if (ev === 'pointercancel') tap.moved = true; setTimeout(unpress, 60); }); });
+  board.addEventListener('click', function (e) {
+    var b = e.target.closest('.sm-c'); if (!b || !tap.touch) return;
+    var i = +b.getAttribute('data-i'), now = Date.now();
+    if (tap.moved || (now - tap.lastAt < 250 && i !== tap.lastI)) { e.stopImmediatePropagation(); skipClick = false; tap.moved = false; return; }
+    tap.lastAt = now; tap.lastI = i;
+  }, true);
   board.addEventListener('click', function (e) {
     var b = e.target.closest('.sm-c'); if (!b || resetting) return;
     if (skipClick) { skipClick = false; return; }

@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
-<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=12" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=11"></script>
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=13" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=12"></script>
 <!-- Generated copy of squarespace-game-emoji-reads.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
 <!-- ============================================================
      Book Icons - a daily game for the Cello's Gate Treasure Hunt.
@@ -81,6 +81,8 @@ html,body{margin:0 !important;padding:0 !important}
 .hg-more{text-align:center;margin:26px 0 0;font-weight:700;font-size:15px;letter-spacing:.06em}
 .hg-more a{color:#c53200}
 .er-emoji{font-family:'Apple Color Emoji','Noto Color Emoji','Segoe UI Emoji','Segoe UI Symbol',sans-serif;text-align:center;font-size:clamp(46px,9vw,84px);line-height:1.2;letter-spacing:.08em;margin:6px auto 18px;padding:18px 12px;background:#213226;border:3px solid #111;max-width:640px}
+.er-emoji.er-grid{font-size:84px;display:grid;grid-template-columns:repeat(var(--er-cols,4),minmax(0,1fr));justify-items:center;align-items:center;gap:8px 4px;letter-spacing:0;container-type:inline-size}
+.er-emoji.er-grid .er-i{display:block;line-height:1.15;font-size:min(1em,calc((100cqi - (var(--er-cols,4) - 1) * 4px) / var(--er-cols,4) * .78))}
 .er-form{display:flex;gap:10px;max-width:560px;margin:0 auto}
 .er-form input{flex:1;min-width:0;font-family:'Almarai',sans-serif;font-size:18px;font-weight:700;padding:13px 14px;border:3px solid #111;background:#fffffe;color:#111;border-radius:0}
 .er-tries{text-align:center;font-weight:700;letter-spacing:.08em;font-size:14px;color:#607667;margin:12px 0 0}
@@ -1092,7 +1094,19 @@ var HG_GAME = {"key":"emoji_reads","label":"Book Icons","points":25,"startDate":
   // "a wizard of the earth sea" counts for A Wizard of Earthsea: the, a, and an are dropped wherever they sit, and spacing is ignored
   var noThe = function (s) { return (' ' + s + ' ').replace(/ (the|a|an)(?= )/g, '').replace(/ /g, '') || s.replace(/ /g, ''); };
   var ok = [HG.norm(P.title)].concat((P.accept || []).map(HG.norm)).map(noThe);
-  document.getElementById('er-emoji').textContent = P.emoji;
+  // the icons in an even grid (Maurice's players, 2026-11-15: 'word icons is wonky on mobile': six icons broke four over two): one
+  // icon a cell, in as many columns as share them out evenly (three over three, four over three), each as big as its cell allows
+  (function (box, s) {
+    var parts = [];
+    try { if (window.Intl && Intl.Segmenter) parts = Array.from(new Intl.Segmenter('en', { granularity: 'grapheme' }).segment(s), function (x) { return x.segment; }); } catch (e) { parts = []; }
+    if (!parts.length) Array.from(s).forEach(function (ch) { if (parts.length && (/[\u200d\ufe0f]|[\u{1f3fb}-\u{1f3ff}]/u.test(ch) || /\u200d$/.test(parts[parts.length - 1]))) parts[parts.length - 1] += ch; else parts.push(ch); });
+    parts = parts.filter(function (x) { return x.trim(); });
+    var n = parts.length, cols = n <= 4 ? n : Math.ceil(n / Math.ceil(n / 4));
+    box.textContent = '';
+    box.style.setProperty('--er-cols', Math.max(1, cols));
+    box.classList.add('er-grid');
+    parts.forEach(function (x) { var sp = document.createElement('span'); sp.className = 'er-i'; sp.textContent = x; sp.setAttribute('aria-hidden', 'true'); box.appendChild(sp); });
+  })(document.getElementById('er-emoji'), P.emoji);
   function paint() {
     var m = st.guesses.length;
     document.getElementById('er-tries').textContent = st.done ? '' : (TRIES - m) + (TRIES - m === 1 ? ' TRY' : ' TRIES') + ' LEFT';

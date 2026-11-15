@@ -1097,3 +1097,74 @@ html.gs-page [data-ma-page] #ma-gauntlet#ma-gauntlet .sg-live{font-size:max(16px
 }
 /* ...its line at 12px as drawn on phones, so it keeps its place on the card with that room under the button where it can */
 @media (max-width:699px){html.gs-page [data-ma-page] #ma-holdwall#ma-holdwall .over p{font-size:max(12px,calc(12px / var(--gsz,1)))!important;line-height:1.35!important}}
+/* ---------- 20. Phone playability (2026-11-15) ---------- */
+/* Maurice's players on phones: 'everything is so small' (Sky Mines), 'my fingers are too fat', 'word icons is wonky on mobile', 'the
+   screen is stretched wider but seems like it's lost length'. On phones the board comes first: as large as the screen allows in its
+   own shape, the champion banner and a daily puzzle's date on the name's screen just before the game (game-frame.js: 'phoneAbout'). */
+@media (max-width:699px){
+  html.gs-page [data-ma-page] .gs-about .gs-col > .gs-abouted{align-self:stretch!important;width:auto!important;max-width:none!important;margin:0!important;box-sizing:border-box}
+  html.gs-page [data-ma-page] .gs-about .gs-col > .hg-stamp.gs-abouted{text-align:center}
+}
+/* Sky Mines on phones: the white card runs the screen's width with 16px inside it, so the field is the screen's width less 16px at
+   each side (cells 30px on a 360 screen, 33px at 390, 35px at 412); Flag mode over the field at 44px, the clock and the message under
+   it. This is the one game screen allowed to scroll inside itself (.gs-scrolly), and only when the clock and the message can't fit
+   under the field on a short phone: the field and Flag mode are always on screen whole. */
+@media (max-width:699px){
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game.gs-tapon{padding-left:0!important;padding-right:0!important}
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game :is(.hg-card,#gs-none main):not(:has(.dbd-cover)){display:flex!important;flex-direction:column;gap:12px;padding:16px!important;border-left:0!important;border-right:0!important;max-width:none!important;box-sizing:border-box}
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game :is(.hg-card,#gs-none main):not(:has(.dbd-cover)) > *{margin:0!important}
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game :is(.hg-card,#gs-none main) .sm-bar{order:1;gap:8px 20px}
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game :is(.hg-card,#gs-none main) .sm-tools{order:2}
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game :is(.hg-card,#gs-none main) .dbd-gate{order:3}
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game :is(.hg-card,#gs-none main) .sm-timer{order:4}
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game :is(.hg-card,#gs-none main) .sm-msg{order:5;min-height:0}
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game :is(.hg-card,#gs-none main) :is(.sm-msg,.hg-toast):empty{display:none}
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game .hg-card :is(.hg-toast,.hg-result){order:6}
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game .sm-field{width:100%!important;max-width:none!important}
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game .sm-tools .sm-btn{width:100%;min-height:44px;box-sizing:border-box}
+}
+/* ...on a short phone, Mines and Gust in go under the field, by the clock, so the field keeps its full width (cells 30px at 360x640) */
+@media (max-width:699px) and (max-height:760px){
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game :is(.hg-card,#gs-none main) .sm-bar{order:4}
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game:not(.gs-fsel){padding-top:12px!important}
+  html.gs-page [data-ma-page="game-sky-mines"] .gs-game :is(.hg-card,#gs-none main):not(:has(.dbd-cover)){padding-top:12px!important}
+}
+/* Book Icons on phones: the answer box and GUESS share the card's width with the whole hint showing ('Type the book title'), and the
+   box's words are 16px or more on screen however far the card is scaled, so a phone never zooms in on it when it's tapped */
+@media (max-width:699px){
+  html.gs-page [data-ma-page="game-emoji-reads"] .gs-game :is(.hg-card,#gs-none main){padding-left:16px!important;padding-right:16px!important}
+  html.gs-page [data-ma-page="game-emoji-reads"] .gs-game .er-form button{padding-left:14px!important;padding-right:14px!important;min-height:48px}
+}
+html.gs-page [data-ma-page] .gs-game .er-form input{font-size:max(18px,calc(16px / var(--gsz,1)))}
+html.gs-page [data-ma-page] .gs-game.gs-scrolly{overflow-y:auto!important;overscroll-behavior-y:auto;justify-content:flex-start!important;-webkit-overflow-scrolling:touch}
+/* ...what scrolls stops 12px over the row's arrows, never under them, and the last line can be scrolled up clear of them */
+@media (max-width:699px){html.gs-page [data-ma-page] .gs-game.gs-scrolly:not(.gs-fsel){clip-path:inset(0 0 86px 0);padding-bottom:98px!important}}
+/* the cell under a finger shows before the finger lifts, so a near miss can be slid off and let go (game-sky-mines.html) */
+html.gs-page [data-ma-page] .sm-c.sm-press{box-shadow:inset 0 0 0 3px #ff4c0f}
+/* Book Icons and the other typed answers: the game slides up over the on-screen keyboard (game-frame.js: kbLift) */
+html.gs-page [data-ma-page] .gs-game.gs-kb > :not(.ma-pfx):not(.gs-fsx){transform:translateY(calc(-1 * var(--gs-kb,0px)));transition:transform .2s ease}
+@media (prefers-reduced-motion:reduce){html.gs-page [data-ma-page] .gs-game.gs-kb > *{transition:none}}
+/* Full screen (Maurice, 2026-11-15: 'Is there a way to add a full screen button before you start each game?'). DRAFT words.
+   The button on the start card: a plain outline in the card's own color, 44px or more tall however far the card is scaled. */
+html.gs-page [data-ma-page] .gs-fsbtn{display:inline-flex;align-items:center;justify-content:center;min-height:calc(44px / var(--gsz,1));min-width:calc(44px / var(--gsz,1));padding:calc(8px / var(--gsz,1)) calc(18px / var(--gsz,1));margin:12px auto 0;box-sizing:border-box;
+  background:transparent!important;color:inherit!important;border:2px solid currentColor!important;border-radius:0!important;line-height:1.2!important;cursor:pointer;white-space:nowrap;text-decoration:none;box-shadow:none!important}
+html.gs-page [data-ma-page] .gs-fsbtn:hover,html.gs-page [data-ma-page] .gs-fsbtn:focus-visible{background:rgba(162,245,144,.16)!important}
+/* the small one at the bottom left of the game's screen (the Scroll Bar's segments start 12px past it) */
+html.gs-page [data-ma-page] .gs-fsgo{position:absolute;left:max(16px,2vw);bottom:max(4px,calc(max(14px,2.4svh) - 14px));z-index:6;width:44px;height:44px;padding:11px;border:0;background:none;color:#a2f590;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s}
+html.gs-page [data-ma-page] .gs-fsgo svg{width:22px;height:22px;display:block}
+html.gs-page [data-ma-page] .gs-fsgo.on{opacity:1;visibility:visible}
+html.gs-page [data-ma-page] .gs-fsgo:focus-visible{outline:2px solid #a2f590;outline-offset:-2px}
+@media (max-width:699px){html.gs-page [data-ma-page] .gs-prog{left:72px!important}}
+/* in full screen: the game's screen fills the screen (game-frame.js sets its box), the X at its top right */
+html.gs-page [data-ma-page] .gs-game > .gs-fsx{display:none!important}
+html.gs-page [data-ma-page] .gs-game.gs-fsel > .gs-fsx{display:flex!important;position:absolute!important;top:calc(env(safe-area-inset-top,0px) + 16px);right:max(16px,env(safe-area-inset-right,0px));left:auto!important;
+  width:44px!important;height:44px!important;margin:0!important;padding:10px;box-sizing:border-box;align-items:center;justify-content:center;border:2px solid #a2f590;background:rgba(11,23,15,.85);color:#a2f590;cursor:pointer;z-index:3}
+html.gs-page [data-ma-page] .gs-game.gs-fsel > .gs-fsx svg{width:20px;height:20px;display:block}
+html.gs-page [data-ma-page] .gs-game.gs-fsel::before{display:none!important}
+html.gs-page [data-ma-page] .gs-game.gs-fsel::backdrop{background:#0b170f}
+/* ...on an iPhone (the game's screen laid over the page): the page holds still under it, and if the browser can't lift the game's
+   screen over everything, the menu bar, the row's arrows, its bar, and Back to top step aside */
+html.gs-fs-p,html.gs-fs-p body{overflow:hidden!important;overscroll-behavior:none!important}
+html.gs-fs-p [data-ma-page] .gs-track{transform:none!important}
+html.gs-fs-p :is(#header,#hunt-nav,#ma-top,#hx-nav),html.gs-fs-p [data-ma-page] :is(.gs-prog,.gs-hint,.gs-back,.gs-fsgo,.gs-sbar){visibility:hidden!important}
