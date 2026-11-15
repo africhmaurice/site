@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
 <link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=15" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=14"></script>
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=15"></script>
 <!-- Generated copy of squarespace-game-blades-and-brass.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
 <!-- ============================================================
      Blades & Brass - a daily game for the Cello's Gate Treasure Hunt.
@@ -1106,6 +1106,7 @@ var HG_GAME = {"key":"blades_brass","label":"Blades & Brass","points":25,"startD
   }
   function tap(i) {
     if (st.done || P.givens[i] !== '.') return;
+    quiet();
     st.hist.push(i + ':' + st.cells[i]);
     st.cells[i] = { '': 'S', S: 'B', B: '' }[st.cells[i]];
     cells[i].classList.remove('pop'); void cells[i].offsetWidth; cells[i].classList.add('pop');
@@ -1142,13 +1143,19 @@ var HG_GAME = {"key":"blades_brass","label":"Blades & Brass","points":25,"startD
   function check() {
     var full = st.cells.every(function (v) { return v; });
     if (!full) return;
-    if (Object.keys(broken()).length) { HG.toast('SOMETHING IS OFF. CHECK THE RED SQUARES.'); return; }
+    if (Object.keys(broken()).length) { warnT = setTimeout(function () { if (!st.done && Object.keys(broken()).length) HG.toast('SOMETHING IS OFF. CHECK THE RED SQUARES.'); }, 700); return; }
     st.done = 'win'; g.save(); finish();
   }
+  // (Maurice's players, 2026-11-15: 'it keeps saying check the red squares when I've solved': the warning from a full board one tap
+  // short of brass stayed up after the next tap solved it) the warning waits a moment, so a square on its way from the swords to
+  // the brass never flashes it, and any tap or a solve takes it down
+  var warnT = 0;
+  function quiet() { clearTimeout(warnT); var t = document.getElementById('hg-toast'); if (t && t.textContent) t.textContent = ''; }
   function fmt(s) { return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2); }
   function finish() {
     clearInterval(timer);
-    if (g.elapsed() != null) st.secs = g.elapsed();   // the board's clock, to the second document.getElementById('hg-toast').textContent = '';
+    if (g.elapsed() != null) st.secs = g.elapsed();   // the board's clock, to the second
+    quiet();   // a solved board never keeps a warning from the try before it
     document.getElementById('bb-timer').textContent = 'SOLVED IN ' + fmt(st.secs);
     document.querySelector('.bb-tools').style.display = 'none';
     g.share = { label: 'SOLVED IN', stat: fmt(st.secs), timed: true, icons: [IMG.S, IMG.B] };

@@ -233,7 +233,10 @@
       // the export card leads, so the result's first screen shows it, never a lone line over an empty screen (QA 2026-11-14: Goma
       // Goons' 'Practice game.' line sat alone on the first screen, the card and the XP box on the next)
       var ac0 = cp.querySelector('.ac-card'); if (ac0 && ac0.parentElement === cp.firstChild && cp.firstChild.firstChild !== ac0) cp.firstChild.insertBefore(ac0, cp.firstChild.firstChild);
-      cp.style.display = ''; cardCols(cp); moved = true; toCard = true;
+      // (the glide on to the result is for a result that just came in: a box the game mounts again beside one that is already showing,
+      // the XP box after a score form is sent, never sends the row back to it; QA 2026-11-15: Airship Runner pulled the row back from
+      // the leaderboard)
+      cp.style.display = ''; cardCols(cp); moved = true; if (!cpOn) toCard = true;
     }
     // the Arcade switcher goes last
     var sw = q('.ma-arcade', game) || q('.hg-tabs', game);
@@ -271,11 +274,15 @@
       seen = sig; cardCols(cp);
       if (on !== was) { cp.style.display = on ? '' : 'none'; bar(); }
       size(true);   // (the game keeps its size: its result changed, not the game)
-      if (on && !was) { if (fsOn) exitFs(true); setTimeout(function () { goPanel(cp); }, 400); }
+      // (only for a game that's on screen: a score form that steps out and back while it's being sent never pulls the row back
+      // from the leaderboard or the Arcade; QA 2026-11-15)
+      if (on && !was) { if (fsOn) exitFs(true); if (gameShown()) setTimeout(function () { goPanel(cp); }, 400); }
     }, 80); }).observe(cp, { attributes: true, attributeFilter: ['hidden'], childList: true, subtree: true });
   }
   // wide screens: a score form and the XP box side by side, each its full size (stacked, they were scaled to 80%)
   function cardCols(cp) { var c = cp.firstChild; if (c) c.className = window.innerWidth >= 700 && resultsIn(cp).length > 1 ? 'gs-group' : 'gs-col'; }
+  // the game is over: its result is showing in the result panel and no run is on
+  function over() { var cp = track.querySelector('.gs-cardp'); return !!cp && cp.style.display !== 'none' && resultsIn(cp).length > 0 && !running(); }
   // what's showing of the result (a box inside another one, the XP box in a daily win box, rides along with it)
   function resultsIn(from) {
     var all = qa(RES, from).filter(function (e) { return !e.hidden && getComputedStyle(e).display !== 'none'; });
@@ -318,17 +325,20 @@
     return gameTop;
   }
   function holdGame() {
-    var gi = panels.indexOf(game); if (gi < 0) return; gameTouch = 0; glideTok++; wTo(0, stopY(at[gi] || 0)); paint(); draw();
+    var gi = panels.indexOf(game); if (gi < 0) return; gameTouch = 0; glideTok++; if (snap) snap.stop(); wTo(0, stopY(at[gi] || 0)); paint(); draw();
     var tb = topBefore(); if (tb !== null && tb !== undefined) gameTop = tb;
     var t = topIn(); if (gameTop === null || t === null || Math.abs(t - gameTop) < 1) return;
     game.style.setProperty('justify-content', 'flex-start', 'important');
     var t2 = topIn(), pt = parseFloat(getComputedStyle(game).paddingTop) || 0;
     if (t2 !== null) game.style.setProperty('padding-top', Math.max(0, pt + gameTop - t2).toFixed(1) + 'px', 'important');
   }
+  // (the row's own glide, the one the arrows use: a settle or a refit while it's under way waits for it instead of pulling the row
+  // back to the game partway there; Maurice's players, 2026-11-15: 'it keeps glitching and going back to Blades and Brass')
   function goPanel(p) {
     var i = panels.indexOf(p); if (i < 0) return;
     gameTouch = 0; var ty = stopY(at[i] || 0);
-    if (still) wTo(0, ty); else glideTo(ty);
+    if (p !== game) kbDone();
+    if (still || !snap) wTo(0, ty); else { glideTok++; snap.glide(ty); }
   }
   function rowPanels() { return qa('.gs-panel', track).filter(function (p) { return p.style.display !== 'none'; }); }
 
@@ -378,12 +388,6 @@
   var glideTok = 0;
   ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (ev) { addEventListener(ev, function () { glideTok++; clearTimeout(snapT2); }, { passive: true }); });
   var snapT2 = 0;
-  function glideTo(ty) {   // our own short glide, so every click moves (the browser's smooth scroll sometimes drops one)
-    var y0g = window.scrollY, d = ty - y0g, t0 = performance.now(), dur = Math.min(420, 220 + Math.abs(d) * 0.4);
-    if (Math.abs(d) < 1) return;
-    var tok = ++glideTok;
-    (function step() { if (tok !== glideTok) return; var k = Math.max(0, Math.min(1, (performance.now() - t0) / dur)), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; wTo(0, y0g + d * e); if (k < 1) requestAnimationFrame(step); })();
-  }
   // a back arrow, so it's clear the row goes both ways (Maurice, 2026-11-14): over the second segment, the forward arrow over the fourth
   var back = document.createElement('button'); back.type = 'button'; back.className = 'gs-back'; back.setAttribute('aria-label', 'Scroll to the previous section');
   back.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>'; stage.appendChild(back);
@@ -391,11 +395,11 @@
     for (var k = stops.length - 1; k >= 0; k--) if (stops[k] < x - vw * 0.25) { snap.glide(stopY(k)); return; }
     snap.glide(y0);
   }
-  back.addEventListener('click', prevStop);
+  back.addEventListener('click', function () { gameTouch = 0; userAt = Date.now(); kbDone(); prevStop(); });
   // at the last stop, a down arrow: on past the row, the same glide a forward swipe there makes (Maurice, 2026-11-14)
   var down = document.createElement('button'); down.type = 'button'; down.className = 'gs-hint gs-down'; down.setAttribute('aria-label', 'Scroll down');
   down.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>'; stage.appendChild(down);
-  down.addEventListener('click', function () { snap.exit(1); });
+  down.addEventListener('click', function () { gameTouch = 0; userAt = Date.now(); kbDone(); snap.exit(1); });
   function placeArrows() {
     if (wide) { back.style.left = ''; hint.style.left = ''; return; }
     var sg = qa('.gs-seg', prog), sr = stage.getBoundingClientRect(); if (sg.length < 2) return;
@@ -407,7 +411,7 @@
     for (var k = 0; k < stops.length; k++) if (stops[k] > x + vw * 0.25) { snap.glide(stopY(k)); return; }
     var tl = stops.length - 1; if (tl >= 0 && stops[tl] > x + 1) snap.glide(stopY(tl));
   }
-  hint.addEventListener('click', nextStop);
+  hint.addEventListener('click', function () { gameTouch = 0; userAt = Date.now(); kbDone(); nextStop(); });
   var sbar = document.createElement('div'), sbarIn = document.createElement('i');
   sbar.className = 'gs-sbar'; sbar.setAttribute('aria-hidden', 'true'); sbar.title = 'Scroll Bar'; sbar.appendChild(sbarIn); stage.appendChild(sbar);
   var panels = [], segs = [];
@@ -761,7 +765,7 @@
     if (!glide) glide = requestAnimationFrame(draw);
   }
   function goTo(i) {
-    gameTouch = 0;
+    gameTouch = 0; if (panels[i] !== game) kbDone();
     wTo({ top: Math.max(0, y0 + posOf(i) + Math.min(HOLD, holds[at[i] || 0] || 0) / 2), behavior: still ? 'auto' : 'smooth' });   // a little way into the hold, so the Scroll Bar shows it's still going
   }
   function here() { var b = 0; stops.forEach(function (v, k) { if (Math.abs(v - x) < Math.abs(stops[b] - x)) b = k; }); var i = at.indexOf(b); return i < 0 ? 0 : i; }
@@ -774,7 +778,7 @@
   addEventListener('touchstart', function () { touching = true; }, { passive: true });
   ['touchend', 'touchcancel'].forEach(function (ev) { addEventListener(ev, function () { touching = false; window.dispatchEvent(new Event('scroll')); }, { passive: true }); });
   var snapT = 0, snapping = false;
-  function snapNow() { if (!still && stops.length && !touching) snap.settle(0); }
+  function snapNow() { if (still || !stops.length || touching) return; if (snap.busy) { clearTimeout(snapT); snapT = setTimeout(snapNow, 200); return; } snap.settle(0); }
   function rowY(tx) {   // the page's scroll for a spot on the row
     var L = stops.length - 1; if (L < 0) return y0;
     if (tx >= stops[L]) return stopY(L);
@@ -857,6 +861,14 @@
   // all move the row now); a daily board's tiles only take taps, so a swipe across them moves the row
   function inPlay(t) {
     if (!t || !t.closest) return false;
+    // (a daily board's squares are buttons that take only taps, and on a phone the board fills the screen's width: a swipe that
+    // starts on one moves the row, during the puzzle and after it; Maurice's players, 2026-11-15: 'when I try to swipe ... it keeps
+    // glitching and going back to Blades and Brass')
+    var tb = cfg.tap && q(cfg.tap.board, game);
+    if (tb && tb.contains(t) && !t.closest('input, textarea, select, [contenteditable], [role="slider"]')) return !pans(t, 'x');
+    // (once the game is over and its result is up, its board takes no more gestures: a swipe anywhere on it moves the row, Matching
+    // Auras' color buttons and Sort the Shelf's books too)
+    if (game.contains(t) && !t.closest('input, textarea, select, [contenteditable], [role="slider"]') && over()) return false;
     if (t.closest('input, textarea, select, button, [contenteditable], [role="button"], [role="slider"]')) return true;
     return !pans(t, 'x');
   }
@@ -877,6 +889,9 @@
     R.glide = function (ty, v0, T) {
       var ys = window.scrollY, d = ty - ys, my = ++R.tok;
       clearTimeout(R.idleT);
+      // (the row is moving itself now: where an earlier scroll began no longer counts, or the settle after this glide would take
+      // the row back toward it; Maurice's players, 2026-11-15: a swipe on to the result glided back to the game a moment later)
+      R.gx = null;
       if (Math.abs(d) < 0.5) { R.busy = false; return; }
       if (o.still) { set(ty); R.busy = false; return; }
       T = T || 440;
@@ -1018,7 +1033,7 @@
         // (up or down at either end of the row: the page scrolls on past it as it always has)
         sw.on = side ? (sw.h ? 1 : -1) : (sw.v && !atEnd(dy < 0 ? 1 : -1, o.x()) ? 3 : -1);
         if (sw.on < 0) return;
-        R.stop(); sw.rx = sw.rx0 = o.x(); sw.pts = []; sw.edge = 0; sw.lx = sw.x; sw.ly = sw.y; if (o.took) o.took();   // (from where the finger went down: the row stays under it)
+        R.stop(); R.gx = null; sw.rx = sw.rx0 = o.x(); sw.pts = []; sw.edge = 0; sw.lx = sw.x; sw.ly = sw.y; if (o.took) o.took(); if (o.grab) o.grab();   // (from where the finger went down: the row stays under it)
         if (sw.on === 3) { R.down = true; var pb = o.page ? o.page(sw.rx0, -1) : R.nearest(sw.rx0, -1), pf = o.page ? o.page(sw.rx0, 1) : R.nearest(sw.rx0, 1); sw.lo = pb === null ? sw.rx0 : pb; sw.hi = pf === null ? sw.rx0 : pf; }
       }
       if (sw.on === 3) {
@@ -1084,8 +1099,10 @@
     skipY: function (t) { return !!fsOn || held21(t) || inPlayY(t); },
     wait: function () { return held(); },
     took: function () { gameTouch = 0; userAt = Date.now(); },
-    // a game just pressed stays centered (Maurice: 'I pressed play and the screen went off center')
-    prefer: function () { return Date.now() - gameTouch < 1500 ? stops[at[panels.indexOf(game)] || 0] : null; }
+    grab: function () { kbDone(); },   // (a swipe the row takes: the visitor is moving on, not typing)
+    // a game just pressed stays centered (Maurice: 'I pressed play and the screen went off center'), but never once it's over and
+    // its result is showing: then the row goes wherever it's sent (Maurice's players, 2026-11-15)
+    prefer: function () { return Date.now() - gameTouch < 1500 && !over() ? stops[at[panels.indexOf(game)] || 0] : null; }
   });
 
   // the game fills its panel: scaled to fit the panel's width and height, keeping its shape
@@ -1608,6 +1625,10 @@
   // game is being typed in, the row holds still (no new layout for the shorter screen, no sideways scroll from the browser bringing
   // the box into view), and the game slides up just enough that the box and its button sit 12px over the keyboard
   var kbEl = null, kbW = 0, kbY = 0, kbStale = false;
+  // the row moving on (an arrow, a section, a swipe it takes, the glide to a result): the typing is over, so the keyboard closes and
+  // the row is free to go (Skyword and Book Icons: a box still focused after a solve held the row on the game, pulling every swipe
+  // and arrow back to it; QA 2026-11-15)
+  function kbDone() { if (!kbEl && !game.classList.contains('gs-kb')) return; var e = kbEl; kbEl = null; try { if (e && document.activeElement === e) e.blur(); } catch (er) {} kbLift(); if (kbStale) { kbStale = false; size(true); } }
   function kbLift() {
     var vv = window.visualViewport, lift = 0;
     if (kbEl && vv) {
