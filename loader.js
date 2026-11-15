@@ -347,6 +347,7 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
     '#page .fe-block:has([data-ma-page="not-found"],[data-ma-page="contests"]){margin-top:0!important;top:auto!important}' +
     // the phone menu is fully opaque, so no page heading shows through behind its links (QA 2026-11-14)
     '#hunt-nav-ov{background:#0b170f!important}' +
+    '#hunt-nav-ov a,#header .header-menu .ma-ovgroup a,#header .header-menu a{text-align:center!important}' +   // wrapped menu names stay centered (Maurice, 2026-11-14)
     // the Squarespace phone menu too: its backdrop layer is solid #0b170f, and its panels scroll only when their links
     // run past the screen, with no scrollbar strip on Windows (QA pass 4, 2026-11-14)
     'html body #header .header-menu .header-menu-bg{background:#0b170f!important;opacity:1!important}' +
