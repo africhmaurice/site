@@ -911,7 +911,7 @@ var HGBoard = (function () {
       if (!rec || rec.ticket || pending) return;   // also after a solve: a fast solver may finish before START's answer
       pending = true; asks++;
       var my = ++askN, who = (o.me && o.me()) || {};
-      var giveUp = setTimeout(function () { if (pending && my === askN) { pending = false; retry(); } }, 8000);
+      var giveUp = setTimeout(function () { if (pending && my === askN) { pending = false; retry(); } }, 20000);
       o.send({ action: 'dailystart', game: o.game, day: o.day, email: myEmail(), first_name: who.first_name || '', handle: who.handle || '' }, function (res) {
         clearTimeout(giveUp);
         if (my === askN) pending = false;
