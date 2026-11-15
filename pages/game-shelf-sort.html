@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
-<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=14" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=13"></script>
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=15" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=14"></script>
 <!-- Generated copy of squarespace-game-shelf-sort.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
 <!-- ============================================================
      Sort the Shelf - a daily game for the Cello's Gate Treasure Hunt.
@@ -1360,6 +1360,9 @@ var HG_GAME = {"key":"shelf_sort","label":"Sort the Shelf","points":40,"startDat
     // the books fly into the next empty box and fold into it
     var bx = caseEl.children[slotIndex], br = bx ? bx.getBoundingClientRect() : c;
     var targetH = br.height * 0.6, targetW = targetH * 360 / 417;
+    // phones (the boxes two by two over the books, game-frame.css section 22): a box made tall by the found box beside it still takes
+    // all four books inside its width
+    if (window.innerWidth < 700 && 4 * targetW + 12 > br.width * 0.9) { targetW = (br.width * 0.9 - 12) / 4; targetH = targetW * 417 / 360; }
     var gap = 4, rowW = 4 * targetW + 3 * gap, x0 = br.left + (br.width - rowW) / 2, yBottom = br.top + br.height * 0.8;
     var books = groups[gi].items.map(function (it) {
       var found = null; Array.prototype.forEach.call(gridEl.querySelectorAll('.ss-book'), function (b) { if (b.dataset.item === it) found = b; }); return found;

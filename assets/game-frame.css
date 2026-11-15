@@ -1248,3 +1248,24 @@ html.gs-page [data-ma-page] .gs-game.gs-fsel > .gs-fsx{top:calc(env(safe-area-in
   html.gs-page [data-ma-page] #ma-chase .ch-pad.gs-dropped .d{grid-area:d}
   html.gs-page [data-ma-page] #ma-chase .ch-pad.gs-dropped .r{grid-area:r}
 }
+/* ---------- 22. Shelf boxes with books (Maurice, 2026-11-15: "Can we put the categories and the options on sort the shelf on the same page?") ----------
+   Phones: the four boxes stay on the game's screen (no Bookcase screen; game-frame.js), two by two over the books. An empty box is a
+   short "?" box; a found box grows to show its category and its stack of four spines at 11px or more however far the card is scaled
+   (--gsz), a long title wrapping onto a second line instead of shrinking. Books stay 40px tall or more on screen, the gaps 12px or
+   more, and the passing message (SORTED!) shows over the board, so it keeps no empty line under the clock. */
+@media (max-width:699px){
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .hg-card{position:relative}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .hg-card > .hg-toast{position:absolute!important;left:16px;right:16px;top:45%;z-index:4;margin:0!important;pointer-events:none;min-height:0!important}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .hg-card > .hg-toast:not(:empty){background:#0b170f;color:#fffffe!important;padding:10px 12px;border:2px solid #f3ead9}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-board{gap:calc(12px / var(--gsz,1))!important}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game :is(.ss-lives,.ss-tools){margin-top:calc(13px / var(--gsz,1))!important}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .hg-card > .hg-clock{margin-top:calc(12px / var(--gsz,1))!important}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-book{height:max(46px,calc(40.5px / var(--gsz,1)))}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-case{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:auto!important;gap:8px!important;width:100%!important;margin:0!important}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-box{aspect-ratio:auto!important;min-height:32px;padding:6px 8px!important}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-box.empty span{font-size:18px;line-height:1}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-in{width:100%;gap:4px!important;white-space:normal}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-box .ss-sticker{white-space:normal!important;text-wrap:balance;font-size:max(13px,calc(12.5px / var(--gsz,1)))!important;line-height:1.2!important;letter-spacing:.03em}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-stack{width:100%}
+  html.gs-page [data-ma-page="game-shelf-sort"] .gs-game .ss-sp{width:calc(100% - 8px)!important;height:auto!important;min-height:15px;line-height:1.2!important;padding:1px 6px!important;font-size:max(11px,calc(11.3px / var(--gsz,1)))!important;letter-spacing:.02em!important;white-space:normal!important}
+}

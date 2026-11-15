@@ -29,10 +29,9 @@
     // (section 21: on phones the four daily boards from the playtest (Skyword, Blades & Brass, Crest Quest, Sky Mines) run the screen's
     // width, the date and the champion on the name's screen, so the cells and the keys are big enough for a thumb: 'tap')
     'games':               { tap: { board: '#thw-grid', need: '#thw-keys', shrink: true }, phoneAbout: ['#thw-stamp', '.dbd-champ'], root: '#daily-word', zoom: '#daily-word main', how: ['#thw-legend'], parts: ['.dbd-panel'] },   // the color key reads with the words, so the board gets the height
-    // phones: the four boxes on a screen of their own right after the books, so the books get the screen and every title reads at 11px
-    // or more, a long one too (QA 2026-11-14: 5.6px on a 360x640 screen, 8.8px at 390x844)
-    // (section 21: in full screen the four boxes come back over the books, so the categories show there too)
-    'game-shelf-sort':     { phoneParts: [{ sel: '.ss-case', name: 'Bookcase', fit: true, fsIn: true }], root: '.hg-section', zoom: '.hg-card', fit: ['.ss-lives', '.ss-tools'], parts: ['.dbd-panel'] },
+    // phones: the four boxes stay on the game's screen, a compact two by two over the books (game-frame.css section 22; Maurice,
+    // 2026-11-15: 'Can we put the categories and the options on sort the shelf on the same page?'), so the books land in boxes you can see
+    'game-shelf-sort':     { root: '.hg-section', zoom: '.hg-card', fit: ['.ss-lives', '.ss-tools'], parts: ['.dbd-panel'] },
     'game-emoji-reads':    { phoneAbout: ['#hg-stamp', '.dbd-champ'], root: '.hg-section', zoom: '.hg-card', fit: ['.er-form', '.er-tries'], parts: ['.dbd-panel'] },
     'game-blades-brass':   { tap: { board: '.bb-board', need: '.bb-tools' }, phoneAbout: ['#hg-stamp', '.dbd-champ'], root: '.hg-section', zoom: '.hg-card', fit: ['.bb-key', '.bb-tools'], parts: ['.dbd-panel'] },
     // (phones: the Oracle's Gift line goes to How to play, so the colors and the words get the room; QA 2026-11-14: 55%, words 8.1px)
@@ -1188,8 +1187,10 @@
     var span = function () { var t = 1e9, b = -1e9; Array.prototype.forEach.call(game.children, function (c) { if (!c.offsetParent || bgLayer(c)) return; var r = c.getBoundingClientRect(); if (!r.height) return; t = Math.min(t, r.top); b = Math.max(b, r.bottom); }); return { t: t, b: b }; };
     // (Skyword: its square board gives up a little of its size first, so the keys under it keep the screen's width; section 21)
     el.style.removeProperty('--gs-gridw');
-    var s0 = span(), need = nd.getBoundingClientRect().bottom - s0.t + 12;
-    if (cfg.tap.shrink && need > H) { el.style.setProperty('--gs-gridw', Math.max(240, bd.offsetWidth - (need - H) - 2).toFixed(0) + 'px'); s0 = span(); need = nd.getBoundingClientRect().bottom - s0.t + 12; }
+    // (full screen: what sits under the keys, Skyword's clock, counts too, so it stays clear of the screen's bottom edge; 2026-11-15)
+    var needOf = function (s) { return Math.max(nd.getBoundingClientRect().bottom + 12, fsOn ? s.b : 0) - s.t; };
+    var s0 = span(), need = needOf(s0);
+    if (cfg.tap.shrink && need > H) { el.style.setProperty('--gs-gridw', Math.max(240, bd.offsetWidth - (need - H) - 2).toFixed(0) + 'px'); s0 = span(); need = needOf(s0); }
     var z = need > H ? Math.max(0.8, H / need) : 1;
     // (full screen: as large as the screen allows, up to the screen's width)
     if (fsOn && need < H) z = 1;
@@ -1485,7 +1486,7 @@
   var FS_CSS = { position: 'fixed', top: '0', right: '0', bottom: '0', left: '0', width: '100%', height: '100%', 'max-width': 'none', 'max-height': 'none', 'min-height': '0',
     margin: '0', border: '0', transform: 'none', zoom: '1', 'z-index': '2147483000', overflow: 'hidden', 'box-sizing': 'border-box',
     'padding-top': 'calc(env(safe-area-inset-top, 0px) + 64px)', 'padding-right': 'max(8px, env(safe-area-inset-right, 0px))',
-    'padding-bottom': 'max(8px, env(safe-area-inset-bottom, 0px))', 'padding-left': 'max(8px, env(safe-area-inset-left, 0px))' };
+    'padding-bottom': 'max(16px, calc(env(safe-area-inset-bottom, 0px) + 12px))', 'padding-left': 'max(8px, env(safe-area-inset-left, 0px))' };
   function fsStyle(on) {
     var col = on ? getComputedStyle(game).color : '';   // (its own color: a screen laid over the page takes the browser's plain text color otherwise)
     Object.keys(FS_CSS).forEach(function (k) { if (on) game.style.setProperty(k, FS_CSS[k], 'important'); else game.style.removeProperty(k); });
@@ -1528,7 +1529,7 @@
     if (was === 'api' && fsEl()) { try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (e) {} }
     try { if (game.hidePopover && game.matches(':popover-open')) game.hidePopover(); } catch (e) {}
     game.removeAttribute('popover');
-    fsStyle(false); html.classList.remove('gs-fs', 'gs-fs-p'); game.classList.remove('gs-fsel');
+    fsStyle(false); html.classList.remove('gs-fs', 'gs-fs-p'); game.classList.remove('gs-fsel'); fsVH = 0;
     fsGone = Date.now(); if (cfg.fsLand) { try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {} }
     fsParts(false); fsResize();
     fsLabels();
@@ -1543,9 +1544,26 @@
     for (var t = e.target; t && t !== game; t = t.parentElement) { var o = getComputedStyle(t).overflowY; if ((o === 'auto' || o === 'scroll') && t.scrollHeight > t.clientHeight + 1) return; }
     e.preventDefault();
   }, { passive: false });
+  // the full screen is as tall as what the phone shows, not the window's height: an Android phone's gesture or button bar can cover the
+  // bottom of the window (Maurice, 2026-11-15: 'Add padding to the bottom, it sits too low on the screen'; Master Stacker's buttons
+  // were cut in half), so the game is fitted to the visible height, with 16px or more kept clear under it (FS_CSS's padding-bottom)
+  // (the browser's own full screen holds the game at the window's full height, so the covered strip is kept clear with padding instead)
+  var fsVH = 0, FS_PB = FS_CSS['padding-bottom'];
+  function fsHeight() {
+    if (!fsOn) return;
+    var vv = window.visualViewport, h = vv ? vv.height * (vv.scale || 1) : window.innerHeight;
+    if (kbEl || game.classList.contains('gs-kb')) h = fsVH || h;   // (a phone keyboard that is open keeps the height it had)
+    h = Math.round(Math.min(h, window.innerHeight)); fsVH = h;
+    var gh = game.getBoundingClientRect().height || window.innerHeight, cut = Math.max(0, Math.round(gh - h));
+    game.style.setProperty('padding-bottom', cut ? 'calc(' + FS_PB + ' + ' + cut + 'px)' : FS_PB, 'important');
+  }
+  if (window.visualViewport) visualViewport.addEventListener('resize', function () {
+    if (!fsOn || kbEl || game.classList.contains('gs-kb')) return;
+    var vv = window.visualViewport; if (Math.abs(Math.round(Math.min(vv.height * (vv.scale || 1), window.innerHeight)) - fsVH) > 1) setTimeout(fsFit, 60);
+  });
   function fsFit() {
     if (!fsOn) return;
-    letGo(); game.style.zoom = ''; game.style.height = ''; game.style.removeProperty('--gz');
+    letGo(); game.style.zoom = ''; game.style.height = ''; game.style.removeProperty('--gz'); fsHeight();
     var el = cfg.zoom && q(cfg.zoom, game);
     if (signIn()) capGate();
     else if (el) { if (!wide) fitPhone(el); else fit(true); }
@@ -1685,8 +1703,8 @@
     try { howOv.querySelector('.gs-howx').focus({ preventScroll: true }); } catch (e) {}
   }
   function closeHow() { if (!howOv) return; howOv.hidden = true; if (howBack && howBack.offsetParent) { try { howBack.focus({ preventScroll: true }); } catch (e) {} } }
-  // full screen: the parts that sit on screens of their own on a phone come back into the game (Hold the Wall!'s fighters and upgrades,
-  // Sort the Shelf's four boxes: 'you can't see the categories but you should be able to'), and go back to their screens after
+  // full screen: the parts that sit on screens of their own on a phone come back into the game (Hold the Wall!'s fighters and upgrades;
+  // Sort the Shelf's four boxes now stay in the game, section 22), and go back to their screens after
   function fsParts(on) {
     if (wide) return;
     qa('.gs-panel', track).forEach(function (p) {
