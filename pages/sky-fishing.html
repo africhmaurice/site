@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
-<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=13" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=12"></script>
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=14" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=13"></script>
 <!-- ============================================================
      GOMA GOONS (was Sky Duel, then Mortar Mayhem / Mortar Madness; renamed 11/2) - a turn-based artillery game.
      Lives at /sky-fishing (page address kept so the Act Three riddle card link still works;
@@ -884,7 +884,7 @@ var ArcadeCard = (function () {
   function fitView(force){
     var st=d.querySelector('.sd-stage'),sw=st.clientWidth;if(!sw||!padEl||padEl.hidden)return;
     var parts=['.sd-bar','.sd-view','.sd-weapons','.sd-pad','.sd-msg'],ctrl=0;parts.forEach(function(q){var e=d.querySelector(q);if(e&&!e.hidden)ctrl+=e.offsetHeight+12;});
-    var fr=window.maGameRoom&&window.maGameRoom(st),room=fr>0?fr:innerHeight-headerCover()-ctrl-4-16,h0=sw*(narrow?600/560:540/960),h=Math.max(sw*(narrow?.6:.3),Math.min(h0,room));   /* (never shorter than .6 of its width on a phone, a short one too: the .42 of pass 9 flattened the battlefield; Maurice's players, 2026-11-15) */
+    var fr=window.maGameRoom&&window.maGameRoom(st),room=fr>0?fr:innerHeight-headerCover()-ctrl-4-16,h0=sw*(narrow?600/560:540/960),fsx=document.documentElement.classList.contains('gs-fs')&&fr>0?(h0=Math.max(h0,Math.min(room,sw*1.6))):0,h=Math.max(sw*(narrow?.6:.3),Math.min(h0,room));   /* (never shorter than .6 of its width on a phone, a short one too: the .42 of pass 9 flattened the battlefield; Maurice's players, 2026-11-15) */
     if(!force&&Math.abs(h-fitH)<24)return;fitH=h;
     VH=Math.round(VW*h/sw);cv.width=VW*DPR;cv.height=VH*DPR;clampCam();
   }
@@ -1259,14 +1259,16 @@ var ArcadeCard = (function () {
   /* ---- the camera: follows the active goon and the shot in flight; you can pan, jump with the minimap, or zoom out -- */
   function fitZ(){return Math.min(VW/W,VH/H);}
   var zoomMul=1;   // v7: Zoom in / Zoom out (and the wheel, and a pinch) scale the close view, between the overview and 2.5x
-  function baseZ(){return (narrow?1.15:1)*zoomMul;}
-  function zoomBy(k){var b=narrow?1.15:1,lo=Math.min(1,fitZ()/b*1.05);zoomMul=Math.max(lo,Math.min(2.5,zoomMul*k));if(overview)setOverview(false);camHold=true;}
+  // phones (Maurice's players, 2026-11-15: 'Goma Goons was like small or really zoomed in'): the close view shows the whole stretch around
+  // your goon, about a third of the map across, with every goon still about 35px wide on screen (it was 50px, a quarter of the map)
+  function baseZ(){return (narrow?.8:1)*zoomMul;}
+  function zoomBy(k){var b=narrow?.8:1,lo=Math.min(1,fitZ()/b*1.05);zoomMul=Math.max(lo,Math.min(2.5,zoomMul*k));if(overview)setOverview(false);camHold=true;}
   function setOverview(on){overview=on;ovBtn.setAttribute('aria-pressed',String(on));if(!on)camHold=false;}
   function camTarget(){
     if(overview)return {x:W/2,y:H/2,z:fitZ()};
     var z=baseZ(),p=null;for(var i=0;i<proj.length;i++)if(!proj[i].done){p=proj[i];break;}
     if(camHold)return {x:cam.cx,y:cam.cy,z:z};
-    if(p)return {x:p.x,y:p.y,z:z*.7};   // pull back a little while a shot is in the air
+    if(p)return {x:p.x,y:p.y,z:z*(narrow?.85:.7)};   // pull back a little while a shot is in the air
     if(active)return {x:active.x,y:active.y-VH*.15/z,z:z};
     return {x:W/2,y:H/2,z:z};
   }

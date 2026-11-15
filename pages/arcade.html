@@ -386,21 +386,23 @@
   var aim = 0, aimAt = 0;
   function from(dir) { return Date.now() - aimAt < 2000 && (aim - x) * dir > 0 ? aim : x; }
   function rowTo(tx) { aim = tx; aimAt = Date.now(); snap.go(tx); }   // through the row's one glide, so two never stack
+  // one screen along the row from a spot, onto a stop where nothing is cut at the left (the arrows, and an up or down swipe: 2026-11-15)
+  function pageFrom(x0, dir) {
+    var pad = parseFloat(getComputedStyle(track).paddingLeft) || 24, st = stopsClean(), tx = null;
+    if (dir > 0) { var reach = x0 + cw - 2 * pad; st.forEach(function (v) { if (v > x0 + 8 && v <= reach) tx = v; }); if (tx === null) st.forEach(function (v) { if (tx === null && v > x0 + 8) tx = v; }); return tx === null ? null : Math.min(span, tx); }
+    var back = x0 - (cw - 2 * pad); st.slice().reverse().forEach(function (v) { if (v < x0 - 8 && v >= back) tx = v; }); if (tx === null) st.slice().reverse().forEach(function (v) { if (tx === null && v < x0 - 8) tx = v; }); return tx === null ? null : Math.max(0, tx);
+  }
   function forward() {   // about one screen further along the row, onto a stop where nothing is cut at the left
-    var x0 = from(1), pad = parseFloat(getComputedStyle(track).paddingLeft) || 24, reach = x0 + cw - 2 * pad, st = stopsClean(), tx = -1;
-    st.forEach(function (v) { if (v > x0 + 8 && v <= reach) tx = v; });
-    if (tx < 0) st.forEach(function (v) { if (tx < 0 && v > x0 + 8) tx = v; });
-    if (tx >= 0) rowTo(Math.min(span, tx));
+    var tx = pageFrom(from(1), 1);
+    if (tx !== null) rowTo(tx);
   }
   hint.addEventListener('click', forward);
   // a back arrow, so it's clear the row goes both ways (Maurice, 2026-11-14)
   var back = document.createElement('button'); back.type = 'button'; back.className = 'ac-back'; back.setAttribute('aria-label', 'Scroll back');
   back.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>'; hint.parentNode.appendChild(back);
   back.addEventListener('click', function () {
-    var x0 = from(-1), pad = parseFloat(getComputedStyle(track).paddingLeft) || 24, reach = x0 - (cw - 2 * pad), st = stopsClean(), tx = -1;
-    st.slice().reverse().forEach(function (v) { if (v < x0 - 8 && v >= reach) tx = v; });
-    if (tx < 0) st.slice().reverse().forEach(function (v) { if (tx < 0 && v < x0 - 8) tx = v; });
-    rowTo(Math.max(0, tx));
+    var tx = pageFrom(from(-1), -1);
+    rowTo(tx === null ? 0 : tx);
   });
   // at the last stop, a down arrow: on past the row, the same glide a forward swipe there makes (Maurice, 2026-11-14)
   var down = document.createElement('button'); down.type = 'button'; down.className = 'ac-hint ac-down'; down.setAttribute('aria-label', 'Scroll down');
@@ -479,6 +481,12 @@
       // settles back on the nearest
       var x = o.x(), g = R.gx; R.gx = null;
       var near = R.nearest(x, 0);
+      // a scroll from a finger (the browser's own fling) never carries the row more than a screen from where it began: it comes back
+      // to that screen's stop (Maurice's players, 2026-11-15: a swipe skipped Sort the Shelf)
+      if (g !== null && now() - R.tAt < 2500 && o.on() && Math.abs(x - g) > 2) {
+        var d1 = x > g ? 1 : -1, f1 = o.page ? o.page(g, d1) : R.nearest(g, d1);
+        if (f1 !== null && f1 !== undefined && (x - f1) * d1 > 2) { R.glide(o.yOf(f1)); return; }
+      }
       if (g !== null && near !== null && Math.abs(near - x) > 2) { var mv = x - g, nx = R.nearest(x, mv > 0 ? 1 : -1), pv = R.nearest(x, mv > 0 ? -1 : 1);
         if (nx !== null && Math.abs(mv) >= Math.min(120, 0.25 * Math.abs(nx - (pv === null ? x : pv)))) { R.settle(mv > 0 ? 0.1 : -0.1, x, mv > 0 ? 40 : -40); return; } }
       R.settle(0, x);
@@ -497,8 +505,9 @@
         R.stop(); clearTimeout(R.idleT); if (ev === 'wheel' && R.gx !== null) soon();
       }, { passive: true, capture: true });
     });
-    addEventListener('touchstart', function () { R.down = true; }, { passive: true, capture: true });
-    ['touchend', 'touchcancel'].forEach(function (ev) { addEventListener(ev, function (e) { if (!e.touches || !e.touches.length) { R.down = false; if (sw.on !== 1) soon(); } }, { passive: true }); });
+    R.tAt = -1e9;
+    addEventListener('touchstart', function () { R.down = true; R.tAt = now(); }, { passive: true, capture: true });
+    ['touchend', 'touchcancel'].forEach(function (ev) { addEventListener(ev, function (e) { if (!e.touches || !e.touches.length) { R.down = false; R.tAt = now(); if (sw.on !== 1) soon(); } }, { passive: true }); });
     // sideways wheels, trackpads, and shift + wheel move the row as they go, eased a little so a wheel's steps don't jump (the
     // page's smooth scrolling is told to leave a sideways wheel alone, so the two never pull the page two ways)
     var wt = null, wraf = 0;
@@ -528,20 +537,31 @@
     }, { passive: false, capture: true });
     // touch: a drag more sideways than up or down moves the row with the finger; letting go eases it onto a stop
     var sw = { on: -1, x: 0, y: 0, lx: 0, rx: 0, pts: [] };
+    // (2026-11-15: an up or down swipe in the row moves it one screen and no further: the browser's own fling carried a phone past
+    // whole games on one swipe; Maurice's players: 'playthrough skipped Sort the Shelf')
     o.stage.addEventListener('touchstart', function (e) {
       sw.on = e.touches.length === 1 && !(o.skip && o.skip(e.target, 'touch')) ? 0 : -1;
       if (sw.on < 0) return;
-      sw.x = sw.lx = e.touches[0].clientX; sw.y = e.touches[0].clientY;
+      sw.v = o.on();
+      sw.x = sw.lx = e.touches[0].clientX; sw.y = sw.ly = e.touches[0].clientY;
     }, { passive: true });
     o.stage.addEventListener('touchmove', function (e) {
       if (sw.on < 0) return;
-      if (e.touches.length !== 1) { if (sw.on === 1) R.settle(0, sw.rx); sw.on = -1; return; }
+      if (e.touches.length !== 1) { if (sw.on === 1 || sw.on === 3) R.settle(0, sw.rx); sw.on = -1; return; }
       var cx = e.touches[0].clientX, dx = cx - sw.x, dy = e.touches[0].clientY - sw.y;
       if (!sw.on) {
         if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
-        sw.on = Math.abs(dx) > Math.abs(dy) * 1.2 ? 1 : -1;
+        sw.on = Math.abs(dx) > Math.abs(dy) * 1.2 ? 1 : (sw.v && !atEnd(dy < 0 ? 1 : -1, o.x()) ? 3 : -1);   // (up or down at either end: the page scrolls on)
         if (sw.on < 0) return;
-        R.stop(); sw.rx = sw.rx0 = o.x(); sw.pts = []; sw.edge = 0; sw.lx = sw.x; if (o.took) o.took();   // (from where the finger went down: the row stays under it)
+        R.stop(); sw.rx = sw.rx0 = o.x(); sw.pts = []; sw.edge = 0; sw.lx = sw.x; sw.ly = sw.y; if (o.took) o.took();   // (from where the finger went down: the row stays under it)
+        if (sw.on === 3) { R.down = true; var pb = o.page ? o.page(sw.rx0, -1) : R.nearest(sw.rx0, -1), pf = o.page ? o.page(sw.rx0, 1) : R.nearest(sw.rx0, 1); sw.lo = pb === null ? sw.rx0 : pb; sw.hi = pf === null ? sw.rx0 : pf; }
+      }
+      if (sw.on === 3) {
+        if (e.cancelable) e.preventDefault();
+        var cy = e.touches[0].clientY; sw.rx = Math.max(sw.lo, Math.min(sw.hi, sw.rx - (cy - sw.ly))); sw.ly = cy;
+        set(o.yOf(sw.rx));
+        var t3 = now(); sw.pts.push([t3, sw.rx]); while (sw.pts.length > 2 && t3 - sw.pts[0][0] > 100) sw.pts.shift();
+        return;
       }
       if (e.cancelable) e.preventDefault();
       var st = o.stops(), lo = st[0] || 0, hi = st[st.length - 1] || 0;
@@ -551,6 +571,18 @@
     }, { passive: false });
     o.stage.addEventListener('touchend', function (e) {
       var was = sw.on; sw.on = -1;
+      if (was === 3) {   // one screen the way the swipe went, from where it started; a short or stopped one settles back
+        R.eat = now(); R.down = false;
+        var p3 = sw.pts, v3 = 0, mv3 = sw.rx - sw.rx0;
+        if (p3.length > 1 && now() - p3[p3.length - 1][0] < 80) v3 = (p3[p3.length - 1][1] - p3[0][1]) / Math.max(8, p3[p3.length - 1][0] - p3[0][0]);
+        var d3 = Math.abs(mv3) >= 40 ? (mv3 > 0 ? 1 : -1) : Math.abs(v3) > 0.3 ? (v3 > 0 ? 1 : -1) : 0;
+        var t3x = d3 ? (d3 > 0 ? sw.hi : sw.lo) : R.nearest(sw.rx, 0);
+        if (t3x === null || t3x === undefined) return;
+        if (o.took) o.took();
+        var ty3 = o.yOf(t3x), k3 = Math.abs(t3x - sw.rx) > 1 ? (ty3 - window.scrollY) / (t3x - sw.rx) : 1;
+        R.glide(ty3, d3 && v3 * d3 > 0 ? v3 * k3 : 0, 380);
+        return;
+      }
       if (was !== 1) return;
       R.eat = now(); R.down = false;
       var p = sw.pts, v = 0;
@@ -561,7 +593,7 @@
       if (atEnd(dir, sw.rx0) && atEnd(dir, sw.rx) && (Math.abs(fx) >= 40 || Math.abs(fv) > 0.3) && R.exit(dir, Math.abs(fv) > 0.05 && fv * dir > 0 ? fv : 0)) return;
       R.settle(v, sw.rx, sw.rx - sw.rx0);
     }, { passive: true });
-    o.stage.addEventListener('touchcancel', function () { if (sw.on === 1) R.settle(0, sw.rx); sw.on = -1; }, { passive: true });
+    o.stage.addEventListener('touchcancel', function () { if (sw.on === 1 || sw.on === 3) { R.down = false; R.settle(0, sw.rx); } sw.on = -1; }, { passive: true });
     // a swipe never counts as a tap on what it started on
     o.stage.addEventListener('click', function (e) { if (now() - R.eat < 450) { e.preventDefault(); e.stopPropagation(); } }, true);
     return R;
@@ -571,6 +603,7 @@
     stage: stage, still: still,
     x: function () { return progress() * span; },
     stops: function () { return stopsClean(); },
+    page: function (x0, dir) { return pageFrom(x0, dir); },
     yOf: function (tx) { return y0 + (tx / Math.max(1, span)) * (y1 - y0); },
     on: function () { return span > 0 && window.scrollY >= y0 - 1 && window.scrollY <= y1 + 1; },
     // (instant: the page's smooth scrolling would turn every step of a drag or a glide into a slow chase)

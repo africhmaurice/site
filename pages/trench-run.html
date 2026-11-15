@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
-<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=13" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=12"></script>
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=14" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=13"></script>
 <!-- ============================================================
      TRENCH RUN (named by Maurice 10/12; was Sky Chase). Rebuilt 10/15 as its own kind of game
      (Maurice: "make it as different as possible", bigger and longer boards, no ghost mechanic, no side-to-side crossing).
@@ -852,6 +852,8 @@ window.TrenchXP = window.TrenchXP || (function () {
     var wrapW=root.querySelector('.ch-game').clientWidth-4;
     var padH=touchy?56*3+24+16:0;
     var avail=(window.innerHeight||800)-88-(root.querySelector('.ch-hud').offsetHeight||28)-12-padH-16;
+    /* on a phone the site's game frame says how much room the board has (game-frame.js section 21, 2026-11-15): the board fills it */
+    var room=window.maBoardRoom&&window.maBoardRoom();if(room>0)avail=room-4;
     T=Math.max(12,Math.floor(Math.min(wrapW/COLS,40)));
     VIS=Math.max(12,Math.min(ROWS,Math.floor(avail/T)));
     dpr=Math.min(2,window.devicePixelRatio||1);

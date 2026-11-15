@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
-<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=13" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=12"></script>
+<link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=14" onload="window.maCiRelines&&window.maCiRelines()">
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=13"></script>
 <!-- Generated copy of squarespace-wordle.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
 <!-- ============================================================
      DAILY WORD (SKYWORD) - a daily word game for the Cello's Gate Treasure Hunt.
@@ -1495,6 +1495,39 @@ var HGBoard = (function () {
     else if (e.key === 'Backspace') { e.preventDefault(); back(); }
     else if (/^[a-zA-Z]$/.test(e.key)) { e.preventDefault(); letter(e.key.toUpperCase()); }
   });
+  // the phone's own keyboard (Maurice, 2026-11-15: 'make it so that Skyword allows you to use your keyboard'): a tap on the board, or
+  // the Type button, opens it; its letters, its delete key, and its enter key play just as the keys under the board do, and those stay.
+  // The box that takes the letters is real but unseen (16px words, so a phone never zooms in on it); the site's game frame keeps the
+  // board in view over the keyboard (data-gs-kb). Words: DRAFT ('Type').
+  (function () {
+    var grid = document.getElementById('thw-grid'), keysEl = document.getElementById('thw-keys'), play = document.getElementById('thw-play');
+    if (!grid || !keysEl || !play) return;
+    var SEED = '.';
+    var inp = document.createElement('input');
+    inp.type = 'text'; inp.className = 'thw-type'; inp.id = 'thw-type'; inp.value = SEED; inp.tabIndex = -1;
+    inp.setAttribute('autocapitalize', 'characters'); inp.setAttribute('autocomplete', 'off'); inp.setAttribute('autocorrect', 'off');
+    inp.setAttribute('spellcheck', 'false'); inp.setAttribute('inputmode', 'text'); inp.setAttribute('enterkeyhint', 'go');
+    inp.setAttribute('aria-label', 'Type your guess'); inp.setAttribute('data-gs-kb', '#thw-grid');
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'thw-typebtn'; btn.setAttribute('aria-label', 'Type with your keyboard');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9 15h6"/></svg><span>Type</span>';
+    play.insertBefore(btn, keysEl); play.appendChild(inp);
+    function open() { if (over || !started) return; try { inp.focus({ preventScroll: true }); } catch (e) { inp.focus(); } reset(); }
+    function reset() { inp.value = SEED; try { inp.setSelectionRange(1, 1); } catch (e) {} }
+    btn.addEventListener('click', function (e) { e.preventDefault(); open(); });
+    grid.addEventListener('click', function () { if (window.matchMedia && matchMedia('(pointer:coarse)').matches) open(); });
+    inp.addEventListener('input', function () {
+      var v = inp.value;
+      if (v.indexOf(SEED) !== 0) back();   // the seed was deleted: one letter back
+      else v.slice(1).replace(/[^a-z]/gi, '').split('').forEach(function (ch) { if (ch) letter(ch.toUpperCase()); });
+      reset();
+    });
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); submit(); reset(); if (over) inp.blur(); }
+      else if (e.key === 'Backspace' && inp.value === SEED) { e.preventDefault(); back(); }
+    });
+    inp.addEventListener('blur', reset);
+  })();
 
   // ---- countdown to the next word -------------------------------------
   function tick() {
