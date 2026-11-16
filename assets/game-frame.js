@@ -660,6 +660,7 @@
   }
   function size(keep) {
     if (fsOn) { fsFit(); return; }   // full screen: only the game is fitted again (section 20)
+    if (tyHold() && window.innerWidth === tyW) { tyStale = Math.max(tyStale, keep === true ? 1 : 2); return; }   // typing: laid out again once the keyboard is gone (section 23)
     // (a browser with a smallest-text setting of 13px or more: the frame CSS scales a few tight rows of buttons instead; QA pass 8)
     document.documentElement.classList.toggle('gs-floor', floorPx() >= 13);
     document.documentElement.classList.toggle('gs-floor16', floorPx() >= 16);
@@ -828,6 +829,7 @@
   addEventListener('resize', function () {
     clearTimeout(rt);
     if (kbEl && window.innerWidth === kbW) { kbStale = true; kbLift(); return; }   // the on-screen keyboard came or went: the row holds still (section 20)
+    if (tyHold() && window.innerWidth === tyW) { tyStale = Math.max(tyStale, 2); return; }   // (any box in the row, and a keyboard on its way closed: section 23)
     rt = setTimeout(function again() { var nowWide = window.innerWidth >= 700; if (nowWide !== wasWide && !fsOn) { if (Date.now() - fsGone < 3000) { rt = setTimeout(again, 400); return; } location.reload(); return; } if (!fsOn) wasWide = nowWide; size(); }, 250);
   });
 
@@ -840,7 +842,7 @@
   }
   addEventListener('keydown', function (e) {
     if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-    if (fsOn || e.defaultPrevented || gameShown() || game.contains(document.activeElement)) return;
+    if (fsOn || e.defaultPrevented || gameShown() || game.contains(document.activeElement) || tyHold()) return;
     if (/INPUT|TEXTAREA|SELECT/.test((document.activeElement || {}).tagName || '')) return;
     var k = here(), d = e.key === 'ArrowRight' ? 1 : -1;
     while (k + d >= 0 && k + d < n && at[k + d] === at[k]) k += d;
@@ -932,7 +934,7 @@
     // ease onto a stop; v is the row's speed (row px per ms, more than zero going on); a swipe of 40px or more that is still
     // moving when the finger lifts goes on to the next stop that way, a drag that stopped first settles on the nearest
     R.settle = function (v, at, moved) {
-      if (!o.on()) return;
+      if (!o.on() || (o.hold && o.hold())) return;
       var x = at === undefined ? o.x() : at, dir = Math.abs(v) > 0.3 || (Math.abs(moved || 0) >= 40 && v * moved > 0 && Math.abs(v) > 0.08) ? (v > 0 ? 1 : -1) : 0, tx = dir ? R.nearest(x, dir) : null;
       if (tx === null) tx = R.nearest(x, 0);
       if (!dir && o.prefer) { var pf = o.prefer(); if (pf !== null && pf !== undefined) tx = pf; }
@@ -943,6 +945,7 @@
       R.glide(ty, v * k, T);
     };
     function idle() {
+      if (o.hold && o.hold()) { R.gx = null; return; }   // (typing: the row never settles anywhere; section 23)
       if (R.down || R.busy || wraf || (o.wait && o.wait()) || (window.maLenis && window.maLenis.isScrolling === 'smooth')) { R.idleT = setTimeout(idle, 90); return; }
       // a scroll that went a good way (a quarter of the way to the next stop, or 120px) carries on to that stop; a small one
       // settles back on the nearest
@@ -1016,7 +1019,10 @@
     // whole panel, the game itself, on one swipe; Maurice's players, 2026-11-15: 'playthrough skipped Sort the Shelf')
     o.stage.addEventListener('touchstart', function (e) {
       var u = under(e);
-      sw.on = -1; if (e.touches.length !== 1) return;
+      sw.on = -1; sw.far = false; sw.fh = 0;
+      if (o.hold && o.hold()) { sw.on = -2; sw.hs = o.hold(1, u); return; }   // typing: no finger moves the row (section 23)
+      if (e.touches.length !== 1) return;
+      sw.far = !!(o.far && o.far(u));   // (a daily puzzle under way, a touch in its panel off the card: only a long sideways swipe)
       sw.h = !(o.skip && o.skip(u, 'touch'));   // a sideways drag may move the row
       sw.v = !(o.skipY ? o.skipY(u) : !sw.h) && o.on();   // an up or down drag may move the row, a stop at a time
       if (!sw.h && !sw.v) return;
@@ -1024,16 +1030,25 @@
       sw.x = sw.lx = e.touches[0].clientX; sw.y = sw.ly = e.touches[0].clientY;
     }, { passive: true });
     o.stage.addEventListener('touchmove', function (e) {
+      if (sw.on === -2) { if (e.cancelable && !sw.hs) e.preventDefault(); return; }   // (the page holds still too; a box that scrolls itself still does)
       if (sw.on < 0) return;
       if (e.touches.length !== 1) { if (sw.on === 1) R.settle(0, sw.rx); if (sw.on === 3) R.settle(0, sw.rx); sw.on = -1; return; }
       var cx = e.touches[0].clientX, dx = cx - sw.x, dy = e.touches[0].clientY - sw.y;
       if (!sw.on) {
         if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
         var side = Math.abs(dx) > Math.abs(dy) * 1.2;
+        // (section 23: 80px or more and mostly sideways moves the row; until then the page holds still, and a swipe that turns up or
+        // down partway is nobody's; one that starts up or down scrolls as always)
+        if (sw.far && (side || sw.fh)) {
+          sw.fh = 1; sw.hs = false;
+          if (Math.abs(dx) < 80) { if (Math.abs(dy) > 40) sw.on = -2; if (e.cancelable) e.preventDefault(); return; }
+          if (Math.abs(dx) <= Math.abs(dy) * 2) { sw.on = -2; if (e.cancelable) e.preventDefault(); return; }
+          side = true;
+        }
         // (up or down at either end of the row: the page scrolls on past it as it always has)
         sw.on = side ? (sw.h ? 1 : -1) : (sw.v && !atEnd(dy < 0 ? 1 : -1, o.x()) ? 3 : -1);
         if (sw.on < 0) return;
-        R.stop(); R.gx = null; sw.rx = sw.rx0 = o.x(); sw.pts = []; sw.edge = 0; sw.lx = sw.x; sw.ly = sw.y; if (o.took) o.took(); if (o.grab) o.grab();   // (from where the finger went down: the row stays under it)
+        R.stop(); R.gx = null; sw.rx = sw.rx0 = o.x(); sw.pts = []; sw.edge = 0; sw.lx = sw.fh ? cx : sw.x; sw.ly = sw.y; sw.fh = 0; if (o.took) o.took(); if (o.grab) o.grab();   // (from where the finger went down: the row stays under it)
         if (sw.on === 3) { R.down = true; var pb = o.page ? o.page(sw.rx0, -1) : R.nearest(sw.rx0, -1), pf = o.page ? o.page(sw.rx0, 1) : R.nearest(sw.rx0, 1); sw.lo = pb === null ? sw.rx0 : pb; sw.hi = pf === null ? sw.rx0 : pf; }
       }
       if (sw.on === 3) {
@@ -1074,6 +1089,7 @@
       R.settle(v, sw.rx, sw.rx - sw.rx0);
     }, { passive: true });
     o.stage.addEventListener('touchcancel', function () { if (sw.on === 1 || sw.on === 3) { R.down = false; R.settle(0, sw.rx); } sw.on = -1; }, { passive: true });
+    o.stage.addEventListener('touchend', function () { if (sw.on === -2) sw.on = -1; }, { passive: true });
     // a swipe never counts as a tap on what it started on
     o.stage.addEventListener('click', function (e) { if (now() - R.eat < 450) { e.preventDefault(); e.stopPropagation(); } }, true);
     return R;
@@ -1098,6 +1114,9 @@
     skip: function (t, how) { return !!fsOn || held21(t) || (how === 'wheel' ? inGame(t) : inPlay(t)); },
     skipY: function (t) { return !!fsOn || held21(t) || inPlayY(t); },
     wait: function () { return held(); },
+    // (section 23) typing: the row holds still (with a target: is it in a box that scrolls itself?); far: a touch in a daily's panel off its card
+    hold: function (ask, t) { if (!ask) return tyHold(); for (var e = t; e && e !== stage && e.nodeType === 1; e = e.parentElement) { var oy = getComputedStyle(e).overflowY; if ((oy === 'auto' || oy === 'scroll') && e.scrollHeight > e.clientHeight + 1) return true; } return false; },
+    far: function (t) { return dailyLive() && game.contains(t) && !inCard(t); },
     took: function () { gameTouch = 0; userAt = Date.now(); },
     grab: function () { kbDone(); },   // (a swipe the row takes: the visitor is moving on, not typing)
     // a game just pressed stays centered (Maurice: 'I pressed play and the screen went off center'), but never once it's over and
@@ -1455,7 +1474,7 @@
       var card = q('.hg-card, #daily-word main', game);
       var gw = Math.round(Math.max(card === el ? 360 : 480, w * z, card && card !== el ? card.offsetWidth : 0) + parseFloat(gs.paddingLeft) + parseFloat(gs.paddingRight));
       gw = Math.min(gw, Math.floor(vw / gz));   // never wider than the screen, so it's always seen whole at a stop
-      if (Math.abs(game.getBoundingClientRect().width / gz - gw) > 1) { game.style.width = gw + 'px'; if (fresh !== true) { layout(); paint(); } }
+      if (Math.abs(game.getBoundingClientRect().width / gz - gw) > 1) { game.style.width = gw + 'px'; if (fresh !== true) { if (tyHold()) tyStale = Math.max(tyStale, 1); else { layout(); paint(); } } }
     }
   }
   var ft = 0;
@@ -1465,6 +1484,7 @@
   // the start card gives way to the board: scale the game and its panel again for what's showing now
   function refit() {
     if (fsOn) { fsFit(); return; }
+    if (tyHold()) { tyRefit = true; return; }   // (section 23)
     letGo();
     if (!wide) { fit(true); fitLabels(); alignChamp(); gameTop = topIn(); return; }   // the banner follows the board when the start card gives way
     game.style.zoom = ''; game.style.height = ''; game.style.removeProperty('--gz');
@@ -1628,7 +1648,7 @@
   // the row moving on (an arrow, a section, a swipe it takes, the glide to a result): the typing is over, so the keyboard closes and
   // the row is free to go (Skyword and Book Icons: a box still focused after a solve held the row on the game, pulling every swipe
   // and arrow back to it; QA 2026-11-15)
-  function kbDone() { if (!kbEl && !game.classList.contains('gs-kb')) return; var e = kbEl; kbEl = null; try { if (e && document.activeElement === e) e.blur(); } catch (er) {} kbLift(); if (kbStale) { kbStale = false; size(true); } }
+  function kbDone() { tyFree = true; tyLock = null; if (fieldOn() && !game.contains(document.activeElement)) { try { document.activeElement.blur(); } catch (er) {} } if (!kbEl && !game.classList.contains('gs-kb')) return; var e = kbEl; kbEl = null; try { if (e && document.activeElement === e) e.blur(); } catch (er) {} kbLift(); if (kbStale) { kbStale = false; size(true); } }
   function kbLift() {
     var vv = window.visualViewport, lift = 0;
     if (kbEl && vv) {
@@ -1656,6 +1676,72 @@
   if (window.visualViewport) ['resize', 'scroll'].forEach(function (ev) { visualViewport.addEventListener(ev, function () { if (kbEl || game.classList.contains('gs-kb')) kbLift(); }); });
   addEventListener('scroll', function () { if (kbEl && !fsOn && Math.abs(window.scrollY - kbY) > 1 && Date.now() - userAt > 400) wTo(0, kbY); }, { passive: true });
 
+  // ---------- 23. Phones: typing, and a daily puzzle under way (Maurice's players, 2026-11-15: 'the daily games are acting super weird on
+  // mobile. It keeps trying to swipe to the next thing when I'm trying to enter text') ----------
+  // While a box anywhere in the row has focus (Skyword's type box, Book Icons' answer, the sign-in questions, the XP box's Discord name)
+  // or the on-screen keyboard is open, the row never moves: no swipe, no settle, no new layout, no arrow key, and the page holds its
+  // scroll. The keyboard opening or closing changes nothing; once it has been gone a moment, anything that wanted a new layout gets
+  // it, with the row kept on the screen it was on. Only the row's own arrows and sections (which close the keyboard first) move it.
+  // While a daily puzzle's clock runs (START pressed, no result yet), a touch on its card never moves the row, however it drifts; a
+  // touch in the game's screen off the card moves it only with a long sideways swipe (80px or more). Before START and once the
+  // result is up, the card swipes as before.
+  var touchy = ('ontouchstart' in window) || (navigator.maxTouchPoints || 0) > 0;
+  var tyLock = null, tyStale = 0, tyRefit = false, tyOff = 0, tyFree = false, tyW = window.innerWidth;
+  function fieldOn() {
+    var a = document.activeElement; if (!a || a === document.body || !stage.contains(a)) return false;
+    if (a.isContentEditable) return true;
+    return /^(INPUT|TEXTAREA)$/.test(a.tagName) && !/^(button|submit|reset|checkbox|radio|range|image|file|color)$/.test(a.type || '');
+  }
+  function kbOpen() { var vv = window.visualViewport; return !!vv && vv.height * (vv.scale || 1) < window.innerHeight - 120; }
+  function tyNow() { return touchy && !fsOn && (fieldOn() || (!tyFree && kbOpen())); }
+  function tyHold() { return tyNow() || (touchy && !fsOn && !tyFree && tyOff > 0); }   // (and a moment after, while the keyboard closes)
+  stage.addEventListener('focusin', function () {
+    if (!touchy || !fieldOn()) return;
+    tyFree = false; tyOff = 0; if (tyLock === null && !(snap && snap.busy)) { tyW = window.innerWidth; tyLock = window.scrollY; }
+  });
+  addEventListener('scroll', function () { if (tyLock !== null && tyHold() && Math.abs(window.scrollY - tyLock) > 1) wTo(0, tyLock); }, { passive: true });
+  setInterval(function () {
+    if (!touchy) return;
+    if (tyNow()) { tyOff = 0; if (tyLock === null && !(snap && snap.busy)) { tyW = window.innerWidth; tyLock = window.scrollY; } return; }
+    if (tyLock === null && !tyStale && !tyRefit) { tyOff = 0; return; }
+    if (!tyFree && !tyOff) { tyOff = Date.now(); return; }
+    if ((!tyFree && Date.now() - tyOff < 600) || (snap && snap.busy) || touching) return;
+    var st = tyStale, rf = tyRefit, k = here(); tyStale = 0; tyRefit = false; tyOff = 0; tyLock = null;
+    if (!st && !rf) return;
+    if (rf) refit();
+    if (st) size(st === 2 ? undefined : true);
+    var y = stopY(at[k] || 0); if (Math.abs(window.scrollY - y) > 1) wTo(0, y);   // (the row stays on the screen it was on)
+    paint();
+  }, 150);
+  // a daily puzzle: its card, and whether its clock runs (START pressed and no result showing yet)
+  var daily = /^(\.hg-card|#daily-word main)$/.test(cfg.zoom || '');
+  function inCard(t) { var c = daily && q(cfg.zoom, game); return !!(c && t && c.contains(t)); }
+  function dailyLive() {
+    if (!daily || !q(cfg.zoom, game) || q('.dbd-cover', game)) return false;
+    if (resultsIn(game).length) return false;
+    var cp = track.querySelector('.gs-cardp'); return !(cp && cp.style.display !== 'none' && resultsIn(cp).length);
+  }
+  // ...and a quick tap on one of its buttons (a square, a key, a tool) counts even when the finger slides a little as it lifts (up to
+  // 30px), where the browser would drop it: the tap is made here, once, instead of by the browser
+  var tapSt = null;
+  game.addEventListener('touchstart', function (e) {
+    tapSt = null;
+    if (e.touches.length !== 1 || !dailyLive() || !inCard(e.target)) return;
+    var b = e.target.closest && e.target.closest('button, [role="button"]'); if (!b || !inCard(b) || !pans(e.target, 'x')) return;   // (never one the game drags: Sort the Shelf's books)
+    tapSt = { b: b, x: e.touches[0].clientX, y: e.touches[0].clientY, at: Date.now() };
+  }, { capture: true, passive: true });
+  game.addEventListener('touchmove', function (e) {
+    if (!tapSt) return;
+    var t = e.touches[0]; if (e.touches.length !== 1 || !t || Math.max(Math.abs(t.clientX - tapSt.x), Math.abs(t.clientY - tapSt.y)) > 30) tapSt = null;
+  }, { capture: true, passive: true });
+  game.addEventListener('touchend', function (e) {
+    var s = tapSt; tapSt = null;
+    if (!s || e.touches.length || !e.cancelable || Date.now() - s.at > 800 || !s.b.isConnected) return;
+    e.preventDefault();   // (no click from the browser too)
+    if (!s.b.disabled) s.b.click();
+  }, { capture: true, passive: false });
+  game.addEventListener('touchcancel', function () { tapSt = null; }, { capture: true, passive: true });
+
   // ---------- 21. Real-phone playtest (Maurice's players on an Android phone, 2026-11-15) ----------
   // A run that is on owns every touch that starts in the game: the row never moves and the page never scrolls for it ('Airship runner
   // when I was dragging the ship dragged the page left and right as well'), and a touch on a game's canvas never moves them at all.
@@ -1675,12 +1761,26 @@
   function held21(t) {
     if (!t || !t.closest || !game.contains(t)) return false;
     if (t.closest('.gs-howov') || t.closest('canvas')) return true;
-    return running();
+    return running() || (dailyLive() && inCard(t));   // (and a daily puzzle's card while its clock runs: section 23)
   }
   var runT = false;
-  game.addEventListener('touchstart', function () { runT = running(); }, { capture: true, passive: true });
+  var runD = null;
+  game.addEventListener('touchstart', function (e) {
+    runD = !running() && dailyLive() && inCard(e.target) && e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY, v: null } : null;
+    runT = running() || !!runD;
+  }, { capture: true, passive: true });
   game.addEventListener('touchmove', function (e) {
     if (!runT || !e.cancelable || fsOn === 'pseudo') return;
+    // (a daily's game screen that scrolls inside itself, on a short phone: an up or down swipe on the card still scrolls it, as long as
+    // it has room to go that way, so the row never moves for it; section 23)
+    if (runD && game.classList.contains('gs-scrolly') && e.touches[0]) {
+      if (runD.v === null) {
+        var ddx = e.touches[0].clientX - runD.x, ddy = e.touches[0].clientY - runD.y;
+        if (Math.abs(ddx) < 4 && Math.abs(ddy) < 4) return;
+        runD.v = Math.abs(ddy) > Math.abs(ddx) && (ddy < 0 ? game.scrollTop + game.clientHeight < game.scrollHeight - 1 : game.scrollTop > 0);
+      }
+      if (runD.v) return;
+    }
     for (var t = e.target; t && t !== game; t = t.parentElement) { var o = getComputedStyle(t).overflowY; if ((o === 'auto' || o === 'scroll') && t.scrollHeight > t.clientHeight + 1) return; }
     e.preventDefault();
   }, { passive: false });
@@ -1885,7 +1985,7 @@
       Array.prototype.forEach.call(box.children, function (c) { if (bgLayer(c) || !c.getClientRects().length) return; var b = c.getBoundingClientRect(); if (!b.height) return; t0 = Math.min(t0, b.top); b0 = Math.max(b0, b.bottom); });
       if (t0 < top || b0 > bot) { hit = p; sig = i + ':' + Math.round(t0 - top) + ':' + Math.round(b0 - bot) + ':' + Math.round(pr.width); }
     });
-    if (!hit || overTried[sig]) return;
+    if (!hit || overTried[sig] || tyHold()) return;
     var now = Date.now(); overLog = overLog.filter(function (t) { return now - t < 10000; }); if (overLog.length >= 3) return;
     overTried[sig] = 1; overLog.push(now);
     if (hit === game) refit(); else size();

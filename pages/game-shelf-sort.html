@@ -1,6 +1,6 @@
 <!-- Edited by hand 2026-11-12 (page redesign, sandbox): the frame around the game (the Arcade switcher, the name and its lines, the ground around the board) comes from assets/game-frame.css, linked on the next line; the sideways row of panels (game, How to play, leaderboards, the Arcade) comes from assets/game-frame.js, on the line after. The generator that wrote this file doesn't know about it, so rerunning it would drop the new frame. -->
 <link rel="stylesheet" href="https://africhmaurice.github.io/site/assets/game-frame.css?v=15" onload="window.maCiRelines&&window.maCiRelines()">
-<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=15"></script>
+<script src="https://africhmaurice.github.io/site/assets/game-frame.js?v=16"></script>
 <!-- Generated copy of squarespace-game-shelf-sort.html from the treasure-hunt-leaderboard project. Edit it there, then run npm run publish. -->
 <!-- ============================================================
      Sort the Shelf - a daily game for the Cello's Gate Treasure Hunt.
@@ -1311,18 +1311,21 @@ var HG_GAME = {"key":"shelf_sort","label":"Sort the Shelf","points":40,"startDat
     if (d.ghost) d.ghost.remove();
     var it = d.b.dataset.item;
     if (!d.moved) return;          // a plain tap: the click handler below picks the book
-    justDragged = true; setTimeout(function () { justDragged = false; }, 0);
+    justDragged = Date.now();   // (the browser's own click can come a moment later: it never counts too)
     var c = caseEl.getBoundingClientRect();
     if (e.clientX > c.left && e.clientX < c.right && e.clientY > c.top && e.clientY < c.bottom) {
       if (sel.indexOf(it) < 0) { if (sel.length >= 4) return HG.toast('FOUR BOOKS AT A TIME'); sel.push(it); }
       paintBooks();
       if (sel.length === 4) submit();
     }
+    // a tap whose finger slid a little (under 40px) and let go off the bookcase is still a tap (Maurice's players, 2026-11-15: taps on
+    // a phone drift as the finger lifts)
+    else if (Math.abs(e.clientX - d.x) + Math.abs(e.clientY - d.y) < 40) toggle(it);
   }
   gridEl.addEventListener('pointerup', endDrag);
   // taps, clicks and the keyboard (Enter/Space on a book) all arrive here
-  var justDragged = false;
-  gridEl.addEventListener('click', function (e) { var b = e.target.closest('.ss-book'); if (b && !justDragged) toggle(b.dataset.item); });
+  var justDragged = 0;
+  gridEl.addEventListener('click', function (e) { var b = e.target.closest('.ss-book'); if (b && Date.now() - justDragged > 400) toggle(b.dataset.item); });
   gridEl.addEventListener('pointercancel', function () { if (drag && drag.ghost) drag.ghost.remove(); drag = null; caseEl.classList.remove('drop'); });
 
   document.getElementById('ss-shuffle').onclick = function () { order = st.order = HG.shuffle(order, Date.now() & 0xffff); paintBooks(); };
