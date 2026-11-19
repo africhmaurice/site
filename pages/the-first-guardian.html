@@ -1150,6 +1150,16 @@
   }
   showMe();
   if (!PREVIEW && (closed || notYet)) { $('px-go').disabled = true; $('px-msg').textContent = closed ? 'The fight is over.' : 'The fight opens ' + when(DATA.opens) + '.'; }
+  // After the fight, no form: just how it ended and where the story goes next (Maurice, 2026-11-18: "remove the forms").
+  // A fren who fought still gets their own battle back below (pxstate hides this card).
+  if (!PREVIEW && closed) {
+    var who = $('px-who'), acts = who.querySelector('.acts');
+    who.querySelector('.kick').textContent = 'THE FIGHT IS OVER';
+    who.querySelector('h2').textContent = 'The Battles Are In';
+    $('px-who-note').textContent = '24 frens fought Paraxis, and the crew won 19 of the 24 battles. But Scarlett fell in 13 of them. There are four medpacks the crew never used.';
+    $('px-form').hidden = true; $('px-me').hidden = true; $('px-msg').textContent = '';
+    acts.innerHTML = '<a class="btn" href="https://www.mauriceafrich.com/one-last-medpack" style="display:inline-block;text-decoration:none">NEXT: ONE LAST MEDPACK</a>';
+  }
 
   // ---- the battle on screen ----
   var view = null, busy = false;

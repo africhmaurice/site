@@ -747,6 +747,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       shared.setSize(120, 120, false);
       return shared;
     }
+    var CARD = {};   // shared by every card die: studio env, geometry, materials per label set
     function build(id, node) {
       var cv = node.querySelector('canvas');
       var r = sharedRenderer(), px = Math.round(120 * Math.min(window.devicePixelRatio || 1, 2));
@@ -754,10 +755,10 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
       var c2 = cv.getContext('2d');
       var scene = new T.Scene(), cam = new T.PerspectiveCamera(30, 1, 0.1, 50);
       cam.position.set(0, 0, 6.4); cam.lookAt(0, 0, 0);
-      var pm = new T.PMREMGenerator(r); scene.environment = pm.fromEquirectangular(studio()).texture; pm.dispose();
+      if (!CARD.env) { var pm = new T.PMREMGenerator(r); CARD.env = pm.fromEquirectangular(studio()).texture; pm.dispose(); } scene.environment = CARD.env;
       scene.add(new T.HemisphereLight(0xfff4e6, 0x2c1a10, 0.35));
       var sun = new T.DirectionalLight(0xffffff, 0.8); sun.position.set(-3, 5, 5); scene.add(sun);
-      var mesh = new T.Mesh(dieGeometry(), dieMaterials(LAB[id]));
+      var mk = LAB[id] ? 'lab:' + JSON.stringify(LAB[id]) : 'num'; var mesh = new T.Mesh(CARD.geo || (CARD.geo = dieGeometry()), CARD[mk] || (CARD[mk] = dieMaterials(LAB[id])));
       mesh.quaternion.copy(idle());
       scene.add(mesh);
       var d = { r: r, c2: c2, scene: scene, cam: cam, mesh: mesh, node: node, shadow: node.querySelector('.rc-die-shadow'), raf: 0, y: 0 };

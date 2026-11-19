@@ -1247,7 +1247,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
 @media (max-width:760px){
   #av .avt-rail{left:8px;width:38px;gap:3px}
   #av .avt-r{font-size:clamp(12px,2.1vh,17px)}
-  #av.avt-railed .av-wrap{padding-left:56px}
+  #av.avt-railed .av-wrap{padding-left:66px}   /* 20px clear of the rail (Maurice, 2026-11-18: numbers sat right against the text) */
   /* phones (QA 2026-11-14): a slimmer route lane leaves the cards more room */
   #av .av-line{padding-left:36px}
   #av .av-line::before{left:15px}
@@ -1397,7 +1397,7 @@ sup{font-size:.6em !important;line-height:0 !important;display:inline-block !imp
     rail.classList.add('avt-two'); root.classList.add('avt-two');
     rail.style.setProperty('--avt-row', row.toFixed(2) + 'px');
     if (fs < css) rail.style.setProperty('--avt-fs', fs.toFixed(2) + 'px');
-    root.style.setProperty('--avt-pad', Math.ceil(rail.getBoundingClientRect().right - root.getBoundingClientRect().left + 12) + 'px');
+    root.style.setProperty('--avt-pad', Math.ceil(rail.getBoundingClientRect().right - root.getBoundingClientRect().left + 20) + 'px');
   }
   railPlace();
   addEventListener('scroll', railPlace, { passive: true });
