@@ -1000,14 +1000,22 @@ var HGBoard = (function () {
       }).join('') + (you && you.rank > list.length ? '<li class="me you"><i>' + you.rank + '</i><span>You' + (players ? ' (of ' + players + ')' : '') + '</span><b>' + fmt(you.best) + ' fastest</b></li>'
         : you && you.status && !list.some(function (r) { return r.status && r.me; }) && !(mine && list.some(function (r) { return r.status && String(r.name).toLowerCase() === mine; })) ? '<li class="me you dbd-st"><i>&ndash;</i><span>You</span><b>' + (you.status === 'playing' ? 'Playing' : 'Did not finish') + '</b></li>' : '');
     }
+    // The last board this device saw for this game and week shows at once (Maurice 11/18: "Loading the board..." sat
+    // 6-15 s while the web app woke up); the fresh one replaces it when it lands.
+    function showTop(res) {
+      if (res.week) week = res.week; paint(res.top, res.me, res.players);
+      if (startedEl) startedEl.textContent = res.started ? res.started + ' started, ' + (res.players || 0) + ' finished' : '';
+    }
     function refresh() {
       if (!boardEl) return;
-      var em = ((o.me && o.me()) || {}).email, q = { action: 'dailytop', game: o.game };
+      var em = ((o.me && o.me()) || {}).email, q = { action: 'dailytop', game: o.game }, had = null, mine = String(em || '').toLowerCase();
       if (em) q.email = em;
+      try { had = JSON.parse(localStorage.getItem('thDailyTop:' + o.game) || 'null'); } catch (e) {}
+      var cached = had && had.res && had.res.ok && had.em === mine && had.res.week === week ? had.res : null;
+      if (cached) showTop(cached);
       o.send(q, function (res) {
-        if (res && res.ok) { if (res.week) week = res.week; paint(res.top, res.me, res.players);
-          if (startedEl) startedEl.textContent = res.started ? res.started + ' started, ' + (res.players || 0) + ' finished' : ''; }
-        else boardEl.innerHTML = '<li><span class="dbd-empty">The board is resting. Try again soon.</span></li>';
+        if (res && res.ok) { showTop(res); try { localStorage.setItem('thDailyTop:' + o.game, JSON.stringify({ em: mine, res: res })); } catch (e) {} }
+        else if (!cached) boardEl.innerHTML = '<li><span class="dbd-empty">The board is resting. Try again soon.</span></li>';
       });
     }
 
