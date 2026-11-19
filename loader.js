@@ -147,10 +147,10 @@ if (MAINT && window.__maClosed) { window.maAfterLoading = function () {}; }
   (function top() {
     if (!document.body) { document.addEventListener('DOMContentLoaded', top); return; }
     var css = document.createElement('style');
-    css.textContent = '#ma-top{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:calc(20px + env(safe-area-inset-bottom));z-index:2147483000;width:52px;height:52px;padding:0;border:2px solid #fffffe;border-radius:0;background:#0b170f;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .3s ease,transform .3s ease,visibility 0s linear .3s,background-color .2s ease;cursor:pointer}' +
+    css.textContent = '#ma-top{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:calc(14px + env(safe-area-inset-bottom));z-index:2147483000;width:40px;height:40px;padding:0;border:2px solid #fffffe;border-radius:0;background:#0b170f;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .3s ease,transform .3s ease,visibility 0s linear .3s,background-color .2s ease;cursor:pointer}' +
       '#ma-top.on{opacity:1;visibility:visible;transform:none;transition:opacity .3s ease,transform .3s ease,background-color .2s ease}' +
       '#ma-top:hover,#ma-top:focus-visible{background:#c53200}#ma-top:focus-visible{outline:2px solid #a2f590;outline-offset:3px}' +
-      '#ma-top img{height:28px;width:auto;display:block;pointer-events:none}' +
+      '#ma-top img{height:20px;width:auto;display:block;pointer-events:none}' +
       // the sideways sliders keep a bar along the bottom; the button sits above it there
       'body:has(.lk-prog,.ac-prog,.gs-prog,[data-ma-hz]) #ma-top{bottom:calc(max(18px,3svh) + 34px)}' +
       // game pages (QA 2026-11-14): wide screens: down beside the bar, which ends short of it, so it never covers a panel's corner;
