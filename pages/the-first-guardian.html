@@ -1496,7 +1496,8 @@
   };
   // coming back to a battle already started
   if (me.email && !PREVIEW && !CAPTAIN) api({ action: 'pxstate', email: me.email }).then(function (res) { if (res && res.ok && res.state) { $('px-who').hidden = true; enter(res.state, [], false); } });
-  if (!PREVIEW) send({ action: 'pxcount' }).then(function (res) { $('px-count').textContent = res && res.ok ? Number(res.count).toLocaleString('en-US') : '—'; });
+  if (closed) $('px-count').textContent = '24';   // final count, Maurice and test rows left out
+  else if (!PREVIEW) send({ action: 'pxcount' }).then(function (res) { $('px-count').textContent = res && res.ok ? Number(res.count).toLocaleString('en-US') : '—'; });
   else $('px-count').textContent = '0';
 
   // ---- the Captain banks Paraxis's rolls ----
