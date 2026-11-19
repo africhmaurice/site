@@ -1158,7 +1158,9 @@
     who.querySelector('h2').textContent = 'The Battles Are In';
     $('px-who-note').textContent = '24 frens fought Paraxis, and the crew won 19 of the 24 battles. But Scarlett fell in 13 of them. There are four medpacks the crew never used.';
     $('px-form').hidden = true; $('px-me').hidden = true; $('px-msg').textContent = '';
-    acts.innerHTML = '<a class="btn" href="https://www.mauriceafrich.com/one-last-medpack" style="display:inline-block;text-decoration:none">NEXT: ONE LAST MEDPACK</a>';
+    // keep #px-go in the page (hidden): later code wires it, and removing it stopped the rest of the script
+    $('px-go').hidden = true; $('px-go').style.display = 'none';
+    acts.insertAdjacentHTML('beforeend', '<a class="btn" href="https://www.mauriceafrich.com/one-last-medpack" style="display:inline-block;text-decoration:none">NEXT: ONE LAST MEDPACK</a>');
   }
 
   // ---- the battle on screen ----
