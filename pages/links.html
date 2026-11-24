@@ -38,6 +38,10 @@
 #ma-links .lk-quiz em{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;background:#c53200;color:#fffffe;font-style:normal;font-weight:800;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
 #ma-links .lk-quiz em svg{width:16px;height:16px}
 #ma-links .lk-quiz:hover{transform:scale(1.02)}
+#ma-links .lk-ama{display:block;text-decoration:none!important;transition:transform .15s ease}
+#ma-links .lk-ama img{display:block;width:100%;height:auto;box-shadow:0 10px 28px rgba(0,0,0,.45)}
+#ma-links .lk-ama:hover{transform:scale(1.02)}
+@media (prefers-reduced-motion:reduce){#ma-links .lk-ama{transition:none}}
 @media (max-width:520px){#ma-links .lk-quiz{grid-template-columns:minmax(0,1fr);gap:16px;padding:20px}#ma-links .lk-quiz span{align-items:center;text-align:center}}
 #ma-links .lk-feats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 #ma-links .lk-secs{display:flex;flex-direction:column;gap:30px;margin-top:8px}
@@ -137,6 +141,8 @@
 <div id="ma-links">
   <div class="lk-sky" aria-hidden="true"></div><div class="lk-wash" aria-hidden="true"></div>
   <div class="lk-in">
+    <!-- r/Fantasy AMA banner (Maurice, 11/24): his AMA cover at the very top, tapping through to the Reddit post. -->
+    <a class="lk-ama" href="https://www.reddit.com/r/Fantasy/s/qCWDJVdLzR" target="_blank" rel="noopener" data-link="reddit-ama" data-section="top"><img src="https://africhmaurice.github.io/site/assets/links/ama-cover.webp" alt="Maurice Africh with Cello's Gate: I'm the author of Cello's Gate. Ask me anything." width="1200" height="900" loading="eager" decoding="async"></a>
     <header class="lk-top">
       <img class="lk-cover" src="https://africhmaurice.github.io/site/assets/press/cover-saga-floating.webp" alt="Cello's Gate by Maurice Africh" width="1600" height="1600" loading="eager" decoding="sync" fetchpriority="high">
       <h1>Cello's Gate</h1>
@@ -345,6 +351,8 @@
 .lk-hz .lk-gg.lk-full{display:flex;align-items:center;justify-content:center;width:calc(100vw - 2 * max(24px,6vw));min-height:calc(var(--u) * 4 + 24px)}
 /* the opening screen keeps the next group wholly off screen until the row moves (QA 2026-11-14: at 1920 its name peeked in as "CH") */
 .lk-hz .lk-grp:has(> .lk-gg.lk-full){margin-right:max(0px,calc(max(24px,6vw) - var(--u) * .6 + 2px))}
+#ma-links.lk-hz .lk-full > .lk-ama{display:flex;justify-content:center;width:100%;padding:20px}
+#ma-links.lk-hz .lk-full > .lk-ama img{display:block;width:auto;max-width:none;height:min(calc(var(--u) * 4 - 16px),calc((100vw - 2 * max(24px,6vw) - 40px) * .75))}   /* height-led, so the 4:3 picture never stretches */
 .lk-hz .lk-full > .lk-top{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;width:100%;padding:20px;background:none;border:0}
 #ma-links.lk-hz .lk-top .lk-cover{width:auto;height:min(54svh,calc(100vw - 64px));max-width:none;object-fit:contain;margin:-4svh 0 -3svh}
 @media (max-width:700px){#ma-links.lk-hz .lk-top .lk-cover{height:min(40svh,64vw);margin:0}}
@@ -395,6 +403,8 @@
   .lk-hz .lk-mt.s,.lk-hz .lk-mt.s2,.lk-hz .lk-mt.m,.lk-hz .lk-mt.w{grid-column:span 1;grid-row:span 1}
   .lk-hz .lk-mt.l,.lk-hz .lk-mt.t{grid-column:span 1;grid-row:span 2}
   .lk-hz .lk-gg.lk-full{width:calc(100vw - 40px);min-height:calc(var(--rowh,180px) * 3 + 16px)}
+  #ma-links.lk-hz .lk-full > .lk-ama{padding:0}
+  #ma-links.lk-hz .lk-full > .lk-ama img{height:min(calc(var(--rowh,180px) * 3 + 16px),calc((100vw - 40px) * .75))}
   #ma-links.lk-hz .lk-top .lk-cover{height:min(30svh,52vw)}
   #ma-links.lk-hz .lk-top h1{font-size:clamp(32px,10vw,48px)}
   #ma-links.lk-hz .lk-top .lk-line{font-size:clamp(12px,3.7vw,16px);white-space:nowrap}
@@ -459,6 +469,9 @@
   var top = inner.querySelector('.lk-top'), socs = q('.lk-soc', top), eds = q('.lk-eds .lk-ed'), quiz = inner.querySelector('.lk-quiz');
   var feats = q('.lk-feats > *'), news = inner.querySelector('.lk-news'), secs = q('.lk-sec'), endBits = q('.lk-foot, .lk-flogo');
 
+  // 0. the r/Fantasy AMA cover, a whole first stop of its own, tapping through to the Reddit post (Maurice 2026-11-24)
+  var ama = inner.querySelector('.lk-ama');
+  if (ama) { var ga = group(''); ga.classList.add('lk-full'); ga.appendChild(ama); }
   // 1. Cello's Gate: the book, its name, and the icons under it, filling the screen with no tile (Maurice 2026-11-12)
   var g = group('');
   g.classList.add('lk-full');
@@ -521,7 +534,7 @@
   var segs = q('.lk-grp', track).map(function (gr, i) {
     var b = document.createElement('button'), h = gr.querySelector('.lk-h');
     var first = gr.querySelector('.lk-name, .lk-quiz b');
-    var name = (h && h.textContent.trim()) || (i === 0 ? "Cello's Gate" : gr.querySelector('.lk-endt') ? 'mauriceafrich.com' : first ? first.textContent.trim() : 'Section ' + (i + 1));
+    var name = (h && h.textContent.trim()) || (gr.querySelector('.lk-ama') ? 'Reddit AMA' : gr.querySelector('.lk-top') ? "Cello's Gate" : gr.querySelector('.lk-endt') ? 'mauriceafrich.com' : first ? first.textContent.trim() : 'Section ' + (i + 1));
     b.type = 'button'; b.className = 'lk-seg'; b.title = name; b.setAttribute('aria-label', name);
     b.innerHTML = '<i></i>';
     b.addEventListener('click', function () { goTo(gr); });
