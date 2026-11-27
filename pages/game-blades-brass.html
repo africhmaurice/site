@@ -975,7 +975,7 @@ var HGBoard = (function () {
     // the reigning champion across the top of the game (Maurice, 2026-10-24), from the leaderboard site's champions.json,
     // which lists each board's latest paid weekly winner; no banner until a week has been paid
     function champ() {
-      fetch('https://africhmaurice.github.io/leaderboard/champions.json?t=' + Math.floor(Date.now() / 300000)).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      fetch('https://script.google.com/macros/s/AKfycby34PKiGYVbQezaoq9aQ2zXV86qDZ3G7OIzfx7cFsElDpY8YAwT2dPhRf6LAwqBw3UyRA/exec?action=champions&t=' + Math.floor(Date.now() / 300000)).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
         var g = d && d.games && d.games[o.game], c = g && g.champion; if (!c || !o.card || !o.card.parentNode) return;
         var n = (g.wins || {})[String(c.key || '').toLowerCase()], top = o.card.parentNode.classList.contains('dbd-gate') ? o.card.parentNode : o.card;
         var p = document.createElement('p'); p.className = 'dbd-champ ma-rv ma-in';   // ma-rv ma-in: the site loader's scroll-in fade leaves it alone
